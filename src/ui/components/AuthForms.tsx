@@ -157,7 +157,6 @@ interface RegisterFormProps {
 }
 
 function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
-	const router = useRouter();
 	const [formData, setFormData] = useState({
 		firstName: "",
 		lastName: "",
@@ -168,6 +167,7 @@ function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [success, setSuccess] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -196,11 +196,11 @@ function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 				body: JSON.stringify(formData),
 			});
 
+			const data = (await response.json()) as { message?: string };
+
 			if (response.ok) {
-				router.refresh();
-				router.push("/orders");
+				setSuccess(true);
 			} else {
-				const data = (await response.json()) as { message?: string };
 				setError(data.message || "Registration failed");
 			}
 		} catch {
@@ -209,6 +209,29 @@ function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 			setIsLoading(false);
 		}
 	};
+
+	// Show success message after registration
+	if (success) {
+		return (
+			<div className="rounded-lg border border-secondary-200 bg-white p-8 text-center shadow-sm">
+				<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+					<Mail className="h-6 w-6 text-green-600" />
+				</div>
+				<h2 className="mb-2 text-xl font-bold text-secondary-900">Check your email</h2>
+				<p className="mb-6 text-secondary-600">
+					We&apos;ve sent a confirmation link to <strong>{formData.email}</strong>. Please click the link to
+					activate your account.
+				</p>
+				<button
+					type="button"
+					onClick={onSwitchToLogin}
+					className="font-medium text-primary-600 hover:text-primary-700"
+				>
+					Back to sign in
+				</button>
+			</div>
+		);
+	}
 
 	// Password strength indicator
 	const getPasswordStrength = (password: string) => {

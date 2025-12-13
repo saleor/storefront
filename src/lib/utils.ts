@@ -63,3 +63,17 @@ export const getPaginatedListVariables = ({
 		? { last: ProductsPerPage, before: cursor }
 		: { first: ProductsPerPage, after: cursor };
 };
+
+/**
+ * Ensures image URLs use HTTPS protocol to avoid mixed content warnings
+ * @param url - The image URL to process
+ * @returns URL with HTTPS protocol
+ */
+export function ensureHttps(url: string | null | undefined): string {
+	if (!url) return "";
+	// Replace http:// with https://
+	if (url.startsWith("http://")) {
+		return url.replace("http://", "https://");
+	}
+	return url;
+}

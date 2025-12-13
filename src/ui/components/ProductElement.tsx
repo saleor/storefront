@@ -8,7 +8,7 @@ import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { clsx } from "clsx";
 
 import type { ProductListItemFragment } from "@/gql/graphql";
-import { formatMoneyRange } from "@/lib/utils";
+import { formatMoneyRange, ensureHttps } from "@/lib/utils";
 
 export interface ProductElementProps {
 	product: ProductListItemFragment;
@@ -29,16 +29,18 @@ export function ProductElement({
 }: ProductElementProps) {
 	// Get all images (filter to only IMAGE type)
 	const mediaImages = product.media?.filter((m) => m.type === "IMAGE") || [];
-	
+
 	// Build images array - use media if available, otherwise fall back to thumbnail
-	const images = mediaImages.length > 0 
-		? mediaImages.map(m => ({ url: m.url, alt: m.alt }))
-		: product.thumbnail 
-			? [{ url: product.thumbnail.url, alt: product.thumbnail.alt }]
-			: [];
-	
+	// Ensure all URLs use HTTPS to avoid mixed content warnings
+	const images =
+		mediaImages.length > 0
+			? mediaImages.map((m) => ({ url: ensureHttps(m.url), alt: m.alt }))
+			: product.thumbnail
+				? [{ url: ensureHttps(product.thumbnail.url), alt: product.thumbnail.alt }]
+				: [];
+
 	const hasMultipleImages = images.length > 1;
-	
+
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const [isHovering, setIsHovering] = useState(false);
 	const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -48,15 +50,15 @@ export function ProductElement({
 		if (hasMultipleImages) {
 			// Stagger start time based on product id to avoid all products changing at once
 			const staggerDelay = (product.id.charCodeAt(0) % 10) * 200;
-			
+
 			const startSlideshow = () => {
 				intervalRef.current = setInterval(() => {
 					setCurrentImageIndex((prev) => (prev + 1) % images.length);
 				}, 3000); // Change image every 3 seconds
 			};
-			
+
 			const timeoutId = setTimeout(startSlideshow, staggerDelay);
-			
+
 			return () => {
 				clearTimeout(timeoutId);
 				if (intervalRef.current) {
@@ -66,22 +68,28 @@ export function ProductElement({
 		}
 	}, [hasMultipleImages, images.length, product.id]);
 
-	const goToPrevious = useCallback((e: React.MouseEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-		setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
-	}, [images.length]);
+	const goToPrevious = useCallback(
+		(e: React.MouseEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+			setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+		},
+		[images.length],
+	);
 
-	const goToNext = useCallback((e: React.MouseEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-		setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
-	}, [images.length]);
+	const goToNext = useCallback(
+		(e: React.MouseEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+			setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+		},
+		[images.length],
+	);
 
-	// Get current image URL
-	const currentImage = images[currentImageIndex]?.url || product.thumbnail?.url;
+	// Get current image URL (ensure HTTPS)
+	const currentImage = images[currentImageIndex]?.url || ensureHttps(product.thumbnail?.url);
 	const currentAlt = images[currentImageIndex]?.alt || product.thumbnail?.alt || product.name;
-	
+
 	// Debug: log image count (remove in production)
 	// console.log(`Product ${product.name}: ${images.length} images, hasMultiple: ${hasMultipleImages}`);
 
@@ -89,9 +97,9 @@ export function ProductElement({
 		return (
 			<li data-testid="ProductElement" className="group">
 				<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
-					<div className="flex gap-4 p-4 rounded-lg border border-secondary-200 hover:border-primary-300 hover:shadow-md transition-all bg-white">
-						<div 
-							className="relative w-32 h-32 flex-shrink-0 overflow-hidden rounded-md bg-white"
+					<div className="flex gap-4 rounded-lg border border-secondary-200 bg-white p-4 transition-all hover:border-primary-300 hover:shadow-md">
+						<div
+							className="relative h-32 w-32 flex-shrink-0 overflow-hidden rounded-md bg-white"
 							onMouseEnter={() => setIsHovering(true)}
 							onMouseLeave={() => setIsHovering(false)}
 						>
@@ -108,25 +116,28 @@ export function ProductElement({
 							)}
 							{/* Image dots indicator */}
 							{hasMultipleImages && (
-								<div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
+								<div className="absolute bottom-1 left-1/2 flex -translate-x-1/2 gap-1">
 									{images.slice(0, 5).map((_, idx) => (
 										<span
 											key={idx}
 											className={clsx(
-												"w-1 h-1 rounded-full transition-colors",
-												idx === currentImageIndex ? "bg-primary-500" : "bg-secondary-300"
+												"h-1 w-1 rounded-full transition-colors",
+												idx === currentImageIndex ? "bg-primary-500" : "bg-secondary-300",
 											)}
 										/>
 									))}
 								</div>
 							)}
 						</div>
-						<div className="flex-1 flex flex-col justify-between">
+						<div className="flex flex-1 flex-col justify-between">
 							<div>
-								<p className="text-xs text-secondary-500 uppercase tracking-wide" data-testid="ProductElement_Category">
+								<p
+									className="text-xs uppercase tracking-wide text-secondary-500"
+									data-testid="ProductElement_Category"
+								>
 									{product.category?.name}
 								</p>
-								<h3 className="mt-1 text-base font-semibold text-secondary-900 group-hover:text-primary-600 transition-colors">
+								<h3 className="mt-1 text-base font-semibold text-secondary-900 transition-colors group-hover:text-primary-600">
 									{product.name}
 								</h3>
 							</div>
@@ -137,9 +148,7 @@ export function ProductElement({
 										stop: product?.pricing?.priceRange?.stop?.gross,
 									})}
 								</p>
-								{showWishlist && (
-									<WishlistButton product={product} size="sm" />
-								)}
+								{showWishlist && <WishlistButton product={product} size="sm" />}
 							</div>
 						</div>
 					</div>
@@ -150,11 +159,11 @@ export function ProductElement({
 
 	return (
 		<li data-testid="ProductElement" className="group relative">
-			<div className="relative overflow-hidden rounded-lg bg-white border border-secondary-200 hover:border-primary-300 hover:shadow-lg transition-all">
+			<div className="relative overflow-hidden rounded-lg border border-secondary-200 bg-white transition-all hover:border-primary-300 hover:shadow-lg">
 				{/* Product Image with Slideshow */}
 				<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
-					<div 
-						className="aspect-square overflow-hidden bg-white relative"
+					<div
+						className="relative aspect-square overflow-hidden bg-white"
 						onMouseEnter={() => setIsHovering(true)}
 						onMouseLeave={() => setIsHovering(false)}
 					>
@@ -175,14 +184,14 @@ export function ProductElement({
 							<>
 								<button
 									onClick={goToPrevious}
-									className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-white/90 shadow-md hover:bg-white transition-colors z-10"
+									className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-1.5 shadow-md transition-colors hover:bg-white"
 									aria-label="Previous image"
 								>
 									<ChevronLeft className="h-4 w-4 text-secondary-700" />
 								</button>
 								<button
 									onClick={goToNext}
-									className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-white/90 shadow-md hover:bg-white transition-colors z-10"
+									className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-1.5 shadow-md transition-colors hover:bg-white"
 									aria-label="Next image"
 								>
 									<ChevronRight className="h-4 w-4 text-secondary-700" />
@@ -192,7 +201,7 @@ export function ProductElement({
 
 						{/* Image dots indicator */}
 						{hasMultipleImages && (
-							<div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+							<div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
 								{images.slice(0, 5).map((_, idx) => (
 									<button
 										key={idx}
@@ -202,16 +211,16 @@ export function ProductElement({
 											setCurrentImageIndex(idx);
 										}}
 										className={clsx(
-											"w-2 h-2 rounded-full transition-all",
-											idx === currentImageIndex 
-												? "bg-primary-500 scale-110" 
-												: "bg-secondary-300 hover:bg-secondary-400"
+											"h-2 w-2 rounded-full transition-all",
+											idx === currentImageIndex
+												? "scale-110 bg-primary-500"
+												: "bg-secondary-300 hover:bg-secondary-400",
 										)}
 										aria-label={`View image ${idx + 1}`}
 									/>
 								))}
 								{images.length > 5 && (
-									<span className="text-xs text-secondary-500 ml-1">+{images.length - 5}</span>
+									<span className="ml-1 text-xs text-secondary-500">+{images.length - 5}</span>
 								)}
 							</div>
 						)}
@@ -220,13 +229,11 @@ export function ProductElement({
 
 				{/* Quick Actions */}
 				{(showWishlist || showQuickView) && (
-					<div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-						{showWishlist && (
-							<WishlistButton product={product} size="sm" />
-						)}
+					<div className="absolute right-3 top-3 z-20 flex flex-col gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+						{showWishlist && <WishlistButton product={product} size="sm" />}
 						{showQuickView && (
-							<button 
-								className="p-2 bg-white rounded-full shadow-md hover:bg-primary-50 hover:text-primary-600 transition-colors"
+							<button
+								className="rounded-full bg-white p-2 shadow-md transition-colors hover:bg-primary-50 hover:text-primary-600"
 								aria-label="Quick view"
 							>
 								<Eye className="h-4 w-4" />
@@ -237,11 +244,14 @@ export function ProductElement({
 
 				{/* Product Info */}
 				<div className="p-4">
-					<p className="text-xs text-secondary-500 uppercase tracking-wide" data-testid="ProductElement_Category">
+					<p
+						className="text-xs uppercase tracking-wide text-secondary-500"
+						data-testid="ProductElement_Category"
+					>
 						{product.category?.name}
 					</p>
 					<LinkWithChannel href={`/products/${product.slug}`}>
-						<h3 className="mt-1 text-sm font-semibold text-secondary-900 group-hover:text-primary-600 transition-colors line-clamp-2">
+						<h3 className="mt-1 line-clamp-2 text-sm font-semibold text-secondary-900 transition-colors group-hover:text-primary-600">
 							{product.name}
 						</h3>
 					</LinkWithChannel>
