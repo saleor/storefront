@@ -2,6 +2,7 @@ import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { executeGraphQL } from "@/lib/graphql";
 import { CategoriesListDocument } from "@/gql/graphql";
 import { Shirt, Laptop, Home, Gift, Watch, Sparkles, ShoppingBag } from "lucide-react";
+import { ensureHttps } from "@/lib/utils";
 
 // Icon mapping for categories - can be extended based on category slugs
 const categoryIcons: Record<string, { icon: typeof Shirt; color: string }> = {
@@ -64,42 +65,42 @@ export async function CategoryGrid() {
 	return (
 		<section className="bg-secondary-50 py-16">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-				<div className="text-center mb-12">
+				<div className="mb-12 text-center">
 					<h2 className="text-2xl font-bold text-secondary-900">Shop by Category</h2>
 					<p className="mt-2 text-secondary-600">Find exactly what you&apos;re looking for</p>
 				</div>
 
-				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+				<div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
 					{categoryList.map((category) => {
 						const { icon: Icon, color } = getIconForCategory(category.slug);
 						const childCount = category.children?.edges.length || 0;
-						
+
 						return (
 							<LinkWithChannel
 								key={category.id}
 								href={`/categories/${category.slug}`}
-								className="group flex flex-col items-center p-6 bg-white rounded-xl border border-secondary-200 hover:border-primary-300 hover:shadow-lg transition-all"
+								className="group flex flex-col items-center rounded-xl border border-secondary-200 bg-white p-6 transition-all hover:border-primary-300 hover:shadow-lg"
 							>
 								{category.backgroundImage?.url ? (
-									<div className="w-16 h-16 rounded-full overflow-hidden mb-4 group-hover:scale-110 transition-transform">
-										<img 
-											src={category.backgroundImage.url} 
+									<div className="mb-4 h-16 w-16 overflow-hidden rounded-full transition-transform group-hover:scale-110">
+										<img
+											src={ensureHttps(category.backgroundImage.url)}
 											alt={category.backgroundImage.alt || category.name}
-											className="w-full h-full object-cover"
+											className="h-full w-full object-cover"
 										/>
 									</div>
 								) : (
-									<div className={`p-4 rounded-full ${color} mb-4 group-hover:scale-110 transition-transform`}>
+									<div
+										className={`rounded-full p-4 ${color} mb-4 transition-transform group-hover:scale-110`}
+									>
 										<Icon className="h-6 w-6" />
 									</div>
 								)}
-								<h3 className="font-semibold text-secondary-900 group-hover:text-primary-600 transition-colors text-center">
+								<h3 className="text-center font-semibold text-secondary-900 transition-colors group-hover:text-primary-600">
 									{category.name}
 								</h3>
 								{childCount > 0 && (
-									<p className="text-xs text-secondary-500 mt-1">
-										{childCount} subcategories
-									</p>
+									<p className="mt-1 text-xs text-secondary-500">{childCount} subcategories</p>
 								)}
 							</LinkWithChannel>
 						);

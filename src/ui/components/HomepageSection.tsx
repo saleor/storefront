@@ -3,6 +3,7 @@ import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 import { ProductList } from "./ProductList";
 import Image from "next/image";
 import edjsHTML from "editorjs-html";
+import { ensureHttps } from "@/lib/utils";
 
 const parser = edjsHTML();
 
@@ -99,7 +100,12 @@ export function HomepageSection({
 		return (
 			<section className="relative overflow-hidden">
 				<div className="absolute inset-0">
-					<Image src={backgroundImage.url} alt={backgroundImage.alt || title} fill className="object-cover" />
+					<Image
+						src={ensureHttps(backgroundImage.url)}
+						alt={backgroundImage.alt || title}
+						fill
+						className="object-cover"
+					/>
 					<div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30" />
 				</div>
 				<div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
