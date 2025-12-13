@@ -157,9 +157,25 @@ export function ProductElement({
 		);
 	}
 
+	// Check if product is on sale
+	const isOnSale = product.pricing?.onSale;
+	const originalPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
+	const currentPriceAmount = product.pricing?.priceRange?.start?.gross;
+	const discountPercentage =
+		isOnSale && originalPrice && currentPriceAmount
+			? Math.round((1 - currentPriceAmount.amount / originalPrice.amount) * 100)
+			: 0;
+
 	return (
 		<li data-testid="ProductElement" className="group relative">
 			<div className="relative overflow-hidden rounded-lg border border-secondary-200 bg-white transition-all hover:border-primary-300 hover:shadow-lg">
+				{/* Sale Badge */}
+				{isOnSale && discountPercentage > 0 && (
+					<div className="absolute left-3 top-3 z-20 rounded-full bg-red-500 px-2 py-1 text-xs font-semibold text-white">
+						-{discountPercentage}%
+					</div>
+				)}
+
 				{/* Product Image with Slideshow */}
 				<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
 					<div
@@ -255,12 +271,31 @@ export function ProductElement({
 							{product.name}
 						</h3>
 					</LinkWithChannel>
-					<p className="mt-2 text-base font-bold text-secondary-900" data-testid="ProductElement_PriceRange">
-						{formatMoneyRange({
-							start: product?.pricing?.priceRange?.start?.gross,
-							stop: product?.pricing?.priceRange?.stop?.gross,
-						})}
-					</p>
+					<div className="mt-2" data-testid="ProductElement_PriceRange">
+						{isOnSale && originalPrice ? (
+							<div className="flex items-center gap-2">
+								<span className="text-base font-bold text-red-600">
+									{formatMoneyRange({
+										start: product?.pricing?.priceRange?.start?.gross,
+										stop: product?.pricing?.priceRange?.stop?.gross,
+									})}
+								</span>
+								<span className="text-sm text-secondary-400 line-through">
+									{formatMoneyRange({
+										start: originalPrice,
+										stop: product?.pricing?.priceRangeUndiscounted?.stop?.gross,
+									})}
+								</span>
+							</div>
+						) : (
+							<span className="text-base font-bold text-secondary-900">
+								{formatMoneyRange({
+									start: product?.pricing?.priceRange?.start?.gross,
+									stop: product?.pricing?.priceRange?.stop?.gross,
+								})}
+							</span>
+						)}
+					</div>
 				</div>
 			</div>
 		</li>

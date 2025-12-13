@@ -1,4 +1,4 @@
-query HomepageCollections($channel: String!, $first: Int = 10) {
+query HomepageCollections($channel: String!, $first: Int = 20) {
 	collections(first: $first, channel: $channel) {
 		edges {
 			node {
@@ -14,13 +14,47 @@ query HomepageCollections($channel: String!, $first: Int = 10) {
 					key
 					value
 				}
-				products(first: 8) {
+				products(first: 12) {
+					totalCount
 					edges {
 						node {
-							...ProductListItem
+							id
+							name
+							slug
+							thumbnail(size: 512, format: WEBP) {
+								url
+								alt
+							}
+							category {
+								name
+							}
+							pricing {
+								onSale
+								priceRange {
+									start {
+										gross {
+											amount
+											currency
+										}
+									}
+									stop {
+										gross {
+											amount
+											currency
+										}
+									}
+								}
+								priceRangeUndiscounted {
+									start {
+										gross {
+											amount
+											currency
+										}
+									}
+								}
+							}
 						}
 					}
-					totalCount
 				}
 			}
 		}
