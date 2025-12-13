@@ -1,0 +1,41 @@
+query UserAccount {
+	me {
+		id
+		email
+		firstName
+		lastName
+		isActive
+		dateJoined
+		lastLogin
+		metadata {
+			key
+			value
+		}
+		addresses {
+			id
+			firstName
+			lastName
+			streetAddress1
+			streetAddress2
+			city
+			postalCode
+			country {
+				code
+				country
+			}
+			countryArea
+			phone
+			isDefaultShippingAddress
+			isDefaultBillingAddress
+		}
+		defaultShippingAddress {
+			id
+		}
+		defaultBillingAddress {
+			id
+		}
+		orders(first: 10) {
+			totalCount
+		}
+	}
+}

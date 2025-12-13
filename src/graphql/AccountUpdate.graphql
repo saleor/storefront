@@ -1,0 +1,111 @@
+mutation AccountUpdate($input: AccountInput!) {
+	accountUpdate(input: $input) {
+		user {
+			id
+			email
+			firstName
+			lastName
+			metadata {
+				key
+				value
+			}
+		}
+		errors {
+			field
+			message
+			code
+		}
+	}
+}
+
+mutation PasswordChange($oldPassword: String!, $newPassword: String!) {
+	passwordChange(oldPassword: $oldPassword, newPassword: $newPassword) {
+		user {
+			id
+			email
+		}
+		errors {
+			field
+			message
+			code
+		}
+	}
+}
+
+mutation AccountAddressCreate($input: AddressInput!) {
+	accountAddressCreate(input: $input) {
+		address {
+			id
+			firstName
+			lastName
+			streetAddress1
+			streetAddress2
+			city
+			postalCode
+			country {
+				code
+				country
+			}
+			phone
+			isDefaultShippingAddress
+			isDefaultBillingAddress
+		}
+		errors {
+			field
+			message
+			code
+		}
+	}
+}
+
+mutation AccountAddressUpdate($id: ID!, $input: AddressInput!) {
+	accountAddressUpdate(id: $id, input: $input) {
+		address {
+			id
+			firstName
+			lastName
+			streetAddress1
+			streetAddress2
+			city
+			postalCode
+			country {
+				code
+				country
+			}
+			phone
+			isDefaultShippingAddress
+			isDefaultBillingAddress
+		}
+		errors {
+			field
+			message
+			code
+		}
+	}
+}
+
+mutation AccountAddressDelete($id: ID!) {
+	accountAddressDelete(id: $id) {
+		address {
+			id
+		}
+		errors {
+			field
+			message
+			code
+		}
+	}
+}
+
+mutation AccountSetDefaultAddress($id: ID!, $type: AddressTypeEnum!) {
+	accountSetDefaultAddress(id: $id, type: $type) {
+		user {
+			id
+		}
+		errors {
+			field
+			message
+			code
+		}
+	}
+}
