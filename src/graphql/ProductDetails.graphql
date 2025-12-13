@@ -6,6 +6,8 @@ query ProductDetails($slug: String!, $channel: String!) {
 		description
 		seoTitle
 		seoDescription
+		isAvailableForPurchase
+		availableForPurchaseAt
 		thumbnail(size: 1024, format: WEBP) {
 			url
 			alt
@@ -25,20 +27,41 @@ query ProductDetails($slug: String!, $channel: String!) {
 			name
 			slug
 		}
+		productType {
+			id
+			name
+			slug
+			hasVariants
+		}
+		weight {
+			unit
+			value
+		}
 		attributes {
 			attribute {
 				name
 				slug
+				inputType
 			}
 			values {
 				name
 				slug
+				file {
+					url
+				}
 			}
 		}
 		variants {
 			...VariantDetails
 		}
 		pricing {
+			onSale
+			discount {
+				gross {
+					amount
+					currency
+				}
+			}
 			priceRange {
 				start {
 					gross {
@@ -53,6 +76,24 @@ query ProductDetails($slug: String!, $channel: String!) {
 					}
 				}
 			}
+			priceRangeUndiscounted {
+				start {
+					gross {
+						amount
+						currency
+					}
+				}
+				stop {
+					gross {
+						amount
+						currency
+					}
+				}
+			}
+		}
+		metadata {
+			key
+			value
 		}
 	}
 }

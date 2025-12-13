@@ -3,6 +3,10 @@ fragment VariantDetails on ProductVariant {
 	name
 	sku
 	quantityAvailable
+	weight {
+		unit
+		value
+	}
 	attributes {
 		attribute {
 			name
@@ -18,11 +22,28 @@ fragment VariantDetails on ProductVariant {
 		alt
 	}
 	pricing {
+		onSale
+		discount {
+			gross {
+				currency
+				amount
+			}
+		}
 		price {
 			gross {
 				currency
 				amount
 			}
 		}
+		priceUndiscounted {
+			gross {
+				currency
+				amount
+			}
+		}
+	}
+	metadata {
+		key
+		value
 	}
 }

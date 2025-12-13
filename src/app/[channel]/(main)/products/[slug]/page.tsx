@@ -174,7 +174,11 @@ export default async function ProductPage(props: {
 
 	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
 
-	const price = selectedVariant?.pricing?.price?.gross
+	// Check if product is on sale
+	const isOnSale = selectedVariant?.pricing?.onSale || product?.pricing?.onSale;
+
+	// Get current price
+	const currentPrice = selectedVariant?.pricing?.price?.gross
 		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
 		: isAvailable
 			? formatMoneyRange({
@@ -182,6 +186,38 @@ export default async function ProductPage(props: {
 					stop: product?.pricing?.priceRange?.stop?.gross,
 				})
 			: "";
+
+	// Get original price (before discount)
+	const originalPrice = selectedVariant?.pricing?.priceUndiscounted?.gross
+		? formatMoney(
+				selectedVariant.pricing.priceUndiscounted.gross.amount,
+				selectedVariant.pricing.priceUndiscounted.gross.currency,
+			)
+		: product?.pricing?.priceRangeUndiscounted?.start?.gross
+			? formatMoneyRange({
+					start: product?.pricing?.priceRangeUndiscounted?.start?.gross,
+					stop: product?.pricing?.priceRangeUndiscounted?.stop?.gross,
+				})
+			: null;
+
+	// Calculate discount percentage
+	const discountPercentage =
+		selectedVariant?.pricing?.price?.gross && selectedVariant?.pricing?.priceUndiscounted?.gross
+			? Math.round(
+					(1 -
+						selectedVariant.pricing.price.gross.amount /
+							selectedVariant.pricing.priceUndiscounted.gross.amount) *
+						100,
+				)
+			: product?.pricing?.discount?.gross && product?.pricing?.priceRangeUndiscounted?.start?.gross
+				? Math.round(
+						(product.pricing.discount.gross.amount /
+							product.pricing.priceRangeUndiscounted.start.gross.amount) *
+							100,
+					)
+				: 0;
+
+	const price = currentPrice;
 
 	// Prepare attributes for tabs
 	const productAttributes =
@@ -248,7 +284,12 @@ export default async function ProductPage(props: {
 			<form action={addItem}>
 				<div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
 					{/* Product Gallery */}
-					<div>
+					<div className="relative">
+						{isOnSale && (
+							<div className="absolute left-4 top-4 z-10 rounded-full bg-red-500 px-3 py-1 text-sm font-semibold text-white">
+								Sale
+							</div>
+						)}
 						<ProductGallery images={galleryImages} productName={product.name} enableZoom={true} />
 					</div>
 
@@ -262,10 +303,27 @@ export default async function ProductPage(props: {
 						{/* Title */}
 						<h1 className="mb-4 text-2xl font-bold text-secondary-900 sm:text-3xl">{product.name}</h1>
 
+						{/* SKU */}
+						{selectedVariant?.sku && (
+							<p className="mb-2 text-sm text-secondary-500">SKU: {selectedVariant.sku}</p>
+						)}
+
 						{/* Price */}
-						<p className="mb-6 text-2xl font-bold text-secondary-900" data-testid="ProductElement_Price">
-							{price}
-						</p>
+						<div className="mb-6" data-testid="ProductElement_Price">
+							{isOnSale && originalPrice ? (
+								<div className="flex items-center gap-3">
+									<span className="text-2xl font-bold text-red-600">{price}</span>
+									<span className="text-lg text-secondary-400 line-through">{originalPrice}</span>
+									{discountPercentage > 0 && (
+										<span className="rounded bg-red-500 px-2 py-1 text-xs font-semibold text-white">
+											-{discountPercentage}%
+										</span>
+									)}
+								</div>
+							) : (
+								<span className="text-2xl font-bold text-secondary-900">{price}</span>
+							)}
+						</div>
 
 						{/* Variant Selector */}
 						{variants && variants.length > 0 && (
@@ -281,7 +339,10 @@ export default async function ProductPage(props: {
 
 						{/* Availability */}
 						<div className="mb-6">
-							<AvailabilityMessage isAvailable={isAvailable} />
+							<AvailabilityMessage
+								isAvailable={isAvailable}
+								quantityAvailable={selectedVariant?.quantityAvailable}
+							/>
 						</div>
 
 						{/* Add to Cart */}
