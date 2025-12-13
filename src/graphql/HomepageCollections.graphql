@@ -1,0 +1,28 @@
+query HomepageCollections($channel: String!, $first: Int = 10) {
+	collections(first: $first, channel: $channel) {
+		edges {
+			node {
+				id
+				name
+				slug
+				description
+				backgroundImage {
+					url
+					alt
+				}
+				metadata {
+					key
+					value
+				}
+				products(first: 8) {
+					edges {
+						node {
+							...ProductListItem
+						}
+					}
+					totalCount
+				}
+			}
+		}
+	}
+}
