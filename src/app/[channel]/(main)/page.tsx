@@ -33,6 +33,9 @@ export default async function HomePage(props: { params: Promise<{ channel: strin
 			first: 20,
 		},
 		revalidate: 60, // Revalidate every minute for fresh content
+	}).catch((error) => {
+		console.error("Failed to fetch collections:", error);
+		return { collections: null };
 	});
 
 	// Fetch latest products as fallback/new arrivals
@@ -42,6 +45,9 @@ export default async function HomePage(props: { params: Promise<{ channel: strin
 			channel: params.channel,
 		},
 		revalidate: 60,
+	}).catch((error) => {
+		console.error("Failed to fetch new arrivals:", error);
+		return { products: null };
 	});
 
 	const collections = collectionsData.collections?.edges.map(({ node }) => node) || [];
