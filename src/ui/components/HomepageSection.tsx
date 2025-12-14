@@ -2,28 +2,8 @@ import { ArrowRight } from "lucide-react";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 import { ProductList } from "./ProductList";
 import Image from "next/image";
-import edjsHTML from "editorjs-html";
 import { ensureHttps } from "@/lib/utils";
-
-const parser = edjsHTML();
-
-type Product = {
-	id: string;
-	name: string;
-	slug: string;
-	thumbnail?: { url: string; alt?: string | null } | null;
-	pricing?: {
-		onSale?: boolean | null;
-		priceRange?: {
-			start?: { gross: { amount: number; currency: string } } | null;
-			stop?: { gross: { amount: number; currency: string } } | null;
-		} | null;
-		priceRangeUndiscounted?: {
-			start?: { gross: { amount: number; currency: string } } | null;
-		} | null;
-	} | null;
-	category?: { name: string } | null;
-};
+import type { ProductListItemFragment } from "@/gql/graphql";
 
 type CollectionMetadata = {
 	key: string;
@@ -34,32 +14,14 @@ export interface HomepageSectionProps {
 	title: string;
 	subtitle?: string;
 	slug: string;
-	products: Product[];
+	products: ProductListItemFragment[];
 	totalCount?: number;
 	backgroundImage?: { url: string; alt?: string | null } | null;
 	metadata?: CollectionMetadata[];
 	variant?: "grid" | "carousel" | "featured" | "banner";
-	columns?: 3 | 4 | 5;
+	columns?: 2 | 3 | 4;
 	showViewAll?: boolean;
 	maxProducts?: number;
-}
-
-// Helper to parse EditorJS description
-function parseDescription(description: string | null | undefined): string | null {
-	if (!description) return null;
-	try {
-		const parsed = JSON.parse(description) as { blocks?: Array<{ data?: { text?: string } }> };
-		if (parsed.blocks) {
-			const html = parser.parse(parsed);
-			return html
-				.join(" ")
-				.replace(/<[^>]*>/g, "")
-				.trim();
-		}
-		return description;
-	} catch {
-		return description;
-	}
 }
 
 // Get metadata value by key
@@ -85,7 +47,6 @@ export function HomepageSection({
 	const customTitle = getMetadataValue(metadata, "homepage_title");
 	const customSubtitle = getMetadataValue(metadata, "homepage_subtitle");
 	const bgColor = getMetadataValue(metadata, "homepage_bg_color");
-	const priority = getMetadataValue(metadata, "homepage_priority");
 
 	const displayTitle = customTitle || title;
 	const displaySubtitle = customSubtitle || subtitle;

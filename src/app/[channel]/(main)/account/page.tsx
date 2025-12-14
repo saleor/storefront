@@ -3,7 +3,6 @@ import { executeGraphQL } from "@/lib/graphql";
 import { UserAccountDocument } from "@/gql/graphql";
 import { Breadcrumb } from "@/ui/components/Breadcrumb";
 import { AccountSettings } from "@/ui/components/AccountSettings";
-import { getServerAuthClient } from "@/app/config";
 
 export const metadata = {
 	title: "Account Settings | Luxior Mall",
@@ -11,20 +10,13 @@ export const metadata = {
 };
 
 export default async function AccountPage() {
-	// Check if user is authenticated
-	const authClient = await getServerAuthClient();
-	const isAuthenticated = await authClient.isSignedIn();
-
-	if (!isAuthenticated) {
-		redirect("/login");
-	}
-
-	// Fetch user data
+	// Fetch user data - if not authenticated, me will be null
 	const { me } = await executeGraphQL(UserAccountDocument, {
 		cache: "no-store",
 		withAuth: true,
 	});
 
+	// Redirect to login if not authenticated
 	if (!me) {
 		redirect("/login");
 	}

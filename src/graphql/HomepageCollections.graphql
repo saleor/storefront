@@ -18,41 +18,7 @@ query HomepageCollections($channel: String!, $first: Int = 20) {
 					totalCount
 					edges {
 						node {
-							id
-							name
-							slug
-							thumbnail(size: 512, format: WEBP) {
-								url
-								alt
-							}
-							category {
-								name
-							}
-							pricing {
-								onSale
-								priceRange {
-									start {
-										gross {
-											amount
-											currency
-										}
-									}
-									stop {
-										gross {
-											amount
-											currency
-										}
-									}
-								}
-								priceRangeUndiscounted {
-									start {
-										gross {
-											amount
-											currency
-										}
-									}
-								}
-							}
+							...ProductListItem
 						}
 					}
 				}

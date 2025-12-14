@@ -41,7 +41,6 @@ export async function POST(request: Request) {
 		return NextResponse.json(
 			{
 				message: "Login successful",
-				user: result.data.tokenCreate.user,
 			},
 			{ status: 200 },
 		);

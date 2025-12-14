@@ -1,19 +1,6 @@
 import { NextResponse } from "next/server";
-import { executeGraphQL } from "@/lib/graphql";
 import { DefaultChannelSlug } from "@/app/config";
-
-// GraphQL mutation for password reset request
-const RequestPasswordResetDocument = /* GraphQL */ `
-	mutation RequestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
-		requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
-			errors {
-				field
-				message
-				code
-			}
-		}
-	}
-`;
+import { invariant } from "ts-invariant";
 
 interface ForgotPasswordRequest {
 	email: string;
@@ -40,25 +27,40 @@ export async function POST(request: Request) {
 		}
 
 		const redirectUrl = `${process.env.NEXT_PUBLIC_STOREFRONT_URL || ""}/reset-password`;
+		const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+		invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL");
 
-		// Call Saleor API to request password reset
-		const result = await executeGraphQL<
-			RequestPasswordResetResponse,
-			{ email: string; channel: string; redirectUrl: string }
-		>(RequestPasswordResetDocument as unknown as Parameters<typeof executeGraphQL>[0], {
-			variables: {
-				email,
-				channel: DefaultChannelSlug,
-				redirectUrl,
-			},
-			cache: "no-store",
+		// Call Saleor API directly
+		const response = await fetch(saleorApiUrl, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				query: `
+					mutation RequestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
+						requestPasswordReset(email: $email, channel: $channel, redirectUrl: $redirectUrl) {
+							errors {
+								field
+								message
+								code
+							}
+						}
+					}
+				`,
+				variables: {
+					email,
+					channel: DefaultChannelSlug,
+					redirectUrl,
+				},
+			}),
 		});
 
+		const result = (await response.json()) as { data: RequestPasswordResetResponse };
+
 		// Check for errors
-		if (result.requestPasswordReset?.errors && result.requestPasswordReset.errors.length > 0) {
+		if (result.data?.requestPasswordReset?.errors && result.data.requestPasswordReset.errors.length > 0) {
 			// Don't reveal if email exists or not for security
 			// Just return success message regardless
-			console.error("Password reset errors:", result.requestPasswordReset.errors);
+			console.error("Password reset errors:", result.data.requestPasswordReset.errors);
 		}
 
 		// Always return success to prevent email enumeration

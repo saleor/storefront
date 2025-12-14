@@ -1,25 +1,6 @@
 import { NextResponse } from "next/server";
-import { executeGraphQL } from "@/lib/graphql";
 import { DefaultChannelSlug } from "@/app/config";
-
-// GraphQL mutation for account registration
-const AccountRegisterDocument = /* GraphQL */ `
-	mutation AccountRegister($input: AccountRegisterInput!) {
-		accountRegister(input: $input) {
-			user {
-				id
-				email
-				firstName
-				lastName
-			}
-			errors {
-				field
-				message
-				code
-			}
-		}
-	}
-`;
+import { invariant } from "ts-invariant";
 
 interface RegisterRequest {
 	email: string;
@@ -54,10 +35,31 @@ export async function POST(request: Request) {
 			return NextResponse.json({ message: "Email and password are required" }, { status: 400 });
 		}
 
-		// Call Saleor API to register user
-		const result = await executeGraphQL<AccountRegisterResponse, { input: object }>(
-			AccountRegisterDocument as unknown as Parameters<typeof executeGraphQL>[0],
-			{
+		const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+		invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL");
+
+		// Call Saleor API directly
+		const response = await fetch(saleorApiUrl, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				query: `
+					mutation AccountRegister($input: AccountRegisterInput!) {
+						accountRegister(input: $input) {
+							user {
+								id
+								email
+								firstName
+								lastName
+							}
+							errors {
+								field
+								message
+								code
+							}
+						}
+					}
+				`,
 				variables: {
 					input: {
 						email,
@@ -68,11 +70,11 @@ export async function POST(request: Request) {
 						redirectUrl: `${process.env.NEXT_PUBLIC_STOREFRONT_URL || ""}/account/confirm`,
 					},
 				},
-				cache: "no-store",
-			},
-		);
+			}),
+		});
 
-		const { accountRegister } = result;
+		const result = (await response.json()) as { data: AccountRegisterResponse };
+		const { accountRegister } = result.data;
 
 		// Check for errors
 		if (accountRegister.errors && accountRegister.errors.length > 0) {

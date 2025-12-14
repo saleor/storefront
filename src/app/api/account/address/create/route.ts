@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { executeGraphQL } from "@/lib/graphql";
-import { AccountAddressCreateDocument } from "@/gql/graphql";
+import { AccountAddressCreateDocument, type CountryCode } from "@/gql/graphql";
 
 interface AddressRequest {
 	firstName: string;
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 					streetAddress2: body.streetAddress2 || "",
 					city: body.city,
 					postalCode: body.postalCode,
-					country: body.country,
+					country: body.country as CountryCode,
 					phone: body.phone || "",
 				},
 			},

@@ -2,21 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-	User,
-	Lock,
-	MapPin,
-	Mail,
-	Phone,
-	Calendar,
-	Shield,
-	LogOut,
-	Edit2,
-	Trash2,
-	Plus,
-	Check,
-	X,
-} from "lucide-react";
+import { User, Lock, MapPin, Mail, Phone, Calendar, Shield, LogOut, Edit2, Plus } from "lucide-react";
 import { clsx } from "clsx";
 import { Button } from "../atoms/Button";
 import { Input } from "../atoms/Input";
