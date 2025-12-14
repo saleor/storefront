@@ -67,22 +67,33 @@ export async function POST(request: Request) {
 						firstName: firstName || "",
 						lastName: lastName || "",
 						channel: DefaultChannelSlug,
-						redirectUrl: `${process.env.NEXT_PUBLIC_STOREFRONT_URL || ""}/account/confirm`,
+						// Only include redirectUrl if STOREFRONT_URL is set
+						...(process.env.NEXT_PUBLIC_STOREFRONT_URL && {
+							redirectUrl: `${process.env.NEXT_PUBLIC_STOREFRONT_URL}/account/confirm`,
+						}),
 					},
 				},
 			}),
 		});
 
-		const result = (await response.json()) as { data: AccountRegisterResponse };
+		const result = (await response.json()) as { data?: AccountRegisterResponse; errors?: Array<{ message: string }> };
+		
+		// Check for GraphQL errors
+		if (result.errors && result.errors.length > 0) {
+			console.error("GraphQL errors:", result.errors);
+			return NextResponse.json({ message: result.errors[0].message || "Registration failed" }, { status: 400 });
+		}
+
+		if (!result.data) {
+			return NextResponse.json({ message: "Registration failed - no response from server" }, { status: 500 });
+		}
+
 		const { accountRegister } = result.data;
 
 		// Check for errors
 		if (accountRegister.errors && accountRegister.errors.length > 0) {
-			const errorMessages = accountRegister.errors
-				.map((e) => e.message)
-				.filter(Boolean)
-				.join(", ");
-
+			console.error("Account register errors:", accountRegister.errors);
+			
 			// Check for specific error codes
 			const duplicateEmail = accountRegister.errors.some(
 				(e) => e.code === "UNIQUE" || e.code === "DUPLICATED_INPUT_ITEM",
@@ -91,6 +102,19 @@ export async function POST(request: Request) {
 			if (duplicateEmail) {
 				return NextResponse.json({ message: "An account with this email already exists" }, { status: 400 });
 			}
+
+			// Check for password errors
+			const passwordError = accountRegister.errors.find((e) => e.field === "password");
+			if (passwordError) {
+				return NextResponse.json({ 
+					message: passwordError.message || "Password does not meet requirements. Use at least 8 characters with letters and numbers." 
+				}, { status: 400 });
+			}
+
+			const errorMessages = accountRegister.errors
+				.map((e) => e.message)
+				.filter(Boolean)
+				.join(", ");
 
 			return NextResponse.json({ message: errorMessages || "Registration failed" }, { status: 400 });
 		}
