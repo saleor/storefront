@@ -12,10 +12,10 @@ services:
     ports:
       - 3000:3000
     networks:
-      - saleor_network
+      - dokploy-network
 
   # Add more containers below (nginx, postgres, etc.)
 
 networks:
-  saleor_network:
-    external: false
+  dokploy-network:
+    external: true # Indicates that this network is managed externally by Dokploy
