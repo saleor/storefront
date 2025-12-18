@@ -2056,17 +2056,21 @@ section,
 
 .hero .hero-visuals .product-showcase {
 	position: relative;
-	max-width: 500px;
+	max-width: 520px;
+	width: 100%;
 }
 
 .hero .hero-visuals .product-showcase .product-card {
 	background: var(--surface-color);
 	border-radius: 24px;
-	padding: 30px;
+	padding: 34px;
 	box-shadow: 0 20px 60px color-mix(in srgb, var(--default-color), transparent 90%);
 	position: relative;
 	overflow: hidden;
 	transition: all 0.3s ease;
+	display: block;
+	text-decoration: none;
+	color: inherit;
 }
 
 .hero .hero-visuals .product-showcase .product-card::before {
@@ -2090,11 +2094,32 @@ section,
 	box-shadow: 0 30px 80px color-mix(in srgb, var(--default-color), transparent 85%);
 }
 
-.hero .hero-visuals .product-showcase .product-card img {
+.hero .hero-visuals .product-showcase .product-card .product-image {
+	position: relative;
 	width: 100%;
-	height: 300px;
-	object-fit: contain;
+	height: 350px;
 	margin-bottom: 20px;
+	padding: 18px;
+	border-radius: 18px;
+	background: var(--contrast-color);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+	.hero .hero-visuals .product-showcase .product-card .product-image {
+		height: 310px;
+		padding: 14px;
+	}
+}
+
+@media (max-width: 768px) {
+	.hero .hero-visuals .product-showcase .product-card .product-image {
+		height: 250px;
+		padding: 10px;
+	}
 }
 
 .hero .hero-visuals .product-showcase .product-card .product-badge {
@@ -2176,17 +2201,44 @@ section,
 	transform: scale(1.1);
 }
 
-.hero .hero-visuals .product-showcase .product-grid .product-mini img {
-	width: 60px;
-	height: 60px;
-	object-fit: contain;
-	margin-bottom: 8px;
-}
-
 .hero .hero-visuals .product-showcase .product-grid .product-mini .mini-price {
 	font-size: 0.9rem;
 	font-weight: 600;
 	color: var(--accent-color);
+}
+
+.hero .hero-visuals .product-showcase .product-grid .product-mini .product-mini-image {
+	position: relative;
+	width: 100%;
+	height: 80px;
+	margin-bottom: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 12px;
+	overflow: hidden;
+	background: var(--contrast-color);
+	padding: 8px;
+}
+
+@media (max-width: 992px) {
+	.hero .hero-visuals .product-showcase .product-grid .product-mini .product-mini-image {
+		height: 65px;
+	}
+}
+
+.hero .hero-visuals .product-showcase .image-placeholder {
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+	background: color-mix(in srgb, var(--default-color), transparent 92%);
+	color: color-mix(in srgb, var(--default-color), transparent 35%);
+	font-size: 0.95rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 10px;
 }
 
 .hero .hero-visuals .floating-elements {

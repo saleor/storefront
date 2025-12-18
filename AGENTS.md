@@ -16,6 +16,10 @@ The storefront is a Next.js App Router project rooted in `src`. Routing, layouts
 
 TypeScript is mandatory across `src`, with modules exporting typed functions or React components using PascalCase names (e.g., `ProductCard`). Follow React hooks conventions (`useXyz`) and colocate styles or helpers with their feature folder. Formatting is enforced by ESLint + Prettier + `prettier-plugin-tailwindcss`, so rely on `pnpm lint` or your editor integration instead of manual tweaks. Prefer 2-space indentation, descriptive prop names, and Tailwind utility ordering as produced by Prettier.
 
+## UI Framework Migration
+
+We are migrating away from Tailwind CSS and rebuilding the component library with `react-bootstrap`. Treat the Bootstrap 5 template in `/Users/jocke/Desktop/NiceShop` as the visual and structural reference when creating or updating UI. All new Next.js components must rely on `react-bootstrap` primitives instead of Tailwind utility classes so the codebase steadily aligns with the upcoming Bootstrap-first design system.
+
 ## Testing Guidelines
 
 Smoke and integration tests use Playwright; group specs by route or feature and suffix them with `.spec.ts`. Unit helpers can sit in `__tests__` and mirror the source tree. Keep tests deterministic by seeding data via Saleor fixtures or mocking network calls. Aim to cover cart, checkout, and payment regressions before merging. Run `pnpm test --project chromium` for a fast pre-push check, and capture screenshots or traces via `--trace on` when chasing flaky results.

@@ -1,6 +1,7 @@
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
+import { FeaturedProductShowcase } from "@/ui/components/FeaturedProductShowcase";
 
 export const metadata = {
 	title: "ACME Storefront, powered by Saleor & Next.js",
@@ -22,7 +23,8 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 		return null;
 	}
 
-	const products = data.collection?.products.edges.map(({ node: product }) => product);
+	const products = data.collection?.products.edges.map(({ node: product }) => product) ?? [];
+	const featuredProducts = products.slice(0, 3);
 
 	return (
 		<>
@@ -61,43 +63,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 					</div>
 
 					<div className="hero-visuals">
-						<div className="product-showcase" data-aos="fade-left" data-aos-delay="200">
-							<div className="product-card featured">
-								<img src="assets/img/product/product-2.webp" alt="Featured Product" className="img-fluid" />
-								<div className="product-badge">Best Seller</div>
-								<div className="product-info">
-									<h4>Premium Wireless Headphones</h4>
-									<div className="price">
-										<span className="sale-price">$299</span>
-										<span className="original-price">$399</span>
-									</div>
-								</div>
-							</div>
-
-							<div className="product-grid">
-								<div className="product-mini" data-aos="zoom-in" data-aos-delay="400">
-									<img src="assets/img/product/product-3.webp" alt="Product" className="img-fluid" />
-									<span className="mini-price">$89</span>
-								</div>
-								<div className="product-mini" data-aos="zoom-in" data-aos-delay="500">
-									<img src="assets/img/product/product-5.webp" alt="Product" className="img-fluid" />
-									<span className="mini-price">$149</span>
-								</div>
-							</div>
-						</div>
-
-						<div className="floating-elements">
-							<div className="floating-icon cart" data-aos="fade-up" data-aos-delay="600">
-								<i className="bi bi-cart3" />
-								<span className="notification-dot">3</span>
-							</div>
-							<div className="floating-icon wishlist" data-aos="fade-up" data-aos-delay="700">
-								<i className="bi bi-heart" />
-							</div>
-							<div className="floating-icon search" data-aos="fade-up" data-aos-delay="800">
-								<i className="bi bi-search" />
-							</div>
-						</div>
+						<FeaturedProductShowcase products={featuredProducts} channel={params.channel} />
 					</div>
 				</div>
 			</section>
