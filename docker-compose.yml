@@ -10,7 +10,7 @@ services:
         NEXT_PUBLIC_STOREFRONT_URL: ${NEXT_PUBLIC_STOREFRONT_URL}
     restart: always
     ports:
-      - 3000:3000
+      - 3001:3001
     networks:
       - dokploy-network
 
