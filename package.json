@@ -18,6 +18,7 @@
 		"@adyen/adyen-web": "5.53.3",
 		"@adyen/api-library": "15.0.0-beta",
 		"@headlessui/react": "1.7.18",
+		"@radix-ui/react-dialog": "1.1.15",
 		"@saleor/auth-sdk": "1.0.3",
 		"@stripe/react-stripe-js": "3.7.0",
 		"@stripe/stripe-js": "7.3.0",

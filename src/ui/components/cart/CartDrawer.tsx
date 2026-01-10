@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useTransition } from "react";
+import { useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight, Truck, RotateCcw } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Truck, RotateCcw } from "lucide-react";
 import { Button } from "@/ui/components/ui/Button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetCloseButton } from "@/ui/components/ui/Sheet";
 import { useCart } from "./CartContext";
 import { deleteCartLine, updateCartLineQuantity } from "./actions";
 import { cn } from "@/lib/utils";
@@ -139,34 +140,11 @@ interface CartDrawerProps {
 
 export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
-	const drawerRef = useRef<HTMLDivElement>(null);
 	const [isPending, startTransition] = useTransition();
 
 	const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
 	const subtotal = totalPrice?.gross.amount ?? 0;
 	const currency = totalPrice?.gross.currency ?? "USD";
-
-	// Close on escape key
-	useEffect(() => {
-		const handleEscape = (e: KeyboardEvent) => {
-			if (e.key === "Escape") closeCart();
-		};
-		if (isOpen) {
-			document.addEventListener("keydown", handleEscape);
-			document.body.style.overflow = "hidden";
-		}
-		return () => {
-			document.removeEventListener("keydown", handleEscape);
-			document.body.style.overflow = "";
-		};
-	}, [isOpen, closeCart]);
-
-	// Focus trap
-	useEffect(() => {
-		if (isOpen && drawerRef.current) {
-			drawerRef.current.focus();
-		}
-	}, [isOpen]);
 
 	const handleRemove = (lineId: string) => {
 		if (!checkoutId) return;
@@ -187,41 +165,17 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 	const amountToFreeShipping = Math.max(freeShippingThreshold - subtotal, 0);
 
 	return (
-		<>
-			{/* Backdrop */}
-			<div
-				className={cn(
-					"bg-foreground/20 fixed inset-0 z-50 backdrop-blur-sm transition-opacity duration-300",
-					isOpen ? "opacity-100" : "pointer-events-none opacity-0",
-				)}
-				onClick={closeCart}
-				aria-hidden="true"
-			/>
-
-			{/* Drawer */}
-			<div
-				ref={drawerRef}
-				tabIndex={-1}
-				role="dialog"
-				aria-modal="true"
-				aria-label="Shopping cart"
-				className={cn(
-					"fixed right-0 top-0 z-50 flex h-full w-full flex-col bg-background shadow-2xl transition-transform duration-300 ease-out sm:max-w-md",
-					isOpen ? "translate-x-0" : "translate-x-full",
-				)}
-			>
+		<Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
+			<SheetContent side="right" className="flex flex-col p-0">
 				{/* Header */}
-				<div className="flex items-center justify-between border-b border-border px-6 py-4">
+				<SheetHeader className="justify-between border-b border-border px-6 py-4">
 					<div className="flex items-center gap-3">
 						<ShoppingBag className="h-5 w-5" />
-						<h2 className="text-lg font-semibold">Your Bag</h2>
+						<SheetTitle>Your Bag</SheetTitle>
 						<span className="text-sm text-muted-foreground">({itemCount} items)</span>
 					</div>
-					<Button variant="ghost" size="icon" onClick={closeCart} className="-mr-2">
-						<X className="h-5 w-5" />
-						<span className="sr-only">Close cart</span>
-					</Button>
-				</div>
+					<SheetCloseButton className="static" />
+				</SheetHeader>
 
 				{/* Free Shipping Progress */}
 				{lines.length > 0 && (
@@ -439,7 +393,7 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 						</div>
 					</div>
 				)}
-			</div>
-		</>
+			</SheetContent>
+		</Sheet>
 	);
 }

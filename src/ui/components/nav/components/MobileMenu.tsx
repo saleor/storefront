@@ -1,56 +1,60 @@
 "use client";
 
-import { Fragment, type ReactNode } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { type ReactNode, useState, createContext, useContext } from "react";
+import { Menu } from "lucide-react";
 import { Logo } from "../../Logo";
-import { useMobileMenu } from "./useMobileMenu";
-import { OpenButton } from "./OpenButton";
-import { CloseButton } from "./CloseButton";
+import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetCloseButton } from "@/ui/components/ui/Sheet";
+
+// Context to allow children to close the menu
+const MobileMenuContext = createContext<{ close: () => void } | null>(null);
+
+export const useMobileMenuClose = () => {
+	const context = useContext(MobileMenuContext);
+	return context?.close ?? (() => {});
+};
 
 type Props = {
 	children: ReactNode;
 };
 
 export const MobileMenu = ({ children }: Props) => {
-	const { closeMenu, openMenu, isOpen } = useMobileMenu();
+	const [isOpen, setIsOpen] = useState(false);
+
+	const close = () => setIsOpen(false);
 
 	return (
-		<>
-			<OpenButton onClick={openMenu} aria-controls="mobile-menu" />
-			<Transition show={isOpen}>
-				<Dialog onClose={closeMenu}>
-					<Dialog.Panel className="fixed inset-0 z-20 flex h-dvh w-screen flex-col overflow-y-scroll bg-white">
-						<Transition.Child
-							className="sticky top-0 z-10 flex h-16 shrink-0 bg-white px-3 backdrop-blur-md sm:px-8"
-							enter="motion-safe:transition-all motion-safe:duration-150"
-							enterFrom="bg-transparent"
-							enterTo="bg-white"
-							leave="motion-safe:transition-all motion-safe:duration-150"
-							leaveFrom="bg-white"
-							leaveTo="bg-transparent"
+		<Sheet open={isOpen} onOpenChange={setIsOpen}>
+			<SheetTrigger asChild>
+				<button
+					type="button"
+					className="flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-accent md:hidden"
+					aria-label="Open menu"
+				>
+					<Menu className="h-5 w-5" />
+				</button>
+			</SheetTrigger>
+			<SheetContent side="left" className="flex w-full flex-col p-0 sm:max-w-sm">
+				<SheetHeader className="justify-between border-b border-border px-4 py-4">
+					<Logo />
+					<SheetCloseButton className="static" />
+				</SheetHeader>
+				<nav className="flex-1 overflow-y-auto">
+					<MobileMenuContext.Provider value={{ close }}>
+						<ul
+							className="flex flex-col whitespace-nowrap p-4 [&>*:nth-child(n+2)]:border-t [&>*:nth-child(n+2)]:border-border [&>li]:py-3"
+							id="mobile-menu"
+							onClick={(e) => {
+								// Close menu when a link is clicked
+								if ((e.target as HTMLElement).closest("a")) {
+									close();
+								}
+							}}
 						>
-							<Logo />
-							<CloseButton onClick={closeMenu} aria-controls="mobile-menu" />
-						</Transition.Child>
-						<Transition.Child
-							as={Fragment}
-							enter="motion-safe:transition-all motion-safe:duration-150"
-							enterFrom="opacity-0 -translate-y-3 bg-transparent"
-							enterTo="opacity-100 translate-y-0 bg-white"
-							leave="motion-safe:transition-all motion-safe:duration-150"
-							leaveFrom="opacity-100 translate-y-0 bg-white"
-							leaveTo="opacity-0 -translate-y-3 bg-transparent"
-						>
-							<ul
-								className="flex h-full flex-col whitespace-nowrap p-3 pt-0 sm:p-8 sm:pt-0 [&>*:nth-child(n+3)]:border-t [&>*:nth-child(n+3)]:border-neutral-200 [&>li]:py-3"
-								id="mobile-menu"
-							>
-								{children}
-							</ul>
-						</Transition.Child>
-					</Dialog.Panel>
-				</Dialog>
-			</Transition>
-		</>
+							{children}
+						</ul>
+					</MobileMenuContext.Provider>
+				</nav>
+			</SheetContent>
+		</Sheet>
 	);
 };
