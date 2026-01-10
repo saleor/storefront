@@ -135,7 +135,10 @@ export async function POST(request: NextRequest) {
 				revalidated.push(`/${targetChannel}/products`);
 		}
 
-		console.log("[Revalidate] Success:", { type, slug, revalidated });
+		// Sanitize for logging to prevent log injection
+		const sanitizedSlug = slug?.replace(/[\r\n]/g, "") ?? "";
+		const sanitizedPaths = revalidated.map((s) => s.replace(/[\r\n]/g, ""));
+		console.log("[Revalidate] Success:", { type, slug: sanitizedSlug, revalidated: sanitizedPaths });
 		return Response.json({ revalidated, success: true });
 	} catch (error) {
 		console.error("[Revalidate] Error:", error);
@@ -175,6 +178,8 @@ export async function GET(request: NextRequest) {
 		return Response.json({ error: "Provide path or tag parameter" }, { status: 400 });
 	}
 
-	console.log("[Revalidate] Manual:", revalidated);
+	// Sanitize for logging to prevent log injection
+	const sanitized = revalidated.map((s) => s.replace(/[\r\n]/g, ""));
+	console.log("[Revalidate] Manual:", sanitized);
 	return Response.json({ revalidated, success: true });
 }

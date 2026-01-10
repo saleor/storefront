@@ -3,7 +3,14 @@
 import { type ReactNode, useState, createContext, useContext } from "react";
 import { Menu } from "lucide-react";
 import { Logo } from "../../Logo";
-import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetCloseButton } from "@/ui/components/ui/Sheet";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+	SheetCloseButton,
+} from "@/ui/components/ui/Sheet";
 
 // Context to allow children to close the menu
 const MobileMenuContext = createContext<{ close: () => void } | null>(null);
@@ -34,6 +41,7 @@ export const MobileMenu = ({ children }: Props) => {
 				</button>
 			</SheetTrigger>
 			<SheetContent side="left" className="flex w-full flex-col p-0 sm:max-w-sm">
+				<SheetTitle className="sr-only">Navigation menu</SheetTitle>
 				<SheetHeader className="justify-between border-b border-border px-4 py-4">
 					<Logo />
 					<SheetCloseButton className="static" />
