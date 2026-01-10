@@ -82,10 +82,16 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 					</>
 				)}
 
-				{/* Zoom indicator */}
-				<div className="bg-background/90 absolute bottom-4 right-4 flex items-center gap-2 rounded-full px-3 py-1.5 text-xs opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+				{/* Zoom indicator - always visible on mobile, hover on desktop */}
+				<div
+					className={cn(
+						"bg-background/90 absolute bottom-4 right-4 flex items-center gap-2 rounded-full px-3 py-1.5 text-xs backdrop-blur-sm transition-opacity",
+						isZoomed ? "opacity-0" : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100",
+					)}
+				>
 					<ZoomIn className="h-3.5 w-3.5" />
-					<span>Click to zoom</span>
+					<span className="sm:hidden">Tap to zoom</span>
+					<span className="hidden sm:inline">Click to zoom</span>
 				</div>
 			</div>
 
