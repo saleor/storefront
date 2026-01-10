@@ -1,7 +1,17 @@
+/* Brand configuration - edit this file to customize colors, radius, etc. */
+@import "../styles/brand.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-	overflow-x: hidden;
+@layer base {
+	body {
+		@apply bg-neutral-50 text-neutral-900;
+		overflow-x: hidden;
+	}
+
+	.dark body {
+		@apply bg-neutral-950 text-neutral-50;
+	}
 }
