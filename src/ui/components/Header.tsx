@@ -1,13 +1,45 @@
+import { Suspense } from "react";
 import { Logo } from "./Logo";
-import { Nav } from "./nav/Nav";
+import { NavLinks } from "./nav/components/NavLinks";
+import { CartNavItem } from "./nav/components/CartNavItem";
+import { UserMenuContainer } from "./nav/components/UserMenu/UserMenuContainer";
+import { MobileMenu } from "./nav/components/MobileMenu";
+import { SearchBar } from "./nav/components/SearchBar";
 
-export function Header({ channel }: { channel: string }) {
+export async function Header({ channel }: { channel: string }) {
 	return (
-		<header className="sticky top-0 z-20 bg-neutral-100/50 backdrop-blur-md">
-			<div className="mx-auto max-w-7xl px-3 sm:px-8">
-				<div className="flex h-16 justify-between gap-4 md:gap-8">
+		<header className="sticky top-0 z-40 border-b border-border bg-background">
+			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+				<div className="flex h-16 items-center justify-between gap-4">
+					{/* Logo */}
 					<Logo />
-					<Nav channel={channel} />
+
+					{/* Search bar - centered on desktop */}
+					<div className="hidden flex-1 justify-center md:flex">
+						<SearchBar channel={channel} />
+					</div>
+
+					{/* Navigation - Desktop */}
+					<nav className="hidden items-center gap-6 lg:flex">
+						<NavLinks channel={channel} />
+					</nav>
+
+					{/* Actions */}
+					<div className="flex items-center gap-1">
+						{/* Mobile search - uses MobileMenu */}
+						<Suspense fallback={<div className="h-10 w-10" />}>
+							<UserMenuContainer />
+						</Suspense>
+						<Suspense fallback={<div className="h-10 w-10" />}>
+							<CartNavItem channel={channel} />
+						</Suspense>
+						<Suspense>
+							<MobileMenu>
+								<SearchBar channel={channel} />
+								<NavLinks channel={channel} />
+							</MobileMenu>
+						</Suspense>
+					</div>
 				</div>
 			</div>
 		</header>

@@ -1,19 +1,27 @@
-import edjsHTML from "editorjs-html";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
-import xss from "xss";
 import { invariant } from "ts-invariant";
 import { type WithContext, type Product } from "schema-dts";
-import { AddButton } from "./AddButton";
-import { VariantSelector } from "@/ui/components/VariantSelector";
-import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
+import edjsHTML from "editorjs-html";
+import xss from "xss";
+
 import { executeGraphQL } from "@/lib/graphql";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
-import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 
+import { Breadcrumbs } from "@/ui/components/Breadcrumbs";
+import {
+	ProductGallery,
+	AddToCart,
+	ProductAttributes,
+	StickyBar,
+	VariantSelectionSection,
+} from "@/ui/components/pdp";
+import { Badge } from "@/ui/components/ui/Badge";
+
+// Metadata generation
 export async function generateMetadata(
 	props: {
 		params: Promise<{ slug: string; channel: string }>;
@@ -49,17 +57,13 @@ export async function generateMetadata(
 		},
 		openGraph: product.thumbnail
 			? {
-					images: [
-						{
-							url: product.thumbnail.url,
-							alt: product.name,
-						},
-					],
+					images: [{ url: product.thumbnail.url, alt: product.name }],
 				}
 			: null,
 	};
 }
 
+// Static params generation
 export async function generateStaticParams({ params }: { params: { channel: string } }) {
 	const { products } = await executeGraphQL(ProductListDocument, {
 		revalidate: 60,
@@ -67,17 +71,17 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 		withAuth: false,
 	});
 
-	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
-	return paths;
+	return products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 }
 
 const parser = edjsHTML();
 
-export default async function Page(props: {
+export default async function ProductPage(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
 	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
+
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(params.slug),
@@ -90,29 +94,95 @@ export default async function Page(props: {
 		notFound();
 	}
 
-	const firstImage = product.thumbnail;
-	const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
+	// Parse data
+	const variants = product.variants || [];
 
-	const variants = product.variants;
-	const selectedVariantID = searchParams.variant;
-	const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
+	// Auto-select variant: use URL param, or auto-select if only one variant exists
+	const selectedVariantID = searchParams.variant || (variants.length === 1 ? variants[0].id : undefined);
+	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
 
-	async function addItem() {
+	// Parse description from EditorJS format and sanitize HTML
+	let descriptionHtml: string[] | null = null;
+	try {
+		if (product.description) {
+			const parsed = parser.parse(JSON.parse(product.description));
+			descriptionHtml = parsed.map((html: string) => xss(html));
+		}
+	} catch {
+		// If parsing fails, wrap plain text in a paragraph
+		if (product.description) {
+			descriptionHtml = [xss(`<p>${product.description}</p>`)];
+		}
+	}
+
+	// Check availability
+	const isAvailable = variants.some((variant) => variant.quantityAvailable);
+	const isAddToCartDisabled = !selectedVariantID || !selectedVariant?.quantityAvailable;
+
+	// Format prices
+	const price = selectedVariant?.pricing?.price?.gross
+		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
+		: formatMoneyRange({
+				start: product.pricing?.priceRange?.start?.gross,
+				stop: product.pricing?.priceRange?.stop?.gross,
+			}) || "";
+
+	// Prepare images from product media
+	const images =
+		product.media && product.media.length > 0
+			? product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }))
+			: product.thumbnail
+				? [{ url: product.thumbnail.url, alt: product.thumbnail.alt }]
+				: [];
+
+	// Extract product attributes for display
+	// Filter out variant-specific attributes (Size, Color) as they're handled by variant selector
+	const variantAttributeSlugs = ["size", "color", "colour", "variant"];
+	const internalAttributeSlugs = ["care-instructions", "care"];
+
+	const productAttributes = (product.attributes || [])
+		.filter((attr) => attr.attribute.name)
+		.filter((attr) => !variantAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
+		.filter((attr) => !internalAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
+		.map((attr) => ({
+			name: attr.attribute.name!,
+			value:
+				attr.values.length === 1
+					? attr.values[0]?.name ?? ""
+					: attr.values.map((v) => v.name ?? "").filter(Boolean),
+		}))
+		.filter((attr) => {
+			if (Array.isArray(attr.value)) return attr.value.length > 0;
+			return attr.value !== "";
+		});
+
+	// Look for care instructions attribute
+	const careAttr = (product.attributes || []).find(
+		(attr) =>
+			attr.attribute.slug === "care-instructions" ||
+			attr.attribute.slug === "care" ||
+			(attr.attribute.name ?? "").toLowerCase().includes("care"),
+	);
+	const careInstructions =
+		careAttr?.values
+			.map((v) => v.name)
+			.filter(Boolean)
+			.join(". ") || null;
+
+	// Server action for adding to cart
+	async function addToCart() {
 		"use server";
+
+		if (!selectedVariantID) return;
 
 		const checkout = await Checkout.findOrCreate({
 			checkoutId: await Checkout.getIdFromCookies(params.channel),
 			channel: params.channel,
 		});
-		invariant(checkout, "This should never happen");
+		invariant(checkout, "Failed to create checkout");
 
 		await Checkout.saveIdToCookie(params.channel, checkout.id);
 
-		if (!selectedVariantID) {
-			return;
-		}
-
-		// TODO: error handling
 		await executeGraphQL(CheckoutAddLineDocument, {
 			variables: {
 				id: checkout.id,
@@ -124,101 +194,104 @@ export default async function Page(props: {
 		revalidatePath("/cart");
 	}
 
-	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
-
-	const price = selectedVariant?.pricing?.price?.gross
-		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-		: isAvailable
-			? formatMoneyRange({
-					start: product?.pricing?.priceRange?.start?.gross,
-					stop: product?.pricing?.priceRange?.stop?.gross,
-				})
-			: "";
-
+	// JSON-LD structured data
 	const productJsonLd: WithContext<Product> = {
 		"@context": "https://schema.org",
 		"@type": "Product",
+		name: product.name,
 		image: product.thumbnail?.url,
-		...(selectedVariant
+		description: product.seoDescription || product.name,
+		offers: selectedVariant
 			? {
-					name: `${product.name} - ${selectedVariant.name}`,
-					description: product.seoDescription || `${product.name} - ${selectedVariant.name}`,
-					offers: {
-						"@type": "Offer",
-						availability: selectedVariant.quantityAvailable
-							? "https://schema.org/InStock"
-							: "https://schema.org/OutOfStock",
-						priceCurrency: selectedVariant.pricing?.price?.gross.currency,
-						price: selectedVariant.pricing?.price?.gross.amount,
-					},
+					"@type": "Offer",
+					availability: selectedVariant.quantityAvailable
+						? "https://schema.org/InStock"
+						: "https://schema.org/OutOfStock",
+					priceCurrency: selectedVariant.pricing?.price?.gross.currency,
+					price: selectedVariant.pricing?.price?.gross.amount,
 				}
 			: {
-					name: product.name,
-
-					description: product.seoDescription || product.name,
-					offers: {
-						"@type": "AggregateOffer",
-						availability: product.variants?.some((variant) => variant.quantityAvailable)
-							? "https://schema.org/InStock"
-							: "https://schema.org/OutOfStock",
-						priceCurrency: product.pricing?.priceRange?.start?.gross.currency,
-						lowPrice: product.pricing?.priceRange?.start?.gross.amount,
-						highPrice: product.pricing?.priceRange?.stop?.gross.amount,
-					},
-				}),
+					"@type": "AggregateOffer",
+					availability: isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+					priceCurrency: product.pricing?.priceRange?.start?.gross?.currency,
+					lowPrice: product.pricing?.priceRange?.start?.gross?.amount,
+					highPrice: product.pricing?.priceRange?.stop?.gross?.amount,
+				},
 	};
 
+	// Breadcrumbs
+	const breadcrumbs = [
+		{ label: "Home", href: "/" },
+		...(product.category
+			? [{ label: product.category.name, href: `/categories/${product.category.slug}` }]
+			: []),
+		{ label: product.name },
+	];
+
 	return (
-		<section className="mx-auto grid max-w-7xl p-8">
+		<div className="flex min-h-screen flex-col bg-background">
 			<script
 				type="application/ld+json"
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(productJsonLd),
-				}}
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
 			/>
-			<form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
-				<div className="md:col-span-1 lg:col-span-5">
-					{firstImage && (
-						<ProductImageWrapper
-							priority={true}
-							alt={firstImage.alt ?? ""}
-							width={1024}
-							height={1024}
-							src={firstImage.url}
-						/>
-					)}
-				</div>
-				<div className="flex flex-col pt-6 sm:col-span-1 sm:px-6 sm:pt-0 lg:col-span-3 lg:pt-16">
-					<div>
-						<h1 className="mb-4 flex-auto text-3xl font-medium tracking-tight text-neutral-900">
-							{product?.name}
-						</h1>
-						<p className="mb-8 text-sm " data-testid="ProductElement_Price">
-							{price}
-						</p>
 
-						{variants && (
-							<VariantSelector
-								selectedVariant={selectedVariant}
+			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+				{/* Breadcrumb */}
+				<div className="mb-6">
+					<Breadcrumbs items={breadcrumbs} />
+				</div>
+
+				{/* Product Grid */}
+				<form action={addToCart}>
+					<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+						{/* Left Column - Gallery */}
+						<div className="lg:sticky lg:top-24 lg:self-start">
+							<ProductGallery images={images} productName={product.name} />
+						</div>
+
+						{/* Right Column - Product Info */}
+						<div className="space-y-8">
+							{/* Header */}
+							<div className="space-y-3">
+								<div className="flex items-center gap-2">
+									{product.category && (
+										<span className="text-sm text-muted-foreground">{product.category.name}</span>
+									)}
+									{!isAvailable && (
+										<Badge variant="secondary" className="text-xs">
+											Out of stock
+										</Badge>
+									)}
+								</div>
+								<h1 className="text-balance text-3xl font-semibold tracking-tight lg:text-4xl">
+									{product.name}
+								</h1>
+							</div>
+
+							{/* Variant Selectors */}
+							<VariantSelectionSection
 								variants={variants}
-								product={product}
+								selectedVariantId={selectedVariantID}
+								productSlug={product.slug}
 								channel={params.channel}
 							/>
-						)}
-						<AvailabilityMessage isAvailable={isAvailable} />
-						<div className="mt-8">
-							<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
+
+							{/* Add to Cart */}
+							<AddToCart price={price} disabled={isAddToCartDisabled} />
+
+							{/* Product Details Accordion */}
+							<ProductAttributes
+								descriptionHtml={descriptionHtml}
+								attributes={productAttributes}
+								careInstructions={careInstructions}
+							/>
 						</div>
-						{description && (
-							<div className="mt-8 space-y-6 text-sm text-neutral-500">
-								{description.map((content) => (
-									<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
-								))}
-							</div>
-						)}
 					</div>
-				</div>
-			</form>
-		</section>
+
+					{/* Sticky Add to Cart Bar (Mobile) */}
+					<StickyBar productName={product.name} price={price} show={!isAddToCartDisabled} />
+				</form>
+			</main>
+		</div>
 	);
 }

@@ -1,0 +1,148 @@
+# Saleor Storefront - AI Agent Rules
+
+You are working on a Saleor e-commerce storefront built with Next.js 16, TypeScript, and Tailwind CSS.
+
+## Critical Workflows
+
+### After Modifying `.graphql` Files
+ALWAYS run `pnpm run generate` after changing any file in:
+- `src/graphql/*.graphql`
+- `src/checkout/graphql/*.graphql`
+
+This regenerates TypeScript types in `src/gql/`. Without this step, TypeScript errors will occur.
+
+### Before Committing
+Run these commands to verify changes:
+```bash
+pnpm run generate    # Regenerate GraphQL types
+pnpm exec tsc --noEmit  # Type check
+pnpm run build       # Full build test
+```
+
+## File Locations
+
+| Purpose | Location |
+|---------|----------|
+| GraphQL queries (storefront) | `src/graphql/*.graphql` |
+| GraphQL queries (checkout) | `src/checkout/graphql/*.graphql` |
+| Generated types (DO NOT EDIT) | `src/gql/` |
+| UI components | `src/ui/components/` |
+| Product page components | `src/ui/components/pdp/` |
+| Base UI primitives | `src/ui/components/ui/` |
+| Design tokens | `src/styles/brand.css` |
+| Product page | `src/app/[channel]/(main)/products/[slug]/page.tsx` |
+
+## Code Patterns
+
+### Server Components (Default)
+```tsx
+// No "use client" = Server Component
+export async function MyComponent({ channel }: { channel: string }) {
+  const data = await executeGraphQL(MyDocument, { variables: { channel } });
+  return <div>{data.field}</div>;
+}
+```
+
+### Client Components (Only When Needed)
+```tsx
+"use client";
+import { useState } from "react";
+export function InteractiveComponent() {
+  const [state, setState] = useState(null);
+  // ...
+}
+```
+
+### Server Actions
+```tsx
+async function handleSubmit() {
+  "use server";
+  await executeGraphQL(MutationDocument, { variables: { ... } });
+  revalidatePath("/path");
+}
+```
+
+### GraphQL Usage
+```tsx
+import { MyQueryDocument } from "@/gql/graphql";
+import { executeGraphQL } from "@/lib/graphql";
+
+const { data } = await executeGraphQL(MyQueryDocument, {
+  variables: { slug, channel },
+  revalidate: 60,
+});
+```
+
+## Styling
+
+Use semantic Tailwind classes that reference CSS variables:
+```tsx
+// Good - uses design tokens
+<div className="bg-background text-foreground border-border">
+<button className="bg-primary text-primary-foreground">
+
+// Avoid - hardcoded colors
+<div className="bg-white text-black border-gray-200">
+```
+
+## Investigating Saleor API Behavior
+
+When API behavior is unclear, **clone Saleor core** to check the source:
+```bash
+cd /tmp && git clone --depth 1 https://github.com/saleor/saleor.git saleor-core
+```
+
+Key paths: `saleor/graphql/product/`, `saleor/graphql/attribute/`, `saleor/product/models.py`
+
+Example: `product.attributes` auto-filters by `visibleInStorefront` for storefront users (see `resolvers.py`).
+
+**Note**: Saleor's API returns only storefront-visible data to anonymous/customer users. No client-side filtering needed for `visibleInStorefront` flags - it's driven by the authentication token: no token or customer JWT = filtered, app/user with `MANAGE_PRODUCTS` permission = full access.
+
+## Variant Attributes Configuration
+
+Variant attributes (like Size, Color) are configured at the **ProductType** level:
+- Dashboard → Configuration → Product Types → [Type] → Variant Attributes
+
+If an attribute doesn't appear in `variant.attributes`, check if it's added as a Variant Attribute in the ProductType (not just a Product Attribute).
+
+## Variant Selection System
+
+**Key truths:**
+1. **Cart requires variant ID** - You add variants (not products) to cart. ALL attributes must be selected.
+2. **URL params per attribute** - `?color=black&size=m&variant=abc123`
+3. **`variant` param only set when complete** - Partial selections don't set `variant` param
+4. **Three visual states**: Available (normal), Incompatible (dimmed), Out of stock (strikethrough)
+5. **Smart adjustment** - Clicking incompatible option clears conflicting selections (users never stuck)
+
+Location: `src/ui/components/pdp/variant-selection/`
+
+## Common Gotchas
+
+### Saleor API Permissions
+Some fields require admin permissions. If you see:
+```
+"To access this path, you need one of the following permissions: MANAGE_..."
+```
+Use the checkout pattern for fetching attributes:
+```graphql
+attributes(variantSelection: ALL) {
+  values { name value }
+  attribute { name slug }
+}
+```
+
+### Nullable Fields
+Saleor schema has many nullable fields. Always use optional chaining:
+```tsx
+const name = product.category?.name ?? "Default";
+```
+
+### Import Paths
+Always use the `@/` alias:
+```tsx
+import { Button } from "@/ui/components/ui/Button";
+```
+
+## Documentation
+
+For comprehensive documentation, see `AGENTS.md` in the project root.

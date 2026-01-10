@@ -1,9 +1,18 @@
 import NextImage, { type ImageProps } from "next/image";
+import clsx from "clsx";
 
-export const ProductImageWrapper = (props: ImageProps) => {
+interface ProductImageWrapperProps extends ImageProps {
+	containerClassName?: string;
+}
+
+export const ProductImageWrapper = ({
+	containerClassName,
+	className,
+	...props
+}: ProductImageWrapperProps) => {
 	return (
-		<div className="aspect-square overflow-hidden bg-neutral-50">
-			<NextImage {...props} className="h-full w-full object-contain object-center p-2" />
+		<div className={clsx("aspect-square overflow-hidden bg-secondary", containerClassName)}>
+			<NextImage {...props} className={clsx("h-full w-full object-cover object-center", className)} />
 		</div>
 	);
 };

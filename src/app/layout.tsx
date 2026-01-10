@@ -1,10 +1,9 @@
-import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Suspense, type ReactNode } from "react";
 import { type Metadata } from "next";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: "Saleor Storefront example",
@@ -18,8 +17,8 @@ export default function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;
 
 	return (
-		<html lang="en" className="min-h-dvh">
-			<body className={`${inter.className} min-h-dvh`}>
+		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}>
+			<body className="min-h-dvh font-sans">
 				{children}
 				<Suspense>
 					<DraftModeNotification />

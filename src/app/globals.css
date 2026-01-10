@@ -1,4 +1,4 @@
-/* Brand configuration - edit this file to customize colors, radius, etc. */
+/* Brand tokens (includes fonts) */
 @import "../styles/brand.css";
 
 @tailwind base;
@@ -6,12 +6,35 @@
 @tailwind utilities;
 
 @layer base {
+	*,
+	*::before,
+	*::after {
+		@apply border-border;
+	}
+	html {
+		/* Enable smooth scrolling */
+		scroll-behavior: smooth;
+	}
 	body {
-		@apply bg-neutral-50 text-neutral-900;
-		overflow-x: hidden;
+		@apply bg-background text-foreground antialiased;
+		font-feature-settings:
+			"rlig" 1,
+			"calt" 1;
+	}
+}
+
+@layer utilities {
+	/* Hide scrollbar for thumbnails gallery */
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
 	}
 
-	.dark body {
-		@apply bg-neutral-950 text-neutral-50;
+	/* Text balance for headings */
+	.text-balance {
+		text-wrap: balance;
 	}
 }

@@ -7,23 +7,28 @@ import { SearchBar } from "./components/SearchBar";
 
 export const Nav = ({ channel }: { channel: string }) => {
 	return (
-		<nav className="flex w-full gap-4 lg:gap-6" aria-label="Main navigation">
-			<ul className="hidden gap-4 overflow-x-auto whitespace-nowrap md:flex lg:gap-8 lg:px-0">
+		<nav className="flex flex-1 items-center gap-4 lg:gap-8" aria-label="Main navigation">
+			{/* Search bar - centered on desktop */}
+			<div className="hidden flex-1 justify-center lg:flex">
+				<SearchBar channel={channel} />
+			</div>
+
+			{/* Navigation links - desktop */}
+			<ul className="hidden items-center gap-6 md:flex">
 				<NavLinks channel={channel} />
 			</ul>
-			<div className="ml-auto flex items-center justify-center gap-4 whitespace-nowrap lg:gap-8">
-				<div className="hidden lg:flex">
-					<SearchBar channel={channel} />
-				</div>
-				<Suspense fallback={<div className="w-8" />}>
+
+			{/* User menu and cart */}
+			<div className="ml-auto flex items-center gap-4 md:ml-0">
+				<Suspense fallback={<div className="h-8 w-8" />}>
 					<UserMenuContainer />
 				</Suspense>
-			</div>
-			<div className="flex items-center">
-				<Suspense fallback={<div className="w-6" />}>
+				<Suspense fallback={<div className="h-8 w-8" />}>
 					<CartNavItem channel={channel} />
 				</Suspense>
 			</div>
+
+			{/* Mobile menu */}
 			<Suspense>
 				<MobileMenu>
 					<SearchBar channel={channel} />

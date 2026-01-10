@@ -41,6 +41,9 @@ importers:
       formik:
         specifier: 2.4.5
         version: 2.4.5(react@19.1.2)
+      geist:
+        specifier: 1.5.1
+        version: 1.5.1(next@16.0.10(@babel/core@7.24.9)(react-dom@19.1.2(react@19.1.2))(react@19.1.2))
       libphonenumber-js:
         specifier: 1.10.58
         version: 1.10.58
@@ -77,6 +80,9 @@ importers:
       sharp:
         specifier: 0.33.2
         version: 0.33.2
+      tailwindcss-animate:
+        specifier: 1.0.7
+        version: 1.0.7(tailwindcss@3.4.0)
       ts-invariant:
         specifier: 0.10.3
         version: 0.10.3
@@ -2242,6 +2248,11 @@ packages:
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
 
+  geist@1.5.1:
+    resolution: {integrity: sha512-mAHZxIsL2o3ZITFaBVFBnwyDOw+zNLYum6A6nIjpzCGIO8QtC3V76XF2RnZTyLx1wlDTmMDy8jg3Ib52MIjGvQ==}
+    peerDependencies:
+      next: '>=13.2.0'
+
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
@@ -3626,6 +3637,11 @@ packages:
 
   swap-case@2.0.2:
     resolution: {integrity: sha512-kc6S2YS/2yXbtkSMunBtKdah4VFETZ8Oh6ONSmSd9bRxhqTrtARUCBUiWXH3xVPpvR7tz2CSnkuXVE42EcGnMw==}
+
+  tailwindcss-animate@1.0.7:
+    resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || insiders'
 
   tailwindcss@3.4.0:
     resolution: {integrity: sha512-VigzymniH77knD1dryXbyxR+ePHihHociZbXnLZHUyzf2MMs2ZVqlUrZ3FvpXP8pno9JzmILt1sZPD19M3IxtA==}
@@ -6513,6 +6529,10 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
+  geist@1.5.1(next@16.0.10(@babel/core@7.24.9)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)):
+    dependencies:
+      next: 16.0.10(@babel/core@7.24.9)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
@@ -7937,6 +7957,10 @@ snapshots:
   swap-case@2.0.2:
     dependencies:
       tslib: 2.6.3
+
+  tailwindcss-animate@1.0.7(tailwindcss@3.4.0):
+    dependencies:
+      tailwindcss: 3.4.0
 
   tailwindcss@3.4.0:
     dependencies:

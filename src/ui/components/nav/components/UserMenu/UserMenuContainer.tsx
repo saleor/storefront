@@ -13,8 +13,11 @@ export async function UserMenuContainer() {
 		return <UserMenu user={user} />;
 	} else {
 		return (
-			<LinkWithChannel href="/login" className="h-6 w-6 flex-shrink-0">
-				<UserIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
+			<LinkWithChannel
+				href="/login"
+				className="inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
+			>
+				<UserIcon className="h-5 w-5" aria-hidden="true" />
 				<span className="sr-only">Log in</span>
 			</LinkWithChannel>
 		);

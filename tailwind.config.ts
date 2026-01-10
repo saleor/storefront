@@ -1,13 +1,12 @@
 import TypographyPlugin from "@tailwindcss/typography";
 import FormPlugin from "@tailwindcss/forms";
 import ContainerQueriesPlugin from "@tailwindcss/container-queries";
+import AnimatePlugin from "tailwindcss-animate";
 import { type Config } from "tailwindcss";
 
 /**
  * Tailwind Configuration
- *
- * Brand customization: edit src/styles/brand.css
- * That file controls colors, border radius, and other brand-specific values.
+ * Brand tokens defined in src/styles/brand.css
  */
 const config: Config = {
 	content: ["./src/**/*.{ts,tsx}"],
@@ -15,80 +14,100 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				/* Brand colors - customizable via CSS variables in brand.css */
-				brand: {
-					DEFAULT: "rgb(var(--brand) / <alpha-value>)",
-					foreground: "rgb(var(--brand-foreground) / <alpha-value>)",
+				background: "var(--background)",
+				foreground: "var(--foreground)",
+				card: {
+					DEFAULT: "var(--card)",
+					foreground: "var(--card-foreground)",
 				},
-
-				/* Neutral scale - customizable via CSS variables in brand.css */
-				neutral: {
-					50: "rgb(var(--neutral-50) / <alpha-value>)",
-					100: "rgb(var(--neutral-100) / <alpha-value>)",
-					200: "rgb(var(--neutral-200) / <alpha-value>)",
-					300: "rgb(var(--neutral-300) / <alpha-value>)",
-					400: "rgb(var(--neutral-400) / <alpha-value>)",
-					500: "rgb(var(--neutral-500) / <alpha-value>)",
-					600: "rgb(var(--neutral-600) / <alpha-value>)",
-					700: "rgb(var(--neutral-700) / <alpha-value>)",
-					800: "rgb(var(--neutral-800) / <alpha-value>)",
-					900: "rgb(var(--neutral-900) / <alpha-value>)",
-					950: "rgb(var(--neutral-950) / <alpha-value>)",
+				popover: {
+					DEFAULT: "var(--popover)",
+					foreground: "var(--popover-foreground)",
 				},
-
-				/* Feedback colors - static, rarely need brand customization */
+				primary: {
+					DEFAULT: "var(--primary)",
+					foreground: "var(--primary-foreground)",
+				},
+				secondary: {
+					DEFAULT: "var(--secondary)",
+					foreground: "var(--secondary-foreground)",
+				},
+				muted: {
+					DEFAULT: "var(--muted)",
+					foreground: "var(--muted-foreground)",
+				},
+				accent: {
+					DEFAULT: "var(--accent)",
+					foreground: "var(--accent-foreground)",
+				},
+				destructive: {
+					DEFAULT: "var(--destructive)",
+					foreground: "var(--destructive-foreground)",
+				},
 				success: {
-					50: "#f0fdf4",
-					100: "#dcfce7",
-					200: "#bbf7d0",
-					300: "#86efac",
-					400: "#4ade80",
-					500: "#22c55e",
-					600: "#16a34a",
-					700: "#15803d",
-					800: "#166534",
-					900: "#14532d",
+					DEFAULT: "var(--success)",
+					foreground: "var(--success-foreground)",
 				},
-				error: {
-					50: "#fef2f2",
-					100: "#fee2e2",
-					200: "#fecaca",
-					300: "#fca5a5",
-					400: "#f87171",
-					500: "#ef4444",
-					600: "#dc2626",
-					700: "#b91c1c",
-					800: "#991b1b",
-					900: "#7f1d1d",
-				},
-				warning: {
-					50: "#fffbeb",
-					100: "#fef3c7",
-					200: "#fde68a",
-					300: "#fcd34d",
-					400: "#fbbf24",
-					500: "#f59e0b",
-					600: "#d97706",
-					700: "#b45309",
-					800: "#92400e",
-					900: "#78350f",
-				},
+				border: "var(--border)",
+				input: "var(--input)",
+				ring: "var(--ring)",
 			},
-
-			/* Border radius - uses CSS variable for easy brand customization */
 			borderRadius: {
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
+				xl: "calc(var(--radius) + 4px)",
 			},
-
-			/* Font family - default Inter, change in layout.tsx */
 			fontFamily: {
-				sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+				sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+				mono: ["var(--font-geist-mono)", "monospace"],
+			},
+			borderColor: {
+				DEFAULT: "var(--border)",
+			},
+			outlineColor: {
+				DEFAULT: "var(--ring)",
+			},
+			ringColor: {
+				DEFAULT: "var(--ring)",
+			},
+			keyframes: {
+				"accordion-down": {
+					from: { height: "0" },
+					to: { height: "var(--radix-accordion-content-height)" },
+				},
+				"accordion-up": {
+					from: { height: "var(--radix-accordion-content-height)" },
+					to: { height: "0" },
+				},
+				"fade-in": {
+					from: { opacity: "0" },
+					to: { opacity: "1" },
+				},
+				"fade-out": {
+					from: { opacity: "1" },
+					to: { opacity: "0" },
+				},
+				"slide-in-from-bottom": {
+					from: { transform: "translateY(100%)" },
+					to: { transform: "translateY(0)" },
+				},
+				"slide-out-to-bottom": {
+					from: { transform: "translateY(0)" },
+					to: { transform: "translateY(100%)" },
+				},
+			},
+			animation: {
+				"accordion-down": "accordion-down 0.2s ease-out",
+				"accordion-up": "accordion-up 0.2s ease-out",
+				"fade-in": "fade-in 0.2s ease-out",
+				"fade-out": "fade-out 0.2s ease-out",
+				"slide-in-from-bottom": "slide-in-from-bottom 0.3s ease-out",
+				"slide-out-to-bottom": "slide-out-to-bottom 0.3s ease-out",
 			},
 		},
 	},
-	plugins: [TypographyPlugin, FormPlugin, ContainerQueriesPlugin],
+	plugins: [TypographyPlugin, FormPlugin, ContainerQueriesPlugin, AnimatePlugin],
 };
 
 export default config;

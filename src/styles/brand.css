@@ -1,101 +1,87 @@
 /**
  * ========================================
- * BRAND CONFIGURATION
+ * SALEOR STOREFRONT - BRAND CONFIGURATION
  * ========================================
  * 
- * Edit these values to customize the storefront for your brand.
- * This is the single source of truth for visual identity.
+ * Minimal e-commerce theme - warm neutrals with black accent
  * 
- * After editing, rebuild the project: `pnpm build`
+ * Typography: Geist (loaded via Next.js font system in layout.tsx)
+ * 
+ * 3-Color System:
+ * 1. Near-black (#1A1A1A) - primary actions, headings, key UI
+ * 2. Warm off-whites (#FAF9F7 → #F5F4F2 → #E5E4DF) - backgrounds
+ * 3. Red accent (#DC2626) - destructive actions, sale indicators
  */
 
 :root {
-	/* ----------------------------------------
-   * BRAND COLORS
-   * Your primary brand color and its contrast text
-   * Format: RGB values separated by spaces (for opacity support)
-   * ---------------------------------------- */
-	--brand: 23 23 23; /* Primary brand color (buttons, links, accents) */
-	--brand-foreground: 255 255 255; /* Text on brand color */
+	/* Backgrounds */
+	--background: oklch(0.98 0.005 90);
+	--card: oklch(1 0 0);
+	--popover: oklch(1 0 0);
+	--secondary: oklch(0.96 0.003 90);
+	--muted: oklch(0.94 0.003 90);
+	--accent: oklch(0.94 0.003 90);
 
-	/* ----------------------------------------
-   * NEUTRAL PALETTE  
-   * Used for backgrounds, text, borders
-   * Tip: Use a color tool to generate a cohesive scale
-   * ---------------------------------------- */
-	--neutral-50: 250 250 250;
-	--neutral-100: 245 245 245;
-	--neutral-200: 229 229 229;
-	--neutral-300: 212 212 212;
-	--neutral-400: 163 163 163;
-	--neutral-500: 115 115 115;
-	--neutral-600: 82 82 82;
-	--neutral-700: 64 64 64;
-	--neutral-800: 38 38 38;
-	--neutral-900: 23 23 23;
-	--neutral-950: 10 10 10;
+	/* Foregrounds */
+	--foreground: oklch(0.12 0 0);
+	--card-foreground: oklch(0.12 0 0);
+	--popover-foreground: oklch(0.12 0 0);
+	--secondary-foreground: oklch(0.12 0 0);
+	--muted-foreground: oklch(0.45 0 0);
+	--accent-foreground: oklch(0.12 0 0);
 
-	/* ----------------------------------------
-   * BORDER RADIUS
-   * Controls roundness of buttons, cards, inputs
-   * Examples: 0 (sharp), 0.375rem (subtle), 0.5rem (rounded), 1rem (very rounded)
-   * ---------------------------------------- */
-	--radius: 0.375rem;
+	/* Primary */
+	--primary: oklch(0.12 0 0);
+	--primary-foreground: oklch(0.98 0 0);
 
-	/* ----------------------------------------
-   * FONT FAMILY
-   * Default uses Inter via Next.js font loader
-   * To change: update the font import in src/app/layout.tsx
-   * ---------------------------------------- */
+	/* Destructive */
+	--destructive: oklch(0.55 0.2 25);
+	--destructive-foreground: oklch(0.98 0 0);
+
+	/* Success */
+	--success: oklch(0.55 0.15 145);
+	--success-foreground: oklch(0.98 0 0);
+
+	/* Borders & Inputs */
+	--border: oklch(0.9 0.003 90);
+	--input: oklch(0.9 0.003 90);
+	--ring: oklch(0.12 0 0);
+
+	/* Layout */
+	--radius: 0.5rem;
 }
 
-/* ----------------------------------------
- * DARK MODE OVERRIDES
- * Automatically applied when `dark` class is on <html>
- * Typically inverts the neutral scale
- * ---------------------------------------- */
 .dark {
-	--brand: 250 250 250;
-	--brand-foreground: 23 23 23;
-}
+	/* Backgrounds */
+	--background: oklch(0.12 0 0);
+	--card: oklch(0.16 0 0);
+	--popover: oklch(0.16 0 0);
+	--secondary: oklch(0.22 0 0);
+	--muted: oklch(0.22 0 0);
+	--accent: oklch(0.22 0 0);
 
-/* ========================================
- * EXAMPLE BRAND PRESETS
- * Uncomment one block to quickly try a different look
- * ======================================== */
+	/* Foregrounds */
+	--foreground: oklch(0.98 0 0);
+	--card-foreground: oklch(0.98 0 0);
+	--popover-foreground: oklch(0.98 0 0);
+	--secondary-foreground: oklch(0.98 0 0);
+	--muted-foreground: oklch(0.65 0 0);
+	--accent-foreground: oklch(0.98 0 0);
 
-/*
-:root {
-  --brand: 37 99 235;
-  --brand-foreground: 255 255 255;
-  --radius: 0.5rem;
-}
-.dark {
-  --brand: 96 165 250;
-  --brand-foreground: 23 23 23;
-}
-*/
+	/* Primary */
+	--primary: oklch(0.98 0 0);
+	--primary-foreground: oklch(0.12 0 0);
 
-/*
-:root {
-  --brand: 22 163 74;
-  --brand-foreground: 255 255 255;
-  --radius: 0.75rem;
-}
-.dark {
-  --brand: 74 222 128;
-  --brand-foreground: 23 23 23;
-}
-*/
+	/* Destructive */
+	--destructive: oklch(0.45 0.18 25);
+	--destructive-foreground: oklch(0.98 0 0);
 
-/*
-:root {
-  --brand: 147 51 234;
-  --brand-foreground: 255 255 255;
-  --radius: 1rem;
+	/* Success */
+	--success: oklch(0.65 0.15 145);
+	--success-foreground: oklch(0.12 0 0);
+
+	/* Borders & Inputs */
+	--border: oklch(0.26 0 0);
+	--input: oklch(0.26 0 0);
+	--ring: oklch(0.98 0 0);
 }
-.dark {
-  --brand: 192 132 252;
-  --brand-foreground: 23 23 23;
-}
-*/
