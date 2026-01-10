@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
-import { ShoppingBag, Loader2 } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { Button } from "@/ui/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -16,8 +16,13 @@ function StickyAddButton() {
 	const { pending } = useFormStatus();
 
 	return (
-		<Button type="submit" size="lg" disabled={pending} className="shrink-0">
-			{pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShoppingBag className="mr-2 h-4 w-4" />}
+		<Button
+			type="submit"
+			size="lg"
+			disabled={pending}
+			className={cn("shrink-0 transition-opacity", pending && "opacity-80")}
+		>
+			<ShoppingBag className={cn("mr-2 h-4 w-4 transition-transform", pending && "scale-90")} />
 			{pending ? "Adding..." : "Add to bag"}
 		</Button>
 	);

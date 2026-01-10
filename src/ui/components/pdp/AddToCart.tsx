@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useFormStatus } from "react-dom";
-import { ShoppingBag, Check, Loader2 } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { Button } from "@/ui/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -15,29 +14,18 @@ interface AddToCartProps {
 
 function AddToCartButton({ disabled }: { disabled?: boolean }) {
 	const { pending } = useFormStatus();
-	const [isAdded, setIsAdded] = useState(false);
 
-	// Show success state briefly after form submission
-	if (!pending && isAdded) {
-		setTimeout(() => setIsAdded(false), 2000);
-	}
-
+	// Simple, clean - no success state needed
+	// The cart badge/drawer updating IS the feedback (like Apple)
 	return (
 		<Button
 			type="submit"
 			size="lg"
 			disabled={disabled || pending}
-			className={cn("h-14 w-full text-base font-medium", isAdded && "bg-green-600 hover:bg-green-600")}
-			onClick={() => !disabled && !pending && setIsAdded(true)}
+			className={cn("h-14 w-full text-base font-medium transition-all duration-200", pending && "opacity-80")}
 		>
-			{pending ? (
-				<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-			) : isAdded ? (
-				<Check className="mr-2 h-5 w-5" />
-			) : (
-				<ShoppingBag className="mr-2 h-5 w-5" />
-			)}
-			{pending ? "Adding..." : isAdded ? "Added to bag" : disabled ? "Select options" : "Add to bag"}
+			<ShoppingBag className={cn("mr-2 h-5 w-5 transition-transform", pending && "scale-90")} />
+			{pending ? "Adding..." : disabled ? "Select options" : "Add to bag"}
 		</Button>
 	);
 }
