@@ -8,6 +8,10 @@ const config = {
 		],
 	},
 	typedRoutes: false,
+	experimental: {
+		// Enable 'use cache' directive for component/function caching
+		dynamicIO: true,
+	},
 	// used in the Dockerfile
 	output:
 		process.env.NEXT_OUTPUT === "standalone"

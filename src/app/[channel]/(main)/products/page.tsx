@@ -7,6 +7,9 @@ import { ProductList } from "@/ui/components/ProductList";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { SortBy } from "@/ui/components/SortBy";
 
+// Cache product list for 5 minutes
+export const revalidate = 300;
+
 export const metadata = {
 	title: "Products · Saleor Storefront example",
 	description: "All products in Saleor Storefront example",
@@ -45,7 +48,7 @@ export default async function Page(props: {
 			channel: params.channel,
 			sortBy: sortVariables,
 		},
-		revalidate: 60,
+		revalidate: 300,
 	});
 
 	if (!products) {

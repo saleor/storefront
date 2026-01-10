@@ -4,6 +4,9 @@ import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
 
+// Cache collection pages for 5 minutes
+export const revalidate = 300;
+
 export const generateMetadata = async (
 	props: { params: Promise<{ slug: string; channel: string }> },
 	parent: ResolvingMetadata,
@@ -11,7 +14,7 @@ export const generateMetadata = async (
 	const params = await props.params;
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
 		variables: { slug: params.slug, channel: params.channel },
-		revalidate: 60,
+		revalidate: 300,
 	});
 
 	return {
@@ -25,7 +28,7 @@ export default async function Page(props: { params: Promise<{ slug: string; chan
 	const params = await props.params;
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
 		variables: { slug: params.slug, channel: params.channel },
-		revalidate: 60,
+		revalidate: 300,
 	});
 
 	if (!collection || !collection.products) {

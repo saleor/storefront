@@ -22,6 +22,12 @@ export async function executeGraphQL<Result, Variables>(
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 	const { variables, headers, cache, revalidate, withAuth = true } = options;
 
+	// Debug logging in development
+	if (process.env.NODE_ENV === "development" && process.env.DEBUG_CACHE) {
+		const opName = operation.toString().match(/(?:query|mutation)\s+(\w+)/)?.[1] || "unknown";
+		console.log(`[GraphQL] ${opName} | cache: ${cache || "default"} | revalidate: ${revalidate || "none"}`);
+	}
+
 	const input = {
 		method: "POST",
 		headers: {

@@ -11,6 +11,10 @@ import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
+// Route segment config for optimal caching
+export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
+export const revalidate = 300; // Default revalidation: 5 minutes
+
 import { Breadcrumbs } from "@/ui/components/Breadcrumbs";
 import {
 	ProductGallery,
@@ -36,7 +40,7 @@ export async function generateMetadata(
 			slug: decodeURIComponent(params.slug),
 			channel: params.channel,
 		},
-		revalidate: 60,
+		revalidate: 300, // 5 minutes - balance freshness vs performance
 	});
 
 	if (!product) {
@@ -66,7 +70,7 @@ export async function generateMetadata(
 // Static params generation
 export async function generateStaticParams({ params }: { params: { channel: string } }) {
 	const { products } = await executeGraphQL(ProductListDocument, {
-		revalidate: 60,
+		revalidate: 300, // 5 minutes - balance freshness vs performance
 		variables: { first: 20, channel: params.channel },
 		withAuth: false,
 	});
@@ -87,7 +91,7 @@ export default async function ProductPage(props: {
 			slug: decodeURIComponent(params.slug),
 			channel: params.channel,
 		},
-		revalidate: 60,
+		revalidate: 300, // 5 minutes - balance freshness vs performance
 	});
 
 	if (!product) {
