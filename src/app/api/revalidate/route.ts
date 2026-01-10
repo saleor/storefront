@@ -1,4 +1,4 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
 
@@ -161,25 +161,15 @@ export async function GET(request: NextRequest) {
 	}
 
 	const path = searchParams.get("path");
-	const tag = searchParams.get("tag");
-	const revalidated: string[] = [];
 
-	if (path) {
-		revalidatePath(path);
-		revalidated.push(path);
+	if (!path) {
+		return Response.json({ error: "Provide path parameter" }, { status: 400 });
 	}
 
-	if (tag) {
-		revalidateTag(tag);
-		revalidated.push(`tag:${tag}`);
-	}
-
-	if (revalidated.length === 0) {
-		return Response.json({ error: "Provide path or tag parameter" }, { status: 400 });
-	}
+	revalidatePath(path);
 
 	// Sanitize for logging to prevent log injection
-	const sanitized = revalidated.map((s) => s.replace(/[\r\n]/g, ""));
-	console.log("[Revalidate] Manual:", sanitized);
-	return Response.json({ revalidated, success: true });
+	const sanitizedPath = path.replace(/[\r\n]/g, "");
+	console.log("[Revalidate] Manual:", sanitizedPath);
+	return Response.json({ revalidated: [path], success: true });
 }
