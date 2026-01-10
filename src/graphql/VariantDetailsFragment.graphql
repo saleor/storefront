@@ -1,6 +1,7 @@
 fragment VariantDetails on ProductVariant {
 	id
 	name
+	sku
 	quantityAvailable
 	attributes(variantSelection: ALL) {
 		values {

@@ -1,8 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
-import { type ResolvingMetadata, type Metadata } from "next";
+import { type Metadata } from "next";
 import { invariant } from "ts-invariant";
-import { type WithContext, type Product } from "schema-dts";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
@@ -10,6 +9,7 @@ import { executeGraphQL } from "@/lib/graphql";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
+import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 
 // Route segment config for optimal caching
 export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
@@ -25,14 +25,14 @@ import {
 } from "@/ui/components/pdp";
 import { Badge } from "@/ui/components/ui/Badge";
 
-// Metadata generation
-export async function generateMetadata(
-	props: {
-		params: Promise<{ slug: string; channel: string }>;
-		searchParams: Promise<{ variant?: string }>;
-	},
-	parent: ResolvingMetadata,
-): Promise<Metadata> {
+/**
+ * Product page metadata generation
+ * Uses centralized SEO helpers from @/lib/seo
+ */
+export async function generateMetadata(props: {
+	params: Promise<{ slug: string; channel: string }>;
+	searchParams: Promise<{ variant?: string }>;
+}): Promise<Metadata> {
 	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
 
 	const { product } = await executeGraphQL(ProductDetailsDocument, {
@@ -40,31 +40,39 @@ export async function generateMetadata(
 			slug: decodeURIComponent(params.slug),
 			channel: params.channel,
 		},
-		revalidate: 300, // 5 minutes - balance freshness vs performance
+		revalidate: 300,
 	});
 
 	if (!product) {
 		notFound();
 	}
 
-	const productName = product.seoTitle || product.name;
+	// Build description with variant name if selected
 	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
-	const productNameAndVariant = variantName ? `${productName} - ${variantName}` : productName;
+	const description =
+		product.seoDescription || (variantName ? `${product.name} - ${variantName}` : product.name);
 
-	return {
-		title: `${product.name} | ${product.seoTitle || (await parent).title?.absolute}`,
-		description: product.seoDescription || productNameAndVariant,
-		alternates: {
-			canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL
-				? process.env.NEXT_PUBLIC_STOREFRONT_URL + `/products/${encodeURIComponent(params.slug)}`
+	// Best image for sharing
+	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
+
+	// Price info for OG tags
+	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
+	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
+
+	return buildPageMetadata({
+		title: product.seoTitle || product.name,
+		description,
+		image: ogImage,
+		url: `/${params.channel}/products/${encodeURIComponent(params.slug)}`,
+		// Product pricing for rich previews
+		openGraph:
+			priceAmount && priceCurrency
+				? {
+						"product:price:amount": String(priceAmount),
+						"product:price:currency": priceCurrency,
+					}
 				: undefined,
-		},
-		openGraph: product.thumbnail
-			? {
-					images: [{ url: product.thumbnail.url, alt: product.name }],
-				}
-			: null,
-	};
+	});
 }
 
 // Static params generation
@@ -209,30 +217,33 @@ export default async function ProductPage(props: {
 		revalidatePath("/cart");
 	}
 
-	// JSON-LD structured data
-	const productJsonLd: WithContext<Product> = {
-		"@context": "https://schema.org",
-		"@type": "Product",
+	// JSON-LD structured data for rich Google results
+	// Uses centralized builder from @/lib/seo
+	const productJsonLd = buildProductJsonLd({
 		name: product.name,
-		image: product.thumbnail?.url,
 		description: product.seoDescription || product.name,
-		offers: selectedVariant
+		images: images.length > 0 ? images.map((img) => img.url) : undefined,
+		sku: selectedVariant?.sku,
+		brand: product.category?.name,
+		url: `/${params.channel}/products/${product.slug}`,
+		price: selectedVariant?.pricing?.price?.gross
 			? {
-					"@type": "Offer",
-					availability: selectedVariant.quantityAvailable
-						? "https://schema.org/InStock"
-						: "https://schema.org/OutOfStock",
-					priceCurrency: selectedVariant.pricing?.price?.gross.currency,
-					price: selectedVariant.pricing?.price?.gross.amount,
+					amount: selectedVariant.pricing.price.gross.amount,
+					currency: selectedVariant.pricing.price.gross.currency,
 				}
-			: {
-					"@type": "AggregateOffer",
-					availability: isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-					priceCurrency: product.pricing?.priceRange?.start?.gross?.currency,
-					lowPrice: product.pricing?.priceRange?.start?.gross?.amount,
-					highPrice: product.pricing?.priceRange?.stop?.gross?.amount,
-				},
-	};
+			: null,
+		priceRange:
+			!selectedVariant && product.pricing?.priceRange?.start?.gross
+				? {
+						lowPrice: product.pricing.priceRange.start.gross.amount,
+						highPrice:
+							product.pricing.priceRange.stop?.gross?.amount || product.pricing.priceRange.start.gross.amount,
+						currency: product.pricing.priceRange.start.gross.currency,
+					}
+				: null,
+		inStock: selectedVariant ? !!selectedVariant.quantityAvailable : isAvailable,
+		variantCount: variants.length,
+	});
 
 	// Breadcrumbs
 	const breadcrumbs = [
@@ -245,10 +256,13 @@ export default async function ProductPage(props: {
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-			/>
+			{/* JSON-LD for rich Google results - can be disabled in seo/config.ts */}
+			{productJsonLd && (
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+				/>
+			)}
 
 			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
 				{/* Breadcrumb - hidden on mobile */}

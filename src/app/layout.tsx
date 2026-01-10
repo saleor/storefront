@@ -2,16 +2,14 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Suspense, type ReactNode } from "react";
-import { type Metadata } from "next";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
+import { rootMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-	title: "Saleor Storefront example",
-	description: "Starter pack for building performant e-commerce experiences with Saleor.",
-	metadataBase: process.env.NEXT_PUBLIC_STOREFRONT_URL
-		? new URL(process.env.NEXT_PUBLIC_STOREFRONT_URL)
-		: undefined,
-};
+/**
+ * Root metadata for the entire site.
+ * Configuration is in src/lib/seo/config.ts
+ */
+export const metadata = rootMetadata;
 
 export default function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;
