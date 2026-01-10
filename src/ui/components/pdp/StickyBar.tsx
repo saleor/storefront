@@ -44,7 +44,7 @@ export function StickyBar({ productName, price, show = false }: StickyBarProps) 
 	return (
 		<div
 			className={cn(
-				"bg-background/95 fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-sm transition-transform duration-300 md:hidden",
+				"fixed bottom-0 left-0 right-0 z-50 border-t bg-background transition-transform duration-300 md:hidden",
 				isVisible ? "translate-y-0" : "translate-y-full",
 			)}
 		>
