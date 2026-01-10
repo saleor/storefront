@@ -121,7 +121,18 @@ export default async function ProductPage(props: {
 
 	// Check availability
 	const isAvailable = variants.some((variant) => variant.quantityAvailable);
-	const isAddToCartDisabled = !selectedVariantID || !selectedVariant?.quantityAvailable;
+
+	function getAddToCartState() {
+		if (!selectedVariantID) {
+			return { disabled: true, reason: "no-selection" as const };
+		}
+		if (!selectedVariant?.quantityAvailable) {
+			return { disabled: true, reason: "out-of-stock" as const };
+		}
+		return { disabled: false, reason: undefined };
+	}
+
+	const { disabled: isAddToCartDisabled, reason: disabledReason } = getAddToCartState();
 
 	// Format prices
 	const price = selectedVariant?.pricing?.price?.gross
@@ -281,7 +292,7 @@ export default async function ProductPage(props: {
 							/>
 
 							{/* Add to Cart */}
-							<AddToCart price={price} disabled={isAddToCartDisabled} />
+							<AddToCart price={price} disabled={isAddToCartDisabled} disabledReason={disabledReason} />
 
 							{/* Product Details Accordion */}
 							<ProductAttributes

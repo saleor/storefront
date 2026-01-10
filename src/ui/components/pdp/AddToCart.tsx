@@ -10,10 +10,24 @@ interface AddToCartProps {
 	compareAtPrice?: string | null;
 	discountPercent?: number | null;
 	disabled?: boolean;
+	disabledReason?: "no-selection" | "out-of-stock";
 }
 
-function AddToCartButton({ disabled }: { disabled?: boolean }) {
+function AddToCartButton({
+	disabled,
+	disabledReason,
+}: {
+	disabled?: boolean;
+	disabledReason?: "no-selection" | "out-of-stock";
+}) {
 	const { pending } = useFormStatus();
+
+	const getButtonText = () => {
+		if (pending) return "Adding...";
+		if (!disabled) return "Add to bag";
+		if (disabledReason === "out-of-stock") return "Out of stock";
+		return "Select options";
+	};
 
 	// Simple, clean - no success state needed
 	// The cart badge/drawer updating IS the feedback (like Apple)
@@ -25,12 +39,18 @@ function AddToCartButton({ disabled }: { disabled?: boolean }) {
 			className={cn("h-14 w-full text-base font-medium transition-all duration-200", pending && "opacity-80")}
 		>
 			<ShoppingBag className={cn("mr-2 h-5 w-5 transition-transform", pending && "scale-90")} />
-			{pending ? "Adding..." : disabled ? "Select options" : "Add to bag"}
+			{getButtonText()}
 		</Button>
 	);
 }
 
-export function AddToCart({ price, compareAtPrice, discountPercent, disabled = false }: AddToCartProps) {
+export function AddToCart({
+	price,
+	compareAtPrice,
+	discountPercent,
+	disabled = false,
+	disabledReason,
+}: AddToCartProps) {
 	return (
 		<div className="space-y-4">
 			{/* Price Display */}
@@ -47,7 +67,7 @@ export function AddToCart({ price, compareAtPrice, discountPercent, disabled = f
 			</div>
 
 			{/* Add to Cart Button */}
-			<AddToCartButton disabled={disabled} />
+			<AddToCartButton disabled={disabled} disabledReason={disabledReason} />
 
 			{/* Trust Signals */}
 			<div className="flex items-center justify-center gap-6 pt-2 text-xs text-muted-foreground">
