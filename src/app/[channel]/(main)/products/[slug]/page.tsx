@@ -239,9 +239,9 @@ export default async function ProductPage(props: {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
 			/>
 
-			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-				{/* Breadcrumb */}
-				<div className="mb-6">
+			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
+				{/* Breadcrumb - hidden on mobile */}
+				<div className="mb-6 hidden sm:block">
 					<Breadcrumbs items={breadcrumbs} />
 				</div>
 
