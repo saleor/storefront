@@ -59,24 +59,7 @@ interface CartLine {
 	};
 }
 
-// Color name to hex mapping for display
-const COLOR_NAME_TO_HEX: Record<string, string> = {
-	black: "#1a1a1a",
-	white: "#fafafa",
-	red: "#dc2626",
-	blue: "#2563eb",
-	green: "#16a34a",
-	yellow: "#eab308",
-	orange: "#ea580c",
-	purple: "#9333ea",
-	pink: "#ec4899",
-	gray: "#6b7280",
-	grey: "#6b7280",
-	brown: "#78350f",
-	navy: "#1e3a5a",
-	beige: "#d4c4a8",
-	cream: "#fffdd0",
-};
+import { getColorHex, isColorAttribute } from "@/lib/colors";
 
 interface VariantAttribute {
 	name: string;
@@ -90,30 +73,18 @@ function getVariantDetails(variant: CartLine["variant"]): VariantAttribute[] {
 	const result: VariantAttribute[] = [];
 
 	for (const attr of attributes) {
-		const slug = attr.attribute.slug?.toLowerCase() || "";
+		const slug = attr.attribute.slug || "";
 		const name = attr.attribute.name || slug;
 		const value = attr.values[0];
 
 		if (!value?.name) continue;
 
-		const isColor = slug === "color" || slug === "colour";
-		let colorHex: string | undefined;
-
-		if (isColor) {
-			// Try to get hex from value field (swatch) or name lookup
-			if (value.value?.startsWith("#")) {
-				colorHex = value.value;
-			} else if (value.value && /^[0-9A-Fa-f]{6}$/.test(value.value)) {
-				colorHex = `#${value.value}`;
-			} else {
-				colorHex = COLOR_NAME_TO_HEX[value.name.toLowerCase()] || undefined;
-			}
-		}
+		const isColor = isColorAttribute(slug);
 
 		result.push({
 			name,
 			value: value.name,
-			colorHex,
+			colorHex: isColor ? getColorHex(value) : undefined,
 			isColor,
 		});
 	}

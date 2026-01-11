@@ -93,7 +93,7 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 		const { ProductListByCollectionDocument } = await import("@/gql/graphql");
 		const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
 			revalidate: 300,
-			variables: { slug: collectionSlug, channel: params.channel },
+			variables: { slug: collectionSlug, channel: params.channel, first: 100 },
 			withAuth: false,
 		});
 		return collection?.products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
@@ -165,13 +165,37 @@ export default async function ProductPage(props: {
 
 	const { disabled: isAddToCartDisabled, reason: disabledReason } = getAddToCartState();
 
-	// Format prices
+	// Format prices - show "FREE" for $0 items
 	const price = selectedVariant?.pricing?.price?.gross
-		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
+		? selectedVariant.pricing.price.gross.amount === 0
+			? "FREE"
+			: formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
 		: formatMoneyRange({
 				start: product.pricing?.priceRange?.start?.gross,
 				stop: product.pricing?.priceRange?.stop?.gross,
 			}) || "";
+
+	// Calculate discount/sale information
+	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
+	const undiscountedPrice = selectedVariant?.pricing?.priceUndiscounted?.gross?.amount;
+	// Note: use !== undefined to handle $0 prices correctly (0 is falsy in JS)
+	const isOnSale =
+		typeof undiscountedPrice === "number" &&
+		typeof currentPrice === "number" &&
+		undiscountedPrice > currentPrice;
+
+	const compareAtPrice =
+		isOnSale && selectedVariant?.pricing?.priceUndiscounted?.gross
+			? formatMoney(
+					selectedVariant.pricing.priceUndiscounted.gross.amount,
+					selectedVariant.pricing.priceUndiscounted.gross.currency,
+				)
+			: null;
+
+	const discountPercent =
+		isOnSale && typeof undiscountedPrice === "number" && typeof currentPrice === "number"
+			? Math.round(((undiscountedPrice - currentPrice) / undiscountedPrice) * 100)
+			: null;
 
 	// Prepare images from product media
 	const images =
@@ -270,9 +294,9 @@ export default async function ProductPage(props: {
 
 	// Breadcrumbs
 	const breadcrumbs = [
-		{ label: "Home", href: "/" },
+		{ label: "Home", href: `/${params.channel}` },
 		...(product.category
-			? [{ label: product.category.name, href: `/categories/${product.category.slug}` }]
+			? [{ label: product.category.name, href: `/${params.channel}/categories/${product.category.slug}` }]
 			: []),
 		{ label: product.name },
 	];
@@ -309,6 +333,11 @@ export default async function ProductPage(props: {
 									{product.category && (
 										<span className="text-sm text-muted-foreground">{product.category.name}</span>
 									)}
+									{isOnSale && (
+										<Badge variant="destructive" className="text-xs">
+											Sale
+										</Badge>
+									)}
 									{!isAvailable && (
 										<Badge variant="secondary" className="text-xs">
 											Out of stock
@@ -329,7 +358,13 @@ export default async function ProductPage(props: {
 							/>
 
 							{/* Add to Cart */}
-							<AddToCart price={price} disabled={isAddToCartDisabled} disabledReason={disabledReason} />
+							<AddToCart
+								price={price}
+								compareAtPrice={compareAtPrice}
+								discountPercent={discountPercent}
+								disabled={isAddToCartDisabled}
+								disabledReason={disabledReason}
+							/>
 
 							{/* Product Details Accordion */}
 							<ProductAttributes

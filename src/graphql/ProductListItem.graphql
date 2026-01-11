@@ -2,6 +2,7 @@ fragment ProductListItem on Product {
 	id
 	name
 	slug
+	created
 	pricing {
 		priceRange {
 			start {
@@ -21,9 +22,23 @@ fragment ProductListItem on Product {
 	category {
 		id
 		name
+		slug
 	}
 	thumbnail(size: 1024, format: WEBP) {
 		url
 		alt
+	}
+	variants {
+		id
+		attributes(variantSelection: ALL) {
+			attribute {
+				slug
+				name
+			}
+			values {
+				name
+				value
+			}
+		}
 	}
 }

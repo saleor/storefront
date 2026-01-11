@@ -632,6 +632,62 @@ src/ui/components/pdp/variant-selection/
 
 ---
 
+## Product Listing Filtering
+
+The product listing pages (categories, collections, all products) support filtering and sorting with a hybrid server/client architecture.
+
+### Filter Architecture
+
+| Filter         | Processing     | Why                                              |
+| -------------- | -------------- | ------------------------------------------------ |
+| **Categories** | ✅ Server-side | Saleor's `ProductFilterInput.categories` (by ID) |
+| **Price**      | ✅ Server-side | Saleor's `ProductFilterInput.price` range filter |
+| **Sort**       | ✅ Server-side | Saleor's `ProductOrder` (DATE, PRICE, RATING)    |
+| **Colors**     | ❌ Client-side | Saleor needs attribute IDs for filtering         |
+| **Sizes**      | ❌ Client-side | Same as colors                                   |
+
+### Key Files
+
+| File                                      | Purpose                                                       |
+| ----------------------------------------- | ------------------------------------------------------------- |
+| `src/ui/components/plp/saleor-filters.ts` | Build Saleor GraphQL variables, resolve category slugs to IDs |
+| `src/ui/components/plp/filter-utils.ts`   | Client-side filtering, extract filter options from products   |
+| `src/ui/components/plp/FilterBar.tsx`     | UI component for filter dropdowns and active filter pills     |
+
+### Server-Side Category Filtering
+
+Category slugs in URL params are resolved to IDs via `resolveCategorySlugsToIds()`:
+
+```typescript
+// In page.tsx (server component)
+const categorySlugs = searchParams.categories?.split(",") || [];
+const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
+const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+
+const filter = buildFilterVariables({
+	priceRange: searchParams.price,
+	categoryIds,
+});
+```
+
+This adds one lightweight GraphQL query (cached for 1 hour) but enables proper server-side filtering with pagination.
+
+### Customization
+
+To add attribute-based server-side filtering (requires knowing attribute IDs):
+
+```typescript
+// In saleor-filters.ts
+filter.attributes = [
+	{
+		slug: "color",
+		values: ["red", "blue"],
+	},
+];
+```
+
+---
+
 ## SEO System
 
 The storefront has a modular SEO system in `src/lib/seo/` that can be easily configured or disabled.
@@ -759,6 +815,16 @@ await deleteLine(checkoutId, lineId);
 
 ## Caching & Performance
 
+### Caching Strategy Overview
+
+| Layer                | TTL          | Purpose                             |
+| -------------------- | ------------ | ----------------------------------- |
+| **ISR**              | 5 min        | Product/category pages              |
+| **GraphQL**          | 5 min - 1 hr | API responses (varies by data type) |
+| **Static Assets**    | 1 year       | JS/CSS bundles (immutable)          |
+| **OG Images**        | 1 day        | Dynamic social images               |
+| **Category Lookups** | 1 hour       | Slug → ID resolution                |
+
 ### ISR (Incremental Static Regeneration)
 
 Product pages use ISR with 5-minute revalidation:
@@ -792,6 +858,21 @@ export const staticPagesConfig = {
 
 Priority: `slugs` → `collection` → `fetchCount` (first non-null wins)
 
+### Cache Headers
+
+Configured in `next.config.js`:
+
+```javascript
+// Static assets (immutable, 1 year)
+"/_next/static/:path*" → "public, max-age=31536000, immutable"
+
+// Public assets (1 day + stale-while-revalidate)
+"/(.*)\\.(ico|png|jpg|...)" → "public, max-age=86400, stale-while-revalidate=604800"
+
+// OG images (1 day)
+"/api/og" → "public, max-age=86400, stale-while-revalidate=604800"
+```
+
 ### On-Demand Revalidation
 
 The `/api/revalidate` endpoint supports cache invalidation:
@@ -807,6 +888,7 @@ Configure a webhook in Saleor Dashboard pointing to `/api/revalidate`. The endpo
 
 - Verifies HMAC signature from `SALEOR_WEBHOOK_SECRET`
 - Automatically revalidates product, category, and collection pages
+- **Rate limited**: 10 requests/minute per IP (prevents abuse)
 
 ### GraphQL Caching
 

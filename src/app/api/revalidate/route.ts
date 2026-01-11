@@ -13,10 +13,72 @@ import { createHmac, timingSafeEqual } from "crypto";
  *
  * Security:
  * - Verifies Saleor's HMAC signature (prevents abuse)
- * - Rate limited by design (only called on actual Saleor events)
+ * - Rate limited (10 requests per minute per IP)
  */
 
 const WEBHOOK_SECRET = process.env.SALEOR_WEBHOOK_SECRET;
+
+// ============================================================================
+// Rate Limiting (in-memory, suitable for single-instance deployments)
+// For multi-instance deployments, use Redis or similar
+// ============================================================================
+
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 10; // Max requests per window
+
+interface RateLimitEntry {
+	count: number;
+	resetTime: number;
+}
+
+const rateLimitStore = new Map<string, RateLimitEntry>();
+
+// Clean up old entries every minute
+setInterval(() => {
+	const now = Date.now();
+	for (const [key, entry] of rateLimitStore.entries()) {
+		if (entry.resetTime < now) {
+			rateLimitStore.delete(key);
+		}
+	}
+}, RATE_LIMIT_WINDOW_MS);
+
+function checkRateLimit(identifier: string): { allowed: boolean; remaining: number; resetIn: number } {
+	const now = Date.now();
+	const entry = rateLimitStore.get(identifier);
+
+	if (!entry || entry.resetTime < now) {
+		// New window
+		rateLimitStore.set(identifier, {
+			count: 1,
+			resetTime: now + RATE_LIMIT_WINDOW_MS,
+		});
+		return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - 1, resetIn: RATE_LIMIT_WINDOW_MS };
+	}
+
+	if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+		// Rate limited
+		return { allowed: false, remaining: 0, resetIn: entry.resetTime - now };
+	}
+
+	// Increment count
+	entry.count++;
+	return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - entry.count, resetIn: entry.resetTime - now };
+}
+
+function getClientIP(request: NextRequest): string {
+	// Check various headers for the real IP (behind proxies/CDN)
+	const forwarded = request.headers.get("x-forwarded-for");
+	if (forwarded) {
+		return forwarded.split(",")[0].trim();
+	}
+	const realIP = request.headers.get("x-real-ip");
+	if (realIP) {
+		return realIP;
+	}
+	// Fallback (may not work in all environments)
+	return "unknown";
+}
 
 /**
  * Verify Saleor webhook signature
@@ -82,6 +144,24 @@ function parseWebhookPayload(payload: unknown): {
 }
 
 export async function POST(request: NextRequest) {
+	// Rate limit check
+	const clientIP = getClientIP(request);
+	const rateLimit = checkRateLimit(`post:${clientIP}`);
+
+	if (!rateLimit.allowed) {
+		console.warn(`[Revalidate] Rate limited: ${clientIP}`);
+		return Response.json(
+			{ error: "Too many requests", resetIn: Math.ceil(rateLimit.resetIn / 1000) },
+			{
+				status: 429,
+				headers: {
+					"Retry-After": Math.ceil(rateLimit.resetIn / 1000).toString(),
+					"X-RateLimit-Remaining": "0",
+				},
+			},
+		);
+	}
+
 	// Get raw body for signature verification
 	const rawBody = await request.text();
 
@@ -153,6 +233,24 @@ export async function POST(request: NextRequest) {
  * GET /api/revalidate?secret=xxx&path=/default-channel/products/my-product
  */
 export async function GET(request: NextRequest) {
+	// Rate limit check
+	const clientIP = getClientIP(request);
+	const rateLimit = checkRateLimit(`get:${clientIP}`);
+
+	if (!rateLimit.allowed) {
+		console.warn(`[Revalidate] Rate limited: ${clientIP}`);
+		return Response.json(
+			{ error: "Too many requests", resetIn: Math.ceil(rateLimit.resetIn / 1000) },
+			{
+				status: 429,
+				headers: {
+					"Retry-After": Math.ceil(rateLimit.resetIn / 1000).toString(),
+					"X-RateLimit-Remaining": "0",
+				},
+			},
+		);
+	}
+
 	const searchParams = request.nextUrl.searchParams;
 	const secret = searchParams.get("secret");
 

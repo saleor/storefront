@@ -1,0 +1,13 @@
+# Lightweight query to resolve category slugs to IDs for filtering.
+# Used by the "All Products" page to enable server-side category filtering.
+query CategoriesBySlug($slugs: [String!]!, $first: Int = 20) {
+	categories(filter: { slugs: $slugs }, first: $first) {
+		edges {
+			node {
+				id
+				slug
+				name
+			}
+		}
+	}
+}

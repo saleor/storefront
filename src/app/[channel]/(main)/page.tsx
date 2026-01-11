@@ -14,6 +14,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 		variables: {
 			slug: "featured-products",
 			channel: params.channel,
+			first: 12, // Featured products limit
 		},
 		revalidate: 60,
 	});

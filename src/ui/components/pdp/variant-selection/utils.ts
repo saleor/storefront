@@ -6,34 +6,10 @@
  */
 
 import type { VariantOption, AttributeGroup } from "./types";
+import { getColorHex, isColorAttribute, isSizeAttribute, COLOR_NAME_TO_HEX } from "@/lib/colors";
 
-/**
- * Common color name to hex mappings.
- * Used as fallback when swatch attributes don't have hex values.
- */
-export const COLOR_NAME_TO_HEX: Record<string, string> = {
-	black: "#1a1a1a",
-	white: "#fafafa",
-	red: "#dc2626",
-	blue: "#2563eb",
-	green: "#16a34a",
-	yellow: "#eab308",
-	orange: "#ea580c",
-	purple: "#9333ea",
-	pink: "#ec4899",
-	gray: "#6b7280",
-	grey: "#6b7280",
-	brown: "#78350f",
-	navy: "#1e3a5a",
-	beige: "#d4c4a8",
-	cream: "#fffdd0",
-};
-
-/** Attribute slugs that should render as color swatches */
-const COLOR_ATTRIBUTE_SLUGS = ["color", "colour"];
-
-/** Attribute slugs that should render as size buttons */
-const SIZE_ATTRIBUTE_SLUGS = ["size", "shoe-size", "clothing-size"];
+// Re-export for backwards compatibility
+export { COLOR_NAME_TO_HEX };
 
 /**
  * Raw variant type from Saleor GraphQL
@@ -46,33 +22,11 @@ export type SaleorVariant = {
 		attribute: { slug?: string | null; name?: string | null };
 		values: Array<{ name?: string | null; value?: string | null }>;
 	}>;
+	pricing?: {
+		price?: { gross: { amount: number; currency: string } } | null;
+		priceUndiscounted?: { gross: { amount: number; currency: string } } | null;
+	} | null;
 };
-
-/**
- * Get color hex value from an attribute value.
- */
-function getColorHexFromValue(value: { name?: string | null; value?: string | null }): string | undefined {
-	const hexValue = value.value;
-	const colorName = value.name?.toLowerCase();
-
-	// Try hex value first (from swatch attributes)
-	if (hexValue) {
-		if (hexValue.startsWith("#")) {
-			return hexValue;
-		}
-		// Handle hex without # prefix
-		if (/^[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$/.test(hexValue)) {
-			return `#${hexValue}`;
-		}
-	}
-
-	// Fall back to common color names
-	if (colorName && colorName in COLOR_NAME_TO_HEX) {
-		return COLOR_NAME_TO_HEX[colorName];
-	}
-
-	return undefined;
-}
 
 /**
  * Group variants by their attributes.
@@ -97,6 +51,22 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 		}
 	>();
 
+	// Helper to check if a variant has a discount
+	// Note: use typeof to handle $0 prices correctly (0 is falsy in JS)
+	const variantHasDiscount = (variant: SaleorVariant): boolean => {
+		const price = variant.pricing?.price?.gross?.amount;
+		const undiscounted = variant.pricing?.priceUndiscounted?.gross?.amount;
+		return typeof undiscounted === "number" && typeof price === "number" && undiscounted > price;
+	};
+
+	// Helper to calculate discount percentage for a variant
+	const getVariantDiscountPercent = (variant: SaleorVariant): number => {
+		const price = variant.pricing?.price?.gross?.amount;
+		const undiscounted = variant.pricing?.priceUndiscounted?.gross?.amount;
+		if (typeof undiscounted !== "number" || typeof price !== "number" || undiscounted <= price) return 0;
+		return Math.round(((undiscounted - price) / undiscounted) * 100);
+	};
+
 	// Process each variant
 	for (const variant of variants) {
 		for (const attr of variant.attributes) {
@@ -114,10 +84,9 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 				if (!valueName) continue;
 
 				if (!attrData.values.has(valueName)) {
-					const isColorAttr = COLOR_ATTRIBUTE_SLUGS.includes(slug.toLowerCase());
 					attrData.values.set(valueName, {
 						variantIds: new Set(),
-						colorHex: isColorAttr ? getColorHexFromValue(val) : undefined,
+						colorHex: isColorAttribute(slug) ? getColorHex(val) : undefined,
 					});
 				}
 
@@ -139,10 +108,26 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 				return variant && (variant.quantityAvailable ?? 0) > 0;
 			});
 
+			// Check if any variant with this value has a discount and get max discount
+			let hasDiscount = false;
+			let maxDiscountPercent = 0;
+			for (const variantId of valueData.variantIds) {
+				const variant = variants.find((v) => v.id === variantId);
+				if (variant && variantHasDiscount(variant)) {
+					hasDiscount = true;
+					const discount = getVariantDiscountPercent(variant);
+					if (discount > maxDiscountPercent) {
+						maxDiscountPercent = discount;
+					}
+				}
+			}
+
 			options.push({
 				id: valueName.toLowerCase().replace(/\s+/g, "-"),
 				name: valueName,
 				available,
+				hasDiscount,
+				discountPercent: maxDiscountPercent > 0 ? maxDiscountPercent : undefined,
 				colorHex: valueData.colorHex,
 				variantIds: [...valueData.variantIds],
 			});
@@ -157,10 +142,10 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 
 	// Sort: color attributes first, then size, then others
 	groups.sort((a, b) => {
-		const aIsColor = COLOR_ATTRIBUTE_SLUGS.includes(a.slug.toLowerCase());
-		const bIsColor = COLOR_ATTRIBUTE_SLUGS.includes(b.slug.toLowerCase());
-		const aIsSize = SIZE_ATTRIBUTE_SLUGS.includes(a.slug.toLowerCase());
-		const bIsSize = SIZE_ATTRIBUTE_SLUGS.includes(b.slug.toLowerCase());
+		const aIsColor = isColorAttribute(a.slug);
+		const bIsColor = isColorAttribute(b.slug);
+		const aIsSize = isSizeAttribute(a.slug);
+		const bIsSize = isSizeAttribute(b.slug);
 
 		if (aIsColor && !bIsColor) return -1;
 		if (!aIsColor && bIsColor) return 1;
@@ -282,6 +267,22 @@ export function getOptionsForAttribute(
 	const targetGroup = attributeGroups.find((g) => g.slug === targetAttributeSlug);
 	if (!targetGroup) return [];
 
+	// Helper to check if a variant has a discount
+	// Note: use typeof to handle $0 prices correctly (0 is falsy in JS)
+	const variantHasDiscount = (variant: SaleorVariant): boolean => {
+		const price = variant.pricing?.price?.gross?.amount;
+		const undiscounted = variant.pricing?.priceUndiscounted?.gross?.amount;
+		return typeof undiscounted === "number" && typeof price === "number" && undiscounted > price;
+	};
+
+	// Helper to calculate discount percentage for a variant
+	const getVariantDiscountPercent = (variant: SaleorVariant): number => {
+		const price = variant.pricing?.price?.gross?.amount;
+		const undiscounted = variant.pricing?.priceUndiscounted?.gross?.amount;
+		if (typeof undiscounted !== "number" || typeof price !== "number" || undiscounted <= price) return 0;
+		return Math.round(((undiscounted - price) / undiscounted) * 100);
+	};
+
 	// Get other selections (not the target attribute)
 	const otherSelections = Object.entries(currentSelections).filter(([slug]) => slug !== targetAttributeSlug);
 
@@ -296,6 +297,19 @@ export function getOptionsForAttribute(
 
 		// Option is available if ANY variant with this value is in stock
 		const available = variantsWithOption.some((variant) => (variant.quantityAvailable ?? 0) > 0);
+
+		// Check if any variant with this option has a discount and get max discount
+		let hasDiscount = false;
+		let maxDiscountPercent = 0;
+		for (const variant of variantsWithOption) {
+			if (variantHasDiscount(variant)) {
+				hasDiscount = true;
+				const discount = getVariantDiscountPercent(variant);
+				if (discount > maxDiscountPercent) {
+					maxDiscountPercent = discount;
+				}
+			}
+		}
 
 		// Check if a variant exists with this option AND all other current selections
 		let existsWithCurrentSelection = true;
@@ -317,7 +331,13 @@ export function getOptionsForAttribute(
 			});
 		}
 
-		return { ...option, available, existsWithCurrentSelection };
+		return {
+			...option,
+			available,
+			hasDiscount,
+			discountPercent: maxDiscountPercent > 0 ? maxDiscountPercent : undefined,
+			existsWithCurrentSelection,
+		};
 	});
 }
 

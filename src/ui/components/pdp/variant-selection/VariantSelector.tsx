@@ -67,7 +67,7 @@ export function VariantSelector({
 
 			{/* Color swatches row */}
 			{colorOptions.length > 0 && (
-				<div className="flex flex-wrap gap-3">
+				<div className="flex flex-wrap gap-4">
 					{colorOptions.map((option) => {
 						const Renderer = getRendererForOption(option);
 						return (
@@ -84,7 +84,7 @@ export function VariantSelector({
 
 			{/* Text/Size buttons row */}
 			{textOptions.length > 0 && (
-				<div className="flex flex-wrap gap-2">
+				<div className="flex flex-wrap gap-4">
 					{textOptions.map((option) => {
 						const Renderer = getRendererForOption(option);
 						return (

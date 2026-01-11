@@ -21,6 +21,10 @@ export interface VariantOption {
 	colorHex?: string;
 	/** Variant IDs that have this option value */
 	variantIds?: string[];
+	/** Whether any variant with this option is on sale */
+	hasDiscount?: boolean;
+	/** Maximum discount percentage for variants with this option (e.g., 20 for 20% off) */
+	discountPercent?: number;
 	/** Additional metadata from Saleor attributes */
 	metadata?: Record<string, unknown>;
 }
@@ -101,6 +105,11 @@ export interface VariantSelectionSectionProps {
 			attribute: { slug?: string | null; name?: string | null };
 			values: Array<{ name?: string | null; value?: string | null }>;
 		}>;
+		/** Pricing info for discount detection */
+		pricing?: {
+			price?: { gross: { amount: number; currency: string } } | null;
+			priceUndiscounted?: { gross: { amount: number; currency: string } } | null;
+		} | null;
 	}>;
 	/** Currently selected variant ID from URL params */
 	selectedVariantId?: string;

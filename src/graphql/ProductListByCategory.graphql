@@ -1,15 +1,36 @@
-query ProductListByCategory($slug: String!, $channel: String!) {
+query ProductListByCategory(
+	$slug: String!
+	$channel: String!
+	$first: Int
+	$after: String
+	$sortBy: ProductOrder
+	$filter: ProductFilterInput
+) {
 	category(slug: $slug) {
+		id
 		name
+		slug
 		description
 		seoDescription
 		seoTitle
-		products(first: 100, channel: $channel) {
+		backgroundImage {
+			url
+			alt
+		}
+		products(first: $first, after: $after, channel: $channel, sortBy: $sortBy, filter: $filter) {
 			edges {
 				node {
 					...ProductListItem
 				}
+				cursor
 			}
+			pageInfo {
+				hasNextPage
+				hasPreviousPage
+				startCursor
+				endCursor
+			}
+			totalCount
 		}
 	}
 }
