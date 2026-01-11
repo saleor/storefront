@@ -2,197 +2,48 @@
 
 You are working on a Saleor e-commerce storefront built with Next.js 16, TypeScript, and Tailwind CSS.
 
-## Critical Workflows
+## Skills
 
-### After Modifying `.graphql` Files
-ALWAYS run `pnpm run generate` after changing any file in:
-- `src/graphql/*.graphql`
-- `src/checkout/graphql/*.graphql`
+For detailed task-specific instructions, use these skills in `.claude/skills/`:
 
-This regenerates TypeScript types in `src/gql/`. Without this step, TypeScript errors will occur.
+| Task | Skill |
+|------|-------|
+| Modifying `.graphql` files | `graphql-workflow` |
+| Creating/styling components | `ui-components` |
+| Product filtering/sorting | `filtering-system` |
+| Understanding Saleor API | `saleor-investigation` |
+| Variant selection on PDP | `variant-selection` |
+| SEO, metadata, OG images | `seo-system` |
+| ISR, webhooks, caching | `caching-strategy` |
 
-### Before Committing
-Run these commands to verify changes:
+## Critical Commands
+
 ```bash
-pnpm run generate    # Regenerate GraphQL types
-pnpm exec tsc --noEmit  # Type check
-pnpm run build       # Full build test
+pnpm run generate        # ALWAYS run after .graphql changes
+pnpm exec tsc --noEmit   # Type check
+pnpm run build           # Full build
 ```
+
+## Key Rules
+
+1. **GraphQL**: Always run `pnpm run generate` after changing `.graphql` files
+2. **Components**: Use Server Components by default, `"use client"` only when needed
+3. **Styling**: Use design tokens (`bg-background`, `text-foreground`), not hardcoded colors
+4. **Nullable fields**: Always use optional chaining (`product.category?.name`)
+5. **Imports**: Use `@/` alias (`import { Button } from "@/ui/components/ui/Button"`)
 
 ## File Locations
 
 | Purpose | Location |
 |---------|----------|
-| GraphQL queries (storefront) | `src/graphql/*.graphql` |
-| GraphQL queries (checkout) | `src/checkout/graphql/*.graphql` |
+| GraphQL queries | `src/graphql/*.graphql` |
 | Generated types (DO NOT EDIT) | `src/gql/` |
 | UI components | `src/ui/components/` |
-| Product page components | `src/ui/components/pdp/` |
-| Cart drawer & context | `src/ui/components/cart/` |
-| Base UI primitives | `src/ui/components/ui/` |
-| SEO configuration | `src/lib/seo/` |
 | Design tokens | `src/styles/brand.css` |
-| Product page | `src/app/[channel]/(main)/products/[slug]/page.tsx` |
-| Cache invalidation API | `src/app/api/revalidate/` |
-| Dynamic OG images | `src/app/api/og/` |
-
-## Code Patterns
-
-### Server Components (Default)
-```tsx
-// No "use client" = Server Component
-export async function MyComponent({ channel }: { channel: string }) {
-  const data = await executeGraphQL(MyDocument, { variables: { channel } });
-  return <div>{data.field}</div>;
-}
-```
-
-### Client Components (Only When Needed)
-```tsx
-"use client";
-import { useState } from "react";
-export function InteractiveComponent() {
-  const [state, setState] = useState(null);
-  // ...
-}
-```
-
-### Server Actions
-```tsx
-async function handleSubmit() {
-  "use server";
-  await executeGraphQL(MutationDocument, { variables: { ... } });
-  revalidatePath("/path");
-}
-```
-
-### GraphQL Usage
-```tsx
-import { MyQueryDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
-
-const { data } = await executeGraphQL(MyQueryDocument, {
-  variables: { slug, channel },
-  revalidate: 60,
-});
-```
-
-## Styling
-
-Use semantic Tailwind classes that reference CSS variables:
-```tsx
-// Good - uses design tokens
-<div className="bg-background text-foreground border-border">
-<button className="bg-primary text-primary-foreground">
-
-// Avoid - hardcoded colors
-<div className="bg-white text-black border-gray-200">
-```
-
-## Investigating Saleor API Behavior
-
-When API behavior is unclear, **clone Saleor core** to check the source:
-```bash
-cd /tmp && git clone --depth 1 https://github.com/saleor/saleor.git saleor-core
-```
-
-Key paths: `saleor/graphql/product/`, `saleor/graphql/attribute/`, `saleor/product/models.py`
-
-Example: `product.attributes` auto-filters by `visibleInStorefront` for storefront users (see `resolvers.py`).
-
-**Note**: Saleor's API returns only storefront-visible data to anonymous/customer users. No client-side filtering needed for `visibleInStorefront` flags - it's driven by the authentication token: no token or customer JWT = filtered, app/user with `MANAGE_PRODUCTS` permission = full access.
-
-## Variant Attributes Configuration
-
-Variant attributes (like Size, Color) are configured at the **ProductType** level:
-- Dashboard → Configuration → Product Types → [Type] → Variant Attributes
-
-If an attribute doesn't appear in `variant.attributes`, check if it's added as a Variant Attribute in the ProductType (not just a Product Attribute).
-
-## Variant Selection System
-
-**Key truths:**
-1. **Cart requires variant ID** - You add variants (not products) to cart. ALL attributes must be selected.
-2. **URL params per attribute** - `?color=black&size=m&variant=abc123`
-3. **`variant` param only set when complete** - Partial selections don't set `variant` param
-4. **Three visual states**: Available (normal), Incompatible (dimmed), Out of stock (strikethrough)
-5. **Smart adjustment** - Clicking incompatible option clears conflicting selections (users never stuck)
-
-Location: `src/ui/components/pdp/variant-selection/`
-
-## SEO System
-
-SEO is modular and configurable in `src/lib/seo/`:
-- **Config**: `src/lib/seo/config.ts` - site name, toggles for features
-- **Root metadata**: `import { rootMetadata } from "@/lib/seo"` in layout
-- **Page metadata**: `buildPageMetadata({ title, description, image })`
-- **JSON-LD**: `buildProductJsonLd({ name, price, inStock })`
-- **Dynamic OG**: `/api/og?title=...&price=...`
-
-To disable: Delete `src/lib/seo/` and remove imports.
-
-## Cart System
-
-Cart uses React Context with drawer UI:
-- **Open cart**: `const { openCart } = useCart()`
-- **Server actions**: `updateLineQuantity()`, `deleteLine()` in `cart/actions.ts`
-
-## Caching
-
-- **ISR**: `export const revalidate = 300` (5 min) on page files
-- **Static gen**: `generateStaticParams()` for popular products
-- **On-demand**: `GET /api/revalidate?secret=xxx&path=/products/slug`
-- **Webhooks**: `POST /api/revalidate` with Saleor HMAC signature
-
-## Common Gotchas
-
-### Saleor API Permissions
-Some fields require admin permissions. If you see:
-```
-"To access this path, you need one of the following permissions: MANAGE_..."
-```
-Use the checkout pattern for fetching attributes:
-```graphql
-attributes(variantSelection: ALL) {
-  values { name value }
-  attribute { name slug }
-}
-```
-
-### Nullable Fields
-Saleor schema has many nullable fields. Always use optional chaining:
-```tsx
-const name = product.category?.name ?? "Default";
-```
-
-### Import Paths
-Always use the `@/` alias:
-```tsx
-import { Button } from "@/ui/components/ui/Button";
-```
-
-## Environment Variables
-
-```env
-# Required
-NEXT_PUBLIC_SALEOR_API_URL=https://xxx.saleor.cloud/graphql/
-
-# Optional
-NEXT_PUBLIC_STOREFRONT_URL=   # SEO canonical URLs
-REVALIDATE_SECRET=            # Manual cache invalidation
-SALEOR_WEBHOOK_SECRET=        # Webhook HMAC verification
-
-# App Token (use with caution - see AGENTS.md Security section)
-SALEOR_APP_TOKEN=             # Only for channels query, create dedicated minimal-permission app
-```
-
-### App Token Security
-
-- Token is server-side only (no `NEXT_PUBLIC_` prefix)
-- Used ONLY for `channels` query (`MANAGE_CHANNELS` permission)
-- Best practice: Create a dedicated app with only `MANAGE_CHANNELS`
-- Alternative: Hardcode channel slugs in `generateStaticParams` (no token needed)
+| SEO helpers | `src/lib/seo/` |
+| Filter utilities | `src/ui/components/plp/filter-utils.ts` |
 
 ## Documentation
 
-For comprehensive documentation, see `AGENTS.md` in the project root.
+- **Full docs**: `AGENTS.md` in project root
+- **Skills**: `.claude/skills/[name]/SKILL.md`
