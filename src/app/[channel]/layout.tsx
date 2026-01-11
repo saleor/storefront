@@ -2,16 +2,20 @@ import { type ReactNode } from "react";
 import { executeGraphQL } from "@/lib/graphql";
 import { ChannelsListDocument } from "@/gql/graphql";
 import { DefaultChannelSlug } from "@/app/config";
+import { getStaticChannels } from "@/config/static-pages";
 
 export const generateStaticParams = async () => {
-	// the `channels` query is protected
-	// you can either hardcode the channels or use an app token to fetch the channel list here
+	// Option 1: Use channels from config (no API call, no token needed)
+	const configuredChannels = getStaticChannels();
+	if (configuredChannels && configuredChannels.length > 0) {
+		return configuredChannels.map((channel) => ({ channel }));
+	}
 
+	// Option 2: Fetch from Saleor API (requires SALEOR_APP_TOKEN)
 	if (process.env.SALEOR_APP_TOKEN) {
 		const channels = await executeGraphQL(ChannelsListDocument, {
-			withAuth: false, // disable cookie-based auth for this call
+			withAuth: false,
 			headers: {
-				// and use app token instead
 				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
 			},
 		});
@@ -20,9 +24,10 @@ export const generateStaticParams = async () => {
 				?.filter((channel) => channel.isActive)
 				.map((channel) => ({ channel: channel.slug })) ?? []
 		);
-	} else {
-		return [{ channel: DefaultChannelSlug }];
 	}
+
+	// Option 3: Fallback to default channel
+	return [{ channel: DefaultChannelSlug }];
 };
 
 export default function ChannelLayout({ children }: { children: ReactNode }) {

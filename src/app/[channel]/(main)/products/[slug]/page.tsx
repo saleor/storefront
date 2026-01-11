@@ -75,11 +75,34 @@ export async function generateMetadata(props: {
 	});
 }
 
-// Static params generation
+// Static params generation - configurable via src/config/static-pages.ts
 export async function generateStaticParams({ params }: { params: { channel: string } }) {
+	const { getStaticProductSlugs, getStaticProductCollection, getStaticProductFetchCount } = await import(
+		"@/config/static-pages"
+	);
+
+	// Option 1: Use explicit slugs from config (no API call needed)
+	const configuredSlugs = getStaticProductSlugs();
+	if (configuredSlugs && configuredSlugs.length > 0) {
+		return configuredSlugs.map((slug) => ({ slug }));
+	}
+
+	// Option 2: Fetch from a specific collection
+	const collectionSlug = getStaticProductCollection();
+	if (collectionSlug) {
+		const { ProductListByCollectionDocument } = await import("@/gql/graphql");
+		const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
+			revalidate: 300,
+			variables: { slug: collectionSlug, channel: params.channel },
+			withAuth: false,
+		});
+		return collection?.products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
+	}
+
+	// Option 3: Fetch top N products (default)
 	const { products } = await executeGraphQL(ProductListDocument, {
-		revalidate: 300, // 5 minutes - balance freshness vs performance
-		variables: { first: 20, channel: params.channel },
+		revalidate: 300,
+		variables: { first: getStaticProductFetchCount(), channel: params.channel },
 		withAuth: false,
 	});
 
