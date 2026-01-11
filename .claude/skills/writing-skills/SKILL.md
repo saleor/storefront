@@ -59,6 +59,17 @@ What NOT to do
 | External integrations (Saleor APIs) | Standard library usage               |
 | Decisions requiring project context | Obvious best practices               |
 
+### When to Include State Machines
+
+For complex interactive features, include a Mermaid state diagram when:
+
+- Multiple states with non-obvious transitions
+- Auto-adjustment or conflict resolution behavior
+- URL/state synchronization
+- Async operations with race conditions
+
+Example: See `variant-selection` skill - the state machine prevents edge case bugs like "what happens when user selects an incompatible option?"
+
 ## Source References
 
 **Always include sources** for:

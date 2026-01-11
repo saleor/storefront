@@ -122,6 +122,63 @@ const deadEnd = getUnavailableAttributeInfo(variants, groups, selections);
 />
 ```
 
+## State Machine
+
+> **Why include this?** State machines clarify complex interactive features. For multi-state UI with non-obvious transitions (like auto-adjustment here), a diagram prevents edge case bugs and helps AI agents reason about the system correctly.
+
+Understanding the state machine helps prevent edge case bugs:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Empty: Page Load
+
+    Empty --> Partial: SELECT(attr, value)
+    Empty --> Complete: Single variant product
+
+    Partial --> Partial: SELECT [not all attrs filled]
+    Partial --> Complete: SELECT [all filled, variant exists]
+    Partial --> Conflict: SELECT [all filled, no variant]
+    Partial --> DeadEnd: SELECT blocks other groups
+
+    Complete --> Complete: SELECT [compatible]
+    Complete --> Partial: SELECT [incompatible → adjust]
+
+    Conflict --> Partial: AUTO_ADJUST [clear conflicts]
+
+    DeadEnd --> Partial: SELECT different option
+```
+
+### States
+
+| State        | URL Params                        | Add to Cart | Description                         |
+| ------------ | --------------------------------- | ----------- | ----------------------------------- |
+| **Empty**    | `?`                               | ❌          | No selections                       |
+| **Partial**  | `?color=black`                    | ❌          | Some attributes selected            |
+| **Complete** | `?color=black&size=m&variant=abc` | ✅          | All selected, variant found         |
+| **Conflict** | (transient)                       | —           | Impossible combination, auto-clears |
+| **DeadEnd**  | `?color=black`                    | ❌          | Selection blocks other groups       |
+
+### Example User Flow
+
+```
+1. User lands on product page
+   State: Empty → URL: /products/t-shirt
+
+2. User clicks "Black" color
+   State: Partial → URL: ?color=black
+
+3. User clicks "Medium" size
+   State: Complete → URL: ?color=black&size=medium&variant=abc123
+   → Add to Cart enabled ✓
+
+4. User clicks "XL" (but Black/XL doesn't exist)
+   State: Conflict → AUTO_ADJUST → Partial
+   → URL: ?size=xl (color cleared)
+   → User can now pick a color that has XL
+```
+
+This "smart adjustment" pattern ensures users are never stuck. They can always explore all options.
+
 ## Anti-patterns
 
 ❌ **Don't enable "Add to Cart" without full selection** - Needs variant ID  
