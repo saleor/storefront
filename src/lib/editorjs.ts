@@ -55,26 +55,14 @@ export function parseEditorJSToHtml(content: string | null | undefined): string[
 
 /**
  * Safely strip HTML tags from a string.
- * Uses xss library to sanitize first, then removes remaining safe tags.
+ * Uses xss library configured to strip all tags.
  */
 function stripHtmlTags(html: string): string {
-	// First, sanitize with xss to neutralize any dangerous content
-	// Configure xss to output empty strings for all tags (strip them)
-	const stripped = xss(html, {
+	return xss(html, {
 		whiteList: {}, // Allow no tags
 		stripIgnoreTag: true, // Strip all tags not in whitelist
 		stripIgnoreTagBody: ["script", "style"], // Remove script/style content entirely
 	});
-
-	// The xss output should now be safe plain text
-	// Decode any HTML entities that might remain
-	return stripped
-		.replace(/&amp;/g, "&")
-		.replace(/&lt;/g, "<")
-		.replace(/&gt;/g, ">")
-		.replace(/&quot;/g, '"')
-		.replace(/&#x27;/g, "'")
-		.replace(/&#x2F;/g, "/");
 }
 
 /**
