@@ -13,6 +13,7 @@ pnpm run generate     # After ANY .graphql file change
 pnpm exec tsc --noEmit   # Type check
 pnpm run build        # Full build
 pnpm run dev          # Development server
+pnpm test             # Run tests (watch mode)
 ```
 
 ### When to Use Which Skill
@@ -26,6 +27,7 @@ pnpm run dev          # Development server
 | Variant/attribute selection on PDP | [`variant-selection`](.claude/skills/variant-selection/SKILL.md)       |
 | Page metadata, JSON-LD, OG images  | [`seo-system`](.claude/skills/seo-system/SKILL.md)                     |
 | ISR, webhooks, cache invalidation  | [`caching-strategy`](.claude/skills/caching-strategy/SKILL.md)         |
+| Writing tests                      | [`testing`](.claude/skills/testing/SKILL.md)                           |
 | Creating/maintaining skills        | [`writing-skills`](.claude/skills/writing-skills/SKILL.md)             |
 
 ---
@@ -149,7 +151,8 @@ Each skill is a focused guide for a specific task. Skills are in `.claude/skills
 5. **[variant-selection](.claude/skills/variant-selection/SKILL.md)** - Complex variant/attribute selection
 6. **[seo-system](.claude/skills/seo-system/SKILL.md)** - Metadata, JSON-LD, OG images
 7. **[caching-strategy](.claude/skills/caching-strategy/SKILL.md)** - ISR, webhooks, cache invalidation
-8. **[writing-skills](.claude/skills/writing-skills/SKILL.md)** - How to create and maintain skills
+8. **[testing](.claude/skills/testing/SKILL.md)** - Writing fast, effective tests
+9. **[writing-skills](.claude/skills/writing-skills/SKILL.md)** - How to create and maintain skills
 
 ### Using Skills
 
