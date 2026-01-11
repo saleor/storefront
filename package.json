@@ -12,6 +12,8 @@
 		"prebuild": "pnpm run generate",
 		"lint": "eslint",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
+		"test": "vitest",
+		"test:run": "vitest run",
 		"prepare": "husky install"
 	},
 	"dependencies": {
@@ -50,6 +52,7 @@
 	},
 	"devDependencies": {
 		"@graphql-codegen/cli": "5.0.0",
+		"vitest": "2.1.8",
 		"@graphql-codegen/client-preset": "4.1.0",
 		"@graphql-typed-document-node/core": "3.2.0",
 		"@next/env": "16.0.7",
