@@ -28,9 +28,13 @@ pnpm run build       # Full build test
 | Generated types (DO NOT EDIT) | `src/gql/` |
 | UI components | `src/ui/components/` |
 | Product page components | `src/ui/components/pdp/` |
+| Cart drawer & context | `src/ui/components/cart/` |
 | Base UI primitives | `src/ui/components/ui/` |
+| SEO configuration | `src/lib/seo/` |
 | Design tokens | `src/styles/brand.css` |
 | Product page | `src/app/[channel]/(main)/products/[slug]/page.tsx` |
+| Cache invalidation API | `src/app/api/revalidate/` |
+| Dynamic OG images | `src/app/api/og/` |
 
 ## Code Patterns
 
@@ -116,6 +120,30 @@ If an attribute doesn't appear in `variant.attributes`, check if it's added as a
 
 Location: `src/ui/components/pdp/variant-selection/`
 
+## SEO System
+
+SEO is modular and configurable in `src/lib/seo/`:
+- **Config**: `src/lib/seo/config.ts` - site name, toggles for features
+- **Root metadata**: `import { rootMetadata } from "@/lib/seo"` in layout
+- **Page metadata**: `buildPageMetadata({ title, description, image })`
+- **JSON-LD**: `buildProductJsonLd({ name, price, inStock })`
+- **Dynamic OG**: `/api/og?title=...&price=...`
+
+To disable: Delete `src/lib/seo/` and remove imports.
+
+## Cart System
+
+Cart uses React Context with drawer UI:
+- **Open cart**: `const { openCart } = useCart()`
+- **Server actions**: `updateLineQuantity()`, `deleteLine()` in `cart/actions.ts`
+
+## Caching
+
+- **ISR**: `export const revalidate = 300` (5 min) on page files
+- **Static gen**: `generateStaticParams()` for popular products
+- **On-demand**: `GET /api/revalidate?secret=xxx&path=/products/slug`
+- **Webhooks**: `POST /api/revalidate` with Saleor HMAC signature
+
 ## Common Gotchas
 
 ### Saleor API Permissions
@@ -142,6 +170,28 @@ Always use the `@/` alias:
 ```tsx
 import { Button } from "@/ui/components/ui/Button";
 ```
+
+## Environment Variables
+
+```env
+# Required
+NEXT_PUBLIC_SALEOR_API_URL=https://xxx.saleor.cloud/graphql/
+
+# Optional
+NEXT_PUBLIC_STOREFRONT_URL=   # SEO canonical URLs
+REVALIDATE_SECRET=            # Manual cache invalidation
+SALEOR_WEBHOOK_SECRET=        # Webhook HMAC verification
+
+# App Token (use with caution - see AGENTS.md Security section)
+SALEOR_APP_TOKEN=             # Only for channels query, create dedicated minimal-permission app
+```
+
+### App Token Security
+
+- Token is server-side only (no `NEXT_PUBLIC_` prefix)
+- Used ONLY for `channels` query (`MANAGE_CHANNELS` permission)
+- Best practice: Create a dedicated app with only `MANAGE_CHANNELS`
+- Alternative: Hardcode channel slugs in `generateStaticParams` (no token needed)
 
 ## Documentation
 

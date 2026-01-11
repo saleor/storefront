@@ -39,8 +39,9 @@ pnpm run dev            # Start dev server (runs generate automatically via pred
 - **Framework**: Next.js 16 (App Router, Server Components, Server Actions)
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS with CSS custom properties for theming
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) pattern (Radix UI primitives)
 - **GraphQL**: Saleor API with `graphql-codegen` for type generation
-- **State**: Zustand (checkout), React Server Components (most data)
+- **State**: React Context (cart), Zustand (checkout module only)
 
 ### Project Structure
 
@@ -50,6 +51,9 @@ src/
 │   ├── [channel]/          # Channel-scoped routes
 │   │   └── (main)/         # Main layout (header/footer)
 │   │       └── products/   # Product pages
+│   ├── api/                # API routes
+│   │   ├── og/             # Dynamic OG image generation
+│   │   └── revalidate/     # Cache invalidation endpoint
 │   ├── checkout/           # Checkout flow
 │   └── actions.ts          # Global server actions
 ├── graphql/                # GraphQL queries/mutations for storefront
@@ -57,11 +61,16 @@ src/
 ├── gql/                    # AUTO-GENERATED - Do not edit manually
 ├── ui/
 │   ├── components/         # Shared UI components
+│   │   ├── cart/           # Cart drawer and context
 │   │   ├── pdp/            # Product detail page components
-│   │   ├── ui/             # Base UI primitives (Button, Badge, etc.)
+│   │   ├── ui/             # Base UI primitives (Button, Badge, Sheet, etc.)
 │   │   └── nav/            # Navigation components
 │   └── atoms/              # Small reusable atoms
 ├── lib/                    # Utilities and helpers
+│   ├── seo/                # SEO configuration and helpers
+│   ├── graphql.ts          # GraphQL client
+│   ├── checkout.ts         # Checkout utilities
+│   └── utils.ts            # General utilities
 └── styles/
     └── brand.css           # Brand-specific design tokens
 ```
@@ -157,60 +166,7 @@ Brand-specific tokens are in `src/styles/brand.css`:
 
 ### Dark Mode
 
-Dark mode variables are defined in `brand.css` under `.dark` selector. Use Tailwind's `dark:` variant:
-
-```tsx
-<div className="bg-background dark:bg-background">
-```
-
----
-
-## Component Patterns
-
-### Server Components (Default)
-
-Most components should be Server Components for better performance:
-
-```tsx
-// No "use client" directive = Server Component
-export async function ProductList({ channel }: { channel: string }) {
-  const data = await executeGraphQL(...);
-  return <div>...</div>;
-}
-```
-
-### Client Components
-
-Only use when needed (interactivity, hooks, browser APIs):
-
-```tsx
-"use client";
-
-import { useState } from "react";
-
-export function VariantSelector({ options }) {
-	const [selected, setSelected] = useState(null);
-	// ...
-}
-```
-
-### Server Actions
-
-For mutations, use Server Actions (not API routes):
-
-```tsx
-async function addToCart() {
-  "use server";
-  // This runs on the server
-  await executeGraphQL(CheckoutAddLineDocument, { ... });
-  revalidatePath("/cart");
-}
-
-// In JSX
-<form action={addToCart}>
-  <button type="submit">Add to Cart</button>
-</form>
-```
+Dark mode variables are defined in `brand.css` under `.dark` selector.
 
 ---
 
@@ -277,28 +233,6 @@ Key components used:
 
 ---
 
-## Testing Changes
-
-### Type Check
-
-```bash
-pnpm exec tsc --noEmit
-```
-
-### Full Build
-
-```bash
-pnpm run build
-```
-
-### Lint
-
-```bash
-pnpm run lint
-```
-
----
-
 ## Environment Variables
 
 Required in `.env.local`:
@@ -310,9 +244,79 @@ NEXT_PUBLIC_SALEOR_API_URL=https://your-instance.saleor.cloud/graphql/
 Optional:
 
 ```env
-SALEOR_APP_TOKEN=          # For accessing protected queries (channels list, etc.)
-NEXT_PUBLIC_STOREFRONT_URL= # For canonical URLs in metadata
+# SEO & Metadata
+NEXT_PUBLIC_STOREFRONT_URL=   # Base URL for canonical URLs and OG images
+
+# Cache Invalidation
+REVALIDATE_SECRET=            # Secret for manual cache invalidation via GET
+SALEOR_WEBHOOK_SECRET=        # HMAC secret for Saleor webhook verification
+
+# App Token (see Security section below)
+SALEOR_APP_TOKEN=             # For accessing protected queries (channels list)
 ```
+
+### Webhook Setup (for on-demand revalidation)
+
+1. In Saleor Dashboard → Settings → Webhooks
+2. Create webhook pointing to `https://your-store.com/api/revalidate`
+3. Subscribe to: `PRODUCT_CREATED`, `PRODUCT_UPDATED`, `PRODUCT_DELETED`
+4. Copy the webhook secret to `SALEOR_WEBHOOK_SECRET`
+
+---
+
+## Security: App Token for Storefronts
+
+> **Source**: [Saleor Docs - App Permissions](https://docs.saleor.io/developer/extending/apps/architecture/app-permissions)
+
+### The Challenge
+
+The storefront needs `SALEOR_APP_TOKEN` only for the `channels` query (to show channel selector). This query requires `MANAGE_CHANNELS` permission, which is more than what a public storefront should have.
+
+### Security Principles
+
+1. **Server-side only**: The token is NOT prefixed with `NEXT_PUBLIC_`, so it never reaches the browser
+2. **Minimal permissions**: Create a dedicated app with ONLY the permissions needed
+3. **No token is best**: If you don't need the channel selector, don't use a token at all
+
+### Recommended Setup
+
+**Option 1: No token (simplest, most secure)**
+
+If you have a single channel or can hardcode channel slugs:
+
+```typescript
+// src/app/[channel]/layout.tsx
+export const generateStaticParams = async () => {
+	// Hardcode your channel(s) - no token needed
+	return [{ channel: "default-channel" }, { channel: "us-channel" }];
+};
+```
+
+**Option 2: Dedicated minimal-permission app**
+
+If you need dynamic channel fetching:
+
+1. Create a new App in Saleor Dashboard → Apps → Create Local App
+2. Name it "Storefront Channel Reader" (descriptive name)
+3. Assign ONLY `MANAGE_CHANNELS` permission
+4. Generate a token and use it as `SALEOR_APP_TOKEN`
+
+### What NOT to do
+
+- ❌ Don't use an app token with `MANAGE_PRODUCTS`, `MANAGE_ORDERS`, etc.
+- ❌ Don't reuse tokens from other apps (checkout, admin tools)
+- ❌ Don't prefix with `NEXT_PUBLIC_` (would expose to browser)
+
+### Current Usage
+
+The storefront uses `SALEOR_APP_TOKEN` in exactly two places:
+
+| File                           | Purpose                             | Permission Needed |
+| ------------------------------ | ----------------------------------- | ----------------- |
+| `src/app/[channel]/layout.tsx` | `generateStaticParams` for channels | `MANAGE_CHANNELS` |
+| `src/ui/components/Footer.tsx` | Channel selector dropdown           | `MANAGE_CHANNELS` |
+
+Both are Server Components, so the token stays server-side.
 
 ---
 
@@ -330,26 +334,13 @@ After adding a GraphQL field, run `pnpm run generate` to update types.
 
 Check if the field requires authentication. See "Permission Errors" section above.
 
-### Build fails with "use server" error
-
-Server Actions can't be defined inside Client Components. Either:
-
-- Move the action to a Server Component
-- Create a separate file with `"use server"` at the top
-
-### Import path errors
-
-Use `@/` alias for imports from `src/`:
-
-```typescript
-import { Button } from "@/ui/components/ui/Button";
-```
-
 ---
 
 ## Rich Text Content (EditorJS)
 
 Saleor uses EditorJS for rich text content (product descriptions, page content). Here's how to handle it:
+
+> **Source**: [EditorJS Documentation](https://editorjs.io/) | [editorjs-html parser](https://www.npmjs.com/package/editorjs-html)
 
 ### Parsing EditorJS Content
 
@@ -385,6 +376,12 @@ const descriptionHtml = product.description
 ## Investigating Saleor Core Behavior
 
 When there's ambiguity about how the Saleor API works, **clone the Saleor core repository** to investigate the source code directly. This is the definitive source of truth.
+
+> **Documentation Sources**:
+>
+> - [Saleor API Reference](https://docs.saleor.io/api-reference) - Official GraphQL schema docs
+> - [Saleor Developer Docs](https://docs.saleor.io/developer) - Guides and concepts
+> - [Saleor Core GitHub](https://github.com/saleor/saleor) - Source code (ultimate truth)
 
 ### Quick Clone (shallow, for investigation only)
 
@@ -423,6 +420,8 @@ attribute__visible_in_storefront=True
 ```
 
 **Conclusion**: Storefront users only receive attributes with `visibleInStorefront=True`. No client-side filtering needed.
+
+> **Source**: [`saleor/graphql/product/resolvers.py`](https://github.com/saleor/saleor/blob/main/saleor/graphql/product/resolvers.py) - see `resolve_product_attributes` function.
 
 ### Key Insight: Storefront API Auto-Filtering
 
@@ -473,6 +472,8 @@ The API already returns only what's meant to be shown. This pattern applies to o
 ## Product Types and Variant Attributes
 
 In Saleor, **which attributes appear on variants** is configured at the **ProductType** level, not the product level.
+
+> **Source**: [Saleor Docs - Attributes](https://docs.saleor.io/developer/attributes/overview)
 
 ### Configuration Location
 
@@ -627,4 +628,193 @@ src/ui/components/pdp/variant-selection/
     ├── ColorSwatchOption.tsx   # Color swatch (circular)
     ├── SizeButtonOption.tsx    # Size button (rectangular)
     └── TextOption.tsx          # Generic text (fallback)
+```
+
+---
+
+## SEO System
+
+The storefront has a modular SEO system in `src/lib/seo/` that can be easily configured or disabled.
+
+### Configuration
+
+All SEO settings are in `src/lib/seo/config.ts`:
+
+```typescript
+export const seoConfig = {
+  siteName: "Saleor Store",           // Site name in titles
+  description: "...",                  // Default description
+  twitterHandle: null,                 // Set to enable Twitter cards
+  enableJsonLd: true,                  // Toggle structured data
+  enableOpenGraph: true,               // Toggle OG tags
+  enableTwitterCards: true,            // Toggle Twitter cards
+  noIndexPaths: ["/checkout", ...],    // Excluded from crawlers
+};
+```
+
+### Usage
+
+**Root layout metadata:**
+
+```typescript
+// src/app/layout.tsx
+import { rootMetadata } from "@/lib/seo";
+export const metadata = rootMetadata;
+```
+
+**Page metadata:**
+
+```typescript
+import { buildPageMetadata } from "@/lib/seo";
+
+export async function generateMetadata() {
+	return buildPageMetadata({
+		title: "Page Title",
+		description: "Description",
+		image: "/og-image.jpg",
+		url: "/page-path",
+	});
+}
+```
+
+**Product JSON-LD:**
+
+```typescript
+import { buildProductJsonLd } from "@/lib/seo";
+
+const jsonLd = buildProductJsonLd({
+  name: product.name,
+  price: { amount: 29.99, currency: "USD" },
+  inStock: true,
+});
+
+// In JSX:
+{jsonLd && (
+  <script type="application/ld+json"
+    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+  />
+)}
+```
+
+### Dynamic OG Images
+
+The `/api/og` route generates branded OG images:
+
+```
+/api/og?title=Product%20Name&price=€29.99
+```
+
+### Disabling SEO
+
+To remove SEO features entirely:
+
+1. Delete `src/lib/seo/` folder
+2. Remove `rootMetadata` import from layout
+3. Remove `buildPageMetadata`/`buildProductJsonLd` from pages
+4. Delete `src/app/api/og/`
+
+---
+
+## Cart System
+
+The cart uses a drawer pattern with React Context for state management.
+
+### Architecture
+
+```
+src/ui/components/cart/
+├── CartContext.tsx      # React Context with cart state
+├── CartDrawer.tsx       # Drawer UI component
+├── CartButton.tsx       # Header cart icon (opens drawer)
+├── CartDrawerWrapper.tsx # Client wrapper for layout
+├── actions.ts           # Server actions (update/delete lines)
+└── index.ts             # Public exports
+```
+
+### Usage
+
+The cart is included in the main layout automatically. To trigger the drawer:
+
+```typescript
+import { useCart } from "@/ui/components/cart";
+
+function MyComponent() {
+  const { openCart, items, subtotal } = useCart();
+
+  return <button onClick={openCart}>View Cart ({items.length})</button>;
+}
+```
+
+### Server Actions
+
+```typescript
+// Update line quantity
+import { updateLineQuantity, deleteLine } from "@/ui/components/cart/actions";
+
+await updateLineQuantity(checkoutId, lineId, quantity);
+await deleteLine(checkoutId, lineId);
+```
+
+---
+
+## Caching & Performance
+
+### ISR (Incremental Static Regeneration)
+
+Product pages use ISR with 5-minute revalidation:
+
+```typescript
+// src/app/[channel]/(main)/products/[slug]/page.tsx
+export const revalidate = 300; // 5 minutes
+```
+
+### Static Generation
+
+Popular products are pre-rendered at build time. Configure in `src/config/static-pages.ts`:
+
+```typescript
+export const staticPagesConfig = {
+	products: {
+		// Option 1: Explicit slugs (recommended for key products)
+		slugs: ["hero-product", "bestseller-tee", "new-arrival"],
+
+		// Option 2: Fetch from a Saleor collection
+		collection: "featured",
+
+		// Option 3: Fetch top N products (default fallback)
+		fetchCount: 20,
+	},
+
+	// Hardcode channels to avoid needing SALEOR_APP_TOKEN
+	channels: ["default-channel"],
+};
+```
+
+Priority: `slugs` → `collection` → `fetchCount` (first non-null wins)
+
+### On-Demand Revalidation
+
+The `/api/revalidate` endpoint supports cache invalidation:
+
+**Manual (protected by secret):**
+
+```bash
+curl "/api/revalidate?secret=xxx&path=/default-channel/products/my-product"
+```
+
+**Saleor Webhooks:**
+Configure a webhook in Saleor Dashboard pointing to `/api/revalidate`. The endpoint:
+
+- Verifies HMAC signature from `SALEOR_WEBHOOK_SECRET`
+- Automatically revalidates product, category, and collection pages
+
+### GraphQL Caching
+
+```typescript
+const { product } = await executeGraphQL(ProductDetailsDocument, {
+	variables: { slug, channel },
+	revalidate: 300, // Cache for 5 minutes
+	// OR
+	cache: "no-cache", // Skip cache (for mutations)
+});
 ```
