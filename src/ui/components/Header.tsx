@@ -26,7 +26,6 @@ export async function Header({ channel }: { channel: string }) {
 
 					{/* Actions */}
 					<div className="flex items-center gap-1">
-						{/* Mobile search - uses MobileMenu */}
 						<Suspense fallback={<div className="h-10 w-10" />}>
 							<UserMenuContainer />
 						</Suspense>

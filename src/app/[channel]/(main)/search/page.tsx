@@ -1,63 +1,131 @@
 import { notFound, redirect } from "next/navigation";
-import { OrderDirection, ProductOrderField, SearchProductsDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import Link from "next/link";
+import { searchProducts } from "@/lib/search";
+import { SearchResults } from "@/ui/components/SearchResults";
 import { Pagination } from "@/ui/components/Pagination";
-import { ProductList } from "@/ui/components/ProductList";
-import { getPaginatedListVariables } from "@/lib/utils";
+import { SearchSort } from "./SearchSort";
+import { SearchIcon } from "lucide-react";
 
 export const metadata = {
 	title: "Search products · Saleor Storefront example",
 	description: "Search products in Saleor Storefront example",
 };
 
+type SearchParams = {
+	query?: string | string[];
+	cursor?: string | string[];
+	direction?: string | string[];
+	sort?: string | string[];
+};
+
 export default async function Page(props: {
-	searchParams: Promise<Record<"query" | "cursor" | "direction", string | string[] | undefined>>;
+	searchParams: Promise<SearchParams>;
 	params: Promise<{ channel: string }>;
 }) {
-	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 
-	const searchValue = searchParams.query;
-
-	if (!searchValue) {
+	// Extract and validate query
+	const queryParam = searchParams.query;
+	if (!queryParam) {
 		notFound();
 	}
 
-	if (Array.isArray(searchValue)) {
-		const firstValidSearchValue = searchValue.find((v) => v.length > 0);
-		if (!firstValidSearchValue) {
-			notFound();
-		}
-		redirect(`/search?${new URLSearchParams({ query: firstValidSearchValue }).toString()}`);
+	// Handle array values (redirect to first valid)
+	const query = Array.isArray(queryParam) ? queryParam.find((v) => v.length > 0) : queryParam;
+
+	if (!query) {
+		notFound();
 	}
 
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
+	if (Array.isArray(queryParam)) {
+		redirect(`/${params.channel}/search?query=${encodeURIComponent(query)}`);
+	}
 
-	const { products } = await executeGraphQL(SearchProductsDocument, {
-		variables: {
-			search: searchValue,
-			channel: params.channel,
-			sortBy: ProductOrderField.Rating,
-			sortDirection: OrderDirection.Asc,
-			...paginationVariables,
-		},
-		revalidate: 60,
+	// Parse pagination
+	const cursor = Array.isArray(searchParams.cursor) ? searchParams.cursor[0] : searchParams.cursor;
+	const direction = searchParams.direction === "backward" ? "backward" : "forward";
+
+	// Parse sort
+	const sortParam = Array.isArray(searchParams.sort) ? searchParams.sort[0] : searchParams.sort;
+	const sortBy = ["relevance", "price-asc", "price-desc", "name", "newest"].includes(sortParam || "")
+		? (sortParam as "relevance" | "price-asc" | "price-desc" | "name" | "newest")
+		: "relevance";
+
+	// Search using Saleor
+	const result = await searchProducts({
+		query,
+		channel: params.channel,
+		limit: 20,
+		cursor,
+		direction,
+		sortBy,
 	});
 
-	if (!products) {
-		notFound();
-	}
+	const { products, pagination } = result;
 
 	return (
-		<section className="mx-auto max-w-7xl p-8 pb-16">
-			{products.totalCount && products.totalCount > 0 ? (
+		<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			{pagination.totalCount > 0 ? (
 				<div>
-					<h1 className="pb-8 text-xl font-semibold">Search results for &quot;{searchValue}&quot;:</h1>
-					<ProductList products={products.edges.map((e) => e.node)} />
-					<Pagination pageInfo={products.pageInfo} />
+					{/* Header with count and sort */}
+					<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+						<div>
+							<h1 className="text-2xl font-semibold">Results for &quot;{query}&quot;</h1>
+							<p className="mt-1 text-sm text-muted-foreground">
+								{pagination.totalCount} {pagination.totalCount === 1 ? "product" : "products"} found
+							</p>
+						</div>
+						<SearchSort />
+					</div>
+
+					{/* Results grid */}
+					<SearchResults products={products} channel={params.channel} />
+
+					{/* Pagination */}
+					{(pagination.hasNextPage || pagination.hasPreviousPage) && (
+						<Pagination
+							pageInfo={{
+								hasNextPage: pagination.hasNextPage ?? false,
+								hasPreviousPage: pagination.hasPreviousPage ?? false,
+								startCursor: pagination.prevCursor,
+								endCursor: pagination.nextCursor,
+							}}
+						/>
+					)}
 				</div>
 			) : (
-				<h1 className="mx-auto pb-8 text-center text-xl font-semibold">Nothing found :(</h1>
+				<EmptyState query={query} channel={params.channel} />
 			)}
 		</section>
+	);
+}
+
+function EmptyState({ query, channel }: { query: string; channel: string }) {
+	return (
+		<div className="flex flex-col items-center justify-center py-16 text-center">
+			<div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+				<SearchIcon className="h-8 w-8 text-muted-foreground" />
+			</div>
+			<h1 className="text-2xl font-semibold">No results for &quot;{query}&quot;</h1>
+			<p className="mt-2 max-w-md text-muted-foreground">
+				We couldn&apos;t find any products matching your search. Try a different term or browse our
+				categories.
+			</p>
+			<div className="mt-8 flex flex-col gap-3 sm:flex-row">
+				<Link
+					href={`/${channel}/products`}
+					className="hover:bg-primary/90 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors"
+				>
+					Browse All Products
+				</Link>
+				<Link
+					href={`/${channel}`}
+					className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+				>
+					Go to Homepage
+				</Link>
+			</div>
+		</div>
 	);
 }
