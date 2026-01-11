@@ -12,23 +12,21 @@ export {
 export { WavePattern } from "./WavePattern";
 export { transformToProductCard, formatPrice } from "./utils";
 export {
+	// Server-side filter helpers
+	resolveCategorySlugsToIds,
+	buildFilterVariables,
+	buildSortVariables,
+	// Client-side filter helpers
 	extractCategoryOptions,
 	extractColorOptions,
 	extractSizeOptions,
-	generatePriceRanges,
-	getStaticPriceRanges,
+	filterProducts,
+	sortProductsClientSide,
+	buildActiveFilters,
+	// Constants
 	STATIC_PRICE_RANGES,
 	STATIC_PRICE_RANGES_WITH_COUNT,
-	filterProducts,
-	buildActiveFilters,
-	parseFiltersFromUrl,
-	buildFilterUrl,
+	// Types
 	type CategoryOption,
 } from "./filter-utils";
-export {
-	buildSortVariables,
-	buildFilterVariables,
-	parseFilterParams,
-	sortProductsClientSide,
-} from "./saleor-filters";
 export { useProductFilters } from "./useProductFilters";

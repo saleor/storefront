@@ -1,5 +1,24 @@
+/**
+ * Product filtering and sorting utilities.
+ *
+ * Server-side filters (handled by Saleor GraphQL):
+ * - categories: via ProductFilterInput.categories (requires IDs)
+ * - price: via ProductFilterInput.price range
+ *
+ * Client-side filters (handled here):
+ * - colors: Saleor doesn't support attribute filtering without IDs
+ * - sizes: Same as colors
+ */
+
+import type { ProductOrder, ProductOrderField, OrderDirection, ProductFilterInput } from "@/gql/graphql";
+import { CategoriesBySlugDocument } from "@/gql/graphql";
+import { executeGraphQL } from "@/lib/graphql";
 import type { ProductCardData } from "./ProductCard";
-import type { FilterOption, ActiveFilter } from "./FilterBar";
+import type { FilterOption, ActiveFilter, SortOption } from "./FilterBar";
+
+// ============================================================================
+// Types
+// ============================================================================
 
 export interface CategoryOption {
 	id: string;
@@ -8,19 +27,108 @@ export interface CategoryOption {
 	count: number;
 }
 
+// ============================================================================
+// Static Price Ranges (for server-side filtering)
+// ============================================================================
+
+export const STATIC_PRICE_RANGES = [
+	{ label: "Under $50", value: "0-50" },
+	{ label: "$50 - $100", value: "50-100" },
+	{ label: "$100 - $200", value: "100-200" },
+	{ label: "$200+", value: "200-" },
+] as const;
+
+/** Price ranges with count=0 for FilterBar compatibility */
+export const STATIC_PRICE_RANGES_WITH_COUNT = STATIC_PRICE_RANGES.map((r) => ({ ...r, count: 0 }));
+
+// ============================================================================
+// Server-side: Saleor GraphQL Filters
+// ============================================================================
+
 /**
- * Extract unique category options from products with counts
+ * Resolve category slugs to IDs via Saleor API.
+ * Cached for 1 hour.
+ */
+export async function resolveCategorySlugsToIds(
+	slugs: string[],
+): Promise<Map<string, { id: string; name: string }>> {
+	const result = new Map<string, { id: string; name: string }>();
+	if (slugs.length === 0) return result;
+
+	try {
+		const { categories } = await executeGraphQL(CategoriesBySlugDocument, {
+			variables: { slugs, first: slugs.length },
+			revalidate: 3600,
+		});
+		categories?.edges?.forEach(({ node }) => {
+			result.set(node.slug, { id: node.id, name: node.name });
+		});
+	} catch (error) {
+		console.error("[filter-utils] Failed to resolve category slugs:", error);
+	}
+
+	return result;
+}
+
+/**
+ * Build Saleor ProductFilterInput from URL params.
+ */
+export function buildFilterVariables(params: {
+	priceRange?: string | null;
+	categoryIds?: string[];
+}): ProductFilterInput | undefined {
+	const filter: ProductFilterInput = {};
+	let hasFilter = false;
+
+	if (params.categoryIds?.length) {
+		filter.categories = params.categoryIds;
+		hasFilter = true;
+	}
+
+	if (params.priceRange) {
+		const [minStr, maxStr] = params.priceRange.split("-");
+		const min = parseFloat(minStr) || 0;
+		const max = maxStr ? parseFloat(maxStr) : undefined;
+		filter.price = { gte: min, ...(max && { lte: max }) };
+		hasFilter = true;
+	}
+
+	return hasFilter ? filter : undefined;
+}
+
+/**
+ * Build Saleor ProductOrder from sort option.
+ */
+export function buildSortVariables(sort: SortOption | string | undefined): ProductOrder | undefined {
+	if (!sort || sort === "featured") return undefined;
+
+	const sortMap: Record<string, { field: ProductOrderField; direction: OrderDirection }> = {
+		newest: { field: "DATE" as ProductOrderField, direction: "DESC" as OrderDirection },
+		price_asc: { field: "PRICE" as ProductOrderField, direction: "ASC" as OrderDirection },
+		price_desc: { field: "PRICE" as ProductOrderField, direction: "DESC" as OrderDirection },
+		bestselling: { field: "RATING" as ProductOrderField, direction: "DESC" as OrderDirection },
+	};
+
+	return sortMap[sort];
+}
+
+// ============================================================================
+// Client-side: Extract Filter Options from Products
+// ============================================================================
+
+/**
+ * Extract unique category options from products with counts.
  */
 export function extractCategoryOptions(products: ProductCardData[]): CategoryOption[] {
-	const categoryMap = new Map<string, { id: string; name: string; slug: string; count: number }>();
+	const map = new Map<string, CategoryOption>();
 
-	products.forEach((product) => {
+	for (const product of products) {
 		if (product.category) {
-			const existing = categoryMap.get(product.category.slug);
+			const existing = map.get(product.category.slug);
 			if (existing) {
 				existing.count++;
 			} else {
-				categoryMap.set(product.category.slug, {
+				map.set(product.category.slug, {
 					id: product.category.id,
 					name: product.category.name,
 					slug: product.category.slug,
@@ -28,61 +136,55 @@ export function extractCategoryOptions(products: ProductCardData[]): CategoryOpt
 				});
 			}
 		}
-	});
+	}
 
-	return Array.from(categoryMap.values()).sort((a, b) => b.count - a.count);
+	return Array.from(map.values()).sort((a, b) => b.count - a.count);
 }
 
 /**
- * Extract unique color options from products with counts.
- * If selectedColors is provided, ensures those are always included
- * (with count 0) so users can deselect them even when no products match.
+ * Extract unique color options from products.
+ * Selected colors are always included (with count 0) so users can deselect them.
  */
 export function extractColorOptions(products: ProductCardData[], selectedColors?: string[]): FilterOption[] {
-	const colorMap = new Map<string, { count: number; hex?: string }>();
+	const map = new Map<string, { count: number; hex?: string }>();
 
-	products.forEach((product) => {
+	for (const product of products) {
 		product.colors?.forEach((color) => {
-			const existing = colorMap.get(color.name);
+			const existing = map.get(color.name);
 			if (existing) {
 				existing.count++;
 			} else {
-				colorMap.set(color.name, { count: 1, hex: color.hex });
+				map.set(color.name, { count: 1, hex: color.hex });
 			}
 		});
-	});
+	}
 
-	// Ensure selected colors are always included so they can be deselected
+	// Ensure selected colors are always shown
 	selectedColors?.forEach((color) => {
-		if (!colorMap.has(color)) {
-			colorMap.set(color, { count: 0 });
-		}
+		if (!map.has(color)) map.set(color, { count: 0 });
 	});
 
-	return Array.from(colorMap.entries())
+	return Array.from(map.entries())
 		.map(([name, { count, hex }]) => ({ name, count, hex }))
 		.sort((a, b) => b.count - a.count);
 }
 
 /**
- * Extract unique size options from products with counts.
- * If selectedSizes is provided, ensures those are always included
- * (with count 0) so users can deselect them even when no products match.
+ * Extract unique size options from products.
+ * Selected sizes are always included (with count 0) so users can deselect them.
  */
 export function extractSizeOptions(products: ProductCardData[], selectedSizes?: string[]): FilterOption[] {
-	const sizeMap = new Map<string, number>();
+	const map = new Map<string, number>();
 
-	products.forEach((product) => {
+	for (const product of products) {
 		product.sizes?.forEach((size) => {
-			sizeMap.set(size, (sizeMap.get(size) || 0) + 1);
+			map.set(size, (map.get(size) || 0) + 1);
 		});
-	});
+	}
 
-	// Ensure selected sizes are always included so they can be deselected
+	// Ensure selected sizes are always shown
 	selectedSizes?.forEach((size) => {
-		if (!sizeMap.has(size)) {
-			sizeMap.set(size, 0);
-		}
+		if (!map.has(size)) map.set(size, 0);
 	});
 
 	// Sort sizes in logical order
@@ -97,7 +199,7 @@ export function extractSizeOptions(products: ProductCardData[], selectedSizes?: 
 		XXXL: 8,
 	};
 
-	return Array.from(sizeMap.entries())
+	return Array.from(map.entries())
 		.map(([name, count]) => ({ name, count }))
 		.sort((a, b) => {
 			const aOrder = sizeOrder[a.name.toUpperCase()] ?? (parseInt(a.name) || 100);
@@ -106,131 +208,69 @@ export function extractSizeOptions(products: ProductCardData[], selectedSizes?: 
 		});
 }
 
-/**
- * Static price ranges for server-side filtering.
- * These are fixed and don't depend on the current products,
- * so they remain stable when price filtering is applied.
- */
-export const STATIC_PRICE_RANGES: readonly { label: string; value: string }[] = [
-	{ label: "Under $50", value: "0-50" },
-	{ label: "$50 - $100", value: "50-100" },
-	{ label: "$100 - $200", value: "100-200" },
-	{ label: "$200+", value: "200-" },
-] as const;
+// ============================================================================
+// Client-side: Apply Filters & Sort
+// ============================================================================
 
 /**
- * Static price ranges with count field for FilterBar compatibility.
- * Count is 0 since these are server-side filtered.
- */
-export const STATIC_PRICE_RANGES_WITH_COUNT: readonly { label: string; value: string; count: number }[] =
-	STATIC_PRICE_RANGES.map((range) => ({ ...range, count: 0 }));
-
-/**
- * Get static price ranges for filtering.
- * @deprecated Use STATIC_PRICE_RANGES_WITH_COUNT constant instead
- */
-export function getStaticPriceRanges(): { label: string; value: string; count: number }[] {
-	return [...STATIC_PRICE_RANGES_WITH_COUNT];
-}
-
-/**
- * Generate price range options based on product prices.
- * Use this for client-side filtering only.
- * For server-side filtering, use getStaticPriceRanges() instead.
- */
-export function generatePriceRanges(
-	products: ProductCardData[],
-	_currency: string = "USD",
-): { label: string; value: string; count: number }[] {
-	if (products.length === 0) return [];
-
-	const prices = products.map((p) => p.price);
-	const maxPrice = Math.max(...prices);
-
-	// Create 4 price ranges
-	const ranges: { min: number; max: number; label: string; value: string }[] = [];
-
-	if (maxPrice <= 25) {
-		ranges.push({ min: 0, max: 25, label: "Under $25", value: "0-25" });
-	} else if (maxPrice <= 50) {
-		ranges.push(
-			{ min: 0, max: 25, label: "Under $25", value: "0-25" },
-			{ min: 25, max: 50, label: "$25 - $50", value: "25-50" },
-		);
-	} else if (maxPrice <= 100) {
-		ranges.push(
-			{ min: 0, max: 25, label: "Under $25", value: "0-25" },
-			{ min: 25, max: 50, label: "$25 - $50", value: "25-50" },
-			{ min: 50, max: 100, label: "$50 - $100", value: "50-100" },
-		);
-	} else {
-		ranges.push(
-			{ min: 0, max: 50, label: "Under $50", value: "0-50" },
-			{ min: 50, max: 100, label: "$50 - $100", value: "50-100" },
-			{ min: 100, max: 200, label: "$100 - $200", value: "100-200" },
-			{ min: 200, max: Infinity, label: "$200+", value: "200-" },
-		);
-	}
-
-	// Count products in each range
-	return ranges
-		.map((range) => ({
-			label: range.label,
-			value: range.value,
-			count: products.filter((p) => p.price >= range.min && p.price < range.max).length,
-		}))
-		.filter((r) => r.count > 0);
-}
-
-/**
- * Filter products based on selected filters (client-side).
- *
- * Server-side filters (handled by Saleor API before this runs):
- * - categories: Filtered via ProductFilterInput.categories
- * - priceRange: Filtered via ProductFilterInput.price
- *
- * Client-side filters (handled here):
- * - colors: Saleor doesn't support attribute filtering without IDs
- * - sizes: Same as colors
+ * Filter products by colors and sizes (client-side).
+ * Categories and price are filtered server-side via GraphQL.
  */
 export function filterProducts(
 	products: ProductCardData[],
-	filters: {
-		colors?: string[];
-		sizes?: string[];
-	},
+	filters: { colors?: string[]; sizes?: string[] },
 ): ProductCardData[] {
 	let filtered = products;
 
-	// Filter by colors (client-side, OR logic)
-	if (filters.colors && filters.colors.length > 0) {
-		filtered = filtered.filter(
-			(product) => product.colors?.some((color) => filters.colors!.includes(color.name)),
-		);
+	if (filters.colors?.length) {
+		filtered = filtered.filter((p) => p.colors?.some((c) => filters.colors!.includes(c.name)));
 	}
 
-	// Filter by sizes (client-side, OR logic)
-	if (filters.sizes && filters.sizes.length > 0) {
-		filtered = filtered.filter((product) => product.sizes?.some((size) => filters.sizes!.includes(size)));
+	if (filters.sizes?.length) {
+		filtered = filtered.filter((p) => p.sizes?.some((s) => filters.sizes!.includes(s)));
 	}
 
 	return filtered;
 }
 
 /**
- * Build active filters array for display.
- *
- * Note: Categories are now handled server-side and should be added
- * separately using the resolved category data from the server.
+ * Sort products client-side (fallback when server sort not applied).
  */
-export function buildActiveFilters(
-	filters: {
-		colors?: string[];
-		sizes?: string[];
-		priceRange?: string | null;
-	},
-	_categoryOptions?: CategoryOption[],
-): ActiveFilter[] {
+export function sortProductsClientSide<T extends { price: number; createdAt?: string | null }>(
+	products: T[],
+	sort: SortOption | string,
+): T[] {
+	const sorted = [...products];
+
+	switch (sort) {
+		case "price_asc":
+			return sorted.sort((a, b) => a.price - b.price);
+		case "price_desc":
+			return sorted.sort((a, b) => b.price - a.price);
+		case "newest":
+			return sorted.sort((a, b) => {
+				const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+				const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+				return dateB - dateA;
+			});
+		default:
+			return sorted;
+	}
+}
+
+// ============================================================================
+// Active Filters Display
+// ============================================================================
+
+/**
+ * Build active filters array for display.
+ * Note: Categories are added separately from resolved server data.
+ */
+export function buildActiveFilters(filters: {
+	colors?: string[];
+	sizes?: string[];
+	priceRange?: string | null;
+}): ActiveFilter[] {
 	const active: ActiveFilter[] = [];
 
 	filters.colors?.forEach((color) => {
@@ -248,52 +288,4 @@ export function buildActiveFilters(
 	}
 
 	return active;
-}
-
-/**
- * Parse filters from URL search params
- */
-export function parseFiltersFromUrl(searchParams: URLSearchParams): {
-	colors: string[];
-	sizes: string[];
-	priceRange: string | null;
-	sort: string;
-} {
-	const colors = searchParams.get("colors")?.split(",").filter(Boolean) || [];
-	const sizes = searchParams.get("sizes")?.split(",").filter(Boolean) || [];
-	const priceRange = searchParams.get("price") || null;
-	const sort = searchParams.get("sort") || "featured";
-
-	return { colors, sizes, priceRange, sort };
-}
-
-/**
- * Build URL search params from filters
- */
-export function buildFilterUrl(
-	baseUrl: string,
-	filters: {
-		colors?: string[];
-		sizes?: string[];
-		priceRange?: string | null;
-		sort?: string;
-	},
-): string {
-	const params = new URLSearchParams();
-
-	if (filters.colors && filters.colors.length > 0) {
-		params.set("colors", filters.colors.join(","));
-	}
-	if (filters.sizes && filters.sizes.length > 0) {
-		params.set("sizes", filters.sizes.join(","));
-	}
-	if (filters.priceRange) {
-		params.set("price", filters.priceRange);
-	}
-	if (filters.sort && filters.sort !== "featured") {
-		params.set("sort", filters.sort);
-	}
-
-	const queryString = params.toString();
-	return queryString ? `${baseUrl}?${queryString}` : baseUrl;
 }

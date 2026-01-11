@@ -7,7 +7,7 @@ import {
 	buildSortVariables,
 	buildFilterVariables,
 	resolveCategorySlugsToIds,
-} from "@/ui/components/plp/saleor-filters";
+} from "@/ui/components/plp/filter-utils";
 import { ProductsPageClient } from "./products-client";
 
 // Cache product list for 5 minutes

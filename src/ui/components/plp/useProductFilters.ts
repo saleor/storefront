@@ -11,9 +11,9 @@ import {
 	STATIC_PRICE_RANGES_WITH_COUNT,
 	filterProducts,
 	buildActiveFilters,
+	sortProductsClientSide,
 	type CategoryOption,
 } from "./filter-utils";
-import { sortProductsClientSide } from "./saleor-filters";
 
 interface UseProductFiltersOptions {
 	products: ProductCardData[];
