@@ -17,11 +17,13 @@
 	"dependencies": {
 		"@adyen/adyen-web": "5.53.3",
 		"@adyen/api-library": "15.0.0-beta",
+		"@builder.io/react": "^1.0.0",
 		"@headlessui/react": "1.7.18",
 		"@saleor/auth-sdk": "1.0.3",
 		"@stripe/react-stripe-js": "3.7.0",
 		"@stripe/stripe-js": "7.3.0",
 		"@tailwindcss/container-queries": "0.1.1",
+		"builder": "^3.2.0",
 		"clsx": "2.1.0",
 		"editorjs-html": "3.4.3",
 		"formik": "2.4.5",
