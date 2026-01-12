@@ -7,7 +7,6 @@ import { Builder, builder } from "@builder.io/react";
 interface BuilderIntegrationProps {
 	pageId: string;
 	channel?: string;
-	// Add any additional props that might be needed for GraphQL data
 }
 
 // Define a type for the Builder content structure
@@ -47,7 +46,7 @@ export function BuilderIntegration({ pageId, channel }: BuilderIntegrationProps)
 				setLoading(true);
 
 				// Mock product data for now since we're not implementing full GraphQL integration in this step
-				// In a real implementation, you would use executeGraphQL here
+				// In a real implementation, you would use executeGraphQL here with proper type definitions
 				const mockProducts: Product[] = [
 					{
 						id: "1",
@@ -79,8 +78,7 @@ export function BuilderIntegration({ pageId, channel }: BuilderIntegrationProps)
 				];
 				setProducts(mockProducts);
 
-				// Fetch content from Builder.io (this is a simplified version)
-				// In a real implementation, you would fetch the actual Builder.io content
+				// Fetch content from Builder.io
 				const content = await builder
 					.get("page", {
 						userAttributes: { channel },
@@ -138,9 +136,9 @@ export function BuilderIntegration({ pageId, channel }: BuilderIntegrationProps)
 				</div>
 
 				<div className="mt-6">
-					<h2>Sample Products (from Saleor):</h2>
+					<h2>Products (from Saleor):</h2>
 					<div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-						{products.slice(0, 3).map((product) => (
+						{products.map((product) => (
 							<div key={product.id} className="rounded border p-4">
 								<h3 className="font-bold">{product.name}</h3>
 								{product.thumbnail && product.thumbnail.url && (
@@ -176,7 +174,7 @@ export function BuilderIntegration({ pageId, channel }: BuilderIntegrationProps)
 
 // Helper function to fetch data that can be used in Builder.io components
 export async function getBuilderPageData(pageId: string, channel?: string) {
-	// Mock implementation for now - in real implementation, you would use executeGraphQL here
+	// Mock implementation for now - in real implementation, you would use executeGraphQL with proper types
 	return {
 		pageId,
 		channel,

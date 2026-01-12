@@ -58,7 +58,7 @@ export function BuilderPage({ pageId, channel }: BuilderPageProps) {
 			<div className="mt-8 rounded bg-gray-100 p-4">
 				<h2>Integration Notes:</h2>
 				<ul className="mt-2 list-disc pl-5">
-					<li>Use Builder.io&aposs React SDK to render dynamic content</li>
+					<li>Use Builder.io&apos;s React SDK to render dynamic content</li>
 					<li>Pass GraphQL data as props to Builder.io components</li>
 					<li>Implement custom components that can access Saleor data</li>
 				</ul>
