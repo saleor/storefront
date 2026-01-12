@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const config = {
+	// Optimize barrel file imports for better bundle size and cold start performance
+	// See: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
+	experimental: {
+		optimizePackageImports: ["lucide-react", "lodash-es"],
+	},
 	images: {
 		remotePatterns: [
 			{
@@ -28,7 +33,17 @@ const config = {
 
 	// Cache headers for static assets and API routes
 	async headers() {
+		const isDev = process.env.NODE_ENV === "development";
 		return [
+			// In development, prevent aggressive caching of dynamic chunks
+			...(isDev
+				? [
+						{
+							source: "/_next/static/chunks/:path*",
+							headers: [{ key: "Cache-Control", value: "no-store, must-revalidate" }],
+						},
+					]
+				: []),
 			{
 				// Static assets - cache for 1 year (immutable with hash in filename)
 				source: "/_next/static/:path*",

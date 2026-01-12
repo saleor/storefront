@@ -109,7 +109,7 @@ export function FilterBar({
 						{hasFilters && (
 							<Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
 								<SheetTrigger asChild>
-									<Button variant="outline" size="sm" className="shrink-0 bg-transparent md:hidden">
+									<Button variant="outline-solid" size="sm" className="shrink-0 bg-transparent md:hidden">
 										<SlidersHorizontal className="mr-2 h-4 w-4" />
 										Filters
 										{activeFilterCount > 0 && (
@@ -261,7 +261,7 @@ export function FilterBar({
 									{activeFilterCount > 0 && onClearFilters && (
 										<div className="border-t border-border p-4">
 											<Button
-												variant="outline"
+												variant="outline-solid"
 												className="w-full"
 												onClick={() => {
 													onClearFilters();
@@ -280,7 +280,11 @@ export function FilterBar({
 						{categoryOptions.length > 0 && onCategoryToggle && (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="outline" size="sm" className="hidden shrink-0 bg-transparent md:flex">
+									<Button
+										variant="outline-solid"
+										size="sm"
+										className="hidden shrink-0 bg-transparent md:flex"
+									>
 										Category
 										{selectedCategories.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
@@ -310,7 +314,11 @@ export function FilterBar({
 						{colorOptions.length > 0 && onColorToggle && (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="outline" size="sm" className="hidden shrink-0 bg-transparent md:flex">
+									<Button
+										variant="outline-solid"
+										size="sm"
+										className="hidden shrink-0 bg-transparent md:flex"
+									>
 										Color
 										{selectedColors.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
@@ -347,7 +355,11 @@ export function FilterBar({
 						{sizeOptions.length > 0 && onSizeToggle && (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="outline" size="sm" className="hidden shrink-0 bg-transparent md:flex">
+									<Button
+										variant="outline-solid"
+										size="sm"
+										className="hidden shrink-0 bg-transparent md:flex"
+									>
 										Size
 										{selectedSizes.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
@@ -378,7 +390,11 @@ export function FilterBar({
 						{priceRanges.length > 0 && onPriceRangeChange && (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="outline" size="sm" className="hidden shrink-0 bg-transparent md:flex">
+									<Button
+										variant="outline-solid"
+										size="sm"
+										className="hidden shrink-0 bg-transparent md:flex"
+									>
 										Price
 										{selectedPriceRange && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
@@ -414,7 +430,7 @@ export function FilterBar({
 
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button variant="outline" size="sm" className="bg-transparent">
+								<Button variant="outline-solid" size="sm" className="bg-transparent">
 									Sort
 									<ChevronDown className="ml-1.5 h-4 w-4 opacity-50" />
 								</Button>

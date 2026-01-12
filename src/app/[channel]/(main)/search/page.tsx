@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { searchProducts } from "@/lib/search";
@@ -84,20 +85,31 @@ export default async function Page(props: {
 
 					{/* Pagination */}
 					{(pagination.hasNextPage || pagination.hasPreviousPage) && (
-						<Pagination
-							pageInfo={{
-								hasNextPage: pagination.hasNextPage ?? false,
-								hasPreviousPage: pagination.hasPreviousPage ?? false,
-								startCursor: pagination.prevCursor,
-								endCursor: pagination.nextCursor,
-							}}
-						/>
+						<Suspense fallback={<PaginationSkeleton />}>
+							<Pagination
+								pageInfo={{
+									hasNextPage: pagination.hasNextPage ?? false,
+									hasPreviousPage: pagination.hasPreviousPage ?? false,
+									startCursor: pagination.prevCursor,
+									endCursor: pagination.nextCursor,
+								}}
+							/>
+						</Suspense>
 					)}
 				</div>
 			) : (
 				<EmptyState query={query} channel={params.channel} />
 			)}
 		</section>
+	);
+}
+
+function PaginationSkeleton() {
+	return (
+		<nav className="flex items-center justify-center gap-x-4 border-neutral-200 px-4 pt-12">
+			<span className="h-10 w-24 animate-pulse rounded bg-neutral-200" />
+			<span className="h-10 w-24 animate-pulse rounded bg-neutral-200" />
+		</nav>
 	);
 }
 

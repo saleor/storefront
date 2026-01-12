@@ -19,7 +19,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<DialogPrimitive.Overlay
 		className={cn(
-			"bg-foreground/20 fixed inset-0 z-50 backdrop-blur-sm",
+			"bg-foreground/20 backdrop-blur-xs fixed inset-0 z-50",
 			"data-[state=open]:animate-in data-[state=closed]:animate-out",
 			"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
 			className,
@@ -109,7 +109,7 @@ const SheetCloseButton = React.forwardRef<
 	<DialogPrimitive.Close
 		ref={ref}
 		className={cn(
-			"rounded-md border-none bg-transparent p-2 opacity-70 shadow-none outline-none transition-opacity",
+			"outline-hidden rounded-md border-none bg-transparent p-2 opacity-70 shadow-none transition-opacity",
 			"hover:bg-accent hover:opacity-100",
 			"focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 			"disabled:pointer-events-none",

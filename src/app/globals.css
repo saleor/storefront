@@ -1,4 +1,4 @@
-/* Brand tokens (includes fonts) */
+/* postcss-import inlines this BEFORE Tailwind processes */
 @import "../styles/brand.css";
 
 @tailwind base;
@@ -9,32 +9,15 @@
 	*,
 	*::before,
 	*::after {
-		@apply border-border;
+		border-color: var(--border);
 	}
 	html {
-		/* Enable smooth scrolling */
 		scroll-behavior: smooth;
 	}
 	body {
-		@apply bg-background text-foreground antialiased;
-		font-feature-settings:
-			"rlig" 1,
-			"calt" 1;
-	}
-}
-
-@layer utilities {
-	/* Hide scrollbar for thumbnails gallery */
-	.scrollbar-hide {
-		-ms-overflow-style: none;
-		scrollbar-width: none;
-	}
-	.scrollbar-hide::-webkit-scrollbar {
-		display: none;
-	}
-
-	/* Text balance for headings */
-	.text-balance {
-		text-wrap: balance;
+		background-color: var(--background);
+		color: var(--foreground);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 }

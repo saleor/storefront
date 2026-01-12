@@ -20,9 +20,13 @@ function StickyAddButton() {
 			type="submit"
 			size="lg"
 			disabled={pending}
-			className={cn("shrink-0 transition-opacity", pending && "opacity-80")}
+			className={cn(
+				"min-w-[130px] shrink-0",
+				// Override transition to prevent flash on state change
+				"transition-none disabled:opacity-100",
+			)}
 		>
-			<ShoppingBag className={cn("mr-2 h-4 w-4 transition-transform", pending && "scale-90")} />
+			<ShoppingBag className="h-4 w-4" />
 			{pending ? "Adding..." : "Add to bag"}
 		</Button>
 	);

@@ -9,6 +9,19 @@ import { type OptionalAddress, type AddressField } from "@/checkout/components/A
 import { defaultCountry } from "@/checkout/lib/consts/countries";
 import { getOrderedAddressFields, getRequiredAddressFields } from "@/checkout/components/AddressForm/utils";
 
+// Default fields to show while loading country-specific validation rules
+const DEFAULT_ADDRESS_FIELDS: AddressField[] = [
+	"firstName",
+	"lastName",
+	"companyName",
+	"streetAddress1",
+	"streetAddress2",
+	"city",
+	"postalCode",
+	"countryArea",
+	"phone",
+];
+
 export type AddressFieldLabel = Exclude<AddressField, "countryCode"> | "country";
 export const addressFieldMessages: Record<AddressFieldLabel, string> = {
 	city: "City",
@@ -20,7 +33,7 @@ export const addressFieldMessages: Record<AddressFieldLabel, string> = {
 	postalCode: "Postal code",
 	companyName: "Company",
 	streetAddress1: "Street address",
-	streetAddress2: "Street address (continue)",
+	streetAddress2: "Apartment, suite, etc.",
 	phone: "Phone number",
 };
 
@@ -43,7 +56,7 @@ export const localizedAddressFieldMessages: Record<LocalizedAddressFieldLabel, s
 };
 
 export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
-	const [{ data }] = useAddressValidationRulesQuery({
+	const [{ data, fetching }] = useAddressValidationRulesQuery({
 		variables: { countryCode },
 	});
 
@@ -117,7 +130,14 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
 		[getLocalizedFieldLabel, localizedFields],
 	);
 
-	const orderedAddressFields = getOrderedAddressFields(validationRules?.allowedFields as AddressField[]);
+	// Calculate ordered address fields from validation rules
+	const orderedAddressFields = useMemo(() => {
+		if (validationRules?.allowedFields) {
+			return getOrderedAddressFields(validationRules.allowedFields as AddressField[]);
+		}
+		// While loading, show default fields
+		return DEFAULT_ADDRESS_FIELDS;
+	}, [validationRules?.allowedFields]);
 
 	return {
 		orderedAddressFields,
@@ -125,6 +145,7 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
 		isRequiredField,
 		hasAllRequiredFields,
 		getMissingFieldsFromAddress,
+		fetching,
 		...validationRules,
 		allowedFields: validationRules?.allowedFields as AddressField[] | undefined,
 	};

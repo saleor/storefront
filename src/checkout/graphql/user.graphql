@@ -84,3 +84,14 @@ mutation userAddressCreate($address: AddressInput!, $type: AddressTypeEnum) {
 		}
 	}
 }
+
+mutation userSetDefaultAddress($id: ID!, $type: AddressTypeEnum!) {
+	accountSetDefaultAddress(id: $id, type: $type) {
+		user {
+			...UserFragment
+		}
+		errors {
+			...AccountErrorFragment
+		}
+	}
+}

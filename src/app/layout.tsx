@@ -4,6 +4,7 @@ import "./globals.css";
 import { Suspense, type ReactNode } from "react";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
 import { rootMetadata } from "@/lib/seo";
+import { localeConfig } from "@/config/locale";
 
 /**
  * Root metadata for the entire site.
@@ -15,7 +16,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;
 
 	return (
-		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}>
+		<html lang={localeConfig.htmlLang} className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}>
 			<body className="min-h-dvh font-sans">
 				{children}
 				<Suspense>

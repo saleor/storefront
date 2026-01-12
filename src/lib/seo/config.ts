@@ -2,34 +2,37 @@
  * SEO Configuration
  *
  * Centralized SEO settings for the storefront.
- * Adjust these values to customize SEO across the entire site.
+ * Branding values are imported from @/config/brand.
  *
  * To disable SEO features entirely, you can:
  * 1. Remove imports of this module
  * 2. Set individual features to undefined/null
  */
 
+import { brandConfig } from "@/config/brand";
+import { localeConfig } from "@/config/locale";
+
 export const seoConfig = {
 	/** Site name used in titles and OG tags */
-	siteName: "Saleor Store",
+	siteName: brandConfig.siteName,
 
 	/** Default site description */
-	description: "Premium products with exceptional quality. Discover our curated collection.",
+	description: brandConfig.tagline,
 
 	/** Default locale for OG tags */
-	locale: "en_US",
+	locale: localeConfig.ogLocale,
 
 	/** Twitter/X handle (without @) - set to null to disable */
-	twitterHandle: null as string | null,
+	twitterHandle: brandConfig.social.twitter,
 
 	/** Organization name for structured data */
-	organizationName: "Saleor Store",
+	organizationName: brandConfig.organizationName,
 
 	/** Default brand name for products without a brand */
-	defaultBrand: "Saleor Store",
+	defaultBrand: brandConfig.defaultBrand,
 
 	/** Title template - %s will be replaced with page title */
-	titleTemplate: "%s | Saleor Store",
+	titleTemplate: brandConfig.titleTemplate,
 
 	/** Separator used in compound titles */
 	titleSeparator: " | ",

@@ -1,42 +1,38 @@
-import { useEffect, useMemo } from "react";
 import { useCheckoutCustomerAttachMutation } from "@/checkout/graphql";
-import { useSubmit } from "@/checkout/hooks/useSubmit/useSubmit";
 import { useUser } from "@/checkout/hooks/useUser";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
+import { useSafeMutationOnce } from "@/checkout/hooks/useSafeMutation";
+import { localeConfig } from "@/config/locale";
 
+/**
+ * Attaches the logged-in user to the checkout.
+ *
+ * Runs once when user is authenticated and checkout doesn't have a user.
+ * Retry logic is handled at the fetch level.
+ */
 export const useCustomerAttach = () => {
 	const { checkout, fetching: fetchingCheckout, refetch } = useCheckout();
 	const { authenticated } = useUser();
+	const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 
-	const [{ fetching: fetchingCustomerAttach }, customerAttach] = useCheckoutCustomerAttachMutation();
+	const checkoutId = checkout?.id;
+	const checkoutUserId = checkout?.user?.id;
 
-	const onSubmit = useSubmit<{}, typeof customerAttach>(
-		useMemo(
-			() => ({
-				hideAlerts: true,
-				scope: "checkoutCustomerAttach",
-				shouldAbort: () =>
-					!!checkout?.user?.id || !authenticated || fetchingCustomerAttach || fetchingCheckout,
-				onSubmit: customerAttach,
-				parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
-				onError: ({ errors }) => {
-					if (
-						errors.some(
-							(error) =>
-								error?.message?.includes(
-									"[GraphQL] You cannot reassign a checkout that is already attached to a user.",
-								),
-						)
-					) {
-						refetch();
-					}
-				},
-			}),
-			[authenticated, checkout?.user?.id, customerAttach, fetchingCheckout, fetchingCustomerAttach, refetch],
-		),
+	// Skip if: already has user, not authenticated, still loading, or no checkout
+	const shouldSkip = !!checkoutUserId || !authenticated || fetchingCheckout || fetching || !checkoutId;
+
+	useSafeMutationOnce(
+		customerAttach,
+		{ checkoutId: checkoutId || "", languageCode: localeConfig.graphqlLanguageCode },
+		{
+			skip: shouldSkip,
+			deps: [checkoutId, authenticated],
+			onError: (error) => {
+				// "Already attached" is fine - just refetch to sync state
+				if (error.message?.includes("cannot reassign")) {
+					refetch();
+				}
+			},
+		},
 	);
-
-	useEffect(() => {
-		void onSubmit();
-	}, [onSubmit]);
 };

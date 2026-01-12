@@ -7,6 +7,7 @@ import xss from "xss";
 
 import { executeGraphQL } from "@/lib/graphql";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
+import { getDiscountInfo } from "@/lib/pricing";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
@@ -153,17 +154,13 @@ export default async function ProductPage(props: {
 	// Check availability
 	const isAvailable = variants.some((variant) => variant.quantityAvailable);
 
-	function getAddToCartState() {
-		if (!selectedVariantID) {
-			return { disabled: true, reason: "no-selection" as const };
-		}
-		if (!selectedVariant?.quantityAvailable) {
-			return { disabled: true, reason: "out-of-stock" as const };
-		}
-		return { disabled: false, reason: undefined };
-	}
-
-	const { disabled: isAddToCartDisabled, reason: disabledReason } = getAddToCartState();
+	// Determine add-to-cart button state
+	const isAddToCartDisabled = !selectedVariantID || !selectedVariant?.quantityAvailable;
+	const disabledReason = !selectedVariantID
+		? ("no-selection" as const)
+		: !selectedVariant?.quantityAvailable
+			? ("out-of-stock" as const)
+			: undefined;
 
 	// Format prices - show "FREE" for $0 items
 	const price = selectedVariant?.pricing?.price?.gross
@@ -175,14 +172,10 @@ export default async function ProductPage(props: {
 				stop: product.pricing?.priceRange?.stop?.gross,
 			}) || "";
 
-	// Calculate discount/sale information
+	// Calculate discount/sale information using shared utility
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
 	const undiscountedPrice = selectedVariant?.pricing?.priceUndiscounted?.gross?.amount;
-	// Note: use !== undefined to handle $0 prices correctly (0 is falsy in JS)
-	const isOnSale =
-		typeof undiscountedPrice === "number" &&
-		typeof currentPrice === "number" &&
-		undiscountedPrice > currentPrice;
+	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, undiscountedPrice);
 
 	const compareAtPrice =
 		isOnSale && selectedVariant?.pricing?.priceUndiscounted?.gross
@@ -190,11 +183,6 @@ export default async function ProductPage(props: {
 					selectedVariant.pricing.priceUndiscounted.gross.amount,
 					selectedVariant.pricing.priceUndiscounted.gross.currency,
 				)
-			: null;
-
-	const discountPercent =
-		isOnSale && typeof undiscountedPrice === "number" && typeof currentPrice === "number"
-			? Math.round(((undiscountedPrice - currentPrice) / undiscountedPrice) * 100)
 			: null;
 
 	// Prepare images from product media

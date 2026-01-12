@@ -1,3 +1,49 @@
+/**
+ * Checkout Module Styles
+ *
+ * This file is imported by src/checkout/Root.tsx which is dynamically
+ * loaded via next/dynamic with ssr: false.
+ *
+ * Tailwind utilities are NOT duplicated here - checkout inherits all
+ * Tailwind styles from globals.css (loaded in root layout).
+ */
+
+/* Vendor CSS - Notification Library */
 @import "react-toastify/dist/ReactToastify.css";
-@import "@adyen/adyen-web/dist/adyen.css";
-@import "./sections/PaymentSection/AdyenDropIn/adyenDropin.css";
+
+/* =============================================================================
+ * Mobile Order Summary Collapse Animation
+ * Using CSS Grid for smooth height animation without JS measurement
+ * ============================================================================= */
+
+.order-summary-content {
+	display: grid;
+	transition:
+		grid-template-rows 300ms ease-in-out,
+		opacity 200ms ease-in-out;
+}
+
+.order-summary-content[data-expanded="false"] {
+	grid-template-rows: 0fr;
+	opacity: 0;
+}
+
+.order-summary-content[data-expanded="true"] {
+	grid-template-rows: 1fr;
+	opacity: 1;
+}
+
+.order-summary-content > .order-summary-inner {
+	overflow: hidden;
+	min-height: 0;
+}
+
+/* Desktop: always visible */
+@media (min-width: 768px) {
+	.order-summary-content,
+	.order-summary-content[data-expanded="false"],
+	.order-summary-content[data-expanded="true"] {
+		grid-template-rows: 1fr;
+		opacity: 1;
+	}
+}

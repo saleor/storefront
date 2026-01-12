@@ -13,6 +13,7 @@
 import type { ProductOrder, ProductOrderField, OrderDirection, ProductFilterInput } from "@/gql/graphql";
 import { CategoriesBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
+import { compareSizes } from "@/lib/sizes";
 import type { ProductCardData } from "./ProductCard";
 import type { FilterOption, ActiveFilter, SortOption } from "./FilterBar";
 
@@ -188,24 +189,9 @@ export function extractSizeOptions(products: ProductCardData[], selectedSizes?: 
 	});
 
 	// Sort sizes in logical order
-	const sizeOrder: Record<string, number> = {
-		XXS: 1,
-		XS: 2,
-		S: 3,
-		M: 4,
-		L: 5,
-		XL: 6,
-		XXL: 7,
-		XXXL: 8,
-	};
-
 	return Array.from(map.entries())
 		.map(([name, count]) => ({ name, count }))
-		.sort((a, b) => {
-			const aOrder = sizeOrder[a.name.toUpperCase()] ?? (parseInt(a.name) || 100);
-			const bOrder = sizeOrder[b.name.toUpperCase()] ?? (parseInt(b.name) || 100);
-			return aOrder - bOrder;
-		});
+		.sort((a, b) => compareSizes(a.name, b.name));
 }
 
 // ============================================================================

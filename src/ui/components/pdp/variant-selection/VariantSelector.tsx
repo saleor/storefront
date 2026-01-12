@@ -54,12 +54,18 @@ export function VariantSelector({
 	const colorOptions = options.filter((opt) => opt.colorHex);
 	const textOptions = options.filter((opt) => !opt.colorHex);
 
+	const labelId = `variant-label-${attributeSlug}`;
+
 	return (
 		<div className="space-y-3">
 			<div className="flex items-center gap-2">
-				<span className="text-sm font-medium">{label}</span>
+				<span id={labelId} className="text-sm font-medium">
+					{label}
+				</span>
 				{unavailableMessage ? (
-					<span className="text-sm text-muted-foreground">{unavailableMessage}</span>
+					<span className="text-sm text-muted-foreground" role="status">
+						{unavailableMessage}
+					</span>
 				) : selectedOption ? (
 					<span className="text-sm text-muted-foreground">{selectedOption.name}</span>
 				) : null}
@@ -67,7 +73,7 @@ export function VariantSelector({
 
 			{/* Color swatches row */}
 			{colorOptions.length > 0 && (
-				<div className="flex flex-wrap gap-4">
+				<div role="group" aria-labelledby={labelId} className="flex flex-wrap gap-4">
 					{colorOptions.map((option) => {
 						const Renderer = getRendererForOption(option);
 						return (
@@ -84,7 +90,7 @@ export function VariantSelector({
 
 			{/* Text/Size buttons row */}
 			{textOptions.length > 0 && (
-				<div className="flex flex-wrap gap-4">
+				<div role="group" aria-labelledby={labelId} className="flex flex-wrap gap-4">
 					{textOptions.map((option) => {
 						const Renderer = getRendererForOption(option);
 						return (

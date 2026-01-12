@@ -1,11 +1,14 @@
+"use client";
+
 import { Suspense } from "react";
-import { Checkout, CheckoutSkeleton } from "@/checkout/views/Checkout";
+import { useSearchParams } from "next/navigation";
+import { SaleorCheckout, CheckoutSkeleton } from "@/checkout/views/SaleorCheckout";
 import { OrderConfirmation, OrderConfirmationSkeleton } from "@/checkout/views/OrderConfirmation";
 import { getQueryParams } from "@/checkout/lib/utils/url";
-import { PaymentProcessingScreen } from "@/checkout/sections/PaymentSection/PaymentProcessingScreen";
 
 export const RootViews = () => {
-	const orderId = getQueryParams().orderId;
+	const searchParams = useSearchParams();
+	const orderId = getQueryParams(searchParams).orderId;
 
 	if (orderId) {
 		return (
@@ -16,10 +19,8 @@ export const RootViews = () => {
 	}
 
 	return (
-		<PaymentProcessingScreen>
-			<Suspense fallback={<CheckoutSkeleton />}>
-				<Checkout />
-			</Suspense>
-		</PaymentProcessingScreen>
+		<Suspense fallback={<CheckoutSkeleton />}>
+			<SaleorCheckout />
+		</Suspense>
 	);
 };

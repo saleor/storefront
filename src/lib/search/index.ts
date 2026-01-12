@@ -3,7 +3,7 @@
  *
  * Provides search functionality with a swappable provider architecture.
  * Currently uses Saleor's built-in search. To use Typesense, Algolia, or
- * Meilisearch, replace the implementation in saleor-provider.ts.
+ * Meilisearch, replace the implementation in saleorProvider.ts.
  *
  * See AGENTS.md for integration examples with other search engines.
  */
@@ -12,4 +12,4 @@
 export * from "./types";
 
 // Export Saleor implementation (swap this for other providers)
-export { searchProducts } from "./saleor-provider";
+export { searchProducts } from "./saleorProvider";

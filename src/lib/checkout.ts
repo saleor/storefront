@@ -3,9 +3,14 @@ import { CheckoutCreateDocument, CheckoutFindDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 
 export async function getIdFromCookies(channel: string) {
-	const cookieName = `checkoutId-${channel}`;
-	const checkoutId = (await cookies()).get(cookieName)?.value || "";
-	return checkoutId;
+	try {
+		const cookieName = `checkoutId-${channel}`;
+		const checkoutId = (await cookies()).get(cookieName)?.value || "";
+		return checkoutId;
+	} catch {
+		// During static generation, cookies() throws - return empty string
+		return "";
+	}
 }
 
 export async function saveIdToCookie(channel: string, checkoutId: string) {
@@ -16,6 +21,11 @@ export async function saveIdToCookie(channel: string, checkoutId: string) {
 		sameSite: "lax",
 		secure: shouldUseHttps,
 	});
+}
+
+export async function clearCheckoutCookie(channel: string) {
+	const cookieName = `checkoutId-${channel}`;
+	(await cookies()).delete(cookieName);
 }
 
 export async function find(checkoutId: string) {

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { SearchProduct } from "@/lib/search";
+import { localeConfig } from "@/config/locale";
 
 interface SearchResultsProps {
 	products: SearchProduct[];
@@ -36,7 +37,7 @@ function SearchResultCard({
 	channel: string;
 	priority?: boolean;
 }) {
-	const formattedPrice = new Intl.NumberFormat("en-US", {
+	const formattedPrice = new Intl.NumberFormat(localeConfig.default, {
 		style: "currency",
 		currency: product.currency,
 	}).format(product.price);

@@ -1,12 +1,15 @@
 import { type OrderFragment, useOrderQuery } from "@/checkout/graphql";
 import { getQueryParams } from "@/checkout/lib/utils/url";
+import { localeConfig } from "@/config/locale";
+import { useSearchParams } from "next/navigation";
 
 export const useOrder = () => {
-	const { orderId } = getQueryParams();
+	const searchParams = useSearchParams();
+	const { orderId } = getQueryParams(searchParams);
 
 	const [{ data, fetching: loading }] = useOrderQuery({
 		pause: !orderId,
-		variables: { languageCode: "EN_US", id: orderId as string },
+		variables: { languageCode: localeConfig.graphqlLanguageCode, id: orderId as string },
 	});
 
 	return { order: data?.order as OrderFragment, loading };

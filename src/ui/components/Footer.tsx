@@ -3,6 +3,7 @@ import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { ChannelSelect } from "./ChannelSelect";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
+import { getCopyrightText } from "@/config/brand";
 
 const SaleorLogoFooter = () => (
 	<svg
@@ -81,7 +82,6 @@ export async function Footer({ channel }: { channel: string }) {
 			})
 		: null;
 
-	const currentYear = new Date().getFullYear();
 	const menuItems = footerLinks.menu?.items || [];
 
 	return (
@@ -208,7 +208,7 @@ export async function Footer({ channel }: { channel: string }) {
 
 				{/* Bottom bar */}
 				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-neutral-800 pt-8 sm:flex-row">
-					<p className="text-xs text-neutral-500">© {currentYear} Saleor Demo Store. All rights reserved.</p>
+					<p className="text-xs text-neutral-500">{getCopyrightText()}</p>
 					<div className="flex items-center gap-6">
 						<Link
 							href="/privacy"

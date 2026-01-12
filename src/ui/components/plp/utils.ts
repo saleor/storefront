@@ -1,6 +1,8 @@
 import type { ProductListItemFragment } from "@/gql/graphql";
 import type { ProductCardData } from "./ProductCard";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
+import { sortSizes } from "@/lib/sizes";
+import { localeConfig } from "@/config/locale";
 
 /**
  * Extract colors from product variants
@@ -46,21 +48,7 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
 	});
 
 	// Sort sizes in logical order (S, M, L, XL or numeric)
-	return Array.from(sizeSet).sort((a, b) => {
-		const sizeOrder: Record<string, number> = {
-			XXS: 1,
-			XS: 2,
-			S: 3,
-			M: 4,
-			L: 5,
-			XL: 6,
-			XXL: 7,
-			XXXL: 8,
-		};
-		const aOrder = sizeOrder[a.toUpperCase()] ?? (parseInt(a) || 100);
-		const bOrder = sizeOrder[b.toUpperCase()] ?? (parseInt(b) || 100);
-		return aOrder - bOrder;
-	});
+	return sortSizes(Array.from(sizeSet));
 }
 
 /**
@@ -87,7 +75,7 @@ export function transformToProductCard(product: ProductListItemFragment, channel
 		brand: product.category?.name ?? null,
 		price: startPrice?.amount ?? 0,
 		compareAtPrice: isSale ? stopPrice?.amount : null,
-		currency: startPrice?.currency ?? "USD",
+		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? product.name,
 		hoverImage: null, // Would need additional media in fragment
@@ -109,7 +97,7 @@ export function transformToProductCard(product: ProductListItemFragment, channel
  * Format price with currency
  */
 export function formatPrice(amount: number, currency: string): string {
-	return new Intl.NumberFormat("en", {
+	return new Intl.NumberFormat(localeConfig.default, {
 		style: "currency",
 		currency: currency,
 	}).format(amount);

@@ -146,10 +146,11 @@ The app is now running at `http://localhost:3000`.
 
 #### GraphQL queries and mutations:
 
-After altering or creating new GraphQL queries in `gql` folder, you need to run the following command to generate types and javascript queries:
+After altering or creating new GraphQL queries, regenerate the TypeScript types:
 
 ```bash
-pnpm run generate
+pnpm run generate           # For src/graphql/*.graphql (storefront)
+pnpm run generate:checkout  # For src/checkout/graphql/*.graphql (checkout)
 ```
 
 ### Preview content changes instantly (Draft Mode)

@@ -43,7 +43,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 				>
 					{checkout.lines.map((item) => (
 						<li key={item.id} className="flex py-4">
-							<div className="aspect-square h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 sm:h-32 sm:w-32">
+							<div className="aspect-square h-24 w-24 shrink-0 overflow-hidden rounded-md border bg-neutral-50 sm:h-32 sm:w-32">
 								{item.variant?.product?.thumbnail?.url && (
 									<Image
 										src={item.variant.product.thumbnail.url}

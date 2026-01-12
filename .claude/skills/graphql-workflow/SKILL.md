@@ -18,9 +18,12 @@ Use this skill when:
 
 ### 1. Locate the Right File
 
-- **Storefront queries**: `src/graphql/*.graphql`
-- **Checkout queries**: `src/checkout/graphql/*.graphql`
-- **Generated types** (DO NOT EDIT): `src/gql/`
+| Purpose                           | Location                         | Generated Types                   | Regenerate With          |
+| --------------------------------- | -------------------------------- | --------------------------------- | ------------------------ |
+| Storefront (products, cart, etc.) | `src/graphql/*.graphql`          | `src/gql/`                        | `pnpm generate`          |
+| Checkout flow                     | `src/checkout/graphql/*.graphql` | `src/checkout/graphql/generated/` | `pnpm generate:checkout` |
+
+> **Note**: Checkout uses urql (client-side), storefront uses Next.js fetch (server-side). That's why they have separate codegen setups.
 
 ### 2. Make Your Changes
 
@@ -39,10 +42,17 @@ query ProductDetails($slug: String!, $channel: String!) {
 ### 3. Regenerate Types (CRITICAL)
 
 ```bash
+# For storefront queries (src/graphql/*.graphql)
 pnpm run generate
+
+# For checkout queries (src/checkout/graphql/*.graphql)
+pnpm run generate:checkout
 ```
 
-This regenerates `src/gql/` with updated TypeScript types. **Always run this after any GraphQL change.**
+This regenerates TypeScript types. **Always run the appropriate command after any GraphQL change.**
+
+- `src/gql/` - Storefront types (DO NOT EDIT)
+- `src/checkout/graphql/generated/` - Checkout types (DO NOT EDIT)
 
 ### 4. Use the Types
 
@@ -91,6 +101,7 @@ const name = product.category.name;
 
 ## Anti-patterns
 
-❌ **Don't edit files in `src/gql/`** - They're auto-generated  
-❌ **Don't forget to run `pnpm run generate`** - Types won't update  
-❌ **Don't assume fields are non-null** - Use optional chaining
+❌ **Don't edit generated files** (`src/gql/` or `src/checkout/graphql/generated/`)  
+❌ **Don't forget to regenerate types** - Run the appropriate `generate` command  
+❌ **Don't assume fields are non-null** - Use optional chaining  
+❌ **Don't mix up the two codegen setups** - Storefront ≠ Checkout

@@ -1,58 +1,73 @@
 /**
  * ========================================
- * SALEOR STOREFRONT - BRAND CONFIGURATION
+ * SALEOR STOREFRONT - DESIGN TOKENS
  * ========================================
- * 
- * Minimal e-commerce theme - warm neutrals with black accent
- * 
- * Typography: Geist (loaded via Next.js font system in layout.tsx)
- * 
- * 3-Color System:
- * 1. Near-black (#1A1A1A) - primary actions, headings, key UI
- * 2. Warm off-whites (#FAF9F7 → #F5F4F2 → #E5E4DF) - backgrounds
- * 3. Red accent (#DC2626) - destructive actions, sale indicators
+ *
+ * This file defines the visual foundation of the storefront using
+ * CSS custom properties. These tokens are consumed by Tailwind CSS
+ * via the theme configuration in tailwind.config.ts.
+ *
+ * Color Format: OKLCH (Oklab Lightness Chroma Hue)
+ * - Modern perceptually uniform color space
+ * - Better for programmatic color manipulation
+ * - Supported in all modern browsers
+ *
+ * Design System:
+ * - Minimal e-commerce theme with warm neutrals
+ * - Near-black for primary actions and headings
+ * - Warm off-whites for backgrounds
+ * - Red accent for destructive/sale indicators
+ *
+ * Typography:
+ * - Geist font family (loaded via Next.js font system in layout.tsx)
+ * - Font variables set on <html> element: --font-geist-sans, --font-geist-mono
  */
 
+/* ============================================
+ * Light Theme (Default)
+ * ============================================ */
 :root {
-	/* Backgrounds */
-	--background: oklch(0.98 0.005 90);
-	--card: oklch(1 0 0);
-	--popover: oklch(1 0 0);
-	--secondary: oklch(0.96 0.003 90);
-	--muted: oklch(0.94 0.003 90);
-	--accent: oklch(0.94 0.003 90);
+	/* --- Backgrounds --- */
+	--background: oklch(0.98 0.005 90); /* Page background - warm off-white */
+	--card: oklch(1 0 0); /* Card surfaces - pure white */
+	--popover: oklch(1 0 0); /* Popover/dropdown backgrounds */
+	--secondary: oklch(0.96 0.003 90); /* Secondary surfaces */
+	--muted: oklch(0.94 0.003 90); /* Muted/disabled backgrounds */
+	--accent: oklch(0.94 0.003 90); /* Accent backgrounds */
 
-	/* Foregrounds */
-	--foreground: oklch(0.12 0 0);
+	/* --- Foregrounds (Text Colors) --- */
+	--foreground: oklch(0.12 0 0); /* Primary text - near black */
 	--card-foreground: oklch(0.12 0 0);
 	--popover-foreground: oklch(0.12 0 0);
 	--secondary-foreground: oklch(0.12 0 0);
-	--muted-foreground: oklch(0.45 0 0);
+	--muted-foreground: oklch(0.45 0 0); /* Secondary/muted text */
 	--accent-foreground: oklch(0.12 0 0);
 
-	/* Primary */
-	--primary: oklch(0.12 0 0);
-	--primary-foreground: oklch(0.98 0 0);
+	/* --- Primary (CTA buttons, links) --- */
+	--primary: oklch(0.12 0 0); /* Near black */
+	--primary-foreground: oklch(0.98 0 0); /* White text on primary */
 
-	/* Destructive */
-	--destructive: oklch(0.55 0.2 25);
+	/* --- Semantic Colors --- */
+	--destructive: oklch(0.55 0.2 25); /* Error/delete - red */
 	--destructive-foreground: oklch(0.98 0 0);
-
-	/* Success */
-	--success: oklch(0.55 0.15 145);
+	--success: oklch(0.55 0.15 145); /* Success - green */
 	--success-foreground: oklch(0.98 0 0);
 
-	/* Borders & Inputs */
-	--border: oklch(0.9 0.003 90);
-	--input: oklch(0.9 0.003 90);
-	--ring: oklch(0.12 0 0);
+	/* --- Interactive Elements --- */
+	--border: oklch(0.9 0.003 90); /* Border color */
+	--input: oklch(0.9 0.003 90); /* Input borders */
+	--ring: oklch(0.12 0 0); /* Focus ring color */
 
-	/* Layout */
-	--radius: 0.5rem;
+	/* --- Layout --- */
+	--radius: 0.5rem; /* Base border radius (8px) */
 }
 
+/* ============================================
+ * Dark Theme
+ * Activated by adding .dark class to <html>
+ * ============================================ */
 .dark {
-	/* Backgrounds */
+	/* --- Backgrounds --- */
 	--background: oklch(0.12 0 0);
 	--card: oklch(0.16 0 0);
 	--popover: oklch(0.16 0 0);
@@ -60,7 +75,7 @@
 	--muted: oklch(0.22 0 0);
 	--accent: oklch(0.22 0 0);
 
-	/* Foregrounds */
+	/* --- Foregrounds --- */
 	--foreground: oklch(0.98 0 0);
 	--card-foreground: oklch(0.98 0 0);
 	--popover-foreground: oklch(0.98 0 0);
@@ -68,19 +83,17 @@
 	--muted-foreground: oklch(0.65 0 0);
 	--accent-foreground: oklch(0.98 0 0);
 
-	/* Primary */
+	/* --- Primary --- */
 	--primary: oklch(0.98 0 0);
 	--primary-foreground: oklch(0.12 0 0);
 
-	/* Destructive */
+	/* --- Semantic Colors --- */
 	--destructive: oklch(0.45 0.18 25);
 	--destructive-foreground: oklch(0.98 0 0);
-
-	/* Success */
 	--success: oklch(0.65 0.15 145);
 	--success-foreground: oklch(0.12 0 0);
 
-	/* Borders & Inputs */
+	/* --- Interactive Elements --- */
 	--border: oklch(0.26 0 0);
 	--input: oklch(0.26 0 0);
 	--ring: oklch(0.98 0 0);

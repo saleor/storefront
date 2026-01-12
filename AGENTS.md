@@ -9,17 +9,19 @@ This document provides essential context for AI agents. For detailed task-specif
 ### Critical Commands
 
 ```bash
-pnpm run generate     # After ANY .graphql file change
-pnpm exec tsc --noEmit   # Type check
-pnpm run build        # Full build
-pnpm run dev          # Development server
-pnpm test             # Run tests (watch mode)
+pnpm run generate           # After ANY src/graphql/*.graphql file change
+pnpm run generate:checkout  # After ANY src/checkout/graphql/*.graphql file change
+pnpm exec tsc --noEmit      # Type check
+pnpm run build              # Full build
+pnpm run dev                # Development server
+pnpm test                   # Run tests (watch mode)
 ```
 
 ### When to Use Which Skill
 
 | Task                               | Skill                                                                  |
 | ---------------------------------- | ---------------------------------------------------------------------- |
+| Writing React components           | [`react-patterns`](.claude/skills/react-patterns/SKILL.md)             |
 | Modifying `.graphql` files         | [`graphql-workflow`](.claude/skills/graphql-workflow/SKILL.md)         |
 | Creating/styling components        | [`ui-components`](.claude/skills/ui-components/SKILL.md)               |
 | Product list filtering/sorting     | [`filtering-system`](.claude/skills/filtering-system/SKILL.md)         |
@@ -28,6 +30,8 @@ pnpm test             # Run tests (watch mode)
 | Page metadata, JSON-LD, OG images  | [`seo-system`](.claude/skills/seo-system/SKILL.md)                     |
 | ISR, webhooks, cache invalidation  | [`caching-strategy`](.claude/skills/caching-strategy/SKILL.md)         |
 | Writing tests                      | [`testing`](.claude/skills/testing/SKILL.md)                           |
+| Tailwind/CSS with Turbopack        | [`tailwind-turbopack`](.claude/skills/tailwind-turbopack/SKILL.md)     |
+| Channels & multi-currency          | [`channels`](.claude/skills/channels/SKILL.md)                         |
 | Creating/maintaining skills        | [`writing-skills`](.claude/skills/writing-skills/SKILL.md)             |
 
 ---
@@ -53,7 +57,7 @@ src/
 │   ├── api/                # API routes (og/, revalidate/)
 │   └── checkout/           # Checkout flow
 ├── graphql/                # GraphQL queries (run `pnpm run generate` after changes)
-├── gql/                    # AUTO-GENERATED - Do not edit
+├── gql/                    # AUTO-GENERATED - Do not edit (storefront types)
 ├── ui/components/          # UI components
 │   ├── pdp/                # Product detail page
 │   ├── plp/                # Product listing page
@@ -63,7 +67,7 @@ src/
 ├── lib/                    # Utilities
 │   ├── seo/                # SEO helpers
 │   └── search/             # Search abstraction
-└── styles/brand.css        # Design tokens
+└── styles/brand.css        # Design tokens (CSS variables)
 ```
 
 ---
@@ -88,7 +92,8 @@ SALEOR_APP_TOKEN=             # For channels query (server-side only)
 ### 1. GraphQL Types Not Found
 
 ```bash
-pnpm run generate  # Regenerate types after .graphql changes
+pnpm run generate           # Regenerate types after src/graphql/*.graphql changes
+pnpm run generate:checkout  # Regenerate types after src/checkout/graphql/*.graphql changes
 ```
 
 ### 2. Nullable Fields
@@ -144,15 +149,16 @@ Each skill is a focused guide for a specific task. Skills are in `.claude/skills
 
 ### Available Skills
 
-1. **[graphql-workflow](.claude/skills/graphql-workflow/SKILL.md)** - Modifying queries, regenerating types
-2. **[ui-components](.claude/skills/ui-components/SKILL.md)** - Component patterns, design tokens, shadcn/ui
-3. **[filtering-system](.claude/skills/filtering-system/SKILL.md)** - Server/client filtering architecture
-4. **[saleor-investigation](.claude/skills/saleor-investigation/SKILL.md)** - Checking Saleor source for API behavior
-5. **[variant-selection](.claude/skills/variant-selection/SKILL.md)** - Complex variant/attribute selection
-6. **[seo-system](.claude/skills/seo-system/SKILL.md)** - Metadata, JSON-LD, OG images
-7. **[caching-strategy](.claude/skills/caching-strategy/SKILL.md)** - ISR, webhooks, cache invalidation
-8. **[testing](.claude/skills/testing/SKILL.md)** - Writing fast, effective tests
-9. **[writing-skills](.claude/skills/writing-skills/SKILL.md)** - How to create and maintain skills
+1. **[react-patterns](.claude/skills/react-patterns/SKILL.md)** - Writing React the React way (purity, hooks, effects)
+2. **[graphql-workflow](.claude/skills/graphql-workflow/SKILL.md)** - Modifying queries, regenerating types
+3. **[ui-components](.claude/skills/ui-components/SKILL.md)** - Component patterns, design tokens, shadcn/ui
+4. **[filtering-system](.claude/skills/filtering-system/SKILL.md)** - Server/client filtering architecture
+5. **[saleor-investigation](.claude/skills/saleor-investigation/SKILL.md)** - Checking Saleor source for API behavior
+6. **[variant-selection](.claude/skills/variant-selection/SKILL.md)** - Complex variant/attribute selection
+7. **[seo-system](.claude/skills/seo-system/SKILL.md)** - Metadata, JSON-LD, OG images
+8. **[caching-strategy](.claude/skills/caching-strategy/SKILL.md)** - ISR, webhooks, cache invalidation
+9. **[testing](.claude/skills/testing/SKILL.md)** - Writing fast, effective tests
+10. **[writing-skills](.claude/skills/writing-skills/SKILL.md)** - How to create and maintain skills
 
 ### Using Skills
 

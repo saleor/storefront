@@ -1,6 +1,8 @@
 fragment Money on Money {
 	currency
 	amount
+	fractionDigits
+	fractionalAmount
 }
 
 fragment OrderLineFragment on OrderLine {
@@ -53,6 +55,9 @@ fragment OrderFragment on Order {
 	number
 	userEmail
 	isPaid
+	channel {
+		slug
+	}
 	discounts {
 		type
 		name

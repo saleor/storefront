@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { CurrentUserOrderListDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { LoginForm } from "@/ui/components/LoginForm";
 import { OrderListItem } from "@/ui/components/OrderListItem";
+import { Loader } from "@/ui/atoms/Loader";
 
 export default async function OrderPage() {
 	const { me: user } = await executeGraphQL(CurrentUserOrderListDocument, {
@@ -9,7 +11,11 @@ export default async function OrderPage() {
 	});
 
 	if (!user) {
-		return <LoginForm />;
+		return (
+			<Suspense fallback={<Loader />}>
+				<LoginForm />
+			</Suspense>
+		);
 	}
 
 	const orders = user.orders?.edges || [];

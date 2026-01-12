@@ -19,14 +19,15 @@ For detailed task-specific instructions, use these skills in `.claude/skills/`:
 ## Critical Commands
 
 ```bash
-pnpm run generate        # ALWAYS run after .graphql changes
-pnpm exec tsc --noEmit   # Type check
-pnpm run build           # Full build
+pnpm run generate           # After src/graphql/*.graphql changes
+pnpm run generate:checkout  # After src/checkout/graphql/*.graphql changes
+pnpm exec tsc --noEmit      # Type check
+pnpm run build              # Full build
 ```
 
 ## Key Rules
 
-1. **GraphQL**: Always run `pnpm run generate` after changing `.graphql` files
+1. **GraphQL**: Run `pnpm generate` (storefront) or `pnpm generate:checkout` (checkout) after `.graphql` changes
 2. **Components**: Use Server Components by default, `"use client"` only when needed
 3. **Styling**: Use design tokens (`bg-background`, `text-foreground`), not hardcoded colors
 4. **Nullable fields**: Always use optional chaining (`product.category?.name`)
@@ -36,8 +37,9 @@ pnpm run build           # Full build
 
 | Purpose | Location |
 |---------|----------|
-| GraphQL queries | `src/graphql/*.graphql` |
-| Generated types (DO NOT EDIT) | `src/gql/` |
+| Storefront GraphQL | `src/graphql/*.graphql` |
+| Checkout GraphQL | `src/checkout/graphql/*.graphql` |
+| Generated types (DO NOT EDIT) | `src/gql/`, `src/checkout/graphql/generated/` |
 | UI components | `src/ui/components/` |
 | Design tokens | `src/styles/brand.css` |
 | SEO helpers | `src/lib/seo/` |

@@ -1,9 +1,13 @@
-import queryString from "query-string";
 import { type CountryCode } from "@/checkout/graphql";
 import { type MightNotExist } from "@/checkout/lib/globalTypes";
+import { type ReadonlyURLSearchParams } from "next/navigation";
 
 export type ParamBasicValue = MightNotExist<string>;
 
+/**
+ * Maps URL param names to internal names.
+ * URL uses shorter/external names, internal code uses descriptive names.
+ */
 const queryParamsMap = {
 	redirectUrl: "redirectUrl",
 	checkout: "checkoutId",
@@ -12,8 +16,8 @@ const queryParamsMap = {
 	email: "passwordResetEmail",
 	saleorApiUrl: "saleorApiUrl",
 	// payment flow
-	transaction: "transaction", // allows us to process started transaction
-	processingPayment: "processingPayment", // tell the processing screen to show up
+	transaction: "transaction",
+	processingPayment: "processingPayment",
 	// adyen
 	redirectResult: "redirectResult",
 	resultCode: "resultCode",
@@ -21,6 +25,8 @@ const queryParamsMap = {
 	// stripe
 	payment_intent: "paymentIntent",
 	payment_intent_client_secret: "paymentIntentClientSecret",
+	// flow
+	step: "step",
 } as const;
 
 type UnmappedQueryParam = keyof typeof queryParamsMap;
@@ -33,95 +39,69 @@ interface CustomTypedQueryParams {
 	saleorApiUrl: string;
 }
 
-type RawQueryParams = Record<UnmappedQueryParam, ParamBasicValue> & CustomTypedQueryParams;
-
 export type QueryParams = Record<QueryParam, ParamBasicValue> & CustomTypedQueryParams;
 
-// this is intentional, we know what we'll get from the query but
-// queryString has no way to type this in such a specific way
-export const getRawQueryParams = () => queryString.parse(location.search) as unknown as RawQueryParams;
+/**
+ * Get query params with mapped names from Next.js ReadonlyURLSearchParams.
+ */
+export const getQueryParams = (searchParams: ReadonlyURLSearchParams): QueryParams => {
+	const result: Record<string, string | undefined> = {};
 
-export const getQueryParams = (): QueryParams => {
-	const params = getRawQueryParams();
-
-	return Object.entries(params).reduce((result, entry) => {
-		const [paramName, paramValue] = entry as [UnmappedQueryParam, ParamBasicValue];
-		const mappedParamName = queryParamsMap[paramName];
-		const mappedParamValue = paramValue;
-
-		return {
-			...result,
-			[mappedParamName]: mappedParamValue,
-		};
-	}, {}) as QueryParams;
-};
-
-export const clearQueryParams = (...keys: QueryParam[]) => {
-	const query = Object.entries(queryParamsMap).reduce((result, [unmappedParam, mappedParam]) => {
-		if (!keys.includes(mappedParam)) {
-			return result;
+	for (const [key, value] of searchParams.entries()) {
+		if (key in queryParamsMap) {
+			const mappedKey = queryParamsMap[key as UnmappedQueryParam];
+			result[mappedKey] = value;
 		}
+	}
 
-		return { ...result, [unmappedParam]: undefined };
-	}, {});
-
-	replaceUrl({ query });
+	return result as unknown as QueryParams;
 };
 
-export const getUrl = ({
-	query,
-	replaceWholeQuery = false,
-}: {
-	query?: Record<string, any>;
-	replaceWholeQuery?: boolean;
-}) => {
-	const baseUrl = replaceWholeQuery
-		? window.location.toString().replace(window.location.search, "")
-		: window.location.toString();
-	const newQuery = replaceWholeQuery ? query : { ...getRawQueryParams(), ...query };
-	const newUrl = queryString.stringifyUrl({ url: baseUrl, query: newQuery });
-	return { newUrl, newQuery };
-};
+/**
+ * Create a new URLSearchParams string with updated values.
+ * Useful for router.push() or router.replace().
+ */
+export const createQueryString = (
+	currentParams: ReadonlyURLSearchParams,
+	updates: Record<string, string | null>,
+): string => {
+	const params = new URLSearchParams(currentParams.toString());
 
-export const replaceUrl = ({
-	query,
-	replaceWholeQuery = false,
-}: {
-	url?: string;
-	query?: Record<string, any>;
-	replaceWholeQuery?: boolean;
-}) => {
-	const { newUrl, newQuery } = getUrl({ query, replaceWholeQuery });
-
-	window.history.pushState(
-		{
-			...window.history.state,
-			...newQuery,
-			url: newUrl,
-			as: newUrl,
+	// Reverse map internal keys to URL keys
+	const internalToUrlKey = Object.entries(queryParamsMap).reduce(
+		(acc, [urlKey, internalKey]) => {
+			acc[internalKey] = urlKey;
+			return acc;
 		},
-		"",
-		newUrl,
+		{} as Record<string, string>,
 	);
 
-	return newUrl;
-};
+	for (const [internalKey, value] of Object.entries(updates)) {
+		const urlKey = internalToUrlKey[internalKey];
+		if (!urlKey) continue;
 
-export const extractCheckoutIdFromUrl = (): string => {
-	const { checkoutId } = getQueryParams();
-
-	if (isOrderConfirmationPage()) {
-		return "";
+		if (value === null) {
+			params.delete(urlKey);
+		} else {
+			params.set(urlKey, value);
+		}
 	}
 
-	if (typeof checkoutId !== "string") {
-		throw new Error("Checkout token does not exist");
-	}
-
-	return checkoutId;
+	return params.toString();
 };
 
-export const isOrderConfirmationPage = () => {
-	const { orderId } = getQueryParams();
-	return typeof orderId === "string";
+/**
+ * Extract checkout ID from params.
+ * Returns null if on order confirmation page.
+ */
+export const extractCheckoutIdFromParams = (params: QueryParams): string | null => {
+	if (params.orderId) {
+		return null;
+	}
+
+	if (typeof params.checkoutId !== "string") {
+		return null;
+	}
+
+	return params.checkoutId;
 };

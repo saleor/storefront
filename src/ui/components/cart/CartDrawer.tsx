@@ -10,6 +10,7 @@ import { useCart } from "./CartContext";
 import { deleteCartLine, updateCartLineQuantity } from "./actions";
 import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
+import { localeConfig } from "@/config/locale";
 
 interface CartLine {
 	id: string;
@@ -115,7 +116,7 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 
 	const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
 	const subtotal = totalPrice?.gross.amount ?? 0;
-	const currency = totalPrice?.gross.currency ?? "USD";
+	const currency = totalPrice?.gross.currency ?? localeConfig.fallbackCurrency;
 
 	const handleRemove = (lineId: string) => {
 		if (!checkoutId) return;

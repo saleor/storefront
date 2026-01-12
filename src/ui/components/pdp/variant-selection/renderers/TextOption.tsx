@@ -18,14 +18,23 @@ export function TextOption({ option, isSelected, onSelect }: OptionRendererProps
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
 
+	// Build accessible label with context
+	const accessibleParts = [
+		option.name,
+		isOutOfStock && "out of stock",
+		hasDiscount && `${option.discountPercent}% off`,
+	].filter(Boolean);
+
 	return (
 		<div className="relative">
 			<button
 				type="button"
 				onClick={() => onSelect(option.id)}
 				disabled={isOutOfStock}
+				aria-disabled={isOutOfStock}
 				className={cn(
 					"h-12 min-w-[4.5rem] rounded-lg border px-4 text-sm font-medium transition-all",
+					"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 					isSelected
 						? "border-foreground bg-foreground text-background"
 						: "border-border bg-background text-foreground hover:border-foreground",
@@ -41,12 +50,16 @@ export function TextOption({ option, isSelected, onSelect }: OptionRendererProps
 								? `${option.name} - ${option.discountPercent}% off`
 								: undefined
 				}
+				aria-label={accessibleParts.join(", ")}
 				aria-pressed={isSelected}
 			>
 				{option.name}
 			</button>
 			{hasDiscount && (
-				<span className="pointer-events-none absolute -bottom-2 -right-1 rounded-full border border-destructive bg-background px-1.5 py-0.5 text-[10px] font-semibold text-destructive">
+				<span
+					className="pointer-events-none absolute -bottom-2 -right-1 rounded-full border border-destructive bg-background px-1.5 py-0.5 text-[10px] font-semibold text-destructive"
+					aria-hidden="true"
+				>
 					-{option.discountPercent}%
 				</span>
 			)}

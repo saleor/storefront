@@ -7,6 +7,7 @@
 
 import type { VariantOption, AttributeGroup } from "./types";
 import { getColorHex, isColorAttribute, isSizeAttribute, COLOR_NAME_TO_HEX } from "@/lib/colors";
+import { getMaxDiscountInfo as getMaxDiscountInfoBase } from "@/lib/pricing";
 
 // Re-export for backwards compatibility
 export { COLOR_NAME_TO_HEX };
@@ -29,45 +30,21 @@ export type SaleorVariant = {
 };
 
 // ============================================================================
-// Discount Helpers
+// Discount Helpers (using shared pricing utilities)
 // ============================================================================
-
-/**
- * Check if a variant has a discount.
- * Uses typeof to handle $0 prices correctly (0 is falsy in JS).
- */
-function variantHasDiscount(variant: SaleorVariant): boolean {
-	const price = variant.pricing?.price?.gross?.amount;
-	const undiscounted = variant.pricing?.priceUndiscounted?.gross?.amount;
-	return typeof undiscounted === "number" && typeof price === "number" && undiscounted > price;
-}
-
-/**
- * Calculate discount percentage for a variant.
- */
-function getVariantDiscountPercent(variant: SaleorVariant): number {
-	const price = variant.pricing?.price?.gross?.amount;
-	const undiscounted = variant.pricing?.priceUndiscounted?.gross?.amount;
-	if (typeof undiscounted !== "number" || typeof price !== "number" || undiscounted <= price) return 0;
-	return Math.round(((undiscounted - price) / undiscounted) * 100);
-}
 
 /**
  * Get max discount info across a list of variants.
  */
 function getMaxDiscountInfo(variants: SaleorVariant[]): { hasDiscount: boolean; maxPercent: number } {
-	let hasDiscount = false;
-	let maxPercent = 0;
-
-	for (const variant of variants) {
-		if (variantHasDiscount(variant)) {
-			hasDiscount = true;
-			const percent = getVariantDiscountPercent(variant);
-			if (percent > maxPercent) maxPercent = percent;
-		}
-	}
-
-	return { hasDiscount, maxPercent };
+	const result = getMaxDiscountInfoBase(variants, (v) => ({
+		current: v.pricing?.price?.gross?.amount,
+		undiscounted: v.pricing?.priceUndiscounted?.gross?.amount,
+	}));
+	return {
+		hasDiscount: result.isOnSale,
+		maxPercent: result.discountPercent ?? 0,
+	};
 }
 
 // ============================================================================

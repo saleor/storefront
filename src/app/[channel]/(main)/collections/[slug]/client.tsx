@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { FilterBar, ProductGrid, useProductFilters, type ProductCardData } from "@/ui/components/plp";
 import { Pagination } from "@/ui/components/Pagination";
 
@@ -12,6 +13,15 @@ interface CollectionPageClientProps {
 		endCursor?: string | null;
 	};
 	totalCount?: number;
+}
+
+function PaginationSkeleton() {
+	return (
+		<nav className="flex items-center justify-center gap-x-4 border-neutral-200 px-4 pt-12">
+			<span className="h-10 w-24 animate-pulse rounded bg-neutral-200" />
+			<span className="h-10 w-24 animate-pulse rounded bg-neutral-200" />
+		</nav>
+	);
 }
 
 export function CollectionPageClient({ products, pageInfo }: CollectionPageClientProps) {
@@ -67,7 +77,9 @@ export function CollectionPageClient({ products, pageInfo }: CollectionPageClien
 							</button>
 						</div>
 					)}
-					<Pagination pageInfo={pageInfo} />
+					<Suspense fallback={<PaginationSkeleton />}>
+						<Pagination pageInfo={pageInfo} />
+					</Suspense>
 				</div>
 			</div>
 		</>

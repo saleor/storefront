@@ -2,10 +2,11 @@ import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/Footer";
 import { Header } from "@/ui/components/Header";
 import { CartProvider, CartDrawerWrapper } from "@/ui/components/cart";
+import { brandConfig } from "@/config/brand";
 
 export const metadata = {
-	title: "Saleor Storefront example",
-	description: "Starter pack for building performant e-commerce experiences with Saleor.",
+	title: brandConfig.siteName,
+	description: brandConfig.description,
 };
 
 export default async function RootLayout(props: {
