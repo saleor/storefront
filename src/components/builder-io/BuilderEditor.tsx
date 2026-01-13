@@ -96,22 +96,22 @@ export function BuilderEditor({ layoutId, channel, onLayoutSaved }: BuilderEdito
 		}
 	};
 
-	// Handle content changes
-	const handleContentChange = (content: any) => {
-		if (layoutData && content) {
-			setLayoutData({
-				...layoutData,
-				content,
-				updatedAt: new Date(),
-			});
-		}
-	};
+	// // Handle content changes
+	// const handleContentChange = (content: any) => {
+	// 	if (layoutData && content) {
+	// 		setLayoutData({
+	// 			...layoutData,
+	// 			content,
+	// 			updatedAt: new Date(),
+	// 		});
+	// 	}
+	// };
 
-	// For Builder.io editing, we don't need to pass onContentChange as it's handled by Builder.io
-	// This is just a placeholder function if needed for other purposes
-	const handleBuilderContentChange = (content: any) => {
-		// Content change handling is managed by Builder.io itself
-	};
+	// // For Builder.io editing, we don't need to pass onContentChange as it's handled by Builder.io
+	// // This is just a placeholder function if needed for other purposes
+	// const handleBuilderContentChange = (content: any) => {
+	// 	// Content change handling is managed by Builder.io itself
+	// };
 
 	if (loading) {
 		return <div className="p-8 text-center">Loading Builder editor...</div>;
