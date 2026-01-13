@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Builder, builder } from "@builder.io/react";
+import { builder } from "@builder.io/react";
 
 // Define the props for our BuilderPage component
 interface BuilderPageProps {
