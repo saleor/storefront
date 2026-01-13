@@ -1,14 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Builder, builder } from "@builder.io/react";
+import { BuilderComponent, builder } from "@builder.io/react";
 
 // Import our schema types
-import type {
-	BuilderLayout,
-	CreateBuilderLayoutInput,
-	UpdateBuilderLayoutInput,
-} from "@/lib/builder-io-schema";
+import type { BuilderLayout } from "@/lib/builder-io-schema";
 
 // Define the props for our BuilderEditor component
 interface BuilderEditorProps {
@@ -111,6 +107,12 @@ export function BuilderEditor({ layoutId, channel, onLayoutSaved }: BuilderEdito
 		}
 	};
 
+	// For Builder.io editing, we don't need to pass onContentChange as it's handled by Builder.io
+	// This is just a placeholder function if needed for other purposes
+	const handleBuilderContentChange = (content: any) => {
+		// Content change handling is managed by Builder.io itself
+	};
+
 	if (loading) {
 		return <div className="p-8 text-center">Loading Builder editor...</div>;
 	}
@@ -179,15 +181,7 @@ export function BuilderEditor({ layoutId, channel, onLayoutSaved }: BuilderEdito
 
 				{isEditing ? (
 					<div className="rounded-lg border-2 border-dashed border-gray-300 p-4">
-						<Builder
-							model="page"
-							content={layoutData?.content}
-							onContentChange={handleContentChange}
-							// Pass channel information to Builder.io
-							userAttributes={{
-								channel: channel || "default",
-							}}
-						/>
+						<BuilderComponent model="page" content={layoutData?.content} />
 					</div>
 				) : (
 					<div className="rounded-lg border-2 border-dashed border-gray-300 p-4">
