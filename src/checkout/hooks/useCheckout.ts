@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { type Checkout, useCheckoutQuery } from "@/checkout/graphql";
