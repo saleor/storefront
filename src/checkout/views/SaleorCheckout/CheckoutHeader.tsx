@@ -6,24 +6,6 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/ui/components/shared/Logo";
 import { getCheckoutSteps } from "./flow";
 
-/** Progress bar width classes mapped to step/total combinations */
-const progressWidthClasses: Record<string, string> = {
-	"1/3": "w-1/3",
-	"2/3": "w-2/3",
-	"3/3": "w-full",
-	"1/4": "w-1/4",
-	"2/4": "w-2/4",
-	"3/4": "w-3/4",
-	"4/4": "w-full",
-};
-
-/** Get progress bar width class based on current step and total steps */
-const getProgressWidthClass = (step: number, totalSteps: number): string => {
-	const clampedStep = Math.min(step, totalSteps);
-	const key = `${clampedStep}/${totalSteps}`;
-	return progressWidthClasses[key] ?? "w-0";
-};
-
 interface CheckoutHeaderProps {
 	step: number;
 	onStepClick?: (step: number) => void;
@@ -43,6 +25,9 @@ export function CheckoutHeader({ step, onStepClick, isShippingRequired = true }:
 	const totalSteps = steps.length;
 	const confirmationStepIndex = allSteps.find((s) => s.id === "CONFIRMATION")?.index ?? steps.length + 1;
 
+	// Calculate progress percentage dynamically
+	const progressPercentage = Math.min((step / totalSteps) * 100, 100);
+
 	return (
 		<header className="bg-background md:border-b md:border-border">
 			<div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 md:pb-4 md:pt-4 lg:px-8">
@@ -53,13 +38,14 @@ export function CheckoutHeader({ step, onStepClick, isShippingRequired = true }:
 					</Link>
 
 					{/* Progress Steps - Desktop */}
-					<nav className="hidden items-center gap-2 md:flex">
+					<nav className="hidden items-center gap-2 md:flex" aria-label="Checkout steps">
 						{steps.map((s, i) => (
 							<div key={s.number} className="flex items-center">
 								<button
 									type="button"
 									onClick={() => step > s.number && onStepClick?.(s.number)}
 									disabled={step < s.number}
+									aria-current={step === s.number ? "step" : undefined}
 									className={cn("flex items-center gap-2", step > s.number && "cursor-pointer")}
 								>
 									<span
@@ -96,12 +82,16 @@ export function CheckoutHeader({ step, onStepClick, isShippingRequired = true }:
 						<span>{step === confirmationStepIndex ? "Complete" : `Step ${step} of ${totalSteps}`}</span>
 						<span>{steps[step - 1]?.label}</span>
 					</div>
-					<div className="h-1 overflow-hidden rounded-full bg-muted">
+					<div
+						className="h-1 overflow-hidden rounded-full bg-muted"
+						role="progressbar"
+						aria-valuenow={progressPercentage}
+						aria-valuemin={0}
+						aria-valuemax={100}
+					>
 						<div
-							className={cn(
-								"h-full bg-foreground transition-all duration-300",
-								getProgressWidthClass(step, totalSteps),
-							)}
+							className="h-full bg-foreground transition-all duration-300"
+							style={{ width: `${progressPercentage}%` }}
 						/>
 					</div>
 				</div>

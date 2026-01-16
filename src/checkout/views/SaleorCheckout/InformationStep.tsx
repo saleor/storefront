@@ -198,7 +198,13 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 			}
 
 			setErrors(newErrors);
-			if (Object.keys(newErrors).length > 0) return;
+			if (Object.keys(newErrors).length > 0) {
+				// Focus the first invalid field
+				const firstErrorField = Object.keys(newErrors)[0];
+				const element = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement;
+				element?.focus();
+				return;
+			}
 
 			// ----- Save to Saleor -----
 			setIsSubmitting(true);

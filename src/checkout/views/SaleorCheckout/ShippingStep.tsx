@@ -59,6 +59,9 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 
 			if (!selectedMethod) {
 				setError("Please select a shipping method");
+				// Focus the first radio option
+				const firstRadio = document.querySelector('input[name="shipping"]') as HTMLElement;
+				firstRadio?.focus();
 				return;
 			}
 

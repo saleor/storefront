@@ -208,6 +208,9 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 							errorMap[field] = err.message || "Invalid value";
 						});
 						setErrors(errorMap);
+						const firstField = Object.keys(errorMap)[0];
+						const element = document.querySelector(`[name="${firstField}"]`) as HTMLElement;
+						element?.focus();
 						return;
 					}
 				} else if (shippingAddress) {
