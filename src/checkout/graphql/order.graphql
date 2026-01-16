@@ -1,8 +1,6 @@
 fragment Money on Money {
 	currency
 	amount
-	fractionDigits
-	fractionalAmount
 }
 
 fragment OrderLineFragment on OrderLine {
