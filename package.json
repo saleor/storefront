@@ -7,6 +7,7 @@
 	"scripts": {
 		"dev": "next dev --webpack",
 		"dev:webpack": "next dev --webpack",
+		"dev:turbopack": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"predev": "pnpm run generate",
@@ -47,6 +48,9 @@
 	"devDependencies": {
 		"@graphql-codegen/cli": "6.1.1",
 		"@graphql-codegen/client-preset": "5.2.2",
+		"@graphql-codegen/typescript": "5.0.7",
+		"@graphql-codegen/typescript-operations": "5.0.7",
+		"@graphql-codegen/typescript-urql": "4.0.1",
 		"@next/env": "16.0.7",
 		"@parcel/watcher": "2.3.0",
 		"@tailwindcss/container-queries": "0.1.1",

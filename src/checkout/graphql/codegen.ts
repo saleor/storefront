@@ -20,20 +20,19 @@ const config: CodegenConfig = {
 	schema: schemaUrl,
 	documents: "src/checkout/graphql/**/*.graphql",
 	generates: {
-		"src/checkout/graphql/generated/": {
-			preset: "client",
-			plugins: [],
+		"src/checkout/graphql/generated/index.ts": {
+			plugins: ["typescript", "typescript-operations", "typescript-urql"],
 			config: {
-				documentMode: "string",
 				useTypeImports: true,
 				strictScalars: true,
+				enumsAsTypes: true,
 				scalars: {
 					Date: "string",
 					DateTime: "string",
 					Day: "number",
 					Decimal: "number",
 					GenericScalar: "unknown",
-					JSON: "unknown",
+					JSON: "any",
 					JSONString: "string",
 					Metadata: "Record<string, string>",
 					Hour: "number",
@@ -45,9 +44,6 @@ const config: CodegenConfig = {
 					WeightScalar: "unknown",
 					_Any: "unknown",
 				},
-			},
-			presetConfig: {
-				fragmentMasking: false,
 			},
 		},
 	},
