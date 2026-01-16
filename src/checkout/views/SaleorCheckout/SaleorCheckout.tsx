@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type FC } from "react";
+import { useEffect, useRef, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckoutHeader } from "./CheckoutHeader";
 import { OrderSummary } from "./OrderSummary";
@@ -44,9 +44,12 @@ export const SaleorCheckout: FC = () => {
 	// Determine current step from URL
 	const currentStep = getCurrentStepFromParams(searchParams, isShippingRequired);
 
-	// Scroll to top when step changes (mobile UX)
+	const stepRef = useRef<HTMLDivElement>(null);
+
+	// Scroll to top and focus content when step changes (mobile UX + a11y)
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: "instant" });
+		stepRef.current?.focus();
 	}, [currentStep.id]);
 
 	// Checkout is invalid if: no checkout ID in URL, or fetching is done but no checkout data
@@ -107,28 +110,30 @@ export const SaleorCheckout: FC = () => {
 							<OrderSummary checkout={checkout} />
 						</div>
 						<div className="rounded-lg border border-border bg-card p-6 md:p-8">
-							{currentStep.id === "INFO" && (
-								<InformationStep
-									checkout={checkout}
-									onNext={() => goToStep(isShippingRequired ? "SHIPPING" : "PAYMENT")}
-								/>
-							)}
-							{currentStep.id === "SHIPPING" && (
-								<ShippingStep
-									checkout={checkout}
-									onBack={() => goToStep("INFO")}
-									onNext={() => goToStep("PAYMENT")}
-								/>
-							)}
-							{currentStep.id === "PAYMENT" && (
-								<PaymentStep
-									checkout={checkout}
-									onBack={() => goToStep(isShippingRequired ? "SHIPPING" : "INFO")}
-									onComplete={() => goToStep("CONFIRMATION")}
-									onGoToInformation={() => goToStep("INFO")}
-								/>
-							)}
-							{currentStep.id === "CONFIRMATION" && <ConfirmationStep checkout={checkout} />}
+							<div ref={stepRef} tabIndex={-1} className="outline-none">
+								{currentStep.id === "INFO" && (
+									<InformationStep
+										checkout={checkout}
+										onNext={() => goToStep(isShippingRequired ? "SHIPPING" : "PAYMENT")}
+									/>
+								)}
+								{currentStep.id === "SHIPPING" && (
+									<ShippingStep
+										checkout={checkout}
+										onBack={() => goToStep("INFO")}
+										onNext={() => goToStep("PAYMENT")}
+									/>
+								)}
+								{currentStep.id === "PAYMENT" && (
+									<PaymentStep
+										checkout={checkout}
+										onBack={() => goToStep(isShippingRequired ? "SHIPPING" : "INFO")}
+										onComplete={() => goToStep("CONFIRMATION")}
+										onGoToInformation={() => goToStep("INFO")}
+									/>
+								)}
+								{currentStep.id === "CONFIRMATION" && <ConfirmationStep checkout={checkout} />}
+							</div>
 						</div>
 					</div>
 

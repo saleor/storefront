@@ -31,6 +31,7 @@ export const CheckoutSummaryContext: FC<CheckoutSummaryContextProps> = ({ rows, 
 					<span className="min-w-0 flex-1">{row.value}</span>
 					{row.onChangeStep !== undefined && onGoToStep && (
 						<button
+							type="button"
 							onClick={() => onGoToStep(row.onChangeStep!)}
 							className="shrink-0 text-sm underline underline-offset-2 hover:no-underline"
 						>

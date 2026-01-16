@@ -89,6 +89,31 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 	});
 	const [showNewAddressForm, setShowNewAddressForm] = useState(false);
 
+	// Sync local state with checkout data when it updates (e.g. after auto-login)
+	useEffect(() => {
+		if (checkout.email) {
+			setEmail(checkout.email);
+		}
+	}, [checkout.email]);
+
+	useEffect(() => {
+		if (shippingAddress) {
+			setCountryCode((shippingAddress.country?.code as CountryCode) || "US");
+			setFormData({
+				firstName: shippingAddress.firstName || "",
+				lastName: shippingAddress.lastName || "",
+				streetAddress1: shippingAddress.streetAddress1 || "",
+				streetAddress2: shippingAddress.streetAddress2 || "",
+				companyName: shippingAddress.companyName || "",
+				city: shippingAddress.city || "",
+				postalCode: shippingAddress.postalCode || "",
+				countryArea: shippingAddress.countryArea || "",
+				cityArea: shippingAddress.cityArea || "",
+				phone: shippingAddress.phone || "",
+			});
+		}
+	}, [shippingAddress]);
+
 	// Update selected address when user data loads
 	useEffect(() => {
 		if (user && !selectedAddressId) {
@@ -138,143 +163,150 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 	};
 
 	// ----- Submit Logic -----
-	const handleSubmit = useCallback(async () => {
-		const newErrors: Record<string, string> = {};
-
-		// Validate email (guests only)
-		if (!authenticated) {
-			if (!email) newErrors.email = "Email is required";
-			else if (!validateEmail(email)) newErrors.email = "Please enter a valid email";
-
-			if (createAccount) {
-				if (!accountPassword) newErrors.password = "Password is required";
-				else if (accountPassword.length < 8) newErrors.password = "Password must be at least 8 characters";
+	const handleSubmit = useCallback(
+		async (event?: React.FormEvent) => {
+			if (event) {
+				event.preventDefault();
 			}
-		}
 
-		// Validate shipping address (if required)
-		if (checkout.isShippingRequired) {
-			if (authenticated && user?.addresses?.length && !showNewAddressForm) {
-				if (!selectedAddressId) {
-					newErrors.address = "Please select a shipping address";
-				}
-			} else {
-				orderedAddressFields.forEach((field) => {
-					if (isRequiredField(field) && !formData[field]) {
-						newErrors[field] = `${getFieldLabel(field)} is required`;
-					}
-				});
-			}
-		}
+			const newErrors: Record<string, string> = {};
 
-		setErrors(newErrors);
-		if (Object.keys(newErrors).length > 0) return;
-
-		// ----- Save to Saleor -----
-		setIsSubmitting(true);
-		try {
-			// Update email (guests)
+			// Validate email (guests only)
 			if (!authenticated) {
-				const emailResult = await updateEmail({
-					checkoutId: checkout.id,
-					email,
-					languageCode: localeConfig.graphqlLanguageCode,
-				});
-				if (emailResult.error) {
-					setErrors({ email: "Failed to update email" });
-					return;
-				}
-				const emailErrors = emailResult.data?.checkoutEmailUpdate?.errors;
-				if (emailErrors?.length) {
-					const errorMap: Record<string, string> = {};
-					emailErrors.forEach((err) => {
-						errorMap[err.field || "email"] = err.message || "Invalid value";
-					});
-					setErrors(errorMap);
-					return;
-				}
+				if (!email) newErrors.email = "Email is required";
+				else if (!validateEmail(email)) newErrors.email = "Please enter a valid email";
 
-				// Create account if requested
-				if (createAccount && accountPassword) {
-					const registerResult = await userRegister({
-						input: {
-							email,
-							password: accountPassword,
-							channel: checkout.channel.slug,
-							redirectUrl: window.location.href,
-						},
-					});
-					if (registerResult.data?.accountRegister?.errors?.length) {
-						const err = registerResult.data.accountRegister.errors[0];
-						if (err.code !== "UNIQUE") {
-							setErrors({ password: err.message || "Failed to create account" });
-							return;
-						}
-					}
+				if (createAccount) {
+					if (!accountPassword) newErrors.password = "Password is required";
+					else if (accountPassword.length < 8) newErrors.password = "Password must be at least 8 characters";
 				}
 			}
 
-			// Update shipping address
+			// Validate shipping address (if required)
 			if (checkout.isShippingRequired) {
-				let addressInput;
-				if (authenticated && user?.addresses?.length && selectedAddressId && !showNewAddressForm) {
-					const selectedAddress = user.addresses.find((a) => a.id === selectedAddressId);
-					if (selectedAddress) {
-						addressInput = getAddressInputDataFromAddress(selectedAddress);
+				if (authenticated && user?.addresses?.length && !showNewAddressForm) {
+					if (!selectedAddressId) {
+						newErrors.address = "Please select a shipping address";
 					}
 				} else {
-					addressInput = getAddressInputData({ ...formData, countryCode });
+					orderedAddressFields.forEach((field) => {
+						if (isRequiredField(field) && !formData[field]) {
+							newErrors[field] = `${getFieldLabel(field)} is required`;
+						}
+					});
 				}
+			}
 
-				if (addressInput) {
-					const addressResult = await updateShippingAddress({
+			setErrors(newErrors);
+			if (Object.keys(newErrors).length > 0) return;
+
+			// ----- Save to Saleor -----
+			setIsSubmitting(true);
+			try {
+				// Update email (guests)
+				if (!authenticated) {
+					const emailResult = await updateEmail({
 						checkoutId: checkout.id,
-						shippingAddress: addressInput,
+						email,
 						languageCode: localeConfig.graphqlLanguageCode,
 					});
-
-					if (addressResult.error) {
-						setErrors({ streetAddress1: "Failed to update address" });
+					if (emailResult.error) {
+						setErrors({ email: "Failed to update email" });
 						return;
 					}
-					const addressErrors = addressResult.data?.checkoutShippingAddressUpdate?.errors;
-					if (addressErrors?.length) {
+					const emailErrors = emailResult.data?.checkoutEmailUpdate?.errors;
+					if (emailErrors?.length) {
 						const errorMap: Record<string, string> = {};
-						addressErrors.forEach((err) => {
-							const field = err.field || "streetAddress1";
-							errorMap[field] = err.message || "Invalid value";
+						emailErrors.forEach((err) => {
+							errorMap[err.field || "email"] = err.message || "Invalid value";
 						});
 						setErrors(errorMap);
 						return;
 					}
-				}
-			}
 
-			onNext();
-		} finally {
-			setIsSubmitting(false);
-		}
-	}, [
-		authenticated,
-		email,
-		createAccount,
-		accountPassword,
-		checkout.isShippingRequired,
-		checkout.id,
-		checkout.channel.slug,
-		user?.addresses,
-		showNewAddressForm,
-		selectedAddressId,
-		orderedAddressFields,
-		isRequiredField,
-		getFieldLabel,
-		formData,
-		countryCode,
-		updateEmail,
-		userRegister,
-		updateShippingAddress,
-		onNext,
-	]);
+					// Create account if requested
+					if (createAccount && accountPassword) {
+						const registerResult = await userRegister({
+							input: {
+								email,
+								password: accountPassword,
+								channel: checkout.channel.slug,
+								redirectUrl: window.location.href,
+							},
+						});
+						if (registerResult.data?.accountRegister?.errors?.length) {
+							const err = registerResult.data.accountRegister.errors[0];
+							if (err.code !== "UNIQUE") {
+								setErrors({ password: err.message || "Failed to create account" });
+								return;
+							}
+						}
+					}
+				}
+
+				// Update shipping address
+				if (checkout.isShippingRequired) {
+					let addressInput;
+					if (authenticated && user?.addresses?.length && selectedAddressId && !showNewAddressForm) {
+						const selectedAddress = user.addresses.find((a) => a.id === selectedAddressId);
+						if (selectedAddress) {
+							addressInput = getAddressInputDataFromAddress(selectedAddress);
+						}
+					} else {
+						addressInput = getAddressInputData({ ...formData, countryCode });
+					}
+
+					if (addressInput) {
+						const addressResult = await updateShippingAddress({
+							checkoutId: checkout.id,
+							shippingAddress: addressInput,
+							languageCode: localeConfig.graphqlLanguageCode,
+						});
+
+						if (addressResult.error) {
+							setErrors({ streetAddress1: "Failed to update address" });
+							return;
+						}
+						const addressErrors = addressResult.data?.checkoutShippingAddressUpdate?.errors;
+						if (addressErrors?.length) {
+							const errorMap: Record<string, string> = {};
+							addressErrors.forEach((err) => {
+								const field = err.field || "streetAddress1";
+								errorMap[field] = err.message || "Invalid value";
+							});
+							setErrors(errorMap);
+							return;
+						}
+					}
+				}
+
+				onNext();
+			} finally {
+				setIsSubmitting(false);
+			}
+		},
+		[
+			authenticated,
+			email,
+			createAccount,
+			accountPassword,
+			checkout.isShippingRequired,
+			checkout.id,
+			checkout.channel.slug,
+			user?.addresses,
+			showNewAddressForm,
+			selectedAddressId,
+			orderedAddressFields,
+			isRequiredField,
+			getFieldLabel,
+			formData,
+			countryCode,
+			updateEmail,
+			userRegister,
+			updateShippingAddress,
+			onNext,
+		],
+	);
 
 	// ----- Render: Password Reset -----
 	if (contactView === "resetPassword") {
@@ -319,7 +351,7 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 			: "Continue to payment";
 
 	return (
-		<div className="space-y-8">
+		<form className="space-y-8" onSubmit={handleSubmit} noValidate>
 			<ExpressCheckout />
 
 			<ContactSection
@@ -363,7 +395,7 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 			)}
 
 			<Button
-				onClick={handleSubmit}
+				type="submit"
 				disabled={isSubmitting}
 				className="hidden h-14 w-full text-base font-semibold md:flex"
 			>
@@ -373,10 +405,11 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 			<MobileStickyAction
 				step={getStepNumber("INFO", checkout.isShippingRequired)}
 				isShippingRequired={checkout.isShippingRequired}
+				type="submit"
 				onAction={handleSubmit}
 				isLoading={isSubmitting}
 				loadingText="Saving..."
 			/>
-		</div>
+		</form>
 	);
 };

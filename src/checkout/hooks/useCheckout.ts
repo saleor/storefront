@@ -3,15 +3,12 @@ import { useSearchParams } from "next/navigation";
 
 import { type Checkout, useCheckoutQuery } from "@/checkout/graphql";
 import { extractCheckoutIdFromParams, getQueryParams } from "@/checkout/lib/utils/url";
-import { useCheckoutUpdateStateActions } from "@/checkout/state/updateStateStore";
 import { localeConfig } from "@/config/locale";
 
 export const useCheckout = ({ pause = false } = {}) => {
 	const searchParams = useSearchParams();
 	const queryParams = useMemo(() => getQueryParams(searchParams), [searchParams]);
 	const id = extractCheckoutIdFromParams(queryParams);
-
-	const { setLoadingCheckout } = useCheckoutUpdateStateActions();
 
 	// Pause the query if there's no checkout ID
 	const shouldPause = pause || !id;
@@ -20,8 +17,6 @@ export const useCheckout = ({ pause = false } = {}) => {
 		variables: { id: id || "", languageCode: localeConfig.graphqlLanguageCode },
 		pause: shouldPause,
 	});
-
-	useEffect(() => setLoadingCheckout(fetching || stale), [fetching, setLoadingCheckout, stale]);
 
 	return useMemo(
 		() => ({

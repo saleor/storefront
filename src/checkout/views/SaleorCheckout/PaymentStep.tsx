@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type FC } from "react";
+import { useState, useEffect, useCallback, type FC } from "react";
 import { ChevronLeft, AlertCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/ui/components/ui/Button";
@@ -89,6 +89,29 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 		},
 	}));
 
+	// Sync billing address from server state
+	useEffect(() => {
+		const billing = checkout.billingAddress;
+		if (billing) {
+			setBillingData((prev) => ({
+				...prev,
+				countryCode: (billing.country?.code as CountryCode) || "US",
+				formData: {
+					firstName: billing.firstName || "",
+					lastName: billing.lastName || "",
+					streetAddress1: billing.streetAddress1 || "",
+					streetAddress2: billing.streetAddress2 || "",
+					companyName: billing.companyName || "",
+					city: billing.city || "",
+					postalCode: billing.postalCode || "",
+					countryArea: billing.countryArea || "",
+					cityArea: billing.cityArea || "",
+					phone: billing.phone || "",
+				},
+			}));
+		}
+	}, [checkout.billingAddress]);
+
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -124,181 +147,188 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	const total = checkout.totalPrice?.gross;
 	const totalStr = formatMoneyWithFallback(total);
 
-	const handleSubmit = useCallback(async () => {
-		setErrors({});
+	const handleSubmit = useCallback(
+		async (event?: React.FormEvent) => {
+			if (event) {
+				event.preventDefault();
+			}
 
-		// Validate billing address if different from shipping (or for digital products)
-		const needsBillingForm = !sameAsBilling || !hasShippingAddress;
+			setErrors({});
 
-		setIsProcessing(true);
-		try {
-			// Update billing address
-			if (needsBillingForm) {
-				let addressInput;
+			// Validate billing address if different from shipping (or for digital products)
+			const needsBillingForm = !sameAsBilling || !hasShippingAddress;
 
-				// Check if user selected a saved address
-				if (billingData.selectedAddressId && user?.addresses) {
-					const selectedAddress = user.addresses.find((addr) => addr.id === billingData.selectedAddressId);
-					if (selectedAddress) {
+			setIsProcessing(true);
+			try {
+				// Update billing address
+				if (needsBillingForm) {
+					let addressInput;
+
+					// Check if user selected a saved address
+					if (billingData.selectedAddressId && user?.addresses) {
+						const selectedAddress = user.addresses.find((addr) => addr.id === billingData.selectedAddressId);
+						if (selectedAddress) {
+							addressInput = getAddressInputData({
+								firstName: selectedAddress.firstName || "",
+								lastName: selectedAddress.lastName || "",
+								streetAddress1: selectedAddress.streetAddress1 || "",
+								streetAddress2: selectedAddress.streetAddress2 || "",
+								companyName: selectedAddress.companyName || "",
+								city: selectedAddress.city || "",
+								postalCode: selectedAddress.postalCode || "",
+								countryArea: selectedAddress.countryArea || "",
+								phone: selectedAddress.phone || "",
+								countryCode: selectedAddress.country?.code as CountryCode,
+							});
+						}
+					}
+
+					// If no saved address selected, use form data
+					if (!addressInput) {
 						addressInput = getAddressInputData({
-							firstName: selectedAddress.firstName || "",
-							lastName: selectedAddress.lastName || "",
-							streetAddress1: selectedAddress.streetAddress1 || "",
-							streetAddress2: selectedAddress.streetAddress2 || "",
-							companyName: selectedAddress.companyName || "",
-							city: selectedAddress.city || "",
-							postalCode: selectedAddress.postalCode || "",
-							countryArea: selectedAddress.countryArea || "",
-							phone: selectedAddress.phone || "",
-							countryCode: selectedAddress.country?.code as CountryCode,
+							...billingData.formData,
+							countryCode: billingData.countryCode,
 						});
 					}
-				}
 
-				// If no saved address selected, use form data
-				if (!addressInput) {
-					addressInput = getAddressInputData({
-						...billingData.formData,
-						countryCode: billingData.countryCode,
+					const result = await updateBillingAddress({
+						checkoutId: checkout.id,
+						billingAddress: addressInput,
+						languageCode: localeConfig.graphqlLanguageCode,
+					});
+					if (result.error) {
+						setErrors({ streetAddress1: "Failed to update billing address" });
+						return;
+					}
+					const billingErrors = result.data?.checkoutBillingAddressUpdate?.errors;
+					if (billingErrors?.length) {
+						const errorMap: Record<string, string> = {};
+						billingErrors.forEach((err) => {
+							const field = err.field || "streetAddress1";
+							errorMap[field] = err.message || "Invalid value";
+						});
+						setErrors(errorMap);
+						return;
+					}
+				} else if (shippingAddress) {
+					// Copy shipping address to billing
+					const addressInput = getAddressInputData({
+						firstName: shippingAddress.firstName || "",
+						lastName: shippingAddress.lastName || "",
+						streetAddress1: shippingAddress.streetAddress1 || "",
+						streetAddress2: shippingAddress.streetAddress2 || "",
+						companyName: shippingAddress.companyName || "",
+						city: shippingAddress.city || "",
+						postalCode: shippingAddress.postalCode || "",
+						countryArea: shippingAddress.countryArea || "",
+						phone: shippingAddress.phone || "",
+						countryCode: shippingAddress.country?.code as CountryCode,
+					});
+					await updateBillingAddress({
+						checkoutId: checkout.id,
+						billingAddress: addressInput,
+						languageCode: localeConfig.graphqlLanguageCode,
 					});
 				}
 
-				const result = await updateBillingAddress({
-					checkoutId: checkout.id,
-					billingAddress: addressInput,
-					languageCode: localeConfig.graphqlLanguageCode,
-				});
-				if (result.error) {
-					setErrors({ streetAddress1: "Failed to update billing address" });
-					return;
-				}
-				const billingErrors = result.data?.checkoutBillingAddressUpdate?.errors;
-				if (billingErrors?.length) {
-					const errorMap: Record<string, string> = {};
-					billingErrors.forEach((err) => {
-						const field = err.field || "streetAddress1";
-						errorMap[field] = err.message || "Invalid value";
-					});
-					setErrors(errorMap);
-					return;
-				}
-			} else if (shippingAddress) {
-				// Copy shipping address to billing
-				const addressInput = getAddressInputData({
-					firstName: shippingAddress.firstName || "",
-					lastName: shippingAddress.lastName || "",
-					streetAddress1: shippingAddress.streetAddress1 || "",
-					streetAddress2: shippingAddress.streetAddress2 || "",
-					companyName: shippingAddress.companyName || "",
-					city: shippingAddress.city || "",
-					postalCode: shippingAddress.postalCode || "",
-					countryArea: shippingAddress.countryArea || "",
-					phone: shippingAddress.phone || "",
-					countryCode: shippingAddress.country?.code as CountryCode,
-				});
-				await updateBillingAddress({
-					checkoutId: checkout.id,
-					billingAddress: addressInput,
-					languageCode: localeConfig.graphqlLanguageCode,
-				});
-			}
+				// Process payment using available gateway
+				if (hasDummyGateway) {
+					const checkoutId = checkout.id;
 
-			// Process payment using available gateway
-			if (hasDummyGateway) {
-				const checkoutId = checkout.id;
-
-				const initResult = await transactionInitialize({
-					checkoutId,
-					paymentGateway: {
-						id: dummyGatewayId,
-						data: {
-							event: {
-								includePspReference: true,
-								type: "CHARGE_SUCCESS",
+					const initResult = await transactionInitialize({
+						checkoutId,
+						paymentGateway: {
+							id: dummyGatewayId,
+							data: {
+								event: {
+									includePspReference: true,
+									type: "CHARGE_SUCCESS",
+								},
 							},
 						},
-					},
-				});
+					});
 
-				if (initResult.error) {
-					console.error("Payment initialization error:", initResult.error);
-					setErrors({ streetAddress1: "Payment failed. Please try again." });
+					if (initResult.error) {
+						console.error("Payment initialization error:", initResult.error);
+						setErrors({ streetAddress1: "Payment failed. Please try again." });
+						return;
+					}
+
+					const transactionErrors = initResult.data?.transactionInitialize?.errors;
+					if (transactionErrors?.length) {
+						console.error("Transaction errors:", transactionErrors);
+						setErrors({ streetAddress1: transactionErrors[0].message || "Payment failed" });
+						return;
+					}
+
+					// Complete the checkout and create the order
+					const completeResult = await checkoutComplete({
+						checkoutId,
+					});
+
+					if (completeResult.error) {
+						console.error("Checkout complete error:", completeResult.error);
+						setErrors({ streetAddress1: "Failed to complete order. Please try again." });
+						return;
+					}
+
+					const completeErrors = completeResult.data?.checkoutComplete?.errors;
+					if (completeErrors?.length) {
+						const errorDetails = completeErrors.map((e) => `${e.field}: ${e.message} (${e.code})`).join(", ");
+						console.error("Checkout complete errors:", errorDetails, completeErrors);
+						// Show a more descriptive error
+						const firstError = completeErrors[0];
+						const errorMessage = firstError.message || firstError.code || "Failed to complete order";
+						setErrors({ payment: errorMessage });
+						return;
+					}
+
+					// Redirect to order confirmation
+					const order = completeResult.data?.checkoutComplete?.order;
+					if (order) {
+						const newQuery = createQueryString(searchParams, { orderId: order.id });
+						router.replace(`?${newQuery}`, { scroll: false });
+						return;
+					}
+				} else if (!hasRealGateway) {
+					// No payment gateway configured
+					setErrors({
+						streetAddress1:
+							"No payment gateway configured. Please contact support or configure a payment app in Saleor.",
+					});
+					return;
+				} else {
+					// Real payment gateway - this UI doesn't support it yet
+					// For now, show an error
+					setErrors({
+						streetAddress1:
+							"This checkout UI currently only supports test payments. Please use the standard checkout for real payments.",
+					});
 					return;
 				}
 
-				const transactionErrors = initResult.data?.transactionInitialize?.errors;
-				if (transactionErrors?.length) {
-					console.error("Transaction errors:", transactionErrors);
-					setErrors({ streetAddress1: transactionErrors[0].message || "Payment failed" });
-					return;
-				}
-
-				// Complete the checkout and create the order
-				const completeResult = await checkoutComplete({
-					checkoutId,
-				});
-
-				if (completeResult.error) {
-					console.error("Checkout complete error:", completeResult.error);
-					setErrors({ streetAddress1: "Failed to complete order. Please try again." });
-					return;
-				}
-
-				const completeErrors = completeResult.data?.checkoutComplete?.errors;
-				if (completeErrors?.length) {
-					const errorDetails = completeErrors.map((e) => `${e.field}: ${e.message} (${e.code})`).join(", ");
-					console.error("Checkout complete errors:", errorDetails, completeErrors);
-					// Show a more descriptive error
-					const firstError = completeErrors[0];
-					const errorMessage = firstError.message || firstError.code || "Failed to complete order";
-					setErrors({ payment: errorMessage });
-					return;
-				}
-
-				// Redirect to order confirmation
-				const order = completeResult.data?.checkoutComplete?.order;
-				if (order) {
-					const newQuery = createQueryString(searchParams, { orderId: order.id });
-					router.replace(`?${newQuery}`, { scroll: false });
-					return;
-				}
-			} else if (!hasRealGateway) {
-				// No payment gateway configured
-				setErrors({
-					streetAddress1:
-						"No payment gateway configured. Please contact support or configure a payment app in Saleor.",
-				});
-				return;
-			} else {
-				// Real payment gateway - this UI doesn't support it yet
-				// For now, show an error
-				setErrors({
-					streetAddress1:
-						"This checkout UI currently only supports test payments. Please use the standard checkout for real payments.",
-				});
-				return;
+				onComplete();
+			} finally {
+				setIsProcessing(false);
 			}
-
-			onComplete();
-		} finally {
-			setIsProcessing(false);
-		}
-	}, [
-		sameAsBilling,
-		hasShippingAddress,
-		billingData,
-		user?.addresses,
-		shippingAddress,
-		checkout.id,
-		hasDummyGateway,
-		hasRealGateway,
-		updateBillingAddress,
-		transactionInitialize,
-		checkoutComplete,
-		onComplete,
-		searchParams,
-		router,
-	]);
+		},
+		[
+			sameAsBilling,
+			hasShippingAddress,
+			billingData,
+			user?.addresses,
+			shippingAddress,
+			checkout.id,
+			hasDummyGateway,
+			hasRealGateway,
+			updateBillingAddress,
+			transactionInitialize,
+			checkoutComplete,
+			onComplete,
+			searchParams,
+			router,
+		],
+	);
 
 	const isCardValid = isCardDataValid(cardData);
 
@@ -317,7 +347,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 		(paymentMethod === "card" && !hasDummyGateway && !isCardValid);
 
 	return (
-		<div className="space-y-8">
+		<form className="space-y-8" onSubmit={handleSubmit}>
 			{/* Summary Context */}
 			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={handleGoToStep} />
 
@@ -383,17 +413,14 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 			{/* Navigation */}
 			<div className="flex items-center justify-between">
 				<button
+					type="button"
 					onClick={onBack}
 					className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
 				>
 					<ChevronLeft className="h-4 w-4" />
 					{isShippingRequired ? "Return to shipping" : "Return to information"}
 				</button>
-				<Button
-					onClick={handleSubmit}
-					disabled={isDisabled}
-					className="hidden h-12 min-w-[200px] px-8 md:flex"
-				>
+				<Button type="submit" disabled={isDisabled} className="hidden h-12 min-w-[200px] px-8 md:flex">
 					{isLoading ? (
 						<span className="flex items-center gap-2">
 							<LoadingSpinner />
@@ -408,12 +435,13 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 			<MobileStickyAction
 				step={getStepNumber("PAYMENT", isShippingRequired)}
 				isShippingRequired={isShippingRequired}
+				type="submit"
 				onAction={handleSubmit}
 				isLoading={isLoading}
 				disabled={isDisabled}
 				total={totalStr}
 				loadingText={completeState.fetching ? "Creating order..." : "Processing payment..."}
 			/>
-		</div>
+		</form>
 	);
 };

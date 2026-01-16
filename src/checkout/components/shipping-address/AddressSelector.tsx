@@ -108,6 +108,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 						key={address.id}
 						className={cn(
 							"flex cursor-pointer items-start gap-4 rounded-lg border p-4 transition-colors",
+							"focus-within:ring-2 focus-within:ring-foreground focus-within:ring-offset-2",
 							isSelected ? "bg-muted/30 border-foreground" : "hover:border-muted-foreground/50 border-border",
 						)}
 					>

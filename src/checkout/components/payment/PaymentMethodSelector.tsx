@@ -105,7 +105,7 @@ export const PaymentMethodSelector: FC<PaymentMethodSelectorProps> = ({
 							value === "card" ? "border-foreground" : "border-border",
 						)}
 					>
-						<label className="flex cursor-pointer items-center gap-4 p-4">
+						<label className="flex cursor-pointer items-center gap-4 p-4 focus-within:ring-2 focus-within:ring-inset focus-within:ring-foreground">
 							<input
 								type="radio"
 								name="payment"
@@ -165,6 +165,7 @@ export const PaymentMethodSelector: FC<PaymentMethodSelectorProps> = ({
 					<label
 						className={cn(
 							"flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors",
+							"focus-within:ring-2 focus-within:ring-foreground focus-within:ring-offset-2",
 							value === "paypal" ? "border-foreground" : "border-border",
 						)}
 					>
@@ -187,6 +188,7 @@ export const PaymentMethodSelector: FC<PaymentMethodSelectorProps> = ({
 					<label
 						className={cn(
 							"flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors",
+							"focus-within:ring-2 focus-within:ring-foreground focus-within:ring-offset-2",
 							value === "ideal" ? "border-foreground" : "border-border",
 						)}
 					>

@@ -51,43 +51,50 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 		return lowerName.includes("eco") || lowerName.includes("green");
 	};
 
-	const handleSubmit = useCallback(async () => {
-		if (!selectedMethod) {
-			setError("Please select a shipping method");
-			return;
-		}
+	const handleSubmit = useCallback(
+		async (event?: React.FormEvent) => {
+			if (event) {
+				event.preventDefault();
+			}
 
-		// Skip API call if method hasn't changed
-		if (selectedMethod === currentMethodId) {
-			onNext();
-			return;
-		}
-
-		setIsSubmittingLocal(true);
-		setError(null);
-
-		try {
-			const result = await updateDeliveryMethod({
-				checkoutId: checkout.id,
-				deliveryMethodId: selectedMethod,
-				languageCode: localeConfig.graphqlLanguageCode,
-			});
-
-			if (result.error) {
-				setError("Failed to update shipping method");
+			if (!selectedMethod) {
+				setError("Please select a shipping method");
 				return;
 			}
 
-			onNext();
-		} finally {
-			setIsSubmittingLocal(false);
-		}
-	}, [selectedMethod, currentMethodId, onNext, updateDeliveryMethod, checkout.id]);
+			// Skip API call if method hasn't changed
+			if (selectedMethod === currentMethodId) {
+				onNext();
+				return;
+			}
+
+			setIsSubmittingLocal(true);
+			setError(null);
+
+			try {
+				const result = await updateDeliveryMethod({
+					checkoutId: checkout.id,
+					deliveryMethodId: selectedMethod,
+					languageCode: localeConfig.graphqlLanguageCode,
+				});
+
+				if (result.error) {
+					setError("Failed to update shipping method");
+					return;
+				}
+
+				onNext();
+			} finally {
+				setIsSubmittingLocal(false);
+			}
+		},
+		[selectedMethod, currentMethodId, onNext, updateDeliveryMethod, checkout.id],
+	);
 
 	const buttonText = isSubmittingLocal ? "Saving..." : "Continue to payment";
 
 	return (
-		<div className="space-y-8">
+		<form className="space-y-8" onSubmit={handleSubmit}>
 			{/* Summary Context */}
 			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={() => onBack()} />
 
@@ -126,6 +133,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 									key={method.id}
 									className={cn(
 										"flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors",
+										"focus-within:ring-2 focus-within:ring-foreground focus-within:ring-offset-2",
 										isSelected
 											? "bg-secondary/50 border-foreground"
 											: "hover:border-muted-foreground/50 border-border",
@@ -177,6 +185,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 			{/* Navigation */}
 			<div className="flex items-center justify-between">
 				<button
+					type="button"
 					onClick={onBack}
 					className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
 				>
@@ -184,7 +193,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 					Return to information
 				</button>
 				<Button
-					onClick={handleSubmit}
+					type="submit"
 					disabled={!selectedMethod || isSubmittingLocal}
 					className="hidden h-12 px-8 md:flex"
 				>
@@ -195,11 +204,12 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 			<MobileStickyAction
 				step={getStepNumber("SHIPPING", true)}
 				isShippingRequired={true}
+				type="submit"
 				onAction={handleSubmit}
 				isLoading={isSubmittingLocal}
 				disabled={!selectedMethod}
 				loadingText="Saving..."
 			/>
-		</div>
+		</form>
 	);
 };

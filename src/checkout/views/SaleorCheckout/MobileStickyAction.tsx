@@ -20,7 +20,9 @@ interface MobileStickyActionProps {
 	/** Total to display (for payment step) */
 	total?: string;
 	/** Click handler */
-	onAction: () => void;
+	onAction?: () => void;
+	/** Button type */
+	type?: "button" | "submit";
 }
 
 /**
@@ -35,6 +37,7 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 	loadingText,
 	total,
 	onAction,
+	type = "button",
 }) => {
 	// Determine button text based on step
 	const getButtonText = () => {
@@ -62,6 +65,7 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 	return (
 		<div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card p-4 md:hidden">
 			<Button
+				type={type}
 				onClick={onAction}
 				disabled={disabled || isLoading}
 				className="h-12 w-full text-base font-semibold"
