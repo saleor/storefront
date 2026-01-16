@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"license": "BSD-3-Clause",
+	"license": "SEE LICENSE IN LICENSE",
 	"scripts": {
 		"dev": "next dev --webpack",
 		"dev:webpack": "next dev --webpack",
