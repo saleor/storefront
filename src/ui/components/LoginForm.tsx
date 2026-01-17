@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { Button } from "@/ui/components/ui/Button";
 import { Input } from "@/ui/components/ui/Input";
 import { Label } from "@/ui/components/ui/Label";
@@ -14,6 +15,7 @@ export function LoginForm() {
 	const router = useRouter();
 	const params = useParams<{ channel: string }>();
 	const searchParams = useSearchParams();
+	const { signIn } = useSaleorAuthContext();
 
 	// Check if this is a password reset callback
 	const resetEmail = searchParams.get("email");
@@ -59,20 +61,15 @@ export function LoginForm() {
 		setIsSubmitting(true);
 
 		try {
-			const response = await fetch("/api/auth/login", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password }),
-			});
+			const result = await signIn({ email, password });
 
-			const data = (await response.json()) as {
-				errors?: Array<{ message: string; code?: string }>;
-				token?: string;
-			};
-
-			if (data.errors?.length) {
-				const err = data.errors[0];
-				if (err.code === "INVALID_CREDENTIALS") {
+			if (result.data?.tokenCreate?.errors?.length) {
+				const err = result.data.tokenCreate.errors[0];
+				// Check for invalid credentials by message pattern
+				const isInvalidCredentials =
+					err.message?.toLowerCase().includes("invalid") ||
+					err.message?.toLowerCase().includes("credentials");
+				if (isInvalidCredentials) {
 					setError("Invalid email or password. Please try again.");
 				} else {
 					setError(err.message || "Sign in failed");
@@ -80,7 +77,7 @@ export function LoginForm() {
 				return;
 			}
 
-			if (data.token) {
+			if (result.data?.tokenCreate?.token) {
 				router.push(`/${params.channel}`);
 				router.refresh();
 			}
