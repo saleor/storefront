@@ -67,7 +67,7 @@ export const ConfirmationStep: FC<ConfirmationStepProps> = ({ checkout }) => {
 			<div className="overflow-hidden rounded-lg border border-border">
 				<div className="bg-secondary/50 border-b border-border p-4">
 					<h2 className="font-semibold">Your order is confirmed</h2>
-					<p className="mt-1 text-sm text-muted-foreground">
+					<p className="mt-1 break-words text-sm text-muted-foreground">
 						You&apos;ll receive a confirmation email at {email}
 					</p>
 				</div>
@@ -75,33 +75,33 @@ export const ConfirmationStep: FC<ConfirmationStepProps> = ({ checkout }) => {
 				{/* Order Details */}
 				<div className="space-y-4 p-4">
 					<div className="flex items-start gap-3">
-						<Mail className="mt-0.5 h-5 w-5 text-muted-foreground" />
-						<div>
+						<Mail className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+						<div className="min-w-0 flex-1">
 							<p className="text-sm font-medium">Confirmation email sent</p>
-							<p className="text-sm text-muted-foreground">{email}</p>
+							<p className="break-words text-sm text-muted-foreground">{email}</p>
 						</div>
 					</div>
 					{shippingAddress && (
 						<div className="flex items-start gap-3">
-							<MapPin className="mt-0.5 h-5 w-5 text-muted-foreground" />
-							<div>
+							<MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+							<div className="min-w-0 flex-1">
 								<p className="text-sm font-medium">Shipping address</p>
-								<p className="text-sm text-muted-foreground">{formatAddress(shippingAddress)}</p>
+								<p className="break-words text-sm text-muted-foreground">{formatAddress(shippingAddress)}</p>
 							</div>
 						</div>
 					)}
 					{billingAddress && (
 						<div className="flex items-start gap-3">
-							<CreditCard className="mt-0.5 h-5 w-5 text-muted-foreground" />
-							<div>
+							<CreditCard className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+							<div className="min-w-0 flex-1">
 								<p className="text-sm font-medium">Billing address</p>
-								<p className="text-sm text-muted-foreground">{formatAddress(billingAddress)}</p>
+								<p className="break-words text-sm text-muted-foreground">{formatAddress(billingAddress)}</p>
 							</div>
 						</div>
 					)}
 					<div className="flex items-start gap-3">
-						<Package className="mt-0.5 h-5 w-5 text-muted-foreground" />
-						<div>
+						<Package className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+						<div className="min-w-0 flex-1">
 							<p className="text-sm font-medium">Estimated delivery</p>
 							<p className="text-sm text-muted-foreground">{formattedDelivery}</p>
 						</div>

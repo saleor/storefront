@@ -28,7 +28,7 @@ export const CheckoutSummaryContext: FC<CheckoutSummaryContextProps> = ({ rows, 
 			{rows.map((row) => (
 				<div key={row.label} className="flex items-start gap-4 p-4">
 					<span className="w-16 shrink-0 pt-0.5 text-muted-foreground">{row.label}</span>
-					<span className="min-w-0 flex-1">{row.value}</span>
+					<span className="min-w-0 flex-1 break-words">{row.value}</span>
 					{row.onChangeStep !== undefined && onGoToStep && (
 						<button
 							type="button"
