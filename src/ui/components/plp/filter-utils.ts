@@ -8,11 +8,11 @@
  * Client-side filters (handled here):
  * - colors: Saleor doesn't support attribute filtering without IDs
  * - sizes: Same as colors
+ *
+ * Note: Server-only functions (like resolveCategorySlugsToIds) are in filter-utils.server.ts
  */
 
 import type { ProductOrder, ProductOrderField, OrderDirection, ProductFilterInput } from "@/gql/graphql";
-import { CategoriesBySlugDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
 import { compareSizes } from "@/lib/sizes";
 import type { ProductCardData } from "./ProductCard";
 import type { FilterOption, ActiveFilter, SortOption } from "./FilterBar";
@@ -45,31 +45,6 @@ export const STATIC_PRICE_RANGES_WITH_COUNT = STATIC_PRICE_RANGES.map((r) => ({ 
 // ============================================================================
 // Server-side: Saleor GraphQL Filters
 // ============================================================================
-
-/**
- * Resolve category slugs to IDs via Saleor API.
- * Cached for 1 hour.
- */
-export async function resolveCategorySlugsToIds(
-	slugs: string[],
-): Promise<Map<string, { id: string; name: string }>> {
-	const result = new Map<string, { id: string; name: string }>();
-	if (slugs.length === 0) return result;
-
-	try {
-		const { categories } = await executeGraphQL(CategoriesBySlugDocument, {
-			variables: { slugs, first: slugs.length },
-			revalidate: 3600,
-		});
-		categories?.edges?.forEach(({ node }) => {
-			result.set(node.slug, { id: node.id, name: node.name });
-		});
-	} catch (error) {
-		console.error("[filter-utils] Failed to resolve category slugs:", error);
-	}
-
-	return result;
-}
 
 /**
  * Build Saleor ProductFilterInput from URL params.

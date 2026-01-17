@@ -13,22 +13,10 @@ import {
 	fetchExchange,
 } from "urql";
 import { withRetry } from "@/lib/fetchRetry";
+import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE, encodeCookieName } from "./constants";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
-
-// Token lifetimes (industry standard for e-commerce)
-const ACCESS_TOKEN_MAX_AGE = 15 * 60; // 15 minutes
-const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60; // 7 days
-
-/**
- * Encode storage key to be a valid cookie name.
- * The SDK uses keys like "https://api.example.com/graphql/+saleor_auth_access_token"
- * which contain invalid cookie characters (: and /). We encode these to make valid names.
- */
-const encodeCookieName = (key: string): string => {
-	return key.replace(/[^a-zA-Z0-9_-]/g, "_");
-};
 
 /**
  * Client-side cookie storage for auth tokens.
@@ -71,7 +59,6 @@ const createClientCookieStorage = () => {
 	};
 };
 
-// Use cookie storage so tokens are shared between client and server
 const clientCookieStorage = createClientCookieStorage();
 
 export const saleorAuthClient = createSaleorAuthClient({
@@ -88,7 +75,6 @@ const makeUrqlClient = () => {
 		url: saleorApiUrl,
 		suspense: true,
 		requestPolicy: "cache-first",
-		// Type assertion needed due to urql's overloaded fetch type
 		fetch: withRetry(authFetch) as typeof fetch,
 		exchanges: [dedupExchange, cacheExchange, fetchExchange],
 	});

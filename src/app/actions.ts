@@ -1,6 +1,6 @@
 "use server";
 
-import { getServerAuthClient } from "@/app/config.server";
+import { getServerAuthClient } from "@/lib/auth/server";
 import * as Checkout from "@/lib/checkout";
 
 export async function logout() {

@@ -1,30 +1,18 @@
 import "server-only";
 
 import { createSaleorAuthClient } from "@saleor/auth-sdk";
+import { cookies } from "next/headers";
 import { invariant } from "ts-invariant";
+import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE, encodeCookieName } from "./constants";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
-// Token lifetimes (must match AuthProvider.tsx)
-const ACCESS_TOKEN_MAX_AGE = 15 * 60; // 15 minutes
-const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60; // 7 days
-
-/**
- * Encode storage key to be a valid cookie name.
- * Must match the encoding in AuthProvider.tsx on the client side.
- */
-const encodeCookieName = (key: string): string => {
-	return key.replace(/[^a-zA-Z0-9_-]/g, "_");
-};
-
 /**
  * Server-side cookie storage for auth tokens.
  * Uses the same key encoding as the client-side storage to share cookies.
- * Does NOT set httpOnly so client can also read/write these cookies.
  */
 const createServerCookieStorage = async () => {
-	const { cookies } = await import("next/headers");
 	const cookieStore = await cookies();
 	const isSecure = process.env.NODE_ENV === "production";
 

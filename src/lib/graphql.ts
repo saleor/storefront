@@ -46,7 +46,7 @@ export async function executeGraphQL<Result, Variables>(
 		if (withAuth) {
 			try {
 				// Dynamic import to avoid bundling server-only code in client components
-				const { getServerAuthClient } = await import("@/app/config.server");
+				const { getServerAuthClient } = await import("@/lib/auth/server");
 				response = await (
 					await getServerAuthClient()
 				).fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);

@@ -12,8 +12,7 @@ export {
 export { WavePattern } from "./WavePattern";
 export { transformToProductCard, formatPrice } from "./utils";
 export {
-	// Server-side filter helpers
-	resolveCategorySlugsToIds,
+	// Server-side filter helpers (resolveCategorySlugsToIds is in filter-utils.server.ts)
 	buildFilterVariables,
 	buildSortVariables,
 	// Client-side filter helpers

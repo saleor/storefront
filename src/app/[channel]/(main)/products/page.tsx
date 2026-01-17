@@ -3,11 +3,8 @@ import { ProductListPaginatedDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
-import {
-	buildSortVariables,
-	buildFilterVariables,
-	resolveCategorySlugsToIds,
-} from "@/ui/components/plp/filter-utils";
+import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
+import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
 import { ProductsPageClient } from "./products-client";
 
 // Cache product list for 5 minutes

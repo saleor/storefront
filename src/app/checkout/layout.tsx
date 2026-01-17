@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { AuthProvider } from "@/ui/components/AuthProvider";
+import { AuthProvider } from "@/lib/auth";
 import { brandConfig, formatPageTitle } from "@/config/brand";
 
 export const metadata = {

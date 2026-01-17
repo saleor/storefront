@@ -2,7 +2,7 @@ import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/Footer";
 import { Header } from "@/ui/components/Header";
 import { CartProvider, CartDrawerWrapper } from "@/ui/components/cart";
-import { AuthProvider } from "@/ui/components/AuthProvider";
+import { AuthProvider } from "@/lib/auth";
 import { brandConfig } from "@/config/brand";
 
 export const metadata = {
