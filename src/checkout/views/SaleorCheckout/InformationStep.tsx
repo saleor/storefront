@@ -13,7 +13,11 @@ import {
 } from "@/checkout/graphql";
 import { useAvailableShippingCountries } from "@/checkout/hooks/useAvailableShippingCountries";
 import { useAddressFormUtils } from "@/checkout/components/AddressForm/useAddressFormUtils";
-import { getAddressInputData, getAddressInputDataFromAddress } from "@/checkout/components/AddressForm/utils";
+import {
+	getAddressInputData,
+	getAddressInputDataFromAddress,
+	isMatchingAddressData,
+} from "@/checkout/components/AddressForm/utils";
 import { useUser } from "@/checkout/hooks/useUser";
 import { getQueryParams, createQueryString } from "@/checkout/lib/utils/url";
 import { localeConfig } from "@/config/locale";
@@ -46,6 +50,10 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 	const { availableShippingCountries } = useAvailableShippingCountries();
 	const shippingAddress = checkout.shippingAddress;
 
+	// Default country: use checkout's address, or first available country from channel
+	const defaultCountry =
+		(shippingAddress?.country?.code as CountryCode) || availableShippingCountries[0] || ("US" as CountryCode);
+
 	// Mutations
 	const [, updateEmail] = useCheckoutEmailUpdateMutation();
 	const [, updateShippingAddress] = useCheckoutShippingAddressUpdateMutation();
@@ -65,9 +73,7 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 	const [subscribeNews, setSubscribeNews] = useState(false);
 
 	// ----- Address form state (for guests/new address) -----
-	const [countryCode, setCountryCode] = useState<CountryCode>(
-		(shippingAddress?.country?.code as CountryCode) || "US",
-	);
+	const [countryCode, setCountryCode] = useState<CountryCode>(defaultCountry);
 	const [formData, setFormData] = useState<Record<string, string>>(() => ({
 		firstName: shippingAddress?.firstName || "",
 		lastName: shippingAddress?.lastName || "",
@@ -82,12 +88,31 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 	}));
 
 	// ----- Address selection state (for logged-in users) -----
+	// Check if checkout's shipping address matches any saved address
+	const findMatchingAddressId = (): string | null => {
+		if (!shippingAddress || !user?.addresses?.length) return null;
+		const match = user.addresses.find((addr) => isMatchingAddressData(addr, shippingAddress));
+		return match?.id || null;
+	};
+
 	const [selectedAddressId, setSelectedAddressId] = useState<string | null>(() => {
+		// First, check if checkout's address matches a saved address
+		const matchingId = findMatchingAddressId();
+		if (matchingId) return matchingId;
+		// Otherwise, use defaults
 		if (user?.defaultShippingAddress?.id) return user.defaultShippingAddress.id;
 		if (user?.addresses?.[0]?.id) return user.addresses[0].id;
 		return null;
 	});
-	const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+
+	// If checkout has an address that doesn't match any saved address, show the form
+	const [showNewAddressForm, setShowNewAddressForm] = useState(() => {
+		if (!shippingAddress) return false;
+		if (!user?.addresses?.length) return false;
+		// If there's a shipping address but it doesn't match any saved address, show the form
+		const matchingId = findMatchingAddressId();
+		return !matchingId && Boolean(shippingAddress.streetAddress1);
+	});
 
 	// Sync local state with checkout data when it updates (e.g. after auto-login)
 	useEffect(() => {
@@ -96,9 +121,10 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 		}
 	}, [checkout.email]);
 
+	// Sync form data with checkout's shipping address - but only when NOT entering a new address
 	useEffect(() => {
-		if (shippingAddress) {
-			setCountryCode((shippingAddress.country?.code as CountryCode) || "US");
+		if (shippingAddress && !showNewAddressForm) {
+			setCountryCode((shippingAddress.country?.code as CountryCode) || defaultCountry);
 			setFormData({
 				firstName: shippingAddress.firstName || "",
 				lastName: shippingAddress.lastName || "",
@@ -112,18 +138,32 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 				phone: shippingAddress.phone || "",
 			});
 		}
-	}, [shippingAddress]);
+	}, [shippingAddress, showNewAddressForm]);
 
 	// Update selected address when user data loads
 	useEffect(() => {
-		if (user && !selectedAddressId) {
+		if (user && !selectedAddressId && !showNewAddressForm) {
+			// First check if checkout's address matches a saved address
+			if (shippingAddress && user.addresses?.length) {
+				const match = user.addresses.find((addr) => isMatchingAddressData(addr, shippingAddress));
+				if (match) {
+					setSelectedAddressId(match.id);
+					return;
+				}
+				// If shipping address exists but doesn't match, show form
+				if (shippingAddress.streetAddress1) {
+					setShowNewAddressForm(true);
+					return;
+				}
+			}
+			// Fall back to defaults
 			if (user.defaultShippingAddress?.id) {
 				setSelectedAddressId(user.defaultShippingAddress.id);
 			} else if (user.addresses?.[0]?.id) {
 				setSelectedAddressId(user.addresses[0].id);
 			}
 		}
-	}, [user, selectedAddressId]);
+	}, [user, selectedAddressId, showNewAddressForm, shippingAddress]);
 
 	// ----- Validation & Errors -----
 	const [errors, setErrors] = useState<Record<string, string>>({});
@@ -159,7 +199,40 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 
 	const handleShowNewAddressForm = (show: boolean) => {
 		setShowNewAddressForm(show);
-		if (!show) setErrors({});
+		if (show) {
+			// Clear form for new address entry
+			setFormData({
+				firstName: "",
+				lastName: "",
+				streetAddress1: "",
+				streetAddress2: "",
+				companyName: "",
+				city: "",
+				postalCode: "",
+				countryArea: "",
+				cityArea: "",
+				phone: "",
+			});
+			setErrors({});
+		} else {
+			// Going back to saved addresses - restore from checkout if available
+			if (shippingAddress) {
+				setCountryCode((shippingAddress.country?.code as CountryCode) || defaultCountry);
+				setFormData({
+					firstName: shippingAddress.firstName || "",
+					lastName: shippingAddress.lastName || "",
+					streetAddress1: shippingAddress.streetAddress1 || "",
+					streetAddress2: shippingAddress.streetAddress2 || "",
+					companyName: shippingAddress.companyName || "",
+					city: shippingAddress.city || "",
+					postalCode: shippingAddress.postalCode || "",
+					countryArea: shippingAddress.countryArea || "",
+					cityArea: shippingAddress.cityArea || "",
+					phone: shippingAddress.phone || "",
+				});
+			}
+			setErrors({});
+		}
 	};
 
 	// ----- Submit Logic -----

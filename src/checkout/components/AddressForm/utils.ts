@@ -53,10 +53,26 @@ export const getAddressInputData = ({
 		countryCode?: CountryCode;
 		country: CountryDisplay;
 	}
->): AddressInput => ({
-	...pick(rest, getAllAddressFieldKeys()),
-	country: countryCode || (country?.code as CountryCode),
-});
+>): AddressInput => {
+	// Pick only address fields, then filter out empty strings
+	const picked = pick(rest, getAllAddressFieldKeys());
+	const filtered = reduce(
+		picked,
+		(result, value, key) => {
+			// Only include non-empty values
+			if (value !== undefined && value !== null && value !== "") {
+				result[key] = value;
+			}
+			return result;
+		},
+		{} as Record<string, unknown>,
+	);
+
+	return {
+		...filtered,
+		country: countryCode || (country?.code as CountryCode),
+	} as AddressInput;
+};
 
 export const getAddressInputDataFromAddress = (
 	address: OptionalAddress | Partial<AddressFragment>,
@@ -67,12 +83,25 @@ export const getAddressInputDataFromAddress = (
 
 	const { country, phone, ...rest } = address;
 
+	// Pick only address fields, then filter out empty/null values
+	const picked = pick(rest, getAllAddressFieldKeys());
+	const filtered = reduce(
+		picked,
+		(result, value, key) => {
+			if (value !== undefined && value !== null && value !== "") {
+				result[key] = value;
+			}
+			return result;
+		},
+		{} as Record<string, unknown>,
+	);
+
 	return {
-		...pick(rest, getAllAddressFieldKeys()),
+		...filtered,
 		country: country?.code as CountryCode,
-		// cause in api phone can be null
-		phone: phone || "",
-	};
+		// Only include phone if it has a value
+		...(phone ? { phone } : {}),
+	} as AddressInput;
 };
 
 export const getAddressFormDataFromAddress = (address: OptionalAddress): AddressFormData => {
@@ -141,7 +170,7 @@ export const getAddressValidationRulesVariables = (
 	autoSave
 		? {
 				checkRequiredFields: false,
-		  }
+			}
 		: {};
 
 export const addressFieldsOrder: AddressField[] = [
