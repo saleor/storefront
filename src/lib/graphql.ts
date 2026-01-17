@@ -1,6 +1,5 @@
 import { invariant } from "ts-invariant";
 import { type TypedDocumentString } from "../gql/graphql";
-import { getServerAuthClient } from "@/app/config.server";
 
 type GraphQLErrorResponse = {
 	errors: readonly {
@@ -46,6 +45,8 @@ export async function executeGraphQL<Result, Variables>(
 	try {
 		if (withAuth) {
 			try {
+				// Dynamic import to avoid bundling server-only code in client components
+				const { getServerAuthClient } = await import("@/app/config.server");
 				response = await (
 					await getServerAuthClient()
 				).fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
