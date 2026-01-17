@@ -50,14 +50,42 @@ export const rootMetadata: Metadata = {
 		},
 	}),
 
-	// Icons
+	// Icons - with light/dark mode support
 	icons: {
 		icon: [
 			{ url: "/favicon.ico", sizes: "32x32" },
-			{ url: "/icon.svg", type: "image/svg+xml" },
+			// Light mode (dark icon on light tabs)
+			{
+				url: "/favicon-16x16.png",
+				sizes: "16x16",
+				type: "image/png",
+				media: "(prefers-color-scheme: light)",
+			},
+			{
+				url: "/favicon-32x32.png",
+				sizes: "32x32",
+				type: "image/png",
+				media: "(prefers-color-scheme: light)",
+			},
+			// Dark mode (light icon on dark tabs)
+			{
+				url: "/favicon-dark-16x16.png",
+				sizes: "16x16",
+				type: "image/png",
+				media: "(prefers-color-scheme: dark)",
+			},
+			{
+				url: "/favicon-dark-32x32.png",
+				sizes: "32x32",
+				type: "image/png",
+				media: "(prefers-color-scheme: dark)",
+			},
 		],
 		apple: "/apple-icon.png",
 	},
+
+	// Web App Manifest
+	manifest: "/site.webmanifest",
 
 	// Crawler configuration
 	robots: {
