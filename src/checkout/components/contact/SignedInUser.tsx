@@ -39,6 +39,7 @@ export const SignedInUser: FC<SignedInUserProps> = ({ user, onSignOut }) => {
 				</div>
 			</div>
 			<button
+				type="button"
 				onClick={handleSignOut}
 				className="shrink-0 text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground hover:no-underline"
 			>
