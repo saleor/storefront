@@ -1,7 +1,6 @@
 import "server-only";
 
 import { createSaleorAuthClient } from "@saleor/auth-sdk";
-import { cookies } from "next/headers";
 import { invariant } from "ts-invariant";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
@@ -25,6 +24,7 @@ const encodeCookieName = (key: string): string => {
  * Does NOT set httpOnly so client can also read/write these cookies.
  */
 const createServerCookieStorage = async () => {
+	const { cookies } = await import("next/headers");
 	const cookieStore = await cookies();
 	const isSecure = process.env.NODE_ENV === "production";
 
