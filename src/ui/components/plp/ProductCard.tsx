@@ -65,13 +65,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 		<article className="group">
 			<Link href={product.href} className="block">
 				{/* Image Container */}
-				<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary lg:mb-5">
+				<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
 					{/* Primary Image */}
 					<Image
 						src={product.image}
 						alt={product.imageAlt || product.name}
 						fill
-						sizes="(max-width: 640px) 50vw, 600px"
+						sizes="(max-width: 1024px) 50vw, 33vw"
 						className={cn(
 							"object-cover transition-all duration-500 ease-out group-hover:scale-105",
 							product.hoverImage && "group-hover:opacity-0",
@@ -85,7 +85,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 							src={product.hoverImage}
 							alt={`${product.name} - alternate view`}
 							fill
-							sizes="(max-width: 640px) 50vw, 600px"
+							sizes="(max-width: 1024px) 50vw, 33vw"
 							className="object-cover opacity-0 transition-all duration-500 ease-out group-hover:scale-105 group-hover:opacity-100"
 						/>
 					)}
@@ -94,7 +94,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 					{product.badge && (
 						<Badge
 							variant={product.badge === "Sale" ? "destructive" : "default"}
-							className="absolute left-3 top-3 lg:left-4 lg:top-4"
+							className="absolute left-3 top-3"
 						>
 							{product.badge}
 						</Badge>
@@ -104,7 +104,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 					<Button
 						variant="secondary"
 						size="icon"
-						className="absolute right-3 top-3 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 lg:right-4 lg:top-4 lg:h-9 lg:w-9"
+						className="absolute right-3 top-3 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
 						onClick={handleWishlist}
 						type="button"
 					>
@@ -114,7 +114,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
 					{/* Quick Add Overlay */}
 					{canQuickAdd && (
-						<div className="absolute bottom-0 left-0 right-0 translate-y-2 p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:p-4">
+						<div className="absolute bottom-0 left-0 right-0 translate-y-2 p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
 							<Button className="w-full" size="sm" onClick={handleQuickAdd} type="button">
 								<Plus className="mr-1.5 h-4 w-4" />
 								Quick Add
@@ -124,11 +124,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 				</div>
 
 				{/* Product Info */}
-				<div className="space-y-1.5 lg:space-y-2">
-					{product.brand && (
-						<p className="text-xs tracking-wide text-muted-foreground lg:text-sm">{product.brand}</p>
-					)}
-					<h3 className="line-clamp-2 font-medium leading-snug underline-offset-2 group-hover:underline lg:text-lg">
+				<div className="space-y-1.5">
+					{product.brand && <p className="text-xs tracking-wide text-muted-foreground">{product.brand}</p>}
+					<h3 className="line-clamp-2 font-medium leading-snug underline-offset-2 group-hover:underline">
 						{product.name}
 					</h3>
 
@@ -138,7 +136,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 							{product.colors.slice(0, 4).map((color) => (
 								<span
 									key={color.name}
-									className="h-4 w-4 rounded-full border border-border lg:h-5 lg:w-5"
+									className="h-4 w-4 rounded-full border border-border"
 									style={{ backgroundColor: color.hex }}
 									title={color.name}
 								/>
@@ -151,7 +149,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
 					{/* Price */}
 					<div className="flex items-center gap-2 pt-0.5">
-						<span className="font-semibold lg:text-lg">{formatPrice(product.price, product.currency)}</span>
+						<span className="font-semibold">{formatPrice(product.price, product.currency)}</span>
 						{product.compareAtPrice && (
 							<span className="text-sm text-muted-foreground line-through">
 								{formatPrice(product.compareAtPrice, product.currency)}
