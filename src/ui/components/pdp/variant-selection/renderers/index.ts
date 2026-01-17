@@ -30,14 +30,14 @@
  * ```
  */
 
-export { ColorSwatchOption } from "./ColorSwatchOption";
-export { SizeButtonOption } from "./SizeButtonOption";
-export { TextOption } from "./TextOption";
+export { ColorSwatchOption } from "./color-swatch-option";
+export { SizeButtonOption } from "./size-button-option";
+export { TextOption } from "./text-option";
 
 import type { RendererRegistry } from "../types";
-import { ColorSwatchOption } from "./ColorSwatchOption";
-import { SizeButtonOption } from "./SizeButtonOption";
-import { TextOption } from "./TextOption";
+import { ColorSwatchOption } from "./color-swatch-option";
+import { SizeButtonOption } from "./size-button-option";
+import { TextOption } from "./text-option";
 
 /**
  * Default renderer registry.

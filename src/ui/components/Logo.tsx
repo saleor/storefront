@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { LinkWithChannel } from "../atoms/LinkWithChannel";
-import { Logo as SharedLogo } from "./shared/Logo";
+import { LinkWithChannel } from "../atoms/link-with-channel";
+import { Logo as SharedLogo } from "./shared/logo";
 
 export const Logo = () => {
 	const pathname = usePathname();

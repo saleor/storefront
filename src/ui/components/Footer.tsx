@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { LinkWithChannel } from "../atoms/LinkWithChannel";
-import { ChannelSelect } from "./ChannelSelect";
+import { LinkWithChannel } from "../atoms/link-with-channel";
+import { ChannelSelect } from "./channel-select";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { getCopyrightText } from "@/config/brand";
-import { Logo } from "./shared/Logo";
+import { Logo } from "./shared/logo";
 
 // Default footer links when no CMS data is available
 const defaultFooterLinks = {

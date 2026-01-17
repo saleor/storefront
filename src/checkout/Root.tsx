@@ -12,11 +12,11 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useAuthChange, useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { useState } from "react";
-import { alertsContainerProps } from "./hooks/useAlerts/consts";
-import { RootViews } from "./views/RootViews";
-import { PageNotFound } from "@/checkout/views/PageNotFound";
-import { GraphQLMonitor, createMonitoredFetch } from "@/ui/components/dev/GraphQLMonitor";
-import { withRetry } from "@/lib/fetchRetry";
+import { alertsContainerProps } from "./hooks/use-alerts/consts";
+import { RootViews } from "./views/root-views";
+import { PageNotFound } from "@/checkout/views/page-not-found";
+import { GraphQLMonitor, createMonitoredFetch } from "@/ui/components/dev/graphql-monitor";
+import { withRetry } from "@/lib/fetch-retry";
 import "./index.css";
 
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {

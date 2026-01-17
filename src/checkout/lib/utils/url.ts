@@ -1,5 +1,5 @@
 import { type CountryCode } from "@/checkout/graphql";
-import { type MightNotExist } from "@/checkout/lib/globalTypes";
+import { type MightNotExist } from "@/checkout/lib/global-types";
 import { type ReadonlyURLSearchParams } from "next/navigation";
 
 export type ParamBasicValue = MightNotExist<string>;

@@ -9,6 +9,145 @@ type GraphQLErrorResponse = {
 
 type GraphQLRespone<T> = { data: T } | GraphQLErrorResponse;
 
+// ============================================================================
+// Request Queue for Rate Limiting
+// ============================================================================
+
+/**
+ * Simple request queue to limit concurrent API calls.
+ * Prevents 429 errors during build when multiple workers fetch simultaneously.
+ */
+class RequestQueue {
+	private queue: Array<() => void> = [];
+	private activeRequests = 0;
+	private readonly maxConcurrent: number;
+	private readonly minDelayMs: number;
+	private lastRequestTime = 0;
+
+	constructor(maxConcurrent = 3, minDelayMs = 100) {
+		this.maxConcurrent = maxConcurrent;
+		this.minDelayMs = minDelayMs;
+	}
+
+	async enqueue<T>(fn: () => Promise<T>): Promise<T> {
+		// Wait for slot
+		await this.waitForSlot();
+
+		// Ensure minimum delay between requests
+		const now = Date.now();
+		const timeSinceLastRequest = now - this.lastRequestTime;
+		if (timeSinceLastRequest < this.minDelayMs) {
+			await sleep(this.minDelayMs - timeSinceLastRequest);
+		}
+
+		this.activeRequests++;
+		this.lastRequestTime = Date.now();
+
+		try {
+			return await fn();
+		} finally {
+			this.activeRequests--;
+			this.processQueue();
+		}
+	}
+
+	private waitForSlot(): Promise<void> {
+		if (this.activeRequests < this.maxConcurrent) {
+			return Promise.resolve();
+		}
+		return new Promise((resolve) => this.queue.push(resolve));
+	}
+
+	private processQueue(): void {
+		if (this.queue.length > 0 && this.activeRequests < this.maxConcurrent) {
+			const next = this.queue.shift();
+			next?.();
+		}
+	}
+}
+
+function sleep(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Global queue - shared across all requests
+const requestQueue = new RequestQueue(
+	parseInt(process.env.SALEOR_MAX_CONCURRENT_REQUESTS || "3", 10),
+	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || "100", 10),
+);
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000;
+
+/**
+ * Fetch with retry for 429 (rate limit) and 5xx errors.
+ * Used internally by executeGraphQL.
+ */
+async function fetchWithRetry(input: RequestInit, withAuth: boolean): Promise<Response> {
+	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+
+	for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+		try {
+			let response: Response;
+
+			if (withAuth) {
+				try {
+					// Dynamic import to avoid bundling server-only code in client components
+					const { getServerAuthClient } = await import("@/lib/auth/server");
+					response = await (
+						await getServerAuthClient()
+					).fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
+				} catch (authError) {
+					// During static generation, cookies() throws - fall back to unauthenticated fetch
+					const isDynamicServerError =
+						authError instanceof Error &&
+						((authError as Error & { digest?: string }).digest === "DYNAMIC_SERVER_USAGE" ||
+							authError.message?.includes("cookies") ||
+							authError.message?.includes("Dynamic server usage"));
+					if (isDynamicServerError) {
+						response = await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
+					} else {
+						throw authError;
+					}
+				}
+			} else {
+				response = await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
+			}
+
+			// Retry on 429 (rate limit) or 5xx (server errors)
+			if ((response.status === 429 || response.status >= 500) && attempt < MAX_RETRIES) {
+				const retryAfter = response.headers.get("Retry-After");
+				const delayMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : RETRY_DELAY_MS * Math.pow(2, attempt);
+				console.warn(
+					`[GraphQL] ${response.status} - retrying in ${delayMs}ms (attempt ${attempt + 1}/${MAX_RETRIES})`,
+				);
+				await sleep(delayMs);
+				continue;
+			}
+
+			return response;
+		} catch (error) {
+			// Network errors - retry
+			if (attempt < MAX_RETRIES) {
+				console.warn(`[GraphQL] Network error - retrying (attempt ${attempt + 1}/${MAX_RETRIES})`);
+				await sleep(RETRY_DELAY_MS * Math.pow(2, attempt));
+				continue;
+			}
+			throw new SaleorError("Failed to connect to Saleor API", {
+				type: "network",
+				isRetryable: true,
+				cause: error,
+			});
+		}
+	}
+
+	throw new SaleorError("Max retries exceeded", { type: "server", isRetryable: false });
+}
+
+// ============================================================================
+// GraphQL Execution
+// ============================================================================
+
 export async function executeGraphQL<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
 	options: {
@@ -41,40 +180,8 @@ export async function executeGraphQL<Result, Variables>(
 		next: { revalidate },
 	};
 
-	let response: Response;
-	try {
-		if (withAuth) {
-			try {
-				// Dynamic import to avoid bundling server-only code in client components
-				const { getServerAuthClient } = await import("@/lib/auth/server");
-				response = await (
-					await getServerAuthClient()
-				).fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
-			} catch (authError) {
-				// During static generation, cookies() throws - fall back to unauthenticated fetch
-				// Next.js throws errors with digest 'DYNAMIC_SERVER_USAGE' when dynamic APIs are used during static generation
-				const isDynamicServerError =
-					authError instanceof Error &&
-					((authError as Error & { digest?: string }).digest === "DYNAMIC_SERVER_USAGE" ||
-						authError.message?.includes("cookies") ||
-						authError.message?.includes("Dynamic server usage"));
-				if (isDynamicServerError) {
-					response = await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
-				} else {
-					throw authError;
-				}
-			}
-		} else {
-			response = await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
-		}
-	} catch (error) {
-		// Network errors (DNS failure, connection refused, timeout, etc.)
-		throw new SaleorError("Failed to connect to Saleor API", {
-			type: "network",
-			isRetryable: true,
-			cause: error,
-		});
-	}
+	// Use queue to limit concurrent requests (prevents 429 during build)
+	const response = await requestQueue.enqueue(() => fetchWithRetry(input, withAuth));
 
 	if (!response.ok) {
 		const body = await (async () => {

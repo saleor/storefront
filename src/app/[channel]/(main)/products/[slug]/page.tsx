@@ -16,7 +16,7 @@ import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
 export const revalidate = 300; // Default revalidation: 5 minutes
 
-import { Breadcrumbs } from "@/ui/components/Breadcrumbs";
+import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductGallery,
 	AddToCart,
@@ -24,7 +24,7 @@ import {
 	StickyBar,
 	VariantSelectionSection,
 } from "@/ui/components/pdp";
-import { Badge } from "@/ui/components/ui/Badge";
+import { Badge } from "@/ui/components/ui/badge";
 
 /**
  * Product page metadata generation

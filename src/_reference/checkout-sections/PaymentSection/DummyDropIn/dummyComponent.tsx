@@ -1,7 +1,7 @@
 "use client";
 
 import { dummyGatewayId } from "./types";
-import { Button } from "@/ui/components/ui/Button";
+import { Button } from "@/ui/components/ui/button";
 import { useTransactionInitializeMutation } from "@/checkout/graphql";
 import { useAlerts } from "@/checkout/hooks/useAlerts";
 import { useCheckout } from "@/checkout/hooks/useCheckout";

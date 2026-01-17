@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { FilterBar, ProductGrid, useProductFilters, type ProductCardData } from "@/ui/components/plp";
-import { Pagination } from "@/ui/components/Pagination";
+import { Pagination } from "@/ui/components/pagination";
 
 interface CollectionPageClientProps {
 	products: ProductCardData[];

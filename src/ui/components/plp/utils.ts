@@ -1,5 +1,5 @@
 import type { ProductListItemFragment } from "@/gql/graphql";
-import type { ProductCardData } from "./ProductCard";
+import type { ProductCardData } from "./product-card";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
 import { localeConfig } from "@/config/locale";

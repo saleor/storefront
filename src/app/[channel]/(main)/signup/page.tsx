@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { Loader } from "@/ui/atoms/Loader";
-import { SignUpForm } from "@/ui/components/SignUpForm";
+import { Loader } from "@/ui/atoms/loader";
+import { SignUpForm } from "@/ui/components/sign-up-form";
 
 export const metadata = {
 	title: "Create Account",

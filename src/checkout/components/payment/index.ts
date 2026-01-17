@@ -6,11 +6,11 @@ export {
 	type PaymentMethodType,
 	type CardData,
 	type PaymentMethodSelectorProps,
-} from "./PaymentMethodSelector";
+} from "./payment-method-selector";
 
 export {
 	BillingAddressSection,
 	useBillingAddressValidation,
 	type BillingAddressData,
 	type BillingAddressSectionProps,
-} from "./BillingAddressSection";
+} from "./billing-address-section";

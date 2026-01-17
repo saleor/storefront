@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { Loader } from "@/ui/atoms/Loader";
-import { LoginForm } from "@/ui/components/LoginForm";
+import { Loader } from "@/ui/atoms/loader";
+import { LoginForm } from "@/ui/components/login-form";
 import { executeGraphQL } from "@/lib/graphql";
 import { CurrentUserDocument } from "@/gql/graphql";
 

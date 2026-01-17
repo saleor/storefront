@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { CheckoutLink } from "./CheckoutLink";
-import { DeleteLineButton } from "./DeleteLineButton";
+import { CheckoutLink } from "./checkout-link";
+import { DeleteLineButton } from "./delete-line-button";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney, getHrefForVariant } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
 export const metadata = {
 	title: "Shopping Cart · Saleor Storefront example",

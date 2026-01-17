@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { Logo } from "./Logo";
-import { NavLinks } from "./nav/components/NavLinks";
-import { CartNavItem } from "./nav/components/CartNavItem";
-import { UserMenuContainer } from "./nav/components/UserMenu/UserMenuContainer";
-import { MobileMenu } from "./nav/components/MobileMenu";
-import { SearchBar } from "./nav/components/SearchBar";
+import { Logo } from "./logo";
+import { NavLinks } from "./nav/components/nav-links";
+import { CartNavItem } from "./nav/components/cart-nav-item";
+import { UserMenuContainer } from "./nav/components/user-menu/user-menu-container";
+import { MobileMenu } from "./nav/components/mobile-menu";
+import { SearchBar } from "./nav/components/search-bar";
 
 export async function Header({ channel }: { channel: string }) {
 	return (

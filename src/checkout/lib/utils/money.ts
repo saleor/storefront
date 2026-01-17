@@ -1,4 +1,4 @@
-import { type MightNotExist } from "@/checkout/lib/globalTypes";
+import { type MightNotExist } from "@/checkout/lib/global-types";
 import { localeConfig } from "@/config/locale";
 
 export type Money = {

@@ -1,7 +1,7 @@
-export { ProductGallery } from "./ProductGallery";
-export { ProductAttributes } from "./ProductAttributes";
-export { AddToCart } from "./AddToCart";
-export { StickyBar } from "./StickyBar";
+export { ProductGallery } from "./product-gallery";
+export { ProductAttributes } from "./product-attributes";
+export { AddToCart } from "./add-to-cart";
+export { StickyBar } from "./sticky-bar";
 
 // Variant Selection System
 // Re-export main components for convenient access

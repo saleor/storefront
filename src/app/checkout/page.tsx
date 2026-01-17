@@ -1,5 +1,5 @@
 import { invariant } from "ts-invariant";
-import { RootWrapper } from "./pageWrapper";
+import { RootWrapper } from "./page-wrapper";
 
 export const metadata = {
 	title: "Checkout · Saleor Storefront example",

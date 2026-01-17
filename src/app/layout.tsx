@@ -2,7 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Suspense, type ReactNode } from "react";
-import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
+import { DraftModeNotification } from "@/ui/components/draft-mode-notification";
 import { rootMetadata } from "@/lib/seo";
 import { localeConfig } from "@/config/locale";
 

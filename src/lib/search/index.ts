@@ -12,4 +12,4 @@
 export * from "./types";
 
 // Export Saleor implementation (swap this for other providers)
-export { searchProducts } from "./saleorProvider";
+export { searchProducts } from "./saleor-provider";

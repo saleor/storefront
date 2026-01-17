@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { searchProducts } from "@/lib/search";
-import { SearchResults } from "@/ui/components/SearchResults";
-import { Pagination } from "@/ui/components/Pagination";
-import { SearchSort } from "./SearchSort";
+import { SearchResults } from "@/ui/components/search-results";
+import { Pagination } from "@/ui/components/pagination";
+import { SearchSort } from "./search-sort";
 import { SearchIcon } from "lucide-react";
 
 export const metadata = {

@@ -4,6 +4,8 @@ const config = {
 	// See: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
 	experimental: {
 		optimizePackageImports: ["lucide-react", "lodash-es"],
+		// Limit build workers to avoid API rate limiting (429) during static generation
+		cpus: 1,
 	},
 	images: {
 		remotePatterns: [

@@ -1,4 +1,4 @@
-import type { ProductCardData } from "../ProductCard";
+import type { ProductCardData } from "../product-card";
 
 /**
  * Test fixtures for filter-utils tests.

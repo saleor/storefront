@@ -42,11 +42,11 @@
  * ```
  */
 
-export { HybridAddressSelector, type HybridAddressSelectorProps } from "./HybridAddressSelector";
-export { AddressSelector, type AddressSelectorProps } from "./AddressSelector";
-export { AddressDisplay, type AddressDisplayProps } from "./AddressDisplay";
-export { AddressCard, type AddressCardProps } from "./AddressCard";
-export { AddressPickerSheet, type AddressPickerSheetProps } from "./AddressPickerSheet";
+export { HybridAddressSelector, type HybridAddressSelectorProps } from "./hybrid-address-selector";
+export { AddressSelector, type AddressSelectorProps } from "./address-selector";
+export { AddressDisplay, type AddressDisplayProps } from "./address-display";
+export { AddressCard, type AddressCardProps } from "./address-card";
+export { AddressPickerSheet, type AddressPickerSheetProps } from "./address-picker-sheet";
 
 // Re-export form components from existing location for convenience
 export {
@@ -56,4 +56,4 @@ export {
 	FieldError,
 	addressFieldIcons,
 	addressFieldPairs,
-} from "@/checkout/views/SaleorCheckout/AddressFormFields";
+} from "@/checkout/views/saleor-checkout/address-form-fields";

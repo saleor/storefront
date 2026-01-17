@@ -1,6 +1,6 @@
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
-import { ProductList } from "@/ui/components/ProductList";
+import { ProductList } from "@/ui/components/product-list";
 
 export const metadata = {
 	title: "ACME Storefront, powered by Saleor & Next.js",
