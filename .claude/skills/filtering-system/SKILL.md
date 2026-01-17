@@ -1,3 +1,8 @@
+---
+name: filtering-system
+description: Product list filtering and sorting architecture. Use when modifying filters, adding new filter types, working on category/collection pages, or understanding server-side vs client-side filtering.
+---
+
 # Product Filtering System
 
 > **Source**: [Saleor API - ProductFilterInput](https://docs.saleor.io/api-reference/products/inputs/product-filter-input) - Available server-side filter options

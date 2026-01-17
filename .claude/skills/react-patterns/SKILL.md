@@ -1,3 +1,8 @@
+---
+name: react-patterns
+description: Write idiomatic React with proper hooks and render purity. Use when writing components, fixing hook-related lint errors, or deciding where to put logic (render vs effect vs handler).
+---
+
 # React Patterns
 
 > **Source**: [React Documentation](https://react.dev/learn) — Official React mental model

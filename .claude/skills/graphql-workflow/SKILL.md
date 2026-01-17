@@ -1,3 +1,8 @@
+---
+name: graphql-workflow
+description: Modify GraphQL queries and regenerate types. Use when editing .graphql files, adding fields to queries, or seeing TypeScript errors about missing GraphQL types.
+---
+
 # GraphQL Workflow
 
 > **Sources**:

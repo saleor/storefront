@@ -1,3 +1,8 @@
+---
+name: ui-components
+description: Create and style UI components with design tokens. Use when creating components, styling with Tailwind, deciding between Server/Client Components, or using shadcn/ui primitives.
+---
+
 # UI Components
 
 > **Source**: [shadcn/ui](https://ui.shadcn.com/) - Component patterns and primitives used in this project

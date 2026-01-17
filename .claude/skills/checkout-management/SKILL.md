@@ -1,3 +1,8 @@
+---
+name: checkout-management
+description: Understand checkout session lifecycle and debugging. Use when troubleshooting checkout issues, payment failures, hydration mismatches, or "CHECKOUT_NOT_FULLY_PAID" errors.
+---
+
 # Checkout Management Skill
 
 ## Overview

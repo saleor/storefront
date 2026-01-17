@@ -1,3 +1,8 @@
+---
+name: tailwind-turbopack
+description: Handle Tailwind CSS with Turbopack limitations. Use when CSS classes aren't being generated, needing dynamic styles, or encountering Turbopack CSS issues.
+---
+
 # Tailwind CSS + Turbopack
 
 ## Avoid Inline Styles

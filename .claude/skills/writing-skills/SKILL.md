@@ -1,3 +1,8 @@
+---
+name: writing-skills
+description: Create and maintain AI agent skills for this project. Use when creating new skills, reviewing existing skills, or deciding what deserves to be a skill.
+---
+
 # Writing Skills
 
 > **Context**: AI agent configuration is still evolving. Multiple approaches exist, none fully standardized yet.
@@ -28,14 +33,21 @@ Use when:
 
 ## Skill Structure
 
+Every skill requires **YAML frontmatter** followed by markdown content:
+
 ```markdown
-# Skill Name
+---
+name: skill-name
+description: What this skill does. Use when [trigger conditions users would say].
+---
+
+# Skill Title
 
 > **Source**: [Link](url) - Brief description
 
 ## When to Use
 
-Clear trigger conditions
+Clear trigger conditions (mirrors description)
 
 ## Instructions
 
@@ -48,6 +60,36 @@ Before/after or input/output examples
 ## Anti-patterns
 
 What NOT to do
+```
+
+### Required Frontmatter Fields
+
+| Field         | Purpose                                                          |
+| ------------- | ---------------------------------------------------------------- |
+| `name`        | Unique identifier (kebab-case, matches folder name)              |
+| `description` | **Critical**: Claude uses this to decide when to apply the skill |
+
+### Optional Frontmatter Fields
+
+| Field            | Purpose                                        | Example                 |
+| ---------------- | ---------------------------------------------- | ----------------------- |
+| `allowed-tools`  | Restrict which tools the skill can use         | `Read, Bash, WebSearch` |
+| `user-invocable` | Control visibility in `/` menu (default: true) | `false`                 |
+| `context`        | Run in forked context                          | `fork`                  |
+
+### Writing Effective Descriptions
+
+The `description` field is **how Claude discovers your skill**. Include:
+
+1. **What it does**: Specific capabilities
+2. **Trigger keywords**: Terms users would naturally say
+
+```yaml
+# ❌ Bad - too vague
+description: Helps with GraphQL
+
+# ✅ Good - specific with triggers
+description: Modify GraphQL queries and regenerate types. Use when editing .graphql files, adding fields to queries, or seeing TypeScript errors about missing GraphQL types.
 ```
 
 ## What Makes a Good Skill
@@ -94,9 +136,24 @@ Example: See `variant-selection` skill - the state machine prevents edge case bu
 
 ```
 .claude/skills/[skill-name]/
-  SKILL.md           # The skill definition
-  examples/          # Optional: example files
+  SKILL.md              # Main skill (required) - overview and quick start
+  REFERENCE.md          # Optional: detailed reference docs
+  STATE_MACHINE.md      # Optional: state diagrams for complex features
+  examples/             # Optional: example files
 ```
+
+### Progressive Disclosure Pattern
+
+For complex skills, keep `SKILL.md` focused and link to supporting files:
+
+```markdown
+# In SKILL.md
+
+For detailed function reference, see [REFERENCE.md](REFERENCE.md).
+For state transition rules, see [STATE_MACHINE.md](STATE_MACHINE.md).
+```
+
+This keeps startup fast (Claude only loads `SKILL.md` names/descriptions initially) while providing depth when needed.
 
 ## Naming
 
@@ -122,7 +179,9 @@ Skills are like code:
 
 ## Anti-patterns
 
+❌ **Don't skip YAML frontmatter** - Required for Claude to discover the skill  
+❌ **Don't write vague descriptions** - Be specific with trigger keywords  
 ❌ **Don't claim standards** - This is our pattern, not "the" standard  
 ❌ **Don't include generic docs** - AI already knows Next.js/React  
 ❌ **Don't skip source links** - Unverified info leads to errors  
-❌ **Don't write novels** - Keep skills focused and scannable
+❌ **Don't write novels** - Keep `SKILL.md` focused, use supporting files for depth

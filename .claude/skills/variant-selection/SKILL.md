@@ -1,3 +1,8 @@
+---
+name: variant-selection
+description: Variant and attribute selection on product detail pages. Use when modifying variant selectors, debugging "Add to Cart" button state, understanding option availability, or adding discount badges to options.
+---
+
 # Variant Selection System
 
 > **Source**: [Saleor Docs - Attributes](https://docs.saleor.io/developer/attributes/overview) - How product/variant attributes work
@@ -49,6 +54,8 @@ src/ui/components/pdp/variant-selection/
 | `getOptionsForAttribute()`      | Get options with availability/compatibility info |
 | `getAdjustedSelections()`       | Clear conflicting selections when needed         |
 | `getUnavailableAttributeInfo()` | Detect dead-end selections                       |
+
+For detailed function signatures and usage, see [UTILS_REFERENCE.md](UTILS_REFERENCE.md).
 
 ### Option States
 
@@ -124,60 +131,19 @@ const deadEnd = getUnavailableAttributeInfo(variants, groups, selections);
 
 ## State Machine
 
-> **Why include this?** State machines clarify complex interactive features. For multi-state UI with non-obvious transitions (like auto-adjustment here), a diagram prevents edge case bugs and helps AI agents reason about the system correctly.
+The selection system has 5 states with automatic conflict resolution. For the full state diagram and transition rules, see [STATE_MACHINE.md](STATE_MACHINE.md).
 
-Understanding the state machine helps prevent edge case bugs:
+**Quick reference:**
 
-```mermaid
-stateDiagram-v2
-    [*] --> Empty: Page Load
+| State        | Add to Cart | Description                   |
+| ------------ | ----------- | ----------------------------- |
+| **Empty**    | ❌          | No selections                 |
+| **Partial**  | ❌          | Some attributes selected      |
+| **Complete** | ✅          | All selected, variant found   |
+| **Conflict** | —           | Auto-clears to Partial        |
+| **DeadEnd**  | ❌          | Selection blocks other groups |
 
-    Empty --> Partial: SELECT(attr, value)
-    Empty --> Complete: Single variant product
-
-    Partial --> Partial: SELECT [not all attrs filled]
-    Partial --> Complete: SELECT [all filled, variant exists]
-    Partial --> Conflict: SELECT [all filled, no variant]
-    Partial --> DeadEnd: SELECT blocks other groups
-
-    Complete --> Complete: SELECT [compatible]
-    Complete --> Partial: SELECT [incompatible → adjust]
-
-    Conflict --> Partial: AUTO_ADJUST [clear conflicts]
-
-    DeadEnd --> Partial: SELECT different option
-```
-
-### States
-
-| State        | URL Params                        | Add to Cart | Description                         |
-| ------------ | --------------------------------- | ----------- | ----------------------------------- |
-| **Empty**    | `?`                               | ❌          | No selections                       |
-| **Partial**  | `?color=black`                    | ❌          | Some attributes selected            |
-| **Complete** | `?color=black&size=m&variant=abc` | ✅          | All selected, variant found         |
-| **Conflict** | (transient)                       | —           | Impossible combination, auto-clears |
-| **DeadEnd**  | `?color=black`                    | ❌          | Selection blocks other groups       |
-
-### Example User Flow
-
-```
-1. User lands on product page
-   State: Empty → URL: /products/t-shirt
-
-2. User clicks "Black" color
-   State: Partial → URL: ?color=black
-
-3. User clicks "Medium" size
-   State: Complete → URL: ?color=black&size=medium&variant=abc123
-   → Add to Cart enabled ✓
-
-4. User clicks "XL" (but Black/XL doesn't exist)
-   State: Conflict → AUTO_ADJUST → Partial
-   → URL: ?size=xl (color cleared)
-   → User can now pick a color that has XL
-```
-
-This "smart adjustment" pattern ensures users are never stuck. They can always explore all options.
+**Key behavior:** When user selects an incompatible option, other selections are cleared automatically (not blocked). Users can always explore all options.
 
 ## Anti-patterns
 

@@ -1,3 +1,9 @@
+---
+name: saleor-investigation
+description: Investigate Saleor API behavior by checking source code. Use when API behavior is unclear from docs, getting unexpected permission errors, or need to understand exact data model.
+allowed-tools: Read, Bash, WebSearch
+---
+
 # Saleor API Investigation
 
 ## When to Use
@@ -26,29 +32,13 @@ cd /tmp && git clone --depth 1 https://github.com/saleor/saleor.git saleor-core
 
 ### 3. Key Directories
 
-| Path                        | Purpose                          |
-| --------------------------- | -------------------------------- |
-| `saleor/graphql/`           | GraphQL schema, resolvers, types |
-| `saleor/graphql/product/`   | Product queries/mutations        |
-| `saleor/graphql/attribute/` | Attribute handling               |
-| `saleor/product/models.py`  | Product Django models            |
-| `saleor/attribute/models/`  | Attribute Django models          |
+For detailed directory structure and grep patterns, see [KEY_DIRECTORIES.md](KEY_DIRECTORIES.md).
 
-### 4. Common Investigation Patterns
-
-#### Finding a Resolver
-
-```bash
-# Find where a field is resolved
-grep -r "def resolve_" saleor/graphql/product/
-```
-
-#### Understanding Permission Logic
-
-```bash
-# Find permission checks
-grep -r "has_perm" saleor/graphql/product/resolvers.py
-```
+| Path                       | Purpose                          |
+| -------------------------- | -------------------------------- |
+| `saleor/graphql/`          | GraphQL schema, resolvers, types |
+| `saleor/graphql/product/`  | Product queries/mutations        |
+| `saleor/product/models.py` | Product Django models            |
 
 ## Examples
 

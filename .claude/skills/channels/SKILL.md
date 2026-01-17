@@ -1,3 +1,8 @@
+---
+name: channels
+description: Configure multi-channel and multi-currency support. Use when working with channel URLs, channel selector component, SALEOR_APP_TOKEN setup, or per-channel locale formatting.
+---
+
 # Channels & Multi-Currency
 
 This storefront supports multiple Saleor channels, each with its own currency.

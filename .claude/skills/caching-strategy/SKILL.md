@@ -1,3 +1,8 @@
+---
+name: caching-strategy
+description: Set up Saleor webhooks and debug cache invalidation. Use when configuring webhooks for on-demand revalidation, debugging stale content, or modifying /api/revalidate endpoint.
+---
+
 # Caching Strategy
 
 ## When to Use

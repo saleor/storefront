@@ -1,3 +1,8 @@
+---
+name: seo-system
+description: Add page metadata, JSON-LD structured data, and OG images. Use when adding SEO to pages, implementing schema.org markup, configuring Open Graph/Twitter cards, or using dynamic OG image generation.
+---
+
 # SEO System
 
 > **Sources**:

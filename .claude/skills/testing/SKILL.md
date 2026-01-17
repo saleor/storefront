@@ -1,3 +1,8 @@
+---
+name: testing
+description: Write fast, effective tests with Vitest. Use when adding tests for new features, debugging failing tests, or deciding what to test vs skip.
+---
+
 # Testing
 
 > **Source**: [Vitest Docs](https://vitest.dev/) - Test framework documentation
