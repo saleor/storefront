@@ -88,6 +88,11 @@ SALEOR_APP_TOKEN=             # For channels query (server-side only)
 # Rate Limiting (for build-time API calls)
 SALEOR_MAX_CONCURRENT_REQUESTS=3   # Max parallel requests to Saleor (default: 3)
 SALEOR_MIN_REQUEST_DELAY_MS=300    # Min delay between requests in ms (default: 300)
+
+# Static Generation Control (reduce API load during build)
+STATIC_CHANNELS=default-channel    # Comma-separated channel slugs (avoids API call)
+STATIC_PRODUCT_SLUGS=              # Comma-separated product slugs to pre-render
+STATIC_PRODUCT_COUNT=20            # Number of products to pre-render (0 to skip)
 ```
 
 ---

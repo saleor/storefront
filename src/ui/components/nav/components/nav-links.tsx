@@ -9,11 +9,19 @@ export const NavLinks = async ({ channel }: { channel: string }) => {
 	cacheLife("hours"); // 1 hour cache - navigation rarely changes
 	cacheTag("navigation"); // Tag for on-demand revalidation
 
-	const navLinks = await executeGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "navbar", channel },
-		revalidate: 60 * 60, // 1 hour
-		withAuth: false, // Public data - no cookies in cache scope
-	});
+	let navLinks;
+	try {
+		navLinks = await executeGraphQL(MenuGetBySlugDocument, {
+			variables: { slug: "navbar", channel },
+			revalidate: 60 * 60, // 1 hour
+			withAuth: false, // Public data - no cookies in cache scope
+		});
+	} catch (error) {
+		// During build, if the API is unreachable, render minimal nav.
+		// The page will re-fetch when a user visits.
+		console.warn(`[NavLinks] Failed to fetch navigation for ${channel}:`, error);
+		return <NavLink href="/products">All</NavLink>;
+	}
 
 	return (
 		<>

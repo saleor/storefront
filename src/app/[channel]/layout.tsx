@@ -13,17 +13,22 @@ export const generateStaticParams = async () => {
 
 	// Option 2: Fetch from Saleor API (requires SALEOR_APP_TOKEN)
 	if (process.env.SALEOR_APP_TOKEN) {
-		const channels = await executeGraphQL(ChannelsListDocument, {
-			withAuth: false,
-			headers: {
-				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-			},
-		});
-		return (
-			channels.channels
-				?.filter((channel) => channel.isActive)
-				.map((channel) => ({ channel: channel.slug })) ?? []
-		);
+		try {
+			const channels = await executeGraphQL(ChannelsListDocument, {
+				withAuth: false,
+				headers: {
+					Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+				},
+			});
+			return (
+				channels.channels
+					?.filter((channel) => channel.isActive)
+					.map((channel) => ({ channel: channel.slug })) ?? []
+			);
+		} catch (error) {
+			// If API is unreachable, fall back to default channel
+			console.warn("[generateStaticParams] Failed to fetch channels:", error);
+		}
 	}
 
 	// Option 3: Fallback to default channel

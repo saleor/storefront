@@ -73,8 +73,15 @@ const requestQueue = new RequestQueue(
 	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || "300", 10),
 );
 
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 1000;
+/**
+ * Detect if we're in build-time static generation.
+ * During build, we use shorter timeouts to avoid USE_CACHE_TIMEOUT errors.
+ */
+const isBuildTime = process.env.NODE_ENV === "production" && !process.env.NEXT_RUNTIME;
+
+// Use shorter retries during build to avoid `use cache` timeout
+const MAX_RETRIES = isBuildTime ? 1 : 3;
+const RETRY_DELAY_MS = isBuildTime ? 500 : 1000;
 
 /**
  * Fetch with retry for 429 (rate limit) and 5xx errors.

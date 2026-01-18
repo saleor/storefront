@@ -19,17 +19,24 @@ async function getFeaturedProducts(channel: string) {
 	cacheLife("minutes"); // 5 minute cache
 	cacheTag("collection:featured-products"); // Tag for on-demand revalidation
 
-	const data = await executeGraphQL(ProductListByCollectionDocument, {
-		variables: {
-			slug: "featured-products",
-			channel,
-			first: 12,
-		},
-		revalidate: 300,
-		withAuth: false, // Public data - no cookies in cache scope
-	});
+	try {
+		const data = await executeGraphQL(ProductListByCollectionDocument, {
+			variables: {
+				slug: "featured-products",
+				channel,
+				first: 12,
+			},
+			revalidate: 300,
+			withAuth: false, // Public data - no cookies in cache scope
+		});
 
-	return data.collection?.products?.edges.map(({ node }) => node) ?? null;
+		return data.collection?.products?.edges.map(({ node }) => node) ?? null;
+	} catch (error) {
+		// During build, if the API is unreachable, return null instead of failing.
+		// The page will be populated on-demand when a user visits.
+		console.warn(`[Homepage] Failed to fetch featured products for ${channel}:`, error);
+		return null;
+	}
 }
 
 export default async function Page(props: { params: Promise<{ channel: string }> }) {

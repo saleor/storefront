@@ -34,16 +34,23 @@ async function getProductData(slug: string, channel: string) {
 	cacheLife("minutes"); // 5 minute cache
 	cacheTag(`product:${slug}`); // Tag for on-demand revalidation
 
-	const { product } = await executeGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(slug),
-			channel,
-		},
-		revalidate: 300,
-		withAuth: false, // Public data - no cookies in cache scope
-	});
+	try {
+		const { product } = await executeGraphQL(ProductDetailsDocument, {
+			variables: {
+				slug: decodeURIComponent(slug),
+				channel,
+			},
+			revalidate: 300,
+			withAuth: false, // Public data - no cookies in cache scope
+		});
 
-	return product;
+		return product;
+	} catch (error) {
+		// During build, if the API is unreachable, return null instead of failing.
+		// The page will be populated on-demand when a user visits.
+		console.warn(`[PDP] Failed to fetch product ${slug} for ${channel}:`, error);
+		return null;
+	}
 }
 
 // ============================================================================
@@ -98,24 +105,31 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 		return configuredSlugs.map((slug) => ({ slug }));
 	}
 
-	const collectionSlug = getStaticProductCollection();
-	if (collectionSlug) {
-		const { ProductListByCollectionDocument } = await import("@/gql/graphql");
-		const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
+	try {
+		const collectionSlug = getStaticProductCollection();
+		if (collectionSlug) {
+			const { ProductListByCollectionDocument } = await import("@/gql/graphql");
+			const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
+				revalidate: 300,
+				variables: { slug: collectionSlug, channel: params.channel, first: 100 },
+				withAuth: false,
+			});
+			return collection?.products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
+		}
+
+		const { products } = await executeGraphQL(ProductListDocument, {
 			revalidate: 300,
-			variables: { slug: collectionSlug, channel: params.channel, first: 100 },
+			variables: { first: getStaticProductFetchCount(), channel: params.channel },
 			withAuth: false,
 		});
-		return collection?.products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
+
+		return products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
+	} catch (error) {
+		// If API is unreachable during build, return empty array.
+		// Pages will be generated on-demand when users visit.
+		console.warn(`[generateStaticParams] Failed to fetch products for ${params.channel}:`, error);
+		return [];
 	}
-
-	const { products } = await executeGraphQL(ProductListDocument, {
-		revalidate: 300,
-		variables: { first: getStaticProductFetchCount(), channel: params.channel },
-		withAuth: false,
-	});
-
-	return products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 }
 
 // ============================================================================

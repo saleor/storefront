@@ -25,14 +25,20 @@ export const staticPagesConfig = {
 	 *    slugs: null, fetchCount: 20
 	 */
 	products: {
-		/** Explicit product slugs to pre-render (highest priority) */
-		slugs: null as string[] | null,
+		/**
+		 * Explicit product slugs to pre-render (highest priority).
+		 * Set via env var STATIC_PRODUCT_SLUGS (comma-separated) or directly here.
+		 */
+		slugs: (process.env.STATIC_PRODUCT_SLUGS?.split(",").filter(Boolean) ?? null) as string[] | null,
 
 		/** Or: fetch products from this collection slug */
 		collection: null as string | null,
 
-		/** Fallback: how many products to fetch if no slugs/collection specified */
-		fetchCount: 20,
+		/**
+		 * Fallback: how many products to fetch if no slugs/collection specified.
+		 * Set STATIC_PRODUCT_COUNT=0 to skip product static generation entirely.
+		 */
+		fetchCount: parseInt(process.env.STATIC_PRODUCT_COUNT ?? "20", 10),
 	},
 
 	/**
@@ -57,9 +63,10 @@ export const staticPagesConfig = {
 	 * Channel slugs for multi-channel stores.
 	 * If set, no SALEOR_APP_TOKEN is needed.
 	 *
+	 * Set via env var STATIC_CHANNELS (comma-separated) or directly in this config.
 	 * Example: ["default-channel", "us-store", "eu-store"]
 	 */
-	channels: null as string[] | null,
+	channels: (process.env.STATIC_CHANNELS?.split(",").filter(Boolean) ?? null) as string[] | null,
 };
 
 /**
