@@ -73,20 +73,20 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 						fill
 						sizes="(max-width: 1024px) 50vw, 33vw"
 						className={cn(
-							"object-cover transition-all duration-500 ease-out group-hover:scale-105",
-							product.hoverImage && "group-hover:opacity-0",
+							"object-cover transition-all duration-500 ease-out md:group-hover:scale-105",
+							product.hoverImage && "md:group-hover:opacity-0",
 						)}
 						priority={priority}
 					/>
 
-					{/* Hover Image */}
+					{/* Hover Image - desktop only to avoid double-tap on touch */}
 					{product.hoverImage && (
 						<Image
 							src={product.hoverImage}
 							alt={`${product.name} - alternate view`}
 							fill
 							sizes="(max-width: 1024px) 50vw, 33vw"
-							className="object-cover opacity-0 transition-all duration-500 ease-out group-hover:scale-105 group-hover:opacity-100"
+							className="object-cover opacity-0 transition-all duration-500 ease-out md:group-hover:scale-105 md:group-hover:opacity-100"
 						/>
 					)}
 
@@ -100,11 +100,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 						</Badge>
 					)}
 
-					{/* Wishlist Button */}
+					{/* Wishlist Button - desktop only to avoid double-tap on touch */}
 					<Button
 						variant="secondary"
 						size="icon"
-						className="absolute right-3 top-3 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
+						className="absolute right-3 top-3 hidden h-8 w-8 opacity-0 transition-opacity md:block md:group-hover:opacity-100"
 						onClick={handleWishlist}
 						type="button"
 					>
@@ -112,9 +112,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 						<span className="sr-only">Add to wishlist</span>
 					</Button>
 
-					{/* Quick Add Overlay */}
+					{/* Quick Add Overlay - desktop only to avoid double-tap on touch */}
 					{canQuickAdd && (
-						<div className="absolute bottom-0 left-0 right-0 translate-y-2 p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+						<div className="absolute bottom-0 left-0 right-0 hidden translate-y-2 p-3 opacity-0 transition-all duration-300 md:block md:group-hover:translate-y-0 md:group-hover:opacity-100">
 							<Button className="w-full" size="sm" onClick={handleQuickAdd} type="button">
 								<Plus className="mr-1.5 h-4 w-4" />
 								Quick Add
@@ -126,7 +126,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 				{/* Product Info */}
 				<div className="space-y-1.5">
 					{product.brand && <p className="text-xs tracking-wide text-muted-foreground">{product.brand}</p>}
-					<h3 className="line-clamp-2 font-medium leading-snug underline-offset-2 group-hover:underline">
+					<h3 className="line-clamp-2 font-medium leading-snug underline-offset-2 md:group-hover:underline">
 						{product.name}
 					</h3>
 
