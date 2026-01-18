@@ -37,7 +37,6 @@
 		"react": "^19.1.2",
 		"react-dom": "^19.1.2",
 		"react-error-boundary": "4.0.13",
-		"react-toastify": "^11.0.0",
 		"server-only": "0.0.1",
 		"sharp": "0.33.2",
 		"tailwindcss-animate": "1.0.7",

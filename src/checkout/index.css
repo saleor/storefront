@@ -8,9 +8,6 @@
  * Tailwind styles from globals.css (loaded in root layout).
  */
 
-/* Vendor CSS - Notification Library */
-@import "react-toastify/dist/ReactToastify.css";
-
 /* =============================================================================
  * Mobile Order Summary Collapse Animation
  * Using CSS Grid for smooth height animation without JS measurement

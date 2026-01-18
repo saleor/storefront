@@ -9,7 +9,6 @@ import {
 	fetchExchange,
 } from "urql";
 
-import { ToastContainer } from "react-toastify";
 import { useAuthChange, useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { useState } from "react";
 
@@ -18,16 +17,6 @@ import { PageNotFound } from "@/checkout/views/page-not-found";
 import { GraphQLMonitor, createMonitoredFetch } from "@/ui/components/dev/graphql-monitor";
 import { withRetry } from "@/lib/fetch-retry";
 import "./index.css";
-
-// Toast container configuration (inlined from deleted use-alerts)
-const alertsContainerProps = {
-	position: "top-right" as const,
-	autoClose: 5000,
-	hideProgressBar: false,
-	newestOnTop: true,
-	closeOnClick: true,
-	pauseOnHover: true,
-};
 
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 	const saleorAuthClient = useSaleorAuthContext();
@@ -62,7 +51,6 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 
 	return (
 		<UrqlProvider value={urqlClient}>
-			<ToastContainer {...alertsContainerProps} />
 			<ErrorBoundary FallbackComponent={PageNotFound}>
 				<RootViews />
 			</ErrorBoundary>
