@@ -10,10 +10,25 @@ export const metadata = {
 	description: "Sign in to your account to access your orders and saved addresses.",
 };
 
-export default async function LoginPage(props: { params: Promise<{ channel: string }> }) {
-	const { channel } = await props.params;
+/**
+ * Login page with Cache Components.
+ * Static shell renders immediately, auth check streams in.
+ */
+export default function LoginPage(props: { params: Promise<{ channel: string }> }) {
+	return (
+		<Suspense fallback={<Loader />}>
+			<LoginContent params={props.params} />
+		</Suspense>
+	);
+}
 
-	// Check if user is already logged in
+/**
+ * Dynamic login content - checks auth status at request time.
+ */
+async function LoginContent({ params: paramsPromise }: { params: Promise<{ channel: string }> }) {
+	const { channel } = await paramsPromise;
+
+	// Check if user is already logged in (reads cookies)
 	const { me: user } = await executeGraphQL(CurrentUserDocument, {
 		cache: "no-cache",
 	});
@@ -24,10 +39,8 @@ export default async function LoginPage(props: { params: Promise<{ channel: stri
 	}
 
 	return (
-		<Suspense fallback={<Loader />}>
-			<section className="mx-auto max-w-7xl p-8">
-				<LoginForm />
-			</section>
-		</Suspense>
+		<section className="mx-auto max-w-7xl p-8">
+			<LoginForm />
+		</section>
 	);
 }

@@ -5,9 +5,16 @@ import { executeGraphQL } from "@/lib/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
 export async function UserMenuContainer() {
-	const { me: user } = await executeGraphQL(CurrentUserDocument, {
-		cache: "no-cache",
-	});
+	// Try to get current user - handle auth errors gracefully (expired token = not logged in)
+	let user = null;
+	try {
+		const result = await executeGraphQL(CurrentUserDocument, {
+			cache: "no-cache",
+		});
+		user = result.me;
+	} catch {
+		// Auth failed (expired signature, etc.) - treat as not logged in
+	}
 
 	if (user) {
 		return <UserMenu user={user} />;

@@ -1,10 +1,9 @@
 import { ImageResponse } from "next/og";
 import { type NextRequest } from "next/server";
 
-export const runtime = "edge";
-
 /**
  * Dynamic OG Image Generator
+ * Note: Cache Components requires Node.js runtime (Edge not supported)
  *
  * Generates branded Open Graph images for social media sharing.
  * Used for product pages when no product image is available,

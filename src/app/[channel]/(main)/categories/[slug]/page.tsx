@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
+import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
@@ -8,8 +10,23 @@ import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { CategoryPageClient } from "./client";
 
-// Cache category pages for 5 minutes
-export const revalidate = 300;
+/**
+ * Cached category data for hero section and metadata.
+ * Part of the static shell with Cache Components.
+ */
+async function getCategoryData(slug: string, channel: string) {
+	"use cache";
+	cacheLife("minutes"); // 5 minute cache
+	cacheTag(`category:${slug}`); // Tag for on-demand revalidation
+
+	const { category } = await executeGraphQL(ProductListByCategoryDocument, {
+		variables: { slug, channel, first: 1 },
+		revalidate: 300,
+		withAuth: false, // Public data - no cookies in cache scope
+	});
+
+	return category;
+}
 
 type PageProps = {
 	params: Promise<{ slug: string; channel: string }>;
@@ -24,13 +41,11 @@ type PageProps = {
 };
 
 export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
-	const params = await props.params;
-	const { category } = await executeGraphQL(ProductListByCategoryDocument, {
-		variables: { slug: params.slug, channel: params.channel, first: 1 },
-		revalidate: 300,
-	});
+	"use cache";
+	cacheLife("minutes");
 
-	// Parse EditorJS description for meta tag
+	const params = await props.params;
+	const category = await getCategoryData(params.slug, params.channel);
 	const plainDescription = parseEditorJSToText(category?.description);
 
 	return {
@@ -39,13 +54,55 @@ export const generateMetadata = async (props: PageProps, parent: ResolvingMetada
 	};
 };
 
+/**
+ * Category page with Cache Components.
+ * Hero (cached) renders immediately, product grid (dynamic) streams in.
+ */
 export default async function Page(props: PageProps) {
-	const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
+	const params = await props.params;
+	const category = await getCategoryData(params.slug, params.channel);
 
-	// Build pagination variables
+	if (!category) {
+		notFound();
+	}
+
+	const plainDescription = parseEditorJSToText(category.description);
+
+	const breadcrumbs = [
+		{ label: "Home", href: `/${params.channel}` },
+		{ label: category.name, href: `/${params.channel}/categories/${params.slug}` },
+	];
+
+	return (
+		<>
+			{/* Static shell - cached category data renders immediately */}
+			<CategoryHero
+				title={category.name}
+				description={plainDescription}
+				backgroundImage={category.backgroundImage?.url}
+				breadcrumbs={breadcrumbs}
+			/>
+			{/* Dynamic content - streams in via Suspense */}
+			<Suspense fallback={<ProductsGridSkeleton />}>
+				<CategoryProducts params={props.params} searchParams={props.searchParams} />
+			</Suspense>
+		</>
+	);
+}
+
+/**
+ * Dynamic category products - reads searchParams at request time.
+ */
+async function CategoryProducts({
+	params: paramsPromise,
+	searchParams: searchParamsPromise,
+}: {
+	params: PageProps["params"];
+	searchParams: PageProps["searchParams"];
+}) {
+	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
+
 	const paginationVariables = getPaginatedListVariables({ params: searchParams });
-
-	// Build server-side sort and filter variables
 	const sortBy = buildSortVariables(searchParams.sort);
 	const filter = buildFilterVariables({ priceRange: searchParams.price });
 
@@ -60,35 +117,33 @@ export default async function Page(props: PageProps) {
 		revalidate: 300,
 	});
 
-	if (!category || !category.products) {
+	if (!category?.products) {
 		notFound();
 	}
 
-	const { name, description, products, backgroundImage } = category;
-
-	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
-
-	// Parse EditorJS description to plain text for hero display
-	const plainDescription = parseEditorJSToText(description);
-
-	const breadcrumbs = [
-		{ label: "Home", href: `/${params.channel}` },
-		{ label: name, href: `/${params.channel}/categories/${params.slug}` },
-	];
+	const productCards = category.products.edges.map((e) => transformToProductCard(e.node, params.channel));
 
 	return (
-		<>
-			<CategoryHero
-				title={name}
-				description={plainDescription}
-				backgroundImage={backgroundImage?.url}
-				breadcrumbs={breadcrumbs}
-			/>
-			<CategoryPageClient
-				products={productCards}
-				pageInfo={products.pageInfo}
-				totalCount={products.totalCount ?? productCards.length}
-			/>
-		</>
+		<CategoryPageClient
+			products={productCards}
+			pageInfo={category.products.pageInfo}
+			totalCount={category.products.totalCount ?? productCards.length}
+		/>
+	);
+}
+
+function ProductsGridSkeleton() {
+	return (
+		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+				{Array.from({ length: 8 }).map((_, i) => (
+					<div key={i} className="animate-pulse">
+						<div className="aspect-square rounded-lg bg-muted" />
+						<div className="mt-2 h-4 w-3/4 rounded bg-muted" />
+						<div className="mt-1 h-4 w-1/2 rounded bg-muted" />
+					</div>
+				))}
+			</div>
+		</div>
 	);
 }

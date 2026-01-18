@@ -5,17 +5,28 @@ import { LoginForm } from "@/ui/components/login-form";
 import { OrderListItem } from "@/ui/components/order-list-item";
 import { Loader } from "@/ui/atoms/loader";
 
-export default async function OrderPage() {
+/**
+ * Orders page with Cache Components.
+ * Entire page is dynamic (requires auth check).
+ */
+export default function OrderPage() {
+	return (
+		<Suspense fallback={<Loader />}>
+			<OrdersContent />
+		</Suspense>
+	);
+}
+
+/**
+ * Dynamic orders content - checks auth and fetches orders at request time.
+ */
+async function OrdersContent() {
 	const { me: user } = await executeGraphQL(CurrentUserOrderListDocument, {
 		cache: "no-cache",
 	});
 
 	if (!user) {
-		return (
-			<Suspense fallback={<Loader />}>
-				<LoginForm />
-			</Suspense>
-		);
+		return <LoginForm />;
 	}
 
 	const orders = user.orders?.edges || [];

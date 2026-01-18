@@ -13,3 +13,6 @@ export {
 	SizeButtonOption,
 	TextOption,
 } from "./variant-selection";
+
+// Cache Components - Dynamic variant section with Suspense support
+export { VariantSectionDynamic, VariantSectionSkeleton } from "./variant-section-dynamic";

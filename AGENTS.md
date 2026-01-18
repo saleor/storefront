@@ -122,6 +122,25 @@ Default to Server Components. Only use `"use client"` when you need:
 - `useState`, `useEffect`, event handlers
 - Browser APIs
 
+### 5. GraphQL Auth Defaults
+
+`executeGraphQL()` defaults to `withAuth: true` (attaches user cookies). For public data:
+
+```typescript
+// ✅ Public queries (menus, products, categories)
+await executeGraphQL(MenuDocument, {
+	variables: { slug: "footer" },
+	withAuth: false, // Explicit: no user cookies
+});
+
+// ✅ User queries - handle expired tokens gracefully
+try {
+	const { me } = await executeGraphQL(CurrentUserDocument, { cache: "no-cache" });
+} catch {
+	// Expired token = not logged in
+}
+```
+
 ---
 
 ## Caching Strategy

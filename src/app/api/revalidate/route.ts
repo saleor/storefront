@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
 
@@ -183,43 +183,67 @@ export async function POST(request: NextRequest) {
 
 		// Default channel if not specified
 		const targetChannel = channel || "default-channel";
-		const revalidated: string[] = [];
+		const revalidatedPaths: string[] = [];
+		const revalidatedTags: string[] = [];
 
 		switch (type) {
 			case "product":
 				if (slug) {
+					// Tag-based: Invalidates "use cache" function data
+					// Second arg must match the cacheLife() profile used in the cached function
+					revalidateTag(`product:${slug}`, "minutes");
+					revalidatedTags.push(`product:${slug}`);
+
+					// Path-based: Invalidates ISR page cache
 					revalidatePath(`/${targetChannel}/products/${slug}`);
-					revalidated.push(`/${targetChannel}/products/${slug}`);
+					revalidatedPaths.push(`/${targetChannel}/products/${slug}`);
 				}
+				// Also revalidate product listings
 				revalidatePath(`/${targetChannel}/products`);
-				revalidated.push(`/${targetChannel}/products`);
+				revalidatedPaths.push(`/${targetChannel}/products`);
 				break;
 
 			case "category":
 				if (slug) {
+					// Tag-based (uses cacheLife("minutes"))
+					revalidateTag(`category:${slug}`, "minutes");
+					revalidatedTags.push(`category:${slug}`);
+
+					// Path-based
 					revalidatePath(`/${targetChannel}/categories/${slug}`);
-					revalidated.push(`/${targetChannel}/categories/${slug}`);
+					revalidatedPaths.push(`/${targetChannel}/categories/${slug}`);
 				}
 				break;
 
 			case "collection":
 				if (slug) {
+					// Tag-based (uses cacheLife("minutes"))
+					revalidateTag(`collection:${slug}`, "minutes");
+					revalidatedTags.push(`collection:${slug}`);
+
+					// Path-based
 					revalidatePath(`/${targetChannel}/collections/${slug}`);
-					revalidated.push(`/${targetChannel}/collections/${slug}`);
+					revalidatedPaths.push(`/${targetChannel}/collections/${slug}`);
 				}
 				break;
 
 			default:
 				// Unknown event type - revalidate product listings as safe default
 				revalidatePath(`/${targetChannel}/products`);
-				revalidated.push(`/${targetChannel}/products`);
+				revalidatedPaths.push(`/${targetChannel}/products`);
 		}
 
 		// Sanitize for logging to prevent log injection
 		const sanitizedSlug = slug?.replace(/[\r\n]/g, "") ?? "";
-		const sanitizedPaths = revalidated.map((s) => s.replace(/[\r\n]/g, ""));
-		console.log("[Revalidate] Success:", { type, slug: sanitizedSlug, revalidated: sanitizedPaths });
-		return Response.json({ revalidated, success: true });
+		const sanitizedPaths = revalidatedPaths.map((s) => s.replace(/[\r\n]/g, ""));
+		const sanitizedTags = revalidatedTags.map((s) => s.replace(/[\r\n]/g, ""));
+		console.log("[Revalidate] Success:", {
+			type,
+			slug: sanitizedSlug,
+			paths: sanitizedPaths,
+			tags: sanitizedTags,
+		});
+		return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
 	} catch (error) {
 		console.error("[Revalidate] Error:", error);
 		return Response.json({ error: "Invalid payload" }, { status: 400 });
@@ -229,8 +253,14 @@ export async function POST(request: NextRequest) {
 /**
  * GET endpoint for manual cache clearing (protected by secret)
  *
- * @example
+ * @example Path-based revalidation (ISR pages):
  * GET /api/revalidate?secret=xxx&path=/default-channel/products/my-product
+ *
+ * @example Tag-based revalidation ("use cache" functions):
+ * GET /api/revalidate?secret=xxx&tag=product:my-product
+ *
+ * @example Both at once:
+ * GET /api/revalidate?secret=xxx&path=/default-channel/products/my-product&tag=product:my-product
  */
 export async function GET(request: NextRequest) {
 	// Rate limit check
@@ -259,15 +289,30 @@ export async function GET(request: NextRequest) {
 	}
 
 	const path = searchParams.get("path");
+	const tag = searchParams.get("tag");
 
-	if (!path) {
-		return Response.json({ error: "Provide path parameter" }, { status: 400 });
+	if (!path && !tag) {
+		return Response.json({ error: "Provide path and/or tag parameter" }, { status: 400 });
 	}
 
-	revalidatePath(path);
+	const revalidatedPaths: string[] = [];
+	const revalidatedTags: string[] = [];
+
+	if (path) {
+		revalidatePath(path);
+		revalidatedPaths.push(path);
+	}
+
+	if (tag) {
+		// Profile defaults to "minutes" but can be overridden for navigation ("hours")
+		const profile = searchParams.get("profile") || "minutes";
+		revalidateTag(tag, profile);
+		revalidatedTags.push(tag);
+	}
 
 	// Sanitize for logging to prevent log injection
-	const sanitizedPath = path.replace(/[\r\n]/g, "");
-	console.log("[Revalidate] Manual:", sanitizedPath);
-	return Response.json({ revalidated: [path], success: true });
+	const sanitizedPaths = revalidatedPaths.map((s) => s.replace(/[\r\n]/g, ""));
+	const sanitizedTags = revalidatedTags.map((s) => s.replace(/[\r\n]/g, ""));
+	console.log("[Revalidate] Manual:", { paths: sanitizedPaths, tags: sanitizedTags });
+	return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
 }

@@ -1,63 +1,69 @@
-import { revalidatePath } from "next/cache";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { invariant } from "ts-invariant";
+import { cacheLife, cacheTag } from "next/cache";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
 import { executeGraphQL } from "@/lib/graphql";
-import { formatMoney, formatMoneyRange } from "@/lib/utils";
-import { getDiscountInfo } from "@/lib/pricing";
-import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
-import * as Checkout from "@/lib/checkout";
+import { ProductDetailsDocument, ProductListDocument, type ProductDetailsQuery } from "@/gql/graphql";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
-
-// Route segment config for optimal caching
-export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
-export const revalidate = 300; // Default revalidation: 5 minutes
-
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductGallery,
 	ProductGalleryImage,
-	AddToCart,
 	ProductAttributes,
-	StickyBar,
-	VariantSelectionSection,
+	VariantSectionDynamic,
+	VariantSectionSkeleton,
 } from "@/ui/components/pdp";
-import { Badge } from "@/ui/components/ui/badge";
+
+// ============================================================================
+// Cached Data Fetching
+// ============================================================================
 
 /**
- * Product page metadata generation
- * Uses centralized SEO helpers from @/lib/seo
+ * Cached product data fetching.
+ *
+ * With Cache Components, this data becomes part of the static shell,
+ * making product pages load instantly while variant-specific UI streams in.
  */
+async function getProductData(slug: string, channel: string) {
+	"use cache";
+	cacheLife("minutes"); // 5 minute cache
+	cacheTag(`product:${slug}`); // Tag for on-demand revalidation
+
+	const { product } = await executeGraphQL(ProductDetailsDocument, {
+		variables: {
+			slug: decodeURIComponent(slug),
+			channel,
+		},
+		revalidate: 300,
+		withAuth: false, // Public data - no cookies in cache scope
+	});
+
+	return product;
+}
+
+// ============================================================================
+// Metadata & Static Params
+// ============================================================================
+
 export async function generateMetadata(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }): Promise<Metadata> {
+	// Note: Can't use "use cache" here because we access searchParams (dynamic)
 	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
-
-	const { product } = await executeGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(params.slug),
-			channel: params.channel,
-		},
-		revalidate: 300,
-	});
+	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
 		notFound();
 	}
 
-	// Build description with variant name if selected
 	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
 	const description =
 		product.seoDescription || (variantName ? `${product.name} - ${variantName}` : product.name);
-
-	// Best image for sharing
 	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
-
-	// Price info for OG tags
 	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
 	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
 
@@ -66,7 +72,6 @@ export async function generateMetadata(props: {
 		description,
 		image: ogImage,
 		url: `/${params.channel}/products/${encodeURIComponent(params.slug)}`,
-		// Product pricing for rich previews
 		openGraph:
 			priceAmount && priceCurrency
 				? {
@@ -77,19 +82,16 @@ export async function generateMetadata(props: {
 	});
 }
 
-// Static params generation - configurable via src/config/static-pages.ts
 export async function generateStaticParams({ params }: { params: { channel: string } }) {
 	const { getStaticProductSlugs, getStaticProductCollection, getStaticProductFetchCount } = await import(
 		"@/config/static-pages"
 	);
 
-	// Option 1: Use explicit slugs from config (no API call needed)
 	const configuredSlugs = getStaticProductSlugs();
 	if (configuredSlugs && configuredSlugs.length > 0) {
 		return configuredSlugs.map((slug) => ({ slug }));
 	}
 
-	// Option 2: Fetch from a specific collection
 	const collectionSlug = getStaticProductCollection();
 	if (collectionSlug) {
 		const { ProductListByCollectionDocument } = await import("@/gql/graphql");
@@ -101,7 +103,6 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 		return collection?.products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 	}
 
-	// Option 3: Fetch top N products (default)
 	const { products } = await executeGraphQL(ProductListDocument, {
 		revalidate: 300,
 		variables: { first: getStaticProductFetchCount(), channel: params.channel },
@@ -111,82 +112,38 @@ export async function generateStaticParams({ params }: { params: { channel: stri
 	return products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
 }
 
+// ============================================================================
+// Page Component
+// ============================================================================
+
 const parser = edjsHTML();
 
+/**
+ * Product Detail Page with Cache Components.
+ *
+ * Architecture:
+ * - Static Shell: Page layout, gallery, product name, description, attributes
+ * - Cached: Product data from Saleor API (via getProductData with "use cache")
+ * - Dynamic (Suspense): Variant selection, pricing, add-to-cart
+ *
+ * This gives users instant page loads with all static content visible,
+ * while personalized/dynamic elements stream in seamlessly.
+ */
 export default async function ProductPage(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
-	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
-
-	const { product } = await executeGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(params.slug),
-			channel: params.channel,
-		},
-		revalidate: 300, // 5 minutes - balance freshness vs performance
-	});
+	const params = await props.params;
+	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
 		notFound();
 	}
 
-	// Parse data
-	const variants = product.variants || [];
+	// Parse description (cached - part of static shell)
+	const descriptionHtml = parseDescription(product.description);
 
-	// Auto-select variant: use URL param, or auto-select if only one variant exists
-	const selectedVariantID = searchParams.variant || (variants.length === 1 ? variants[0].id : undefined);
-	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
-
-	// Parse description from EditorJS format and sanitize HTML
-	let descriptionHtml: string[] | null = null;
-	try {
-		if (product.description) {
-			const parsed = parser.parse(JSON.parse(product.description));
-			descriptionHtml = parsed.map((html: string) => xss(html));
-		}
-	} catch {
-		// If parsing fails, wrap plain text in a paragraph
-		if (product.description) {
-			descriptionHtml = [xss(`<p>${product.description}</p>`)];
-		}
-	}
-
-	// Check availability
-	const isAvailable = variants.some((variant) => variant.quantityAvailable);
-
-	// Determine add-to-cart button state
-	const isAddToCartDisabled = !selectedVariantID || !selectedVariant?.quantityAvailable;
-	const disabledReason = !selectedVariantID
-		? ("no-selection" as const)
-		: !selectedVariant?.quantityAvailable
-			? ("out-of-stock" as const)
-			: undefined;
-
-	// Format prices - show "FREE" for $0 items
-	const price = selectedVariant?.pricing?.price?.gross
-		? selectedVariant.pricing.price.gross.amount === 0
-			? "FREE"
-			: formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-		: formatMoneyRange({
-				start: product.pricing?.priceRange?.start?.gross,
-				stop: product.pricing?.priceRange?.stop?.gross,
-			}) || "";
-
-	// Calculate discount/sale information using shared utility
-	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
-	const undiscountedPrice = selectedVariant?.pricing?.priceUndiscounted?.gross?.amount;
-	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, undiscountedPrice);
-
-	const compareAtPrice =
-		isOnSale && selectedVariant?.pricing?.priceUndiscounted?.gross
-			? formatMoney(
-					selectedVariant.pricing.priceUndiscounted.gross.amount,
-					selectedVariant.pricing.priceUndiscounted.gross.currency,
-				)
-			: null;
-
-	// Prepare images from product media
+	// Prepare images (cached)
 	const images =
 		product.media && product.media.length > 0
 			? product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }))
@@ -194,12 +151,119 @@ export default async function ProductPage(props: {
 				? [{ url: product.thumbnail.url, alt: product.thumbnail.alt }]
 				: [];
 
-	// Extract product attributes for display
-	// Filter out variant-specific attributes (Size, Color) as they're handled by variant selector
+	// Extract product attributes (cached)
+	const productAttributes = extractProductAttributes(product);
+	const careInstructions = extractCareInstructions(product);
+
+	// Breadcrumbs (cached)
+	const breadcrumbs = [
+		{ label: "Home", href: `/${params.channel}` },
+		...(product.category
+			? [{ label: product.category.name, href: `/${params.channel}/categories/${product.category.slug}` }]
+			: []),
+		{ label: product.name },
+	];
+
+	// JSON-LD with base product info
+	const productJsonLd = buildProductJsonLd({
+		name: product.name,
+		description: product.seoDescription || product.name,
+		images: images.length > 0 ? images.map((img) => img.url) : undefined,
+		brand: product.category?.name,
+		url: `/${params.channel}/products/${product.slug}`,
+		priceRange: product.pricing?.priceRange?.start?.gross
+			? {
+					lowPrice: product.pricing.priceRange.start.gross.amount,
+					highPrice:
+						product.pricing.priceRange.stop?.gross?.amount || product.pricing.priceRange.start.gross.amount,
+					currency: product.pricing.priceRange.start.gross.currency,
+				}
+			: null,
+		inStock: product.variants?.some((v) => v.quantityAvailable) ?? false,
+		variantCount: product.variants?.length ?? 0,
+	});
+
+	const lcpImageUrl = images[0]?.url;
+
+	return (
+		<div className="flex min-h-screen flex-col bg-background">
+			{/* Preload LCP image - part of static shell */}
+			{lcpImageUrl && <link rel="preload" as="image" href={lcpImageUrl} fetchPriority="high" />}
+
+			{/* JSON-LD - part of static shell */}
+			{productJsonLd && (
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+				/>
+			)}
+
+			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
+				{/* Breadcrumb - part of static shell */}
+				<div className="mb-6 hidden sm:block">
+					<Breadcrumbs items={breadcrumbs} />
+				</div>
+
+				{/* Product Grid */}
+				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+					{/* Left Column - Gallery (cached/static) */}
+					<div className="lg:sticky lg:top-24 lg:self-start">
+						<ProductGallery images={images} productName={product.name}>
+							{images[0] && <ProductGalleryImage src={images[0].url} alt={images[0].alt || product.name} />}
+						</ProductGallery>
+					</div>
+
+					{/* Right Column - Product Info */}
+					<div className="flex flex-col gap-3">
+						{/* Product Name - static shell for SEO/LCP, order:2 so Category appears above */}
+						<h1 className="order-2 text-balance text-3xl font-semibold tracking-tight lg:text-4xl">
+							{product.name}
+						</h1>
+
+						{/* Variant Section - DYNAMIC (streams at request time), order:1 for Category row, order:3 for rest */}
+						<Suspense fallback={<VariantSectionSkeleton />}>
+							<VariantSectionDynamic
+								product={product}
+								channel={params.channel}
+								searchParams={props.searchParams}
+							/>
+						</Suspense>
+
+						{/* Product Details Accordion - cached/static, order:4 (last) */}
+						<div className="order-4 mt-6">
+							<ProductAttributes
+								descriptionHtml={descriptionHtml}
+								attributes={productAttributes}
+								careInstructions={careInstructions}
+							/>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	);
+}
+
+// ============================================================================
+// Helper Functions (pure - execute during prerender)
+// ============================================================================
+
+function parseDescription(description: string | null | undefined): string[] | null {
+	if (!description) return null;
+
+	try {
+		const parsed = parser.parse(JSON.parse(description));
+		return parsed.map((html: string) => xss(html));
+	} catch {
+		return [xss(`<p>${description}</p>`)];
+	}
+}
+
+function extractProductAttributes(product: NonNullable<ProductDetailsQuery["product"]>) {
 	const variantAttributeSlugs = ["size", "color", "colour", "variant"];
 	const internalAttributeSlugs = ["care-instructions", "care"];
 
-	const productAttributes = (product.attributes || [])
+	return (product.attributes || [])
 		.filter((attr) => attr.attribute.name)
 		.filter((attr) => !variantAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
 		.filter((attr) => !internalAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
@@ -214,169 +278,20 @@ export default async function ProductPage(props: {
 			if (Array.isArray(attr.value)) return attr.value.length > 0;
 			return attr.value !== "";
 		});
+}
 
-	// Look for care instructions attribute
+function extractCareInstructions(product: NonNullable<ProductDetailsQuery["product"]>): string | null {
 	const careAttr = (product.attributes || []).find(
 		(attr) =>
 			attr.attribute.slug === "care-instructions" ||
 			attr.attribute.slug === "care" ||
 			(attr.attribute.name ?? "").toLowerCase().includes("care"),
 	);
-	const careInstructions =
+
+	return (
 		careAttr?.values
 			.map((v) => v.name)
 			.filter(Boolean)
-			.join(". ") || null;
-
-	// Server action for adding to cart
-	async function addToCart() {
-		"use server";
-
-		if (!selectedVariantID) return;
-
-		const checkout = await Checkout.findOrCreate({
-			checkoutId: await Checkout.getIdFromCookies(params.channel),
-			channel: params.channel,
-		});
-		invariant(checkout, "Failed to create checkout");
-
-		await Checkout.saveIdToCookie(params.channel, checkout.id);
-
-		await executeGraphQL(CheckoutAddLineDocument, {
-			variables: {
-				id: checkout.id,
-				productVariantId: decodeURIComponent(selectedVariantID),
-			},
-			cache: "no-cache",
-		});
-
-		revalidatePath("/cart");
-	}
-
-	// JSON-LD structured data for rich Google results
-	// Uses centralized builder from @/lib/seo
-	const productJsonLd = buildProductJsonLd({
-		name: product.name,
-		description: product.seoDescription || product.name,
-		images: images.length > 0 ? images.map((img) => img.url) : undefined,
-		sku: selectedVariant?.sku,
-		brand: product.category?.name,
-		url: `/${params.channel}/products/${product.slug}`,
-		price: selectedVariant?.pricing?.price?.gross
-			? {
-					amount: selectedVariant.pricing.price.gross.amount,
-					currency: selectedVariant.pricing.price.gross.currency,
-				}
-			: null,
-		priceRange:
-			!selectedVariant && product.pricing?.priceRange?.start?.gross
-				? {
-						lowPrice: product.pricing.priceRange.start.gross.amount,
-						highPrice:
-							product.pricing.priceRange.stop?.gross?.amount || product.pricing.priceRange.start.gross.amount,
-						currency: product.pricing.priceRange.start.gross.currency,
-					}
-				: null,
-		inStock: selectedVariant ? !!selectedVariant.quantityAvailable : isAvailable,
-		variantCount: variants.length,
-	});
-
-	// Breadcrumbs
-	const breadcrumbs = [
-		{ label: "Home", href: `/${params.channel}` },
-		...(product.category
-			? [{ label: product.category.name, href: `/${params.channel}/categories/${product.category.slug}` }]
-			: []),
-		{ label: product.name },
-	];
-
-	// Preload LCP image for better performance
-	const lcpImageUrl = images[0]?.url;
-
-	return (
-		<div className="flex min-h-screen flex-col bg-background">
-			{/* Preload LCP image - makes it discoverable from initial HTML */}
-			{lcpImageUrl && <link rel="preload" as="image" href={lcpImageUrl} fetchPriority="high" />}
-
-			{/* JSON-LD for rich Google results - can be disabled in seo/config.ts */}
-			{productJsonLd && (
-				<script
-					type="application/ld+json"
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-				/>
-			)}
-
-			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
-				{/* Breadcrumb - hidden on mobile */}
-				<div className="mb-6 hidden sm:block">
-					<Breadcrumbs items={breadcrumbs} />
-				</div>
-
-				{/* Product Grid */}
-				<form action={addToCart}>
-					<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-						{/* Left Column - Gallery */}
-						<div className="lg:sticky lg:top-24 lg:self-start">
-							<ProductGallery images={images} productName={product.name}>
-								{/* Server-rendered LCP image - in initial HTML for fast discovery */}
-								{images[0] && <ProductGalleryImage src={images[0].url} alt={images[0].alt || product.name} />}
-							</ProductGallery>
-						</div>
-
-						{/* Right Column - Product Info */}
-						<div className="space-y-8">
-							{/* Header */}
-							<div className="space-y-3">
-								<div className="flex items-center gap-2">
-									{product.category && (
-										<span className="text-sm text-muted-foreground">{product.category.name}</span>
-									)}
-									{isOnSale && (
-										<Badge variant="destructive" className="text-xs">
-											Sale
-										</Badge>
-									)}
-									{!isAvailable && (
-										<Badge variant="secondary" className="text-xs">
-											Out of stock
-										</Badge>
-									)}
-								</div>
-								<h1 className="text-balance text-3xl font-semibold tracking-tight lg:text-4xl">
-									{product.name}
-								</h1>
-							</div>
-
-							{/* Variant Selectors */}
-							<VariantSelectionSection
-								variants={variants}
-								selectedVariantId={selectedVariantID}
-								productSlug={product.slug}
-								channel={params.channel}
-							/>
-
-							{/* Add to Cart */}
-							<AddToCart
-								price={price}
-								compareAtPrice={compareAtPrice}
-								discountPercent={discountPercent}
-								disabled={isAddToCartDisabled}
-								disabledReason={disabledReason}
-							/>
-
-							{/* Product Details Accordion */}
-							<ProductAttributes
-								descriptionHtml={descriptionHtml}
-								attributes={productAttributes}
-								careInstructions={careInstructions}
-							/>
-						</div>
-					</div>
-
-					{/* Sticky Add to Cart Bar (Mobile) */}
-					<StickyBar productName={product.name} price={price} show={!isAddToCartDisabled} />
-				</form>
-			</main>
-		</div>
+			.join(". ") || null
 	);
 }

@@ -26,6 +26,7 @@ export async function Footer({ channel }: { channel: string }) {
 	const footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "footer", channel },
 		revalidate: 60 * 60 * 24,
+		withAuth: false, // Menu data is public
 	});
 
 	const channels = process.env.SALEOR_APP_TOKEN

@@ -19,12 +19,34 @@ type SearchParams = {
 	sort?: string | string[];
 };
 
-export default async function Page(props: {
+/**
+ * Search page with Cache Components.
+ * Static shell renders immediately, search results stream in.
+ */
+export default function Page(props: {
 	searchParams: Promise<SearchParams>;
 	params: Promise<{ channel: string }>;
 }) {
-	const searchParams = await props.searchParams;
-	const params = await props.params;
+	return (
+		<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			<Suspense fallback={<SearchSkeleton />}>
+				<SearchContent searchParams={props.searchParams} params={props.params} />
+			</Suspense>
+		</section>
+	);
+}
+
+/**
+ * Dynamic search content - reads searchParams at request time.
+ */
+async function SearchContent({
+	searchParams: searchParamsPromise,
+	params: paramsPromise,
+}: {
+	searchParams: Promise<SearchParams>;
+	params: Promise<{ channel: string }>;
+}) {
+	const [searchParams, params] = await Promise.all([searchParamsPromise, paramsPromise]);
 
 	// Extract and validate query
 	const queryParam = searchParams.query;
@@ -65,51 +87,58 @@ export default async function Page(props: {
 
 	const { products, pagination } = result;
 
+	if (pagination.totalCount === 0) {
+		return <EmptyState query={query} channel={params.channel} />;
+	}
+
 	return (
-		<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			{pagination.totalCount > 0 ? (
+		<div>
+			{/* Header with count and sort */}
+			<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
-					{/* Header with count and sort */}
-					<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-						<div>
-							<h1 className="text-2xl font-semibold">Results for &quot;{query}&quot;</h1>
-							<p className="mt-1 text-sm text-muted-foreground">
-								{pagination.totalCount} {pagination.totalCount === 1 ? "product" : "products"} found
-							</p>
-						</div>
-						<SearchSort />
-					</div>
-
-					{/* Results grid */}
-					<SearchResults products={products} channel={params.channel} />
-
-					{/* Pagination */}
-					{(pagination.hasNextPage || pagination.hasPreviousPage) && (
-						<Suspense fallback={<PaginationSkeleton />}>
-							<Pagination
-								pageInfo={{
-									hasNextPage: pagination.hasNextPage ?? false,
-									hasPreviousPage: pagination.hasPreviousPage ?? false,
-									startCursor: pagination.prevCursor,
-									endCursor: pagination.nextCursor,
-								}}
-							/>
-						</Suspense>
-					)}
+					<h1 className="text-2xl font-semibold">Results for &quot;{query}&quot;</h1>
+					<p className="mt-1 text-sm text-muted-foreground">
+						{pagination.totalCount} {pagination.totalCount === 1 ? "product" : "products"} found
+					</p>
 				</div>
-			) : (
-				<EmptyState query={query} channel={params.channel} />
+				<SearchSort />
+			</div>
+
+			{/* Results grid */}
+			<SearchResults products={products} channel={params.channel} />
+
+			{/* Pagination */}
+			{(pagination.hasNextPage || pagination.hasPreviousPage) && (
+				<Pagination
+					pageInfo={{
+						hasNextPage: pagination.hasNextPage ?? false,
+						hasPreviousPage: pagination.hasPreviousPage ?? false,
+						startCursor: pagination.prevCursor,
+						endCursor: pagination.nextCursor,
+					}}
+				/>
 			)}
-		</section>
+		</div>
 	);
 }
 
-function PaginationSkeleton() {
+function SearchSkeleton() {
 	return (
-		<nav className="flex items-center justify-center gap-x-4 border-neutral-200 px-4 pt-12">
-			<span className="h-10 w-24 animate-pulse rounded bg-neutral-200" />
-			<span className="h-10 w-24 animate-pulse rounded bg-neutral-200" />
-		</nav>
+		<div className="animate-pulse">
+			<div className="mb-8">
+				<div className="h-8 w-64 rounded bg-muted" />
+				<div className="mt-2 h-4 w-32 rounded bg-muted" />
+			</div>
+			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+				{Array.from({ length: 8 }).map((_, i) => (
+					<div key={i}>
+						<div className="aspect-square rounded-lg bg-muted" />
+						<div className="mt-2 h-4 w-3/4 rounded bg-muted" />
+						<div className="mt-1 h-4 w-1/2 rounded bg-muted" />
+					</div>
+				))}
+			</div>
+		</div>
 	);
 }
 

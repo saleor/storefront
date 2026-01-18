@@ -95,6 +95,62 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ---
 
+## Caching Architecture
+
+Paper uses **Cache Components** (Partial Prerendering) for optimal performance—static shells load instantly while dynamic content streams in. This is built on Next.js's experimental `cacheComponents` feature.
+
+> ⚠️ **Note**: Cache Components are experimental. See `.claude/skills/caching-strategy/SKILL.md` for rollback instructions if needed.
+
+The **display-cached, checkout-live** model ensures fast browsing with accurate checkout:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         DATA FRESHNESS                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Product Pages          Cart / Checkout         Payment            │
+│   ──────────────         ──────────────          ───────            │
+│                                                                     │
+│   ┌───────────┐         ┌───────────┐          ┌───────────┐       │
+│   │  CACHED   │────────▶│   LIVE    │─────────▶│   LIVE    │       │
+│   │  5 min    │  Add    │  Always   │   Pay    │  Always   │       │
+│   └───────────┘  to     └───────────┘          └───────────┘       │
+│                  Cart                                               │
+│   Fast page loads        Real-time prices       Saleor validates    │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### How It Works
+
+| Component               | Freshness          | Why                                  |
+| ----------------------- | ------------------ | ------------------------------------ |
+| **Product pages**       | Cached (5 min TTL) | Instant loads, great Core Web Vitals |
+| **Category/Collection** | Cached (5 min TTL) | Fast browsing experience             |
+| **Cart drawer**         | Always live        | Saleor API with `cache: "no-cache"`  |
+| **Checkout**            | Always live        | Direct API calls, real-time totals   |
+
+### Instant Updates with Webhooks
+
+Configure Saleor webhooks to invalidate cache immediately when data changes:
+
+1. Create webhook in Saleor Dashboard → Configuration → Webhooks
+2. Point to `https://your-store.com/api/revalidate`
+3. Subscribe to `PRODUCT_UPDATED`, `CATEGORY_UPDATED`, etc.
+4. Set `SALEOR_WEBHOOK_SECRET` env var
+
+Without webhooks? TTL handles it—cached data expires naturally after 5 minutes.
+
+### Why This Is Safe
+
+- **Saleor is the source of truth**: `checkoutLinesAdd` calculates prices server-side
+- **Cart always fetches fresh**: Users see current prices before checkout
+- **Payment validates**: `checkoutComplete` uses real-time data
+
+> 📚 **Deep dive**: See `.claude/skills/caching-strategy/SKILL.md` for the full architecture, Cache Components (PPR), webhook setup, and debugging guide.
+
+---
+
 ## Quick Start
 
 ### 1. Get a Saleor Backend

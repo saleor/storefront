@@ -1,12 +1,18 @@
 import Link from "next/link";
+import { cacheLife, cacheTag } from "next/cache";
 import { NavLink } from "./nav-link";
 import { executeGraphQL } from "@/lib/graphql";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
 
 export const NavLinks = async ({ channel }: { channel: string }) => {
+	"use cache";
+	cacheLife("hours"); // 1 hour cache - navigation rarely changes
+	cacheTag("navigation"); // Tag for on-demand revalidation
+
 	const navLinks = await executeGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "navbar", channel },
-		revalidate: 60 * 60 * 24,
+		revalidate: 60 * 60, // 1 hour
+		withAuth: false, // Public data - no cookies in cache scope
 	});
 
 	return (

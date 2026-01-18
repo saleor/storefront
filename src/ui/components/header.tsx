@@ -6,22 +6,46 @@ import { UserMenuContainer } from "./nav/components/user-menu/user-menu-containe
 import { MobileMenu } from "./nav/components/mobile-menu";
 import { SearchBar } from "./nav/components/search-bar";
 
+function SearchBarSkeleton() {
+	return <div className="h-10 w-full max-w-md animate-pulse rounded-lg bg-secondary" />;
+}
+
+function NavLinksSkeleton() {
+	return (
+		<>
+			<li className="inline-flex">
+				<span className="h-4 w-8 animate-pulse rounded bg-muted" />
+			</li>
+			<li className="inline-flex">
+				<span className="h-4 w-16 animate-pulse rounded bg-muted" />
+			</li>
+			<li className="inline-flex">
+				<span className="h-4 w-12 animate-pulse rounded bg-muted" />
+			</li>
+		</>
+	);
+}
+
 export async function Header({ channel }: { channel: string }) {
 	return (
 		<header className="sticky top-0 z-40 border-b border-border bg-background">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-16 items-center justify-between gap-4">
-					{/* Logo */}
+					{/* Logo - no Suspense needed (simple server component) */}
 					<Logo />
 
-					{/* Search bar - centered on desktop */}
+					{/* Search bar - Suspense for server action */}
 					<div className="hidden flex-1 justify-center md:flex">
-						<SearchBar channel={channel} />
+						<Suspense fallback={<SearchBarSkeleton />}>
+							<SearchBar channel={channel} />
+						</Suspense>
 					</div>
 
-					{/* Navigation - Desktop */}
+					{/* Navigation - Suspense for cached data + client active state */}
 					<nav className="hidden items-center gap-6 lg:flex">
-						<NavLinks channel={channel} />
+						<Suspense fallback={<NavLinksSkeleton />}>
+							<NavLinks channel={channel} />
+						</Suspense>
 					</nav>
 
 					{/* Actions */}
@@ -34,8 +58,12 @@ export async function Header({ channel }: { channel: string }) {
 						</Suspense>
 						<Suspense>
 							<MobileMenu>
-								<SearchBar channel={channel} />
-								<NavLinks channel={channel} />
+								<Suspense fallback={<SearchBarSkeleton />}>
+									<SearchBar channel={channel} />
+								</Suspense>
+								<Suspense fallback={<NavLinksSkeleton />}>
+									<NavLinks channel={channel} />
+								</Suspense>
 							</MobileMenu>
 						</Suspense>
 					</div>
