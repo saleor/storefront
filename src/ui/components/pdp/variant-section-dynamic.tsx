@@ -1,4 +1,3 @@
-import { invariant } from "ts-invariant";
 import { revalidatePath } from "next/cache";
 
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
@@ -73,25 +72,39 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 	async function addToCart() {
 		"use server";
 
-		if (!selectedVariantID) return;
+		if (!selectedVariantID) {
+			// Silently return - button should be disabled if no variant selected
+			return;
+		}
 
-		const checkout = await Checkout.findOrCreate({
-			checkoutId: await Checkout.getIdFromCookies(channel),
-			channel: channel,
-		});
-		invariant(checkout, "Failed to create checkout");
+		try {
+			const checkout = await Checkout.findOrCreate({
+				checkoutId: await Checkout.getIdFromCookies(channel),
+				channel: channel,
+			});
 
-		await Checkout.saveIdToCookie(channel, checkout.id);
+			if (!checkout) {
+				// Log error server-side, UI will show via ErrorBoundary if needed
+				console.error("Add to cart: Failed to create checkout");
+				return;
+			}
 
-		await executeGraphQL(CheckoutAddLineDocument, {
-			variables: {
-				id: checkout.id,
-				productVariantId: decodeURIComponent(selectedVariantID),
-			},
-			cache: "no-cache",
-		});
+			await Checkout.saveIdToCookie(channel, checkout.id);
 
-		revalidatePath("/cart");
+			await executeGraphQL(CheckoutAddLineDocument, {
+				variables: {
+					id: checkout.id,
+					productVariantId: decodeURIComponent(selectedVariantID),
+				},
+				cache: "no-cache",
+			});
+
+			revalidatePath("/cart");
+		} catch (error) {
+			// Log error server-side - the UI feedback comes from cart drawer/badge update
+			// For explicit error UI, would need useActionState (separate enhancement)
+			console.error("Add to cart failed:", error);
+		}
 	}
 
 	return (

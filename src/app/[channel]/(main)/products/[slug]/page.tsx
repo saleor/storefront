@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
+import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
@@ -15,6 +16,7 @@ import {
 	ProductAttributes,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
+	VariantSectionError,
 } from "@/ui/components/pdp";
 
 // ============================================================================
@@ -226,13 +228,15 @@ export default async function ProductPage(props: {
 						</h1>
 
 						{/* Variant Section - DYNAMIC (streams at request time), order:1 for Category row, order:3 for rest */}
-						<Suspense fallback={<VariantSectionSkeleton />}>
-							<VariantSectionDynamic
-								product={product}
-								channel={params.channel}
-								searchParams={props.searchParams}
-							/>
-						</Suspense>
+						<ErrorBoundary FallbackComponent={VariantSectionError}>
+							<Suspense fallback={<VariantSectionSkeleton />}>
+								<VariantSectionDynamic
+									product={product}
+									channel={params.channel}
+									searchParams={props.searchParams}
+								/>
+							</Suspense>
+						</ErrorBoundary>
 
 						{/* Product Details Accordion - cached/static, order:4 (last) */}
 						<div className="order-4 mt-6">

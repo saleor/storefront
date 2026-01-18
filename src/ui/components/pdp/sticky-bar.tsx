@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useFormStatus } from "react-dom";
 import { ShoppingBag } from "lucide-react";
+import { throttle } from "lodash-es";
 import { Button } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
+
+/** Scroll threshold (in pixels) before showing the sticky bar */
+const SCROLL_THRESHOLD = 500;
 
 interface StickyBarProps {
 	productName: string;
@@ -33,19 +37,27 @@ function StickyAddButton() {
 }
 
 export function StickyBar({ productName, price, show = false }: StickyBarProps) {
-	const [scrolledPastThreshold, setScrolledPastThreshold] = useState(false);
+	// Initialize with current scroll position (avoids flash on page load)
+	const [scrolledPastThreshold, setScrolledPastThreshold] = useState(
+		() => typeof window !== "undefined" && window.scrollY > SCROLL_THRESHOLD,
+	);
+
+	// Throttle scroll handler to avoid excessive updates (especially on low-end devices)
+	const handleScroll = useMemo(
+		() =>
+			throttle(() => {
+				setScrolledPastThreshold(window.scrollY > SCROLL_THRESHOLD);
+			}, 100),
+		[],
+	);
 
 	useEffect(() => {
-		const handleScroll = () => {
-			setScrolledPastThreshold(window.scrollY > 500);
-		};
-
-		// Check initial scroll position
-		handleScroll();
-
 		window.addEventListener("scroll", handleScroll, { passive: true });
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+		return () => {
+			handleScroll.cancel(); // Cancel any pending throttled calls
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, [handleScroll]);
 
 	// Only show if both conditions are met
 	const isVisible = show && scrolledPastThreshold;
