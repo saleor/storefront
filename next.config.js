@@ -9,8 +9,8 @@ const config = {
 	// See: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
 	experimental: {
 		optimizePackageImports: ["lucide-react", "lodash-es"],
-		// Limit build workers to avoid API rate limiting (429) during static generation
-		cpus: 1,
+		// Note: API rate limiting is handled by RequestQueue in src/lib/graphql.ts
+		// (max 3 concurrent requests + 200ms delay between requests)
 	},
 	images: {
 		remotePatterns: [
