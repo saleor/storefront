@@ -8,6 +8,7 @@
 import type { VariantOption, AttributeGroup } from "./types";
 import { getColorHex, isColorAttribute, isSizeAttribute, COLOR_NAME_TO_HEX } from "@/lib/colors";
 import { getMaxDiscountInfo as getMaxDiscountInfoBase } from "@/lib/pricing";
+import { sortBySizeProperty } from "@/lib/sizes";
 
 // Re-export for backwards compatibility
 export { COLOR_NAME_TO_HEX };
@@ -131,7 +132,10 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 			});
 		}
 
-		groups.push({ slug, name: data.name, options });
+		// Sort size options in logical order (S, M, L, XL, etc.)
+		const sortedOptions = isSizeAttribute(slug) ? sortBySizeProperty(options) : options;
+
+		groups.push({ slug, name: data.name, options: sortedOptions });
 	}
 
 	// Sort: color attributes first, then size, then others

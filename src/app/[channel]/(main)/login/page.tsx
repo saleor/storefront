@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Loader } from "@/ui/atoms/loader";
 import { LoginForm } from "@/ui/components/login-form";
@@ -28,14 +29,25 @@ export default function LoginPage(props: { params: Promise<{ channel: string }> 
 async function LoginContent({ params: paramsPromise }: { params: Promise<{ channel: string }> }) {
 	const { channel } = await paramsPromise;
 
-	// Check if user is already logged in (reads cookies)
-	const { me: user } = await executeGraphQL(CurrentUserDocument, {
-		cache: "no-cache",
-	});
+	// During static generation, skip API call entirely - just show login form
+	let hasCookies = false;
+	try {
+		const cookieStore = await cookies();
+		hasCookies = cookieStore.getAll().length > 0;
+	} catch {
+		// Static generation - no cookies available
+	}
 
-	// Redirect logged-in users to home
-	if (user) {
-		redirect(`/${channel}`);
+	// Only check auth if we have cookies (runtime request with potential session)
+	if (hasCookies) {
+		const { me: user } = await executeGraphQL(CurrentUserDocument, {
+			cache: "no-cache",
+		});
+
+		// Redirect logged-in users to home
+		if (user) {
+			redirect(`/${channel}`);
+		}
 	}
 
 	return (

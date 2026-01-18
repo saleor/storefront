@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { VariantSelectionSectionProps } from "./types";
 import { VariantSelector } from "./variant-selector";
+import { VariantNameSelector } from "./variant-name-selector";
 import {
 	groupVariantsByAttributes,
 	findMatchingVariant,
@@ -115,6 +116,25 @@ export function VariantSelectionSection({
 		[variants, attributeGroups, currentSelections],
 	);
 
+	// Development warning for name-based fallback
+	useEffect(() => {
+		if (process.env.NODE_ENV === "development" && attributeGroups.length === 0 && variants.length > 1) {
+			console.warn(
+				`[VariantSelectionSection] Product "${productSlug}" has ${variants.length} variants but no structured attributes. ` +
+					`Using name-based fallback selector. For better UX (color swatches, size pills, cross-filtering), ` +
+					`configure variant attributes in Saleor Dashboard.`,
+			);
+		}
+	}, [attributeGroups.length, variants.length, productSlug]);
+
+	// Handle variant selection for name-based fallback
+	const handleVariantSelect = useCallback(
+		(variantId: string) => {
+			router.push(`/${channel}/products/${productSlug}?variant=${variantId}`, { scroll: false });
+		},
+		[channel, productSlug, router],
+	);
+
 	// If children provided, render them instead (full override)
 	if (children) {
 		return <>{children}</>;
@@ -125,9 +145,17 @@ export function VariantSelectionSection({
 		return null;
 	}
 
-	// If no attributes found, show nothing (variant names might be used instead)
+	// Fallback: variants without structured attributes use name-based selector
 	if (attributeGroups.length === 0) {
-		return null;
+		return (
+			<div className="space-y-6 py-2">
+				<VariantNameSelector
+					variants={variants}
+					selectedVariantId={selectedVariantId}
+					onSelect={handleVariantSelect}
+				/>
+			</div>
+		);
 	}
 
 	return (

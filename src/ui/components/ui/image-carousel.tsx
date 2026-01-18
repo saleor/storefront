@@ -148,14 +148,16 @@ export function ImageCarousel({
 					{showArrows && images.length > 1 && (
 						<>
 							<CarouselPrevious
+								variant="ghost"
 								className={cn(
-									"bg-background/90 left-4 hidden opacity-0 backdrop-blur-sm transition-opacity hover:bg-background group-hover:opacity-100 md:flex",
+									"bg-background/90 left-4 hidden border border-input opacity-0 shadow-sm backdrop-blur-sm transition-opacity hover:bg-background group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>
 							<CarouselNext
+								variant="ghost"
 								className={cn(
-									"bg-background/90 right-4 hidden opacity-0 backdrop-blur-sm transition-opacity hover:bg-background group-hover:opacity-100 md:flex",
+									"bg-background/90 right-4 hidden border border-input opacity-0 shadow-sm backdrop-blur-sm transition-opacity hover:bg-background group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>

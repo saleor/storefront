@@ -7,7 +7,7 @@ import edjsHTML from "editorjs-html";
 import xss from "xss";
 
 import { executeGraphQL } from "@/lib/graphql";
-import { ProductDetailsDocument, ProductListDocument, type ProductDetailsQuery } from "@/gql/graphql";
+import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
@@ -48,7 +48,7 @@ async function getProductData(slug: string, channel: string) {
 	} catch (error) {
 		// During build, if the API is unreachable, return null instead of failing.
 		// The page will be populated on-demand when a user visits.
-		console.warn(`[PDP] Failed to fetch product ${slug} for ${channel}:`, error);
+		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, error);
 		return null;
 	}
 }
@@ -59,24 +59,17 @@ async function getProductData(slug: string, channel: string) {
 
 export async function generateMetadata(props: {
 	params: Promise<{ slug: string; channel: string }>;
-	searchParams: Promise<{ variant?: string }>;
 }): Promise<Metadata> {
-	// Note: Can't use "use cache" here because we access searchParams (dynamic)
-	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
+	// Avoid searchParams here - it makes the page dynamic and can cause build issues
+	const params = await props.params;
 	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
-		notFound();
+		return { title: "Product Not Found" };
 	}
 
-	const selectedVariant = searchParams.variant
-		? product.variants?.find(({ id }) => id === searchParams.variant)
-		: null;
-	const variantName = selectedVariant?.name;
-	const description =
-		product.seoDescription || (variantName ? `${product.name} - ${variantName}` : product.name);
-	// Use variant image for OG if available, otherwise product image
-	const ogImage = selectedVariant?.media?.[0]?.url || product.media?.[0]?.url || product.thumbnail?.url;
+	const description = product.seoDescription || product.name;
+	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
 	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
 	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
 
@@ -95,42 +88,26 @@ export async function generateMetadata(props: {
 	});
 }
 
-export async function generateStaticParams({ params }: { params: { channel: string } }) {
-	const { getStaticProductSlugs, getStaticProductCollection, getStaticProductFetchCount } = await import(
-		"@/config/static-pages"
-	);
-
-	const configuredSlugs = getStaticProductSlugs();
-	if (configuredSlugs && configuredSlugs.length > 0) {
-		return configuredSlugs.map((slug) => ({ slug }));
-	}
-
-	try {
-		const collectionSlug = getStaticProductCollection();
-		if (collectionSlug) {
-			const { ProductListByCollectionDocument } = await import("@/gql/graphql");
-			const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
-				revalidate: 300,
-				variables: { slug: collectionSlug, channel: params.channel, first: 100 },
-				withAuth: false,
-			});
-			return collection?.products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
-		}
-
-		const { products } = await executeGraphQL(ProductListDocument, {
-			revalidate: 300,
-			variables: { first: getStaticProductFetchCount(), channel: params.channel },
-			withAuth: false,
-		});
-
-		return products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
-	} catch (error) {
-		// If API is unreachable during build, return empty array.
-		// Pages will be generated on-demand when users visit.
-		console.warn(`[generateStaticParams] Failed to fetch products for ${params.channel}:`, error);
-		return [];
-	}
-}
+/**
+ * Static params for product pages.
+ *
+ * Control via STATIC_PRODUCT_COUNT env var:
+ * - Not set or 0: Fetch 1 product (minimum for Cache Components)
+ * - N > 0: Fetch N products to pre-render
+ *
+ * All other product pages are generated on-demand via ISR.
+ */
+// NOTE: generateStaticParams is intentionally omitted for product pages.
+//
+// With Next.js 16 Cache Components, using generateStaticParams on this route
+// causes build timeouts (60s+) due to how params/searchParams Promises are
+// resolved during static generation.
+//
+// All product pages are generated on-demand via ISR instead. This is actually
+// beneficial because:
+// 1. Faster builds (no product API calls during build)
+// 2. Cache Components still cache data after first visit
+// 3. No stale product data from build time
 
 // ============================================================================
 // Page Component
@@ -153,7 +130,10 @@ export default async function ProductPage(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
-	const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
+	// Only await params (static) at page level
+	// searchParams (dynamic) must be handled in Suspense boundaries
+	const params = await props.params;
+
 	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
@@ -163,14 +143,9 @@ export default async function ProductPage(props: {
 	// Parse description (cached - part of static shell)
 	const descriptionHtml = parseDescription(product.description);
 
-	// Find selected variant (if any) for variant-specific images
-	const selectedVariant = searchParams.variant
-		? product.variants?.find((v) => v.id === searchParams.variant)
-		: null;
-
-	// Prepare images: use variant images if available, otherwise product images
-	// This enables variant-specific galleries (e.g., different colors show different images)
-	const images = getGalleryImages(product, selectedVariant);
+	// Static shell uses default product images (not variant-specific)
+	// Variant-specific images are handled in the dynamic VariantSection
+	const images = getGalleryImages(product, null);
 
 	// Extract product attributes (cached)
 	const productAttributes = extractProductAttributes(product);

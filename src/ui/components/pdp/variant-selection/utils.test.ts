@@ -12,6 +12,8 @@ import {
 	stockVariants,
 	discountedVariants,
 	singleAttributeVariants,
+	nameOnlyVariants,
+	nameOnlyDifferentPrices,
 } from "./__fixtures__/variants";
 
 // =============================================================================
@@ -285,6 +287,24 @@ describe("edge cases", () => {
 		const noAttrVariants = [{ id: "v1", name: "Default", quantityAvailable: 10, attributes: [] }];
 		const groups = groupVariantsByAttributes(noAttrVariants);
 		expect(groups).toEqual([]);
+	});
+
+	it("returns empty groups for name-only variants (fallback case)", () => {
+		// When variants have no structured attributes, groupVariantsByAttributes
+		// returns empty array, triggering the VariantNameSelector fallback
+		const groups = groupVariantsByAttributes(nameOnlyVariants);
+		expect(groups).toEqual([]);
+		// The variants still have valid data for the fallback selector:
+		expect(nameOnlyVariants).toHaveLength(3);
+		expect(nameOnlyVariants[0]?.name).toBe("Navy blue S");
+	});
+
+	it("returns empty groups for gift cards with different prices", () => {
+		const groups = groupVariantsByAttributes(nameOnlyDifferentPrices);
+		expect(groups).toEqual([]);
+		// Gift cards have different prices that should be shown in fallback
+		expect(nameOnlyDifferentPrices[0]?.pricing?.price?.gross.amount).toBe(25);
+		expect(nameOnlyDifferentPrices[2]?.pricing?.price?.gross.amount).toBe(100);
 	});
 
 	it("handles null/undefined quantity gracefully", () => {

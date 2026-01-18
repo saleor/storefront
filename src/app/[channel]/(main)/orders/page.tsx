@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 import { CurrentUserOrderListDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { LoginForm } from "@/ui/components/login-form";
@@ -21,6 +22,19 @@ export default function OrderPage() {
  * Dynamic orders content - checks auth and fetches orders at request time.
  */
 async function OrdersContent() {
+	// During static generation, skip API call entirely
+	let hasCookies = false;
+	try {
+		const cookieStore = await cookies();
+		hasCookies = cookieStore.getAll().length > 0;
+	} catch {
+		// Static generation - no cookies available
+	}
+
+	if (!hasCookies) {
+		return <LoginForm />;
+	}
+
 	const { me: user } = await executeGraphQL(CurrentUserOrderListDocument, {
 		cache: "no-cache",
 	});

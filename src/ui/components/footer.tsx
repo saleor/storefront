@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { cacheLife, cacheTag } from "next/cache";
 import { LinkWithChannel } from "../atoms/link-with-channel";
 import { ChannelSelect } from "./channel-select";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
-import { getCopyrightText } from "@/config/brand";
+import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
 
 // Default footer links when no CMS data is available
@@ -22,23 +23,49 @@ const defaultFooterLinks = {
 	],
 };
 
+/** Cached channels list - rarely changes */
+async function getChannels() {
+	"use cache";
+	cacheLife("days"); // Cache for 1 day
+	cacheTag("channels");
+
+	if (!process.env.SALEOR_APP_TOKEN) {
+		return null;
+	}
+
+	try {
+		return await executeGraphQL(ChannelsListDocument, {
+			withAuth: false,
+			headers: {
+				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+			},
+		});
+	} catch {
+		return null;
+	}
+}
+
+/** Cached footer menu */
+async function getFooterMenu(channel: string) {
+	"use cache";
+	cacheLife("hours"); // Cache for 1 hour
+	cacheTag("footer-menu");
+
+	try {
+		return await executeGraphQL(MenuGetBySlugDocument, {
+			variables: { slug: "footer", channel },
+			revalidate: 60 * 60 * 24,
+			withAuth: false,
+		});
+	} catch {
+		return null;
+	}
+}
+
 export async function Footer({ channel }: { channel: string }) {
-	const footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "footer", channel },
-		revalidate: 60 * 60 * 24,
-		withAuth: false, // Menu data is public
-	});
+	const [footerLinks, channels] = await Promise.all([getFooterMenu(channel), getChannels()]);
 
-	const channels = process.env.SALEOR_APP_TOKEN
-		? await executeGraphQL(ChannelsListDocument, {
-				withAuth: false,
-				headers: {
-					Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-				},
-			})
-		: null;
-
-	const menuItems = footerLinks.menu?.items || [];
+	const menuItems = footerLinks?.menu?.items || [];
 
 	return (
 		<footer className="bg-foreground text-background">
@@ -164,7 +191,9 @@ export async function Footer({ channel }: { channel: string }) {
 
 				{/* Bottom bar */}
 				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-neutral-800 pt-8 sm:flex-row">
-					<p className="text-xs text-neutral-500">{getCopyrightText()}</p>
+					<p className="text-xs text-neutral-500">
+						<CopyrightText />
+					</p>
 					<div className="flex items-center gap-6">
 						<Link
 							href="/privacy"

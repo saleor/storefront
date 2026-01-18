@@ -87,12 +87,17 @@ SALEOR_APP_TOKEN=             # For channels query (server-side only)
 
 # Rate Limiting (for build-time API calls)
 SALEOR_MAX_CONCURRENT_REQUESTS=3   # Max parallel requests to Saleor (default: 3)
-SALEOR_MIN_REQUEST_DELAY_MS=300    # Min delay between requests in ms (default: 300)
+SALEOR_MIN_REQUEST_DELAY_MS=200    # Min delay between requests in ms (default: 200)
+SALEOR_REQUEST_TIMEOUT_MS=15000    # Request timeout in ms (default: 15000)
+NEXT_BUILD_RETRIES=1               # GraphQL retries during build (default: 3, use 1 for flaky APIs)
 
-# Static Generation Control (reduce API load during build)
-STATIC_CHANNELS=default-channel    # Comma-separated channel slugs (avoids API call)
-STATIC_PRODUCT_SLUGS=              # Comma-separated product slugs to pre-render
-STATIC_PRODUCT_COUNT=20            # Number of products to pre-render (0 to skip)
+# Channel Configuration (required)
+NEXT_PUBLIC_DEFAULT_CHANNEL=       # Your Saleor channel slug (e.g., "default-channel")
+
+# Multi-channel builds (optional) - discovers additional channels at build time
+# SALEOR_APP_TOKEN=                # If set, fetches all active channels from API
+
+# Note: Product pages are NOT pre-rendered (all on-demand via ISR) due to Cache Components limitations
 ```
 
 ---

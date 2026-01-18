@@ -67,30 +67,78 @@ function sleep(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/** Format variables for log output (compact, truncated) */
+function formatVariablesForLog(variables: Record<string, unknown>): string {
+	const parts: string[] = [];
+	for (const [key, value] of Object.entries(variables)) {
+		if (value === undefined || value === null) continue;
+		const strValue = typeof value === "string" ? value : JSON.stringify(value);
+		// Truncate long values
+		const truncated = strValue.length > 30 ? strValue.slice(0, 30) + "…" : strValue;
+		parts.push(`${key}=${truncated}`);
+	}
+	return parts.length > 0 ? `(${parts.join(", ")})` : "";
+}
+
 // Global queue - shared across all requests
 const requestQueue = new RequestQueue(
 	parseInt(process.env.SALEOR_MAX_CONCURRENT_REQUESTS || "3", 10),
-	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || "300", 10),
+	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || "200", 10),
 );
 
 /**
- * Detect if we're in build-time static generation.
- * During build, we use shorter timeouts to avoid USE_CACHE_TIMEOUT errors.
+ * Get retry configuration.
+ * Set NEXT_BUILD_RETRIES for fewer retries during build.
+ * Set SALEOR_REQUEST_TIMEOUT_MS for custom timeout (default: 15s).
  */
-const isBuildTime = process.env.NODE_ENV === "production" && !process.env.NEXT_RUNTIME;
+function getRetryConfig() {
+	const buildRetries = process.env.NEXT_BUILD_RETRIES;
+	const timeoutMs = parseInt(process.env.SALEOR_REQUEST_TIMEOUT_MS || "15000", 10);
 
-// Use shorter retries during build to avoid `use cache` timeout
-const MAX_RETRIES = isBuildTime ? 1 : 3;
-const RETRY_DELAY_MS = isBuildTime ? 500 : 1000;
+	if (buildRetries !== undefined) {
+		return {
+			maxRetries: parseInt(buildRetries, 10),
+			delayMs: 500,
+			timeoutMs,
+		};
+	}
+	return {
+		maxRetries: 3,
+		delayMs: 1000,
+		timeoutMs,
+	};
+}
+
+/**
+ * Fetch with timeout. Throws if request takes longer than timeoutMs.
+ */
+async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number): Promise<Response> {
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+	try {
+		return await fetch(url, { ...init, signal: controller.signal });
+	} finally {
+		clearTimeout(timeoutId);
+	}
+}
 
 /**
  * Fetch with retry for 429 (rate limit) and 5xx errors.
  * Used internally by executeGraphQL.
  */
-async function fetchWithRetry(input: RequestInit, withAuth: boolean): Promise<Response> {
+async function fetchWithRetry(
+	input: RequestInit,
+	withAuth: boolean,
+	operationName: string,
+	variablesForLog?: string,
+): Promise<Response> {
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+	const url = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 
-	for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+	const { maxRetries, delayMs, timeoutMs } = getRetryConfig();
+
+	for (let attempt = 0; attempt <= maxRetries; attempt++) {
 		try {
 			let response: Response;
 
@@ -98,9 +146,7 @@ async function fetchWithRetry(input: RequestInit, withAuth: boolean): Promise<Re
 				try {
 					// Dynamic import to avoid bundling server-only code in client components
 					const { getServerAuthClient } = await import("@/lib/auth/server");
-					response = await (
-						await getServerAuthClient()
-					).fetchWithAuth(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
+					response = await (await getServerAuthClient()).fetchWithAuth(url, input);
 				} catch (authError) {
 					// During static generation, cookies() throws - fall back to unauthenticated fetch
 					const isDynamicServerError =
@@ -109,43 +155,54 @@ async function fetchWithRetry(input: RequestInit, withAuth: boolean): Promise<Re
 							authError.message?.includes("cookies") ||
 							authError.message?.includes("Dynamic server usage"));
 					if (isDynamicServerError) {
-						response = await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
+						response = await fetchWithTimeout(url, input, timeoutMs);
 					} else {
 						throw authError;
 					}
 				}
 			} else {
-				response = await fetch(process.env.NEXT_PUBLIC_SALEOR_API_URL, input);
+				response = await fetchWithTimeout(url, input, timeoutMs);
 			}
 
 			// Retry on 429 (rate limit) or 5xx (server errors)
-			if ((response.status === 429 || response.status >= 500) && attempt < MAX_RETRIES) {
+			if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
 				const retryAfter = response.headers.get("Retry-After");
-				const delayMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : RETRY_DELAY_MS * Math.pow(2, attempt);
+				const retryDelayMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : delayMs * Math.pow(2, attempt);
 				console.warn(
-					`[GraphQL] ${response.status} - retrying in ${delayMs}ms (attempt ${attempt + 1}/${MAX_RETRIES})`,
+					`[GraphQL] ${operationName}${variablesForLog ? ` ${variablesForLog}` : ""}: HTTP ${
+						response.status
+					} - retrying in ${retryDelayMs}ms (attempt ${attempt + 1}/${maxRetries})`,
 				);
-				await sleep(delayMs);
+				await sleep(retryDelayMs);
 				continue;
 			}
 
 			return response;
 		} catch (error) {
-			// Network errors - retry
-			if (attempt < MAX_RETRIES) {
-				console.warn(`[GraphQL] Network error - retrying (attempt ${attempt + 1}/${MAX_RETRIES})`);
-				await sleep(RETRY_DELAY_MS * Math.pow(2, attempt));
+			// Timeout or network errors - retry
+			const isTimeout = error instanceof Error && error.name === "AbortError";
+			if (attempt < maxRetries) {
+				const errorType = isTimeout ? `Timeout (>${timeoutMs}ms)` : "Network error";
+				console.warn(
+					`[GraphQL] ${operationName}${
+						variablesForLog ? ` ${variablesForLog}` : ""
+					}: ${errorType} - retrying (attempt ${attempt + 1}/${maxRetries})`,
+				);
+				await sleep(delayMs * Math.pow(2, attempt));
 				continue;
 			}
-			throw new SaleorError("Failed to connect to Saleor API", {
-				type: "network",
-				isRetryable: true,
-				cause: error,
-			});
+			throw new SaleorError(
+				`${operationName}: ${isTimeout ? "Request timed out" : "Failed to connect to Saleor API"}`,
+				{
+					type: "network",
+					isRetryable: true,
+					cause: error,
+				},
+			);
 		}
 	}
 
-	throw new SaleorError("Max retries exceeded", { type: "server", isRetryable: false });
+	throw new SaleorError(`${operationName}: Max retries exceeded`, { type: "server", isRetryable: false });
 }
 
 // ============================================================================
@@ -164,10 +221,15 @@ export async function executeGraphQL<Result, Variables>(
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 	const { variables, headers, cache, revalidate, withAuth = true } = options;
 
+	// Extract operation name and format variables for logging
+	const operationName = operation.toString().match(/(?:query|mutation)\s+(\w+)/)?.[1] || "UnknownOperation";
+	const variablesForLog = variables ? formatVariablesForLog(variables) : undefined;
+
 	// Debug logging in development
 	if (process.env.NODE_ENV === "development" && process.env.DEBUG_CACHE) {
-		const opName = operation.toString().match(/(?:query|mutation)\s+(\w+)/)?.[1] || "unknown";
-		console.log(`[GraphQL] ${opName} | cache: ${cache || "default"} | revalidate: ${revalidate || "none"}`);
+		console.log(
+			`[GraphQL] ${operationName} | cache: ${cache || "default"} | revalidate: ${revalidate || "none"}`,
+		);
 	}
 
 	const input = {
@@ -185,7 +247,9 @@ export async function executeGraphQL<Result, Variables>(
 	};
 
 	// Use queue to limit concurrent requests (prevents 429 during build)
-	const response = await requestQueue.enqueue(() => fetchWithRetry(input, withAuth));
+	const response = await requestQueue.enqueue(() =>
+		fetchWithRetry(input, withAuth, operationName, variablesForLog),
+	);
 
 	if (!response.ok) {
 		const body = await (async () => {

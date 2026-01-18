@@ -1,4 +1,4 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL&envDescription=Full%20Saleor%20GraphQL%20endpoint%20URL%2C%20eg%3A%20https%3A%2F%2Fstorefront1.saleor.cloud%2Fgraphql%2F&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af)
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL,NEXT_PUBLIC_DEFAULT_CHANNEL&envDescription=API%20URL%20(e.g.%20https%3A%2F%2Fyour-instance.saleor.cloud%2Fgraphql%2F)%20and%20Channel%20slug%20(e.g.%20default-channel)&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af>)
 
 <img width="1920" height="1080" alt="saleor-storefront-paper-fin" src="https://github.com/user-attachments/assets/a8e37c20-35c8-42e0-a9c5-5c0b6097b921" />
 
@@ -82,16 +82,17 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ## What's in the Box
 
-| Feature              | Description                                                                    |
-| -------------------- | ------------------------------------------------------------------------------ |
-| **Checkout**         | Multi-step flow with guest/auth support, address selector, international forms |
-| **Cart**             | Slide-over drawer with real-time updates, quantity editing                     |
-| **Product Pages**    | Multi-attribute variants, image gallery, sticky add-to-cart                    |
-| **Product Listings** | Category & collection pages with pagination                                    |
-| **Navigation**       | Dynamic menus from Saleor, mobile hamburger                                    |
-| **SEO**              | Metadata, JSON-LD, Open Graph images                                           |
-| **Caching**          | ISR with on-demand revalidation via webhooks                                   |
-| **Authentication**   | Login, register, password reset, order history                                 |
+| Feature              | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| **Checkout**         | Multi-step flow with guest/auth support, address selector, international forms  |
+| **Cart**             | Slide-over drawer with real-time updates, quantity editing                      |
+| **Product Pages**    | Multi-attribute variants, image gallery, sticky add-to-cart                     |
+| **Product Listings** | Category & collection pages with pagination                                     |
+| **Navigation**       | Dynamic menus from Saleor, mobile hamburger                                     |
+| **SEO**              | Metadata, JSON-LD, Open Graph images                                            |
+| **Caching**          | ISR with on-demand revalidation via webhooks                                    |
+| **Authentication**   | Login, register, password reset, order history                                  |
+| **API Resilience**   | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully |
 
 ---
 
@@ -170,9 +171,17 @@ saleor storefront create --url https://{YOUR_INSTANCE}/graphql/
 git clone https://github.com/saleor/storefront.git
 cd storefront
 cp .env.example .env
-# Edit .env with your NEXT_PUBLIC_SALEOR_API_URL
 pnpm install
 ```
+
+Edit `.env` with your Saleor instance details:
+
+```bash
+NEXT_PUBLIC_SALEOR_API_URL=https://your-instance.saleor.cloud/graphql/
+NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel  # Your Saleor channel slug
+```
+
+> **Finding your channel slug:** In Saleor Dashboard → Configuration → Channels → copy the slug
 
 ### 3. Run
 

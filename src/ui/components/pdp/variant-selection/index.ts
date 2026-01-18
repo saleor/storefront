@@ -45,6 +45,7 @@
 // Main components
 export { VariantSelectionSection } from "./variant-selection-section";
 export { VariantSelector } from "./variant-selector";
+export { VariantNameSelector } from "./variant-name-selector";
 
 // Option renderers (for custom compositions)
 export { ColorSwatchOption, SizeButtonOption, TextOption, defaultRenderers } from "./renderers";

@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { UserIcon } from "lucide-react";
 import { UserMenu } from "./user-menu";
 import { CurrentUserDocument } from "@/gql/graphql";
@@ -5,15 +6,26 @@ import { executeGraphQL } from "@/lib/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
 export async function UserMenuContainer() {
-	// Try to get current user - handle auth errors gracefully (expired token = not logged in)
-	let user = null;
+	// During static generation, cookies() throws - skip user fetch entirely
+	let hasCookies = false;
 	try {
-		const result = await executeGraphQL(CurrentUserDocument, {
-			cache: "no-cache",
-		});
-		user = result.me;
+		const cookieStore = await cookies();
+		hasCookies = cookieStore.getAll().length > 0;
 	} catch {
-		// Auth failed (expired signature, etc.) - treat as not logged in
+		// Static generation - no cookies available
+	}
+
+	// Only fetch user if we have cookies (runtime request with potential session)
+	let user = null;
+	if (hasCookies) {
+		try {
+			const result = await executeGraphQL(CurrentUserDocument, {
+				cache: "no-cache",
+			});
+			user = result.me;
+		} catch {
+			// Auth failed (expired signature, etc.) - treat as not logged in
+		}
 	}
 
 	if (user) {

@@ -241,3 +241,76 @@ export const singleAttributeVariants: SaleorVariant[] = [
 		attributes: [{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Gray", value: "gray" }] }],
 	},
 ];
+
+// =============================================================================
+// Name-Only Variants: No structured attributes, only names
+// This is the fallback case when Saleor variants aren't properly configured
+// =============================================================================
+export const nameOnlyVariants: SaleorVariant[] = [
+	{
+		id: "name-only-navy-s",
+		name: "Navy blue S",
+		quantityAvailable: 10,
+		attributes: [], // No structured attributes
+		pricing: {
+			price: { gross: { amount: 30.0, currency: "EUR" } },
+			priceUndiscounted: { gross: { amount: 30.0, currency: "EUR" } },
+		},
+	},
+	{
+		id: "name-only-navy-m",
+		name: "Navy blue M",
+		quantityAvailable: 5,
+		attributes: [], // No structured attributes
+		pricing: {
+			price: { gross: { amount: 30.0, currency: "EUR" } },
+			priceUndiscounted: { gross: { amount: 30.0, currency: "EUR" } },
+		},
+	},
+	{
+		id: "name-only-navy-l",
+		name: "Navy blue L",
+		quantityAvailable: 0, // Out of stock
+		attributes: [],
+		pricing: {
+			price: { gross: { amount: 30.0, currency: "EUR" } },
+			priceUndiscounted: { gross: { amount: 30.0, currency: "EUR" } },
+		},
+	},
+];
+
+// =============================================================================
+// Name-Only with Different Prices: For testing price display
+// =============================================================================
+export const nameOnlyDifferentPrices: SaleorVariant[] = [
+	{
+		id: "gift-25",
+		name: "$25 Gift Card",
+		quantityAvailable: 999,
+		attributes: [],
+		pricing: {
+			price: { gross: { amount: 25.0, currency: "USD" } },
+			priceUndiscounted: { gross: { amount: 25.0, currency: "USD" } },
+		},
+	},
+	{
+		id: "gift-50",
+		name: "$50 Gift Card",
+		quantityAvailable: 999,
+		attributes: [],
+		pricing: {
+			price: { gross: { amount: 50.0, currency: "USD" } },
+			priceUndiscounted: { gross: { amount: 50.0, currency: "USD" } },
+		},
+	},
+	{
+		id: "gift-100",
+		name: "$100 Gift Card",
+		quantityAvailable: 999,
+		attributes: [],
+		pricing: {
+			price: { gross: { amount: 100.0, currency: "USD" } },
+			priceUndiscounted: { gross: { amount: 100.0, currency: "USD" } },
+		},
+	},
+];

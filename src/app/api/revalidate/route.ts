@@ -1,6 +1,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
+import { DefaultChannelSlug } from "@/app/config";
 
 /**
  * Webhook endpoint for cache invalidation.
@@ -181,8 +182,14 @@ export async function POST(request: NextRequest) {
 		const payload = JSON.parse(rawBody);
 		const { type, slug, channel } = parseWebhookPayload(payload);
 
-		// Default channel if not specified
-		const targetChannel = channel || "default-channel";
+		// Use channel from webhook payload, or fall back to configured default
+		const targetChannel = channel || DefaultChannelSlug;
+		if (!targetChannel) {
+			return Response.json(
+				{ error: "Channel not specified in webhook and NEXT_PUBLIC_DEFAULT_CHANNEL not set" },
+				{ status: 400 },
+			);
+		}
 		const revalidatedPaths: string[] = [];
 		const revalidatedTags: string[] = [];
 
