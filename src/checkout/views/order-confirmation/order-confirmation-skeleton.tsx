@@ -11,6 +11,8 @@ const Bone = ({ className }: { className?: string }) => (
 /**
  * Order confirmation skeleton.
  *
+ * Uses delayed visibility (300ms) to prevent flash on fast loads.
+ *
  * Structure mirrors OrderConfirmation:
  * - min-h-screen bg-secondary
  * - CheckoutHeader step={4}
@@ -18,7 +20,7 @@ const Bone = ({ className }: { className?: string }) => (
  * - two-column layout same as checkout
  */
 export const OrderConfirmationSkeleton = () => (
-	<div className="min-h-screen bg-secondary">
+	<div className="min-h-screen animate-skeleton-delayed bg-secondary opacity-0">
 		{/* Real header at step 4 */}
 		<CheckoutHeader step={4} onStepClick={() => {}} />
 

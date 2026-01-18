@@ -1,10 +1,13 @@
 /**
- * Product page skeleton - fallback for cache misses
- * Won't show if page is cached/prefetched (most cases)
+ * Product page skeleton - fallback for cache misses.
+ *
+ * Uses delayed visibility (500ms) to prevent flash on fast loads.
+ * With `use cache`, most loads complete in <300ms, so users won't see this.
+ * Only shows when there's a genuine wait (cold cache, slow connection).
  */
 export default function ProductLoading() {
 	return (
-		<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
+		<main className="mx-auto w-full max-w-7xl flex-1 animate-skeleton-delayed-long px-4 py-4 opacity-0 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
 			{/* Breadcrumb skeleton - hidden on mobile */}
 			<div className="mb-6 hidden sm:block">
 				<div className="flex items-center gap-2">

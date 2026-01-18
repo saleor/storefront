@@ -152,16 +152,18 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 
 /**
  * Skeleton fallback for variant section.
- * Part of the static shell - shows immediately while variant data streams in.
+ *
+ * Uses delayed visibility (300ms) to prevent flash on fast loads.
+ * Part of the static shell - shows while variant data streams in.
  */
 export function VariantSectionSkeleton() {
 	return (
 		<>
-			{/* Category skeleton - order:1 */}
-			<div className="order-1 h-4 w-20 animate-pulse rounded bg-muted" />
+			{/* Category skeleton - order:1, delayed visibility */}
+			<div className="order-1 h-4 w-20 animate-pulse animate-skeleton-delayed rounded bg-muted opacity-0" />
 
-			{/* Variant section skeleton - order:3 */}
-			<div className="order-3 mt-4 animate-pulse space-y-6">
+			{/* Variant section skeleton - order:3, delayed visibility */}
+			<div className="order-3 mt-4 animate-pulse animate-skeleton-delayed space-y-6 opacity-0">
 				{/* Variant selector skeleton */}
 				<div className="space-y-4">
 					<div className="h-4 w-16 rounded bg-muted" />

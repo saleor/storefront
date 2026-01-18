@@ -1,10 +1,12 @@
 /**
  * Checkout loading skeleton.
  * Shows while checkout data is being fetched.
+ *
+ * Uses delayed visibility (300ms) to prevent flash on fast loads.
  */
 export const CheckoutSkeleton = () => {
 	return (
-		<div className="min-h-screen bg-secondary">
+		<div className="min-h-screen animate-skeleton-delayed bg-secondary opacity-0">
 			{/* Header skeleton */}
 			<header className="bg-background md:border-b md:border-border">
 				<div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
