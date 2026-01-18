@@ -19,6 +19,7 @@ export const revalidate = 300; // Default revalidation: 5 minutes
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductGallery,
+	ProductGalleryImage,
 	AddToCart,
 	ProductAttributes,
 	StickyBar,
@@ -316,7 +317,10 @@ export default async function ProductPage(props: {
 					<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 						{/* Left Column - Gallery */}
 						<div className="lg:sticky lg:top-24 lg:self-start">
-							<ProductGallery images={images} productName={product.name} />
+							<ProductGallery images={images} productName={product.name}>
+								{/* Server-rendered LCP image - in initial HTML for fast discovery */}
+								{images[0] && <ProductGalleryImage src={images[0].url} alt={images[0].alt || product.name} />}
+							</ProductGallery>
 						</div>
 
 						{/* Right Column - Product Info */}

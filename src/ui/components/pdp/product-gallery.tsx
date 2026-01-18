@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, type ReactNode } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,12 +13,20 @@ interface ProductImage {
 interface ProductGalleryProps {
 	images: ProductImage[];
 	productName: string;
+	/** Server-rendered first image for LCP - displayed until client hydrates */
+	children?: ReactNode;
 }
 
-export function ProductGallery({ images, productName }: ProductGalleryProps) {
+export function ProductGallery({ images, productName, children }: ProductGalleryProps) {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [isZoomed, setIsZoomed] = useState(false);
+	const [isHydrated, setIsHydrated] = useState(false);
 	const scrollRef = useRef<HTMLDivElement>(null);
+
+	// Mark as hydrated after first render
+	if (typeof window !== "undefined" && !isHydrated) {
+		setIsHydrated(true);
+	}
 
 	// Handle empty images
 	if (!images.length) {
@@ -43,23 +51,40 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 
 	const currentImage = images[activeIndex];
 
+	// Show server-rendered image until hydrated, or if viewing first image
+	const showServerImage = children && (activeIndex === 0 || !isHydrated);
+
 	return (
 		<div className="flex flex-col gap-4">
 			{/* Main Image */}
 			<div className="group relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
-				<Image
-					src={currentImage?.url || "/placeholder.svg"}
-					alt={currentImage?.alt || productName}
-					fill
-					className={cn(
-						"object-cover transition-transform duration-500",
-						isZoomed ? "scale-150 cursor-zoom-out" : "cursor-zoom-in",
-					)}
-					onClick={() => setIsZoomed(!isZoomed)}
-					priority
-					fetchPriority="high"
-					sizes="(max-width: 768px) 100vw, 50vw"
-				/>
+				{/* Server-rendered LCP image (visible in initial HTML) */}
+				{showServerImage && (
+					<div
+						className={cn(
+							"absolute inset-0 transition-transform duration-500",
+							isZoomed ? "scale-150 cursor-zoom-out" : "cursor-zoom-in",
+						)}
+						onClick={() => setIsZoomed(!isZoomed)}
+					>
+						{children}
+					</div>
+				)}
+
+				{/* Client-rendered image (for other gallery images) */}
+				{!showServerImage && (
+					<Image
+						src={currentImage?.url || "/placeholder.svg"}
+						alt={currentImage?.alt || productName}
+						fill
+						className={cn(
+							"object-cover transition-transform duration-500",
+							isZoomed ? "scale-150 cursor-zoom-out" : "cursor-zoom-in",
+						)}
+						onClick={() => setIsZoomed(!isZoomed)}
+						sizes="(max-width: 768px) 100vw, 50vw"
+					/>
+				)}
 
 				{/* Navigation arrows */}
 				{images.length > 1 && (

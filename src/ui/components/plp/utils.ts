@@ -56,13 +56,10 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
  */
 export function transformToProductCard(product: ProductListItemFragment, channel: string): ProductCardData {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
-	const stopPrice = product.pricing?.priceRange?.stop?.gross;
+	const undiscountedPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
 
-	// Detect if this is a sale (compare at price is higher)
-	const isSale =
-		stopPrice && startPrice && stopPrice.amount > startPrice.amount
-			? stopPrice.amount > startPrice.amount
-			: false;
+	// Detect if this is a sale (undiscounted price is higher than current price)
+	const isSale = undiscountedPrice && startPrice && undiscountedPrice.amount > startPrice.amount;
 
 	// Extract colors and sizes from variants
 	const colors = extractColorsFromVariants(product.variants);
@@ -74,14 +71,12 @@ export function transformToProductCard(product: ProductListItemFragment, channel
 		slug: product.slug,
 		brand: product.category?.name ?? null,
 		price: startPrice?.amount ?? 0,
-		compareAtPrice: isSale ? stopPrice?.amount : null,
+		compareAtPrice: isSale ? undiscountedPrice?.amount : null,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? product.name,
 		hoverImage: null, // Would need additional media in fragment
 		href: `/${channel}/products/${product.slug}`,
-		// "New" badge would need a custom metadata field in Saleor (e.g., product.metadata)
-		// For now, only show "Sale" badge based on price comparison
 		badge: isSale ? "Sale" : null,
 		colors,
 		sizes,
