@@ -57,6 +57,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 					)}
 					onClick={() => setIsZoomed(!isZoomed)}
 					priority
+					fetchPriority="high"
 					sizes="(max-width: 768px) 100vw, 50vw"
 				/>
 

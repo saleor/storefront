@@ -289,8 +289,14 @@ export default async function ProductPage(props: {
 		{ label: product.name },
 	];
 
+	// Preload LCP image for better performance
+	const lcpImageUrl = images[0]?.url;
+
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
+			{/* Preload LCP image - makes it discoverable from initial HTML */}
+			{lcpImageUrl && <link rel="preload" as="image" href={lcpImageUrl} fetchPriority="high" />}
+
 			{/* JSON-LD for rich Google results - can be disabled in seo/config.ts */}
 			{productJsonLd && (
 				<script
