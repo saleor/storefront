@@ -22,8 +22,6 @@ export interface ImageCarouselImage {
 interface ImageCarouselProps {
 	images: ImageCarouselImage[];
 	productName: string;
-	/** Server-rendered first image for LCP - displayed until client hydrates */
-	children?: React.ReactNode;
 	/** Show navigation arrows (default: true on desktop) */
 	showArrows?: boolean;
 	/** Show dot indicators (default: true on mobile) */
@@ -46,7 +44,7 @@ interface ImageCarouselProps {
  * - Arrow navigation on desktop (hover to reveal)
  * - Thumbnail strip on desktop
  * - Dot indicators on mobile
- * - LCP optimization via server-rendered first image
+ * - First image has priority={true} for LCP optimization
  *
  * Zoom is intentionally not included - use `onImageClick` to integrate
  * with a separate lightbox/zoom component when needed.
@@ -54,7 +52,6 @@ interface ImageCarouselProps {
 export function ImageCarousel({
 	images,
 	productName,
-	children,
 	showArrows = true,
 	showDots = true,
 	showThumbnails = true,
@@ -104,9 +101,6 @@ export function ImageCarousel({
 		);
 	}
 
-	// Show server-rendered image for LCP optimization
-	const showServerImage = children && selectedIndex === 0;
-
 	return (
 		<div className={cn("flex flex-col gap-4", className)}>
 			{/* Main Image Carousel */}
@@ -126,19 +120,14 @@ export function ImageCarousel({
 									className={cn("relative aspect-[4/5] w-full", onImageClick && "cursor-pointer")}
 									onClick={() => onImageClick?.(index)}
 								>
-									{/* Server-rendered LCP image for first slide */}
-									{showServerImage && index === 0 ? (
-										children
-									) : (
-										<Image
-											src={image.url}
-											alt={image.alt || `${productName} - View ${index + 1}`}
-											fill
-											className="object-cover"
-											sizes="(max-width: 768px) 100vw, 50vw"
-											priority={index === 0}
-										/>
-									)}
+									<Image
+										src={image.url}
+										alt={image.alt || `${productName} - View ${index + 1}`}
+										fill
+										className="object-cover"
+										sizes="(max-width: 768px) 100vw, 50vw"
+										priority={index === 0}
+									/>
 								</div>
 							</CarouselItem>
 						))}

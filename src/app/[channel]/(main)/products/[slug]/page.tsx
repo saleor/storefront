@@ -12,7 +12,6 @@ import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductGallery,
-	ProductGalleryImage,
 	ProductAttributes,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
@@ -130,9 +129,7 @@ export default async function ProductPage(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
-	// Only await params (static) at page level
-	// searchParams (dynamic) must be handled in Suspense boundaries
-	const params = await props.params;
+	const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
 
 	const product = await getProductData(params.slug, params.channel);
 
@@ -140,12 +137,16 @@ export default async function ProductPage(props: {
 		notFound();
 	}
 
+	// Find selected variant from URL params
+	const variants = product.variants || [];
+	const selectedVariantId = searchParams.variant || (variants.length === 1 ? variants[0].id : undefined);
+	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
+
 	// Parse description (cached - part of static shell)
 	const descriptionHtml = parseDescription(product.description);
 
-	// Static shell uses default product images (not variant-specific)
-	// Variant-specific images are handled in the dynamic VariantSection
-	const images = getGalleryImages(product, null);
+	// Get images - uses variant images if variant is selected, otherwise product images
+	const images = getGalleryImages(product, selectedVariant);
 
 	// Extract product attributes (cached)
 	const productAttributes = extractProductAttributes(product);
@@ -204,9 +205,7 @@ export default async function ProductPage(props: {
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 					{/* Left Column - Gallery (cached/static) */}
 					<div className="lg:sticky lg:top-24 lg:self-start">
-						<ProductGallery images={images} productName={product.name}>
-							{images[0] && <ProductGalleryImage src={images[0].url} alt={images[0].alt || product.name} />}
-						</ProductGallery>
+						<ProductGallery images={images} productName={product.name} />
 					</div>
 
 					{/* Right Column - Product Info */}
