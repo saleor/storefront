@@ -73,7 +73,8 @@ export async function POST(request: NextRequest) {
 		const data = (await response.json()) as SetPasswordResponse;
 
 		if (data.errors) {
-			console.error("GraphQL errors:", data.errors);
+			// Log only that an error occurred, not the full error (may contain PII)
+			console.error("GraphQL error during set password");
 			return NextResponse.json(
 				{ errors: data.errors.map((e) => ({ message: e.message, code: "GRAPHQL_ERROR" })) },
 				{ status: 400 },
@@ -83,7 +84,8 @@ export async function POST(request: NextRequest) {
 		const result = data.data?.setPassword;
 
 		if (result?.errors?.length) {
-			console.error("Set password errors:", result.errors);
+			// Log only error codes, not messages (which may contain email/token info)
+			console.error("Set password failed:", result.errors.map((e) => e.code).join(", "));
 			return NextResponse.json({ errors: result.errors }, { status: 400 });
 		}
 
@@ -119,7 +121,8 @@ export async function POST(request: NextRequest) {
 			{ status: 500 },
 		);
 	} catch (error) {
-		console.error("Set password error:", error);
+		// Log error type only, not full details (may contain sensitive request data)
+		console.error("Set password error:", error instanceof Error ? error.name : "Unknown");
 		return NextResponse.json(
 			{ errors: [{ message: "An unexpected error occurred", code: "SERVER_ERROR" }] },
 			{ status: 500 },

@@ -104,7 +104,8 @@ export async function POST(request: NextRequest) {
 			message: "Account created successfully. Please check your email to verify your account.",
 		});
 	} catch (error) {
-		console.error("Registration error:", error);
+		// Log error type only, not full details (may contain sensitive request data)
+		console.error("Registration error:", error instanceof Error ? error.name : "Unknown");
 		return NextResponse.json(
 			{ errors: [{ message: "An unexpected error occurred", code: "SERVER_ERROR" }] },
 			{ status: 500 },

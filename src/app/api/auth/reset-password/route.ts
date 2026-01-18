@@ -80,7 +80,8 @@ export async function POST(request: NextRequest) {
 		// Success - always return success to prevent email enumeration
 		return NextResponse.json({ success: true });
 	} catch (error) {
-		console.error("Password reset error:", error);
+		// Log error type only, not full details (may contain sensitive request data)
+		console.error("Password reset error:", error instanceof Error ? error.name : "Unknown");
 		return NextResponse.json(
 			{ errors: [{ message: "An unexpected error occurred", code: "SERVER_ERROR" }] },
 			{ status: 500 },
