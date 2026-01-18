@@ -21,13 +21,20 @@ interface LogoProps {
 }
 
 /**
- * Paper + Saleor combined logo (100x23)
- * Automatically switches between light/dark mode versions
+ * Paper + Saleor combined logo (100x23, aspect ratio ~4.35:1)
+ * Automatically switches between light/dark mode versions.
+ *
+ * Uses explicit width/height + aspect-ratio to prevent CLS while
+ * allowing flexible sizing via className.
  */
 export const Logo = ({ className, ariaLabel = "Paper by Saleor", inverted = false }: LogoProps) => {
 	// When inverted, swap the light/dark mode logic
 	const lightModeLogo = inverted ? "/logo-dark.svg" : "/logo.svg";
 	const darkModeLogo = inverted ? "/logo.svg" : "/logo-dark.svg";
+
+	// Base styles: preserve aspect ratio to prevent CLS
+	// Height classes (e.g., h-7) will work correctly with w-auto
+	const baseStyles = "aspect-[100/23]";
 
 	return (
 		<>
@@ -38,7 +45,7 @@ export const Logo = ({ className, ariaLabel = "Paper by Saleor", inverted = fals
 				alt={ariaLabel}
 				width={100}
 				height={23}
-				className={`dark:hidden ${className ?? ""}`}
+				className={`dark:hidden ${baseStyles} ${className ?? ""}`}
 			/>
 			{/* Dark mode */}
 			{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -47,7 +54,7 @@ export const Logo = ({ className, ariaLabel = "Paper by Saleor", inverted = fals
 				alt={ariaLabel}
 				width={100}
 				height={23}
-				className={`hidden dark:block ${className ?? ""}`}
+				className={`hidden dark:block ${baseStyles} ${className ?? ""}`}
 			/>
 		</>
 	);
