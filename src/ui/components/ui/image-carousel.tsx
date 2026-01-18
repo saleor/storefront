@@ -65,6 +65,13 @@ export function ImageCarousel({
 	const [api, setApi] = React.useState<CarouselApi>();
 	const [selectedIndex, setSelectedIndex] = React.useState(0);
 
+	// Reset to first image when images array changes (e.g., variant switch)
+	const imagesKey = images.map((img) => img.url).join(",");
+	React.useEffect(() => {
+		setSelectedIndex(0);
+		api?.scrollTo(0, true); // true = instant scroll (no animation)
+	}, [imagesKey, api]);
+
 	// Sync selected index from carousel API
 	React.useEffect(() => {
 		if (!api) return;
@@ -114,7 +121,7 @@ export function ImageCarousel({
 				<div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
 					<CarouselContent className="ml-0">
 						{images.map((image, index) => (
-							<CarouselItem key={index} className="pl-0">
+							<CarouselItem key={image.url} className="pl-0">
 								<div
 									className={cn("relative aspect-[4/5] w-full", onImageClick && "cursor-pointer")}
 									onClick={() => onImageClick?.(index)}
@@ -166,7 +173,7 @@ export function ImageCarousel({
 					{images.map((image, index) => (
 						<button
 							type="button"
-							key={index}
+							key={image.url}
 							onClick={() => scrollToImage(index)}
 							className={cn(
 								"relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md transition-all",

@@ -11,6 +11,7 @@ import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductGallery,
+	ProductGalleryImage,
 	ProductAttributes,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
@@ -212,7 +213,9 @@ export default async function ProductPage(props: {
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 					{/* Left Column - Gallery (cached/static) */}
 					<div className="lg:sticky lg:top-24 lg:self-start">
-						<ProductGallery images={images} productName={product.name} />
+						<ProductGallery images={images} productName={product.name}>
+							{images[0] && <ProductGalleryImage src={images[0].url} alt={images[0].alt || product.name} />}
+						</ProductGallery>
 					</div>
 
 					{/* Right Column - Product Info */}
@@ -313,9 +316,14 @@ function getGalleryImages(
 	product: Product,
 	selectedVariant: Variant | null | undefined,
 ): { url: string; alt: string | null | undefined }[] {
-	// If variant is selected and has its own images, use those
+	// If variant is selected and has its own images, use those (filtered to images only)
 	if (selectedVariant?.media && selectedVariant.media.length > 0) {
-		return selectedVariant.media.map((m) => ({ url: m.url, alt: m.alt }));
+		const variantImages = selectedVariant.media
+			.filter((m) => m.type === "IMAGE")
+			.map((m) => ({ url: m.url, alt: m.alt }));
+		if (variantImages.length > 0) {
+			return variantImages;
+		}
 	}
 
 	// Otherwise, use product-level images

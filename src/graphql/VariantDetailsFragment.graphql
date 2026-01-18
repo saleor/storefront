@@ -16,6 +16,7 @@ fragment VariantDetails on ProductVariant {
 	media {
 		url(size: 1024, format: WEBP)
 		alt
+		type
 	}
 	pricing {
 		price {
