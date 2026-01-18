@@ -10,11 +10,13 @@ For detailed task-specific instructions, use these skills in `.claude/skills/`:
 |------|-------|
 | Modifying `.graphql` files | `graphql-workflow` |
 | Creating/styling components | `ui-components` |
+| Product detail page (PDP) | `pdp` |
 | Product filtering/sorting | `filtering-system` |
 | Understanding Saleor API | `saleor-investigation` |
 | Variant selection on PDP | `variant-selection` |
 | SEO, metadata, OG images | `seo-system` |
 | ISR, webhooks, caching | `caching-strategy` |
+| Creating/updating skills | `writing-skills` |
 
 ## Critical Commands
 

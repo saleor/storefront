@@ -24,6 +24,7 @@ pnpm test                   # Run tests (watch mode)
 | Writing React components           | [`react-patterns`](.claude/skills/react-patterns/SKILL.md)             |
 | Modifying `.graphql` files         | [`graphql-workflow`](.claude/skills/graphql-workflow/SKILL.md)         |
 | Creating/styling components        | [`ui-components`](.claude/skills/ui-components/SKILL.md)               |
+| Product detail page (PDP)          | [`pdp`](.claude/skills/pdp/SKILL.md)                                   |
 | Product list filtering/sorting     | [`filtering-system`](.claude/skills/filtering-system/SKILL.md)         |
 | Understanding Saleor API behavior  | [`saleor-investigation`](.claude/skills/saleor-investigation/SKILL.md) |
 | Variant/attribute selection on PDP | [`variant-selection`](.claude/skills/variant-selection/SKILL.md)       |
