@@ -122,19 +122,28 @@ async function SearchContent({
 	);
 }
 
+/**
+ * Search skeleton with delayed visibility.
+ * Matches SearchResults/SearchResultCard dimensions to prevent layout shift.
+ */
 function SearchSkeleton() {
 	return (
-		<div className="animate-pulse">
+		<div className="animate-skeleton-delayed opacity-0">
 			<div className="mb-8">
-				<div className="h-8 w-64 rounded bg-muted" />
-				<div className="mt-2 h-4 w-32 rounded bg-muted" />
+				<div className="h-8 w-64 animate-pulse rounded bg-muted" />
+				<div className="mt-2 h-4 w-32 animate-pulse rounded bg-muted" />
 			</div>
-			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-				{Array.from({ length: 8 }).map((_, i) => (
-					<div key={i}>
-						<div className="aspect-square rounded-lg bg-muted" />
-						<div className="mt-2 h-4 w-3/4 rounded bg-muted" />
-						<div className="mt-1 h-4 w-1/2 rounded bg-muted" />
+			{/* Matches SearchResults: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 */}
+			<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+				{Array.from({ length: 6 }).map((_, i) => (
+					<div key={i} className="animate-pulse overflow-hidden rounded-lg border border-border bg-card">
+						{/* Matches SearchResultCard: aspect-square image + p-4 content */}
+						<div className="aspect-square bg-muted" />
+						<div className="p-4">
+							<div className="mb-1 h-3 w-16 rounded bg-muted" />
+							<div className="h-4 w-3/4 rounded bg-muted" />
+							<div className="mt-2 h-4 w-20 rounded bg-muted" />
+						</div>
 					</div>
 				))}
 			</div>

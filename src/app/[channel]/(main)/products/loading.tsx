@@ -11,10 +11,12 @@ export default function ProductsLoading() {
 				<div className="h-8 w-48 animate-pulse rounded bg-muted" />
 			</div>
 
-			<div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-				{[...Array(8)].map((_, i) => (
+			{/* Matches ProductGrid: grid-cols-2 lg:grid-cols-3 */}
+			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
+				{[...Array(6)].map((_, i) => (
 					<div key={i} className="space-y-3">
-						<div className="aspect-square w-full animate-pulse rounded-lg bg-muted" />
+						{/* Matches ProductCard: aspect-[3/4] rounded-xl */}
+						<div className="aspect-[3/4] w-full animate-pulse rounded-xl bg-muted" />
 						<div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
 						<div className="h-4 w-16 animate-pulse rounded bg-muted" />
 					</div>

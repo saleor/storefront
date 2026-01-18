@@ -132,15 +132,23 @@ async function CollectionProducts({
 	);
 }
 
+/**
+ * Products grid skeleton with delayed visibility.
+ * Matches ProductGrid/ProductCard dimensions to prevent layout shift.
+ */
 function ProductsGridSkeleton() {
 	return (
-		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-				{Array.from({ length: 8 }).map((_, i) => (
+		<div className="mx-auto max-w-7xl animate-skeleton-delayed px-4 py-8 opacity-0 sm:px-6 lg:px-8">
+			{/* Matches ProductGrid: grid-cols-2 lg:grid-cols-3 */}
+			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
+				{Array.from({ length: 6 }).map((_, i) => (
 					<div key={i} className="animate-pulse">
-						<div className="aspect-square rounded-lg bg-muted" />
-						<div className="mt-2 h-4 w-3/4 rounded bg-muted" />
-						<div className="mt-1 h-4 w-1/2 rounded bg-muted" />
+						{/* Matches ProductCard: aspect-[3/4] rounded-xl */}
+						<div className="mb-4 aspect-[3/4] rounded-xl bg-muted" />
+						<div className="space-y-1.5">
+							<div className="h-4 w-3/4 rounded bg-muted" />
+							<div className="h-4 w-1/2 rounded bg-muted" />
+						</div>
 					</div>
 				))}
 			</div>
