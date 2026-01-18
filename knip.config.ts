@@ -5,7 +5,7 @@ const config: KnipConfig = {
 	entry: [
 		"src/app/**/{page,layout,loading,error,not-found,route}.{ts,tsx}",
 		"src/app/api/**/route.ts",
-		"src/checkout/Root.tsx",
+		"src/checkout/root.tsx",
 	],
 
 	// Project files to analyze
@@ -25,6 +25,11 @@ const config: KnipConfig = {
 	// Ignore specific dependencies (used at runtime or by framework)
 	ignoreDependencies: [
 		"sharp", // Used by Next.js image optimization at runtime
+		"graphql-tag", // Used by generated GraphQL code
+		"@graphql-typed-document-node/core", // Used by generated GraphQL code
+		"@graphql-codegen/typescript", // Used by codegen CLI
+		"@graphql-codegen/typescript-operations", // Used by codegen CLI
+		"@graphql-codegen/typescript-urql", // Used by codegen CLI
 	],
 
 	// Next.js plugin understands App Router conventions

@@ -61,7 +61,8 @@ export async function POST(request: NextRequest) {
 		const data = (await response.json()) as RequestPasswordResetResponse;
 
 		if (data.errors) {
-			console.error("GraphQL errors:", data.errors);
+			// Log only that an error occurred, not the full error (may contain PII)
+			console.error("GraphQL error during password reset");
 			return NextResponse.json(
 				{ errors: data.errors.map((e) => ({ message: e.message, code: "GRAPHQL_ERROR" })) },
 				{ status: 400 },
@@ -71,7 +72,8 @@ export async function POST(request: NextRequest) {
 		const result = data.data?.requestPasswordReset;
 
 		if (result?.errors?.length) {
-			console.error("Password reset errors:", result.errors);
+			// Log only error codes, not messages (which may contain email addresses)
+			console.error("Password reset failed:", result.errors.map((e) => e.code).join(", "));
 			return NextResponse.json({ errors: result.errors }, { status: 400 });
 		}
 
