@@ -72,8 +72,8 @@ export async function POST(request: NextRequest) {
 		const result = data.data?.requestPasswordReset;
 
 		if (result?.errors?.length) {
-			// Log only error codes, not messages (which may contain email addresses)
-			console.error("Password reset failed:", result.errors.map((e) => e.code).join(", "));
+			// Log generic failure without including potentially sensitive error details
+			console.error("Password reset failed with validation errors");
 			return NextResponse.json({ errors: result.errors }, { status: 400 });
 		}
 

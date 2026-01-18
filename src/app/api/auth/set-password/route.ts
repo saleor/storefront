@@ -84,8 +84,8 @@ export async function POST(request: NextRequest) {
 		const result = data.data?.setPassword;
 
 		if (result?.errors?.length) {
-			// Log only error codes, not messages (which may contain email/token info)
-			console.error("Set password failed:", result.errors.map((e) => e.code).join(", "));
+			// Log generic failure without including potentially sensitive error details
+			console.error("Set password failed with validation errors");
 			return NextResponse.json({ errors: result.errors }, { status: 400 });
 		}
 
