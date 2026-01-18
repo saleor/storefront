@@ -17,16 +17,19 @@ type GraphQLRespone<T> = { data: T } | GraphQLErrorResponse;
  * Simple semaphore to limit concurrent API calls.
  * Prevents 429 errors during build when multiple workers fetch simultaneously.
  *
- * Note: We avoid Date.now() here because it's considered dynamic data
- * in Next.js Cache Components and would break caching.
+ * Configure via environment variables:
+ * - SALEOR_MAX_CONCURRENT_REQUESTS: Max parallel requests (default: 3)
+ * - SALEOR_MIN_REQUEST_DELAY_MS: Min delay between requests (default: 300ms)
  */
 class RequestQueue {
 	private queue: Array<() => void> = [];
 	private activeRequests = 0;
 	private readonly maxConcurrent: number;
+	private readonly minDelayMs: number;
 
-	constructor(maxConcurrent = 3) {
+	constructor(maxConcurrent = 3, minDelayMs = 300) {
 		this.maxConcurrent = maxConcurrent;
+		this.minDelayMs = minDelayMs;
 	}
 
 	async enqueue<T>(fn: () => Promise<T>): Promise<T> {
@@ -36,7 +39,9 @@ class RequestQueue {
 		this.activeRequests++;
 
 		try {
-			return await fn();
+			// Add minimum delay to avoid rate limiting
+			const [result] = await Promise.all([fn(), sleep(this.minDelayMs)]);
+			return result;
 		} finally {
 			this.activeRequests--;
 			this.processQueue();
@@ -63,7 +68,10 @@ function sleep(ms: number): Promise<void> {
 }
 
 // Global queue - shared across all requests
-const requestQueue = new RequestQueue(parseInt(process.env.SALEOR_MAX_CONCURRENT_REQUESTS || "3", 10));
+const requestQueue = new RequestQueue(
+	parseInt(process.env.SALEOR_MAX_CONCURRENT_REQUESTS || "3", 10),
+	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || "300", 10),
+);
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000;

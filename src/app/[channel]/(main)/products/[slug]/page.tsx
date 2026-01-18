@@ -11,7 +11,6 @@ import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductGallery,
-	ProductGalleryImage,
 	ProductAttributes,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
@@ -60,10 +59,14 @@ export async function generateMetadata(props: {
 		notFound();
 	}
 
-	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
+	const selectedVariant = searchParams.variant
+		? product.variants?.find(({ id }) => id === searchParams.variant)
+		: null;
+	const variantName = selectedVariant?.name;
 	const description =
 		product.seoDescription || (variantName ? `${product.name} - ${variantName}` : product.name);
-	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
+	// Use variant image for OG if available, otherwise product image
+	const ogImage = selectedVariant?.media?.[0]?.url || product.media?.[0]?.url || product.thumbnail?.url;
 	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
 	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
 
@@ -133,7 +136,7 @@ export default async function ProductPage(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
-	const params = await props.params;
+	const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
 	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
@@ -143,13 +146,14 @@ export default async function ProductPage(props: {
 	// Parse description (cached - part of static shell)
 	const descriptionHtml = parseDescription(product.description);
 
-	// Prepare images (cached)
-	const images =
-		product.media && product.media.length > 0
-			? product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }))
-			: product.thumbnail
-				? [{ url: product.thumbnail.url, alt: product.thumbnail.alt }]
-				: [];
+	// Find selected variant (if any) for variant-specific images
+	const selectedVariant = searchParams.variant
+		? product.variants?.find((v) => v.id === searchParams.variant)
+		: null;
+
+	// Prepare images: use variant images if available, otherwise product images
+	// This enables variant-specific galleries (e.g., different colors show different images)
+	const images = getGalleryImages(product, selectedVariant);
 
 	// Extract product attributes (cached)
 	const productAttributes = extractProductAttributes(product);
@@ -208,9 +212,7 @@ export default async function ProductPage(props: {
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 					{/* Left Column - Gallery (cached/static) */}
 					<div className="lg:sticky lg:top-24 lg:self-start">
-						<ProductGallery images={images} productName={product.name}>
-							{images[0] && <ProductGalleryImage src={images[0].url} alt={images[0].alt || product.name} />}
-						</ProductGallery>
+						<ProductGallery images={images} productName={product.name} />
 					</div>
 
 					{/* Right Column - Product Info */}
@@ -294,4 +296,37 @@ function extractCareInstructions(product: NonNullable<ProductDetailsQuery["produ
 			.filter(Boolean)
 			.join(". ") || null
 	);
+}
+
+type Product = NonNullable<ProductDetailsQuery["product"]>;
+type Variant = NonNullable<Product["variants"]>[number];
+
+/**
+ * Get gallery images for a product, with variant-specific image support.
+ *
+ * Priority:
+ * 1. Selected variant's media (if variant selected and has images)
+ * 2. Product media (filtered to images only)
+ * 3. Product thumbnail as fallback
+ */
+function getGalleryImages(
+	product: Product,
+	selectedVariant: Variant | null | undefined,
+): { url: string; alt: string | null | undefined }[] {
+	// If variant is selected and has its own images, use those
+	if (selectedVariant?.media && selectedVariant.media.length > 0) {
+		return selectedVariant.media.map((m) => ({ url: m.url, alt: m.alt }));
+	}
+
+	// Otherwise, use product-level images
+	if (product.media && product.media.length > 0) {
+		return product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }));
+	}
+
+	// Final fallback: thumbnail
+	if (product.thumbnail) {
+		return [{ url: product.thumbnail.url, alt: product.thumbnail.alt }];
+	}
+
+	return [];
 }

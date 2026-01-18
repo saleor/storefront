@@ -1,10 +1,11 @@
 import { ProductsPerPage } from "@/app/config";
 import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { formatPrice, formatDate as formatLocaleDate } from "@/config/locale";
 
-/** Merge class names with clsx */
+/** Merge class names with clsx and tailwind-merge for proper Tailwind class deduplication */
 export function cn(...inputs: ClassValue[]) {
-	return clsx(inputs);
+	return twMerge(clsx(inputs));
 }
 
 /** @deprecated Use formatDate from @/config/locale instead */

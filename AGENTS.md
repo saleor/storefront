@@ -83,6 +83,10 @@ NEXT_PUBLIC_STOREFRONT_URL=   # For canonical URLs and OG images
 REVALIDATE_SECRET=            # Manual cache invalidation
 SALEOR_WEBHOOK_SECRET=        # Webhook HMAC verification
 SALEOR_APP_TOKEN=             # For channels query (server-side only)
+
+# Rate Limiting (for build-time API calls)
+SALEOR_MAX_CONCURRENT_REQUESTS=3   # Max parallel requests to Saleor (default: 3)
+SALEOR_MIN_REQUEST_DELAY_MS=300    # Min delay between requests in ms (default: 300)
 ```
 
 ---
