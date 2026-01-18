@@ -98,9 +98,7 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ## Caching Architecture
 
-Paper uses **Cache Components** (Partial Prerendering) for optimal performance—static shells load instantly while dynamic content streams in. This is built on Next.js's experimental `cacheComponents` feature.
-
-> ⚠️ **Note**: Cache Components are experimental. See `.claude/skills/caching-strategy/SKILL.md` for rollback instructions if needed.
+Paper uses **Cache Components** (Partial Prerendering) for optimal performance—static shells load instantly while dynamic content streams in. Learn more in the [Next.js documentation](https://nextjs.org/docs/app/api-reference/directives/use-cache) or see [`.claude/skills/caching-strategy/SKILL.md`](.claude/skills/caching-strategy/SKILL.md) for project-specific implementation details.
 
 The **display-cached, checkout-live** model ensures fast browsing with accurate checkout:
 
