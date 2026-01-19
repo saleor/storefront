@@ -76,11 +76,11 @@ module.exports = {
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
-				// Delayed skeleton: invisible for 200ms, then fades in over 200ms
+				// Delayed skeleton: invisible for 250ms, then fades in over 200ms
 				// Prevents flash on fast loads while still showing feedback on slow loads
-				"skeleton-delayed": "skeleton-fade-in 0.2s ease-in 0.2s forwards",
-				// Longer delay for route-level loading (300ms)
-				"skeleton-delayed-long": "skeleton-fade-in 0.2s ease-in 0.3s forwards",
+				"skeleton-delayed": "skeleton-fade-in 0.2s ease-in 0.25s forwards",
+				// Longer delay for route-level loading (400ms)
+				"skeleton-delayed-long": "skeleton-fade-in 0.2s ease-in 0.4s forwards",
 			},
 		},
 	},
