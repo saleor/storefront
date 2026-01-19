@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Generated GraphQL types (regenerate with `pnpm generate` and `pnpm generate:checkout`)
 gql/
+src/checkout/graphql/generated/
 
 .env
 

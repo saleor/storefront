@@ -1,9 +1,10 @@
 import { type ReactNode } from "react";
-import { AuthProvider } from "@/ui/components/AuthProvider";
+import { AuthProvider } from "@/lib/auth";
+import { brandConfig, formatPageTitle } from "@/config/brand";
 
 export const metadata = {
-	title: "Saleor Storefront example",
-	description: "Starter pack for building performant e-commerce experiences with Saleor.",
+	title: formatPageTitle("Checkout"),
+	description: brandConfig.description,
 };
 
 export default function RootLayout(props: { children: ReactNode }) {

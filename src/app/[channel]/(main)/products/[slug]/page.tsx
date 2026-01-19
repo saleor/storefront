@@ -1,224 +1,332 @@
-import edjsHTML from "editorjs-html";
-import { revalidatePath } from "next/cache";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { type ResolvingMetadata, type Metadata } from "next";
+import { type Metadata } from "next";
+import { cacheLife, cacheTag } from "next/cache";
+import { ErrorBoundary } from "react-error-boundary";
+import edjsHTML from "editorjs-html";
 import xss from "xss";
-import { invariant } from "ts-invariant";
-import { type WithContext, type Product } from "schema-dts";
-import { AddButton } from "./AddButton";
-import { VariantSelector } from "@/ui/components/VariantSelector";
-import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
+
 import { executeGraphQL } from "@/lib/graphql";
-import { formatMoney, formatMoneyRange } from "@/lib/utils";
-import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
-import * as Checkout from "@/lib/checkout";
-import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
+import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
+import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
+import { Breadcrumbs } from "@/ui/components/breadcrumbs";
+import {
+	ProductGallery,
+	ProductAttributes,
+	VariantSectionDynamic,
+	VariantSectionSkeleton,
+	VariantSectionError,
+} from "@/ui/components/pdp";
 
-export async function generateMetadata(
-	props: {
-		params: Promise<{ slug: string; channel: string }>;
-		searchParams: Promise<{ variant?: string }>;
-	},
-	parent: ResolvingMetadata,
-): Promise<Metadata> {
-	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
+// ============================================================================
+// Cached Data Fetching
+// ============================================================================
 
-	const { product } = await executeGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(params.slug),
-			channel: params.channel,
-		},
-		revalidate: 60,
-	});
+/**
+ * Cached product data fetching.
+ *
+ * With Cache Components, this data becomes part of the static shell,
+ * making product pages load instantly while variant-specific UI streams in.
+ */
+async function getProductData(slug: string, channel: string) {
+	"use cache";
+	cacheLife("minutes"); // 5 minute cache
+	cacheTag(`product:${slug}`); // Tag for on-demand revalidation
+
+	try {
+		const { product } = await executeGraphQL(ProductDetailsDocument, {
+			variables: {
+				slug: decodeURIComponent(slug),
+				channel,
+			},
+			revalidate: 300,
+			withAuth: false, // Public data - no cookies in cache scope
+		});
+
+		return product;
+	} catch (error) {
+		// During build, if the API is unreachable, return null instead of failing.
+		// The page will be populated on-demand when a user visits.
+		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, error);
+		return null;
+	}
+}
+
+// ============================================================================
+// Metadata & Static Params
+// ============================================================================
+
+export async function generateMetadata(props: {
+	params: Promise<{ slug: string; channel: string }>;
+}): Promise<Metadata> {
+	// Avoid searchParams here - it makes the page dynamic and can cause build issues
+	const params = await props.params;
+	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
-		notFound();
+		return { title: "Product Not Found" };
 	}
 
-	const productName = product.seoTitle || product.name;
-	const variantName = product.variants?.find(({ id }) => id === searchParams.variant)?.name;
-	const productNameAndVariant = variantName ? `${productName} - ${variantName}` : productName;
+	const description = product.seoDescription || product.name;
+	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
+	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
+	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
 
-	return {
-		title: `${product.name} | ${product.seoTitle || (await parent).title?.absolute}`,
-		description: product.seoDescription || productNameAndVariant,
-		alternates: {
-			canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL
-				? process.env.NEXT_PUBLIC_STOREFRONT_URL + `/products/${encodeURIComponent(params.slug)}`
+	return buildPageMetadata({
+		title: product.seoTitle || product.name,
+		description,
+		image: ogImage,
+		url: `/${params.channel}/products/${encodeURIComponent(params.slug)}`,
+		openGraph:
+			priceAmount && priceCurrency
+				? {
+						"product:price:amount": String(priceAmount),
+						"product:price:currency": priceCurrency,
+					}
 				: undefined,
-		},
-		openGraph: product.thumbnail
-			? {
-					images: [
-						{
-							url: product.thumbnail.url,
-							alt: product.name,
-						},
-					],
-				}
-			: null,
-	};
-}
-
-export async function generateStaticParams({ params }: { params: { channel: string } }) {
-	const { products } = await executeGraphQL(ProductListDocument, {
-		revalidate: 60,
-		variables: { first: 20, channel: params.channel },
-		withAuth: false,
 	});
-
-	const paths = products?.edges.map(({ node: { slug } }) => ({ slug })) || [];
-	return paths;
 }
+
+/**
+ * Static params for product pages.
+ *
+ * Control via STATIC_PRODUCT_COUNT env var:
+ * - Not set or 0: Fetch 1 product (minimum for Cache Components)
+ * - N > 0: Fetch N products to pre-render
+ *
+ * All other product pages are generated on-demand via ISR.
+ */
+// NOTE: generateStaticParams is intentionally omitted for product pages.
+//
+// With Next.js 16 Cache Components, using generateStaticParams on this route
+// causes build timeouts (60s+) due to how params/searchParams Promises are
+// resolved during static generation.
+//
+// All product pages are generated on-demand via ISR instead. This is actually
+// beneficial because:
+// 1. Faster builds (no product API calls during build)
+// 2. Cache Components still cache data after first visit
+// 3. No stale product data from build time
+
+// ============================================================================
+// Page Component
+// ============================================================================
 
 const parser = edjsHTML();
 
-export default async function Page(props: {
+/**
+ * Product Detail Page with Cache Components.
+ *
+ * Architecture:
+ * - Static Shell: Page layout, gallery, product name, description, attributes
+ * - Cached: Product data from Saleor API (via getProductData with "use cache")
+ * - Dynamic (Suspense): Variant selection, pricing, add-to-cart
+ *
+ * This gives users instant page loads with all static content visible,
+ * while personalized/dynamic elements stream in seamlessly.
+ */
+export default async function ProductPage(props: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
-	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
-	const { product } = await executeGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(params.slug),
-			channel: params.channel,
-		},
-		revalidate: 60,
-	});
+	const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
+
+	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
 		notFound();
 	}
 
-	const firstImage = product.thumbnail;
-	const description = product?.description ? parser.parse(JSON.parse(product?.description)) : null;
+	// Find selected variant from URL params
+	const variants = product.variants || [];
+	const selectedVariantId = searchParams.variant || (variants.length === 1 ? variants[0].id : undefined);
+	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
 
-	const variants = product.variants;
-	const selectedVariantID = searchParams.variant;
-	const selectedVariant = variants?.find(({ id }) => id === selectedVariantID);
+	// Parse description (cached - part of static shell)
+	const descriptionHtml = parseDescription(product.description);
 
-	async function addItem() {
-		"use server";
+	// Get images - uses variant images if variant is selected, otherwise product images
+	const images = getGalleryImages(product, selectedVariant);
 
-		const checkout = await Checkout.findOrCreate({
-			checkoutId: await Checkout.getIdFromCookies(params.channel),
-			channel: params.channel,
-		});
-		invariant(checkout, "This should never happen");
+	// Extract product attributes (cached)
+	const productAttributes = extractProductAttributes(product);
+	const careInstructions = extractCareInstructions(product);
 
-		await Checkout.saveIdToCookie(params.channel, checkout.id);
+	// Breadcrumbs (cached)
+	const breadcrumbs = [
+		{ label: "Home", href: `/${params.channel}` },
+		...(product.category
+			? [{ label: product.category.name, href: `/${params.channel}/categories/${product.category.slug}` }]
+			: []),
+		{ label: product.name },
+	];
 
-		if (!selectedVariantID) {
-			return;
-		}
-
-		// TODO: error handling
-		await executeGraphQL(CheckoutAddLineDocument, {
-			variables: {
-				id: checkout.id,
-				productVariantId: decodeURIComponent(selectedVariantID),
-			},
-			cache: "no-cache",
-		});
-
-		revalidatePath("/cart");
-	}
-
-	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
-
-	const price = selectedVariant?.pricing?.price?.gross
-		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-		: isAvailable
-			? formatMoneyRange({
-					start: product?.pricing?.priceRange?.start?.gross,
-					stop: product?.pricing?.priceRange?.stop?.gross,
-				})
-			: "";
-
-	const productJsonLd: WithContext<Product> = {
-		"@context": "https://schema.org",
-		"@type": "Product",
-		image: product.thumbnail?.url,
-		...(selectedVariant
+	// JSON-LD with base product info
+	const productJsonLd = buildProductJsonLd({
+		name: product.name,
+		description: product.seoDescription || product.name,
+		images: images.length > 0 ? images.map((img) => img.url) : undefined,
+		brand: product.category?.name,
+		url: `/${params.channel}/products/${product.slug}`,
+		priceRange: product.pricing?.priceRange?.start?.gross
 			? {
-					name: `${product.name} - ${selectedVariant.name}`,
-					description: product.seoDescription || `${product.name} - ${selectedVariant.name}`,
-					offers: {
-						"@type": "Offer",
-						availability: selectedVariant.quantityAvailable
-							? "https://schema.org/InStock"
-							: "https://schema.org/OutOfStock",
-						priceCurrency: selectedVariant.pricing?.price?.gross.currency,
-						price: selectedVariant.pricing?.price?.gross.amount,
-					},
+					lowPrice: product.pricing.priceRange.start.gross.amount,
+					highPrice:
+						product.pricing.priceRange.stop?.gross?.amount || product.pricing.priceRange.start.gross.amount,
+					currency: product.pricing.priceRange.start.gross.currency,
 				}
-			: {
-					name: product.name,
+			: null,
+		inStock: product.variants?.some((v) => v.quantityAvailable) ?? false,
+		variantCount: product.variants?.length ?? 0,
+	});
 
-					description: product.seoDescription || product.name,
-					offers: {
-						"@type": "AggregateOffer",
-						availability: product.variants?.some((variant) => variant.quantityAvailable)
-							? "https://schema.org/InStock"
-							: "https://schema.org/OutOfStock",
-						priceCurrency: product.pricing?.priceRange?.start?.gross.currency,
-						lowPrice: product.pricing?.priceRange?.start?.gross.amount,
-						highPrice: product.pricing?.priceRange?.stop?.gross.amount,
-					},
-				}),
-	};
+	const lcpImageUrl = images[0]?.url;
 
 	return (
-		<section className="mx-auto grid max-w-7xl p-8">
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(productJsonLd),
-				}}
-			/>
-			<form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
-				<div className="md:col-span-1 lg:col-span-5">
-					{firstImage && (
-						<ProductImageWrapper
-							priority={true}
-							alt={firstImage.alt ?? ""}
-							width={1024}
-							height={1024}
-							src={firstImage.url}
-						/>
-					)}
-				</div>
-				<div className="flex flex-col pt-6 sm:col-span-1 sm:px-6 sm:pt-0 lg:col-span-3 lg:pt-16">
-					<div>
-						<h1 className="mb-4 flex-auto text-3xl font-medium tracking-tight text-neutral-900">
-							{product?.name}
-						</h1>
-						<p className="mb-8 text-sm " data-testid="ProductElement_Price">
-							{price}
-						</p>
+		<div className="flex min-h-screen flex-col bg-background">
+			{/* Preload LCP image - part of static shell */}
+			{lcpImageUrl && <link rel="preload" as="image" href={lcpImageUrl} fetchPriority="high" />}
 
-						{variants && (
-							<VariantSelector
-								selectedVariant={selectedVariant}
-								variants={variants}
-								product={product}
-								channel={params.channel}
+			{/* JSON-LD - part of static shell */}
+			{productJsonLd && (
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+				/>
+			)}
+
+			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
+				{/* Breadcrumb - part of static shell */}
+				<div className="mb-6 hidden sm:block">
+					<Breadcrumbs items={breadcrumbs} />
+				</div>
+
+				{/* Product Grid */}
+				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+					{/* Left Column - Gallery (cached/static) */}
+					<div className="lg:sticky lg:top-24 lg:self-start">
+						<ProductGallery images={images} productName={product.name} />
+					</div>
+
+					{/* Right Column - Product Info */}
+					<div className="flex flex-col gap-3">
+						{/* Product Name - static shell for SEO/LCP, order:2 so Category appears above */}
+						<h1 className="order-2 text-balance text-3xl font-semibold tracking-tight lg:text-4xl">
+							{product.name}
+						</h1>
+
+						{/* Variant Section - DYNAMIC (streams at request time), order:1 for Category row, order:3 for rest */}
+						<ErrorBoundary FallbackComponent={VariantSectionError}>
+							<Suspense fallback={<VariantSectionSkeleton />}>
+								<VariantSectionDynamic
+									product={product}
+									channel={params.channel}
+									searchParams={props.searchParams}
+								/>
+							</Suspense>
+						</ErrorBoundary>
+
+						{/* Product Details Accordion - cached/static, order:4 (last) */}
+						<div className="order-4 mt-6">
+							<ProductAttributes
+								descriptionHtml={descriptionHtml}
+								attributes={productAttributes}
+								careInstructions={careInstructions}
 							/>
-						)}
-						<AvailabilityMessage isAvailable={isAvailable} />
-						<div className="mt-8">
-							<AddButton disabled={!selectedVariantID || !selectedVariant?.quantityAvailable} />
 						</div>
-						{description && (
-							<div className="mt-8 space-y-6 text-sm text-neutral-500">
-								{description.map((content) => (
-									<div key={content} dangerouslySetInnerHTML={{ __html: xss(content) }} />
-								))}
-							</div>
-						)}
 					</div>
 				</div>
-			</form>
-		</section>
+			</main>
+		</div>
 	);
+}
+
+// ============================================================================
+// Helper Functions (pure - execute during prerender)
+// ============================================================================
+
+function parseDescription(description: string | null | undefined): string[] | null {
+	if (!description) return null;
+
+	try {
+		const parsed = parser.parse(JSON.parse(description));
+		return parsed.map((html: string) => xss(html));
+	} catch {
+		return [xss(`<p>${description}</p>`)];
+	}
+}
+
+function extractProductAttributes(product: NonNullable<ProductDetailsQuery["product"]>) {
+	const variantAttributeSlugs = ["size", "color", "colour", "variant"];
+	const internalAttributeSlugs = ["care-instructions", "care"];
+
+	return (product.attributes || [])
+		.filter((attr) => attr.attribute.name)
+		.filter((attr) => !variantAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
+		.filter((attr) => !internalAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
+		.map((attr) => ({
+			name: attr.attribute.name!,
+			value:
+				attr.values.length === 1
+					? attr.values[0]?.name ?? ""
+					: attr.values.map((v) => v.name ?? "").filter(Boolean),
+		}))
+		.filter((attr) => {
+			if (Array.isArray(attr.value)) return attr.value.length > 0;
+			return attr.value !== "";
+		});
+}
+
+function extractCareInstructions(product: NonNullable<ProductDetailsQuery["product"]>): string | null {
+	const careAttr = (product.attributes || []).find(
+		(attr) =>
+			attr.attribute.slug === "care-instructions" ||
+			attr.attribute.slug === "care" ||
+			(attr.attribute.name ?? "").toLowerCase().includes("care"),
+	);
+
+	return (
+		careAttr?.values
+			.map((v) => v.name)
+			.filter(Boolean)
+			.join(". ") || null
+	);
+}
+
+type Product = NonNullable<ProductDetailsQuery["product"]>;
+type Variant = NonNullable<Product["variants"]>[number];
+
+/**
+ * Get gallery images for a product, with variant-specific image support.
+ *
+ * Priority:
+ * 1. Selected variant's media (if variant selected and has images)
+ * 2. Product media (filtered to images only)
+ * 3. Product thumbnail as fallback
+ */
+function getGalleryImages(
+	product: Product,
+	selectedVariant: Variant | null | undefined,
+): { url: string; alt: string | null | undefined }[] {
+	// If variant is selected and has its own images, use those (filtered to images only)
+	if (selectedVariant?.media && selectedVariant.media.length > 0) {
+		const variantImages = selectedVariant.media
+			.filter((m) => m.type === "IMAGE")
+			.map((m) => ({ url: m.url, alt: m.alt }));
+		if (variantImages.length > 0) {
+			return variantImages;
+		}
+	}
+
+	// Otherwise, use product-level images
+	if (product.media && product.media.length > 0) {
+		return product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }));
+	}
+
+	// Final fallback: thumbnail
+	if (product.thumbnail) {
+		return [{ url: product.thumbnail.url, alt: product.thumbnail.alt }];
+	}
+
+	return [];
 }

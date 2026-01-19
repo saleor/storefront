@@ -1,6 +1,7 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
-import { ProductList } from "@/ui/components/ProductList";
+import { ProductList } from "@/ui/components/product-list";
 
 export const metadata = {
 	title: "ACME Storefront, powered by Saleor & Next.js",
@@ -8,21 +9,43 @@ export const metadata = {
 		"Storefront Next.js Example for building performant e-commerce experiences with Saleor - the composable, headless commerce platform for global brands.",
 };
 
-export default async function Page(props: { params: Promise<{ channel: string }> }) {
-	const params = await props.params;
-	const data = await executeGraphQL(ProductListByCollectionDocument, {
-		variables: {
-			slug: "featured-products",
-			channel: params.channel,
-		},
-		revalidate: 60,
-	});
+/**
+ * Cached function to fetch featured products.
+ * With Cache Components, this data becomes part of the static shell,
+ * giving users instant page loads while keeping content fresh.
+ */
+async function getFeaturedProducts(channel: string) {
+	"use cache";
+	cacheLife("minutes"); // 5 minute cache
+	cacheTag("collection:featured-products"); // Tag for on-demand revalidation
 
-	if (!data.collection?.products) {
+	try {
+		const data = await executeGraphQL(ProductListByCollectionDocument, {
+			variables: {
+				slug: "featured-products",
+				channel,
+				first: 12,
+			},
+			revalidate: 300,
+			withAuth: false, // Public data - no cookies in cache scope
+		});
+
+		return data.collection?.products?.edges.map(({ node }) => node) ?? null;
+	} catch (error) {
+		// During build, if the API is unreachable, return null instead of failing.
+		// The page will be populated on-demand when a user visits.
+		console.warn(`[Homepage] Failed to fetch featured products for ${channel}:`, error);
 		return null;
 	}
+}
 
-	const products = data.collection?.products.edges.map(({ node: product }) => product);
+export default async function Page(props: { params: Promise<{ channel: string }> }) {
+	const { channel } = await props.params;
+	const products = await getFeaturedProducts(channel);
+
+	if (!products) {
+		return null;
+	}
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">

@@ -5,8 +5,17 @@ query ProductListPaginated(
 	$before: String
 	$channel: String!
 	$sortBy: ProductOrder
+	$filter: ProductFilterInput
 ) {
-	products(first: $first, after: $after, last: $last, before: $before, channel: $channel, sortBy: $sortBy) {
+	products(
+		first: $first
+		after: $after
+		last: $last
+		before: $before
+		channel: $channel
+		sortBy: $sortBy
+		filter: $filter
+	) {
 		totalCount
 		edges {
 			node {

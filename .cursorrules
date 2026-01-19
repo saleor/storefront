@@ -1,0 +1,53 @@
+# Saleor Storefront - AI Agent Rules
+
+You are working on a Saleor e-commerce storefront built with Next.js 16, TypeScript, and Tailwind CSS.
+
+## Skills
+
+For detailed task-specific instructions, use these skills in `.claude/skills/`:
+
+| Task | Skill |
+|------|-------|
+| Modifying `.graphql` files | `graphql-workflow` |
+| Creating/styling components | `ui-components` |
+| Product detail page (PDP) | `pdp` |
+| Product filtering/sorting | `filtering-system` |
+| Understanding Saleor API | `saleor-investigation` |
+| Variant selection on PDP | `variant-selection` |
+| SEO, metadata, OG images | `seo-system` |
+| ISR, webhooks, caching | `caching-strategy` |
+| Creating/updating skills | `writing-skills` |
+
+## Critical Commands
+
+```bash
+pnpm run generate           # After src/graphql/*.graphql changes
+pnpm run generate:checkout  # After src/checkout/graphql/*.graphql changes
+pnpm exec tsc --noEmit      # Type check
+pnpm run build              # Full build
+```
+
+## Key Rules
+
+1. **GraphQL**: Run `pnpm generate` (storefront) or `pnpm generate:checkout` (checkout) after `.graphql` changes
+2. **Components**: Use Server Components by default, `"use client"` only when needed
+3. **Styling**: Use design tokens (`bg-background`, `text-foreground`), not hardcoded colors
+4. **Nullable fields**: Always use optional chaining (`product.category?.name`)
+5. **Imports**: Use `@/` alias (`import { Button } from "@/ui/components/ui/Button"`)
+
+## File Locations
+
+| Purpose | Location |
+|---------|----------|
+| Storefront GraphQL | `src/graphql/*.graphql` |
+| Checkout GraphQL | `src/checkout/graphql/*.graphql` |
+| Generated types (DO NOT EDIT) | `src/gql/`, `src/checkout/graphql/generated/` |
+| UI components | `src/ui/components/` |
+| Design tokens | `src/styles/brand.css` |
+| SEO helpers | `src/lib/seo/` |
+| Filter utilities | `src/ui/components/plp/filter-utils.ts` |
+
+## Documentation
+
+- **Full docs**: `AGENTS.md` in project root
+- **Skills**: `.claude/skills/[name]/SKILL.md`

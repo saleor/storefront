@@ -1,20 +1,43 @@
 {
-	// make sure the settings below is not present in either user and
-	// workspace settings so adding ids to messages on save works
-	// "eslint.codeActionsOnSave.rules": [],
+	// === Editor Settings ===
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"eslint.run": "onSave",
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "always"
 	},
-	"tailwindCSS.classAttributes": ["className", "clsx"],
-	"css.validate": true,
 	"editor.quickSuggestions": {
 		"strings": true
 	},
+
+	// === TypeScript ===
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+
+	// === ESLint ===
+	"eslint.run": "onSave",
+
+	// === Tailwind CSS ===
+	"tailwindCSS.classAttributes": ["className", "clsx", "cn"],
+	"tailwindCSS.experimental.classRegex": [["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]],
+	"css.validate": true,
 	"files.associations": {
 		"*.css": "tailwindcss"
+	},
+
+	// === GraphQL ===
+	"graphql-config.load.filePath": ".graphqlrc.ts",
+
+	// === File Nesting (cleaner explorer) ===
+	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.patterns": {
+		"*.graphql": "${capture}.generated.ts",
+		"package.json": "pnpm-lock.yaml, .npmrc, .nvmrc, .env*, .graphqlrc.*"
+	},
+
+	// === Search Exclusions ===
+	"search.exclude": {
+		"**/src/gql/**": true,
+		"**/node_modules": true,
+		"**/.next": true
 	}
 }

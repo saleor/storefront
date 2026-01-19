@@ -1,14 +1,18 @@
 import { ProductsPerPage } from "@/app/config";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { formatPrice, formatDate as formatLocaleDate } from "@/config/locale";
 
-export const formatDate = (date: Date | number) => {
-	return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
-};
+/** Merge class names with clsx and tailwind-merge for proper Tailwind class deduplication */
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs));
+}
 
-export const formatMoney = (amount: number, currency: string) =>
-	new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency,
-	}).format(amount);
+/** @deprecated Use formatDate from @/config/locale instead */
+export const formatDate = formatLocaleDate;
+
+/** @deprecated Use formatPrice from @/config/locale instead */
+export const formatMoney = formatPrice;
 
 export const formatMoneyRange = (
 	range: {

@@ -2,6 +2,12 @@ mutation CheckoutDeleteLines($checkoutId: ID!, $lineIds: [ID!]!) {
 	checkoutLinesDelete(id: $checkoutId, linesIds: $lineIds) {
 		checkout {
 			id
+			lines {
+				id
+			}
+			channel {
+				slug
+			}
 		}
 		errors {
 			field

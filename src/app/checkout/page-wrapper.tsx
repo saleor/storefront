@@ -1,0 +1,13 @@
+"use client";
+
+import dynamic from "next/dynamic";
+
+// Checkout requires browser APIs (location, window) - disable SSR
+const Root = dynamic(() => import("@/checkout/root").then((m) => m.Root), { ssr: false });
+
+export const RootWrapper = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
+	if (!saleorApiUrl) {
+		return null;
+	}
+	return <Root saleorApiUrl={saleorApiUrl} />;
+};

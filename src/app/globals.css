@@ -1,7 +1,23 @@
+/* postcss-import inlines this BEFORE Tailwind processes */
+@import "../styles/brand.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-	overflow-x: hidden;
+@layer base {
+	*,
+	*::before,
+	*::after {
+		border-color: var(--border);
+	}
+	html {
+		scroll-behavior: smooth;
+	}
+	body {
+		background-color: var(--background);
+		color: var(--foreground);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
 }

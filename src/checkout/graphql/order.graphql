@@ -53,6 +53,9 @@ fragment OrderFragment on Order {
 	number
 	userEmail
 	isPaid
+	channel {
+		slug
+	}
 	discounts {
 		type
 		name

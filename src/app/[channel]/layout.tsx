@@ -3,26 +3,50 @@ import { executeGraphQL } from "@/lib/graphql";
 import { ChannelsListDocument } from "@/gql/graphql";
 import { DefaultChannelSlug } from "@/app/config";
 
+/**
+ * Generate static params for channel routes.
+ *
+ * Uses NEXT_PUBLIC_DEFAULT_CHANNEL as the primary channel.
+ * Optionally discovers additional channels via SALEOR_APP_TOKEN (for multi-channel builds).
+ */
 export const generateStaticParams = async () => {
-	// the `channels` query is protected
-	// you can either hardcode the channels or use an app token to fetch the channel list here
+	const channels: string[] = [];
 
-	if (process.env.SALEOR_APP_TOKEN) {
-		const channels = await executeGraphQL(ChannelsListDocument, {
-			withAuth: false, // disable cookie-based auth for this call
-			headers: {
-				// and use app token instead
-				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-			},
-		});
-		return (
-			channels.channels
-				?.filter((channel) => channel.isActive)
-				.map((channel) => ({ channel: channel.slug })) ?? []
-		);
-	} else {
-		return [{ channel: DefaultChannelSlug }];
+	// 1. Add default channel (required)
+	if (DefaultChannelSlug) {
+		channels.push(DefaultChannelSlug);
 	}
+
+	// 2. Optionally discover additional channels via API (for multi-channel setups)
+	if (process.env.SALEOR_APP_TOKEN) {
+		try {
+			const { channels: apiChannels } = await executeGraphQL(ChannelsListDocument, {
+				withAuth: false,
+				headers: {
+					Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+				},
+			});
+
+			const activeChannelSlugs = apiChannels?.filter((ch) => ch.isActive).map((ch) => ch.slug) ?? [];
+
+			// Add channels not already in the list
+			for (const slug of activeChannelSlugs) {
+				if (!channels.includes(slug)) {
+					channels.push(slug);
+				}
+			}
+		} catch (error) {
+			console.warn("[Channels] Failed to fetch additional channels from API:", error);
+		}
+	}
+
+	// Return channels (or empty if none configured - will show setup page)
+	if (channels.length === 0) {
+		console.warn("[Channels] No channels configured. Set NEXT_PUBLIC_DEFAULT_CHANNEL.");
+		return [];
+	}
+
+	return channels.map((channel) => ({ channel }));
 };
 
 export default function ChannelLayout({ children }: { children: ReactNode }) {

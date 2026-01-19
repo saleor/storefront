@@ -1,9 +1,31 @@
 fragment VariantDetails on ProductVariant {
 	id
 	name
+	sku
 	quantityAvailable
+	attributes(variantSelection: ALL) {
+		values {
+			name
+			value
+		}
+		attribute {
+			name
+			slug
+		}
+	}
+	media {
+		url(size: 1024, format: WEBP)
+		alt
+		type
+	}
 	pricing {
 		price {
+			gross {
+				currency
+				amount
+			}
+		}
+		priceUndiscounted {
 			gross {
 				currency
 				amount

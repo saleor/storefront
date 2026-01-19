@@ -1,35 +1,49 @@
-import Link from "next/link";
+import { Suspense } from "react";
 import { invariant } from "ts-invariant";
-import { RootWrapper } from "./pageWrapper";
+import { RootWrapper } from "./page-wrapper";
+import { Loader } from "@/ui/atoms/loader";
 
 export const metadata = {
 	title: "Checkout · Saleor Storefront example",
+	description: "Complete your purchase securely.",
 };
 
-export default async function CheckoutPage(props: {
+/**
+ * Checkout page with Cache Components.
+ * Entire page is dynamic (reads searchParams for checkout ID).
+ */
+export default function CheckoutPage(props: {
 	searchParams: Promise<{ checkout?: string; order?: string }>;
 }) {
-	const searchParams = await props.searchParams;
+	return (
+		<Suspense fallback={<CheckoutSkeleton />}>
+			<CheckoutContent searchParams={props.searchParams} />
+		</Suspense>
+	);
+}
+
+/**
+ * Dynamic checkout content - reads searchParams at request time.
+ */
+async function CheckoutContent({
+	searchParams: searchParamsPromise,
+}: {
+	searchParams: Promise<{ checkout?: string; order?: string }>;
+}) {
+	const searchParams = await searchParamsPromise;
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
 	if (!searchParams.checkout && !searchParams.order) {
 		return null;
 	}
 
-	return (
-		<div className="min-h-dvh bg-white">
-			<section className="mx-auto flex min-h-dvh max-w-7xl flex-col p-8">
-				<div className="flex items-center font-bold">
-					<Link aria-label="homepage" href="/">
-						ACME
-					</Link>
-				</div>
-				<h1 className="mt-8 text-3xl font-bold text-neutral-900">Checkout</h1>
+	return <RootWrapper saleorApiUrl={process.env.NEXT_PUBLIC_SALEOR_API_URL} />;
+}
 
-				<section className="mb-12 mt-6 flex-1">
-					<RootWrapper saleorApiUrl={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
-				</section>
-			</section>
+function CheckoutSkeleton() {
+	return (
+		<div className="flex min-h-screen items-center justify-center">
+			<Loader />
 		</div>
 	);
 }
