@@ -56,10 +56,18 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
  */
 export function transformToProductCard(product: ProductListItemFragment, channel: string): ProductCardData {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
-	const undiscountedPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
+	const stopPrice = product.pricing?.priceRange?.stop?.gross;
+	const undiscountedStartPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
+	const undiscountedStopPrice = product.pricing?.priceRangeUndiscounted?.stop?.gross;
 
-	// Detect if this is a sale (undiscounted price is higher than current price)
-	const isSale = undiscountedPrice && startPrice && undiscountedPrice.amount > startPrice.amount;
+	// Detect if ANY variant is on sale by checking both ends of the price range
+	// - Start comparison: catches sales on the cheapest variant
+	// - Stop comparison: catches sales on more expensive variants
+	const hasStartDiscount =
+		undiscountedStartPrice && startPrice && undiscountedStartPrice.amount > startPrice.amount;
+	const hasStopDiscount =
+		undiscountedStopPrice && stopPrice && undiscountedStopPrice.amount > stopPrice.amount;
+	const isSale = hasStartDiscount || hasStopDiscount;
 
 	// Extract colors and sizes from variants
 	const colors = extractColorsFromVariants(product.variants);
@@ -71,7 +79,7 @@ export function transformToProductCard(product: ProductListItemFragment, channel
 		slug: product.slug,
 		brand: product.category?.name ?? null,
 		price: startPrice?.amount ?? 0,
-		compareAtPrice: isSale ? undiscountedPrice?.amount : null,
+		compareAtPrice: isSale ? undiscountedStartPrice?.amount : null,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? product.name,

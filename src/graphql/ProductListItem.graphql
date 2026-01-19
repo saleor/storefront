@@ -25,6 +25,12 @@ fragment ProductListItem on Product {
 					currency
 				}
 			}
+			stop {
+				gross {
+					amount
+					currency
+				}
+			}
 		}
 	}
 	category {
