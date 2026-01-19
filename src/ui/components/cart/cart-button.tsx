@@ -19,7 +19,11 @@ export function CartButton({ itemCount }: CartButtonProps) {
 		>
 			<ShoppingBagIcon className="h-5 w-5" aria-hidden="true" />
 			{itemCount > 0 && (
-				<span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background">
+				<span
+					// Key change remounts the element, restarting the CSS animation
+					key={itemCount}
+					className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-cart-badge-pop items-center justify-center rounded-full bg-foreground text-[10px] font-medium text-background"
+				>
 					{itemCount > 9 ? "9+" : itemCount}
 				</span>
 			)}
