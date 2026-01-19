@@ -13,7 +13,7 @@ import type { OptionRendererProps } from "../types";
  * - Out of stock: Strikethrough, disabled
  * - On sale: Small red dot indicator
  */
-export function SizeButtonOption({ option, isSelected, onSelect }: OptionRendererProps) {
+export function SizeButtonOption({ option, isSelected, onSelect, isPending }: OptionRendererProps) {
 	const isOutOfStock = !option.available;
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
@@ -26,12 +26,18 @@ export function SizeButtonOption({ option, isSelected, onSelect }: OptionRendere
 	].filter(Boolean);
 
 	return (
-		<div className="relative">
+		<div
+			className={cn(
+				"relative transition-opacity duration-150",
+				isPending && "pointer-events-none opacity-60",
+			)}
+			style={{ transitionDelay: isPending ? "100ms" : "0ms" }}
+		>
 			<button
 				type="button"
 				onClick={() => onSelect(option.id)}
-				disabled={isOutOfStock}
-				aria-disabled={isOutOfStock}
+				disabled={isOutOfStock || isPending}
+				aria-disabled={isOutOfStock || isPending}
 				className={cn(
 					"h-12 min-w-[3.5rem] rounded-lg border px-4 text-sm font-medium transition-all",
 					"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",

@@ -37,6 +37,8 @@ interface VariantNameSelectorProps {
 	selectedVariantId?: string;
 	onSelect: (variantId: string) => void;
 	label?: string;
+	/** Whether a transition is in progress */
+	isPending?: boolean;
 }
 
 export function VariantNameSelector({
@@ -44,6 +46,7 @@ export function VariantNameSelector({
 	selectedVariantId,
 	onSelect,
 	label = "Variant",
+	isPending,
 }: VariantNameSelectorProps) {
 	// Check if prices differ between variants (show price if so)
 	const prices = variants
@@ -60,7 +63,16 @@ export function VariantNameSelector({
 				{selectedVariant && <span className="text-sm text-muted-foreground">{selectedVariant.name}</span>}
 			</div>
 
-			<div role="group" aria-label={label} className="flex flex-wrap gap-3">
+			<div
+				role="group"
+				aria-label={label}
+				aria-busy={isPending}
+				className={cn(
+					"flex flex-wrap gap-3 transition-opacity duration-150",
+					isPending && "pointer-events-none opacity-60",
+				)}
+				style={{ transitionDelay: isPending ? "100ms" : "0ms" }}
+			>
 				{variants.map((variant) => {
 					const isSelected = variant.id === selectedVariantId;
 					const isOutOfStock = (variant.quantityAvailable ?? 0) <= 0;

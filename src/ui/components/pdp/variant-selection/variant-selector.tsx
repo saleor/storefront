@@ -20,6 +20,7 @@ export function VariantSelector({
 	onSelect,
 	renderer: explicitRenderer,
 	unavailableMessage,
+	isPending,
 }: VariantSelectorProps) {
 	const selectedOption = options.find((opt) => opt.id === selectedId);
 
@@ -82,6 +83,7 @@ export function VariantSelector({
 								option={option}
 								isSelected={selectedId === option.id}
 								onSelect={handleSelect}
+								isPending={isPending}
 							/>
 						);
 					})}
@@ -99,6 +101,7 @@ export function VariantSelector({
 								option={option}
 								isSelected={selectedId === option.id}
 								onSelect={handleSelect}
+								isPending={isPending}
 							/>
 						);
 					})}

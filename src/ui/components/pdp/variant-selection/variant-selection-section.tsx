@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useEffect } from "react";
+import { useCallback, useMemo, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { VariantSelectionSectionProps } from "./types";
 import { VariantSelector } from "./variant-selector";
@@ -53,6 +53,7 @@ export function VariantSelectionSection({
 }: VariantSelectionSectionProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const [isPending, startTransition] = useTransition();
 
 	// Group variants by attributes (always call hooks unconditionally)
 	const attributeGroups = useMemo(() => groupVariantsByAttributes(variants as SaleorVariant[]), [variants]);
@@ -105,7 +106,10 @@ export function VariantSelectionSection({
 				params.delete("variant");
 			}
 
-			router.push(`/${channel}/products/${productSlug}?${params.toString()}`, { scroll: false });
+			// Use transition to keep UI responsive during navigation
+			startTransition(() => {
+				router.push(`/${channel}/products/${productSlug}?${params.toString()}`, { scroll: false });
+			});
 		},
 		[currentSelections, variants, channel, productSlug, router],
 	);
@@ -130,7 +134,9 @@ export function VariantSelectionSection({
 	// Handle variant selection for name-based fallback
 	const handleVariantSelect = useCallback(
 		(variantId: string) => {
-			router.push(`/${channel}/products/${productSlug}?variant=${variantId}`, { scroll: false });
+			startTransition(() => {
+				router.push(`/${channel}/products/${productSlug}?variant=${variantId}`, { scroll: false });
+			});
 		},
 		[channel, productSlug, router],
 	);
@@ -153,6 +159,7 @@ export function VariantSelectionSection({
 					variants={variants}
 					selectedVariantId={selectedVariantId}
 					onSelect={handleVariantSelect}
+					isPending={isPending}
 				/>
 			</div>
 		);
@@ -184,6 +191,7 @@ export function VariantSelectionSection({
 						attributeSlug={group.slug}
 						onSelect={handleSelect}
 						unavailableMessage={unavailableMessage}
+						isPending={isPending}
 					/>
 				);
 			})}

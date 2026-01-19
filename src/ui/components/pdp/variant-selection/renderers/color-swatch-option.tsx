@@ -13,7 +13,7 @@ import type { OptionRendererProps } from "../types";
  * - Out of stock: Diagonal strikethrough, disabled
  * - On sale: Small red dot indicator
  */
-export function ColorSwatchOption({ option, isSelected, onSelect }: OptionRendererProps) {
+export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: OptionRendererProps) {
 	const isOutOfStock = !option.available;
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
@@ -29,12 +29,18 @@ export function ColorSwatchOption({ option, isSelected, onSelect }: OptionRender
 		.join(", ");
 
 	return (
-		<div className="relative">
+		<div
+			className={cn(
+				"relative transition-opacity duration-150",
+				isPending && "pointer-events-none opacity-60",
+			)}
+			style={{ transitionDelay: isPending ? "100ms" : "0ms" }}
+		>
 			<button
 				type="button"
 				onClick={() => onSelect(option.id)}
-				disabled={isOutOfStock}
-				aria-disabled={isOutOfStock}
+				disabled={isOutOfStock || isPending}
+				aria-disabled={isOutOfStock || isPending}
 				className={cn(
 					"relative h-12 w-12 rounded-full transition-all",
 					"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",

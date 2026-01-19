@@ -51,6 +51,8 @@ export interface OptionRendererProps {
 	isSelected: boolean;
 	/** Callback when the option is clicked */
 	onSelect: (id: string) => void;
+	/** Whether a transition is in progress (selection being processed) */
+	isPending?: boolean;
 }
 
 /**
@@ -87,6 +89,8 @@ export interface VariantSelectorProps {
 	renderer?: OptionRenderer;
 	/** Optional: Message to show when no options available (replaces selected value display) */
 	unavailableMessage?: string;
+	/** Whether a transition is in progress */
+	isPending?: boolean;
 }
 
 /**
