@@ -115,6 +115,7 @@ async function CategoryProducts({
 			filter,
 		},
 		revalidate: 300,
+		withAuth: false, // Public data - no user cookies needed
 	});
 
 	if (!category?.products) {

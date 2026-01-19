@@ -12,6 +12,7 @@ export const generateMetadata = async (props: { params: Promise<{ slug: string }
 	const { page } = await executeGraphQL(PageGetBySlugDocument, {
 		variables: { slug: params.slug },
 		revalidate: 60,
+		withAuth: false, // Public content
 	});
 
 	return {
@@ -25,6 +26,7 @@ export default async function Page(props: { params: Promise<{ slug: string }> })
 	const { page } = await executeGraphQL(PageGetBySlugDocument, {
 		variables: { slug: params.slug },
 		revalidate: 60,
+		withAuth: false, // Public content
 	});
 
 	if (!page) {
