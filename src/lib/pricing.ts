@@ -1,6 +1,8 @@
 /**
  * Shared pricing utilities for discount calculations.
- * Used by PDP, variant selection, and other pricing-related components.
+ * Used by PDP, PLP, variant selection, cart, and other pricing-related components.
+ *
+ * SINGLE SOURCE OF TRUTH for all discount/sale detection logic.
  */
 
 export interface PriceInfo {
@@ -11,6 +13,11 @@ export interface PriceInfo {
 export interface DiscountInfo {
 	isOnSale: boolean;
 	discountPercent: number | null;
+}
+
+export interface PriceRange {
+	start?: { gross?: { amount?: number | null } | null } | null;
+	stop?: { gross?: { amount?: number | null } | null } | null;
 }
 
 /**
@@ -78,4 +85,33 @@ export function getMaxDiscountInfo<T>(
 		isOnSale: hasAnyDiscount,
 		discountPercent: hasAnyDiscount ? maxPercent : null,
 	};
+}
+
+/**
+ * Check if ANY variant in a product is on sale using price ranges.
+ *
+ * For PLP product cards where we only have aggregated price ranges (not per-variant pricing).
+ * Checks both start (cheapest) and stop (most expensive) to catch discounts on any variant.
+ *
+ * @example
+ * // Variant A: $50 -> $30 (on sale), Variant B: $20 -> $20 (not on sale)
+ * // priceRange: { start: $20, stop: $30 }
+ * // priceRangeUndiscounted: { start: $20, stop: $50 }
+ * // Result: true (because stop shows a discount)
+ */
+export function hasDiscountInPriceRange(
+	priceRange: PriceRange | null | undefined,
+	priceRangeUndiscounted: PriceRange | null | undefined,
+): boolean {
+	const startPrice = priceRange?.start?.gross?.amount;
+	const stopPrice = priceRange?.stop?.gross?.amount;
+	const undiscountedStart = priceRangeUndiscounted?.start?.gross?.amount;
+	const undiscountedStop = priceRangeUndiscounted?.stop?.gross?.amount;
+
+	// Check if cheapest variant is on sale
+	const hasStartDiscount = hasDiscount(startPrice, undiscountedStart);
+	// Check if most expensive variant is on sale
+	const hasStopDiscount = hasDiscount(stopPrice, undiscountedStop);
+
+	return hasStartDiscount || hasStopDiscount;
 }

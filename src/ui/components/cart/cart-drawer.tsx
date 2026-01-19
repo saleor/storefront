@@ -11,6 +11,7 @@ import { deleteCartLine, updateCartLineQuantity } from "./actions";
 import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
 import { localeConfig } from "@/config/locale";
+import { hasDiscount } from "@/lib/pricing";
 
 interface CartLine {
 	id: string;
@@ -197,10 +198,10 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 						<ul className="divide-y divide-border">
 							{lines.map((line) => {
 								const variantAttributes = getVariantDetails(line.variant);
-								const hasDiscount =
-									line.variant.pricing?.priceUndiscounted?.gross.amount &&
-									line.variant.pricing.priceUndiscounted.gross.amount >
-										line.variant.pricing?.price?.gross.amount!;
+								const isDiscounted = hasDiscount(
+									line.variant.pricing?.price?.gross.amount,
+									line.variant.pricing?.priceUndiscounted?.gross.amount,
+								);
 
 								return (
 									<li key={line.id} className="px-6 py-4">
@@ -295,7 +296,7 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 														<span className="text-sm font-medium">
 															{formatMoney(line.totalPrice.gross.amount, line.totalPrice.gross.currency)}
 														</span>
-														{hasDiscount && line.variant.pricing?.priceUndiscounted && (
+														{isDiscounted && line.variant.pricing?.priceUndiscounted && (
 															<span className="block text-xs text-muted-foreground line-through">
 																{formatMoney(
 																	line.variant.pricing.priceUndiscounted.gross.amount * line.quantity,

@@ -3,6 +3,7 @@ import type { ProductCardData } from "./product-card";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
 import { localeConfig } from "@/config/locale";
+import { hasDiscountInPriceRange } from "@/lib/pricing";
 
 /**
  * Extract colors from product variants
@@ -56,18 +57,13 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
  */
 export function transformToProductCard(product: ProductListItemFragment, channel: string): ProductCardData {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
-	const stopPrice = product.pricing?.priceRange?.stop?.gross;
 	const undiscountedStartPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
-	const undiscountedStopPrice = product.pricing?.priceRangeUndiscounted?.stop?.gross;
 
-	// Detect if ANY variant is on sale by checking both ends of the price range
-	// - Start comparison: catches sales on the cheapest variant
-	// - Stop comparison: catches sales on more expensive variants
-	const hasStartDiscount =
-		undiscountedStartPrice && startPrice && undiscountedStartPrice.amount > startPrice.amount;
-	const hasStopDiscount =
-		undiscountedStopPrice && stopPrice && undiscountedStopPrice.amount > stopPrice.amount;
-	const isSale = hasStartDiscount || hasStopDiscount;
+	// Use centralized pricing logic to detect if ANY variant is on sale
+	const isSale = hasDiscountInPriceRange(
+		product.pricing?.priceRange,
+		product.pricing?.priceRangeUndiscounted,
+	);
 
 	// Extract colors and sizes from variants
 	const colors = extractColorsFromVariants(product.variants);
