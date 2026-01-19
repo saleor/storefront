@@ -62,12 +62,12 @@ const config = {
 				],
 			},
 			{
-				// Public folder assets
-				source: "/(.*)\\.(ico|png|jpg|jpeg|gif|svg|webp|woff|woff2)",
+				// Public folder assets - cache for 1 month (logos, favicons, etc.)
+				source: "/(.*)\\.(ico|png|jpg|jpeg|gif|svg|webp|woff|woff2|webmanifest)",
 				headers: [
 					{
 						key: "Cache-Control",
-						value: "public, max-age=86400, stale-while-revalidate=604800",
+						value: "public, max-age=2592000, stale-while-revalidate=31536000",
 					},
 				],
 			},
