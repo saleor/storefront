@@ -105,6 +105,7 @@ function parseWebhookPayload(payload: unknown): {
 	type: "product" | "category" | "collection" | "order" | "unknown";
 	slug?: string;
 	channel?: string;
+	categorySlug?: string;
 } {
 	if (!payload || typeof payload !== "object") {
 		return { type: "unknown" };
@@ -112,14 +113,33 @@ function parseWebhookPayload(payload: unknown): {
 
 	const data = payload as Record<string, unknown>;
 
-	// Product events
+	// Product events (PRODUCT_CREATED, PRODUCT_UPDATED, PRODUCT_DELETED)
 	if (data.product && typeof data.product === "object") {
 		const product = data.product as Record<string, unknown>;
+		// Extract category slug if present (for invalidating category pages when product updates)
+		const category = product.category as Record<string, unknown> | undefined;
 		return {
 			type: "product",
 			slug: product.slug as string | undefined,
 			channel: (product.channel as Record<string, unknown>)?.slug as string | undefined,
+			categorySlug: category?.slug as string | undefined,
 		};
+	}
+
+	// Product variant events (PRODUCT_VARIANT_UPDATED, PRODUCT_VARIANT_STOCK_UPDATED, etc.)
+	// These wrap product data inside productVariant.product
+	if (data.productVariant && typeof data.productVariant === "object") {
+		const variant = data.productVariant as Record<string, unknown>;
+		const product = variant.product as Record<string, unknown> | undefined;
+		if (product) {
+			const category = product.category as Record<string, unknown> | undefined;
+			return {
+				type: "product",
+				slug: product.slug as string | undefined,
+				channel: (product.channel as Record<string, unknown>)?.slug as string | undefined,
+				categorySlug: category?.slug as string | undefined,
+			};
+		}
 	}
 
 	// Category events
@@ -180,7 +200,11 @@ export async function POST(request: NextRequest) {
 
 	try {
 		const payload = JSON.parse(rawBody);
-		const { type, slug, channel } = parseWebhookPayload(payload);
+
+		// Debug: Log raw payload to understand webhook structure
+		console.log("[Revalidate] Raw payload:", JSON.stringify(payload, null, 2));
+
+		const { type, slug, channel, categorySlug } = parseWebhookPayload(payload);
 
 		// Use channel from webhook payload, or fall back to configured default
 		const targetChannel = channel || DefaultChannelSlug;
@@ -208,6 +232,16 @@ export async function POST(request: NextRequest) {
 				// Also revalidate product listings
 				revalidatePath(`/${targetChannel}/products`);
 				revalidatedPaths.push(`/${targetChannel}/products`);
+
+				// Also invalidate the category page where this product appears
+				// This ensures PLP pages show updated pricing/badges after product changes
+				if (categorySlug) {
+					revalidateTag(`category:${categorySlug}`, "minutes");
+					revalidatedTags.push(`category:${categorySlug}`);
+
+					revalidatePath(`/${targetChannel}/categories/${categorySlug}`);
+					revalidatedPaths.push(`/${targetChannel}/categories/${categorySlug}`);
+				}
 				break;
 
 			case "category":
