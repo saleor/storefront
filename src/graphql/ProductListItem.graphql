@@ -44,7 +44,7 @@ fragment ProductListItem on Product {
 	}
 	variants {
 		id
-		attributes(variantSelection: ALL) {
+		selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
 			attribute {
 				slug
 				name

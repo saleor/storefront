@@ -3,24 +3,38 @@
 import { cn } from "@/lib/utils";
 import type { OptionRendererProps } from "../types";
 
+export interface ButtonOptionProps extends OptionRendererProps {
+	/** Optional prefix for accessible label (e.g., "Size" → "Size M") */
+	labelPrefix?: string;
+	/** Minimum width of the button */
+	minWidth?: string;
+}
+
 /**
- * Renders a generic text option as a rectangular button.
+ * Renders a variant option as a rectangular button.
  *
  * Visual states:
  * - Normal: Full styling, clickable
  * - Selected: Inverted colors (dark bg, light text)
  * - Incompatible: Dimmed border/text, still clickable - will clear other selections
  * - Out of stock: Strikethrough, disabled
- * - On sale: Small red dot indicator
+ * - On sale: Small discount badge
  */
-export function TextOption({ option, isSelected, onSelect, isPending }: OptionRendererProps) {
+export function ButtonOption({
+	option,
+	isSelected,
+	onSelect,
+	isPending,
+	labelPrefix,
+	minWidth = "3.5rem",
+}: ButtonOptionProps) {
 	const isOutOfStock = !option.available;
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
 
 	// Build accessible label with context
 	const accessibleParts = [
-		option.name,
+		labelPrefix ? `${labelPrefix} ${option.name}` : option.name,
 		isOutOfStock && "out of stock",
 		hasDiscount && `${option.discountPercent}% off`,
 	].filter(Boolean);
@@ -38,13 +52,15 @@ export function TextOption({ option, isSelected, onSelect, isPending }: OptionRe
 				onClick={() => onSelect(option.id)}
 				disabled={isOutOfStock || isPending}
 				aria-disabled={isOutOfStock || isPending}
+				style={{ minWidth }}
 				className={cn(
-					"h-12 min-w-[4.5rem] rounded-lg border px-4 text-sm font-medium transition-all",
+					"h-12 rounded-lg border px-4 text-sm font-medium transition-all",
 					"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 					isSelected
 						? "border-foreground bg-foreground text-background"
-						: "border-border bg-background text-foreground hover:border-foreground",
-					isIncompatible && !isSelected && "border-border/50 text-muted-foreground hover:border-border",
+						: isIncompatible
+							? "border-gray-200 text-muted-foreground hover:border-gray-300"
+							: "border-gray-400 bg-background text-foreground hover:border-foreground",
 					isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
 				)}
 				title={
@@ -71,4 +87,13 @@ export function TextOption({ option, isSelected, onSelect, isPending }: OptionRe
 			)}
 		</div>
 	);
+}
+
+// Backwards-compatible aliases
+export function SizeButtonOption(props: OptionRendererProps) {
+	return <ButtonOption {...props} labelPrefix="Size" />;
+}
+
+export function TextOption(props: OptionRendererProps) {
+	return <ButtonOption {...props} minWidth="4.5rem" />;
 }

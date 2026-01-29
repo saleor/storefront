@@ -48,7 +48,7 @@ export { VariantSelector } from "./variant-selector";
 export { VariantNameSelector } from "./variant-name-selector";
 
 // Option renderers (for custom compositions)
-export { ColorSwatchOption, SizeButtonOption, TextOption, defaultRenderers } from "./renderers";
+export { ColorSwatchOption, ButtonOption, SizeButtonOption, TextOption, defaultRenderers } from "./renderers";
 
 // Utilities (for custom implementations)
 export {

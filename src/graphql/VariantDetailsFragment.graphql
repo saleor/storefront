@@ -3,7 +3,17 @@ fragment VariantDetails on ProductVariant {
 	name
 	sku
 	quantityAvailable
-	attributes(variantSelection: ALL) {
+	selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
+		values {
+			name
+			value
+		}
+		attribute {
+			name
+			slug
+		}
+	}
+	nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {
 		values {
 			name
 			value

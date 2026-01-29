@@ -31,13 +31,11 @@
  */
 
 export { ColorSwatchOption } from "./color-swatch-option";
-export { SizeButtonOption } from "./size-button-option";
-export { TextOption } from "./text-option";
+export { ButtonOption, SizeButtonOption, TextOption, type ButtonOptionProps } from "./button-option";
 
 import type { RendererRegistry } from "../types";
 import { ColorSwatchOption } from "./color-swatch-option";
-import { SizeButtonOption } from "./size-button-option";
-import { TextOption } from "./text-option";
+import { SizeButtonOption, TextOption } from "./button-option";
 
 /**
  * Default renderer registry.

@@ -18,7 +18,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		id: "tshirt-black-s",
 		name: "Black / S",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Black", value: "black" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -31,7 +31,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		id: "tshirt-black-m",
 		name: "Black / M",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Black", value: "black" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "M", value: "m" }] },
 		],
@@ -44,7 +44,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		id: "tshirt-black-l",
 		name: "Black / L",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Black", value: "black" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "L", value: "l" }] },
 		],
@@ -57,7 +57,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		id: "tshirt-white-s",
 		name: "White / S",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "White", value: "white" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -70,7 +70,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		id: "tshirt-white-m",
 		name: "White / M",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "White", value: "white" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "M", value: "m" }] },
 		],
@@ -83,7 +83,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		id: "tshirt-white-l",
 		name: "White / L",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "White", value: "white" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "L", value: "l" }] },
 		],
@@ -103,7 +103,7 @@ export const sparseVariants: SaleorVariant[] = [
 		id: "sparse-red-s",
 		name: "Red / S",
 		quantityAvailable: 5,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Red", value: "red" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -112,7 +112,7 @@ export const sparseVariants: SaleorVariant[] = [
 		id: "sparse-blue-s",
 		name: "Blue / S",
 		quantityAvailable: 5,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Blue", value: "blue" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -121,7 +121,7 @@ export const sparseVariants: SaleorVariant[] = [
 		id: "sparse-blue-m",
 		name: "Blue / M",
 		quantityAvailable: 5,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Blue", value: "blue" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "M", value: "m" }] },
 		],
@@ -130,7 +130,7 @@ export const sparseVariants: SaleorVariant[] = [
 		id: "sparse-blue-l",
 		name: "Blue / L",
 		quantityAvailable: 5,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Blue", value: "blue" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "L", value: "l" }] },
 		],
@@ -145,7 +145,7 @@ export const stockVariants: SaleorVariant[] = [
 		id: "stock-green-s",
 		name: "Green / S",
 		quantityAvailable: 0, // Out of stock
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Green", value: "green" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -154,7 +154,7 @@ export const stockVariants: SaleorVariant[] = [
 		id: "stock-green-m",
 		name: "Green / M",
 		quantityAvailable: 3, // In stock
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Green", value: "green" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "M", value: "m" }] },
 		],
@@ -163,7 +163,7 @@ export const stockVariants: SaleorVariant[] = [
 		id: "stock-yellow-s",
 		name: "Yellow / S",
 		quantityAvailable: 0, // Out of stock
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Yellow", value: "yellow" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -172,7 +172,7 @@ export const stockVariants: SaleorVariant[] = [
 		id: "stock-yellow-m",
 		name: "Yellow / M",
 		quantityAvailable: 0, // Out of stock
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Yellow", value: "yellow" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "M", value: "m" }] },
 		],
@@ -187,7 +187,7 @@ export const discountedVariants: SaleorVariant[] = [
 		id: "disc-purple-s",
 		name: "Purple / S",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Purple", value: "purple" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -200,7 +200,7 @@ export const discountedVariants: SaleorVariant[] = [
 		id: "disc-purple-m",
 		name: "Purple / M",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Purple", value: "purple" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "M", value: "m" }] },
 		],
@@ -213,7 +213,7 @@ export const discountedVariants: SaleorVariant[] = [
 		id: "disc-orange-s",
 		name: "Orange / S",
 		quantityAvailable: 10,
-		attributes: [
+		selectionAttributes: [
 			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Orange", value: "orange" }] },
 			{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 		],
@@ -232,13 +232,17 @@ export const singleAttributeVariants: SaleorVariant[] = [
 		id: "single-navy",
 		name: "Navy",
 		quantityAvailable: 10,
-		attributes: [{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Navy", value: "navy" }] }],
+		selectionAttributes: [
+			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Navy", value: "navy" }] },
+		],
 	},
 	{
 		id: "single-gray",
 		name: "Gray",
 		quantityAvailable: 10,
-		attributes: [{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Gray", value: "gray" }] }],
+		selectionAttributes: [
+			{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Gray", value: "gray" }] },
+		],
 	},
 ];
 
@@ -251,7 +255,7 @@ export const nameOnlyVariants: SaleorVariant[] = [
 		id: "name-only-navy-s",
 		name: "Navy blue S",
 		quantityAvailable: 10,
-		attributes: [], // No structured attributes
+		selectionAttributes: [], // No structured attributes
 		pricing: {
 			price: { gross: { amount: 30.0, currency: "EUR" } },
 			priceUndiscounted: { gross: { amount: 30.0, currency: "EUR" } },
@@ -261,7 +265,7 @@ export const nameOnlyVariants: SaleorVariant[] = [
 		id: "name-only-navy-m",
 		name: "Navy blue M",
 		quantityAvailable: 5,
-		attributes: [], // No structured attributes
+		selectionAttributes: [], // No structured attributes
 		pricing: {
 			price: { gross: { amount: 30.0, currency: "EUR" } },
 			priceUndiscounted: { gross: { amount: 30.0, currency: "EUR" } },
@@ -271,7 +275,7 @@ export const nameOnlyVariants: SaleorVariant[] = [
 		id: "name-only-navy-l",
 		name: "Navy blue L",
 		quantityAvailable: 0, // Out of stock
-		attributes: [],
+		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 30.0, currency: "EUR" } },
 			priceUndiscounted: { gross: { amount: 30.0, currency: "EUR" } },
@@ -287,7 +291,7 @@ export const nameOnlyDifferentPrices: SaleorVariant[] = [
 		id: "gift-25",
 		name: "$25 Gift Card",
 		quantityAvailable: 999,
-		attributes: [],
+		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 25.0, currency: "USD" } },
 			priceUndiscounted: { gross: { amount: 25.0, currency: "USD" } },
@@ -297,7 +301,7 @@ export const nameOnlyDifferentPrices: SaleorVariant[] = [
 		id: "gift-50",
 		name: "$50 Gift Card",
 		quantityAvailable: 999,
-		attributes: [],
+		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 50.0, currency: "USD" } },
 			priceUndiscounted: { gross: { amount: 50.0, currency: "USD" } },
@@ -307,7 +311,7 @@ export const nameOnlyDifferentPrices: SaleorVariant[] = [
 		id: "gift-100",
 		name: "$100 Gift Card",
 		quantityAvailable: 999,
-		attributes: [],
+		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 100.0, currency: "USD" } },
 			priceUndiscounted: { gross: { amount: 100.0, currency: "USD" } },

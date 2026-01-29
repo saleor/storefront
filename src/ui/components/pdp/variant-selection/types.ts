@@ -105,7 +105,13 @@ export interface VariantSelectionSectionProps {
 		id: string;
 		name: string;
 		quantityAvailable?: number | null;
-		attributes: Array<{
+		/** Attributes used for variant selection (color, size, etc.) */
+		selectionAttributes: Array<{
+			attribute: { slug?: string | null; name?: string | null };
+			values: Array<{ name?: string | null; value?: string | null }>;
+		}>;
+		/** Non-selection attributes (material, brand, etc.) - displayed elsewhere */
+		nonSelectionAttributes?: Array<{
 			attribute: { slug?: string | null; name?: string | null };
 			values: Array<{ name?: string | null; value?: string | null }>;
 		}>;

@@ -245,7 +245,7 @@ describe("getUnavailableAttributeInfo", () => {
 				id: "de-pink-xl",
 				name: "Pink / XL",
 				quantityAvailable: 0, // Out of stock
-				attributes: [
+				selectionAttributes: [
 					{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Pink", value: "pink" }] },
 					{ attribute: { slug: "size", name: "Size" }, values: [{ name: "XL", value: "xl" }] },
 				],
@@ -254,7 +254,7 @@ describe("getUnavailableAttributeInfo", () => {
 				id: "de-blue-s",
 				name: "Blue / S",
 				quantityAvailable: 10,
-				attributes: [
+				selectionAttributes: [
 					{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Blue", value: "blue" }] },
 					{ attribute: { slug: "size", name: "Size" }, values: [{ name: "S", value: "s" }] },
 				],
@@ -284,7 +284,7 @@ describe("edge cases", () => {
 	});
 
 	it("handles variant with no attributes", () => {
-		const noAttrVariants = [{ id: "v1", name: "Default", quantityAvailable: 10, attributes: [] }];
+		const noAttrVariants = [{ id: "v1", name: "Default", quantityAvailable: 10, selectionAttributes: [] }];
 		const groups = groupVariantsByAttributes(noAttrVariants);
 		expect(groups).toEqual([]);
 	});
@@ -311,15 +311,27 @@ describe("edge cases", () => {
 		const nullQtyVariants = [
 			{
 				id: "v1",
-				name: "Test",
+				name: "Test Blue",
 				quantityAvailable: null,
-				attributes: [
+				selectionAttributes: [
 					{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Blue", value: "blue" }] },
+				],
+			},
+			{
+				id: "v2",
+				name: "Test Red",
+				quantityAvailable: 5,
+				selectionAttributes: [
+					{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Red", value: "red" }] },
 				],
 			},
 		];
 		const groups = groupVariantsByAttributes(nullQtyVariants);
-		// Should be treated as unavailable (0 quantity)
-		expect(groups[0]?.options[0]?.available).toBe(false);
+		// Blue should be treated as unavailable (null quantity)
+		const blueOption = groups[0]?.options.find((o) => o.name === "Blue");
+		expect(blueOption?.available).toBe(false);
+		// Red should be available
+		const redOption = groups[0]?.options.find((o) => o.name === "Red");
+		expect(redOption?.available).toBe(true);
 	});
 });

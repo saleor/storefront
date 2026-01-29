@@ -20,7 +20,11 @@ export type SaleorVariant = {
 	id: string;
 	name: string;
 	quantityAvailable?: number | null;
-	attributes: Array<{
+	selectionAttributes: Array<{
+		attribute: { slug?: string | null; name?: string | null };
+		values: Array<{ name?: string | null; value?: string | null }>;
+	}>;
+	nonSelectionAttributes?: Array<{
 		attribute: { slug?: string | null; name?: string | null };
 		values: Array<{ name?: string | null; value?: string | null }>;
 	}>;
@@ -64,6 +68,9 @@ function getMaxDiscountInfo(variants: SaleorVariant[]): { hasDiscount: boolean; 
  * Each option tracks which variants it appears in, allowing us to:
  * - Show availability based on other selections
  * - Find the matching variant when all attributes are selected
+ *
+ * NOTE: Attributes with only one unique value are filtered out, as they don't
+ * differentiate variants (likely product-level attributes incorrectly assigned to variants).
  */
 export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeGroup[] {
 	// Map: attributeSlug -> { name, values: Map<valueName, { variantIds, colorHex }> }
@@ -77,7 +84,7 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 
 	// Process each variant
 	for (const variant of variants) {
-		for (const attr of variant.attributes) {
+		for (const attr of variant.selectionAttributes) {
 			const slug = attr.attribute.slug ?? "";
 			const name = attr.attribute.name ?? slug;
 
@@ -180,7 +187,7 @@ export function findMatchingVariant(
 		let allMatch = true;
 
 		for (const [attrSlug, selectedValue] of selectionEntries) {
-			const attr = variant.attributes.find(
+			const attr = variant.selectionAttributes.find(
 				(a) => (a.attribute.slug ?? "").toLowerCase() === attrSlug.toLowerCase(),
 			);
 
@@ -217,7 +224,7 @@ export function getSelectionsFromVariant(
 	if (!variant) return {};
 
 	const selections: Record<string, string> = {};
-	for (const attr of variant.attributes) {
+	for (const attr of variant.selectionAttributes) {
 		const slug = attr.attribute.slug ?? "";
 		const value = attr.values[0]?.name ?? "";
 		if (slug && value) {
@@ -251,7 +258,7 @@ export function getOptionsForAttribute(
 	return targetGroup.options.map((option) => {
 		// Find ALL variants that have this option value
 		const variantsWithOption = variants.filter((variant) => {
-			const attr = variant.attributes.find(
+			const attr = variant.selectionAttributes.find(
 				(a) => (a.attribute.slug ?? "").toLowerCase() === targetAttributeSlug.toLowerCase(),
 			);
 			return attr?.values.some((v) => (v.name ?? "").toLowerCase().replace(/\s+/g, "-") === option.id);
@@ -266,7 +273,7 @@ export function getOptionsForAttribute(
 		if (otherSelections.length > 0) {
 			existsWithCurrentSelection = variantsWithOption.some((variant) => {
 				for (const [attrSlug, selectedValue] of otherSelections) {
-					const attr = variant.attributes.find(
+					const attr = variant.selectionAttributes.find(
 						(a) => (a.attribute.slug ?? "").toLowerCase() === attrSlug.toLowerCase(),
 					);
 					if (!attr) return false;

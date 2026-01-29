@@ -14,7 +14,7 @@ function extractColorsFromVariants(
 	const colorSet = new Map<string, string>();
 
 	variants?.forEach((variant) => {
-		variant.attributes?.forEach((attr) => {
+		variant.selectionAttributes?.forEach((attr) => {
 			if (isColorAttribute(attr.attribute?.slug ?? "")) {
 				attr.values?.forEach((value) => {
 					const colorName = value.name;
@@ -37,7 +37,7 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
 	const sizeSet = new Set<string>();
 
 	variants?.forEach((variant) => {
-		variant.attributes?.forEach((attr) => {
+		variant.selectionAttributes?.forEach((attr) => {
 			if (isSizeAttribute(attr.attribute?.slug ?? "")) {
 				attr.values?.forEach((value) => {
 					if (value.name) {
