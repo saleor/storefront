@@ -13,6 +13,7 @@ import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
+import { Breadcrumb } from "@/ui/components/nav/components/BreadCrumb";
 
 export async function generateMetadata(
 	props: {
@@ -176,6 +177,14 @@ export default async function Page(props: {
 					__html: JSON.stringify(productJsonLd),
 				}}
 			/>
+			<div>
+				<Breadcrumb
+					channel={params.channel}
+					categoryName={product.category?.name ?? ""}
+					categorySlug={product.category?.name}
+					productName={product.name}
+				/>
+			</div>
 			<form className="grid gap-2 sm:grid-cols-2 lg:grid-cols-8" action={addItem}>
 				<div className="md:col-span-1 lg:col-span-5">
 					{firstImage && (
