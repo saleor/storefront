@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { CheckoutLink } from "./CheckoutLink";
-import { DeleteLineButton } from "./DeleteLineButton";
+import { DeleteLineForm } from "./DeleteLineForm";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney, getHrefForVariant } from "@/lib/utils";
 import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
@@ -35,7 +35,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 	return (
 		<section className="mx-auto max-w-7xl p-8">
 			<h1 className="mt-8 text-3xl font-bold text-neutral-900">Your Shopping Cart</h1>
-			<form className="mt-12">
+			<div className="mt-12">
 				<ul
 					data-testid="CartProductList"
 					role="list"
@@ -76,7 +76,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm font-bold">Qty: {item.quantity}</div>
-									<DeleteLineButton checkoutId={checkoutId} lineId={item.id} />
+									<DeleteLineForm checkoutId={checkoutId} lineId={item.id} />
 								</div>
 							</div>
 						</li>
@@ -103,7 +103,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 						/>
 					</div>
 				</div>
-			</form>
+			</div>
 		</section>
 	);
 }
