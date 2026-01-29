@@ -3,13 +3,14 @@ import { executeGraphQL } from "@/lib/graphql";
 import { LoginForm } from "@/ui/components/LoginForm";
 import { OrderListItem } from "@/ui/components/OrderListItem";
 
-export default async function OrderPage() {
+export default async function OrderPage(props: { params: { channel: string } }) {
+	const { channel } = props.params;
 	const { me: user } = await executeGraphQL(CurrentUserOrderListDocument, {
 		cache: "no-cache",
 	});
 
 	if (!user) {
-		return <LoginForm />;
+		return <LoginForm channel={channel} />;
 	}
 
 	const orders = user.orders?.edges || [];

@@ -78,8 +78,15 @@ function useAlerts(globalScope?: any): any {
 
 	const showErrors = useCallback(
 		(errors: ApiErrors<any>, scope: CheckoutScope = globalScope) =>
-			getParsedApiErrors(errors).forEach((error) => showDefaultAlert({ ...error, scope } as AlertErrorData)),
-		[getParsedApiErrors, showDefaultAlert, globalScope],
+			getParsedApiErrors(errors).forEach(({ message, ...error }) => {
+				if (message) {
+					showAlert({ message });
+					return;
+				}
+
+				showDefaultAlert({ ...error, scope } as AlertErrorData);
+			}),
+		[getParsedApiErrors, showAlert, showDefaultAlert, globalScope],
 	);
 
 	const showCustomErrors = useCallback(

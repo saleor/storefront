@@ -76,7 +76,6 @@ export const useAutoSaveAddressForm = ({
 
 	const onBlur: BlurHandler = (event) => {
 		handleBlur(event);
-		void partialSubmit();
 	};
 
 	return { ...form, handleChange: onChange, handleBlur: onBlur, handleSubmit: partialSubmit };

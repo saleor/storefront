@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC, MouseEventHandler } from "react";
 import { Button } from "@/checkout/components/Button";
 import { PasswordInput } from "@/checkout/components/PasswordInput";
 import { TextInput } from "@/checkout/components/TextInput";
@@ -61,6 +61,16 @@ export const SignIn: FC<SignInProps> = ({
 		},
 	});
 
+	const handlePasswordResetClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+		event.preventDefault();
+
+		if (isSubmitting) {
+			return;
+		}
+
+		onPasswordResetRequest();
+	};
+
 	return (
 		<SignInFormContainer
 			title="Sign in"
@@ -87,7 +97,8 @@ export const SignIn: FC<SignInProps> = ({
 							variant="tertiary"
 							label={passwordResetSent ? "Resend?" : "Forgot password?"}
 							className="ml-1 mr-4"
-							onClick={(e) => (isSubmitting ? e.preventDefault() : onPasswordResetRequest)}
+							type="button"
+							onClick={handlePasswordResetClick}
 						/>
 						<Button
 							type="submit"
