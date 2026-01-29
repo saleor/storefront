@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { ChannelsListDocument } from "@/gql/graphql";
 import { DefaultChannelSlug } from "@/app/config";
 
@@ -19,15 +19,14 @@ export const generateStaticParams = async () => {
 
 	// 2. Optionally discover additional channels via API (for multi-channel setups)
 	if (process.env.SALEOR_APP_TOKEN) {
-		try {
-			const { channels: apiChannels } = await executeGraphQL(ChannelsListDocument, {
-				withAuth: false,
-				headers: {
-					Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-				},
-			});
+		const result = await executePublicGraphQL(ChannelsListDocument, {
+			headers: {
+				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+			},
+		});
 
-			const activeChannelSlugs = apiChannels?.filter((ch) => ch.isActive).map((ch) => ch.slug) ?? [];
+		if (result.ok && result.data.channels) {
+			const activeChannelSlugs = result.data.channels.filter((ch) => ch.isActive).map((ch) => ch.slug);
 
 			// Add channels not already in the list
 			for (const slug of activeChannelSlugs) {
@@ -35,8 +34,8 @@ export const generateStaticParams = async () => {
 					channels.push(slug);
 				}
 			}
-		} catch (error) {
-			console.warn("[Channels] Failed to fetch additional channels from API:", error);
+		} else if (!result.ok) {
+			console.warn("[Channels] Failed to fetch additional channels from API:", result.error.message);
 		}
 	}
 

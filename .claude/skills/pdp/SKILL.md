@@ -185,12 +185,13 @@ async function getProductData(slug: string, channel: string) {
 	cacheLife("minutes"); // 5 minute cache
 	cacheTag(`product:${slug}`); // For on-demand revalidation
 
-	return await executeGraphQL(ProductDetailsDocument, {
+	return await executePublicGraphQL(ProductDetailsDocument, {
 		variables: { slug, channel },
-		withAuth: false, // Public data - important for caching
 	});
 }
 ```
+
+**Note:** `executePublicGraphQL` fetches only publicly visible data, which is safe inside `"use cache"` functions. For user-specific queries, use `executeAuthenticatedGraphQL` (but NOT inside `"use cache"`).
 
 ### What's Cached vs Dynamic
 

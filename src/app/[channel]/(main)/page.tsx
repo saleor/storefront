@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/product-list";
 
 export const metadata = {
@@ -19,24 +19,23 @@ async function getFeaturedProducts(channel: string) {
 	cacheLife("minutes"); // 5 minute cache
 	cacheTag("collection:featured-products"); // Tag for on-demand revalidation
 
-	try {
-		const data = await executeGraphQL(ProductListByCollectionDocument, {
-			variables: {
-				slug: "featured-products",
-				channel,
-				first: 12,
-			},
-			revalidate: 300,
-			withAuth: false, // Public data - no cookies in cache scope
-		});
+	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
+		variables: {
+			slug: "featured-products",
+			channel,
+			first: 12,
+		},
+		revalidate: 300,
+	});
 
-		return data.collection?.products?.edges.map(({ node }) => node) ?? null;
-	} catch (error) {
+	if (!result.ok) {
 		// During build, if the API is unreachable, return null instead of failing.
 		// The page will be populated on-demand when a user visits.
-		console.warn(`[Homepage] Failed to fetch featured products for ${channel}:`, error);
+		console.warn(`[Homepage] Failed to fetch featured products for ${channel}:`, result.error.message);
 		return null;
 	}
+
+	return result.data.collection?.products?.edges.map(({ node }) => node) ?? null;
 }
 
 export default async function Page(props: { params: Promise<{ channel: string }> }) {

@@ -6,7 +6,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
@@ -33,23 +33,22 @@ async function getProductData(slug: string, channel: string) {
 	cacheLife("minutes"); // 5 minute cache
 	cacheTag(`product:${slug}`); // Tag for on-demand revalidation
 
-	try {
-		const { product } = await executeGraphQL(ProductDetailsDocument, {
-			variables: {
-				slug: decodeURIComponent(slug),
-				channel,
-			},
-			revalidate: 300,
-			withAuth: false, // Public data - no cookies in cache scope
-		});
+	const result = await executePublicGraphQL(ProductDetailsDocument, {
+		variables: {
+			slug: decodeURIComponent(slug),
+			channel,
+		},
+		revalidate: 300,
+	});
 
-		return product;
-	} catch (error) {
+	if (!result.ok) {
 		// During build, if the API is unreachable, return null instead of failing.
 		// The page will be populated on-demand when a user visits.
-		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, error);
+		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, result.error.message);
 		return null;
 	}
+
+	return result.data.product;
 }
 
 // ============================================================================

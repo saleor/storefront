@@ -3,7 +3,7 @@
 import type React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Badge } from "@/ui/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -46,12 +46,6 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 		e.preventDefault();
 		e.stopPropagation();
 		product.onQuickAdd?.(product.id);
-	};
-
-	const handleWishlist = (e: React.MouseEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-		// TODO: Implement wishlist functionality
 	};
 
 	const formatPrice = (amount: number, currency: string) => {
@@ -99,18 +93,6 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 							{product.badge}
 						</Badge>
 					)}
-
-					{/* Wishlist Button - desktop only to avoid double-tap on touch */}
-					<Button
-						variant="secondary"
-						size="icon"
-						className="absolute right-3 top-3 hidden h-8 w-8 opacity-0 transition-opacity md:block md:group-hover:opacity-100"
-						onClick={handleWishlist}
-						type="button"
-					>
-						<Heart className="h-4 w-4" />
-						<span className="sr-only">Add to wishlist</span>
-					</Button>
 
 					{/* Quick Add Overlay - desktop only to avoid double-tap on touch */}
 					{canQuickAdd && (

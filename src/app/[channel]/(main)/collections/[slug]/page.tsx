@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
@@ -19,13 +19,17 @@ async function getCollectionData(slug: string, channel: string) {
 	cacheLife("minutes"); // 5 minute cache
 	cacheTag(`collection:${slug}`); // Tag for on-demand revalidation
 
-	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
+	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: { slug, channel, first: 1 },
 		revalidate: 300,
-		withAuth: false, // Public data - no cookies in cache scope
 	});
 
-	return collection;
+	if (!result.ok) {
+		console.error(`[getCollectionData] Failed to fetch collection ${slug}:`, result.error.message);
+		return null;
+	}
+
+	return result.data.collection;
 }
 
 type PageProps = {
@@ -106,7 +110,7 @@ async function CollectionProducts({
 	const sortBy = buildSortVariables(searchParams.sort);
 	const filter = buildFilterVariables({ priceRange: searchParams.price });
 
-	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
+	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: {
 			slug: params.slug,
 			channel: params.channel,
@@ -115,20 +119,20 @@ async function CollectionProducts({
 			filter,
 		},
 		revalidate: 300,
-		withAuth: false, // Public data - no user cookies needed
 	});
 
-	if (!collection?.products) {
+	const products = result.ok ? result.data.collection?.products : null;
+	if (!products) {
 		notFound();
 	}
 
-	const productCards = collection.products.edges.map((e) => transformToProductCard(e.node, params.channel));
+	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
 
 	return (
 		<CollectionPageClient
 			products={productCards}
-			pageInfo={collection.products.pageInfo}
-			totalCount={collection.products.totalCount ?? productCards.length}
+			pageInfo={products.pageInfo}
+			totalCount={products.totalCount ?? productCards.length}
 		/>
 	);
 }

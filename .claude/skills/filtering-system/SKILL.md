@@ -54,7 +54,7 @@ const filter = buildFilterVariables({
 });
 
 // Pass to GraphQL query
-const { products } = await executeGraphQL(ProductListDocument, {
+const { products } = await executePublicGraphQL(ProductListDocument, {
 	variables: { channel, filter },
 });
 ```

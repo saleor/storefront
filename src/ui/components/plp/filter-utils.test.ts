@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 
 // Mock the graphql module to avoid server-only imports
 vi.mock("@/lib/graphql", () => ({
-	executeGraphQL: vi.fn(),
+	executePublicGraphQL: vi.fn(),
 }));
 
 import {

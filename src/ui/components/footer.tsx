@@ -3,7 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { LinkWithChannel } from "../atoms/link-with-channel";
 import { ChannelSelect } from "./channel-select";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
 
@@ -33,16 +33,13 @@ async function getChannels() {
 		return null;
 	}
 
-	try {
-		return await executeGraphQL(ChannelsListDocument, {
-			withAuth: false,
-			headers: {
-				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-			},
-		});
-	} catch {
-		return null;
-	}
+	const result = await executePublicGraphQL(ChannelsListDocument, {
+		headers: {
+			Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+		},
+	});
+
+	return result.ok ? result.data : null;
 }
 
 /** Cached footer menu */
@@ -51,15 +48,12 @@ async function getFooterMenu(channel: string) {
 	cacheLife("hours"); // Cache for 1 hour
 	cacheTag("footer-menu");
 
-	try {
-		return await executeGraphQL(MenuGetBySlugDocument, {
-			variables: { slug: "footer", channel },
-			revalidate: 60 * 60 * 24,
-			withAuth: false,
-		});
-	} catch {
-		return null;
-	}
+	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
+		variables: { slug: "footer", channel },
+		revalidate: 60 * 60 * 24,
+	});
+
+	return result.ok ? result.data : null;
 }
 
 export async function Footer({ channel }: { channel: string }) {

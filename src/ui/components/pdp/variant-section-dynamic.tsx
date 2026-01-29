@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { getDiscountInfo } from "@/lib/pricing";
 import { CheckoutAddLineDocument, type ProductDetailsQuery } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
 
 import { AddToCart } from "./add-to-cart";
@@ -91,13 +91,18 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 
 			await Checkout.saveIdToCookie(channel, checkout.id);
 
-			await executeGraphQL(CheckoutAddLineDocument, {
+			const addResult = await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
 				variables: {
 					id: checkout.id,
 					productVariantId: decodeURIComponent(selectedVariantID),
 				},
 				cache: "no-cache",
 			});
+
+			if (!addResult.ok) {
+				console.error("Add to cart failed:", addResult.error.message);
+				return;
+			}
 
 			revalidatePath("/cart");
 		} catch (error) {

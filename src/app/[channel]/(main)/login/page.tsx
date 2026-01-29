@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Loader } from "@/ui/atoms/loader";
 import { LoginForm } from "@/ui/components/login-form";
-import { executeGraphQL } from "@/lib/graphql";
+import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CurrentUserDocument } from "@/gql/graphql";
 
 export const metadata = {
@@ -40,12 +40,12 @@ async function LoginContent({ params: paramsPromise }: { params: Promise<{ chann
 
 	// Only check auth if we have cookies (runtime request with potential session)
 	if (hasCookies) {
-		const { me: user } = await executeGraphQL(CurrentUserDocument, {
+		const result = await executeAuthenticatedGraphQL(CurrentUserDocument, {
 			cache: "no-cache",
 		});
 
 		// Redirect logged-in users to home
-		if (user) {
+		if (result.ok && result.data.me) {
 			redirect(`/${channel}`);
 		}
 	}

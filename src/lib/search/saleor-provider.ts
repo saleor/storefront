@@ -5,7 +5,7 @@
  * Replace this with Typesense/Algolia/Meilisearch for production.
  */
 
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { SearchProductsDocument, OrderDirection, ProductOrderField } from "@/gql/graphql";
 import type { SearchProduct, SearchResult, SearchPagination } from "./types";
 import { localeConfig } from "@/config/locale";
@@ -33,7 +33,7 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 	// Build pagination - Saleor uses cursor-based pagination
 	const isBackward = direction === "backward" && cursor;
 
-	const { products } = await executeGraphQL(SearchProductsDocument, {
+	const result = await executePublicGraphQL(SearchProductsDocument, {
 		variables: {
 			search: query,
 			channel,
@@ -47,12 +47,14 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 		revalidate: 60,
 	});
 
-	if (!products) {
+	if (!result.ok || !result.data.products) {
 		return {
 			products: [],
 			pagination: { totalCount: 0 },
 		};
 	}
+
+	const products = result.data.products;
 
 	// Transform to common SearchProduct format
 	const searchProducts: SearchProduct[] = products.edges.map(({ node }) => ({

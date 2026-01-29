@@ -139,21 +139,28 @@ Default to Server Components. Only use `"use client"` when you need:
 
 ### 5. GraphQL Auth Defaults
 
-`executeGraphQL()` defaults to `withAuth: true` (attaches user cookies). For public data:
+Two explicit GraphQL helpers ensure you always know what data access level you're using:
 
 ```typescript
-// ✅ Public queries (menus, products, categories)
-await executeGraphQL(MenuDocument, {
+import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
+
+// ✅ Public queries (menus, products, categories) - no auth, only public data
+await executePublicGraphQL(MenuDocument, {
 	variables: { slug: "footer" },
-	withAuth: false, // Explicit: no user cookies
 });
 
-// ✅ User queries - handle expired tokens gracefully
+// ✅ User queries - requires session cookies
 try {
-	const { me } = await executeGraphQL(CurrentUserDocument, { cache: "no-cache" });
+	const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, { cache: "no-cache" });
 } catch {
 	// Expired token = not logged in
 }
+
+// ✅ Checkout/cart mutations - requires session cookies
+await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
+	variables: { id: checkoutId, productVariantId: variantId },
+	cache: "no-cache",
+});
 ```
 
 ---

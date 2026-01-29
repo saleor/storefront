@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
@@ -19,13 +19,17 @@ async function getCategoryData(slug: string, channel: string) {
 	cacheLife("minutes"); // 5 minute cache
 	cacheTag(`category:${slug}`); // Tag for on-demand revalidation
 
-	const { category } = await executeGraphQL(ProductListByCategoryDocument, {
+	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: { slug, channel, first: 1 },
 		revalidate: 300,
-		withAuth: false, // Public data - no cookies in cache scope
 	});
 
-	return category;
+	if (!result.ok) {
+		console.error(`[getCategoryData] Failed to fetch category ${slug}:`, result.error.message);
+		return null;
+	}
+
+	return result.data.category;
 }
 
 type PageProps = {
@@ -106,7 +110,7 @@ async function CategoryProducts({
 	const sortBy = buildSortVariables(searchParams.sort);
 	const filter = buildFilterVariables({ priceRange: searchParams.price });
 
-	const { category } = await executeGraphQL(ProductListByCategoryDocument, {
+	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: {
 			slug: params.slug,
 			channel: params.channel,
@@ -115,20 +119,20 @@ async function CategoryProducts({
 			filter,
 		},
 		revalidate: 300,
-		withAuth: false, // Public data - no user cookies needed
 	});
 
-	if (!category?.products) {
+	const products = result.ok ? result.data.category?.products : null;
+	if (!products) {
 		notFound();
 	}
 
-	const productCards = category.products.edges.map((e) => transformToProductCard(e.node, params.channel));
+	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
 
 	return (
 		<CategoryPageClient
 			products={productCards}
-			pageInfo={category.products.pageInfo}
-			totalCount={category.products.totalCount ?? productCards.length}
+			pageInfo={products.pageInfo}
+			totalCount={products.totalCount ?? productCards.length}
 		/>
 	);
 }

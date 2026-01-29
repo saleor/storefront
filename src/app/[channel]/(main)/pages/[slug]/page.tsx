@@ -3,17 +3,18 @@ import { type Metadata } from "next";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 import { PageGetBySlugDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 
 const parser = edjsHTML();
 
 export const generateMetadata = async (props: { params: Promise<{ slug: string }> }): Promise<Metadata> => {
 	const params = await props.params;
-	const { page } = await executeGraphQL(PageGetBySlugDocument, {
+	const result = await executePublicGraphQL(PageGetBySlugDocument, {
 		variables: { slug: params.slug },
 		revalidate: 60,
-		withAuth: false, // Public content
 	});
+
+	const page = result.ok ? result.data.page : null;
 
 	return {
 		title: `${page?.seoTitle || page?.title || "Page"} · Saleor Storefront example`,
@@ -23,15 +24,16 @@ export const generateMetadata = async (props: { params: Promise<{ slug: string }
 
 export default async function Page(props: { params: Promise<{ slug: string }> }) {
 	const params = await props.params;
-	const { page } = await executeGraphQL(PageGetBySlugDocument, {
+	const result = await executePublicGraphQL(PageGetBySlugDocument, {
 		variables: { slug: params.slug },
 		revalidate: 60,
-		withAuth: false, // Public content
 	});
 
-	if (!page) {
+	if (!result.ok || !result.data.page) {
 		notFound();
 	}
+
+	const page = result.data.page;
 
 	const { title, content } = page;
 

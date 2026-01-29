@@ -118,9 +118,8 @@ async function getProductData(slug: string, channel: string) {
 	cacheLife("minutes"); // 5 min default TTL
 	cacheTag(`product:${slug}`); // Tag for webhook invalidation
 
-	return executeGraphQL(ProductDetailsDocument, {
+	return executePublicGraphQL(ProductDetailsDocument, {
 		variables: { slug, channel },
-		withAuth: false, // Required: no cookies in cache scope
 	});
 }
 ```
@@ -167,19 +166,28 @@ Any component accessing runtime data must be wrapped in Suspense.
 </Suspense>
 ```
 
-### 2. `withAuth: false` for Public Data
+### 2. Public vs Authenticated Queries
 
-Inside `"use cache"` functions, you can't access cookies. Use `withAuth: false`:
+Two explicit GraphQL helpers:
+
+- `executePublicGraphQL` - Safe inside `"use cache"` (no cookies needed)
+- `executeAuthenticatedGraphQL` - NOT safe inside `"use cache"` (requires cookies)
 
 ```typescript
+import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
+
+// ✅ Public data - safe inside "use cache"
 async function getProductData(slug: string, channel: string) {
 	"use cache";
-	// ...
-	return executeGraphQL(ProductDetailsDocument, {
+	return executePublicGraphQL(ProductDetailsDocument, {
 		variables: { slug, channel },
-		withAuth: false, // ← Required for cached functions
 	});
 }
+
+// ✅ User data - NOT inside "use cache" (requires cookies)
+const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, {
+	cache: "no-cache",
+});
 ```
 
 ### 3. Don't Use `searchParams` Inside `"use cache"`
@@ -238,24 +246,29 @@ This keeps `<h1>` in the static shell for SEO while allowing dynamic content to 
 
 ### 5. GraphQL Auth Defaults
 
-`executeGraphQL()` defaults to `withAuth: true`, which attaches user cookies. This causes issues when:
+Two explicit GraphQL helpers ensure you always know what data access level you're using:
 
-- Tokens expire → "Signature has expired" errors
-- Inside `"use cache"` → Cookies aren't available
+- `executePublicGraphQL` - Public queries only (products, menus, categories)
+- `executeAuthenticatedGraphQL` - Requires user session cookies (checkout, user data)
 
-**Patterns:**
+This ensures:
+
+- Only publicly visible products are fetched
+- No user cookies in cache scope (safe for `"use cache"`)
+- No "Signature has expired" errors on public pages
 
 ```typescript
-// ✅ Public data (menus, products) - explicitly disable auth
-const menu = await executeGraphQL(MenuDocument, {
+import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
+
+// ✅ Public data (menus, products) - no auth, only public data
+const menu = await executePublicGraphQL(MenuDocument, {
 	variables: { slug: "footer" },
-	withAuth: false, // No user cookies needed
 });
 
-// ✅ User data - handle auth errors gracefully
+// ✅ User data - requires session cookies
 let user = null;
 try {
-	const result = await executeGraphQL(CurrentUserDocument, {
+	const result = await executeAuthenticatedGraphQL(CurrentUserDocument, {
 		cache: "no-cache",
 	});
 	user = result.me;
@@ -263,9 +276,14 @@ try {
 	// Expired token = treat as not logged in
 }
 
-// ✅ App token (server-side only)
-const channels = await executeGraphQL(ChannelsListDocument, {
-	withAuth: false,
+// ✅ Checkout/cart - requires session cookies
+await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
+	variables: { id: checkoutId, productVariantId: variantId },
+	cache: "no-cache",
+});
+
+// ✅ App token (server-side only) - explicit header
+const channels = await executePublicGraphQL(ChannelsListDocument, {
 	headers: {
 		Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
 	},
@@ -364,7 +382,7 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ❌ **Don't use `cache: "no-cache"` for display pages** - Destroys performance  
 ❌ **Don't skip webhook setup in production** - Users see stale prices  
 ❌ **Don't access cookies/searchParams inside `"use cache"`** - Will error  
-❌ **Don't forget `withAuth: false`** - Cookies in cache scope will break  
+❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** - Requires cookies  
 ❌ **Don't expose `REVALIDATE_SECRET`** - Keep it server-side only
 
 ---
@@ -408,7 +426,7 @@ revalidateTag(`product:${slug}`); // Remove second argument
 
 - **Suspense boundaries** - Still useful for loading states
 - **CSS order layout** - Pure CSS, no impact
-- **`withAuth: false`** - Good practice regardless
+- **`executeAuthenticatedGraphQL`** - Good separation regardless
 - **ISR via `revalidate` option** - Works as fallback
 
 ---

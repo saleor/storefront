@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { CurrentUserOrderListDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { LoginForm } from "@/ui/components/login-form";
 import { OrderListItem } from "@/ui/components/order-list-item";
 import { Loader } from "@/ui/atoms/loader";
@@ -35,14 +35,15 @@ async function OrdersContent() {
 		return <LoginForm />;
 	}
 
-	const { me: user } = await executeGraphQL(CurrentUserOrderListDocument, {
+	const result = await executeAuthenticatedGraphQL(CurrentUserOrderListDocument, {
 		cache: "no-cache",
 	});
 
-	if (!user) {
+	if (!result.ok || !result.data.me) {
 		return <LoginForm />;
 	}
 
+	const user = result.data.me;
 	const orders = user.orders?.edges || [];
 
 	return (

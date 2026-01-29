@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { executeRawGraphQL, getUserMessage } from "@/lib/graphql";
 
 const REQUEST_PASSWORD_RESET_MUTATION = `
   mutation RequestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
@@ -18,73 +19,45 @@ interface ResetPasswordRequest {
 	redirectUrl: string;
 }
 
-interface RequestPasswordResetResponse {
-	data?: {
-		requestPasswordReset?: {
-			errors?: Array<{ field?: string; message: string; code?: string }>;
-		};
+interface RequestPasswordResetResult {
+	requestPasswordReset?: {
+		errors?: Array<{ field?: string | null; message: string; code?: string | null }>;
 	};
-	errors?: Array<{ message: string }>;
 }
 
 export async function POST(request: NextRequest) {
-	try {
-		const body = (await request.json()) as ResetPasswordRequest;
-		const { email, channel, redirectUrl } = body;
+	const body = (await request.json()) as ResetPasswordRequest;
+	const { email, channel, redirectUrl } = body;
 
-		if (!email || !channel || !redirectUrl) {
-			return NextResponse.json(
-				{ errors: [{ message: "Email, channel, and redirectUrl are required", code: "REQUIRED" }] },
-				{ status: 400 },
-			);
-		}
-
-		const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
-		if (!saleorApiUrl) {
-			return NextResponse.json(
-				{ errors: [{ message: "Server configuration error", code: "SERVER_ERROR" }] },
-				{ status: 500 },
-			);
-		}
-
-		const response = await fetch(saleorApiUrl, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				query: REQUEST_PASSWORD_RESET_MUTATION,
-				variables: { email, channel, redirectUrl },
-			}),
-		});
-
-		const data = (await response.json()) as RequestPasswordResetResponse;
-
-		if (data.errors) {
-			// Log only that an error occurred, not the full error (may contain PII)
-			console.error("GraphQL error during password reset");
-			return NextResponse.json(
-				{ errors: data.errors.map((e) => ({ message: e.message, code: "GRAPHQL_ERROR" })) },
-				{ status: 400 },
-			);
-		}
-
-		const result = data.data?.requestPasswordReset;
-
-		if (result?.errors?.length) {
-			// Log generic failure without including potentially sensitive error details
-			console.error("Password reset failed with validation errors");
-			return NextResponse.json({ errors: result.errors }, { status: 400 });
-		}
-
-		// Success - always return success to prevent email enumeration
-		return NextResponse.json({ success: true });
-	} catch (error) {
-		// Log error type only, not full details (may contain sensitive request data)
-		console.error("Password reset error:", error instanceof Error ? error.name : "Unknown");
+	if (!email || !channel || !redirectUrl) {
 		return NextResponse.json(
-			{ errors: [{ message: "An unexpected error occurred", code: "SERVER_ERROR" }] },
-			{ status: 500 },
+			{ errors: [{ message: "Email, channel, and redirectUrl are required", code: "REQUIRED" }] },
+			{ status: 400 },
 		);
 	}
+
+	const result = await executeRawGraphQL<RequestPasswordResetResult>({
+		query: REQUEST_PASSWORD_RESET_MUTATION,
+		variables: { email, channel, redirectUrl },
+	});
+
+	// Network or GraphQL error
+	if (!result.ok) {
+		console.error("Password reset error:", result.error.type);
+		return NextResponse.json(
+			{ errors: [{ message: getUserMessage(result.error), code: result.error.type.toUpperCase() }] },
+			{ status: result.error.type === "network" ? 503 : 400 },
+		);
+	}
+
+	const requestPasswordReset = result.data.requestPasswordReset;
+
+	// Saleor validation errors - log but don't expose to prevent email enumeration
+	if (requestPasswordReset?.errors?.length) {
+		console.error("Password reset validation errors");
+		// Still return success to prevent email enumeration
+	}
+
+	// Always return success to prevent email enumeration
+	return NextResponse.json({ success: true });
 }

@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { UserIcon } from "lucide-react";
 import { UserMenu } from "./user-menu";
 import { CurrentUserDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
 export async function UserMenuContainer() {
@@ -18,14 +18,11 @@ export async function UserMenuContainer() {
 	// Only fetch user if we have cookies (runtime request with potential session)
 	let user = null;
 	if (hasCookies) {
-		try {
-			const result = await executeGraphQL(CurrentUserDocument, {
-				cache: "no-cache",
-			});
-			user = result.me;
-		} catch {
-			// Auth failed (expired signature, etc.) - treat as not logged in
-		}
+		const result = await executeAuthenticatedGraphQL(CurrentUserDocument, {
+			cache: "no-cache",
+		});
+		// Auth failed or expired = treat as not logged in
+		user = result.ok ? result.data.me : null;
 	}
 
 	if (user) {

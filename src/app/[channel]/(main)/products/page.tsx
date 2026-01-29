@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ProductListPaginatedDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
@@ -79,7 +79,7 @@ async function ProductsContent({
 		categoryIds,
 	});
 
-	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
+	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
 		variables: {
 			...paginationVariables,
 			channel: params.channel,
@@ -87,13 +87,13 @@ async function ProductsContent({
 			filter,
 		},
 		revalidate: 300,
-		withAuth: false, // Public data - no user cookies needed
 	});
 
-	if (!products) {
+	if (!result.ok || !result.data.products) {
 		notFound();
 	}
 
+	const products = result.data.products;
 	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
 
 	// Build resolved categories array for the client (for active filter display)

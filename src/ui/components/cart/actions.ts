@@ -1,12 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { executeGraphQL } from "@/lib/graphql";
+import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
 export async function deleteCartLine(checkoutId: string, lineId: string) {
-	const result = await executeGraphQL(CheckoutDeleteLinesDocument, {
+	const result = await executeAuthenticatedGraphQL(CheckoutDeleteLinesDocument, {
 		variables: {
 			checkoutId,
 			lineIds: [lineId],
@@ -15,9 +15,11 @@ export async function deleteCartLine(checkoutId: string, lineId: string) {
 	});
 
 	// If cart is now empty, clear the checkout cookie to start fresh next time
-	const checkout = result.checkoutLinesDelete?.checkout;
-	if (checkout && checkout.lines.length === 0) {
-		await Checkout.clearCheckoutCookie(checkout.channel.slug);
+	if (result.ok) {
+		const checkout = result.data.checkoutLinesDelete?.checkout;
+		if (checkout && checkout.lines.length === 0) {
+			await Checkout.clearCheckoutCookie(checkout.channel.slug);
+		}
 	}
 
 	revalidatePath("/cart");
@@ -29,7 +31,7 @@ export async function updateCartLineQuantity(checkoutId: string, lineId: string,
 		return deleteCartLine(checkoutId, lineId);
 	}
 
-	await executeGraphQL(CheckoutLinesUpdateDocument, {
+	await executeAuthenticatedGraphQL(CheckoutLinesUpdateDocument, {
 		variables: {
 			checkoutId,
 			lines: [{ lineId, quantity }],

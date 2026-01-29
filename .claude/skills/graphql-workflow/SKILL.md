@@ -63,9 +63,9 @@ This regenerates TypeScript types. **Always run the appropriate command after an
 
 ```typescript
 import { ProductDetailsDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 
-const { product } = await executeGraphQL(ProductDetailsDocument, {
+const { product } = await executePublicGraphQL(ProductDetailsDocument, {
 	variables: { slug, channel },
 	revalidate: 60,
 });

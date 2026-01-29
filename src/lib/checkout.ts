@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { CheckoutCreateDocument, CheckoutFindDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 
 export async function getIdFromCookies(channel: string) {
 	try {
@@ -29,29 +29,33 @@ export async function clearCheckoutCookie(channel: string) {
 }
 
 export async function find(checkoutId: string) {
-	try {
-		const { checkout } = checkoutId
-			? await executeGraphQL(CheckoutFindDocument, {
-					variables: {
-						id: checkoutId,
-					},
-					cache: "no-cache",
-				})
-			: { checkout: null };
-
-		return checkout;
-	} catch {
-		// we ignore invalid ID or checkout not found
+	if (!checkoutId) {
+		return null;
 	}
+
+	const result = await executeAuthenticatedGraphQL(CheckoutFindDocument, {
+		variables: { id: checkoutId },
+		cache: "no-cache",
+	});
+
+	// Return null on error or if checkout not found
+	return result.ok ? result.data.checkout : null;
 }
 
 export async function findOrCreate({ channel, checkoutId }: { checkoutId?: string; channel: string }) {
 	if (!checkoutId) {
-		return (await create({ channel })).checkoutCreate?.checkout;
+		const result = await create({ channel });
+		return result.ok ? result.data.checkoutCreate?.checkout : null;
 	}
+
 	const checkout = await find(checkoutId);
-	return checkout || (await create({ channel })).checkoutCreate?.checkout;
+	if (checkout) {
+		return checkout;
+	}
+
+	const result = await create({ channel });
+	return result.ok ? result.data.checkoutCreate?.checkout : null;
 }
 
 export const create = ({ channel }: { channel: string }) =>
-	executeGraphQL(CheckoutCreateDocument, { cache: "no-cache", variables: { channel } });
+	executeAuthenticatedGraphQL(CheckoutCreateDocument, { cache: "no-cache", variables: { channel } });

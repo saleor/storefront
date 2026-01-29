@@ -1,13 +1,13 @@
 import "server-only";
 
 import { CategoriesBySlugDocument } from "@/gql/graphql";
-import { executeGraphQL } from "@/lib/graphql";
+import { executePublicGraphQL } from "@/lib/graphql";
 
 /**
  * Resolve category slugs to IDs via Saleor API.
  * Cached for 1 hour.
  *
- * Server-only: Uses executeGraphQL which requires server context.
+ * Server-only: Uses executePublicGraphQL which requires server context.
  */
 export async function resolveCategorySlugsToIds(
 	slugs: string[],
@@ -15,16 +15,17 @@ export async function resolveCategorySlugsToIds(
 	const result = new Map<string, { id: string; name: string }>();
 	if (slugs.length === 0) return result;
 
-	try {
-		const { categories } = await executeGraphQL(CategoriesBySlugDocument, {
-			variables: { slugs, first: slugs.length },
-			revalidate: 3600,
-		});
-		categories?.edges?.forEach(({ node }) => {
+	const queryResult = await executePublicGraphQL(CategoriesBySlugDocument, {
+		variables: { slugs, first: slugs.length },
+		revalidate: 3600,
+	});
+
+	if (queryResult.ok && queryResult.data.categories?.edges) {
+		queryResult.data.categories.edges.forEach(({ node }) => {
 			result.set(node.slug, { id: node.id, name: node.name });
 		});
-	} catch (error) {
-		console.error("[filter-utils] Failed to resolve category slugs:", error);
+	} else if (!queryResult.ok) {
+		console.error("[filter-utils] Failed to resolve category slugs:", queryResult.error.message);
 	}
 
 	return result;
