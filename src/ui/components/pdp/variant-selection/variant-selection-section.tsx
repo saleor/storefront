@@ -14,6 +14,7 @@ import {
 	getUnavailableAttributeInfo,
 	type SaleorVariant,
 } from "./utils";
+import { VariantAttributeBadges, extractOptionalAttributes } from "./optional-attributes";
 
 /**
  * Main container for variant selection with multiple attributes.
@@ -77,6 +78,19 @@ export function VariantSelectionSection({
 
 		return selections;
 	}, [attributeGroups, searchParams, selectedVariantId, variants]);
+
+	// Find currently matching variant and extract its non-selection attributes
+	const currentVariantId = useMemo(() => {
+		// First check URL param, then try to find from selections
+		const urlVariant = searchParams.get("variant");
+		if (urlVariant) return urlVariant;
+		return findMatchingVariant(variants as SaleorVariant[], currentSelections);
+	}, [searchParams, variants, currentSelections]);
+
+	const optionalAttributes = useMemo(
+		() => extractOptionalAttributes(variants, currentVariantId),
+		[variants, currentVariantId],
+	);
 
 	// Handle selection change with smart adjustment
 	const handleSelect = useCallback(
@@ -195,6 +209,9 @@ export function VariantSelectionSection({
 					/>
 				);
 			})}
+
+			{/* Non-selection attributes (informational badges) */}
+			<VariantAttributeBadges attributes={optionalAttributes} />
 		</div>
 	);
 }

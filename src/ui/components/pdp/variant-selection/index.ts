@@ -46,6 +46,7 @@
 export { VariantSelectionSection } from "./variant-selection-section";
 export { VariantSelector } from "./variant-selector";
 export { VariantNameSelector } from "./variant-name-selector";
+export { VariantAttributeBadges, OptionalAttributes, extractOptionalAttributes } from "./optional-attributes";
 
 // Option renderers (for custom compositions)
 export { ColorSwatchOption, ButtonOption, SizeButtonOption, TextOption, defaultRenderers } from "./renderers";
