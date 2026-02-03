@@ -13,6 +13,7 @@
 		"predev": "pnpm run generate:all",
 		"prebuild": "pnpm run generate:all",
 		"lint": "eslint",
+		"lint:fix": "eslint --fix",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
 		"generate:checkout": "graphql-codegen --config src/checkout/graphql/codegen.ts",
 		"generate:all": "pnpm run generate && pnpm run generate:checkout",
