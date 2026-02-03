@@ -34,16 +34,6 @@ interface RateLimitEntry {
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
-// Clean up old entries every minute
-setInterval(() => {
-	const now = Date.now();
-	for (const [key, entry] of rateLimitStore.entries()) {
-		if (entry.resetTime < now) {
-			rateLimitStore.delete(key);
-		}
-	}
-}, RATE_LIMIT_WINDOW_MS);
-
 function checkRateLimit(identifier: string): { allowed: boolean; remaining: number; resetIn: number } {
 	const now = Date.now();
 	const entry = rateLimitStore.get(identifier);
