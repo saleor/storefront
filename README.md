@@ -260,6 +260,17 @@ The design token system uses CSS custom properties—swap the entire color palet
 
 ---
 
+## Next Steps
+
+Features planned for future development:
+
+- **Filtering logic iteration.** Fetching attributes from API for dynamic product filters.
+- **Customer Profile.** Implementing new Past Orders and Address Book for signed-in customers.
+- **Paper App.** Iteration on the revalidation logic and supported webhooks, providing a _Preview in storefront_ feature in Saleor Dashboard.
+- **Opinionated model for standard content.** Moving currently hardcoded stuff like Credibility or Free checkout information to API models.
+
+---
+
 ## License
 
 [OSSasy](./LICENSE) — use it, modify it, ship it. Build your storefront, run your business.
