@@ -89,9 +89,9 @@
 			"brace-expansion@>=2": ">=2.0.2"
 		}
 	},
-	"packageManager": "pnpm@9.6.0",
+	"packageManager": "pnpm@10.28.1",
 	"engines": {
 		"pnpm": ">=9.4.0",
-		"node": ">=18"
+		"node": ">=20 <21"
 	}
 }
