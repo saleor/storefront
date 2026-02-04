@@ -273,7 +273,7 @@ Features planned for future development:
 
 ## License
 
-[OSSasy](./LICENSE) — use it, modify it, ship it. Build your storefront, run your business.
+[FSL-1.1-ALv2](./LICENSE) (Functional Source License, Version 1.1, ALv2 Future License) — use it, modify it, ship it. Build your storefront, run your business. The license converts to Apache 2.0 after two years.
 
 Want to offer it as a managed service? [Let's talk](https://saleor.io/contact).
 
