@@ -7,7 +7,7 @@
 <div align="center">
 <img width="180" height="180" alt="apple-touch-icon-dark" src="https://github.com/user-attachments/assets/5327c1d3-86eb-4e5b-811a-81e8a5561d19" />
   <h1>Paper</h1>
-  <p>A minimal, production-ready storefront template for <a href="https://github.com/saleor/saleor">Saleor</a>.<br/>Clean as a blank page—and unlike most templates, it's not just for screenshots.</p>
+  <p>A minimal, production-ready storefront template for <a href="https://github.com/saleor/saleor">Saleor</a>.<br/>Clean as a blank page — built to ship.</p>
 </div>
 
 <br/>
@@ -33,9 +33,9 @@
 
 **Ship faster, customize everything.** Paper is a new release—expect some rough edges—but every component is built with real-world e-commerce in mind. This is a foundation you can actually build on.
 
-### 🛒 Checkout That Actually Works
+### 🛒 Open Checkout
 
-The checkout is where most storefronts fall apart. Paper's doesn't.
+The checkout is where most storefronts fall apart or fall short. Paper's doesn't. We aim to provide open UI components and full wiring around the whole process.
 
 - **Multi-step, mobile-first** — Each step is a focused form. No infinite scrolling on phones.
 - **Guest & authenticated** — Seamless flow for everyone. Logged-in users get address book and saved preferences.
