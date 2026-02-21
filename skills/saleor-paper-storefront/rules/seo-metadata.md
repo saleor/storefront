@@ -1,27 +1,13 @@
----
-name: seo-system
-description: Add page metadata, JSON-LD structured data, and OG images. Use when adding SEO to pages, implementing schema.org markup, configuring Open Graph/Twitter cards, or using dynamic OG image generation.
----
+# SEO & Metadata
 
-# SEO System
+Add page metadata, JSON-LD structured data, and OG images.
 
 > **Sources**:
 >
 > - [Next.js Metadata](https://nextjs.org/docs/app/building-your-application/optimizing/metadata) - Metadata API
 > - [Schema.org Product](https://schema.org/Product) - JSON-LD structured data format
 
-## When to Use
-
-Use this skill when:
-
-- Adding metadata to pages
-- Implementing JSON-LD structured data
-- Configuring Open Graph / Twitter cards
-- Working with dynamic OG images
-
-## Instructions
-
-### Configuration
+## Configuration
 
 All SEO settings are in `src/lib/seo/config.ts`:
 
@@ -37,7 +23,7 @@ export const seoConfig = {
 };
 ```
 
-### File Structure
+## File Structure
 
 ```
 src/lib/seo/
@@ -47,7 +33,7 @@ src/lib/seo/
 └── json-ld.ts    # Structured data helpers
 ```
 
-### Root Layout Metadata
+## Root Layout Metadata
 
 ```typescript
 // src/app/layout.tsx
@@ -55,7 +41,7 @@ import { rootMetadata } from "@/lib/seo";
 export const metadata = rootMetadata;
 ```
 
-### Page Metadata
+## Page Metadata
 
 ```typescript
 import { buildPageMetadata } from "@/lib/seo";
@@ -70,7 +56,7 @@ export async function generateMetadata() {
 }
 ```
 
-### Product JSON-LD
+## Product JSON-LD
 
 ```typescript
 import { buildProductJsonLd } from "@/lib/seo";
@@ -92,7 +78,7 @@ const jsonLd = buildProductJsonLd({
 )}
 ```
 
-### Dynamic OG Images
+## Dynamic OG Images
 
 The `/api/og` route generates branded images:
 

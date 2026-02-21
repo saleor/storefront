@@ -1,11 +1,6 @@
----
-name: channels
-description: Configure multi-channel and multi-currency support. Use when working with channel URLs, channel selector component, SALEOR_APP_TOKEN setup, or per-channel locale formatting.
----
-
 # Channels & Multi-Currency
 
-This storefront supports multiple Saleor channels, each with its own currency.
+Configure multi-channel and multi-currency support. This storefront supports multiple Saleor channels, each with its own currency.
 
 ## How Channels Work
 
@@ -35,11 +30,13 @@ SALEOR_APP_TOKEN=your-app-token
 
 ### Creating the App Token
 
+The `channels` query requires an authenticated app token. No specific permission is needed just to list channels.
+
 1. Open **Saleor Dashboard**
 2. Go to **Extensions → Add extension → "Provide details manually"**
 3. Fill in:
    - Name: `Storefront` (or any name)
-   - Permissions: **`MANAGE_CHANNELS`** (minimum required)
+   - Permissions: none required for channel listing
 4. Save and copy the generated token
 5. Add to `.env.local` as `SALEOR_APP_TOKEN`
 
@@ -65,21 +62,21 @@ Checkout gets channel from `checkout.channel.slug` (set when cart was created).
 ### Channel Selector
 
 ```
-src/ui/components/ChannelSelect.tsx   # The <select> component
-src/ui/components/Footer.tsx          # Where it's rendered
+src/ui/components/channel-select.tsx  # The <select> component
+src/ui/components/footer.tsx          # Where it's rendered
 ```
 
 Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` query.
 
 ## Key Files
 
-| File                                  | Purpose                              |
-| ------------------------------------- | ------------------------------------ |
-| `src/app/[channel]/layout.tsx`        | Generates static params for channels |
-| `src/ui/components/ChannelSelect.tsx` | Channel switcher dropdown            |
-| `src/ui/components/Footer.tsx`        | Renders channel selector             |
-| `src/graphql/ChannelsList.graphql`    | Query for fetching channels          |
-| `src/app/config.ts`                   | `DefaultChannelSlug` fallback        |
+| File                                   | Purpose                              |
+| -------------------------------------- | ------------------------------------ |
+| `src/app/[channel]/layout.tsx`         | Generates static params for channels |
+| `src/ui/components/channel-select.tsx` | Channel switcher dropdown            |
+| `src/ui/components/footer.tsx`         | Renders channel selector             |
+| `src/graphql/ChannelsList.graphql`     | Query for fetching channels          |
+| `src/app/config.ts`                    | `DefaultChannelSlug` fallback        |
 
 ## Locale Considerations
 

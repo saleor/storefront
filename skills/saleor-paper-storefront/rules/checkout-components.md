@@ -1,11 +1,8 @@
----
-name: checkout-architecture
-description: Reference for reusable checkout UI components. Use when working with SignInForm, AddressSelector, PaymentMethodSelector, or composing checkout step views.
----
+# Checkout Components
 
-# Checkout Components Skill
+Reusable checkout UI components for contact, address, and payment flows. Composing these components in checkout steps keeps the flow consistent and maintainable.
 
-Quick reference for reusable checkout components extracted during the architecture refactor.
+---
 
 ## Component Locations
 
@@ -14,7 +11,7 @@ src/checkout/components/
 ├── contact/              # Authentication & user display
 ├── shipping-address/     # Address selection & display
 ├── payment/              # Payment method & billing
-└── AddressForm/          # Form utilities (existing)
+└── address-form/         # Form utilities (existing)
 ```
 
 ## Contact Components

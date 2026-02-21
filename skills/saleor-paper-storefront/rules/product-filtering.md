@@ -1,24 +1,10 @@
----
-name: filtering-system
-description: Product list filtering and sorting architecture. Use when modifying filters, adding new filter types, working on category/collection pages, or understanding server-side vs client-side filtering.
----
+# Product Filtering
 
-# Product Filtering System
+Product list filtering and sorting architecture. Ensures correct server-side vs client-side filtering, category resolution, static price ranges, and filter UI behavior.
 
 > **Source**: [Saleor API - ProductFilterInput](https://docs.saleor.io/api-reference/products/inputs/product-filter-input) - Available server-side filter options
 
-## When to Use
-
-Use this skill when:
-
-- Modifying product list filtering or sorting
-- Adding new filter types
-- Working on category, collection, or products pages
-- Understanding server-side vs client-side filtering
-
-## Instructions
-
-### Filter Architecture
+## Filter Architecture
 
 | Filter         | Processing     | Why                                           |
 | -------------- | -------------- | --------------------------------------------- |
@@ -28,15 +14,15 @@ Use this skill when:
 | **Colors**     | ❌ Client-side | Saleor needs attribute IDs                    |
 | **Sizes**      | ❌ Client-side | Same as colors                                |
 
-### Key Files
+## Key Files
 
-| File                                         | Purpose                                |
-| -------------------------------------------- | -------------------------------------- |
-| `src/ui/components/plp/filter-utils.ts`      | All filter utilities (server + client) |
-| `src/ui/components/plp/FilterBar.tsx`        | Filter UI (dropdowns, mobile sheet)    |
-| `src/ui/components/plp/useProductFilters.ts` | Hook consolidating filter logic        |
+| File                                           | Purpose                                |
+| ---------------------------------------------- | -------------------------------------- |
+| `src/ui/components/plp/filter-utils.ts`        | All filter utilities (server + client) |
+| `src/ui/components/plp/filter-bar.tsx`         | Filter UI (dropdowns, mobile sheet)    |
+| `src/ui/components/plp/use-product-filters.ts` | Hook consolidating filter logic        |
 
-### Server-Side Filtering
+## Server-Side Filtering
 
 Category slugs in URL are resolved to IDs:
 
@@ -59,7 +45,7 @@ const { products } = await executePublicGraphQL(ProductListDocument, {
 });
 ```
 
-### Client-Side Filtering
+## Client-Side Filtering
 
 Colors and sizes are filtered after fetch:
 
@@ -76,13 +62,13 @@ const filtered = filterProducts(products, {
 });
 ```
 
-### Using the Hook
+## Using the Hook
 
 The `useProductFilters` hook consolidates all filter logic:
 
 ```tsx
 "use client";
-import { useProductFilters } from "@/ui/components/plp/useProductFilters";
+import { useProductFilters } from "@/ui/components/plp/use-product-filters";
 
 function ProductsClient({ products, resolvedCategories }) {
 	const {
@@ -110,7 +96,7 @@ function ProductsClient({ products, resolvedCategories }) {
 }
 ```
 
-### Static Price Ranges
+## Static Price Ranges
 
 Price ranges are static to avoid UI flicker when filtering:
 
