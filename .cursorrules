@@ -18,7 +18,7 @@ Two skill sources are available:
 | Checkout flow debugging | `checkout-management` |
 | Checkout UI components | `checkout-components` |
 | Creating/styling components | `ui-components` |
-| Channels & multi-currency | `ui-channels` |
+| Channels, fulfillment & stock | `ui-channels` |
 | SEO, metadata, OG images | `seo-metadata` |
 | Investigating Saleor API | `dev-investigation` |
 

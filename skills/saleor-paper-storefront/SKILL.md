@@ -62,7 +62,7 @@ Reference these guidelines when:
 ### 4. UI & Channels (MEDIUM)
 
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
-- `ui-channels` - Multi-channel URLs, SALEOR_APP_TOKEN setup, channel selector
+- `ui-channels` - Multi-channel URLs, fulfillment model, purchasability debugging, channel selector
 
 ### 5. SEO (MEDIUM)
 
