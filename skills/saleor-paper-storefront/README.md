@@ -1,13 +1,19 @@
 # Saleor Paper Storefront Skill
 
-Agent skill for building and maintaining a Saleor e-commerce storefront with Next.js, TypeScript, and Tailwind CSS.
+Project-specific agent skill for the Saleor Paper storefront built with Next.js 16, TypeScript, and Tailwind CSS.
+
+> **Depends on**: [`saleor-storefront`](https://github.com/saleor/agent-skills) for universal Saleor API patterns.
 
 ## Installation
 
 If working within this repo, the skill is already available in `skills/`. To install it in `.agents/skills/` for agent auto-discovery:
 
 ```shell
+# Install this project skill
 npx skills add . --skill saleor-paper-storefront
+
+# Install the universal Saleor skill (dependency)
+npx skills add saleor/agent-skills --skill saleor-storefront
 ```
 
 ## What's Included
@@ -50,9 +56,13 @@ saleor-paper-storefront/
 
 ## Related Skills
 
-This skill covers project-specific patterns. For generic React/Next.js best practices, install:
+This skill covers project-specific patterns. For broader knowledge:
 
 ```shell
+# Universal Saleor API patterns (required dependency)
+npx skills add saleor/agent-skills --skill saleor-storefront
+
+# Generic React/Next.js best practices
 npx skills add vercel-labs/agent-skills --skill react-best-practices
 npx skills add vercel-labs/agent-skills --skill composition-patterns
 npx skills add vercel-labs/agent-skills --skill web-design-guidelines
