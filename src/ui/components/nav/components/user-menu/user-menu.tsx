@@ -29,13 +29,26 @@ export function UserMenu({ user }: Props) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="focus:outline-hidden absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-neutral-200 bg-white py-1 text-start shadow-sm ring-1 ring-neutral-200 ring-opacity-5">
+				<Menu.Items className="focus:outline-hidden absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-neutral-200 bg-white text-start shadow-sm ring-1 ring-neutral-200 ring-opacity-5">
 					<UserInfo user={user} />
 					<div className="flex flex-col px-1 py-1">
 						<Menu.Item>
 							{({ active }) => (
 								<LinkWithChannel
-									href="/orders"
+									href="/account"
+									className={clsx(
+										active && "bg-neutral-100",
+										"block px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-700",
+									)}
+								>
+									My account
+								</LinkWithChannel>
+							)}
+						</Menu.Item>
+						<Menu.Item>
+							{({ active }) => (
+								<LinkWithChannel
+									href="/account/orders"
 									className={clsx(
 										active && "bg-neutral-100",
 										"block px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-700",
@@ -49,12 +62,12 @@ export function UserMenu({ user }: Props) {
 					<div className="flex flex-col px-1 py-1">
 						<Menu.Item>
 							{({ active }) => (
-								<form action={logout}>
+								<form action={logout} className="w-full">
 									<button
 										type="submit"
 										className={clsx(
 											active && "bg-neutral-100",
-											"block px-4 py-2 text-start text-sm font-medium text-neutral-500 hover:text-neutral-700",
+											"w-full px-4 py-2 text-start text-sm font-medium text-neutral-500 hover:text-neutral-700",
 										)}
 									>
 										Log Out

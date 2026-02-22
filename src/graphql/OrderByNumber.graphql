@@ -1,0 +1,87 @@
+fragment OrderFullDetails on Order {
+	id
+	number
+	created
+	status
+	statusDisplay
+	paymentStatus
+	isPaid
+	shippingAddress {
+		...AddressDetails
+	}
+	billingAddress {
+		...AddressDetails
+	}
+	subtotal {
+		gross {
+			amount
+			currency
+		}
+	}
+	shippingPrice {
+		gross {
+			amount
+			currency
+		}
+	}
+	total {
+		gross {
+			amount
+			currency
+		}
+		tax {
+			amount
+			currency
+		}
+	}
+	lines {
+		id
+		quantity
+		variant {
+			id
+			name
+			product {
+				id
+				name
+				slug
+				thumbnail {
+					url
+					alt
+				}
+			}
+			pricing {
+				price {
+					gross {
+						amount
+						currency
+					}
+				}
+			}
+		}
+	}
+	fulfillments {
+		id
+		status
+		created
+		trackingNumber
+		lines {
+			id
+			quantity
+			orderLine {
+				id
+			}
+		}
+	}
+}
+
+query OrderByNumber($first: Int) {
+	me {
+		orders(first: $first) {
+			edges {
+				node {
+					...OrderFullDetails
+				}
+			}
+		}
+	}
+}

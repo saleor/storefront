@@ -1,0 +1,12 @@
+mutation AccountUpdate($input: AccountInput!) {
+	accountUpdate(input: $input) {
+		user {
+			...UserDetails
+		}
+		errors {
+			field
+			message
+			code
+		}
+	}
+}

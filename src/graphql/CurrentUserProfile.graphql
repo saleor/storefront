@@ -1,0 +1,15 @@
+query CurrentUserProfile {
+	me {
+		...UserDetails
+		dateJoined
+		addresses {
+			...AddressDetails
+		}
+		defaultShippingAddress {
+			id
+		}
+		defaultBillingAddress {
+			id
+		}
+	}
+}

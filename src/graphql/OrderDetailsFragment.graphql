@@ -37,5 +37,7 @@ fragment OrderDetails on Order {
 		}
 		quantity
 	}
+	status
+	statusDisplay
 	paymentStatus
 }
