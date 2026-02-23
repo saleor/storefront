@@ -1,0 +1,9 @@
+mutation AccountSetDefaultAddress($id: ID!, $type: AddressTypeEnum!) {
+	accountSetDefaultAddress(id: $id, type: $type) {
+		errors {
+			field
+			message
+			code
+		}
+	}
+}

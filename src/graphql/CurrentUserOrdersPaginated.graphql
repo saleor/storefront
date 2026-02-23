@@ -1,0 +1,18 @@
+query CurrentUserOrdersPaginated($first: Int, $after: String) {
+	me {
+		...UserDetails
+		orders(first: $first, after: $after) {
+			edges {
+				node {
+					...OrderDetails
+				}
+				cursor
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+			totalCount
+		}
+	}
+}

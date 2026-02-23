@@ -1,22 +1,28 @@
 ---
 name: saleor-paper-storefront
 description: >
-  Saleor e-commerce storefront patterns for Next.js 16. Use when working with
-  product pages, checkout flow, GraphQL queries, caching, variant selection,
-  filtering, SEO, or any Saleor API integration. Covers architecture decisions,
-  data flow, and project-specific conventions.
+  Project-specific patterns for the Saleor Paper storefront built with Next.js 16,
+  TypeScript, and Tailwind CSS. Use when working with product pages, checkout flow,
+  caching, variant selection, filtering, SEO, or UI components. For universal Saleor
+  API patterns, see the saleor-storefront dependency.
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.0.0"
+  version: "1.1.0"
+dependencies:
+  - saleor/agent-skills#saleor-storefront
 ---
 
 # Saleor Paper Storefront
 
-Comprehensive guide for building and maintaining a Saleor e-commerce storefront
-with Next.js 16, TypeScript, and Tailwind CSS. Contains 13 rules across 6
-categories, prioritized by impact to guide development, debugging, and
-refactoring.
+Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
+application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
+11 rules across 6 categories covering caching, PDP architecture, checkout
+components, UI patterns, and SEO.
+
+> **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
+> for universal Saleor API knowledge (data model, permissions, checkout lifecycle,
+> channels). Install it alongside this skill.
 
 ## When to Apply
 

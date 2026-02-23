@@ -91,7 +91,13 @@ export function SignUpForm() {
 				<div className="rounded-lg border border-border bg-card p-8 shadow-sm">
 					<div className="text-center">
 						<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-							<svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<svg
+								aria-hidden="true"
+								className="h-6 w-6 text-green-600"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
 							</svg>
 						</div>
@@ -126,7 +132,11 @@ export function SignUpForm() {
 				</div>
 
 				<form onSubmit={handleSubmit} className="space-y-4">
-					{error && <div className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">{error}</div>}
+					{error && (
+						<div role="alert" className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">
+							{error}
+						</div>
+					)}
 
 					{/* Name fields */}
 					<div className="grid grid-cols-2 gap-4">
@@ -140,6 +150,7 @@ export function SignUpForm() {
 									id="firstName"
 									type="text"
 									placeholder="First name"
+									autoComplete="given-name"
 									value={firstName}
 									onChange={(e) => setFirstName(e.target.value)}
 									className="h-12 pl-10"
@@ -154,6 +165,7 @@ export function SignUpForm() {
 								id="lastName"
 								type="text"
 								placeholder="Last name"
+								autoComplete="family-name"
 								value={lastName}
 								onChange={(e) => setLastName(e.target.value)}
 								className="h-12"
@@ -172,6 +184,8 @@ export function SignUpForm() {
 								id="email"
 								type="email"
 								placeholder="you@example.com"
+								autoComplete="email"
+								spellCheck={false}
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								className="h-12 pl-10"
@@ -190,7 +204,8 @@ export function SignUpForm() {
 							<Input
 								id="password"
 								type={showPassword ? "text" : "password"}
-								placeholder="Minimum 8 characters"
+								placeholder="Minimum 8 characters…"
+								autoComplete="new-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								className="h-12 pl-10 pr-10"
@@ -200,6 +215,7 @@ export function SignUpForm() {
 							<button
 								type="button"
 								onClick={() => setShowPassword(!showPassword)}
+								aria-label={showPassword ? "Hide password" : "Show password"}
 								className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
 							>
 								{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -218,6 +234,7 @@ export function SignUpForm() {
 								id="confirmPassword"
 								type={showPassword ? "text" : "password"}
 								placeholder="Re-enter your password"
+								autoComplete="new-password"
 								value={confirmPassword}
 								onChange={(e) => setConfirmPassword(e.target.value)}
 								className={cn(
@@ -233,7 +250,7 @@ export function SignUpForm() {
 					</div>
 
 					<Button type="submit" disabled={isSubmitting} className="h-12 w-full text-base font-semibold">
-						{isSubmitting ? "Creating account..." : "Create Account"}
+						{isSubmitting ? "Creating account…" : "Create Account"}
 					</Button>
 
 					<p className="text-center text-xs text-muted-foreground">
