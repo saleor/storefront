@@ -13,6 +13,7 @@ export function NavLink({ href, children }: { href: string; children: ReactEleme
 		<li className="inline-flex">
 			<LinkWithChannel
 				href={href}
+				prefetch={false}
 				className={clsx(
 					"text-sm font-medium transition-colors",
 					isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
