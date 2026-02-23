@@ -13,7 +13,13 @@ export const LinkWithChannel = ({
 		return <Link {...props} href={href} />;
 	}
 
-	const encodedChannel = encodeURIComponent(channel ?? "");
+	// During hydration/recovery there can be a transient moment where params
+	// are unavailable. Avoid generating malformed "//..." URLs in that case.
+	if (!channel) {
+		return <Link {...props} href={href} />;
+	}
+
+	const encodedChannel = encodeURIComponent(channel);
 	const hrefWithChannel = `/${encodedChannel}${href}`;
 	return <Link {...props} href={hrefWithChannel} />;
 };
