@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
-import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
@@ -15,10 +14,6 @@ import { CategoryPageClient } from "./client";
  * Part of the static shell with Cache Components.
  */
 async function getCategoryData(slug: string, channel: string) {
-	"use cache";
-	cacheLife("minutes"); // 5 minute cache
-	cacheTag(`category:${slug}`); // Tag for on-demand revalidation
-
 	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: { slug, channel, first: 1 },
 		revalidate: 300,
@@ -45,9 +40,6 @@ type PageProps = {
 };
 
 export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
-	"use cache";
-	cacheLife("minutes");
-
 	const params = await props.params;
 	const category = await getCategoryData(params.slug, params.channel);
 	const plainDescription = parseEditorJSToText(category?.description);

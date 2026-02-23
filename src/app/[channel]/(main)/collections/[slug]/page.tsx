@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
-import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
@@ -15,10 +14,6 @@ import { CollectionPageClient } from "./client";
  * Part of the static shell with Cache Components.
  */
 async function getCollectionData(slug: string, channel: string) {
-	"use cache";
-	cacheLife("minutes"); // 5 minute cache
-	cacheTag(`collection:${slug}`); // Tag for on-demand revalidation
-
 	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: { slug, channel, first: 1 },
 		revalidate: 300,
@@ -45,9 +40,6 @@ type PageProps = {
 };
 
 export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
-	"use cache";
-	cacheLife("minutes");
-
 	const params = await props.params;
 	const collection = await getCollectionData(params.slug, params.channel);
 	const plainDescription = parseEditorJSToText(collection?.description);

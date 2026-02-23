@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { cacheLife, cacheTag } from "next/cache";
 import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
@@ -29,10 +28,6 @@ import {
  * making product pages load instantly while variant-specific UI streams in.
  */
 async function getProductData(slug: string, channel: string) {
-	"use cache";
-	cacheLife("minutes"); // 5 minute cache
-	cacheTag(`product:${slug}`); // Tag for on-demand revalidation
-
 	const result = await executePublicGraphQL(ProductDetailsDocument, {
 		variables: {
 			slug: decodeURIComponent(slug),
