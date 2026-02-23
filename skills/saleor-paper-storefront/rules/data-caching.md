@@ -119,6 +119,8 @@ async function getProductData(slug: string, channel: string) {
 | `category:{slug}`   | `getCategoryData()`                            | Category updated          |
 | `collection:{slug}` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
 | `navigation`        | `NavLinks`                                     | Menu structure changed    |
+| `footer-menu`       | `getFooterMenu()`                              | Footer menu changed       |
+| `channels`          | `getChannels()`                                | Channel list changed      |
 
 ---
 
@@ -153,7 +155,46 @@ Any component accessing runtime data must be wrapped in Suspense.
 </Suspense>
 ```
 
-### 2. Public vs Authenticated Queries
+### 2. Sync Page Shell Pattern (CRITICAL)
+
+Page components that use `"use cache"` data must be **synchronous** and wrap their async content in a **dedicated Suspense boundary**. This prevents the cached async work from flowing through the layout's main Suspense, which can cause hydration/reconciliation issues.
+
+```tsx
+// ✅ CORRECT - Page is sync, async content has its own Suspense
+export default function Page(props: PageProps) {
+	return (
+		<Suspense fallback={<PageSkeleton />}>
+			<PageContent params={props.params} />
+		</Suspense>
+	);
+}
+
+async function PageContent({ params: paramsPromise }) {
+	const params = await paramsPromise;
+	const data = await getCachedData(params.slug, params.channel);
+	return <ProductList products={data} />;
+}
+```
+
+```tsx
+// ❌ BAD - async Page relies on layout's Suspense for streaming
+export default async function Page(props: PageProps) {
+	const params = await props.params;
+	const data = await getCachedData(params.slug, params.channel);
+	return <ProductList products={data} />;
+}
+```
+
+**Why**: When Cache Components are enabled, the boundary between the static shell and streamed content is determined by Suspense boundaries. If the page itself is async and relies on the layout's `<Suspense>{children}</Suspense>`, the reconciliation between the static shell and the streamed RSC payload happens at the layout level, which can cause DOM structure mismatches and memory issues. A dedicated page-level Suspense isolates this boundary.
+
+All page routes in this project follow this pattern:
+
+- `src/app/[channel]/(main)/page.tsx` (homepage)
+- `src/app/[channel]/(main)/categories/[slug]/page.tsx`
+- `src/app/[channel]/(main)/collections/[slug]/page.tsx`
+- `src/app/[channel]/(main)/products/[slug]/page.tsx`
+
+### 3. Public vs Authenticated Queries
 
 Two explicit GraphQL helpers:
 
@@ -177,7 +218,7 @@ const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, {
 });
 ```
 
-### 3. Don't Use `searchParams` Inside `"use cache"`
+### 4. Don't Use `searchParams` Inside `"use cache"`
 
 ```typescript
 // ❌ BAD - searchParams is runtime data
@@ -198,7 +239,7 @@ export async function generateMetadata(props) {
 }
 ```
 
-### 4. CSS Order Pattern for Mixed Static/Dynamic Layouts
+### 5. CSS Order Pattern for Mixed Static/Dynamic Layouts
 
 When you need dynamic content to appear **above** static content visually, use CSS `order`:
 
@@ -231,7 +272,7 @@ When you need dynamic content to appear **above** static content visually, use C
 
 This keeps `<h1>` in the static shell for SEO while allowing dynamic content to appear above it.
 
-### 5. GraphQL Auth Defaults
+### 6. GraphQL Auth Defaults
 
 Two explicit GraphQL helpers ensure you always know what data access level you're using:
 
@@ -370,7 +411,8 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ❌ **Don't skip webhook setup in production** - Users see stale prices  
 ❌ **Don't access cookies/searchParams inside `"use cache"`** - Will error  
 ❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** - Requires cookies  
-❌ **Don't expose `REVALIDATE_SECRET`** - Keep it server-side only
+❌ **Don't expose `REVALIDATE_SECRET`** - Keep it server-side only  
+❌ **Don't make page components async when using `"use cache"` data** - Use the sync page shell pattern (see Key Pattern #2) to avoid reconciliation issues with the layout's main Suspense boundary
 
 ---
 

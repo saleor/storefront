@@ -2,7 +2,6 @@ import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
 import { CartProvider, CartDrawerWrapper } from "@/ui/components/cart";
-import { AuthProvider } from "@/lib/auth";
 import { brandConfig } from "@/config/brand";
 import { Logo } from "@/ui/components/shared/logo";
 
@@ -29,25 +28,6 @@ function HeaderSkeleton() {
 				</div>
 			</div>
 		</header>
-	);
-}
-
-/**
- * Generic content skeleton for the main area.
- * Intentionally minimal — route-specific skeletons should be provided
- * via loading.tsx in each route segment (products/, products/[slug]/, etc.).
- * This only shows for routes without their own loading.tsx.
- */
-function MainContentSkeleton() {
-	return (
-		<div className="mx-auto max-w-7xl animate-skeleton-delayed p-8 pb-16 opacity-0">
-			<div className="mb-6 h-7 w-48 animate-pulse rounded bg-secondary" />
-			<div className="space-y-4">
-				<div className="h-4 w-full max-w-2xl animate-pulse rounded bg-secondary" />
-				<div className="h-4 w-3/4 max-w-2xl animate-pulse rounded bg-secondary" />
-				<div className="h-4 w-1/2 max-w-2xl animate-pulse rounded bg-secondary" />
-			</div>
-		</div>
 	);
 }
 
@@ -101,23 +81,21 @@ export default async function RootLayout(props: {
 	const channel = (await props.params).channel;
 
 	return (
-		<AuthProvider>
-			<CartProvider>
-				<Suspense fallback={<HeaderSkeleton />}>
-					<Header channel={channel} />
+		<CartProvider>
+			<Suspense fallback={<HeaderSkeleton />}>
+				<Header channel={channel} />
+			</Suspense>
+			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
+				<main className="flex-1">
+					<Suspense fallback={null}>{props.children}</Suspense>
+				</main>
+				<Suspense fallback={<FooterSkeleton />}>
+					<Footer channel={channel} />
 				</Suspense>
-				<div className="flex min-h-[calc(100dvh-64px)] flex-col">
-					<main className="flex-1">
-						<Suspense fallback={<MainContentSkeleton />}>{props.children}</Suspense>
-					</main>
-					<Suspense fallback={<FooterSkeleton />}>
-						<Footer channel={channel} />
-					</Suspense>
-				</div>
-				<Suspense fallback={null}>
-					<CartDrawerWrapper channel={channel} />
-				</Suspense>
-			</CartProvider>
-		</AuthProvider>
+			</div>
+			<Suspense fallback={null}>
+				<CartDrawerWrapper channel={channel} />
+			</Suspense>
+		</CartProvider>
 	);
 }
