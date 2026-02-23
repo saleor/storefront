@@ -11,7 +11,7 @@ export function ProductElement({
 }: { product: ProductListItemFragment } & { loading: "eager" | "lazy"; priority?: boolean }) {
 	return (
 		<li data-testid="ProductElement">
-			<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
+			<LinkWithChannel href={`/products/${product.slug}`} key={product.id} prefetch={false}>
 				<div>
 					{product?.thumbnail?.url && (
 						<ProductImageWrapper

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { LoginForm } from "@/ui/components/login-form";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CurrentUserDocument } from "@/gql/graphql";
+import { AuthProvider } from "@/lib/auth";
 
 export const metadata = {
 	title: "Sign In",
@@ -70,7 +71,9 @@ async function LoginContent({ params: paramsPromise }: { params: Promise<{ chann
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-24">
-			<LoginForm />
+			<AuthProvider>
+				<LoginForm />
+			</AuthProvider>
 		</section>
 	);
 }

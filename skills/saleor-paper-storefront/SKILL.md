@@ -34,6 +34,7 @@ Reference these guidelines when:
 - Debugging caching, stale content, or revalidation
 - Creating UI components with design tokens
 - Adding SEO metadata, JSON-LD, or OG images
+- Writing tests or investigating Saleor API behavior
 
 ## Rule Categories by Priority
 
