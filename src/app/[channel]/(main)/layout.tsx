@@ -32,25 +32,6 @@ function HeaderSkeleton() {
 }
 
 /**
- * Generic content skeleton for the main area.
- * Intentionally minimal — route-specific skeletons should be provided
- * via loading.tsx in each route segment (products/, products/[slug]/, etc.).
- * This only shows for routes without their own loading.tsx.
- */
-function MainContentSkeleton() {
-	return (
-		<div className="mx-auto max-w-7xl animate-skeleton-delayed p-8 pb-16 opacity-0">
-			<div className="mb-6 h-7 w-48 animate-pulse rounded bg-secondary" />
-			<div className="space-y-4">
-				<div className="h-4 w-full max-w-2xl animate-pulse rounded bg-secondary" />
-				<div className="h-4 w-3/4 max-w-2xl animate-pulse rounded bg-secondary" />
-				<div className="h-4 w-1/2 max-w-2xl animate-pulse rounded bg-secondary" />
-			</div>
-		</div>
-	);
-}
-
-/**
  * Footer skeleton that matches actual footer dimensions to prevent CLS.
  * Matches: pb-24 pt-12 sm:pb-12 lg:py-16 from Footer component.
  * Uses delayed visibility to avoid flash on fast loads.
@@ -105,9 +86,7 @@ export default async function RootLayout(props: {
 				<Header channel={channel} />
 			</Suspense>
 			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
-				<main className="flex-1">
-					<Suspense fallback={<MainContentSkeleton />}>{props.children}</Suspense>
-				</main>
+				<main className="flex-1">{props.children}</main>
 				<Suspense fallback={<FooterSkeleton />}>
 					<Footer channel={channel} />
 				</Suspense>
