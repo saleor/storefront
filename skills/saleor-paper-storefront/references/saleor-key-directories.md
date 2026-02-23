@@ -1,6 +1,8 @@
 # Saleor Core Key Directories
 
-Reference for navigating the Saleor source code when investigating API behavior.
+Reference for navigating the Saleor source code when investigating API **behavior** (permission checks, filtering logic, side effects).
+
+> **For schema types**, use `src/gql/graphql.ts` in this repo first -- it contains the full Saleor schema as TypeScript types, generated from your running instance via `pnpm generate`. Only use the Saleor core source when you need to understand how resolvers work.
 
 ## Clone Command
 
@@ -10,18 +12,18 @@ cd /tmp && git clone --depth 1 https://github.com/saleor/saleor.git saleor-core
 
 ## Directory Structure
 
-| Path                        | Purpose                          |
-| --------------------------- | -------------------------------- |
-| `saleor/graphql/`           | GraphQL schema, resolvers, types |
-| `saleor/graphql/product/`   | Product queries/mutations        |
-| `saleor/graphql/attribute/` | Attribute handling               |
-| `saleor/graphql/checkout/`  | Checkout operations              |
-| `saleor/graphql/order/`     | Order processing                 |
-| `saleor/graphql/account/`   | User/authentication              |
-| `saleor/product/models.py`  | Product Django models            |
-| `saleor/attribute/models/`  | Attribute Django models          |
-| `saleor/checkout/models.py` | Checkout Django models           |
-| `saleor/order/models.py`    | Order Django models              |
+| Path                        | Purpose                                |
+| --------------------------- | -------------------------------------- |
+| `saleor/graphql/`           | Resolvers, type definitions, mutations |
+| `saleor/graphql/product/`   | Product queries/mutations              |
+| `saleor/graphql/attribute/` | Attribute handling                     |
+| `saleor/graphql/checkout/`  | Checkout operations                    |
+| `saleor/graphql/order/`     | Order processing                       |
+| `saleor/graphql/account/`   | User/authentication                    |
+| `saleor/product/models.py`  | Product Django models                  |
+| `saleor/attribute/models/`  | Attribute Django models                |
+| `saleor/checkout/models.py` | Checkout Django models                 |
+| `saleor/order/models.py`    | Order Django models                    |
 
 ## Common Investigation Patterns
 
@@ -62,7 +64,7 @@ grep -r "class.*Loader" saleor/graphql/product/dataloaders/
 
 - `saleor/graphql/product/types/products.py` - Product type definition
 - `saleor/graphql/product/resolvers.py` - Product query resolvers
-- `saleor/graphql/product/mutations/products.py` - Product mutations
+- `saleor/graphql/product/mutations/` - Product mutations (channels.py, attributes.py, digital_contents.py)
 
 ### Attributes
 

@@ -1,24 +1,10 @@
----
-name: variant-selection
-description: Variant and attribute selection on product detail pages. Use when modifying variant selectors, debugging "Add to Cart" button state, understanding option availability, or adding discount badges to options.
----
+# Variant Selection
 
-# Variant Selection System
+Variant and attribute selection on product detail pages. Ensures correct "Add to Cart" button state, option availability, discount badges, and URL-driven selection.
 
 > **Source**: [Saleor Docs - Attributes](https://docs.saleor.io/developer/attributes/overview) - How product/variant attributes work
 
-## When to Use
-
-Use this skill when:
-
-- Modifying variant/attribute selection on product pages
-- Understanding why a variant isn't selectable
-- Adding discount indicators to variant options
-- Debugging "Add to Cart" button state
-
-## Instructions
-
-### Core Concept: Variants, Not Products
+## Core Concept: Variants, Not Products
 
 **You add VARIANTS to cart, not products.** Each variant is a specific attribute combination:
 
@@ -30,7 +16,7 @@ Use this skill when:
 
 The `checkoutLinesAdd` mutation requires a specific `variantId`. Without selecting ALL attributes, there's no variant to add.
 
-### Two Types of Variant Attributes
+## Two Types of Variant Attributes
 
 Saleor distinguishes between two types of variant attributes:
 
@@ -49,7 +35,7 @@ nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) { ..
 
 Non-selection attributes are **display-only** - shown as informational badges, not interactive selectors.
 
-### File Structure
+## File Structure
 
 ```
 src/ui/components/pdp/variant-selection/
@@ -64,7 +50,7 @@ src/ui/components/pdp/variant-selection/
     └── button-option.tsx         # Button for size/text (unified)
 ```
 
-### Key Functions in `utils.ts`
+## Key Functions in `utils.ts`
 
 | Function                        | Purpose                                          |
 | ------------------------------- | ------------------------------------------------ |
@@ -74,9 +60,9 @@ src/ui/components/pdp/variant-selection/
 | `getAdjustedSelections()`       | Clear conflicting selections when needed         |
 | `getUnavailableAttributeInfo()` | Detect dead-end selections                       |
 
-For detailed function signatures and usage, see [UTILS_REFERENCE.md](UTILS_REFERENCE.md).
+For detailed function signatures and usage, see [../references/variant-utils-reference.md](../references/variant-utils-reference.md).
 
-### Option States
+## Option States
 
 | State            | Meaning                                   | Visual        | Clickable?        |
 | ---------------- | ----------------------------------------- | ------------- | ----------------- |
@@ -84,7 +70,7 @@ For detailed function signatures and usage, see [UTILS_REFERENCE.md](UTILS_REFER
 | **Incompatible** | No variant with this + current selections | Dimmed        | ✓ (clears others) |
 | **Out of stock** | Variant exists but quantity = 0           | Strikethrough | ✗                 |
 
-### URL Parameter Pattern
+## URL Parameter Pattern
 
 Selections are stored in URL params:
 
@@ -96,7 +82,7 @@ Color sel  Size sel  Matching variant (set automatically)
 
 The `variant` param is only set when ALL attributes are selected.
 
-### Discount Badges
+## Discount Badges
 
 Options can show discount percentages:
 
@@ -150,7 +136,7 @@ const deadEnd = getUnavailableAttributeInfo(variants, groups, selections);
 
 ## State Machine
 
-The selection system has 5 states with automatic conflict resolution. For the full state diagram and transition rules, see [STATE_MACHINE.md](STATE_MACHINE.md).
+The selection system has 5 states with automatic conflict resolution. For the full state diagram and transition rules, see [../references/variant-state-machine.md](../references/variant-state-machine.md).
 
 **Quick reference:**
 

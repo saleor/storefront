@@ -1,6 +1,6 @@
 # AI Agent Guidelines for Saleor Storefront
 
-This document provides essential context for AI agents. For detailed task-specific instructions, see the **Skills** in `.claude/skills/`.
+This document provides essential context for AI agents. For detailed task-specific instructions, see the **Skills** below.
 
 ---
 
@@ -17,23 +17,40 @@ pnpm run dev                # Development server
 pnpm test                   # Run tests (watch mode)
 ```
 
+### Skills Architecture
+
+Skills are organized in two locations:
+
+| Location                          | Purpose                           | Contents                                                                 |
+| --------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
+| `skills/saleor-paper-storefront/` | Project-specific domain knowledge | 13 rules covering caching, PDP, checkout, GraphQL, etc.                  |
+| `.agents/skills/`                 | Installed community skills        | Vercel React best practices, composition patterns, web design guidelines |
+
 ### When to Use Which Skill
 
-| Task                               | Skill                                                                  |
-| ---------------------------------- | ---------------------------------------------------------------------- |
-| Writing React components           | [`react-patterns`](.claude/skills/react-patterns/SKILL.md)             |
-| Modifying `.graphql` files         | [`graphql-workflow`](.claude/skills/graphql-workflow/SKILL.md)         |
-| Creating/styling components        | [`ui-components`](.claude/skills/ui-components/SKILL.md)               |
-| Product detail page (PDP)          | [`pdp`](.claude/skills/pdp/SKILL.md)                                   |
-| Product list filtering/sorting     | [`filtering-system`](.claude/skills/filtering-system/SKILL.md)         |
-| Understanding Saleor API behavior  | [`saleor-investigation`](.claude/skills/saleor-investigation/SKILL.md) |
-| Variant/attribute selection on PDP | [`variant-selection`](.claude/skills/variant-selection/SKILL.md)       |
-| Page metadata, JSON-LD, OG images  | [`seo-system`](.claude/skills/seo-system/SKILL.md)                     |
-| ISR, webhooks, cache invalidation  | [`caching-strategy`](.claude/skills/caching-strategy/SKILL.md)         |
-| Writing tests                      | [`testing`](.claude/skills/testing/SKILL.md)                           |
-| Tailwind/CSS with Turbopack        | [`tailwind-turbopack`](.claude/skills/tailwind-turbopack/SKILL.md)     |
-| Channels & multi-currency          | [`channels`](.claude/skills/channels/SKILL.md)                         |
-| Creating/maintaining skills        | [`writing-skills`](.claude/skills/writing-skills/SKILL.md)             |
+**Project skill** ([`saleor-paper-storefront`](skills/saleor-paper-storefront/SKILL.md)) -- use for all Saleor storefront tasks:
+
+| Task                           | Rule                  |
+| ------------------------------ | --------------------- |
+| Modifying `.graphql` files     | `data-graphql`        |
+| Caching, ISR, webhooks         | `data-caching`        |
+| Product detail page (PDP)      | `product-pdp`         |
+| Variant/attribute selection    | `product-variants`    |
+| Product list filtering/sorting | `product-filtering`   |
+| Checkout flow debugging        | `checkout-management` |
+| Checkout UI components         | `checkout-components` |
+| Creating/styling components    | `ui-components`       |
+| Channels, fulfillment & stock  | `ui-channels`         |
+| SEO, metadata, OG images       | `seo-metadata`        |
+| Investigating Saleor API       | `dev-investigation`   |
+
+**Community skills** (`.agents/skills/`) -- use for generic best practices:
+
+| Task                           | Skill                         |
+| ------------------------------ | ----------------------------- |
+| Writing React components       | `vercel-react-best-practices` |
+| Component composition patterns | `vercel-composition-patterns` |
+| UI accessibility/UX review     | `web-design-guidelines`       |
 
 ---
 
@@ -113,22 +130,21 @@ pnpm run generate:checkout  # Regenerate types after src/checkout/graphql/*.grap
 
 ### 2. Nullable Fields
 
-Saleor has many nullable fields. Always use optional chaining:
+Saleor's GraphQL schema has many nullable fields. Check the generated types and handle nulls intentionally -- optional chaining with a fallback for display values, early returns or errors when null indicates a real problem:
 
 ```typescript
-const name = product.category?.name ?? "Default";
+// Display value with fallback
+const name = product.category?.name ?? "Uncategorized";
+
+// Guard when null means something is wrong
+if (!product.defaultVariant) {
+	throw new Error(`Product ${product.slug} has no default variant`);
+}
 ```
 
 ### 3. Permission Errors
 
-Some fields require admin permissions. For variant attributes, use:
-
-```graphql
-attributes(variantSelection: ALL) {
-  values { name value }
-  attribute { name slug }
-}
-```
+Some Saleor GraphQL fields require admin permissions. If you see `"To access this path, you need one of the following permissions: MANAGE_..."`, the field isn't available to anonymous/customer tokens. Either remove it from the storefront query or fetch it server-side with `SALEOR_APP_TOKEN`.
 
 ### 4. Server vs Client Components
 
@@ -144,23 +160,50 @@ Two explicit GraphQL helpers ensure you always know what data access level you'r
 ```typescript
 import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
 
-// ✅ Public queries (menus, products, categories) - no auth, only public data
+// Public queries (menus, products, categories) - no auth, only public data
 await executePublicGraphQL(MenuDocument, {
 	variables: { slug: "footer" },
 });
 
-// ✅ User queries - requires session cookies
+// User queries - requires session cookies
 try {
 	const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, { cache: "no-cache" });
 } catch {
 	// Expired token = not logged in
 }
 
-// ✅ Checkout/cart mutations - requires session cookies
+// Checkout/cart mutations - requires session cookies
 await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
 	variables: { id: checkoutId, productVariantId: variantId },
 	cache: "no-cache",
 });
+```
+
+### 6. State-to-State Sync in Effects
+
+Don't derive state in effects -- compute inline or in the handler:
+
+```tsx
+// Bad - extra render, hard to trace
+useEffect(() => {
+	setDerivedValue(computeFrom(sourceValue));
+}, [sourceValue]);
+
+// Good - compute inline
+const derivedValue = computeFrom(sourceValue);
+```
+
+### 7. Child Updating Parent State via Effect
+
+Don't use effects to push state up to a parent on mount:
+
+```tsx
+// Bad - child uses effect to update parent
+useEffect(() => {
+	onLayoutChange(true);
+}, []);
+
+// Good - parent derives state from what it knows, or callback on user action
 ```
 
 ---
@@ -186,25 +229,25 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ## Skills Reference
 
-Each skill is a focused guide for a specific task. Skills are in `.claude/skills/[name]/SKILL.md`.
+### Project Skill
 
-### Available Skills
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 13 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
-1. **[react-patterns](.claude/skills/react-patterns/SKILL.md)** - Writing React the React way (purity, hooks, effects)
-2. **[graphql-workflow](.claude/skills/graphql-workflow/SKILL.md)** - Modifying queries, regenerating types
-3. **[ui-components](.claude/skills/ui-components/SKILL.md)** - Component patterns, design tokens, shadcn/ui
-4. **[filtering-system](.claude/skills/filtering-system/SKILL.md)** - Server/client filtering architecture
-5. **[saleor-investigation](.claude/skills/saleor-investigation/SKILL.md)** - Checking Saleor source for API behavior
-6. **[variant-selection](.claude/skills/variant-selection/SKILL.md)** - Complex variant/attribute selection
-7. **[seo-system](.claude/skills/seo-system/SKILL.md)** - Metadata, JSON-LD, OG images
-8. **[caching-strategy](.claude/skills/caching-strategy/SKILL.md)** - ISR, webhooks, cache invalidation
-9. **[testing](.claude/skills/testing/SKILL.md)** - Writing fast, effective tests
-10. **[writing-skills](.claude/skills/writing-skills/SKILL.md)** - How to create and maintain skills
+Rules by category:
 
-### Using Skills
+1. **Data Layer** (CRITICAL): `data-caching`, `data-graphql`
+2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
+3. **Checkout Flow** (HIGH): `checkout-management`, `checkout-components`
+4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`
+5. **SEO** (MEDIUM): `seo-metadata`
+6. **Development** (MEDIUM): `dev-investigation`
 
-When performing a task, reference the relevant skill:
+Full compiled document: [`skills/saleor-paper-storefront/AGENTS.md`](skills/saleor-paper-storefront/AGENTS.md)
 
-> "Use the `graphql-workflow` skill when modifying any `.graphql` file."
+### Installed Community Skills
 
-Skills provide detailed instructions, examples, and anti-patterns for each task.
+Installed via `npx skills add vercel-labs/agent-skills`:
+
+1. **[vercel-react-best-practices](.agents/skills/vercel-react-best-practices/SKILL.md)** - 57 React/Next.js performance rules
+2. **[vercel-composition-patterns](.agents/skills/vercel-composition-patterns/SKILL.md)** - React composition patterns (compound components, state management)
+3. **[web-design-guidelines](.agents/skills/web-design-guidelines/SKILL.md)** - 100+ accessibility, UX, and performance rules

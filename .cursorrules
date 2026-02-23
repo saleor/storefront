@@ -4,19 +4,31 @@ You are working on a Saleor e-commerce storefront built with Next.js 16, TypeScr
 
 ## Skills
 
-For detailed task-specific instructions, use these skills in `.claude/skills/`:
+Two skill sources are available:
+
+**Project skill** (`skills/saleor-paper-storefront/`) -- Saleor storefront patterns:
+
+| Task | Rule |
+|------|------|
+| Modifying `.graphql` files | `data-graphql` |
+| Caching, ISR, webhooks | `data-caching` |
+| Product detail page (PDP) | `product-pdp` |
+| Variant selection on PDP | `product-variants` |
+| Product filtering/sorting | `product-filtering` |
+| Checkout flow debugging | `checkout-management` |
+| Checkout UI components | `checkout-components` |
+| Creating/styling components | `ui-components` |
+| Channels, fulfillment & stock | `ui-channels` |
+| SEO, metadata, OG images | `seo-metadata` |
+| Investigating Saleor API | `dev-investigation` |
+
+**Community skills** (`.agents/skills/`) -- generic best practices:
 
 | Task | Skill |
 |------|-------|
-| Modifying `.graphql` files | `graphql-workflow` |
-| Creating/styling components | `ui-components` |
-| Product detail page (PDP) | `pdp` |
-| Product filtering/sorting | `filtering-system` |
-| Understanding Saleor API | `saleor-investigation` |
-| Variant selection on PDP | `variant-selection` |
-| SEO, metadata, OG images | `seo-system` |
-| ISR, webhooks, caching | `caching-strategy` |
-| Creating/updating skills | `writing-skills` |
+| Writing React components | `vercel-react-best-practices` |
+| Component composition | `vercel-composition-patterns` |
+| UI accessibility/UX review | `web-design-guidelines` |
 
 ## Critical Commands
 
@@ -32,8 +44,8 @@ pnpm run build              # Full build
 1. **GraphQL**: Run `pnpm generate` (storefront) or `pnpm generate:checkout` (checkout) after `.graphql` changes
 2. **Components**: Use Server Components by default, `"use client"` only when needed
 3. **Styling**: Use design tokens (`bg-background`, `text-foreground`), not hardcoded colors
-4. **Nullable fields**: Always use optional chaining (`product.category?.name`)
-5. **Imports**: Use `@/` alias (`import { Button } from "@/ui/components/ui/Button"`)
+4. **Nullable fields**: Handle nulls intentionally -- optional chaining for display values, guards/throws when null is a real problem
+5. **Imports**: Use `@/` alias (`import { Button } from "@/ui/components/ui/button"`)
 
 ## File Locations
 
@@ -50,4 +62,5 @@ pnpm run build              # Full build
 ## Documentation
 
 - **Full docs**: `AGENTS.md` in project root
-- **Skills**: `.claude/skills/[name]/SKILL.md`
+- **Project skill**: `skills/saleor-paper-storefront/SKILL.md`
+- **Community skills**: `.agents/skills/[name]/SKILL.md`

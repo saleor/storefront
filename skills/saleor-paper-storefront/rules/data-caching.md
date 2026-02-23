@@ -1,21 +1,8 @@
----
-name: caching-strategy
-description: Understand the caching architecture, Cache Components (PPR), and revalidation mechanisms. Use when debugging stale content, modifying caching behavior, or understanding data freshness guarantees.
----
+# Data Caching
 
-# Caching Strategy
+Understanding the caching architecture, Cache Components (PPR), and revalidation mechanisms ensures correct data freshness, avoids stale content, and enables targeted cache invalidation when Saleor data changes.
 
 > **Reference**: [Next.js Cache Components](https://nextjs.org/docs/app/getting-started/cache-components) — the official documentation for `use cache`, `cacheLife`, `cacheTag`, and Partial Prerendering.
-
-## When to Use
-
-Use this skill when:
-
-- Understanding which data is cached vs. real-time
-- Debugging why content isn't updating after Dashboard changes
-- Configuring Saleor webhooks for cache invalidation
-- Modifying the `/api/revalidate` endpoint
-- Working with `"use cache"` and Suspense patterns
 
 ---
 
