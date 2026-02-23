@@ -8,7 +8,7 @@ Detailed reference for functions in `src/ui/components/pdp/variant-selection/uti
 
 Extracts unique attribute values from all variants.
 
-**Input**: Array of Saleor variants with attributes  
+**Input**: Array of Saleor variants with attributes
 **Output**: Map of attribute slugs to value arrays
 
 ```typescript
@@ -62,10 +62,10 @@ Returns new selections after user picks an option, auto-clearing conflicts.
 **Logic**:
 
 1. Add new selection to current selections
-2. If valid variant exists → return updated selections
-3. If no valid variant → return only the new selection (clear others)
+2. If valid variant exists -- return updated selections
+3. If no valid variant -- return only the new selection (clear others)
 
-See [STATE_MACHINE.md](STATE_MACHINE.md) for transition details.
+See [variant-state-machine.md](variant-state-machine.md) for transition details.
 
 ### `getUnavailableAttributeInfo(variants, groups, selections)`
 

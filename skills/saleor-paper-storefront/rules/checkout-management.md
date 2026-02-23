@@ -1,9 +1,8 @@
----
-name: checkout-management
-description: Understand checkout session lifecycle and debugging. Use when troubleshooting checkout issues, payment failures, hydration mismatches, or "CHECKOUT_NOT_FULLY_PAID" errors.
----
+# Checkout Management
 
-# Checkout Management Skill
+Understanding checkout session lifecycle, storage, and debugging prevents payment failures, hydration mismatches, and "CHECKOUT_NOT_FULLY_PAID" errors. Use live checkout data for payment amounts and handle stale checkouts gracefully.
+
+---
 
 ## Overview
 
@@ -93,7 +92,7 @@ useEffect(() => setMounted(true), []);
 const id = useMemo(() => (mounted ? extractCheckoutIdFromUrl() : null), [mounted]);
 ```
 
-See `src/checkout/hooks/useCheckout.ts` for the full implementation.
+See `src/checkout/hooks/use-checkout.ts` for the full implementation.
 
 ### Stale Checkout with Failed Transactions
 
@@ -126,7 +125,7 @@ const totalAmount = checkout.totalPrice.gross.amount;
 | File                                 | Purpose                              |
 | ------------------------------------ | ------------------------------------ |
 | `src/lib/checkout.ts`                | Checkout creation, cookie management |
-| `src/checkout/hooks/useCheckout.ts`  | React hook for checkout data         |
+| `src/checkout/hooks/use-checkout.ts` | React hook for checkout data         |
 | `src/checkout/lib/utils/url.ts`      | URL query param extraction           |
 | `src/graphql/CheckoutCreate.graphql` | Checkout creation mutation           |
 

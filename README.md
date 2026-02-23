@@ -65,7 +65,8 @@ Not an afterthought. Focus management on step transitions, keyboard navigation e
 Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
-- **Skills system** — Task-specific guides in `.claude/skills/` for GraphQL workflows, component patterns, variant selection, and more
+- **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 11 task-specific rules covering GraphQL, caching, variant selection, checkout, and more
+- **[`.agents/skills/`](.agents/skills/)** — Installed community skills (Vercel React best practices, composition patterns)
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
 Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase is designed to help them help you.
@@ -98,7 +99,7 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ## Caching Architecture
 
-Paper uses **Cache Components** (Partial Prerendering) for optimal performance—static shells load instantly while dynamic content streams in. Learn more in the [Next.js documentation](https://nextjs.org/docs/app/api-reference/directives/use-cache) or see [`.claude/skills/caching-strategy/SKILL.md`](.claude/skills/caching-strategy/SKILL.md) for project-specific implementation details.
+Paper uses **Cache Components** (Partial Prerendering) for optimal performance—static shells load instantly while dynamic content streams in. Learn more in the [Next.js documentation](https://nextjs.org/docs/app/api-reference/directives/use-cache) or see [`skills/saleor-paper-storefront/rules/data-caching.md`](skills/saleor-paper-storefront/rules/data-caching.md) for project-specific implementation details.
 
 The **display-cached, checkout-live** model ensures fast browsing with accurate checkout:
 
@@ -146,7 +147,7 @@ Without webhooks? TTL handles it—cached data expires naturally after 5 minutes
 - **Cart always fetches fresh**: Users see current prices before checkout
 - **Payment validates**: `checkoutComplete` uses real-time data
 
-> 📚 **Deep dive**: See `.claude/skills/caching-strategy/SKILL.md` for the full architecture, Cache Components (PPR), webhook setup, and debugging guide.
+> 📚 **Deep dive**: See [`skills/saleor-paper-storefront/rules/data-caching.md`](skills/saleor-paper-storefront/rules/data-caching.md) for the full architecture, Cache Components (PPR), webhook setup, and debugging guide.
 
 ---
 
@@ -225,7 +226,14 @@ src/
 If you're working with AI coding assistants, point them to:
 
 - **`AGENTS.md`** — Architecture, commands, gotchas
-- **`.claude/skills/`** — Task-specific guides (GraphQL, components, checkout, etc.)
+- **`skills/saleor-paper-storefront/`** — 11 project-specific rules (GraphQL, caching, checkout, etc.)
+- **`.agents/skills/`** — Installed community skills (React best practices, composition patterns)
+
+To install the project skill for agent auto-discovery:
+
+```shell
+npx skills add . --skill saleor-paper-storefront
+```
 
 ### Environment Variables
 

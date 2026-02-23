@@ -1,23 +1,10 @@
----
-name: pdp
-description: Product Detail Page architecture, image gallery/carousel, caching, and add-to-cart flow. Use when modifying PDP layout, debugging gallery swipe/thumbnails, understanding LCP optimization, fixing ErrorBoundary issues, or working with variant-specific images.
----
+# Product Detail Page
 
-# Product Detail Page (PDP)
+Product Detail Page architecture, image gallery/carousel, caching, and add-to-cart flow. Ensures correct PDP layout, variant-aware gallery, LCP optimization, and resilient error handling.
 
 > **Sources**: [Next.js Caching](https://nextjs.org/docs/app/building-your-application/caching) · [Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations) · [Suspense](https://react.dev/reference/react/Suspense)
 
-## When to Use
-
-Use this skill when:
-
-- Modifying PDP layout or components
-- Working with the image gallery/carousel
-- Understanding caching and streaming architecture
-- Debugging add-to-cart issues
-- Adding new product information sections
-
-For variant selection logic specifically, see [`variant-selection`](../variant-selection/SKILL.md).
+For variant selection logic specifically, see `product-variants.md`.
 
 > **Start here:** Read the [Data Flow](#data-flow) section first - it explains how everything connects.
 
@@ -125,7 +112,7 @@ src/ui/components/pdp/
 ├── sticky-bar.tsx                    # Mobile sticky add-to-cart
 ├── product-attributes.tsx            # Description/details accordion
 └── variant-selection/                # Variant selection system
-    └── ...                           # See variant-selection skill
+    └── ...                           # See product-variants rule
 
 src/ui/components/ui/
 ├── carousel.tsx                      # Embla carousel primitives

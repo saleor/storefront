@@ -1,24 +1,10 @@
----
-name: ui-components
-description: Create and style UI components with design tokens. Use when creating components, styling with Tailwind, deciding between Server/Client Components, or using shadcn/ui primitives.
----
-
 # UI Components
+
+Create and style UI components with design tokens and shadcn/ui primitives.
 
 > **Source**: [shadcn/ui](https://ui.shadcn.com/) - Component patterns and primitives used in this project
 
-## When to Use
-
-Use this skill when:
-
-- Creating new UI components
-- Styling components with Tailwind
-- Deciding between Server and Client Components
-- Using shadcn/ui primitives
-
-## Instructions
-
-### Component Location
+## Component Location
 
 | Type                       | Location                  |
 | -------------------------- | ------------------------- |
@@ -29,37 +15,7 @@ Use this skill when:
 | Navigation                 | `src/ui/components/nav/`  |
 | Cart                       | `src/ui/components/cart/` |
 
-### Server vs Client Components
-
-**Default: Server Components** (no directive needed)
-
-```tsx
-// Server Component - can use async/await, no useState/useEffect
-export async function ProductInfo({ slug }: { slug: string }) {
-	const data = await fetchProduct(slug);
-	return <div>{data.name}</div>;
-}
-```
-
-**Client Components** (only when needed)
-
-```tsx
-"use client";
-import { useState } from "react";
-
-export function Counter() {
-	const [count, setCount] = useState(0);
-	return <button onClick={() => setCount((c) => c + 1)}>{count}</button>;
-}
-```
-
-Use `"use client"` only when you need:
-
-- `useState`, `useEffect`, `useContext`
-- Event handlers (`onClick`, `onChange`, etc.)
-- Browser APIs (`localStorage`, `window`, etc.)
-
-### Design Tokens
+## Design Tokens
 
 Use semantic Tailwind classes that reference CSS variables from `src/styles/brand.css`:
 
@@ -82,18 +38,18 @@ Available tokens:
 - `border` - Border color
 - `destructive` - Error/danger states
 
-### Using shadcn/ui Primitives
+## Using shadcn/ui Primitives
 
 Import from `@/ui/components/ui/`:
 
 ```tsx
-import { Button } from "@/ui/components/ui/Button";
-import { Badge } from "@/ui/components/ui/Badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/ui/components/ui/Sheet";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/ui/components/ui/DropdownMenu";
+import { Button } from "@/ui/components/ui/button";
+import { Badge } from "@/ui/components/ui/badge";
+import { Sheet, SheetContent, SheetTrigger } from "@/ui/components/ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/ui/components/ui/dropdown-menu";
 ```
 
-### Export Pattern
+## Export Pattern
 
 If component is in a subdirectory, export from index:
 
