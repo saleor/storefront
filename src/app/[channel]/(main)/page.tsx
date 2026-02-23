@@ -44,14 +44,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			<h2 className="sr-only">Product list</h2>
-			{products.length > 0 ? (
-				<ProductList products={products} />
-			) : (
-				<div className="py-24 text-center">
-					<p className="text-lg text-muted-foreground">No featured products available right now.</p>
-					<p className="mt-2 text-sm text-muted-foreground">Please check back shortly.</p>
-				</div>
-			)}
+			<ProductList products={products} />
 		</section>
 	);
 }
