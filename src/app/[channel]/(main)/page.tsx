@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCollectionDocument } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
@@ -37,21 +38,46 @@ async function getFeaturedProducts(channel: string) {
 	return result.data.collection?.products?.edges.map(({ node }) => node) ?? [];
 }
 
-export default async function Page(props: { params: Promise<{ channel: string }> }) {
-	const { channel } = await props.params;
-	const products = await getFeaturedProducts(channel);
-
+/**
+ * Page shell — renders immediately with a static section wrapper.
+ * The async product grid streams inside its own Suspense boundary
+ * so it doesn't rely on the layout's main Suspense for reconciliation.
+ */
+export default function Page(props: { params: Promise<{ channel: string }> }) {
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			<h2 className="sr-only">Product list</h2>
-			{products.length > 0 ? (
-				<ProductList products={products} />
-			) : (
-				<div className="py-24 text-center">
-					<p className="text-lg text-muted-foreground">No featured products available right now.</p>
-					<p className="mt-2 text-sm text-muted-foreground">Please check back shortly.</p>
-				</div>
-			)}
+			<Suspense
+				fallback={
+					<ul
+						role="list"
+						data-testid="ProductList"
+						className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
+					>
+						{Array.from({ length: 12 }).map((_, i) => (
+							<li key={i} className="animate-pulse">
+								<div className="aspect-square overflow-hidden bg-secondary" />
+								<div className="mt-2 flex justify-between">
+									<div>
+										<div className="mt-1 h-4 w-32 rounded bg-secondary" />
+										<div className="mt-1 h-4 w-20 rounded bg-secondary" />
+									</div>
+									<div className="mt-1 h-4 w-16 rounded bg-secondary" />
+								</div>
+							</li>
+						))}
+					</ul>
+				}
+			>
+				<FeaturedProducts params={props.params} />
+			</Suspense>
 		</section>
 	);
+}
+
+async function FeaturedProducts({ params: paramsPromise }: { params: Promise<{ channel: string }> }) {
+	const { channel } = await paramsPromise;
+	const products = await getFeaturedProducts(channel);
+
+	return <ProductList products={products} />;
 }

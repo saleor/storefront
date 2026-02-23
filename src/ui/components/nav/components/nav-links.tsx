@@ -7,7 +7,7 @@ import { MenuGetBySlugDocument } from "@/gql/graphql";
 export const NavLinks = async ({ channel }: { channel: string }) => {
 	"use cache";
 	cacheLife("hours"); // 1 hour cache - navigation rarely changes
-	cacheTag("navigation"); // Tag for on-demand revalidation
+	cacheTag("navigation");
 
 	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "navbar", channel },

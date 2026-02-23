@@ -10,14 +10,10 @@ import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { CategoryPageClient } from "./client";
 
-/**
- * Cached category data for hero section and metadata.
- * Part of the static shell with Cache Components.
- */
 async function getCategoryData(slug: string, channel: string) {
 	"use cache";
-	cacheLife("minutes"); // 5 minute cache
-	cacheTag(`category:${slug}`); // Tag for on-demand revalidation
+	cacheLife("minutes");
+	cacheTag(`category:${slug}`);
 
 	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: { slug, channel, first: 1 },
@@ -45,9 +41,6 @@ type PageProps = {
 };
 
 export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
-	"use cache";
-	cacheLife("minutes");
-
 	const params = await props.params;
 	const category = await getCategoryData(params.slug, params.channel);
 	const plainDescription = parseEditorJSToText(category?.description);
@@ -59,11 +52,26 @@ export const generateMetadata = async (props: PageProps, parent: ResolvingMetada
 };
 
 /**
- * Category page with Cache Components.
- * Hero (cached) renders immediately, product grid (dynamic) streams in.
+ * Sync page shell with dedicated Suspense boundary.
+ * Cached hero + dynamic product grid stream inside this boundary,
+ * not through the layout's main Suspense.
  */
-export default async function Page(props: PageProps) {
-	const params = await props.params;
+export default function Page(props: PageProps) {
+	return (
+		<Suspense fallback={<PageSkeleton />}>
+			<CategoryContent params={props.params} searchParams={props.searchParams} />
+		</Suspense>
+	);
+}
+
+async function CategoryContent({
+	params: paramsPromise,
+	searchParams,
+}: {
+	params: PageProps["params"];
+	searchParams: PageProps["searchParams"];
+}) {
+	const params = await paramsPromise;
 	const category = await getCategoryData(params.slug, params.channel);
 
 	if (!category) {
@@ -79,24 +87,19 @@ export default async function Page(props: PageProps) {
 
 	return (
 		<>
-			{/* Static shell - cached category data renders immediately */}
 			<CategoryHero
 				title={category.name}
 				description={plainDescription}
 				backgroundImage={category.backgroundImage?.url}
 				breadcrumbs={breadcrumbs}
 			/>
-			{/* Dynamic content - streams in via Suspense */}
 			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CategoryProducts params={props.params} searchParams={props.searchParams} />
+				<CategoryProducts params={paramsPromise} searchParams={searchParams} />
 			</Suspense>
 		</>
 	);
 }
 
-/**
- * Dynamic category products - reads searchParams at request time.
- */
 async function CategoryProducts({
 	params: paramsPromise,
 	searchParams: searchParamsPromise,
@@ -137,18 +140,26 @@ async function CategoryProducts({
 	);
 }
 
-/**
- * Products grid skeleton with delayed visibility.
- * Matches ProductGrid/ProductCard dimensions to prevent layout shift.
- */
+function PageSkeleton() {
+	return (
+		<div className="animate-skeleton-delayed opacity-0">
+			<div className="bg-muted px-4 py-12 sm:px-6 lg:px-8">
+				<div className="mx-auto max-w-7xl">
+					<div className="bg-muted-foreground/10 h-8 w-48 animate-pulse rounded" />
+					<div className="bg-muted-foreground/10 mt-3 h-4 w-96 max-w-full animate-pulse rounded" />
+				</div>
+			</div>
+			<ProductsGridSkeleton />
+		</div>
+	);
+}
+
 function ProductsGridSkeleton() {
 	return (
-		<div className="mx-auto max-w-7xl animate-skeleton-delayed px-4 py-8 opacity-0 sm:px-6 lg:px-8">
-			{/* Matches ProductGrid: grid-cols-2 lg:grid-cols-3 */}
+		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
 				{Array.from({ length: 6 }).map((_, i) => (
 					<div key={i} className="animate-pulse">
-						{/* Matches ProductCard: aspect-[3/4] rounded-xl */}
 						<div className="mb-4 aspect-[3/4] rounded-xl bg-muted" />
 						<div className="space-y-1.5">
 							<div className="h-4 w-3/4 rounded bg-muted" />
