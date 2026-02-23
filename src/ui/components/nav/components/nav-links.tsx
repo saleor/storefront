@@ -48,7 +48,7 @@ export const NavLinks = async ({ channel }: { channel: string }) => {
 				}
 				if (item.url) {
 					return (
-						<Link key={item.id} href={item.url}>
+						<Link key={item.id} href={item.url} prefetch={false}>
 							{item.name}
 						</Link>
 					);
