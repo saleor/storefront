@@ -11,13 +11,14 @@ export const metadata = {
 
 /**
  * Cached function to fetch featured products.
- * With Cache Components, this data becomes part of the static shell,
- * giving users instant page loads while keeping content fresh.
+ * Returns [] on failure so the page always renders (never null).
+ * Note: the empty array IS cached for the cacheLife duration —
+ * on-demand revalidation via cacheTag is the intended recovery path.
  */
 async function getFeaturedProducts(channel: string) {
 	"use cache";
-	cacheLife("minutes"); // 5 minute cache
-	cacheTag("collection:featured-products"); // Tag for on-demand revalidation
+	cacheLife("minutes");
+	cacheTag("collection:featured-products");
 
 	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: {
@@ -29,27 +30,28 @@ async function getFeaturedProducts(channel: string) {
 	});
 
 	if (!result.ok) {
-		// During build, if the API is unreachable, return null instead of failing.
-		// The page will be populated on-demand when a user visits.
 		console.warn(`[Homepage] Failed to fetch featured products for ${channel}:`, result.error.message);
-		return null;
+		return [];
 	}
 
-	return result.data.collection?.products?.edges.map(({ node }) => node) ?? null;
+	return result.data.collection?.products?.edges.map(({ node }) => node) ?? [];
 }
 
 export default async function Page(props: { params: Promise<{ channel: string }> }) {
 	const { channel } = await props.params;
 	const products = await getFeaturedProducts(channel);
 
-	if (!products) {
-		return null;
-	}
-
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
 			<h2 className="sr-only">Product list</h2>
-			<ProductList products={products} />
+			{products.length > 0 ? (
+				<ProductList products={products} />
+			) : (
+				<div className="py-24 text-center">
+					<p className="text-lg text-muted-foreground">No featured products available right now.</p>
+					<p className="mt-2 text-sm text-muted-foreground">Please check back shortly.</p>
+				</div>
+			)}
 		</section>
 	);
 }
