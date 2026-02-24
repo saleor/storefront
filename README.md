@@ -83,17 +83,18 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ## What's in the Box
 
-| Feature              | Description                                                                     |
-| -------------------- | ------------------------------------------------------------------------------- |
-| **Checkout**         | Multi-step flow with guest/auth support, address selector, international forms  |
-| **Cart**             | Slide-over drawer with real-time updates, quantity editing                      |
-| **Product Pages**    | Multi-attribute variants, image gallery, sticky add-to-cart                     |
-| **Product Listings** | Category & collection pages with pagination                                     |
-| **Navigation**       | Dynamic menus from Saleor, mobile hamburger                                     |
-| **SEO**              | Metadata, JSON-LD, Open Graph images                                            |
-| **Caching**          | ISR with on-demand revalidation via webhooks                                    |
-| **Authentication**   | Login, register, password reset, order history                                  |
-| **API Resilience**   | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully |
+| Feature              | Description                                                                       |
+| -------------------- | --------------------------------------------------------------------------------- |
+| **Checkout**         | Multi-step flow with guest/auth support, address selector, international forms    |
+| **Cart**             | Slide-over drawer with real-time updates, quantity editing                        |
+| **Product Pages**    | Multi-attribute variants, image gallery, sticky add-to-cart                       |
+| **Product Listings** | Category & collection pages with pagination                                       |
+| **Navigation**       | Dynamic menus from Saleor, mobile hamburger                                       |
+| **SEO**              | Metadata, JSON-LD, Open Graph images                                              |
+| **Caching**          | ISR with on-demand revalidation via webhooks                                      |
+| **Customer Profile** | Account dashboard, address book, order history, password change, account deletion |
+| **Authentication**   | Login, register, password reset, guest checkout                                   |
+| **API Resilience**   | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully   |
 
 ---
 
@@ -214,6 +215,7 @@ src/
 ├── graphql/                # GraphQL queries
 ├── gql/                    # Generated types (don't edit)
 ├── ui/components/          # UI components
+│   ├── account/            # Customer profile & address book
 │   ├── pdp/                # Product detail page
 │   ├── plp/                # Product listing page
 │   ├── cart/               # Cart drawer
@@ -273,7 +275,6 @@ The design token system uses CSS custom properties—swap the entire color palet
 Features planned for future development:
 
 - **Filtering logic iteration.** Fetching attributes from API for dynamic product filters.
-- **Customer Profile.** Implementing new Past Orders and Address Book for signed-in customers.
 - **Paper App.** Iteration on the revalidation logic and supported webhooks, providing a _Preview in storefront_ feature in Saleor Dashboard.
 - **Opinionated model for standard content.** Moving currently hardcoded stuff like Credibility or Free checkout information to API models.
 
