@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { cacheLife, cacheTag } from "next/cache";
-import { ProductListByCollectionDocument } from "@/gql/graphql";
+import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/product-list";
 
@@ -26,6 +26,7 @@ async function getFeaturedProducts(channel: string) {
 			slug: "featured-products",
 			channel,
 			first: 12,
+			sortBy: { field: ProductOrderField.Collection, direction: OrderDirection.Asc },
 		},
 		revalidate: 300,
 	});

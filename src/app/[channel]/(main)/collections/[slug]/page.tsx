@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
-import { ProductListByCollectionDocument } from "@/gql/graphql";
+import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
@@ -110,7 +110,10 @@ async function CollectionProducts({
 	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
 
 	const paginationVariables = getPaginatedListVariables({ params: searchParams });
-	const sortBy = buildSortVariables(searchParams.sort);
+	const sortBy = buildSortVariables(searchParams.sort) ?? {
+		field: ProductOrderField.Collection,
+		direction: OrderDirection.Asc,
+	};
 	const filter = buildFilterVariables({ priceRange: searchParams.price });
 
 	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
