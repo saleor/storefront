@@ -13,6 +13,8 @@
 <br/>
 
 <div align="center">
+  <a href="https://saleor.io/start">Learn about headless storefronts</a>
+  <span> · </span>
   <a href="https://saleor.io/">Website</a>
   <span> · </span>
   <a href="https://docs.saleor.io/docs/3.x">Docs</a>
@@ -153,6 +155,9 @@ Without webhooks? TTL handles it—cached data expires naturally after 5 minutes
 ---
 
 ## Quick Start
+
+> [!NOTE]
+> New to Saleor? Check out [saleor.io/start](https://saleor.io/start) to learn how storefronts work underneath.
 
 ### 1. Get a Saleor Backend
 
