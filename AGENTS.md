@@ -312,10 +312,15 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ### References
 
-Saleor domain knowledge in `skills/saleor-paper-storefront/references/`:
+Saleor domain knowledge and deep-dive documentation in `skills/saleor-paper-storefront/references/`:
 
 - `saleor-domain-model.md` — Entity relationships, ER diagram, GraphQL type patterns
 - `saleor-glossary.md` — Non-obvious Saleor terms that commonly cause confusion
+- `saleor-key-directories.md` — Saleor core source layout for API investigation
+- `variant-state-machine.md` — Variant selection state diagram and transitions
+- `variant-utils-reference.md` — Variant selection utility function signatures
+
+Full compiled document (all rules + references in one file): [`skills/saleor-paper-storefront/AGENTS.md`](skills/saleor-paper-storefront/AGENTS.md)
 
 ---
 

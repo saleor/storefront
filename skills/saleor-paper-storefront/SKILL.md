@@ -69,7 +69,14 @@ For the full project context (dev commands, architecture, env vars, gotchas, ant
 
 ## References
 
-Saleor domain knowledge:
+Saleor domain knowledge and deep-dive documentation:
 
 - `references/saleor-domain-model.md` — Entity relationships, ER diagram, GraphQL type patterns
 - `references/saleor-glossary.md` — Non-obvious Saleor terms that commonly cause confusion
+- `references/saleor-key-directories.md` — Saleor core source layout for API investigation
+- `references/variant-state-machine.md` — Variant selection state diagram and transitions
+- `references/variant-utils-reference.md` — Variant selection utility function signatures
+
+## Full Compiled Document
+
+For the complete guide with all rules and references expanded: `AGENTS.md`
