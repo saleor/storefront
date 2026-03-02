@@ -178,8 +178,10 @@ export const PaymentMethodSelector: FC<PaymentMethodSelectorProps> = ({
 							className="sr-only"
 						/>
 						<RadioIndicator selected={value === "paypal"} />
-						<span className="font-bold text-blue-600">Pay</span>
-						<span className="font-bold text-blue-900">Pal</span>
+						<span>
+							<span className="font-bold text-blue-600">Pay</span>
+							<span className="font-bold text-blue-900">Pal</span>
+						</span>
 					</label>
 				)}
 
