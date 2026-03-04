@@ -1,56 +1,61 @@
 # AI Agent Guidelines for Saleor Storefront
 
-This document provides essential context for AI agents. For detailed task-specific instructions, see the **Skills** below.
+This document provides essential context for AI agents working on this codebase. It is self-contained — any agent (Claude, Codex, Copilot, Cursor) reading only this file should be productive. For Claude Code users, this project also has a [skill](skills/saleor-paper-storefront/SKILL.md) with 16 detailed rule files.
 
 ---
 
 ## Quick Reference
 
-### Critical Commands
+### Dev Commands
 
 ```bash
-pnpm run generate           # After ANY src/graphql/*.graphql file change
-pnpm run generate:checkout  # After ANY src/checkout/graphql/*.graphql file change
-pnpm exec tsc --noEmit      # Type check
-pnpm run build              # Full build
-pnpm run dev                # Development server
-pnpm test                   # Run tests (watch mode)
+pnpm dev                    # Start dev server (webpack, HMR) — auto-runs codegen
+pnpm dev:turbopack           # Start dev server (turbopack)
+pnpm build                   # Production build — auto-runs codegen
+pnpm generate                # Regenerate storefront GraphQL types (src/gql/)
+pnpm generate:checkout       # Regenerate checkout GraphQL types (src/checkout/graphql/generated/)
+pnpm test                    # Run Vitest (watch mode)
+pnpm test:run                # Run Vitest (single run, CI)
+pnpm lint                    # ESLint
+pnpm lint:fix                # ESLint with auto-fix
+pnpm knip                    # Detect unused exports/dependencies
 ```
 
-### Skills Architecture
+**After editing any `.graphql` file**, run the appropriate `generate` command before building or committing.
 
-Skills are organized in two locations:
+### Code Style
 
-| Location                          | Purpose                           | Contents                                                                 |
-| --------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
-| `skills/saleor-paper-storefront/` | Project-specific domain knowledge | 13 rules covering caching, PDP, checkout, GraphQL, etc.                  |
-| `.agents/skills/`                 | Installed community skills        | Vercel React best practices, composition patterns, web design guidelines |
+- TypeScript strict mode — no `any`, no `as` type assertions unless unavoidable
+- Tailwind CSS for all styling — no inline styles, no CSS modules
+- Import paths use `@/` alias (maps to `src/`)
+- Server Components by default — only `"use client"` when hooks/interactivity needed
+- GraphQL results: always check `result.ok` before accessing `result.data`
+- Pre-commit hooks: ESLint + Prettier run automatically via husky/lint-staged
 
-### When to Use Which Skill
+### Testing
 
-**Project skill** ([`saleor-paper-storefront`](skills/saleor-paper-storefront/SKILL.md)) -- use for all Saleor storefront tasks:
+Run `pnpm test:run` before committing. The project has 2 test files covering variant selection and filter utilities — see `rules/dev-testing.md` for conventions and where to add new tests. Test environment is Node (not jsdom) — don't test React component rendering directly.
 
-| Task                           | Rule                  |
-| ------------------------------ | --------------------- |
-| Modifying `.graphql` files     | `data-graphql`        |
-| Caching, ISR, webhooks         | `data-caching`        |
-| Product detail page (PDP)      | `product-pdp`         |
-| Variant/attribute selection    | `product-variants`    |
-| Product list filtering/sorting | `product-filtering`   |
-| Checkout flow debugging        | `checkout-management` |
-| Checkout UI components         | `checkout-components` |
-| Creating/styling components    | `ui-components`       |
-| Channels, fulfillment & stock  | `ui-channels`         |
-| SEO, metadata, OG images       | `seo-metadata`        |
-| Investigating Saleor API       | `dev-investigation`   |
+---
 
-**Community skills** (`.agents/skills/`) -- use for generic best practices:
+## I Want To...
 
-| Task                           | Skill                         |
-| ------------------------------ | ----------------------------- |
-| Writing React components       | `vercel-react-best-practices` |
-| Component composition patterns | `vercel-composition-patterns` |
-| UI accessibility/UX review     | `web-design-guidelines`       |
+| Task                         | Start Here                                                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------------- |
+| Add a new GraphQL field      | `rules/data-graphql.md` → Making Changes                                                 |
+| Add a new storefront page    | `rules/dev-new-page.md` → Recipe                                                         |
+| Add a product page feature   | `rules/product-pdp.md` → Data Flow                                                       |
+| Debug checkout issues        | `rules/dev-investigation.md` → Checkout Diagnostic                                       |
+| Debug payment failures       | `rules/checkout-management.md` → Payment Transaction Flow + `rules/dev-investigation.md` |
+| Fix caching / stale data     | `rules/data-caching.md` → Debugging Checklist                                            |
+| Handle a new webhook event   | `rules/webhook-handlers.md` → Adding New Events                                          |
+| Modify cart behavior         | `rules/checkout-cart.md` → Cart Mutations                                                |
+| Understand variant selection | `rules/product-variants.md` → State Machine                                              |
+| Write a Server Action        | `rules/data-graphql.md` → Server Actions with GraphQL                                    |
+| Write tests                  | `rules/dev-testing.md` → Where to Add Tests First                                        |
+| Understand Saleor concepts   | `references/saleor-glossary.md` + `references/saleor-domain-model.md`                    |
+
+All rule/reference paths are relative to `skills/saleor-paper-storefront/`.
 
 ---
 
@@ -61,9 +66,9 @@ Skills are organized in two locations:
 - **Framework**: Next.js 16 (App Router, Server Components, Server Actions)
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS with CSS custom properties
-- **UI Components**: shadcn/ui pattern (Radix UI primitives)
+- **UI**: @headlessui/react, Radix UI (dialog, dropdown), lucide-react icons
 - **GraphQL**: Saleor API with `graphql-codegen`
-- **State**: React Context (cart), Zustand (checkout only)
+- **State**: Server-side (cookies + server actions for cart data), urql (checkout queries)
 
 ### Project Structure
 
@@ -87,6 +92,34 @@ src/
 │   └── search/             # Search abstraction
 └── styles/brand.css        # Design tokens (CSS variables)
 ```
+
+### Key File Paths
+
+```
+src/lib/graphql.ts                    — GraphQL execution, GraphQLResult<T>, RequestQueue
+src/lib/checkout.ts                   — findOrCreate, getIdFromCookies, cookie management
+src/graphql/*.graphql                 — Storefront queries/mutations
+src/checkout/graphql/*.graphql        — Checkout queries/mutations
+src/gql/graphql.ts                    — Generated storefront types (DO NOT EDIT)
+src/checkout/graphql/generated/       — Generated checkout types (DO NOT EDIT)
+src/app/[channel]/(main)/            — All storefront pages
+src/app/api/revalidate/              — Webhook-driven cache invalidation
+src/ui/components/                    — Shared UI components
+src/checkout/components/              — Checkout-specific UI components
+src/styles/brand.css                  — Design tokens
+vitest.config.ts                      — Test configuration
+```
+
+### Critical Architecture Decisions
+
+- **GraphQL execution**: Never throws — returns `GraphQLResult<T>` discriminated union. Always check `result.ok` before accessing `result.data`
+- **Two codegen setups**: Storefront (`src/graphql/` → `src/gql/`) and Checkout (`src/checkout/graphql/` → `src/checkout/graphql/generated/`). Don't mix them
+- **Server Actions**: `"use server"` → `executeAuthenticatedGraphQL()` → `revalidatePath()`. No client-side state for cart/checkout
+- **Caching**: PPR with `"use cache"` + tag-based revalidation from webhooks. Mutations always use `cache: "no-cache"`
+- **Routing**: All storefront pages under `src/app/[channel]/(main)/`. Channel from URL params, never hardcoded
+- **Auth fallback**: `executeAuthenticatedGraphQL` falls back to unauthenticated during static generation (`DYNAMIC_SERVER_USAGE`)
+- **Components**: Default Server Components. Only `"use client"` for hooks, interactivity, or `@headlessui/react`
+- **Checkout cookies**: `checkoutId-{channel}` cookie, per-channel. Not httpOnly (accessible from client JS for checkout redirect flows)
 
 ---
 
@@ -227,22 +260,75 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ---
 
-## Skills Reference
+## Anti-patterns (Global)
+
+- Don't edit generated files (`src/gql/`, `src/checkout/graphql/generated/`)
+- Don't destructure GraphQL results without checking `result.ok`
+- Don't hardcode channel slugs — use `params.channel`
+- Don't add `"use client"` to page files — extract interactivity into child components
+- Don't use `cache: "no-cache"` on read queries (use `revalidate`)
+- Don't skip `revalidatePath()` after mutations
+- Don't omit `errors { field message code }` from GraphQL mutations
+
+---
+
+## Rule Files Reference
+
+16 rules across 6 categories, in `skills/saleor-paper-storefront/rules/`:
+
+### 1. Data Layer (CRITICAL)
+
+- `data-caching` - Cache Components (PPR), cache tags, revalidation, price flow
+- `data-graphql` - Two codegen setups, execution functions, Server Actions, mutations, rate limiting
+- `data-error-handling` - GraphQLResult<T> pattern, 4 error layers, getUserMessage, validation errors
+- `data-auth-patterns` - Client/server auth, token flow, login, registration, password reset
+- `webhook-handlers` - Revalidation webhooks, HMAC verification, rate limiting, adding events
+
+### 2. Product Pages (HIGH)
+
+- `product-pdp` - PDP architecture, gallery, data flow, add-to-cart, ErrorBoundary
+- `product-variants` - Variant selection state machine, option states, discount badges
+- `product-filtering` - Server vs client filtering, category slug resolution
+
+### 3. Checkout Flow (HIGH)
+
+- `checkout-management` - Checkout lifecycle, cookie storage, payment transactions, checkout components, debugging
+- `checkout-cart` - Cart mutations, add-to-cart action, line items, cart badge, cookie management
+
+### 4. UI & Channels (MEDIUM)
+
+- `ui-components` - Design tokens, @headlessui primitives, Server/Client component split
+- `ui-channels` - Multi-channel URLs, fulfillment model, purchasability debugging, channel selector
+
+### 5. SEO (MEDIUM)
+
+- `seo-metadata` - JSON-LD structured data, metadata helpers, OG image generation
+
+### 6. Development (MEDIUM)
+
+- `dev-investigation` - Saleor API investigation, GraphQL Playground, Dashboard patterns
+- `dev-testing` - Vitest config, testing strategy, highest-value test targets
+- `dev-new-page` - Adding routes, [channel] pattern, data fetching, metadata, caching
+
+### References
+
+Saleor domain knowledge and deep-dive documentation in `skills/saleor-paper-storefront/references/`:
+
+- `saleor-domain-model.md` — Entity relationships, ER diagram, GraphQL type patterns
+- `saleor-glossary.md` — Non-obvious Saleor terms that commonly cause confusion
+- `saleor-key-directories.md` — Saleor core source layout for API investigation
+- `variant-state-machine.md` — Variant selection state diagram and transitions
+- `variant-utils-reference.md` — Variant selection utility function signatures
+
+Full compiled document (all rules + references in one file): [`skills/saleor-paper-storefront/AGENTS.md`](skills/saleor-paper-storefront/AGENTS.md)
+
+---
+
+## Skills (for agents with skill support)
 
 ### Project Skill
 
-**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 13 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
-
-Rules by category:
-
-1. **Data Layer** (CRITICAL): `data-caching`, `data-graphql`
-2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
-3. **Checkout Flow** (HIGH): `checkout-management`, `checkout-components`
-4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`
-5. **SEO** (MEDIUM): `seo-metadata`
-6. **Development** (MEDIUM): `dev-investigation`
-
-Full compiled document: [`skills/saleor-paper-storefront/AGENTS.md`](skills/saleor-paper-storefront/AGENTS.md)
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** — 16 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
 ### Installed Community Skills
 

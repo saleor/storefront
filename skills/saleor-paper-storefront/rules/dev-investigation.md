@@ -1,6 +1,6 @@
 # Saleor API Investigation
 
-Investigate Saleor API behavior by checking source code when documentation is unclear or you need to understand exact data models.
+Investigate Saleor API behavior by checking source code when documentation is unclear or you need to understand exact data models. Use GraphQL Playground for live debugging and the Saleor Dashboard for configuration inspection.
 
 ## Step 1: Check the Generated Types (Schema)
 
@@ -30,12 +30,207 @@ If the Saleor core repo is available locally (e.g. `../saleor/`), or clone it:
 cd /tmp && git clone --depth 1 https://github.com/saleor/saleor.git saleor-core
 ```
 
-For directory structure and grep patterns, see [saleor-key-directories.md](../references/saleor-key-directories.md).
+Key paths in the Saleor core source:
 
 | Path                       | Purpose                     |
 | -------------------------- | --------------------------- |
 | `saleor/graphql/product/`  | Resolvers, permission logic |
 | `saleor/product/models.py` | Django models               |
+
+---
+
+## Step 3: GraphQL Playground Diagnostics
+
+Use the Saleor GraphQL Playground (`NEXT_PUBLIC_SALEOR_API_URL` in browser) for live debugging.
+
+### Common Diagnostic Queries
+
+**Check checkout state** (payment failures, stale data):
+
+```graphql
+query CheckoutDiagnostic($id: ID!) {
+	checkout(id: $id) {
+		id
+		email
+		totalPrice {
+			gross {
+				amount
+				currency
+			}
+		}
+		subtotalPrice {
+			gross {
+				amount
+				currency
+			}
+		}
+		shippingPrice {
+			gross {
+				amount
+				currency
+			}
+		}
+		isShippingRequired
+		shippingAddress {
+			firstName
+			lastName
+			city
+			country {
+				code
+			}
+		}
+		billingAddress {
+			firstName
+			lastName
+			city
+			country {
+				code
+			}
+		}
+		lines {
+			id
+			quantity
+			variant {
+				name
+			}
+			totalPrice {
+				gross {
+					amount
+				}
+			}
+		}
+		transactions {
+			id
+			chargedAmount {
+				amount
+			}
+			authorizedAmount {
+				amount
+			}
+		}
+		availablePaymentGateways {
+			id
+			name
+		}
+	}
+}
+```
+
+**Check product availability** (missing products, stock issues):
+
+```graphql
+query ProductAvailability($slug: String!, $channel: String!) {
+	product(slug: $slug, channel: $channel) {
+		id
+		name
+		isAvailable
+		isAvailableForPurchase
+		availableForPurchaseAt
+		variants {
+			id
+			name
+			quantityAvailable
+			pricing {
+				price {
+					gross {
+						amount
+						currency
+					}
+				}
+			}
+		}
+	}
+}
+```
+
+**Check order status** (post-checkout debugging):
+
+```graphql
+query OrderStatus($id: ID!) {
+	order(id: $id) {
+		id
+		number
+		status
+		paymentStatus
+		totalCaptured {
+			amount
+			currency
+		}
+		payments {
+			id
+			gateway
+			chargeStatus
+		}
+		fulfillments {
+			id
+			status
+			trackingNumber
+		}
+	}
+}
+```
+
+> **Note**: Order and payment queries require authentication (admin token or the user who placed the order).
+
+---
+
+## Step 4: Common Saleor API Gotchas
+
+### Rate Limiting (HTTP 429)
+
+Saleor Cloud rate-limits API requests. The storefront handles this automatically via `RequestQueue` in `src/lib/graphql.ts`:
+
+- 3 concurrent requests max
+- 200ms min delay between requests
+- Exponential backoff on 429 responses
+- Respects `Retry-After` header
+
+If you see 429 errors during builds, increase `NEXT_BUILD_RETRIES` env var.
+
+### DYNAMIC_SERVER_USAGE Errors
+
+If you see `DYNAMIC_SERVER_USAGE` errors during build, see `data-auth-patterns` rule → DYNAMIC_SERVER_USAGE Fallback.
+
+### Timeout Behavior
+
+Default timeout is 15s (`SALEOR_REQUEST_TIMEOUT_MS`). If Saleor is slow (e.g., during reindexing), increase it. Timeouts trigger automatic retry with exponential backoff.
+
+### Channel-Specific Data
+
+Most Saleor queries require a `channel` parameter. See `ui-channels` rule for details.
+
+---
+
+## Step 5: Dashboard Investigation Patterns
+
+### Webhook Deliveries
+
+**Configuration → Webhooks → [Webhook] → Deliveries**
+
+Shows every webhook call with request/response. Use this when:
+
+- Cache isn't invalidating after Saleor changes
+- Webhook errors in `[Revalidate]` logs
+
+### Product Type Configuration
+
+**Configuration → Product Types → [Type] → Variant Attributes**
+
+Controls which attributes appear on variants. If an attribute doesn't show in `variant.attributes`, it's not configured at the ProductType level.
+
+### App Health
+
+**Apps → [App Name]**
+
+Check if payment apps (Stripe, Adyen, Dummy) are active and reachable. If `AUTHORIZATION_FAILURE` errors occur, the payment app is likely down.
+
+### Channel Configuration
+
+**Configuration → Channels → [Channel]**
+
+Check currency, countries, shipping zones, and which products are available in each channel.
+
+---
 
 ## Examples
 
@@ -84,8 +279,213 @@ Dashboard → Configuration → Product Types → [Type] → Variant Attributes
 
 If an attribute doesn't appear in `variant.attributes`, check the ProductType configuration.
 
+## Domain-Aware Investigation Queries
+
+### Stock Availability Debugging
+
+When a variant shows `quantityAvailable: 0` unexpectedly, check stock across all warehouses:
+
+```graphql
+# Requires MANAGE_PRODUCTS permission (use app token)
+query StockDebug($variantId: ID!) {
+	productVariant(id: $variantId) {
+		name
+		sku
+		trackInventory
+		stocks {
+			warehouse {
+				name
+				isPrivate
+			}
+			quantity
+			quantityAllocated
+			quantityReserved
+		}
+	}
+}
+```
+
+If stock exists but `quantityAvailable` is 0 on the storefront, check the fulfillment triangle — the warehouse may not be connected to the channel's shipping zone. See [saleor-domain-model.md](../references/saleor-domain-model.md#the-fulfillment-triangle).
+
+### Shipping Method Availability
+
+When checkout shows no shipping methods:
+
+```graphql
+query ShippingDebug($checkoutId: ID!) {
+	checkout(id: $checkoutId) {
+		shippingAddress {
+			country {
+				code
+			}
+			city
+		}
+		availableShippingMethods {
+			id
+			name
+			price {
+				amount
+				currency
+			}
+			minimumOrderPrice {
+				amount
+				currency
+			}
+			maximumOrderPrice {
+				amount
+				currency
+			}
+		}
+		availableCollectionPoints {
+			id
+			name
+			clickAndCollectOption
+		}
+	}
+}
+```
+
+Empty `availableShippingMethods` means either: no shipping zone covers the address country, or no warehouse is assigned to both the channel and a matching shipping zone.
+
+### Promotion & Discount Debugging
+
+Check whether catalogue promotions are affecting variant prices:
+
+```graphql
+query DiscountDebug($slug: String!, $channel: String!) {
+	product(slug: $slug, channel: $channel) {
+		name
+		variants {
+			name
+			sku
+			pricing {
+				price {
+					gross {
+						amount
+						currency
+					}
+				}
+				priceUndiscounted {
+					gross {
+						amount
+						currency
+					}
+				}
+				discount {
+					gross {
+						amount
+						currency
+					}
+				}
+				onSale
+			}
+		}
+	}
+}
+```
+
+If `price` < `priceUndiscounted`, a catalogue promotion is active. The `discount` field shows the difference and `onSale` is `true`.
+
+### Channel Configuration Inspection
+
+Verify a channel has the required shipping zones and warehouses:
+
+```graphql
+# Requires MANAGE_CHANNELS permission (use app token)
+query ChannelDebug($slug: String!) {
+	channel(slug: $slug) {
+		name
+		slug
+		currencyCode
+		isActive
+		defaultCountry {
+			code
+		}
+		warehouses {
+			name
+		}
+		shippingZones {
+			name
+			countries {
+				code
+			}
+			warehouses {
+				name
+			}
+			shippingMethods {
+				name
+				isActive
+			}
+		}
+	}
+}
+```
+
+Cross-check: Every warehouse in `channel.warehouses` should also appear in at least one `shippingZone.warehouses` — otherwise stock in that warehouse is unreachable.
+
+### Transaction & Payment Debugging
+
+When payments fail or are stuck:
+
+```graphql
+query TransactionDebug($checkoutId: ID!) {
+	checkout(id: $checkoutId) {
+		totalPrice {
+			gross {
+				amount
+				currency
+			}
+		}
+		transactions {
+			id
+			authorizedAmount {
+				amount
+				currency
+			}
+			chargedAmount {
+				amount
+				currency
+			}
+			refundedAmount {
+				amount
+				currency
+			}
+			canceledAmount {
+				amount
+				currency
+			}
+			pspReference
+			availableActions
+			events {
+				type
+				amount {
+					amount
+					currency
+				}
+				createdAt
+				message
+			}
+		}
+		availablePaymentGateways {
+			id
+			name
+			config {
+				field
+				value
+			}
+		}
+	}
+}
+```
+
+If `availablePaymentGateways` is empty, the payment app may be down — check **Dashboard → Apps**.
+
+---
+
 ## Anti-patterns
 
-❌ **Don't guess API behavior** - Check the source  
-❌ **Don't filter `visibleInStorefront` client-side** - API does it  
-❌ **Don't assume attribute presence** - Check ProductType config
+- **Don't guess API behavior** - Check the source
+- **Don't filter `visibleInStorefront` client-side** - API does it
+- **Don't assume attribute presence** - Check ProductType config
+- **Don't hardcode channel slugs in debug queries** — see `ui-channels` rule
+- **Don't ignore 429 errors in logs** - Check `SALEOR_MAX_CONCURRENT_REQUESTS` tuning
