@@ -1,0 +1,5 @@
+{
+	"enabledPlugins": {
+		"saleor-configurator@saleor-configurator": true
+	}
+}
