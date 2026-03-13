@@ -15,6 +15,7 @@ Usage:
 
 import csv
 import json
+import os
 import random
 import string
 import time
@@ -23,14 +24,15 @@ import urllib.error
 import ssl
 
 # =============================================================================
-# Configuration
+# Configuration (override via environment variables for production)
 # =============================================================================
 
-SALEOR_URL = "http://localhost:8000/graphql/"
-ADMIN_EMAIL = "admin@example.com"
-ADMIN_PASSWORD = "admin"
+SALEOR_URL = os.environ.get("SALEOR_URL", "http://localhost:8000/graphql/")
+ADMIN_EMAIL = os.environ.get("SALEOR_ADMIN_EMAIL", "admin@example.com")
+ADMIN_PASSWORD = os.environ.get("SALEOR_ADMIN_PASSWORD", "admin")
 
-CSV_PATH = "/Users/damienlarquey/storefront/product/infinitybio_products_seo_test.csv"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.environ.get("SEO_CSV_PATH", os.path.join(SCRIPT_DIR, "infinitybio_products_seo_test.csv"))
 
 PRODUCT_TYPE_NAMES = [
     "Peptide",

@@ -6,8 +6,11 @@ import ssl
 import uuid
 import os
 
-SALEOR_URL = "http://localhost:8000/graphql/"
-IMAGE_PATH = "/Users/damienlarquey/storefront/product/glp-1.png"
+SALEOR_URL = os.environ.get("SALEOR_URL", "http://localhost:8000/graphql/")
+ADMIN_EMAIL = os.environ.get("SALEOR_ADMIN_EMAIL", "admin@example.com")
+ADMIN_PASSWORD = os.environ.get("SALEOR_ADMIN_PASSWORD", "admin")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGE_PATH = os.environ.get("IMAGE_PATH", os.path.join(SCRIPT_DIR, "glp-1.png"))
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
@@ -16,7 +19,7 @@ ctx.verify_mode = ssl.CERT_NONE
 
 def get_token():
     payload = json.dumps({
-        "query": 'mutation { tokenCreate(email: "admin@example.com", password: "admin") { token } }'
+        "query": f'mutation {{ tokenCreate(email: "{ADMIN_EMAIL}", password: "{ADMIN_PASSWORD}") {{ token }} }}'
     }).encode()
     req = urllib.request.Request(SALEOR_URL, data=payload,
                                  headers={"Content-Type": "application/json"}, method="POST")

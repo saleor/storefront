@@ -11,6 +11,7 @@ Usage:
 
 import csv
 import json
+import os
 import random
 import string
 import time
@@ -19,19 +20,23 @@ import urllib.error
 import ssl
 
 # =============================================================================
-# Configuration
+# Configuration (override via environment variables for production)
 # =============================================================================
 
-SALEOR_URL = "http://localhost:8000/graphql/"
-ADMIN_EMAIL = "admin@example.com"
-ADMIN_PASSWORD = "admin"
+SALEOR_URL = os.environ.get("SALEOR_URL", "http://localhost:8000/graphql/")
+ADMIN_EMAIL = os.environ.get("SALEOR_ADMIN_EMAIL", "admin@example.com")
+ADMIN_PASSWORD = os.environ.get("SALEOR_ADMIN_PASSWORD", "admin")
 
-CHANNEL_SLUG = "default-channel"
-CHANNEL_ID = "Q2hhbm5lbDox"
-WAREHOUSE_ID = "V2FyZWhvdXNlOjNiMjY5ZjU4LTg2MDYtNGJjOC04ZmFmLTE3ZTA5OWQwNzU2ZQ=="
-DEFAULT_CATEGORY_ID = "Q2F0ZWdvcnk6MQ=="
+CHANNEL_SLUG = os.environ.get("SALEOR_CHANNEL_SLUG", "default-channel")
+CHANNEL_CURRENCY = os.environ.get("SALEOR_CHANNEL_CURRENCY", "USD")
+CHANNEL_COUNTRY = os.environ.get("SALEOR_CHANNEL_COUNTRY", "US")
 
-CSV_PATH = "/Users/damienlarquey/storefront/product/infinitybio_products_catalog.csv"
+# These are discovered/created dynamically — no more hardcoded IDs
+CHANNEL_ID = None
+WAREHOUSE_ID = None
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.environ.get("CSV_PATH", os.path.join(SCRIPT_DIR, "infinitybio_products_catalog.csv"))
 
 PRODUCT_TYPES = [
     "Peptide",
@@ -218,6 +223,167 @@ class SaleorClient:
 
 
 # =============================================================================
+# Bootstrap: ensure channel + warehouse exist
+# =============================================================================
+
+def ensure_channel(client):
+    """Find or create the default channel. Returns (channel_id, channel_slug)."""
+    global CHANNEL_ID
+    print("\n" + "=" * 60)
+    print("BOOTSTRAP: Ensuring channel exists...")
+    print("=" * 60)
+
+    # Try to find existing channel by slug
+    result = client.execute("""
+        query {
+            channels {
+                id
+                slug
+                name
+                currencyCode
+            }
+        }
+    """)
+    channels = result.get("channels", [])
+
+    for ch in channels:
+        if ch["slug"] == CHANNEL_SLUG:
+            CHANNEL_ID = ch["id"]
+            print(f"  Found existing channel '{ch['name']}' (slug: {ch['slug']}) -> {CHANNEL_ID}")
+            return CHANNEL_ID
+
+    # Channel doesn't exist — create it
+    print(f"  Channel '{CHANNEL_SLUG}' not found. Creating...")
+    result = client.execute(
+        """
+        mutation ChannelCreate($input: ChannelCreateInput!) {
+            channelCreate(input: $input) {
+                channel {
+                    id
+                    slug
+                    name
+                }
+                errors {
+                    field
+                    message
+                }
+            }
+        }
+        """,
+        {
+            "input": {
+                "name": "Default Channel",
+                "slug": CHANNEL_SLUG,
+                "currencyCode": CHANNEL_CURRENCY,
+                "defaultCountry": CHANNEL_COUNTRY,
+            }
+        },
+    )
+    data = result.get("channelCreate", {})
+    errors = data.get("errors", [])
+    if errors:
+        raise Exception(f"Failed to create channel: {errors}")
+
+    ch = data["channel"]
+    CHANNEL_ID = ch["id"]
+    print(f"  Created channel '{ch['name']}' (slug: {ch['slug']}) -> {CHANNEL_ID}")
+    return CHANNEL_ID
+
+
+def ensure_warehouse(client):
+    """Find or create a warehouse. Returns warehouse_id."""
+    global WAREHOUSE_ID
+    print("\n" + "=" * 60)
+    print("BOOTSTRAP: Ensuring warehouse exists...")
+    print("=" * 60)
+
+    # Find existing warehouses
+    result = client.execute("""
+        query {
+            warehouses(first: 10) {
+                edges {
+                    node {
+                        id
+                        name
+                        slug
+                    }
+                }
+            }
+        }
+    """)
+    edges = result.get("warehouses", {}).get("edges", [])
+
+    if edges:
+        wh = edges[0]["node"]
+        WAREHOUSE_ID = wh["id"]
+        print(f"  Found existing warehouse '{wh['name']}' -> {WAREHOUSE_ID}")
+        return WAREHOUSE_ID
+
+    # No warehouse — create one
+    print("  No warehouse found. Creating 'Default Warehouse'...")
+    result = client.execute(
+        """
+        mutation WarehouseCreate($input: WarehouseCreateInput!) {
+            createWarehouse(input: $input) {
+                warehouse {
+                    id
+                    name
+                }
+                errors {
+                    field
+                    message
+                }
+            }
+        }
+        """,
+        {
+            "input": {
+                "name": "Default Warehouse",
+                "slug": "default-warehouse",
+                "shippingZones": [],
+                "address": {
+                    "companyName": "InfinityBio Labs",
+                    "streetAddress1": "123 Research Blvd",
+                    "city": "San Diego",
+                    "country": CHANNEL_COUNTRY,
+                    "postalCode": "92101",
+                },
+            }
+        },
+    )
+    data = result.get("createWarehouse", {})
+    errors = data.get("errors", [])
+    if errors:
+        raise Exception(f"Failed to create warehouse: {errors}")
+
+    wh = data["warehouse"]
+    WAREHOUSE_ID = wh["id"]
+    print(f"  Created warehouse '{wh['name']}' -> {WAREHOUSE_ID}")
+
+    # Add the warehouse to the channel
+    print(f"  Adding warehouse to channel...")
+    client.execute(
+        """
+        mutation ChannelUpdate($id: ID!, $input: ChannelUpdateInput!) {
+            channelUpdate(id: $id, input: $input) {
+                channel { id }
+                errors { field message }
+            }
+        }
+        """,
+        {
+            "id": CHANNEL_ID,
+            "input": {
+                "addWarehouses": [WAREHOUSE_ID],
+            },
+        },
+    )
+    print(f"  Warehouse added to channel.")
+
+    return WAREHOUSE_ID
+
+
+# =============================================================================
 # Delete operations
 # =============================================================================
 
@@ -343,9 +509,9 @@ def delete_all_product_types(client):
 
 
 def delete_all_categories(client):
-    """Delete all categories except Default Category."""
+    """Delete all categories."""
     print("\n" + "=" * 60)
-    print("STEP 3: Deleting all categories (except Default Category)...")
+    print("STEP 3: Deleting all categories...")
     print("=" * 60)
 
     has_next = True
@@ -373,14 +539,11 @@ def delete_all_categories(client):
         cats = result.get("categories", {})
         edges = cats.get("edges", [])
         for edge in edges:
-            nid = edge["node"]["id"]
-            nname = edge["node"]["name"]
-            if nid != DEFAULT_CATEGORY_ID:
-                all_ids.append((nid, nname))
+            all_ids.append((edge["node"]["id"], edge["node"]["name"]))
             cursor = edge["cursor"]
         has_next = cats.get("pageInfo", {}).get("hasNextPage", False)
 
-    print(f"  Found {len(all_ids)} categories to delete (keeping Default Category).")
+    print(f"  Found {len(all_ids)} categories to delete.")
 
     for i, (cid, cname) in enumerate(all_ids, 1):
         result = client.execute(
@@ -891,12 +1054,16 @@ def main():
     print("InfinityBio Saleor Product Import Script")
     print("=" * 60)
     print(f"API:       {SALEOR_URL}")
+    print(f"Admin:     {ADMIN_EMAIL}")
     print(f"Channel:   {CHANNEL_SLUG}")
-    print(f"Warehouse: Default Warehouse")
     print(f"CSV:       {CSV_PATH}")
 
     client = SaleorClient(SALEOR_URL)
     client.authenticate()
+
+    # Phase 0: Bootstrap — ensure channel + warehouse exist
+    ensure_channel(client)
+    ensure_warehouse(client)
 
     # Phase 1: Delete existing data
     delete_all_products(client)
