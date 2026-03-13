@@ -10,7 +10,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN pnpm i --frozen-lockfile --prefer-offline
 
 # Rebuild the source code only when needed
@@ -37,7 +37,8 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-RUN pnpm build
+# Skip codegen (prebuild) — generated types are committed in src/gql/
+RUN npx next build
 
 # Production image, copy all the files and run next
 FROM base AS runner
