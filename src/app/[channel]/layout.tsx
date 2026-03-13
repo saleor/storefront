@@ -10,11 +10,6 @@ import { DefaultChannelSlug } from "@/app/config";
  * Optionally discovers additional channels via SALEOR_APP_TOKEN (for multi-channel builds).
  */
 export const generateStaticParams = async () => {
-	// In Docker/CI builds, skip static generation — pages render dynamically at runtime
-	if (process.env.NEXT_OUTPUT === "standalone") {
-		return [];
-	}
-
 	const channels: string[] = [];
 
 	// 1. Add default channel (required)

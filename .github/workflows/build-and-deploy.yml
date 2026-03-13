@@ -5,59 +5,49 @@ on:
     branches: [main]
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha
-            type=raw,value=latest
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          build-args: |
-            NEXT_PUBLIC_SALEOR_API_URL=${{ vars.NEXT_PUBLIC_SALEOR_API_URL }}
-            NEXT_PUBLIC_STOREFRONT_URL=${{ vars.NEXT_PUBLIC_STOREFRONT_URL }}
-            NEXT_PUBLIC_DEFAULT_CHANNEL=${{ vars.NEXT_PUBLIC_DEFAULT_CHANNEL }}
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy storefront to Hetzner
+      - name: Build and deploy on Hetzner
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
+          command_timeout: 20m
           script: |
+            set -e
+
+            REPO_DIR="/opt/storefront"
+            REPO_URL="https://github.com/${{ github.repository }}.git"
+            IMAGE_NAME="infinitybio-storefront:latest"
+
+            # Clone or pull
+            if [ ! -d "$REPO_DIR" ]; then
+              echo "==> First deploy — cloning storefront..."
+              git clone "$REPO_URL" "$REPO_DIR"
+            else
+              cd "$REPO_DIR"
+              git fetch origin main
+              git reset --hard origin/main
+            fi
+
+            cd "$REPO_DIR"
+
+            # Build Docker image locally (API is reachable on this server)
+            echo "==> Building Docker image..."
+            docker build \
+              --build-arg NEXT_PUBLIC_SALEOR_API_URL=http://api:8000/graphql/ \
+              --build-arg NEXT_PUBLIC_STOREFRONT_URL=${{ vars.NEXT_PUBLIC_STOREFRONT_URL }} \
+              --build-arg NEXT_PUBLIC_DEFAULT_CHANNEL=${{ vars.NEXT_PUBLIC_DEFAULT_CHANNEL }} \
+              --network=saleor_saleor-backend-tier \
+              -t "$IMAGE_NAME" .
+
+            # Restart storefront via the infra compose
             cd /opt/saleor
-            docker compose -f docker-compose.prod.yml --env-file .env.prod pull storefront
             docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --no-deps storefront
+
+            # Cleanup
             docker image prune -f
+            echo "==> Storefront deployed!"

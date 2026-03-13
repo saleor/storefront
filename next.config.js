@@ -3,8 +3,7 @@ const config = {
 	// Cache Components (Partial Prerendering)
 	// Enables mixing static, cached, and dynamic content in a single route.
 	// See: https://nextjs.org/docs/app/getting-started/cache-components
-	// Disable cache components in standalone/CI builds (requires prerender which needs API)
-	cacheComponents: process.env.NEXT_OUTPUT !== "standalone",
+	cacheComponents: true,
 
 	// Optimize barrel file imports for better bundle size and cold start performance
 	// See: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
