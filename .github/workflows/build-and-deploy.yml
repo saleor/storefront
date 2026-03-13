@@ -11,16 +11,19 @@ jobs:
     steps:
       - name: Build and deploy on Hetzner
         uses: appleboy/ssh-action@v1
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         with:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
+          envs: GH_PAT
           command_timeout: 20m
           script: |
             set -e
 
             REPO_DIR="/opt/storefront"
-            REPO_URL="https://github.com/${{ github.repository }}.git"
+            REPO_URL="https://${GH_PAT}@github.com/${{ github.repository }}.git"
             IMAGE_NAME="infinitybio-storefront:latest"
 
             # Clone or pull
@@ -29,6 +32,7 @@ jobs:
               git clone "$REPO_URL" "$REPO_DIR"
             else
               cd "$REPO_DIR"
+              git remote set-url origin "$REPO_URL"
               git fetch origin main
               git reset --hard origin/main
             fi
