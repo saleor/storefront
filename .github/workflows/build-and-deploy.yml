@@ -50,7 +50,7 @@ jobs:
 
             # Restart storefront via the infra compose
             cd /opt/saleor
-            docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --no-deps storefront
+            docker compose -f docker-compose.prod.yml --profile frontend --env-file .env.prod up -d --no-deps storefront
 
             # Cleanup
             docker image prune -f
