@@ -8,7 +8,7 @@ import { Logo as SharedLogo } from "./shared/logo";
 export const Logo = () => {
 	return (
 		<LinkWithChannel href="/" className="flex shrink-0 items-center" aria-label="Homepage">
-			<SharedLogo className="h-7 w-auto" />
+			<SharedLogo className="h-9 w-auto" />
 		</LinkWithChannel>
 	);
 };

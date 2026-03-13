@@ -1,0 +1,11 @@
+query CollectionsList($channel: String!, $first: Int!) {
+	collections(channel: $channel, first: $first, filter: { published: PUBLISHED }) {
+		edges {
+			node {
+				id
+				name
+				slug
+			}
+		}
+	}
+}

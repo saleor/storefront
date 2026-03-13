@@ -21,3 +21,72 @@
 		-moz-osx-font-smoothing: grayscale;
 	}
 }
+
+@layer components {
+	/* Transparent header — invert all child colors on homepage at top */
+	header[data-transparent] {
+		color: white;
+	}
+	header[data-transparent] img {
+		filter: brightness(10);
+	}
+	header[data-transparent] input {
+		background-color: rgba(255, 255, 255, 0.1);
+		border-color: rgba(255, 255, 255, 0.15);
+		color: white;
+	}
+	header[data-transparent] input::placeholder {
+		color: rgba(255, 255, 255, 0.5);
+	}
+	header[data-transparent] svg {
+		color: white;
+	}
+	header[data-transparent] button,
+	header[data-transparent] a {
+		color: white;
+	}
+}
+
+@layer utilities {
+	/* Subtle noise texture overlay for dark sections */
+	.noise-overlay::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		opacity: 0.03;
+		pointer-events: none;
+		background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		background-repeat: repeat;
+		background-size: 256px 256px;
+	}
+
+	/* Emerald glow effect for card hovers */
+	.glow-emerald {
+		box-shadow:
+			0 0 0 1px rgba(16, 185, 129, 0),
+			0 0 0 0 rgba(16, 185, 129, 0),
+			0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		transition:
+			box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+			transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+			border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	.glow-emerald:hover {
+		box-shadow:
+			0 0 0 1px rgba(16, 185, 129, 0.3),
+			0 0 20px 0 rgba(16, 185, 129, 0.08),
+			0 8px 25px -5px rgba(0, 0, 0, 0.2);
+		transform: translateY(-2px);
+	}
+
+	/* Card lift effect for product cards */
+	.card-lift {
+		transition:
+			transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+			box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	.card-lift:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+	}
+}

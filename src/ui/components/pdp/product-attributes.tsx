@@ -1,6 +1,20 @@
 "use client";
 
-import { Shirt, Leaf, Droplets, Ruler, Sparkles } from "lucide-react";
+import {
+	FlaskConical,
+	Thermometer,
+	Scale,
+	Hash,
+	Dna,
+	Beaker,
+	TestTube,
+	Tag,
+	Droplets,
+	BookOpen,
+	HelpCircle,
+	Truck,
+	AlertTriangle,
+} from "lucide-react";
 import {
 	Accordion,
 	AccordionItemWithContext,
@@ -15,23 +29,29 @@ interface Attribute {
 	value: string | boolean | string[];
 }
 
+interface FaqItem {
+	question: string;
+	answer: string;
+}
+
 interface ProductAttributesProps {
-	/**
-	 * Description as an array of HTML strings (from EditorJS via edjsHTML parser)
-	 * Already sanitized with xss on the server
-	 */
 	descriptionHtml?: string[] | null;
 	attributes?: Attribute[];
 	careInstructions?: string | null;
+	faqItems?: FaqItem[] | null;
+	references?: string[] | null;
 }
 
-// Map attribute names to icons
 const attributeIcons: Record<string, ReactNode> = {
-	Material: <Shirt className="h-4 w-4" />,
-	"Made with Recycled Fibers": <Leaf className="h-4 w-4" />,
-	Waterproof: <Droplets className="h-4 w-4" />,
-	Fit: <Ruler className="h-4 w-4" />,
-	"Key Features": <Sparkles className="h-4 w-4" />,
+	Purity: <FlaskConical className="h-4 w-4" />,
+	Form: <TestTube className="h-4 w-4" />,
+	Storage: <Thermometer className="h-4 w-4" />,
+	"Molecular Weight": <Scale className="h-4 w-4" />,
+	"CAS Number": <Hash className="h-4 w-4" />,
+	Sequence: <Dna className="h-4 w-4" />,
+	Origin: <Tag className="h-4 w-4" />,
+	Solubility: <Droplets className="h-4 w-4" />,
+	"Research Category": <Beaker className="h-4 w-4" />,
 };
 
 function formatValue(value: string | boolean | string[]): ReactNode {
@@ -54,68 +74,133 @@ export function ProductAttributes({
 	descriptionHtml,
 	attributes = [],
 	careInstructions,
+	faqItems,
+	references,
 }: ProductAttributesProps) {
-	// Filter out variant attributes that are shown elsewhere (Size, Color)
 	const displayAttributes = attributes.filter((attr) => !["Size", "Color"].includes(attr.name));
 
+	const defaultOpen = ["description"];
+	if (displayAttributes.length > 0) defaultOpen.push("details");
+
 	return (
-		<Accordion type="multiple" defaultValue={["description"]} className="w-full">
-			{descriptionHtml && descriptionHtml.length > 0 && (
-				<AccordionItemWithContext value="description" className="border-border">
-					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Description
-					</AccordionTrigger>
-					<AccordionContent>
-						<div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-foreground prose-strong:text-foreground">
-							{descriptionHtml.map((html) => (
-								<div key={html} dangerouslySetInnerHTML={{ __html: html }} />
-							))}
-						</div>
-					</AccordionContent>
-				</AccordionItemWithContext>
-			)}
+		<div className="flex flex-col gap-6">
+			{/* Research Use Only disclaimer */}
+			<div className="flex items-start gap-3 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3">
+				<AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+				<p className="text-xs leading-relaxed text-amber-700 dark:text-amber-400">
+					<span className="font-semibold">For Research Use Only.</span> Not for human consumption. All
+					products are sold strictly for in-vitro research and laboratory use.
+				</p>
+			</div>
 
-			{displayAttributes.length > 0 && (
-				<AccordionItemWithContext value="details" className="border-border">
-					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Product Details
-					</AccordionTrigger>
-					<AccordionContent>
-						<div className="grid gap-3">
-							{displayAttributes.map((attr) => (
-								<div key={attr.name} className="flex items-start justify-between gap-4 text-sm">
-									<span className="flex items-center gap-2 text-muted-foreground">
-										{attributeIcons[attr.name]}
-										{attr.name}
-									</span>
-									<span className="text-right font-medium">{formatValue(attr.value)}</span>
-								</div>
-							))}
-						</div>
-					</AccordionContent>
-				</AccordionItemWithContext>
-			)}
+			<Accordion type="multiple" defaultValue={defaultOpen} className="w-full">
+				{descriptionHtml && descriptionHtml.length > 0 && (
+					<AccordionItemWithContext value="description" className="border-border">
+						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+							Description
+						</AccordionTrigger>
+						<AccordionContent>
+							<div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-foreground prose-strong:text-foreground">
+								{descriptionHtml.map((html, i) => (
+									<div key={i} dangerouslySetInnerHTML={{ __html: html }} />
+								))}
+							</div>
+						</AccordionContent>
+					</AccordionItemWithContext>
+				)}
 
-			{careInstructions && (
-				<AccordionItemWithContext value="care" className="border-border">
+				{displayAttributes.length > 0 && (
+					<AccordionItemWithContext value="details" className="border-border">
+						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+							Product Details
+						</AccordionTrigger>
+						<AccordionContent>
+							<div className="grid gap-3">
+								{displayAttributes.map((attr) => (
+									<div key={attr.name} className="flex items-start justify-between gap-4 text-sm">
+										<span className="flex items-center gap-2 text-muted-foreground">
+											{attributeIcons[attr.name]}
+											{attr.name}
+										</span>
+										<span className="text-right font-medium">{formatValue(attr.value)}</span>
+									</div>
+								))}
+							</div>
+						</AccordionContent>
+					</AccordionItemWithContext>
+				)}
+
+				{careInstructions && (
+					<AccordionItemWithContext value="care" className="border-border">
+						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+							Care Instructions
+						</AccordionTrigger>
+						<AccordionContent className="leading-relaxed text-muted-foreground">
+							{careInstructions}
+						</AccordionContent>
+					</AccordionItemWithContext>
+				)}
+
+				{faqItems && faqItems.length > 0 && (
+					<AccordionItemWithContext value="faq" className="border-border">
+						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+							<span className="flex items-center gap-2">
+								<HelpCircle className="h-4 w-4" />
+								Frequently Asked Questions
+							</span>
+						</AccordionTrigger>
+						<AccordionContent>
+							<div className="grid gap-4">
+								{faqItems.map((faq, i) => (
+									<div key={i}>
+										<p className="mb-1 text-sm font-medium text-foreground">{faq.question}</p>
+										<p className="text-sm leading-relaxed text-muted-foreground">{faq.answer}</p>
+									</div>
+								))}
+							</div>
+						</AccordionContent>
+					</AccordionItemWithContext>
+				)}
+
+				{references && references.length > 0 && (
+					<AccordionItemWithContext value="references" className="border-border">
+						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+							<span className="flex items-center gap-2">
+								<BookOpen className="h-4 w-4" />
+								Research References
+							</span>
+						</AccordionTrigger>
+						<AccordionContent>
+							<ol className="grid gap-2 pl-4">
+								{references.map((ref, i) => (
+									<li key={i} className="list-decimal text-xs leading-relaxed text-muted-foreground">
+										{ref}
+									</li>
+								))}
+							</ol>
+						</AccordionContent>
+					</AccordionItemWithContext>
+				)}
+
+				<AccordionItemWithContext value="shipping" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Care Instructions
+						<span className="flex items-center gap-2">
+							<Truck className="h-4 w-4" />
+							Shipping & Returns
+						</span>
 					</AccordionTrigger>
 					<AccordionContent className="leading-relaxed text-muted-foreground">
-						{careInstructions}
+						<div className="grid gap-2 text-sm">
+							<p>Free shipping on orders over $150. Standard delivery 3-7 business days.</p>
+							<p>All products are shipped in temperature-controlled packaging to maintain stability.</p>
+							<p>
+								Returns accepted within 14 days of delivery for unopened, sealed items only. Contact support
+								for return authorization.
+							</p>
+						</div>
 					</AccordionContent>
 				</AccordionItemWithContext>
-			)}
-
-			<AccordionItemWithContext value="shipping" className="border-border">
-				<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-					Shipping & Returns
-				</AccordionTrigger>
-				<AccordionContent className="leading-relaxed text-muted-foreground">
-					<p className="mb-2">Free shipping on orders over €100. Standard delivery 3-5 business days.</p>
-					<p>Free returns within 30 days of purchase. Items must be unworn with tags attached.</p>
-				</AccordionContent>
-			</AccordionItemWithContext>
-		</Accordion>
+			</Accordion>
+		</div>
 	);
 }

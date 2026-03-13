@@ -72,7 +72,7 @@ export async function Footer({ channel }: { channel: string }) {
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-400">
-							Minimal design, maximum impact. Thoughtfully crafted essentials for everyday comfort.
+							Premium research peptides and biotech compounds. Lab-verified purity you can trust.
 						</p>
 					</div>
 

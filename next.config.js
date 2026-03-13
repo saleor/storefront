@@ -8,11 +8,13 @@ const config = {
 	// Optimize barrel file imports for better bundle size and cold start performance
 	// See: https://vercel.com/blog/how-we-optimized-package-imports-in-next-js
 	experimental: {
-		optimizePackageImports: ["lucide-react", "lodash-es"],
+		optimizePackageImports: ["lodash-es"],
 		// Note: API rate limiting is handled by RequestQueue in src/lib/graphql.ts
 		// (max 3 concurrent requests + 200ms delay between requests)
 	},
 	images: {
+		// Skip image optimization in development (localhost images resolve to private IPs)
+		unoptimized: process.env.NODE_ENV === "development",
 		remotePatterns: [
 			{
 				// Saleor Cloud CDN

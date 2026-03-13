@@ -77,6 +77,26 @@ module.exports = {
 					"50%": { transform: "scale(1.4)" },
 					"100%": { transform: "scale(1)" },
 				},
+				"fade-in-up": {
+					"0%": { opacity: "0", transform: "translateY(24px)" },
+					"100%": { opacity: "1", transform: "translateY(0)" },
+				},
+				"fade-in": {
+					"0%": { opacity: "0" },
+					"100%": { opacity: "1" },
+				},
+				marquee: {
+					"0%": { transform: "translateX(0)" },
+					"100%": { transform: "translateX(-50%)" },
+				},
+				shimmer: {
+					"0%": { backgroundPosition: "-200% 0" },
+					"100%": { backgroundPosition: "200% 0" },
+				},
+				"glow-pulse": {
+					"0%, 100%": { opacity: "0.4" },
+					"50%": { opacity: "0.8" },
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
@@ -88,6 +108,13 @@ module.exports = {
 				"skeleton-delayed-long": "skeleton-fade-in 0.2s ease-in 0.4s forwards",
 				// Cart badge pop when item count increases
 				"cart-badge-pop": "cart-badge-pop 0.3s ease-out",
+				"fade-in": "fade-in 0.8s ease-out 0.2s forwards",
+				"fade-in-up": "fade-in-up 0.8s ease-out 0.3s forwards",
+				"fade-in-up-delay-1": "fade-in-up 0.8s ease-out 0.5s forwards",
+				"fade-in-up-delay-2": "fade-in-up 0.8s ease-out 0.7s forwards",
+				marquee: "marquee 25s linear infinite",
+				shimmer: "shimmer 3s ease-in-out infinite",
+				"glow-pulse": "glow-pulse 3s ease-in-out infinite",
 			},
 		},
 	},

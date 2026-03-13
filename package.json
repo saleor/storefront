@@ -87,7 +87,7 @@
 			"micromatch": ">=4.0.8",
 			"@babel/runtime": ">=7.26.10",
 			"@babel/helpers": ">=7.26.10",
-			"brace-expansion@>=2": ">=2.0.2"
+			"brace-expansion@>=2": "2.0.2"
 		}
 	},
 	"packageManager": "pnpm@10.28.1",

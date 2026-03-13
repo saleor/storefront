@@ -12,7 +12,7 @@ export const metadata = {
 
 function HeaderSkeleton() {
 	return (
-		<header className="sticky top-0 z-40 border-b border-border bg-background">
+		<header className="bg-background/95 sticky top-0 z-40 border-b border-border backdrop-blur-md">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-16 items-center justify-between gap-4">
 					<div className="flex shrink-0 items-center">

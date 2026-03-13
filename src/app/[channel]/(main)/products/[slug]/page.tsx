@@ -125,6 +125,8 @@ async function ProductContent({
 	const images = getGalleryImages(product, selectedVariant);
 	const productAttributes = extractProductAttributes(product);
 	const careInstructions = extractCareInstructions(product);
+	const faqItems = extractFaqItems(product);
+	const references = extractReferences(product);
 
 	const breadcrumbs = [
 		{ label: "Home", href: `/${params.channel}` },
@@ -195,6 +197,8 @@ async function ProductContent({
 								descriptionHtml={descriptionHtml}
 								attributes={productAttributes}
 								careInstructions={careInstructions}
+								faqItems={faqItems}
+								references={references}
 							/>
 						</div>
 					</div>
@@ -284,6 +288,37 @@ function extractCareInstructions(product: NonNullable<ProductDetailsQuery["produ
 
 type Product = NonNullable<ProductDetailsQuery["product"]>;
 type Variant = NonNullable<Product["variants"]>[number];
+
+function extractFaqItems(product: NonNullable<ProductDetailsQuery["product"]>) {
+	const metadata = product.metadata || [];
+	const metaMap = new Map(metadata.map((m) => [m.key, m.value]));
+	const faqs: { question: string; answer: string }[] = [];
+
+	for (let i = 1; i <= 5; i++) {
+		const q = metaMap.get(`faq_${i}_q`);
+		const a = metaMap.get(`faq_${i}_a`);
+		if (q && a) {
+			faqs.push({ question: q, answer: a });
+		}
+	}
+
+	return faqs.length > 0 ? faqs : null;
+}
+
+function extractReferences(product: NonNullable<ProductDetailsQuery["product"]>) {
+	const metadata = product.metadata || [];
+	const metaMap = new Map(metadata.map((m) => [m.key, m.value]));
+	const refs: string[] = [];
+
+	for (let i = 1; i <= 3; i++) {
+		const ref = metaMap.get(`ref_${i}`);
+		if (ref) {
+			refs.push(ref);
+		}
+	}
+
+	return refs.length > 0 ? refs : null;
+}
 
 function getGalleryImages(
 	product: Product,
