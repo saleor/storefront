@@ -1,0 +1,328 @@
+ 
+import * as types from "./graphql";
+
+/**
+ * Map of all GraphQL operations in the project.
+ *
+ * This map has several performance disadvantages:
+ * 1. It is not tree-shakeable, so it will include all operations in the project.
+ * 2. It is not minifiable, so the string of a GraphQL query will be multiple times inside the bundle.
+ * 3. It does not support dead code elimination, so it will add unused operations.
+ *
+ * Therefore it is highly recommended to use the babel or swc plugin for production.
+ * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
+ */
+type Documents = {
+	"mutation AccountAddressCreate($input: AddressInput!) {\n  accountAddressCreate(input: $input) {\n    address {\n      ...AddressDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.AccountAddressCreateDocument;
+	"mutation AccountAddressDelete($id: ID!) {\n  accountAddressDelete(id: $id) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.AccountAddressDeleteDocument;
+	"mutation AccountAddressUpdate($id: ID!, $input: AddressInput!) {\n  accountAddressUpdate(id: $id, input: $input) {\n    address {\n      ...AddressDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.AccountAddressUpdateDocument;
+	"mutation AccountRequestDeletion($redirectUrl: String!, $channel: String) {\n  accountRequestDeletion(redirectUrl: $redirectUrl, channel: $channel) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.AccountRequestDeletionDocument;
+	"mutation AccountSetDefaultAddress($id: ID!, $type: AddressTypeEnum!) {\n  accountSetDefaultAddress(id: $id, type: $type) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.AccountSetDefaultAddressDocument;
+	"mutation AccountUpdate($input: AccountInput!) {\n  accountUpdate(input: $input) {\n    user {\n      ...UserDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.AccountUpdateDocument;
+	"fragment AddressDetails on Address {\n  id\n  firstName\n  lastName\n  companyName\n  streetAddress1\n  streetAddress2\n  city\n  cityArea\n  postalCode\n  countryArea\n  country {\n    code\n    country\n  }\n  phone\n}": typeof types.AddressDetailsFragmentDoc;
+	"query CategoriesBySlug($slugs: [String!]!, $first: Int = 20) {\n  categories(filter: {slugs: $slugs}, first: $first) {\n    edges {\n      node {\n        id\n        slug\n        name\n      }\n    }\n  }\n}": typeof types.CategoriesBySlugDocument;
+	"query CategoriesList($first: Int!) {\n  categories(first: $first, level: 0) {\n    edges {\n      node {\n        id\n        name\n        slug\n      }\n    }\n  }\n}": typeof types.CategoriesListDocument;
+	"query ChannelsList {\n  channels {\n    id\n    name\n    slug\n    isActive\n    currencyCode\n    countries {\n      country\n      code\n    }\n  }\n}": typeof types.ChannelsListDocument;
+	"mutation CheckoutAddLine($id: ID!, $productVariantId: ID!) {\n  checkoutLinesAdd(id: $id, lines: [{quantity: 1, variantId: $productVariantId}]) {\n    checkout {\n      id\n      lines {\n        id\n        quantity\n        variant {\n          name\n          product {\n            name\n          }\n        }\n      }\n    }\n    errors {\n      message\n    }\n  }\n}": typeof types.CheckoutAddLineDocument;
+	"mutation CheckoutCreate($channel: String!) {\n  checkoutCreate(input: {channel: $channel, lines: []}) {\n    checkout {\n      id\n      email\n      lines {\n        id\n        quantity\n        totalPrice {\n          gross {\n            amount\n            currency\n          }\n        }\n        variant {\n          product {\n            id\n            name\n            slug\n            thumbnail {\n              url\n              alt\n            }\n            category {\n              name\n            }\n          }\n          pricing {\n            price {\n              gross {\n                amount\n                currency\n              }\n            }\n          }\n          name\n          id\n        }\n      }\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    errors {\n      field\n      code\n    }\n  }\n}": typeof types.CheckoutCreateDocument;
+	"mutation CheckoutDeleteLines($checkoutId: ID!, $lineIds: [ID!]!) {\n  checkoutLinesDelete(id: $checkoutId, linesIds: $lineIds) {\n    checkout {\n      id\n      lines {\n        id\n      }\n      channel {\n        slug\n      }\n    }\n    errors {\n      field\n      code\n    }\n  }\n}": typeof types.CheckoutDeleteLinesDocument;
+	"query CheckoutFind($id: ID!) {\n  checkout(id: $id) {\n    id\n    email\n    lines {\n      id\n      quantity\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n      variant {\n        product {\n          id\n          name\n          slug\n          thumbnail {\n            url\n            alt\n          }\n          category {\n            name\n          }\n        }\n        pricing {\n          price {\n            gross {\n              amount\n              currency\n            }\n          }\n          priceUndiscounted {\n            gross {\n              amount\n              currency\n            }\n          }\n        }\n        name\n        id\n        selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n          attribute {\n            name\n            slug\n          }\n          values {\n            name\n            value\n          }\n        }\n        nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {\n          attribute {\n            name\n            slug\n          }\n          values {\n            name\n            value\n          }\n        }\n      }\n    }\n    totalPrice {\n      gross {\n        amount\n        currency\n      }\n    }\n  }\n}": typeof types.CheckoutFindDocument;
+	"mutation CheckoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {\n  checkoutLinesUpdate(id: $checkoutId, lines: $lines) {\n    checkout {\n      id\n      lines {\n        id\n        quantity\n        totalPrice {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.CheckoutLinesUpdateDocument;
+	"query CollectionsList($channel: String!, $first: Int!) {\n  collections(channel: $channel, first: $first, filter: {published: PUBLISHED}) {\n    edges {\n      node {\n        id\n        name\n        slug\n      }\n    }\n  }\n}": typeof types.CollectionsListDocument;
+	"query CurrentUser {\n  me {\n    ...UserDetails\n  }\n}": typeof types.CurrentUserDocument;
+	"query CurrentUserOrderList {\n  me {\n    ...UserDetails\n    orders(first: 10) {\n      edges {\n        node {\n          ...OrderDetails\n        }\n      }\n    }\n  }\n}": typeof types.CurrentUserOrderListDocument;
+	"query CurrentUserOrdersPaginated($first: Int, $after: String) {\n  me {\n    ...UserDetails\n    orders(first: $first, after: $after) {\n      edges {\n        node {\n          ...OrderDetails\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      totalCount\n    }\n  }\n}": typeof types.CurrentUserOrdersPaginatedDocument;
+	"query CurrentUserProfile {\n  me {\n    ...UserDetails\n    dateJoined\n    addresses {\n      ...AddressDetails\n    }\n    defaultShippingAddress {\n      id\n    }\n    defaultBillingAddress {\n      id\n    }\n  }\n}": typeof types.CurrentUserProfileDocument;
+	"fragment MenuItem on MenuItem {\n  id\n  name\n  level\n  category {\n    id\n    slug\n    name\n  }\n  collection {\n    id\n    name\n    slug\n  }\n  page {\n    id\n    title\n    slug\n  }\n  url\n}\n\nquery MenuGetBySlug($slug: String!, $channel: String!) {\n  menu(slug: $slug, channel: $channel) {\n    items {\n      ...MenuItem\n      children {\n        ...MenuItem\n      }\n    }\n  }\n}": typeof types.MenuItemFragmentDoc;
+	"fragment OrderFullDetails on Order {\n  id\n  number\n  created\n  status\n  statusDisplay\n  paymentStatus\n  isPaid\n  shippingAddress {\n    ...AddressDetails\n  }\n  billingAddress {\n    ...AddressDetails\n  }\n  subtotal {\n    gross {\n      amount\n      currency\n    }\n  }\n  shippingPrice {\n    gross {\n      amount\n      currency\n    }\n  }\n  total {\n    gross {\n      amount\n      currency\n    }\n    tax {\n      amount\n      currency\n    }\n  }\n  lines {\n    id\n    quantity\n    variant {\n      id\n      name\n      product {\n        id\n        name\n        slug\n        thumbnail {\n          url\n          alt\n        }\n      }\n      pricing {\n        price {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n  }\n  fulfillments {\n    id\n    status\n    created\n    trackingNumber\n    lines {\n      id\n      quantity\n      orderLine {\n        id\n      }\n    }\n  }\n}\n\nquery OrderByNumber($first: Int) {\n  me {\n    orders(first: $first) {\n      edges {\n        node {\n          ...OrderFullDetails\n        }\n      }\n    }\n  }\n}": typeof types.OrderFullDetailsFragmentDoc;
+	"fragment OrderDetails on Order {\n  id\n  number\n  created\n  total {\n    gross {\n      amount\n      currency\n    }\n  }\n  lines {\n    variant {\n      id\n      name\n      product {\n        id\n        name\n        description\n        slug\n        thumbnail {\n          url\n          alt\n        }\n        category {\n          id\n          name\n        }\n      }\n      pricing {\n        price {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n    quantity\n  }\n  status\n  statusDisplay\n  paymentStatus\n}": typeof types.OrderDetailsFragmentDoc;
+	"query PageGetBySlug($slug: String!) {\n  page(slug: $slug) {\n    id\n    slug\n    title\n    seoTitle\n    seoDescription\n    content\n  }\n}": typeof types.PageGetBySlugDocument;
+	"mutation PasswordChange($newPassword: String!, $oldPassword: String!) {\n  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}": typeof types.PasswordChangeDocument;
+	"query ProductDetails($slug: String!, $channel: String!) {\n  product(slug: $slug, channel: $channel) {\n    id\n    name\n    slug\n    description\n    seoTitle\n    seoDescription\n    thumbnail(size: 1024, format: WEBP) {\n      url\n      alt\n    }\n    media {\n      url(size: 1024, format: WEBP)\n      alt\n      type\n    }\n    category {\n      id\n      name\n      slug\n    }\n    attributes {\n      values {\n        name\n      }\n      attribute {\n        name\n        slug\n      }\n    }\n    metadata {\n      key\n      value\n    }\n    variants {\n      ...VariantDetails\n    }\n    pricing {\n      priceRange {\n        start {\n          gross {\n            amount\n            currency\n          }\n        }\n        stop {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n  }\n}": typeof types.ProductDetailsDocument;
+	"query ProductList($first: Int = 9, $channel: String!) {\n  products(first: $first, channel: $channel) {\n    edges {\n      node {\n        ...ProductListItem\n      }\n    }\n  }\n}": typeof types.ProductListDocument;
+	"query ProductListByCategory($slug: String!, $channel: String!, $first: Int, $after: String, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  category(slug: $slug) {\n    id\n    name\n    slug\n    description\n    seoDescription\n    seoTitle\n    backgroundImage {\n      url\n      alt\n    }\n    products(\n      first: $first\n      after: $after\n      channel: $channel\n      sortBy: $sortBy\n      filter: $filter\n    ) {\n      edges {\n        node {\n          ...ProductListItem\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n      totalCount\n    }\n  }\n}": typeof types.ProductListByCategoryDocument;
+	"query ProductListByCollection($slug: String!, $channel: String!, $first: Int, $after: String, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  collection(slug: $slug, channel: $channel) {\n    id\n    name\n    slug\n    description\n    seoDescription\n    seoTitle\n    backgroundImage {\n      url\n      alt\n    }\n    products(first: $first, after: $after, sortBy: $sortBy, filter: $filter) {\n      edges {\n        node {\n          ...ProductListItem\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n      totalCount\n    }\n  }\n}": typeof types.ProductListByCollectionDocument;
+	"fragment ProductListItem on Product {\n  id\n  name\n  slug\n  created\n  pricing {\n    priceRange {\n      start {\n        gross {\n          amount\n          currency\n        }\n      }\n      stop {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    priceRangeUndiscounted {\n      start {\n        gross {\n          amount\n          currency\n        }\n      }\n      stop {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n  }\n  category {\n    id\n    name\n    slug\n  }\n  thumbnail(size: 1024, format: WEBP) {\n    url\n    alt\n  }\n  variants {\n    id\n    selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n      attribute {\n        slug\n        name\n      }\n      values {\n        name\n        value\n      }\n    }\n  }\n}": typeof types.ProductListItemFragmentDoc;
+	"query ProductListPaginated($first: Int, $after: String, $last: Int, $before: String, $channel: String!, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  products(\n    first: $first\n    after: $after\n    last: $last\n    before: $before\n    channel: $channel\n    sortBy: $sortBy\n    filter: $filter\n  ) {\n    totalCount\n    edges {\n      node {\n        ...ProductListItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}": typeof types.ProductListPaginatedDocument;
+	"query SearchProducts($search: String!, $sortBy: ProductOrderField!, $sortDirection: OrderDirection!, $first: Int, $after: String, $last: Int, $before: String, $channel: String!) {\n  products(\n    first: $first\n    after: $after\n    last: $last\n    before: $before\n    channel: $channel\n    sortBy: {field: $sortBy, direction: $sortDirection}\n    filter: {search: $search}\n  ) {\n    totalCount\n    edges {\n      node {\n        ...ProductListItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}": typeof types.SearchProductsDocument;
+	"fragment UserDetails on User {\n  id\n  email\n  firstName\n  lastName\n  avatar {\n    url\n    alt\n  }\n}": typeof types.UserDetailsFragmentDoc;
+	"fragment VariantDetails on ProductVariant {\n  id\n  name\n  sku\n  quantityAvailable\n  selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n    values {\n      name\n      value\n    }\n    attribute {\n      name\n      slug\n    }\n  }\n  nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {\n    values {\n      name\n      value\n    }\n    attribute {\n      name\n      slug\n    }\n  }\n  media {\n    url(size: 1024, format: WEBP)\n    alt\n    type\n  }\n  pricing {\n    price {\n      gross {\n        currency\n        amount\n      }\n    }\n    priceUndiscounted {\n      gross {\n        currency\n        amount\n      }\n    }\n  }\n}": typeof types.VariantDetailsFragmentDoc;
+};
+const documents: Documents = {
+	"mutation AccountAddressCreate($input: AddressInput!) {\n  accountAddressCreate(input: $input) {\n    address {\n      ...AddressDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.AccountAddressCreateDocument,
+	"mutation AccountAddressDelete($id: ID!) {\n  accountAddressDelete(id: $id) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.AccountAddressDeleteDocument,
+	"mutation AccountAddressUpdate($id: ID!, $input: AddressInput!) {\n  accountAddressUpdate(id: $id, input: $input) {\n    address {\n      ...AddressDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.AccountAddressUpdateDocument,
+	"mutation AccountRequestDeletion($redirectUrl: String!, $channel: String) {\n  accountRequestDeletion(redirectUrl: $redirectUrl, channel: $channel) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.AccountRequestDeletionDocument,
+	"mutation AccountSetDefaultAddress($id: ID!, $type: AddressTypeEnum!) {\n  accountSetDefaultAddress(id: $id, type: $type) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.AccountSetDefaultAddressDocument,
+	"mutation AccountUpdate($input: AccountInput!) {\n  accountUpdate(input: $input) {\n    user {\n      ...UserDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.AccountUpdateDocument,
+	"fragment AddressDetails on Address {\n  id\n  firstName\n  lastName\n  companyName\n  streetAddress1\n  streetAddress2\n  city\n  cityArea\n  postalCode\n  countryArea\n  country {\n    code\n    country\n  }\n  phone\n}":
+		types.AddressDetailsFragmentDoc,
+	"query CategoriesBySlug($slugs: [String!]!, $first: Int = 20) {\n  categories(filter: {slugs: $slugs}, first: $first) {\n    edges {\n      node {\n        id\n        slug\n        name\n      }\n    }\n  }\n}":
+		types.CategoriesBySlugDocument,
+	"query CategoriesList($first: Int!) {\n  categories(first: $first, level: 0) {\n    edges {\n      node {\n        id\n        name\n        slug\n      }\n    }\n  }\n}":
+		types.CategoriesListDocument,
+	"query ChannelsList {\n  channels {\n    id\n    name\n    slug\n    isActive\n    currencyCode\n    countries {\n      country\n      code\n    }\n  }\n}":
+		types.ChannelsListDocument,
+	"mutation CheckoutAddLine($id: ID!, $productVariantId: ID!) {\n  checkoutLinesAdd(id: $id, lines: [{quantity: 1, variantId: $productVariantId}]) {\n    checkout {\n      id\n      lines {\n        id\n        quantity\n        variant {\n          name\n          product {\n            name\n          }\n        }\n      }\n    }\n    errors {\n      message\n    }\n  }\n}":
+		types.CheckoutAddLineDocument,
+	"mutation CheckoutCreate($channel: String!) {\n  checkoutCreate(input: {channel: $channel, lines: []}) {\n    checkout {\n      id\n      email\n      lines {\n        id\n        quantity\n        totalPrice {\n          gross {\n            amount\n            currency\n          }\n        }\n        variant {\n          product {\n            id\n            name\n            slug\n            thumbnail {\n              url\n              alt\n            }\n            category {\n              name\n            }\n          }\n          pricing {\n            price {\n              gross {\n                amount\n                currency\n              }\n            }\n          }\n          name\n          id\n        }\n      }\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    errors {\n      field\n      code\n    }\n  }\n}":
+		types.CheckoutCreateDocument,
+	"mutation CheckoutDeleteLines($checkoutId: ID!, $lineIds: [ID!]!) {\n  checkoutLinesDelete(id: $checkoutId, linesIds: $lineIds) {\n    checkout {\n      id\n      lines {\n        id\n      }\n      channel {\n        slug\n      }\n    }\n    errors {\n      field\n      code\n    }\n  }\n}":
+		types.CheckoutDeleteLinesDocument,
+	"query CheckoutFind($id: ID!) {\n  checkout(id: $id) {\n    id\n    email\n    lines {\n      id\n      quantity\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n      variant {\n        product {\n          id\n          name\n          slug\n          thumbnail {\n            url\n            alt\n          }\n          category {\n            name\n          }\n        }\n        pricing {\n          price {\n            gross {\n              amount\n              currency\n            }\n          }\n          priceUndiscounted {\n            gross {\n              amount\n              currency\n            }\n          }\n        }\n        name\n        id\n        selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n          attribute {\n            name\n            slug\n          }\n          values {\n            name\n            value\n          }\n        }\n        nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {\n          attribute {\n            name\n            slug\n          }\n          values {\n            name\n            value\n          }\n        }\n      }\n    }\n    totalPrice {\n      gross {\n        amount\n        currency\n      }\n    }\n  }\n}":
+		types.CheckoutFindDocument,
+	"mutation CheckoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {\n  checkoutLinesUpdate(id: $checkoutId, lines: $lines) {\n    checkout {\n      id\n      lines {\n        id\n        quantity\n        totalPrice {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.CheckoutLinesUpdateDocument,
+	"query CollectionsList($channel: String!, $first: Int!) {\n  collections(channel: $channel, first: $first, filter: {published: PUBLISHED}) {\n    edges {\n      node {\n        id\n        name\n        slug\n      }\n    }\n  }\n}":
+		types.CollectionsListDocument,
+	"query CurrentUser {\n  me {\n    ...UserDetails\n  }\n}": types.CurrentUserDocument,
+	"query CurrentUserOrderList {\n  me {\n    ...UserDetails\n    orders(first: 10) {\n      edges {\n        node {\n          ...OrderDetails\n        }\n      }\n    }\n  }\n}":
+		types.CurrentUserOrderListDocument,
+	"query CurrentUserOrdersPaginated($first: Int, $after: String) {\n  me {\n    ...UserDetails\n    orders(first: $first, after: $after) {\n      edges {\n        node {\n          ...OrderDetails\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      totalCount\n    }\n  }\n}":
+		types.CurrentUserOrdersPaginatedDocument,
+	"query CurrentUserProfile {\n  me {\n    ...UserDetails\n    dateJoined\n    addresses {\n      ...AddressDetails\n    }\n    defaultShippingAddress {\n      id\n    }\n    defaultBillingAddress {\n      id\n    }\n  }\n}":
+		types.CurrentUserProfileDocument,
+	"fragment MenuItem on MenuItem {\n  id\n  name\n  level\n  category {\n    id\n    slug\n    name\n  }\n  collection {\n    id\n    name\n    slug\n  }\n  page {\n    id\n    title\n    slug\n  }\n  url\n}\n\nquery MenuGetBySlug($slug: String!, $channel: String!) {\n  menu(slug: $slug, channel: $channel) {\n    items {\n      ...MenuItem\n      children {\n        ...MenuItem\n      }\n    }\n  }\n}":
+		types.MenuItemFragmentDoc,
+	"fragment OrderFullDetails on Order {\n  id\n  number\n  created\n  status\n  statusDisplay\n  paymentStatus\n  isPaid\n  shippingAddress {\n    ...AddressDetails\n  }\n  billingAddress {\n    ...AddressDetails\n  }\n  subtotal {\n    gross {\n      amount\n      currency\n    }\n  }\n  shippingPrice {\n    gross {\n      amount\n      currency\n    }\n  }\n  total {\n    gross {\n      amount\n      currency\n    }\n    tax {\n      amount\n      currency\n    }\n  }\n  lines {\n    id\n    quantity\n    variant {\n      id\n      name\n      product {\n        id\n        name\n        slug\n        thumbnail {\n          url\n          alt\n        }\n      }\n      pricing {\n        price {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n  }\n  fulfillments {\n    id\n    status\n    created\n    trackingNumber\n    lines {\n      id\n      quantity\n      orderLine {\n        id\n      }\n    }\n  }\n}\n\nquery OrderByNumber($first: Int) {\n  me {\n    orders(first: $first) {\n      edges {\n        node {\n          ...OrderFullDetails\n        }\n      }\n    }\n  }\n}":
+		types.OrderFullDetailsFragmentDoc,
+	"fragment OrderDetails on Order {\n  id\n  number\n  created\n  total {\n    gross {\n      amount\n      currency\n    }\n  }\n  lines {\n    variant {\n      id\n      name\n      product {\n        id\n        name\n        description\n        slug\n        thumbnail {\n          url\n          alt\n        }\n        category {\n          id\n          name\n        }\n      }\n      pricing {\n        price {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n    quantity\n  }\n  status\n  statusDisplay\n  paymentStatus\n}":
+		types.OrderDetailsFragmentDoc,
+	"query PageGetBySlug($slug: String!) {\n  page(slug: $slug) {\n    id\n    slug\n    title\n    seoTitle\n    seoDescription\n    content\n  }\n}":
+		types.PageGetBySlugDocument,
+	"mutation PasswordChange($newPassword: String!, $oldPassword: String!) {\n  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}":
+		types.PasswordChangeDocument,
+	"query ProductDetails($slug: String!, $channel: String!) {\n  product(slug: $slug, channel: $channel) {\n    id\n    name\n    slug\n    description\n    seoTitle\n    seoDescription\n    thumbnail(size: 1024, format: WEBP) {\n      url\n      alt\n    }\n    media {\n      url(size: 1024, format: WEBP)\n      alt\n      type\n    }\n    category {\n      id\n      name\n      slug\n    }\n    attributes {\n      values {\n        name\n      }\n      attribute {\n        name\n        slug\n      }\n    }\n    metadata {\n      key\n      value\n    }\n    variants {\n      ...VariantDetails\n    }\n    pricing {\n      priceRange {\n        start {\n          gross {\n            amount\n            currency\n          }\n        }\n        stop {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n  }\n}":
+		types.ProductDetailsDocument,
+	"query ProductList($first: Int = 9, $channel: String!) {\n  products(first: $first, channel: $channel) {\n    edges {\n      node {\n        ...ProductListItem\n      }\n    }\n  }\n}":
+		types.ProductListDocument,
+	"query ProductListByCategory($slug: String!, $channel: String!, $first: Int, $after: String, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  category(slug: $slug) {\n    id\n    name\n    slug\n    description\n    seoDescription\n    seoTitle\n    backgroundImage {\n      url\n      alt\n    }\n    products(\n      first: $first\n      after: $after\n      channel: $channel\n      sortBy: $sortBy\n      filter: $filter\n    ) {\n      edges {\n        node {\n          ...ProductListItem\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n      totalCount\n    }\n  }\n}":
+		types.ProductListByCategoryDocument,
+	"query ProductListByCollection($slug: String!, $channel: String!, $first: Int, $after: String, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  collection(slug: $slug, channel: $channel) {\n    id\n    name\n    slug\n    description\n    seoDescription\n    seoTitle\n    backgroundImage {\n      url\n      alt\n    }\n    products(first: $first, after: $after, sortBy: $sortBy, filter: $filter) {\n      edges {\n        node {\n          ...ProductListItem\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n      totalCount\n    }\n  }\n}":
+		types.ProductListByCollectionDocument,
+	"fragment ProductListItem on Product {\n  id\n  name\n  slug\n  created\n  pricing {\n    priceRange {\n      start {\n        gross {\n          amount\n          currency\n        }\n      }\n      stop {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    priceRangeUndiscounted {\n      start {\n        gross {\n          amount\n          currency\n        }\n      }\n      stop {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n  }\n  category {\n    id\n    name\n    slug\n  }\n  thumbnail(size: 1024, format: WEBP) {\n    url\n    alt\n  }\n  variants {\n    id\n    selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n      attribute {\n        slug\n        name\n      }\n      values {\n        name\n        value\n      }\n    }\n  }\n}":
+		types.ProductListItemFragmentDoc,
+	"query ProductListPaginated($first: Int, $after: String, $last: Int, $before: String, $channel: String!, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  products(\n    first: $first\n    after: $after\n    last: $last\n    before: $before\n    channel: $channel\n    sortBy: $sortBy\n    filter: $filter\n  ) {\n    totalCount\n    edges {\n      node {\n        ...ProductListItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}":
+		types.ProductListPaginatedDocument,
+	"query SearchProducts($search: String!, $sortBy: ProductOrderField!, $sortDirection: OrderDirection!, $first: Int, $after: String, $last: Int, $before: String, $channel: String!) {\n  products(\n    first: $first\n    after: $after\n    last: $last\n    before: $before\n    channel: $channel\n    sortBy: {field: $sortBy, direction: $sortDirection}\n    filter: {search: $search}\n  ) {\n    totalCount\n    edges {\n      node {\n        ...ProductListItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}":
+		types.SearchProductsDocument,
+	"fragment UserDetails on User {\n  id\n  email\n  firstName\n  lastName\n  avatar {\n    url\n    alt\n  }\n}":
+		types.UserDetailsFragmentDoc,
+	"fragment VariantDetails on ProductVariant {\n  id\n  name\n  sku\n  quantityAvailable\n  selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n    values {\n      name\n      value\n    }\n    attribute {\n      name\n      slug\n    }\n  }\n  nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {\n    values {\n      name\n      value\n    }\n    attribute {\n      name\n      slug\n    }\n  }\n  media {\n    url(size: 1024, format: WEBP)\n    alt\n    type\n  }\n  pricing {\n    price {\n      gross {\n        currency\n        amount\n      }\n    }\n    priceUndiscounted {\n      gross {\n        currency\n        amount\n      }\n    }\n  }\n}":
+		types.VariantDetailsFragmentDoc,
+};
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation AccountAddressCreate($input: AddressInput!) {\n  accountAddressCreate(input: $input) {\n    address {\n      ...AddressDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").AccountAddressCreateDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation AccountAddressDelete($id: ID!) {\n  accountAddressDelete(id: $id) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").AccountAddressDeleteDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation AccountAddressUpdate($id: ID!, $input: AddressInput!) {\n  accountAddressUpdate(id: $id, input: $input) {\n    address {\n      ...AddressDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").AccountAddressUpdateDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation AccountRequestDeletion($redirectUrl: String!, $channel: String) {\n  accountRequestDeletion(redirectUrl: $redirectUrl, channel: $channel) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").AccountRequestDeletionDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation AccountSetDefaultAddress($id: ID!, $type: AddressTypeEnum!) {\n  accountSetDefaultAddress(id: $id, type: $type) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").AccountSetDefaultAddressDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation AccountUpdate($input: AccountInput!) {\n  accountUpdate(input: $input) {\n    user {\n      ...UserDetails\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").AccountUpdateDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "fragment AddressDetails on Address {\n  id\n  firstName\n  lastName\n  companyName\n  streetAddress1\n  streetAddress2\n  city\n  cityArea\n  postalCode\n  countryArea\n  country {\n    code\n    country\n  }\n  phone\n}",
+): typeof import("./graphql").AddressDetailsFragmentDoc;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CategoriesBySlug($slugs: [String!]!, $first: Int = 20) {\n  categories(filter: {slugs: $slugs}, first: $first) {\n    edges {\n      node {\n        id\n        slug\n        name\n      }\n    }\n  }\n}",
+): typeof import("./graphql").CategoriesBySlugDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CategoriesList($first: Int!) {\n  categories(first: $first, level: 0) {\n    edges {\n      node {\n        id\n        name\n        slug\n      }\n    }\n  }\n}",
+): typeof import("./graphql").CategoriesListDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query ChannelsList {\n  channels {\n    id\n    name\n    slug\n    isActive\n    currencyCode\n    countries {\n      country\n      code\n    }\n  }\n}",
+): typeof import("./graphql").ChannelsListDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation CheckoutAddLine($id: ID!, $productVariantId: ID!) {\n  checkoutLinesAdd(id: $id, lines: [{quantity: 1, variantId: $productVariantId}]) {\n    checkout {\n      id\n      lines {\n        id\n        quantity\n        variant {\n          name\n          product {\n            name\n          }\n        }\n      }\n    }\n    errors {\n      message\n    }\n  }\n}",
+): typeof import("./graphql").CheckoutAddLineDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation CheckoutCreate($channel: String!) {\n  checkoutCreate(input: {channel: $channel, lines: []}) {\n    checkout {\n      id\n      email\n      lines {\n        id\n        quantity\n        totalPrice {\n          gross {\n            amount\n            currency\n          }\n        }\n        variant {\n          product {\n            id\n            name\n            slug\n            thumbnail {\n              url\n              alt\n            }\n            category {\n              name\n            }\n          }\n          pricing {\n            price {\n              gross {\n                amount\n                currency\n              }\n            }\n          }\n          name\n          id\n        }\n      }\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    errors {\n      field\n      code\n    }\n  }\n}",
+): typeof import("./graphql").CheckoutCreateDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation CheckoutDeleteLines($checkoutId: ID!, $lineIds: [ID!]!) {\n  checkoutLinesDelete(id: $checkoutId, linesIds: $lineIds) {\n    checkout {\n      id\n      lines {\n        id\n      }\n      channel {\n        slug\n      }\n    }\n    errors {\n      field\n      code\n    }\n  }\n}",
+): typeof import("./graphql").CheckoutDeleteLinesDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CheckoutFind($id: ID!) {\n  checkout(id: $id) {\n    id\n    email\n    lines {\n      id\n      quantity\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n      variant {\n        product {\n          id\n          name\n          slug\n          thumbnail {\n            url\n            alt\n          }\n          category {\n            name\n          }\n        }\n        pricing {\n          price {\n            gross {\n              amount\n              currency\n            }\n          }\n          priceUndiscounted {\n            gross {\n              amount\n              currency\n            }\n          }\n        }\n        name\n        id\n        selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n          attribute {\n            name\n            slug\n          }\n          values {\n            name\n            value\n          }\n        }\n        nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {\n          attribute {\n            name\n            slug\n          }\n          values {\n            name\n            value\n          }\n        }\n      }\n    }\n    totalPrice {\n      gross {\n        amount\n        currency\n      }\n    }\n  }\n}",
+): typeof import("./graphql").CheckoutFindDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation CheckoutLinesUpdate($checkoutId: ID!, $lines: [CheckoutLineUpdateInput!]!) {\n  checkoutLinesUpdate(id: $checkoutId, lines: $lines) {\n    checkout {\n      id\n      lines {\n        id\n        quantity\n        totalPrice {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n      totalPrice {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").CheckoutLinesUpdateDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CollectionsList($channel: String!, $first: Int!) {\n  collections(channel: $channel, first: $first, filter: {published: PUBLISHED}) {\n    edges {\n      node {\n        id\n        name\n        slug\n      }\n    }\n  }\n}",
+): typeof import("./graphql").CollectionsListDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CurrentUser {\n  me {\n    ...UserDetails\n  }\n}",
+): typeof import("./graphql").CurrentUserDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CurrentUserOrderList {\n  me {\n    ...UserDetails\n    orders(first: 10) {\n      edges {\n        node {\n          ...OrderDetails\n        }\n      }\n    }\n  }\n}",
+): typeof import("./graphql").CurrentUserOrderListDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CurrentUserOrdersPaginated($first: Int, $after: String) {\n  me {\n    ...UserDetails\n    orders(first: $first, after: $after) {\n      edges {\n        node {\n          ...OrderDetails\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      totalCount\n    }\n  }\n}",
+): typeof import("./graphql").CurrentUserOrdersPaginatedDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query CurrentUserProfile {\n  me {\n    ...UserDetails\n    dateJoined\n    addresses {\n      ...AddressDetails\n    }\n    defaultShippingAddress {\n      id\n    }\n    defaultBillingAddress {\n      id\n    }\n  }\n}",
+): typeof import("./graphql").CurrentUserProfileDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "fragment MenuItem on MenuItem {\n  id\n  name\n  level\n  category {\n    id\n    slug\n    name\n  }\n  collection {\n    id\n    name\n    slug\n  }\n  page {\n    id\n    title\n    slug\n  }\n  url\n}\n\nquery MenuGetBySlug($slug: String!, $channel: String!) {\n  menu(slug: $slug, channel: $channel) {\n    items {\n      ...MenuItem\n      children {\n        ...MenuItem\n      }\n    }\n  }\n}",
+): typeof import("./graphql").MenuItemFragmentDoc;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "fragment OrderFullDetails on Order {\n  id\n  number\n  created\n  status\n  statusDisplay\n  paymentStatus\n  isPaid\n  shippingAddress {\n    ...AddressDetails\n  }\n  billingAddress {\n    ...AddressDetails\n  }\n  subtotal {\n    gross {\n      amount\n      currency\n    }\n  }\n  shippingPrice {\n    gross {\n      amount\n      currency\n    }\n  }\n  total {\n    gross {\n      amount\n      currency\n    }\n    tax {\n      amount\n      currency\n    }\n  }\n  lines {\n    id\n    quantity\n    variant {\n      id\n      name\n      product {\n        id\n        name\n        slug\n        thumbnail {\n          url\n          alt\n        }\n      }\n      pricing {\n        price {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n  }\n  fulfillments {\n    id\n    status\n    created\n    trackingNumber\n    lines {\n      id\n      quantity\n      orderLine {\n        id\n      }\n    }\n  }\n}\n\nquery OrderByNumber($first: Int) {\n  me {\n    orders(first: $first) {\n      edges {\n        node {\n          ...OrderFullDetails\n        }\n      }\n    }\n  }\n}",
+): typeof import("./graphql").OrderFullDetailsFragmentDoc;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "fragment OrderDetails on Order {\n  id\n  number\n  created\n  total {\n    gross {\n      amount\n      currency\n    }\n  }\n  lines {\n    variant {\n      id\n      name\n      product {\n        id\n        name\n        description\n        slug\n        thumbnail {\n          url\n          alt\n        }\n        category {\n          id\n          name\n        }\n      }\n      pricing {\n        price {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n    quantity\n  }\n  status\n  statusDisplay\n  paymentStatus\n}",
+): typeof import("./graphql").OrderDetailsFragmentDoc;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query PageGetBySlug($slug: String!) {\n  page(slug: $slug) {\n    id\n    slug\n    title\n    seoTitle\n    seoDescription\n    content\n  }\n}",
+): typeof import("./graphql").PageGetBySlugDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "mutation PasswordChange($newPassword: String!, $oldPassword: String!) {\n  passwordChange(newPassword: $newPassword, oldPassword: $oldPassword) {\n    errors {\n      field\n      message\n      code\n    }\n  }\n}",
+): typeof import("./graphql").PasswordChangeDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query ProductDetails($slug: String!, $channel: String!) {\n  product(slug: $slug, channel: $channel) {\n    id\n    name\n    slug\n    description\n    seoTitle\n    seoDescription\n    thumbnail(size: 1024, format: WEBP) {\n      url\n      alt\n    }\n    media {\n      url(size: 1024, format: WEBP)\n      alt\n      type\n    }\n    category {\n      id\n      name\n      slug\n    }\n    attributes {\n      values {\n        name\n      }\n      attribute {\n        name\n        slug\n      }\n    }\n    metadata {\n      key\n      value\n    }\n    variants {\n      ...VariantDetails\n    }\n    pricing {\n      priceRange {\n        start {\n          gross {\n            amount\n            currency\n          }\n        }\n        stop {\n          gross {\n            amount\n            currency\n          }\n        }\n      }\n    }\n  }\n}",
+): typeof import("./graphql").ProductDetailsDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query ProductList($first: Int = 9, $channel: String!) {\n  products(first: $first, channel: $channel) {\n    edges {\n      node {\n        ...ProductListItem\n      }\n    }\n  }\n}",
+): typeof import("./graphql").ProductListDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query ProductListByCategory($slug: String!, $channel: String!, $first: Int, $after: String, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  category(slug: $slug) {\n    id\n    name\n    slug\n    description\n    seoDescription\n    seoTitle\n    backgroundImage {\n      url\n      alt\n    }\n    products(\n      first: $first\n      after: $after\n      channel: $channel\n      sortBy: $sortBy\n      filter: $filter\n    ) {\n      edges {\n        node {\n          ...ProductListItem\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n      totalCount\n    }\n  }\n}",
+): typeof import("./graphql").ProductListByCategoryDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query ProductListByCollection($slug: String!, $channel: String!, $first: Int, $after: String, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  collection(slug: $slug, channel: $channel) {\n    id\n    name\n    slug\n    description\n    seoDescription\n    seoTitle\n    backgroundImage {\n      url\n      alt\n    }\n    products(first: $first, after: $after, sortBy: $sortBy, filter: $filter) {\n      edges {\n        node {\n          ...ProductListItem\n        }\n        cursor\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n      totalCount\n    }\n  }\n}",
+): typeof import("./graphql").ProductListByCollectionDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "fragment ProductListItem on Product {\n  id\n  name\n  slug\n  created\n  pricing {\n    priceRange {\n      start {\n        gross {\n          amount\n          currency\n        }\n      }\n      stop {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n    priceRangeUndiscounted {\n      start {\n        gross {\n          amount\n          currency\n        }\n      }\n      stop {\n        gross {\n          amount\n          currency\n        }\n      }\n    }\n  }\n  category {\n    id\n    name\n    slug\n  }\n  thumbnail(size: 1024, format: WEBP) {\n    url\n    alt\n  }\n  variants {\n    id\n    selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n      attribute {\n        slug\n        name\n      }\n      values {\n        name\n        value\n      }\n    }\n  }\n}",
+): typeof import("./graphql").ProductListItemFragmentDoc;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query ProductListPaginated($first: Int, $after: String, $last: Int, $before: String, $channel: String!, $sortBy: ProductOrder, $filter: ProductFilterInput) {\n  products(\n    first: $first\n    after: $after\n    last: $last\n    before: $before\n    channel: $channel\n    sortBy: $sortBy\n    filter: $filter\n  ) {\n    totalCount\n    edges {\n      node {\n        ...ProductListItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}",
+): typeof import("./graphql").ProductListPaginatedDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "query SearchProducts($search: String!, $sortBy: ProductOrderField!, $sortDirection: OrderDirection!, $first: Int, $after: String, $last: Int, $before: String, $channel: String!) {\n  products(\n    first: $first\n    after: $after\n    last: $last\n    before: $before\n    channel: $channel\n    sortBy: {field: $sortBy, direction: $sortDirection}\n    filter: {search: $search}\n  ) {\n    totalCount\n    edges {\n      node {\n        ...ProductListItem\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}",
+): typeof import("./graphql").SearchProductsDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "fragment UserDetails on User {\n  id\n  email\n  firstName\n  lastName\n  avatar {\n    url\n    alt\n  }\n}",
+): typeof import("./graphql").UserDetailsFragmentDoc;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+	source: "fragment VariantDetails on ProductVariant {\n  id\n  name\n  sku\n  quantityAvailable\n  selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {\n    values {\n      name\n      value\n    }\n    attribute {\n      name\n      slug\n    }\n  }\n  nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {\n    values {\n      name\n      value\n    }\n    attribute {\n      name\n      slug\n    }\n  }\n  media {\n    url(size: 1024, format: WEBP)\n    alt\n    type\n  }\n  pricing {\n    price {\n      gross {\n        currency\n        amount\n      }\n    }\n    priceUndiscounted {\n      gross {\n        currency\n        amount\n      }\n    }\n  }\n}",
+): typeof import("./graphql").VariantDetailsFragmentDoc;
+
+export function graphql(source: string) {
+	return (documents as any)[source] ?? {};
+}
