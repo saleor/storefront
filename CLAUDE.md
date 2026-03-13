@@ -92,3 +92,90 @@ Uses `"use cache"` directive with `cacheLife()` and `cacheTag()` — NOT the old
 8. Testimonials (dark, 3-col cards)
 9. FAQ (dark, accordion — `homepage-faq.tsx`)
 10. Newsletter (dark, gradient border card)
+
+## Infrastructure & Deployment
+
+### Architecture
+
+All services run on a single Hetzner VPS (`46.224.112.183`):
+
+| Service       | Image                                             | Port | Repo                               |
+| ------------- | ------------------------------------------------- | ---- | ---------------------------------- |
+| Storefront    | `infinitybio-storefront:latest` (built on server) | 3000 | `d4lvl13n/storefront`              |
+| Dashboard     | `infinitybio-dashboard:latest` (built on server)  | 9000 | `d4lvl13n/saleor-dashboard` (fork) |
+| Saleor API    | `ghcr.io/saleor/saleor:3.22`                      | 8000 | Official image                     |
+| Celery Worker | `ghcr.io/saleor/saleor:3.22`                      | —    | Official image                     |
+| Postgres      | `postgres:15-alpine`                              | —    | Official image                     |
+| Valkey/Redis  | `valkey:8.1-alpine`                               | —    | Official image                     |
+
+### Repos
+
+| Repo                        | Purpose                                           | CI/CD                                                  |
+| --------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| `d4lvl13n/storefront`       | Next.js storefront (this repo)                    | Push → SSH to Hetzner → build Docker image → restart   |
+| `d4lvl13n/saleor-platform`  | Infra: docker-compose, nginx, scripts, env config | Push → SSH to Hetzner → pull images → restart services |
+| `d4lvl13n/saleor-dashboard` | Saleor Dashboard fork (admin UI)                  | Push → SSH to Hetzner → build Docker image → restart   |
+
+### Infra Repo (`saleor-platform`) Key Files
+
+```
+docker-compose.yml          # Local dev (all services, Jaeger, Mailpit)
+docker-compose.prod.yml     # Production (API, worker, DB, cache + profiles for frontend)
+backend.prod.env            # Prod secrets (gitignored, written from GitHub Secrets)
+common.prod.env             # Prod common config (gitignored)
+.env.prod                   # Prod env vars for compose (gitignored)
+nginx/                      # Reverse proxy config (for when domains are added)
+scripts/backup-db.sh        # Postgres backup (14-day retention)
+scripts/deploy.sh           # Manual deploy helper
+scripts/init-ssl.sh         # First-time Let's Encrypt cert setup
+.github/workflows/deploy.yml  # Auto-deploy on push
+```
+
+### CI/CD Flow
+
+**Storefront push:**
+
+1. GitHub Actions SSHs into Hetzner
+2. Pulls latest code to `/opt/storefront`
+3. Builds Docker image on server (`--network=host` so `next build` can reach the Saleor API on localhost:8000)
+4. Restarts storefront container via `docker compose --profile frontend up -d`
+
+**Infra push:**
+
+1. GitHub Actions SSHs into Hetzner
+2. Pulls latest code to `/opt/saleor`
+3. Writes env files from GitHub Secrets
+4. Pulls remote images (Saleor API, Postgres, etc.) and restarts
+
+### Docker Compose Profiles
+
+Backend services (api, worker, db, cache) run by default. Storefront and dashboard use the `frontend` profile since their images are built locally:
+
+```bash
+# Backend only (default deploy)
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+
+# Include frontend services
+docker compose -f docker-compose.prod.yml --profile frontend --env-file .env.prod up -d
+```
+
+### Build Gotchas
+
+- **Generated GraphQL types must be committed** — `src/gql/` and `src/checkout/graphql/generated/` are checked in because codegen can't run during Docker build (needs live Saleor API)
+- **Storefront Docker build uses `--network=host`** — so `next build` prerender can reach the Saleor API at `localhost:8000`
+- **`NEXT_OUTPUT=standalone`** env var in Dockerfile enables standalone output mode
+- **Dockerfile runs `npx next build` directly** (not `pnpm build`) to skip the `prebuild` codegen step
+
+### GitHub Secrets
+
+**`d4lvl13n/saleor-platform`**: `HETZNER_HOST`, `HETZNER_USER`, `HETZNER_SSH_KEY`, `GH_PAT`, `BACKEND_PROD_ENV`, `COMMON_PROD_ENV`, `DOT_ENV_PROD`
+
+**`d4lvl13n/storefront`**: `HETZNER_HOST`, `HETZNER_USER`, `HETZNER_SSH_KEY`, `GH_PAT`
+
+**`d4lvl13n/storefront` vars**: `NEXT_PUBLIC_SALEOR_API_URL`, `NEXT_PUBLIC_STOREFRONT_URL`, `NEXT_PUBLIC_DEFAULT_CHANNEL`
+
+### Pending
+
+- Domain names + nginx SSL (run `scripts/init-ssl.sh` after DNS is pointed)
+- DB migration from local to production
+- Postgres backup cron job on server
