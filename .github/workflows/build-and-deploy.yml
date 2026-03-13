@@ -39,13 +39,13 @@ jobs:
 
             cd "$REPO_DIR"
 
-            # Build Docker image locally (API is reachable on this server)
+            # Build Docker image locally (API is reachable via host port)
             echo "==> Building Docker image..."
             docker build \
-              --build-arg NEXT_PUBLIC_SALEOR_API_URL=http://api:8000/graphql/ \
+              --build-arg NEXT_PUBLIC_SALEOR_API_URL=${{ vars.NEXT_PUBLIC_SALEOR_API_URL }} \
               --build-arg NEXT_PUBLIC_STOREFRONT_URL=${{ vars.NEXT_PUBLIC_STOREFRONT_URL }} \
               --build-arg NEXT_PUBLIC_DEFAULT_CHANNEL=${{ vars.NEXT_PUBLIC_DEFAULT_CHANNEL }} \
-              --network=saleor_saleor-backend-tier \
+              --network=host \
               -t "$IMAGE_NAME" .
 
             # Restart storefront via the infra compose
