@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useEffect, useTransition } from "react";
+import { useCallback, useMemo, useEffect, useTransition, useOptimistic } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { VariantSelectionSectionProps } from "./types";
 import { VariantSelector } from "./variant-selector";
@@ -19,9 +19,10 @@ import { VariantAttributeBadges, extractOptionalAttributes } from "./optional-at
 /**
  * Main container for variant selection with multiple attributes.
  *
- * Handles products with multiple variant attributes (e.g., Color AND Size).
- * Each attribute gets its own selector, and selections are combined to find
- * the matching variant.
+ * Uses useOptimistic to provide immediate visual feedback when clicking
+ * options, while the server-side navigation completes in the background.
+ * This prevents the "dead click" feel on slow connections where router.push()
+ * triggers a server round-trip before searchParams update.
  *
  * ## How it works
  *
@@ -56,14 +57,12 @@ export function VariantSelectionSection({
 	const searchParams = useSearchParams();
 	const [isPending, startTransition] = useTransition();
 
-	// Group variants by attributes (always call hooks unconditionally)
 	const attributeGroups = useMemo(() => groupVariantsByAttributes(variants as SaleorVariant[]), [variants]);
 
 	// Get current selections from URL params OR from selected variant
 	const currentSelections = useMemo(() => {
 		const selections: Record<string, string> = {};
 
-		// First, try to get from URL params
 		for (const group of attributeGroups) {
 			const paramValue = searchParams.get(group.slug);
 			if (paramValue) {
@@ -71,7 +70,6 @@ export function VariantSelectionSection({
 			}
 		}
 
-		// If no URL params but we have a variant ID, extract from that
 		if (Object.keys(selections).length === 0 && selectedVariantId) {
 			return getSelectionsFromVariant(variants as SaleorVariant[], selectedVariantId);
 		}
@@ -79,62 +77,59 @@ export function VariantSelectionSection({
 		return selections;
 	}, [attributeGroups, searchParams, selectedVariantId, variants]);
 
-	// Find currently matching variant and extract its non-selection attributes
-	const currentVariantId = useMemo(() => {
-		// First check URL param, then try to find from selections
-		const urlVariant = searchParams.get("variant");
-		if (urlVariant) return urlVariant;
-		return findMatchingVariant(variants as SaleorVariant[], currentSelections);
-	}, [searchParams, variants, currentSelections]);
+	// Optimistic selections: immediately reflect user clicks while navigation is pending.
+	// Without this, selections only update after the server round-trip completes
+	// (router.push → server re-renders VariantSectionDynamic → new searchParams).
+	const [optimisticSelections, setOptimisticSelections] = useOptimistic(currentSelections);
+
+	// Optimistic variant ID for the name-based fallback selector
+	const [optimisticVariantId, setOptimisticVariantId] = useOptimistic(selectedVariantId);
+
+	// Compute the matching variant from optimistic selections
+	const currentVariantId = useMemo(
+		() => findMatchingVariant(variants as SaleorVariant[], optimisticSelections),
+		[variants, optimisticSelections],
+	);
 
 	const optionalAttributes = useMemo(
 		() => extractOptionalAttributes(variants, currentVariantId),
 		[variants, currentVariantId],
 	);
 
-	// Handle selection change with smart adjustment
+	// Handle selection change with smart adjustment + optimistic UI
 	const handleSelect = useCallback(
 		(attributeSlug: string, optionId: string) => {
-			// Get adjusted selections - clears conflicting selections if needed
 			const newSelections = getAdjustedSelections(
 				variants as SaleorVariant[],
-				currentSelections,
+				optimisticSelections,
 				attributeSlug,
 				optionId,
 			);
 
-			// Build URL params
 			const params = new URLSearchParams();
-
 			for (const [slug, value] of Object.entries(newSelections)) {
 				if (value) params.set(slug, value);
 			}
 
-			// Try to find matching variant
 			const matchingVariantId = findMatchingVariant(variants as SaleorVariant[], newSelections);
-
 			if (matchingVariantId) {
 				params.set("variant", matchingVariantId);
-			} else {
-				// Remove variant param if no exact match yet
-				params.delete("variant");
 			}
 
-			// Use transition to keep UI responsive during navigation
 			startTransition(() => {
+				setOptimisticSelections(newSelections);
 				router.push(`/${channel}/products/${productSlug}?${params.toString()}`, { scroll: false });
 			});
 		},
-		[currentSelections, variants, channel, productSlug, router],
+		[optimisticSelections, variants, channel, productSlug, router, startTransition, setOptimisticSelections],
 	);
 
 	// Check if any attribute group is completely unavailable
 	const unavailableInfo = useMemo(
-		() => getUnavailableAttributeInfo(variants as SaleorVariant[], attributeGroups, currentSelections),
-		[variants, attributeGroups, currentSelections],
+		() => getUnavailableAttributeInfo(variants as SaleorVariant[], attributeGroups, optimisticSelections),
+		[variants, attributeGroups, optimisticSelections],
 	);
 
-	// Development warning for name-based fallback
 	useEffect(() => {
 		if (process.env.NODE_ENV === "development" && attributeGroups.length === 0 && variants.length > 1) {
 			console.warn(
@@ -145,22 +140,21 @@ export function VariantSelectionSection({
 		}
 	}, [attributeGroups.length, variants.length, productSlug]);
 
-	// Handle variant selection for name-based fallback
+	// Handle variant selection for name-based fallback with optimistic UI
 	const handleVariantSelect = useCallback(
 		(variantId: string) => {
 			startTransition(() => {
+				setOptimisticVariantId(variantId);
 				router.push(`/${channel}/products/${productSlug}?variant=${variantId}`, { scroll: false });
 			});
 		},
-		[channel, productSlug, router],
+		[channel, productSlug, router, startTransition, setOptimisticVariantId],
 	);
 
-	// If children provided, render them instead (full override)
 	if (children) {
 		return <>{children}</>;
 	}
 
-	// Skip rendering if only one variant (no selection needed)
 	if (variants.length <= 1) {
 		return null;
 	}
@@ -171,7 +165,7 @@ export function VariantSelectionSection({
 			<div className="space-y-6 py-2">
 				<VariantNameSelector
 					variants={variants}
-					selectedVariantId={selectedVariantId}
+					selectedVariantId={optimisticVariantId}
 					onSelect={handleVariantSelect}
 					isPending={isPending}
 				/>
@@ -182,15 +176,13 @@ export function VariantSelectionSection({
 	return (
 		<div className="space-y-6 py-2">
 			{attributeGroups.map((group) => {
-				// Get options - all are selectable, availability shows stock status
 				const options = getOptionsForAttribute(
 					variants as SaleorVariant[],
 					attributeGroups,
-					currentSelections,
+					optimisticSelections,
 					group.slug,
 				);
 
-				// Check if this group is the one with no available options
 				const isUnavailable = unavailableInfo?.slug === group.slug;
 				const unavailableMessage = isUnavailable
 					? `No ${group.name.toLowerCase()} available in ${unavailableInfo.blockedBy}`
@@ -201,7 +193,7 @@ export function VariantSelectionSection({
 						key={group.slug}
 						label={group.name}
 						options={options}
-						selectedId={currentSelections[group.slug]}
+						selectedId={optimisticSelections[group.slug]}
 						attributeSlug={group.slug}
 						onSelect={handleSelect}
 						unavailableMessage={unavailableMessage}
@@ -210,7 +202,6 @@ export function VariantSelectionSection({
 				);
 			})}
 
-			{/* Non-selection attributes (informational badges) */}
 			<VariantAttributeBadges attributes={optionalAttributes} />
 		</div>
 	);
