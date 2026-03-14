@@ -1,7 +1,8 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
-import { createHmac, timingSafeEqual } from "crypto";
 import { DefaultChannelSlug } from "@/app/config";
+import { CACHE_PROFILES, buildTag, buildPath } from "@/lib/cache-manifest";
+import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
 /**
  * Webhook endpoint for cache invalidation.
@@ -13,86 +14,16 @@ import { DefaultChannelSlug } from "@/app/config";
  * 4. Copy the secret key and set as SALEOR_WEBHOOK_SECRET env var
  *
  * Security:
- * - Verifies Saleor's HMAC signature (prevents abuse)
- * - Rate limited (10 requests per minute per IP)
+ * - Verifies Saleor's HMAC signature (timing-safe)
+ * - Falls back to Bearer token / x-revalidate-secret header
  */
-
-const WEBHOOK_SECRET = process.env.SALEOR_WEBHOOK_SECRET;
 
 // ============================================================================
-// Rate Limiting (in-memory, suitable for single-instance deployments)
-// For multi-instance deployments, use Redis or similar
+// Webhook payload parsing
 // ============================================================================
 
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX_REQUESTS = 10; // Max requests per window
-
-interface RateLimitEntry {
-	count: number;
-	resetTime: number;
-}
-
-const rateLimitStore = new Map<string, RateLimitEntry>();
-
-function checkRateLimit(identifier: string): { allowed: boolean; remaining: number; resetIn: number } {
-	const now = Date.now();
-	const entry = rateLimitStore.get(identifier);
-
-	if (!entry || entry.resetTime < now) {
-		// New window
-		rateLimitStore.set(identifier, {
-			count: 1,
-			resetTime: now + RATE_LIMIT_WINDOW_MS,
-		});
-		return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - 1, resetIn: RATE_LIMIT_WINDOW_MS };
-	}
-
-	if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
-		// Rate limited
-		return { allowed: false, remaining: 0, resetIn: entry.resetTime - now };
-	}
-
-	// Increment count
-	entry.count++;
-	return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - entry.count, resetIn: entry.resetTime - now };
-}
-
-function getClientIP(request: NextRequest): string {
-	// Check various headers for the real IP (behind proxies/CDN)
-	const forwarded = request.headers.get("x-forwarded-for");
-	if (forwarded) {
-		return forwarded.split(",")[0].trim();
-	}
-	const realIP = request.headers.get("x-real-ip");
-	if (realIP) {
-		return realIP;
-	}
-	// Fallback (may not work in all environments)
-	return "unknown";
-}
-
-/**
- * Verify Saleor webhook signature
- */
-function verifyWebhookSignature(payload: string, signature: string | null): boolean {
-	if (!WEBHOOK_SECRET || !signature) return false;
-
-	const hmac = createHmac("sha256", WEBHOOK_SECRET);
-	hmac.update(payload);
-	const expectedSignature = hmac.digest("hex");
-
-	try {
-		return timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
-	} catch {
-		return false;
-	}
-}
-
-/**
- * Extract product/category info from Saleor webhook payload
- */
 function parseWebhookPayload(payload: unknown): {
-	type: "product" | "category" | "collection" | "order" | "unknown";
+	type: "product" | "category" | "collection" | "unknown";
 	slug?: string;
 	channel?: string;
 	categorySlug?: string;
@@ -103,10 +34,8 @@ function parseWebhookPayload(payload: unknown): {
 
 	const data = payload as Record<string, unknown>;
 
-	// Product events (PRODUCT_CREATED, PRODUCT_UPDATED, PRODUCT_DELETED)
 	if (data.product && typeof data.product === "object") {
 		const product = data.product as Record<string, unknown>;
-		// Extract category slug if present (for invalidating category pages when product updates)
 		const category = product.category as Record<string, unknown> | undefined;
 		return {
 			type: "product",
@@ -116,8 +45,6 @@ function parseWebhookPayload(payload: unknown): {
 		};
 	}
 
-	// Product variant events (PRODUCT_VARIANT_UPDATED, PRODUCT_VARIANT_STOCK_UPDATED, etc.)
-	// These wrap product data inside productVariant.product
 	if (data.productVariant && typeof data.productVariant === "object") {
 		const variant = data.productVariant as Record<string, unknown>;
 		const product = variant.product as Record<string, unknown> | undefined;
@@ -132,7 +59,6 @@ function parseWebhookPayload(payload: unknown): {
 		}
 	}
 
-	// Category events
 	if (data.category && typeof data.category === "object") {
 		const category = data.category as Record<string, unknown>;
 		return {
@@ -141,7 +67,6 @@ function parseWebhookPayload(payload: unknown): {
 		};
 	}
 
-	// Collection events
 	if (data.collection && typeof data.collection === "object") {
 		const collection = data.collection as Record<string, unknown>;
 		return {
@@ -154,35 +79,39 @@ function parseWebhookPayload(payload: unknown): {
 	return { type: "unknown" };
 }
 
-export async function POST(request: NextRequest) {
-	// Rate limit check
-	const clientIP = getClientIP(request);
-	const rateLimit = checkRateLimit(`post:${clientIP}`);
+// ============================================================================
+// Revalidation helper — keeps the switch cases DRY
+// ============================================================================
 
-	if (!rateLimit.allowed) {
-		console.warn(`[Revalidate] Rate limited: ${clientIP}`);
-		return Response.json(
-			{ error: "Too many requests", resetIn: Math.ceil(rateLimit.resetIn / 1000) },
-			{
-				status: 429,
-				headers: {
-					"Retry-After": Math.ceil(rateLimit.resetIn / 1000).toString(),
-					"X-RateLimit-Remaining": "0",
-				},
-			},
-		);
+function revalidateProfile(
+	profile: (typeof CACHE_PROFILES)[keyof typeof CACHE_PROFILES],
+	channel: string,
+	slug: string,
+	tags: string[],
+	paths: string[],
+) {
+	const tag = buildTag(profile, slug);
+	revalidateTag(tag, profile.cacheProfile);
+	tags.push(tag);
+
+	const path = buildPath(profile, channel, slug);
+	if (path) {
+		revalidatePath(path);
+		paths.push(path);
 	}
+}
 
-	// Get raw body for signature verification
+// ============================================================================
+// POST — Saleor webhook
+// ============================================================================
+
+export async function POST(request: NextRequest) {
 	const rawBody = await request.text();
 
-	// Verify Saleor webhook signature
 	const signature = request.headers.get("saleor-signature");
-
 	if (!verifyWebhookSignature(rawBody, signature)) {
-		// Fallback to static secret for manual testing
-		const staticSecret = request.headers.get("x-revalidate-secret");
-		if (staticSecret !== process.env.REVALIDATE_SECRET || !process.env.REVALIDATE_SECRET) {
+		const token = extractBearerToken(request) ?? request.headers.get("x-revalidate-secret");
+		if (!verifySecret(token)) {
 			console.warn("[Revalidate] Invalid signature or secret");
 			return Response.json({ error: "Unauthorized" }, { status: 401 });
 		}
@@ -191,12 +120,12 @@ export async function POST(request: NextRequest) {
 	try {
 		const payload = JSON.parse(rawBody);
 
-		// Debug: Log raw payload to understand webhook structure
-		console.log("[Revalidate] Raw payload:", JSON.stringify(payload, null, 2));
+		if (process.env.NODE_ENV === "development") {
+			console.log("[Revalidate] Raw payload:", JSON.stringify(payload, null, 2));
+		}
 
 		const { type, slug, channel, categorySlug } = parseWebhookPayload(payload);
 
-		// Use channel from webhook payload, or fall back to configured default
 		const targetChannel = channel || DefaultChannelSlug;
 		if (!targetChannel) {
 			return Response.json(
@@ -210,61 +139,51 @@ export async function POST(request: NextRequest) {
 		switch (type) {
 			case "product":
 				if (slug) {
-					// Tag-based: Invalidates "use cache" function data
-					// Second arg must match the cacheLife() profile used in the cached function
-					revalidateTag(`product:${slug}`, "minutes");
-					revalidatedTags.push(`product:${slug}`);
-
-					// Path-based: Invalidates ISR page cache
-					revalidatePath(`/${targetChannel}/products/${slug}`);
-					revalidatedPaths.push(`/${targetChannel}/products/${slug}`);
+					revalidateProfile(CACHE_PROFILES.products, targetChannel, slug, revalidatedTags, revalidatedPaths);
 				}
-				// Also revalidate product listings
 				revalidatePath(`/${targetChannel}/products`);
 				revalidatedPaths.push(`/${targetChannel}/products`);
 
-				// Also invalidate the category page where this product appears
-				// This ensures PLP pages show updated pricing/badges after product changes
 				if (categorySlug) {
-					revalidateTag(`category:${categorySlug}`, "minutes");
-					revalidatedTags.push(`category:${categorySlug}`);
-
-					revalidatePath(`/${targetChannel}/categories/${categorySlug}`);
-					revalidatedPaths.push(`/${targetChannel}/categories/${categorySlug}`);
+					revalidateProfile(
+						CACHE_PROFILES.categories,
+						targetChannel,
+						categorySlug,
+						revalidatedTags,
+						revalidatedPaths,
+					);
 				}
 				break;
 
 			case "category":
 				if (slug) {
-					// Tag-based (uses cacheLife("minutes"))
-					revalidateTag(`category:${slug}`, "minutes");
-					revalidatedTags.push(`category:${slug}`);
-
-					// Path-based
-					revalidatePath(`/${targetChannel}/categories/${slug}`);
-					revalidatedPaths.push(`/${targetChannel}/categories/${slug}`);
+					revalidateProfile(
+						CACHE_PROFILES.categories,
+						targetChannel,
+						slug,
+						revalidatedTags,
+						revalidatedPaths,
+					);
 				}
 				break;
 
 			case "collection":
 				if (slug) {
-					// Tag-based (uses cacheLife("minutes"))
-					revalidateTag(`collection:${slug}`, "minutes");
-					revalidatedTags.push(`collection:${slug}`);
-
-					// Path-based
-					revalidatePath(`/${targetChannel}/collections/${slug}`);
-					revalidatedPaths.push(`/${targetChannel}/collections/${slug}`);
+					revalidateProfile(
+						CACHE_PROFILES.collections,
+						targetChannel,
+						slug,
+						revalidatedTags,
+						revalidatedPaths,
+					);
 				}
 				break;
 
 			default:
-				// Unknown event type - revalidate product listings as safe default
 				revalidatePath(`/${targetChannel}/products`);
 				revalidatedPaths.push(`/${targetChannel}/products`);
 		}
 
-		// Sanitize for logging to prevent log injection
 		const sanitizedSlug = slug?.replace(/[\r\n]/g, "") ?? "";
 		const sanitizedPaths = revalidatedPaths.map((s) => s.replace(/[\r\n]/g, ""));
 		const sanitizedTags = revalidatedTags.map((s) => s.replace(/[\r\n]/g, ""));
@@ -281,69 +200,84 @@ export async function POST(request: NextRequest) {
 	}
 }
 
+// ============================================================================
+// GET — Manual cache clearing (protected by secret)
+// ============================================================================
+
 /**
- * GET endpoint for manual cache clearing (protected by secret)
+ * @example Path-based revalidation:
+ * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?path=/default-channel/products/my-product"
  *
- * @example Path-based revalidation (ISR pages):
- * GET /api/revalidate?secret=xxx&path=/default-channel/products/my-product
- *
- * @example Tag-based revalidation ("use cache" functions):
- * GET /api/revalidate?secret=xxx&tag=product:my-product
+ * @example Tag-based revalidation:
+ * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=product:my-product"
  *
  * @example Both at once:
- * GET /api/revalidate?secret=xxx&path=/default-channel/products/my-product&tag=product:my-product
+ * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?path=/default-channel/products/my-product&tag=product:my-product"
+ *
+ * @example Revalidate all cached data:
+ * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?all=1"
  */
 export async function GET(request: NextRequest) {
-	// Rate limit check
-	const clientIP = getClientIP(request);
-	const rateLimit = checkRateLimit(`get:${clientIP}`);
-
-	if (!rateLimit.allowed) {
-		console.warn(`[Revalidate] Rate limited: ${clientIP}`);
-		return Response.json(
-			{ error: "Too many requests", resetIn: Math.ceil(rateLimit.resetIn / 1000) },
-			{
-				status: 429,
-				headers: {
-					"Retry-After": Math.ceil(rateLimit.resetIn / 1000).toString(),
-					"X-RateLimit-Remaining": "0",
-				},
-			},
-		);
-	}
-
-	const searchParams = request.nextUrl.searchParams;
-	const secret = searchParams.get("secret");
-
-	if (!process.env.REVALIDATE_SECRET || secret !== process.env.REVALIDATE_SECRET) {
+	const token = extractBearerToken(request);
+	if (!verifySecret(token)) {
 		return Response.json({ error: "Unauthorized" }, { status: 401 });
 	}
 
+	const searchParams = request.nextUrl.searchParams;
 	const path = searchParams.get("path");
 	const tag = searchParams.get("tag");
+	const all = searchParams.get("all");
 
-	if (!path && !tag) {
-		return Response.json({ error: "Provide path and/or tag parameter" }, { status: 400 });
+	if (!path && !tag && !all) {
+		return Response.json({ error: "Provide path, tag, and/or all parameter" }, { status: 400 });
 	}
 
 	const revalidatedPaths: string[] = [];
 	const revalidatedTags: string[] = [];
 
+	if (all === "1" || all === "true") {
+		revalidatePath("/", "layout");
+		revalidatedPaths.push("/ (all routes)");
+
+		const fixedTagProfiles = Object.values(CACHE_PROFILES).filter((p) => !p.tagPattern.includes("{slug}"));
+		for (const p of fixedTagProfiles) {
+			revalidateTag(p.tagPattern, p.cacheProfile);
+			revalidatedTags.push(p.tagPattern);
+		}
+
+		const slugProfiles = Object.values(CACHE_PROFILES)
+			.filter((p) => p.tagPattern.includes("{slug}"))
+			.map((p) => p.id);
+
+		console.log(
+			"[Revalidate] Full purge:",
+			'revalidatePath("/", "layout") invalidates all routes (including slug-based:',
+			slugProfiles.join(", ") + ").",
+			"Also revalidated fixed tags:",
+			fixedTagProfiles.map((p) => p.tagPattern).join(", "),
+		);
+	}
+
 	if (path) {
+		console.log(
+			`[Revalidate] Path: revalidatePath("${path.replace(/[\r\n]/g, "")}") — invalidates this specific route`,
+		);
 		revalidatePath(path);
 		revalidatedPaths.push(path);
 	}
 
 	if (tag) {
-		// Profile defaults to "minutes" but can be overridden for navigation ("hours")
 		const profile = searchParams.get("profile") || "minutes";
+		console.log(
+			`[Revalidate] Tag: revalidateTag("${tag.replace(
+				/[\r\n]/g,
+				"",
+			)}", "${profile}") — invalidates "use cache" entries with this tag`,
+		);
 		revalidateTag(tag, profile);
 		revalidatedTags.push(tag);
 	}
 
-	// Sanitize for logging to prevent log injection
-	const sanitizedPaths = revalidatedPaths.map((s) => s.replace(/[\r\n]/g, ""));
-	const sanitizedTags = revalidatedTags.map((s) => s.replace(/[\r\n]/g, ""));
-	console.log("[Revalidate] Manual:", { paths: sanitizedPaths, tags: sanitizedTags });
+	console.log("[Revalidate] Done:", { paths: revalidatedPaths, tags: revalidatedTags });
 	return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
 }

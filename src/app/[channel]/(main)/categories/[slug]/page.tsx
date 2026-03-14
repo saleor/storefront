@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
-import { cacheLife, cacheTag } from "next/cache";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
+import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
@@ -12,8 +12,7 @@ import { CategoryPageClient } from "./client";
 
 async function getCategoryData(slug: string, channel: string) {
 	"use cache";
-	cacheLife("minutes");
-	cacheTag(`category:${slug}`);
+	applyCacheProfile(CACHE_PROFILES.categories, slug);
 
 	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: { slug, channel, first: 1 },
