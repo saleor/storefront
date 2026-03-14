@@ -94,16 +94,19 @@ const config = {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Cached Functions with Tags
+### Cache Manifest — Single Source of Truth
 
-Each cached function has a **tag** for targeted invalidation:
+All cache profiles are defined in `src/lib/cache-manifest.ts`. This module is imported by:
+
+- **Cached functions** — for `cacheLife()` / `cacheTag()` calls
+- **`/api/cache-info`** — to serve the manifest to the saleor-paper-app (Dashboard)
 
 ```typescript
-// src/app/[channel]/(main)/products/[slug]/page.tsx
+import { PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+
 async function getProductData(slug: string, channel: string) {
 	"use cache";
-	cacheLife("minutes"); // 5 min default TTL
-	cacheTag(`product:${slug}`); // Tag for webhook invalidation
+	applyCacheProfile(PROFILES.products, slug);
 
 	return executePublicGraphQL(ProductDetailsDocument, {
 		variables: { slug, channel },
@@ -111,16 +114,27 @@ async function getProductData(slug: string, channel: string) {
 }
 ```
 
+To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actual caching behavior and the dashboard app's view of the cache update automatically.
+
 ### Tag Registry
 
-| Tag Pattern         | Used By                                        | Invalidated When          |
-| ------------------- | ---------------------------------------------- | ------------------------- |
-| `product:{slug}`    | `getProductData()`                             | Product updated in Saleor |
-| `category:{slug}`   | `getCategoryData()`                            | Category updated          |
-| `collection:{slug}` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
-| `navigation`        | `NavLinks`                                     | Menu structure changed    |
-| `footer-menu`       | `getFooterMenu()`                              | Footer menu changed       |
-| `channels`          | `getChannels()`                                | Channel list changed      |
+| Tag Pattern         | Profile ID    | Used By                                        | Invalidated When          |
+| ------------------- | ------------- | ---------------------------------------------- | ------------------------- |
+| `product:{slug}`    | `products`    | `getProductData()`                             | Product updated in Saleor |
+| `category:{slug}`   | `categories`  | `getCategoryData()`                            | Category updated          |
+| `collection:{slug}` | `collections` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
+| `navigation`        | `navigation`  | `NavLinks`                                     | Menu structure changed    |
+| `footer-menu`       | `footerMenu`  | `getFooterMenu()`                              | Footer menu changed       |
+| `channels`          | `channels`    | `getChannels()`                                | Channel list changed      |
+
+### Cache Introspection Endpoint
+
+`GET /api/cache-info` returns a machine-readable manifest of all profiles. Protected by `REVALIDATE_SECRET` via `Authorization: Bearer` header (timing-safe comparison). Used by the saleor-paper-app to discover what the storefront caches and build its invalidation UI dynamically.
+
+```bash
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" "https://store.com/api/cache-info"
+# Returns: { version: 1, profiles: [{ id, label, ttlSeconds, cacheProfile, tagPattern, pathPattern }, ...] }
+```
 
 ---
 
@@ -346,15 +360,20 @@ revalidatePath(`/channel/products/${slug}`); // Invalidates ISR page
 
 ### Manual Invalidation
 
+All manual invalidation requests use the `Authorization: Bearer` header (timing-safe comparison):
+
 ```bash
 # Invalidate a specific product (both tag and path)
-curl "https://store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie&path=/default-channel/products/blue-hoodie"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/default-channel/products/blue-hoodie"
 
 # Invalidate just the cached function data
-curl "https://store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:blue-hoodie"
 
 # Invalidate navigation (uses "hours" profile)
-curl "https://store.com/api/revalidate?secret=xxx&tag=navigation&profile=hours"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=navigation&profile=hours"
 ```
 
 ### No Webhooks? TTL Takes Over
@@ -371,10 +390,12 @@ curl "https://store.com/api/revalidate?secret=xxx&tag=navigation&profile=hours"
 ## Environment Variables
 
 ```env
-# Cache invalidation
-REVALIDATE_SECRET=your-secret       # Manual revalidation (GET requests)
+# Cache invalidation — use ≥32 character random strings in production
+REVALIDATE_SECRET=your-secret       # Bearer token for manual revalidation & cache-info
 SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ```
+
+**Security**: Both endpoints use timing-safe comparison and `Authorization: Bearer` header authentication. Query-string `?secret=` still works but logs a deprecation warning — migrate callers to the header.
 
 ---
 
@@ -397,7 +418,8 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 4. **Force manual revalidation:**
 
    ```bash
-   curl "https://store.com/api/revalidate?secret=xxx&tag=product:my-product"
+   curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+     "https://store.com/api/revalidate?tag=product:my-product"
    ```
 
 5. **Check browser cache:**
@@ -411,7 +433,7 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ❌ **Don't skip webhook setup in production** - Users see stale prices  
 ❌ **Don't access cookies/searchParams inside `"use cache"`** - Will error  
 ❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** - Requires cookies  
-❌ **Don't expose `REVALIDATE_SECRET`** - Keep it server-side only  
+❌ **Don't pass `REVALIDATE_SECRET` in query strings** - Always use the `Authorization: Bearer` header  
 ❌ **Don't make page components async when using `"use cache"` data** - Use the sync page shell pattern (see Key Pattern #2) to avoid reconciliation issues with the layout's main Suspense boundary
 
 ---
@@ -462,14 +484,19 @@ revalidateTag(`product:${slug}`); // Remove second argument
 
 ## Files Reference
 
-| File                                                   | Purpose                                  |
-| ------------------------------------------------------ | ---------------------------------------- |
-| `src/app/api/revalidate/route.ts`                      | Webhook endpoint and manual revalidation |
-| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | PDP with "use cache"                     |
-| `src/app/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                |
-| `src/app/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"              |
-| `src/app/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                |
-| `src/ui/components/pdp/variant-section-dynamic.tsx`    | Dynamic variant section                  |
-| `src/ui/components/header.tsx`                         | Header with Suspense boundaries          |
-| `src/lib/checkout.ts`                                  | Cart operations (always fresh)           |
-| `next.config.js`                                       | `cacheComponents: true`                  |
+| File                                                   | Purpose                                                               |
+| ------------------------------------------------------ | --------------------------------------------------------------------- |
+| `src/lib/api-auth.ts`                                  | Shared auth: timing-safe secret verification, Bearer token extraction |
+| `src/lib/cache-manifest.ts`                            | Cache profile definitions (single source of truth)                    |
+| `src/app/api/cache-info/route.ts`                      | Cache introspection endpoint for dashboard app                        |
+| `src/app/api/revalidate/route.ts`                      | Webhook endpoint and manual revalidation                              |
+| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | PDP with "use cache"                                                  |
+| `src/app/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                                             |
+| `src/app/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"                                           |
+| `src/app/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                                             |
+| `src/ui/components/nav/components/nav-links.tsx`       | Navigation with "use cache"                                           |
+| `src/ui/components/footer.tsx`                         | Footer menu + channels with "use cache"                               |
+| `src/ui/components/pdp/variant-section-dynamic.tsx`    | Dynamic variant section                                               |
+| `src/ui/components/header.tsx`                         | Header with Suspense boundaries                                       |
+| `src/lib/checkout.ts`                                  | Cart operations (always fresh)                                        |
+| `next.config.js`                                       | `cacheComponents: true`                                               |

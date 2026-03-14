@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { cacheLife, cacheTag } from "next/cache";
 import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
@@ -9,6 +8,7 @@ import xss from "xss";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
+import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductGallery,
@@ -24,8 +24,7 @@ import {
 
 async function getProductData(slug: string, channel: string) {
 	"use cache";
-	cacheLife("minutes");
-	cacheTag(`product:${slug}`);
+	applyCacheProfile(CACHE_PROFILES.products, slug);
 
 	const result = await executePublicGraphQL(ProductDetailsDocument, {
 		variables: {
