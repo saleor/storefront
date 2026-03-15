@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { cacheLife, cacheTag } from "next/cache";
 import { LinkWithChannel } from "../atoms/link-with-channel";
 import { ChannelSelect } from "./channel-select";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
+import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
 
@@ -26,8 +26,7 @@ const defaultFooterLinks = {
 /** Cached channels list - rarely changes */
 async function getChannels() {
 	"use cache";
-	cacheLife("days"); // Cache for 1 day
-	cacheTag("channels");
+	applyCacheProfile(CACHE_PROFILES.channels);
 
 	if (!process.env.SALEOR_APP_TOKEN) {
 		return null;
@@ -45,8 +44,7 @@ async function getChannels() {
 /** Cached footer menu */
 async function getFooterMenu(channel: string) {
 	"use cache";
-	cacheLife("hours"); // Cache for 1 hour
-	cacheTag("footer-menu");
+	applyCacheProfile(CACHE_PROFILES.footerMenu);
 
 	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "footer", channel },
