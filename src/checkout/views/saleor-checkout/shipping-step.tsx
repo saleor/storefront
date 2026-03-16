@@ -1,10 +1,15 @@
 "use client";
 
-import { useState, useCallback, type FC } from "react";
-import { Truck, Clock, Leaf, ChevronLeft } from "lucide-react";
+import { useState, useCallback, useEffect, type FC } from "react";
+import { Truck, Clock, Leaf, ChevronLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
-import { type CheckoutFragment, useCheckoutDeliveryMethodUpdateMutation } from "@/checkout/graphql";
+import {
+	type CheckoutFragment,
+	type DeliveryOptionsCalculateMutation,
+	useCheckoutDeliveryMethodUpdateMutation,
+	useDeliveryOptionsCalculateMutation,
+} from "@/checkout/graphql";
 import { CheckoutSummaryContext, buildShippingSummaryRows } from "./checkout-summary-context";
 import { useCheckout } from "@/checkout/hooks/use-checkout";
 import { formatShippingPrice } from "@/checkout/lib/utils/money";
@@ -12,10 +17,26 @@ import { localeConfig } from "@/config/locale";
 import { MobileStickyAction } from "./mobile-sticky-action";
 import { getStepNumber } from "./flow";
 
+type DeliveryOption = DeliveryOptionsCalculateMutation["deliveryOptionsCalculate"] extends
+	| { deliveries: infer D }
+	| null
+	| undefined
+	? D extends Array<infer Item>
+		? Item
+		: never
+	: never;
+
 interface ShippingStepProps {
 	checkout: CheckoutFragment;
 	onBack: () => void;
 	onNext: () => void;
+}
+
+function hasDeliveryProblem(
+	checkout: CheckoutFragment,
+	type: "CheckoutProblemDeliveryMethodStale" | "CheckoutProblemDeliveryMethodInvalid",
+): boolean {
+	return checkout.problems?.some((p) => p.__typename === type) ?? false;
 }
 
 export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout, onBack, onNext }) => {
@@ -23,18 +44,80 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 	const { checkout: liveCheckout, fetching } = useCheckout();
 	const checkout = liveCheckout || initialCheckout;
 
-	const shippingMethods = checkout.shippingMethods || [];
 	const hasShippingAddress = !!checkout.shippingAddress;
-	const currentMethod = checkout.deliveryMethod;
-	const currentMethodId = currentMethod?.__typename === "ShippingMethod" ? currentMethod.id : undefined;
+	const currentDeliveryId = checkout.delivery?.id;
+
+	// Delivery options from deliveryOptionsCalculate mutation
+	const [deliveries, setDeliveries] = useState<DeliveryOption[]>([]);
+	const [isLoadingDeliveries, setIsLoadingDeliveries] = useState(false);
 
 	// Local state - only saves on Continue
-	const [selectedMethod, setSelectedMethod] = useState(currentMethodId || shippingMethods[0]?.id);
+	const [selectedMethod, setSelectedMethod] = useState<string | undefined>(currentDeliveryId);
 	const [isSubmittingLocal, setIsSubmittingLocal] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	// Mutation
+	// Problems
+	const isStale = hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodStale");
+	const isInvalid = hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid");
+
+	// Mutations
 	const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
+	const [, calculateDeliveryOptions] = useDeliveryOptionsCalculateMutation();
+
+	// Fetch delivery options
+	const fetchDeliveryOptions = useCallback(async () => {
+		setIsLoadingDeliveries(true);
+		setError(null);
+		try {
+			const result = await calculateDeliveryOptions({ id: checkout.id });
+			if (result.error) {
+				setError("Failed to load shipping methods");
+				return;
+			}
+			const data = result.data?.deliveryOptionsCalculate;
+			if (data?.errors?.length) {
+				setError(data.errors[0].message ?? "Failed to load shipping methods");
+				return;
+			}
+			const newDeliveries = data?.deliveries ?? [];
+			setDeliveries(newDeliveries);
+
+			// If current selection is not in the new list, reset
+			if (selectedMethod && !newDeliveries.some((d) => d.id === selectedMethod)) {
+				setSelectedMethod(newDeliveries[0]?.id);
+			}
+			// If no selection yet, default to first
+			if (!selectedMethod && newDeliveries.length > 0) {
+				setSelectedMethod(newDeliveries[0]?.id);
+			}
+		} finally {
+			setIsLoadingDeliveries(false);
+		}
+	}, [calculateDeliveryOptions, checkout.id, selectedMethod]);
+
+	// Fetch on mount when address is available
+	useEffect(() => {
+		if (hasShippingAddress) {
+			void fetchDeliveryOptions();
+		}
+		// Only run on mount and when address changes
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [hasShippingAddress, checkout.shippingAddress?.id]);
+
+	// Auto-refresh when delivery is stale
+	useEffect(() => {
+		if (isStale) {
+			void fetchDeliveryOptions();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isStale]);
+
+	// Clear selection when delivery becomes invalid
+	useEffect(() => {
+		if (isInvalid) {
+			setSelectedMethod(undefined);
+		}
+	}, [isInvalid]);
 
 	// Summary rows for context display
 	const summaryRows = buildShippingSummaryRows(checkout);
@@ -59,14 +142,13 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 
 			if (!selectedMethod) {
 				setError("Please select a shipping method");
-				// Focus the first radio option
 				const firstRadio = document.querySelector('input[name="shipping"]') as HTMLElement;
 				firstRadio?.focus();
 				return;
 			}
 
 			// Skip API call if method hasn't changed
-			if (selectedMethod === currentMethodId) {
+			if (selectedMethod === currentDeliveryId) {
 				onNext();
 				return;
 			}
@@ -91,9 +173,10 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 				setIsSubmittingLocal(false);
 			}
 		},
-		[selectedMethod, currentMethodId, onNext, updateDeliveryMethod, checkout.id],
+		[selectedMethod, currentDeliveryId, onNext, updateDeliveryMethod, checkout.id],
 	);
 
+	const isLoading = fetching || isLoadingDeliveries;
 	const buttonText = isSubmittingLocal ? "Saving..." : "Continue to payment";
 
 	return (
@@ -101,18 +184,28 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 			{/* Summary Context */}
 			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={() => onBack()} />
 
+			{/* Invalid delivery warning */}
+			{isInvalid && (
+				<div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
+					<AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+					<p className="text-sm text-amber-800">
+						Your previously selected shipping method is no longer available. Please select a new one.
+					</p>
+				</div>
+			)}
+
 			{/* Shipping Methods */}
 			<section className="space-y-4">
 				<h2 className="text-lg font-semibold">Shipping method</h2>
 
 				{error && <p className="text-sm text-destructive">{error}</p>}
 
-				{fetching ? (
+				{isLoading ? (
 					<div className="flex items-center gap-3 rounded-lg border border-border p-4">
 						<div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
 						<p className="text-sm text-muted-foreground">Loading shipping methods...</p>
 					</div>
-				) : shippingMethods.length === 0 ? (
+				) : deliveries.length === 0 ? (
 					<div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
 						<p className="text-sm text-amber-800">
 							{!hasShippingAddress
@@ -124,16 +217,19 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 					</div>
 				) : (
 					<div className="space-y-3">
-						{shippingMethods.map((method) => {
+						{deliveries.map((delivery) => {
+							const method = delivery.shippingMethod;
+							if (!method) return null;
+
 							const Icon = getMethodIcon(method.name);
-							const isSelected = selectedMethod === method.id;
+							const isSelected = selectedMethod === delivery.id;
 							const isEco = isEcoMethod(method.name);
 							const isFree = method.price?.amount === 0;
 							const priceDisplay = formatShippingPrice(method.price);
 
 							return (
 								<label
-									key={method.id}
+									key={delivery.id}
 									className={cn(
 										"flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors",
 										"focus-within:ring-2 focus-within:ring-foreground focus-within:ring-offset-2",
@@ -145,10 +241,10 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 									<input
 										type="radio"
 										name="shipping"
-										value={method.id}
+										value={delivery.id}
 										checked={isSelected}
 										onChange={() => {
-											setSelectedMethod(method.id);
+											setSelectedMethod(delivery.id);
 											setError(null);
 										}}
 										className="sr-only"

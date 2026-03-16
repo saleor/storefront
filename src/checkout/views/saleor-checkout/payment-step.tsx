@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, type FC } from "react";
-import { ChevronLeft, AlertCircle } from "lucide-react";
+import { ChevronLeft, AlertCircle, AlertTriangle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/ui/components/ui/button";
 import { CheckoutSummaryContext, buildPaymentSummaryRows } from "./checkout-summary-context";
@@ -344,8 +344,13 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 			: "Processing payment..."
 		: `Pay ${totalStr}`;
 
+	const hasInvalidDelivery = checkout.problems?.some(
+		(p) => p.__typename === "CheckoutProblemDeliveryMethodInvalid",
+	);
+
 	const isDisabled =
 		isLoading ||
+		hasInvalidDelivery ||
 		(!hasDummyGateway && !hasRealGateway) ||
 		(paymentMethod === "card" && !hasDummyGateway && !isCardValid);
 
@@ -353,6 +358,20 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 		<form className="space-y-8" onSubmit={handleSubmit}>
 			{/* Summary Context */}
 			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={handleGoToStep} />
+
+			{/* Invalid Delivery Method Warning */}
+			{hasInvalidDelivery && (
+				<div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
+					<AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+					<div>
+						<p className="font-medium text-amber-800">Shipping method no longer available</p>
+						<p className="mt-1 text-sm text-amber-700">
+							Please go back to the shipping step and select a valid shipping method before completing your
+							order.
+						</p>
+					</div>
+				</div>
+			)}
 
 			{/* No Payment Gateway Warning */}
 			{!hasDummyGateway && !hasRealGateway && (
