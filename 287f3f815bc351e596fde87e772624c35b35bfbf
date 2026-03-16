@@ -1,0 +1,29 @@
+src/checkout/views/saleor-checkout/shipping-step.tsx
+  f95df83d4203070c 3-4,9-11,20-28,35-39,48,50-52,55,59-63,65-120,151,176,179,187-196,203,208,220-223,225,232,244,247
+src/checkout/views/saleor-checkout/payment-step.tsx
+  f95df83d4203070c 4,347-350,353,362-374
+src/checkout/views/saleor-checkout/checkout-summary-context.tsx
+  f95df83d4203070c 59-60,64
+src/checkout/graphql/checkout.graphql
+  f95df83d4203070c 66,68,70,73-78,338-360
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.12",
+  "base_commit_sha": "287f3f815bc351e596fde87e772624c35b35bfbf",
+  "prompts": {
+    "f95df83d4203070c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5d0ee481-64e9-4520-9729-135484898794",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Lukasz Ostrowski <lukasz.ostrowski@saleor.io>",
+      "messages": [],
+      "total_additions": 170,
+      "total_deletions": 37,
+      "accepted_lines": 166,
+      "overriden_lines": 0
+    }
+  }
+}
