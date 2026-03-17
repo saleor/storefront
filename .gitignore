@@ -42,3 +42,6 @@ next-env.d.ts
 
 .idea/
 .pnpm-store
+
+# Affiliate system SQLite database
+/data/

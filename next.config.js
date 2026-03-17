@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const config = {
+	// Native modules that must not be bundled by webpack/turbopack
+	serverExternalPackages: ["better-sqlite3"],
 	// Cache Components (Partial Prerendering)
 	// Enables mixing static, cached, and dynamic content in a single route.
 	// See: https://nextjs.org/docs/app/getting-started/cache-components
@@ -13,8 +15,9 @@ const config = {
 		// (max 3 concurrent requests + 200ms delay between requests)
 	},
 	images: {
-		// Skip image optimization in development (localhost images resolve to private IPs)
-		unoptimized: process.env.NODE_ENV === "development",
+		// Saleor already serves optimized thumbnails, and the Next.js image optimizer
+		// can't reach the external API URL from inside the Docker container.
+		unoptimized: true,
 		remotePatterns: [
 			{
 				// Saleor Cloud CDN

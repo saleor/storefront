@@ -11,6 +11,7 @@ import { ConfirmationStep } from "./confirmation-step";
 import { useCheckout } from "@/checkout/hooks/use-checkout";
 import { useUser } from "@/checkout/hooks/use-user";
 import { useCustomerAttach } from "@/checkout/hooks/use-customer-attach";
+import { useAffiliateCode } from "@/checkout/hooks/use-affiliate-code";
 import { EmptyCartPage } from "../empty-cart-page";
 import { PageNotFound } from "../page-not-found";
 import { CheckoutSkeleton } from "./checkout-skeleton";
@@ -36,6 +37,9 @@ export const SaleorCheckout: FC = () => {
 
 	// Auto-attach logged-in user to checkout (runs once, persists across step changes)
 	useCustomerAttach();
+
+	// Auto-apply affiliate promo code from cookie (set via ?ref=CODE URL param)
+	useAffiliateCode(checkout);
 
 	// For digital products, skip shipping step (1 = info, 2 = payment, 3 = confirmation)
 	// For physical products, full flow (1 = info, 2 = shipping, 3 = payment, 4 = confirmation)

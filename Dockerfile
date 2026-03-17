@@ -2,8 +2,8 @@ FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+# libc6-compat for Node.js on Alpine, python3/make/g++ for native modules (better-sqlite3)
+RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
 ENV PNPM_HOME="/pnpm"
@@ -52,6 +52,8 @@ ARG NEXT_PUBLIC_SALEOR_API_URL
 ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
 ARG NEXT_PUBLIC_STOREFRONT_URL
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
+ARG SALEOR_API_URL
+ENV SALEOR_API_URL=${SALEOR_API_URL}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -62,12 +64,22 @@ COPY --from=builder /app/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+# Create writable data directory for SQLite (affiliate system)
+RUN mkdir -p data && chown nextjs:nodejs data
+
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Ensure better-sqlite3 native binary is available in standalone output
+# (serverExternalPackages tells Next.js to keep it external, but the .node binary
+# may not be traced — this guarantees it's present)
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
+
 USER nextjs
 
+# Affiliate DB is stored here — mount as a Docker volume for persistence
+VOLUME /app/data
 
 CMD ["node", "server.js"]
