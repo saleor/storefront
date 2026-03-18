@@ -317,13 +317,13 @@ function HeroSection() {
 						tested. Every order documented with a Certificate of Analysis.
 					</p>
 
-					{/* CTAs */}
-					<div className="mt-10 flex animate-fade-in-up-delay-2 flex-wrap items-center gap-4 opacity-0">
+					{/* CTA */}
+					<div className="mt-10 animate-fade-in-up-delay-2 opacity-0">
 						<LinkWithChannel
 							href="/products"
 							className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
 						>
-							Explore Compounds
+							Show All Products
 							<svg
 								className="h-4 w-4 transition-transform group-hover:translate-x-1"
 								fill="none"
@@ -333,12 +333,6 @@ function HeroSection() {
 							>
 								<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 							</svg>
-						</LinkWithChannel>
-						<LinkWithChannel
-							href="/products"
-							className="inline-flex items-center rounded-full border border-neutral-700 px-8 py-4 text-sm font-semibold text-white transition-all hover:border-neutral-500 hover:bg-white/5"
-						>
-							View All Products
 						</LinkWithChannel>
 					</div>
 

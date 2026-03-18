@@ -2,6 +2,9 @@
 const config = {
 	// Native modules that must not be bundled by webpack/turbopack
 	serverExternalPackages: ["better-sqlite3"],
+
+	// FINDING-10: Remove X-Powered-By header
+	poweredByHeader: false,
 	// Cache Components (Partial Prerendering)
 	// Enables mixing static, cached, and dynamic content in a single route.
 	// See: https://nextjs.org/docs/app/getting-started/cache-components

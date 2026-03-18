@@ -19,7 +19,7 @@ const defaultFooterLinks = {
 		{ label: "About", href: "/about" },
 		{ label: "Sustainability", href: "/sustainability" },
 		{ label: "Careers", href: "/careers" },
-		{ label: "Press", href: "/press" },
+		{ label: "Affiliate Program", href: "/affiliate" },
 	],
 };
 
@@ -148,13 +148,13 @@ export async function Footer({ channel }: { channel: string }) {
 								<ul className="space-y-3">
 									{defaultFooterLinks.support.map((link) => (
 										<li key={link.href}>
-											<Link
+											<LinkWithChannel
 												href={link.href}
 												prefetch={false}
 												className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
 											>
 												{link.label}
-											</Link>
+											</LinkWithChannel>
 										</li>
 									))}
 								</ul>
@@ -164,13 +164,13 @@ export async function Footer({ channel }: { channel: string }) {
 								<ul className="space-y-3">
 									{defaultFooterLinks.company.map((link) => (
 										<li key={link.href}>
-											<Link
+											<LinkWithChannel
 												href={link.href}
 												prefetch={false}
 												className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
 											>
 												{link.label}
-											</Link>
+											</LinkWithChannel>
 										</li>
 									))}
 								</ul>
@@ -195,6 +195,13 @@ export async function Footer({ channel }: { channel: string }) {
 						<CopyrightText />
 					</p>
 					<div className="flex items-center gap-6">
+						<LinkWithChannel
+							href="/affiliate"
+							prefetch={false}
+							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+						>
+							Affiliate Program
+						</LinkWithChannel>
 						<Link
 							href="/privacy"
 							prefetch={false}

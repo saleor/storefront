@@ -17,7 +17,10 @@ export default function RootLayout(props: { children: ReactNode }) {
 	const { children } = props;
 
 	return (
-		<html lang={localeConfig.htmlLang} className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}>
+		<html
+			lang={localeConfig.htmlLang}
+			className={`dark ${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}
+		>
 			<body className="min-h-dvh font-sans">
 				{children}
 				<Suspense>
