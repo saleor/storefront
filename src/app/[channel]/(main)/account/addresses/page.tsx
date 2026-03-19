@@ -1,11 +1,11 @@
-export const dynamic = "force-dynamic";
-
+import { connection } from "next/server";
 import { AccountAddressCard } from "@/ui/components/account/address-card";
 import { AddressFormDialog } from "@/ui/components/account/address-form-dialog";
 import { DeleteAddressButton, SetDefaultAddressButton } from "@/ui/components/account/address-actions";
 import { getCurrentUser } from "../get-current-user";
 
 export default async function AddressesPage() {
+	await connection();
 	const user = await getCurrentUser();
 	if (!user) return null;
 

@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+import { connection } from "next/server";
 import { ChevronRight } from "lucide-react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
@@ -10,6 +9,7 @@ import { accountRoutes } from "@/ui/components/account/routes";
 import { getCurrentUser } from "./get-current-user";
 
 export default async function AccountOverviewPage() {
+	await connection();
 	const [user, ordersResult] = await Promise.all([
 		getCurrentUser(),
 		executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {

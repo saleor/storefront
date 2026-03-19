@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { MapPin, CreditCard } from "lucide-react";
@@ -16,6 +15,7 @@ type Props = {
 };
 
 export default async function OrderDetailPage({ params }: Props) {
+	await connection();
 	const { number } = await params;
 
 	// Saleor's `me.orders` doesn't support filtering by number (UserOrdersArgs

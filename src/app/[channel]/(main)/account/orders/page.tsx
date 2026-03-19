@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+import { connection } from "next/server";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { OrderRow } from "@/ui/components/account/order-row";
@@ -14,6 +13,7 @@ type Props = {
 };
 
 export default async function AccountOrdersPage({ searchParams }: Props) {
+	await connection();
 	const { after } = await searchParams;
 
 	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {

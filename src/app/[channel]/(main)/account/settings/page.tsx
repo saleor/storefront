@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+import { connection } from "next/server";
 import { Mail, Calendar } from "lucide-react";
 import { EditNameForm } from "@/ui/components/account/edit-name-form";
 import { ChangePasswordForm } from "@/ui/components/account/change-password-form";
@@ -7,6 +6,7 @@ import { DeleteAccountSection } from "@/ui/components/account/delete-account-sec
 import { getCurrentUser } from "../get-current-user";
 
 export default async function AccountSettingsPage() {
+	await connection();
 	const user = await getCurrentUser();
 	if (!user) return null;
 
