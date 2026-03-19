@@ -6,14 +6,11 @@ import {
 	CollectionsListDocument,
 	ProductOrderField,
 	OrderDirection,
-	type ProductListItemFragment,
 } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
-import { ProductImageWrapper } from "@/ui/atoms/product-image-wrapper";
-import { formatMoneyRange } from "@/lib/utils";
-import heroPep from "../../../../public/hero-pep.png";
-import { HomepageFAQ } from "./homepage-faq";
+import heroPep from "../../../../public/hero-2.png";
+import { ProductTabs } from "./product-tabs";
 
 export const metadata = {
 	title: "InfinityBio Labs — Pharmaceutical-Grade Research Peptides",
@@ -274,15 +271,33 @@ const testimonials = [
 	},
 ];
 
+// ─── Institution names (placeholder — replace with logos) ───
+
+const institutions = [
+	"Stanford Research",
+	"MIT BioLab",
+	"Johns Hopkins",
+	"Cambridge Pharma",
+	"Max Planck Institute",
+	"Karolinska Institute",
+];
+
 // ════════════════════════════════════════════════════════════
 // SECTIONS
 // ════════════════════════════════════════════════════════════
 
-// ─── 1. Hero ────────────────────────────────────────────────
+// ─── 1. Hero (full-bleed background image) ──────────────────
 
 function HeroSection() {
 	return (
-		<section className="noise-overlay relative -mt-16 flex min-h-[90vh] items-center overflow-hidden bg-foreground pt-16">
+		<section className="noise-overlay relative -mt-16 flex min-h-[90vh] items-center overflow-hidden bg-neutral-950 pt-16">
+			{/* Full-bleed background image */}
+			<Image src={heroPep} alt="" fill priority placeholder="blur" className="object-cover object-center" />
+
+			{/* Dark gradient overlay for text readability */}
+			<div className="absolute inset-0 bg-gradient-to-r from-neutral-950/95 via-neutral-950/80 to-neutral-950/60" />
+			<div className="absolute inset-0 bg-neutral-950/40" />
+
 			{/* Gradient orbs */}
 			<div className="pointer-events-none absolute inset-0">
 				<div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-emerald-500/20 blur-[120px]" />
@@ -300,19 +315,19 @@ function HeroSection() {
 				}}
 			/>
 
-			<div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:gap-16">
-				<div>
+			<div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-20">
+				<div className="max-w-2xl">
 					<p className="mb-6 animate-fade-in text-sm font-medium uppercase tracking-[0.3em] text-neutral-400 opacity-0">
 						Pharmaceutical-Grade Research Peptides
 					</p>
-					<h1 className="animate-fade-in-up text-5xl font-bold leading-[1.05] tracking-tight text-white opacity-0 sm:text-6xl lg:text-7xl">
+					<h1 className="animate-fade-in-up text-3xl font-bold leading-[1.05] tracking-tight text-white opacity-0 sm:text-5xl md:text-6xl lg:text-7xl">
 						The Science
 						<br />
 						<span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
 							of Purity
 						</span>
 					</h1>
-					<p className="mt-8 max-w-xl animate-fade-in-up-delay-1 text-lg leading-relaxed text-neutral-400 opacity-0">
+					<p className="mt-6 max-w-xl animate-fade-in-up-delay-1 text-base leading-relaxed text-neutral-300 opacity-0 sm:mt-8 sm:text-lg">
 						HPLC-verified, 99%+ purity research peptides and biotech compounds. Every batch independently
 						tested. Every order documented with a Certificate of Analysis.
 					</p>
@@ -321,9 +336,9 @@ function HeroSection() {
 					<div className="mt-10 animate-fade-in-up-delay-2 opacity-0">
 						<LinkWithChannel
 							href="/products"
-							className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
+							className="group inline-flex h-12 items-center gap-2 rounded-full bg-emerald-500 px-6 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25 sm:px-8"
 						>
-							Show All Products
+							Explore Compounds
 							<svg
 								className="h-4 w-4 transition-transform group-hover:translate-x-1"
 								fill="none"
@@ -337,31 +352,18 @@ function HeroSection() {
 					</div>
 
 					{/* Hero stats */}
-					<dl className="mt-12 flex animate-fade-in-up-delay-2 flex-wrap gap-8 opacity-0 sm:gap-12">
+					<dl className="mt-10 flex animate-fade-in-up-delay-2 flex-wrap gap-6 opacity-0 sm:mt-12 sm:gap-8 lg:gap-12">
 						{statsData.map((stat) => (
 							<div key={stat.label}>
 								<dt className="text-xs font-medium uppercase tracking-wider text-neutral-500">
 									{stat.label}
 								</dt>
-								<dd className="mt-1 font-mono text-2xl font-bold text-emerald-400">{stat.value}</dd>
+								<dd className="mt-1 font-mono text-xl font-bold text-emerald-400 sm:text-2xl">
+									{stat.value}
+								</dd>
 							</div>
 						))}
 					</dl>
-				</div>
-
-				{/* Hero image */}
-				<div className="relative animate-fade-in-up-delay-1 opacity-0 lg:flex lg:justify-end">
-					<div className="relative">
-						<div className="absolute -inset-4 rounded-3xl bg-emerald-500/10 blur-3xl" />
-						<Image
-							src={heroPep}
-							alt="InfinityBio research peptide vials"
-							width={600}
-							height={600}
-							priority
-							className="relative rounded-2xl object-contain drop-shadow-2xl"
-						/>
-					</div>
 				</div>
 			</div>
 
@@ -399,200 +401,12 @@ function TrustBar() {
 	);
 }
 
-// ─── 3. Stats Banner ────────────────────────────────────────
-
-function StatsBanner() {
-	return (
-		<section className="border-b border-neutral-800 bg-foreground">
-			<div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-neutral-800 lg:grid-cols-4">
-				{statsData.map((stat) => (
-					<div key={stat.label} className="px-6 py-10 text-center sm:py-14">
-						<p className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">{stat.value}</p>
-						<p className="mt-2 text-xs font-medium uppercase tracking-wider text-neutral-500">{stat.label}</p>
-					</div>
-				))}
-			</div>
-		</section>
-	);
-}
-
-// ─── 4. Shop by Goal (Collections) ─────────────────────────
-
-async function ShopByGoalSection({ params }: { params: Promise<{ channel: string }> }) {
-	const { channel } = await params;
-	const collections = await getCollections(channel);
-
-	const excludeSlugs = ["accessories"];
-	const displayCollections = collections.filter((c) => !excludeSlugs.includes(c.slug));
-
-	if (displayCollections.length === 0) return null;
-
-	return (
-		<section
-			className="noise-overlay relative overflow-hidden bg-foreground text-white"
-			aria-label="Shop by Goal"
-		>
-			{/* Background */}
-			<div className="pointer-events-none absolute inset-0">
-				<div className="bg-emerald-500/8 absolute -left-40 top-0 h-[500px] w-[500px] rounded-full blur-[120px]" />
-				<div className="bg-teal-500/8 absolute -right-40 bottom-0 h-[500px] w-[500px] rounded-full blur-[120px]" />
-			</div>
-
-			<div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:py-40">
-				{/* Section header */}
-				<div className="mb-12 sm:mb-16">
-					<div className="flex items-end justify-between">
-						<div>
-							<p className="mb-4 text-sm font-medium uppercase tracking-[0.25em] text-emerald-400">
-								Research Goals
-							</p>
-							<h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Shop by Goal</h2>
-						</div>
-						<LinkWithChannel
-							href="/products"
-							className="hidden items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white sm:inline-flex"
-						>
-							View All
-							<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-								<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-							</svg>
-						</LinkWithChannel>
-					</div>
-				</div>
-
-				{/* All collections — uniform grid */}
-				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 lg:gap-6">
-					{displayCollections.map((collection) => (
-						<LinkWithChannel
-							key={collection.id}
-							href={`/collections/${collection.slug}`}
-							className="glow-emerald group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 hover:border-emerald-500/30 hover:bg-neutral-800/80 sm:p-8"
-						>
-							<div className="mb-8 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 transition-colors duration-300 group-hover:bg-emerald-500/20">
-								<CollectionIcon slug={collection.slug} className="h-6 w-6 text-emerald-400" />
-							</div>
-							<div>
-								<h3 className="text-sm font-semibold text-neutral-200 transition-colors duration-300 group-hover:text-white sm:text-base">
-									{collection.name}
-								</h3>
-								<span className="mt-1 flex items-center gap-1 text-xs font-medium text-neutral-500 transition-colors duration-300 group-hover:text-emerald-400">
-									Browse
-									<svg
-										className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										strokeWidth={2}
-									>
-										<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-									</svg>
-								</span>
-							</div>
-						</LinkWithChannel>
-					))}
-				</div>
-			</div>
-		</section>
-	);
-}
-
-// ─── 5. Featured Products ───────────────────────────────────
-
-function ProductCard({ product, index }: { product: ProductListItemFragment; index: number }) {
-	const startPrice = product.pricing?.priceRange?.start?.gross;
-	const undiscounted = product.pricing?.priceRangeUndiscounted?.start?.gross;
-	const hasDiscount = undiscounted && startPrice && undiscounted.amount !== startPrice.amount;
-
-	return (
-		<li className="card-lift group">
-			<LinkWithChannel href={`/products/${product.slug}`} prefetch={false}>
-				<div className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 transition-colors duration-300 group-hover:border-neutral-700">
-					{hasDiscount && (
-						<div className="absolute left-3 top-3 z-10 rounded-full bg-red-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
-							Sale
-						</div>
-					)}
-					{product?.thumbnail?.url && (
-						<ProductImageWrapper
-							loading={index < 4 ? "eager" : "lazy"}
-							src={product.thumbnail.url}
-							alt={product.thumbnail.alt ?? ""}
-							width={512}
-							height={512}
-							sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-							priority={index < 2}
-							className="transition-transform duration-700 ease-out group-hover:scale-105"
-						/>
-					)}
-				</div>
-				<div className="mt-4 space-y-1 px-0.5">
-					<p className="text-[11px] font-medium uppercase tracking-wider text-neutral-500">
-						{product.category?.name}
-					</p>
-					<h3 className="text-sm font-semibold leading-snug text-neutral-200">{product.name}</h3>
-					<div className="flex items-center gap-2 pt-1">
-						<span className="text-sm font-bold text-white">
-							{formatMoneyRange({
-								start: startPrice,
-								stop: product?.pricing?.priceRange?.stop?.gross,
-							})}
-						</span>
-						{hasDiscount && (
-							<span className="text-xs text-neutral-500 line-through">
-								{formatMoneyRange({
-									start: undiscounted,
-									stop: product?.pricing?.priceRangeUndiscounted?.stop?.gross,
-								})}
-							</span>
-						)}
-					</div>
-				</div>
-			</LinkWithChannel>
-		</li>
-	);
-}
-
-async function FeaturedProductsSection({ params }: { params: Promise<{ channel: string }> }) {
-	const { channel } = await params;
-	const products = await getFeaturedProducts(channel);
-	if (products.length === 0) return null;
-
-	return (
-		<section className="bg-foreground py-24 text-white sm:py-32" aria-label="Featured Products">
-			<div className="mx-auto max-w-7xl px-6">
-				<div className="mb-12 flex items-end justify-between sm:mb-16">
-					<div>
-						<p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
-							Curated Selection
-						</p>
-						<h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Featured Compounds</h2>
-					</div>
-					<LinkWithChannel
-						href="/products"
-						className="hidden items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white sm:inline-flex"
-					>
-						View All
-						<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-							<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-						</svg>
-					</LinkWithChannel>
-				</div>
-				<ul className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
-					{products.map((product, i) => (
-						<ProductCard key={product.id} product={product} index={i} />
-					))}
-				</ul>
-			</div>
-		</section>
-	);
-}
-
-// ─── 6. Science & Quality ───────────────────────────────────
+// ─── 3. Science & Quality (moved up — strongest differentiator) ──
 
 function ScienceQualitySection() {
 	return (
 		<section
-			className="noise-overlay relative overflow-hidden bg-foreground text-white"
+			className="noise-overlay relative overflow-hidden bg-neutral-950 text-white"
 			aria-label="Quality Assurance"
 		>
 			{/* Background */}
@@ -629,13 +443,13 @@ function ScienceQualitySection() {
 				</div>
 
 				{/* Two-column layout: COA card + quality pillars */}
-				<div className="grid items-start gap-16 lg:grid-cols-2 lg:gap-24">
+				<div className="grid items-start gap-10 sm:gap-16 lg:grid-cols-2 lg:gap-24">
 					{/* Left: Mock COA Document */}
 					<div className="relative">
 						<div className="absolute -inset-px animate-glow-pulse rounded-2xl bg-gradient-to-b from-emerald-500/20 via-emerald-500/5 to-transparent" />
 						<div className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/90 backdrop-blur-sm">
 							{/* COA Header */}
-							<div className="border-b border-neutral-800 px-8 py-8 sm:px-12 sm:py-10">
+							<div className="border-b border-neutral-800 px-5 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-10">
 								<div className="flex items-center justify-between">
 									<div>
 										<p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">
@@ -658,7 +472,7 @@ function ScienceQualitySection() {
 							</div>
 
 							{/* COA Data rows */}
-							<div className="divide-y divide-neutral-800/60 px-8 sm:px-12">
+							<div className="divide-y divide-neutral-800/60 px-5 sm:px-8 lg:px-12">
 								{[
 									{ label: "Purity (HPLC)", value: "99.2%", status: "pass" },
 									{ label: "Identity (MS)", value: "Confirmed", status: "pass" },
@@ -686,7 +500,7 @@ function ScienceQualitySection() {
 							</div>
 
 							{/* COA Footer */}
-							<div className="border-t border-neutral-800 px-8 py-6 sm:px-12">
+							<div className="border-t border-neutral-800 px-5 py-5 sm:px-8 sm:py-6 lg:px-12">
 								<div className="flex items-center justify-between">
 									<p className="text-xs text-neutral-500">Tested by independent accredited laboratory</p>
 									<span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
@@ -698,7 +512,7 @@ function ScienceQualitySection() {
 					</div>
 
 					{/* Right: Quality pillars */}
-					<div className="flex flex-col gap-10 lg:gap-14">
+					<div className="flex flex-col gap-8 sm:gap-10 lg:gap-14">
 						{qualityPillars.map((pillar) => (
 							<div key={pillar.title} className="group">
 								<span className="mb-3 inline-block rounded-lg bg-emerald-500/10 px-3 py-1.5 font-mono text-sm font-bold text-emerald-400">
@@ -717,52 +531,131 @@ function ScienceQualitySection() {
 	);
 }
 
-// ─── 7. Best Sellers ────────────────────────────────────────
+// ─── 4. Institution Logos Bar ────────────────────────────────
 
-async function BestSellersSection({ params }: { params: Promise<{ channel: string }> }) {
-	const { channel } = await params;
-	const products = await getBestSellers(channel);
-	if (products.length === 0) return null;
-
+function InstitutionLogosBar() {
 	return (
-		<section className="bg-foreground py-24 text-white sm:py-32" aria-label="Best Sellers">
+		<section className="border-y border-neutral-800 bg-neutral-900/30 py-12">
 			<div className="mx-auto max-w-7xl px-6">
-				<div className="mb-12 flex items-end justify-between sm:mb-16">
-					<div>
-						<p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
-							Most Popular
-						</p>
-						<h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Best Sellers</h2>
-						<p className="mt-4 max-w-lg text-neutral-400">
-							Our most requested research compounds. Purity-verified and in stock.
-						</p>
-					</div>
-					<LinkWithChannel
-						href="/products"
-						className="hidden items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white sm:inline-flex"
-					>
-						Shop All
-						<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-							<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-						</svg>
-					</LinkWithChannel>
-				</div>
-
-				<ul className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
-					{products.map((product, i) => (
-						<ProductCard key={product.id} product={product} index={i} />
+				<p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.25em] text-neutral-600">
+					Trusted by researchers at
+				</p>
+				<div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
+					{institutions.map((name) => (
+						<span key={name} className="text-base font-semibold tracking-wide text-neutral-700 sm:text-lg">
+							{name}
+						</span>
 					))}
-				</ul>
+				</div>
 			</div>
 		</section>
 	);
 }
 
-// ─── 8. Testimonials ────────────────────────────────────────
+// ─── 5. Shop by Goal (top 6, larger cards) ──────────────────
+
+async function ShopByGoalSection({ params }: { params: Promise<{ channel: string }> }) {
+	const { channel } = await params;
+	const collections = await getCollections(channel);
+
+	const excludeSlugs = ["accessories"];
+	const displayCollections = collections.filter((c) => !excludeSlugs.includes(c.slug)).slice(0, 6);
+
+	if (displayCollections.length === 0) return null;
+
+	return (
+		<section
+			className="noise-overlay relative overflow-hidden bg-neutral-950 text-white"
+			aria-label="Shop by Goal"
+		>
+			{/* Background */}
+			<div className="pointer-events-none absolute inset-0">
+				<div className="bg-emerald-500/8 absolute -left-40 top-0 h-[500px] w-[500px] rounded-full blur-[120px]" />
+				<div className="bg-teal-500/8 absolute -right-40 bottom-0 h-[500px] w-[500px] rounded-full blur-[120px]" />
+			</div>
+
+			<div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:py-40">
+				{/* Section header */}
+				<div className="mb-12 sm:mb-16">
+					<div className="flex items-end justify-between">
+						<div>
+							<p className="mb-4 text-sm font-medium uppercase tracking-[0.25em] text-emerald-400">
+								Research Goals
+							</p>
+							<h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Shop by Goal</h2>
+						</div>
+						<LinkWithChannel
+							href="/products"
+							className="hidden items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white sm:inline-flex"
+						>
+							View All Categories
+							<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+								<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+							</svg>
+						</LinkWithChannel>
+					</div>
+				</div>
+
+				{/* Top 6 collections — larger cards, 3-col grid */}
+				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
+					{displayCollections.map((collection) => (
+						<LinkWithChannel
+							key={collection.id}
+							href={`/collections/${collection.slug}`}
+							className="glow-emerald group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 hover:border-emerald-500/30 hover:bg-neutral-800/80 sm:p-8 lg:p-10"
+						>
+							<div className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 transition-colors duration-300 group-hover:bg-emerald-500/20 sm:mb-8 sm:h-14 sm:w-14">
+								<CollectionIcon slug={collection.slug} className="h-5 w-5 text-emerald-400 sm:h-7 sm:w-7" />
+							</div>
+							<div>
+								<h3 className="text-base font-semibold text-neutral-200 transition-colors duration-300 group-hover:text-white sm:text-lg">
+									{collection.name}
+								</h3>
+								<span className="mt-2 flex items-center gap-1 text-xs font-medium text-neutral-500 transition-colors duration-300 group-hover:text-emerald-400">
+									Browse
+									<svg
+										className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										strokeWidth={2}
+									>
+										<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+									</svg>
+								</span>
+							</div>
+						</LinkWithChannel>
+					))}
+				</div>
+			</div>
+		</section>
+	);
+}
+
+// ─── 6. Tabbed Products (Featured + Best Sellers merged) ────
+
+async function TabbedProductsSection({ params }: { params: Promise<{ channel: string }> }) {
+	const { channel } = await params;
+	const [featured, bestSellers] = await Promise.all([getFeaturedProducts(channel), getBestSellers(channel)]);
+	if (featured.length === 0 && bestSellers.length === 0) return null;
+
+	return (
+		<section className="bg-neutral-950 py-24 text-white sm:py-32" aria-label="Products">
+			<div className="mx-auto max-w-7xl px-6">
+				<ProductTabs featured={featured} bestSellers={bestSellers} />
+			</div>
+		</section>
+	);
+}
+
+// ─── 7. Testimonials (single featured) ──────────────────────
 
 function TestimonialsSection() {
+	const featured = testimonials[0];
+	const supporting = testimonials.slice(1);
+
 	return (
-		<section className="bg-foreground text-white" aria-label="Testimonials">
+		<section className="bg-neutral-950 text-white" aria-label="Testimonials">
 			<div className="mx-auto max-w-7xl px-6 py-24 sm:py-32">
 				<div className="mb-12 text-center sm:mb-16">
 					<p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
@@ -771,42 +664,67 @@ function TestimonialsSection() {
 					<h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">What Researchers Say</h2>
 				</div>
 
-				<div className="grid gap-8 md:grid-cols-3">
-					{testimonials.map((t, i) => (
+				{/* Featured testimonial */}
+				<article className="relative mx-auto max-w-4xl overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 text-center sm:rounded-3xl sm:p-12 lg:p-16">
+					{/* Decorative quote */}
+					<div className="pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2 font-serif text-[200px] leading-none text-emerald-500/[0.06]">
+						&ldquo;
+					</div>
+
+					{/* Stars */}
+					<div className="relative mb-8 flex justify-center gap-1">
+						{Array.from({ length: featured.rating }).map((_, s) => (
+							<svg key={s} className="h-6 w-6 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+								<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+							</svg>
+						))}
+					</div>
+
+					<blockquote className="relative text-xl leading-relaxed text-neutral-300 sm:text-2xl">
+						&ldquo;{featured.quote}&rdquo;
+					</blockquote>
+
+					<div className="mt-10 flex flex-col items-center gap-3">
+						<div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-lg font-bold text-emerald-400">
+							{featured.author
+								.split(" ")
+								.map((n) => n[0])
+								.join("")}
+						</div>
+						<div>
+							<p className="text-lg font-semibold text-white">{featured.author}</p>
+							<p className="text-sm text-neutral-500">{featured.role}</p>
+						</div>
+					</div>
+				</article>
+
+				{/* Supporting quotes */}
+				<div className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 md:grid-cols-2">
+					{supporting.map((t, i) => (
 						<article
 							key={i}
-							className="card-lift relative flex flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/60 p-8 sm:p-10"
+							className="relative flex flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/40 p-5 sm:p-8"
 						>
-							{/* Decorative quote mark */}
-							<div className="pointer-events-none absolute -right-2 -top-4 font-serif text-[120px] leading-none text-emerald-500/[0.08]">
-								&ldquo;
-							</div>
-
-							{/* Stars */}
-							<div className="relative mb-6 flex gap-1">
+							<div className="mb-4 flex gap-1">
 								{Array.from({ length: t.rating }).map((_, s) => (
-									<svg key={s} className="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+									<svg key={s} className="h-4 w-4 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
 										<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
 									</svg>
 								))}
 							</div>
-
-							{/* Quote */}
 							<blockquote className="flex-1 text-base leading-relaxed text-neutral-400">
 								&ldquo;{t.quote}&rdquo;
 							</blockquote>
-
-							{/* Author */}
-							<div className="mt-8 flex items-center gap-4 border-t border-neutral-800 pt-6">
-								<div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-bold text-emerald-400">
+							<div className="mt-6 flex items-center gap-3 border-t border-neutral-800 pt-6">
+								<div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-bold text-emerald-400">
 									{t.author
 										.split(" ")
 										.map((n) => n[0])
 										.join("")}
 								</div>
 								<div>
-									<p className="text-base font-semibold text-white">{t.author}</p>
-									<p className="text-sm text-neutral-500">{t.role}</p>
+									<p className="text-sm font-semibold text-white">{t.author}</p>
+									<p className="text-xs text-neutral-500">{t.role}</p>
 								</div>
 							</div>
 						</article>
@@ -817,37 +735,43 @@ function TestimonialsSection() {
 	);
 }
 
-// ─── 9. Newsletter CTA ─────────────────────────────────────
+// ─── 8. Newsletter CTA (concrete offer) ────────────────────
 
 function NewsletterSection() {
 	return (
-		<section className="bg-foreground px-6 py-24 sm:py-32" aria-label="Newsletter">
+		<section className="bg-neutral-950 px-6 py-24 sm:py-32" aria-label="Newsletter">
 			{/* Outer glow border */}
 			<div className="relative mx-auto max-w-4xl rounded-[26px] bg-gradient-to-br from-emerald-500/20 via-transparent to-teal-500/20 p-px">
-				<div className="noise-overlay relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 px-8 py-16 text-center sm:px-16 sm:py-20">
+				<div className="noise-overlay relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 px-5 py-12 text-center sm:px-8 sm:py-16 lg:px-16 lg:py-20">
 					<div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-emerald-500/15 blur-3xl" />
 					<div className="pointer-events-none absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-teal-500/15 blur-3xl" />
 
 					<div className="relative">
-						<h2 className="text-3xl font-bold text-white sm:text-4xl">Research Updates & Exclusive Access</h2>
-						<p className="mx-auto mt-4 max-w-md text-neutral-400">
-							New compound launches, research highlights, and early access to limited-stock products.
+						<p className="mb-4 text-sm font-medium uppercase tracking-[0.25em] text-emerald-400">
+							Free Resource
+						</p>
+						<h2 className="text-3xl font-bold text-white sm:text-4xl">
+							Peptide Stability &amp; Storage Guide
+						</h2>
+						<p className="mx-auto mt-4 max-w-lg text-neutral-400">
+							Download our comprehensive guide on peptide reconstitution, storage protocols, and stability
+							data. Plus get early access to new compound launches.
 						</p>
 						<div className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
 							<input
 								type="email"
 								placeholder="Enter your email"
-								className="flex-1 rounded-full border border-neutral-700 bg-neutral-800/50 px-5 py-3.5 text-sm text-white placeholder-neutral-500 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+								className="h-12 flex-1 rounded-full border border-neutral-700 bg-neutral-800/50 px-5 text-sm text-white placeholder-neutral-500 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
 							/>
 							<button
 								type="button"
-								className="rounded-full bg-emerald-500 px-8 py-3.5 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
+								className="h-12 rounded-full bg-emerald-500 px-8 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
 							>
-								Subscribe
+								Get Free Guide
 							</button>
 						</div>
 						<p className="mt-4 text-xs text-neutral-500">
-							No spam, ever. Unsubscribe anytime. Join 2,000+ researchers.
+							Free PDF guide + research updates. No spam, ever. Unsubscribe anytime.
 						</p>
 					</div>
 				</div>
@@ -860,7 +784,7 @@ function NewsletterSection() {
 
 function ProductGridSkeleton({ count = 8 }: { count?: number }) {
 	return (
-		<section className="bg-foreground">
+		<section className="bg-neutral-950">
 			<div className="mx-auto max-w-7xl px-6 py-20">
 				<div className="mb-12">
 					<div className="mb-2 h-3 w-16 animate-pulse rounded bg-neutral-800" />
@@ -885,15 +809,15 @@ function ProductGridSkeleton({ count = 8 }: { count?: number }) {
 
 function CollectionsSkeleton() {
 	return (
-		<section className="bg-foreground">
+		<section className="bg-neutral-950">
 			<div className="mx-auto max-w-7xl px-6 py-20">
 				<div className="mb-12">
 					<div className="mb-2 h-3 w-20 animate-pulse rounded bg-neutral-800" />
 					<div className="h-9 w-48 animate-pulse rounded bg-neutral-800" />
 				</div>
-				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-					{Array.from({ length: 8 }).map((_, i) => (
-						<div key={i} className="h-32 animate-pulse rounded-2xl bg-neutral-800" />
+				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+					{Array.from({ length: 6 }).map((_, i) => (
+						<div key={i} className="h-40 animate-pulse rounded-2xl bg-neutral-800" />
 					))}
 				</div>
 			</div>
@@ -908,25 +832,20 @@ export default function Page(props: { params: Promise<{ channel: string }> }) {
 		<>
 			<HeroSection />
 			<TrustBar />
-			<StatsBanner />
+
+			<ScienceQualitySection />
+
+			<InstitutionLogosBar />
 
 			<Suspense fallback={<CollectionsSkeleton />}>
 				<ShopByGoalSection params={props.params} />
 			</Suspense>
 
 			<Suspense fallback={<ProductGridSkeleton />}>
-				<FeaturedProductsSection params={props.params} />
-			</Suspense>
-
-			<ScienceQualitySection />
-
-			<Suspense fallback={<ProductGridSkeleton />}>
-				<BestSellersSection params={props.params} />
+				<TabbedProductsSection params={props.params} />
 			</Suspense>
 
 			<TestimonialsSection />
-
-			<HomepageFAQ />
 
 			<NewsletterSection />
 		</>

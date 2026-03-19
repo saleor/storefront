@@ -90,3 +90,151 @@
 		box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
 	}
 }
+
+/* ═══════════════════════════════════════════
+ * Legal page prose — outside @layer for
+ * full specificity over Tailwind resets
+ * ═══════════════════════════════════════════ */
+
+.legal-content > p:first-child {
+	font-size: 1rem;
+	line-height: 1.8;
+	color: rgb(212 212 212);
+	margin-bottom: 2rem;
+	padding-bottom: 2rem;
+	border-bottom: 1px solid rgb(38 38 38);
+}
+
+.legal-content h2 {
+	font-size: 1.125rem;
+	font-weight: 700;
+	color: white;
+	margin-top: 3rem;
+	margin-bottom: 1rem;
+	padding-top: 2rem;
+	border-top: 1px solid rgb(38 38 38);
+	letter-spacing: -0.01em;
+}
+
+.legal-content h2:first-of-type {
+	margin-top: 0;
+	padding-top: 0;
+	border-top: none;
+}
+
+.legal-content h3 {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: rgb(229 229 229);
+	margin-top: 1.75rem;
+	margin-bottom: 0.5rem;
+}
+
+.legal-content p {
+	font-size: 0.875rem;
+	line-height: 1.8;
+	color: rgb(163 163 163);
+	margin-bottom: 1rem;
+}
+
+.legal-content ul {
+	list-style: none;
+	padding-left: 0;
+	margin-bottom: 1.25rem;
+}
+
+.legal-content ul li {
+	font-size: 0.875rem;
+	line-height: 1.7;
+	color: rgb(163 163 163);
+	padding-left: 1.25rem;
+	margin-bottom: 0.5rem;
+	position: relative;
+}
+
+.legal-content ul li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0.6em;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background-color: rgb(52 211 153);
+}
+
+.legal-content strong {
+	color: white;
+	font-weight: 600;
+}
+
+.legal-content table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.5rem 0;
+	font-size: 0.8125rem;
+	border: 1px solid rgb(38 38 38);
+	border-radius: 0.75rem;
+	overflow: hidden;
+}
+
+.legal-content thead th {
+	text-align: left;
+	padding: 0.875rem 1rem;
+	background: rgb(23 23 23);
+	color: white;
+	font-weight: 600;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	border-bottom: 1px solid rgb(38 38 38);
+}
+
+.legal-content tbody td {
+	padding: 0.75rem 1rem;
+	color: rgb(163 163 163);
+	border-bottom: 1px solid rgb(38 38 38);
+}
+
+.legal-content tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.legal-callout {
+	border-left: 3px solid rgb(52 211 153);
+	background: rgba(52, 211, 153, 0.05);
+	padding: 1rem 1.25rem;
+	border-radius: 0 0.5rem 0.5rem 0;
+	margin: 1.25rem 0;
+	font-size: 0.875rem;
+	line-height: 1.7;
+	color: rgb(212 212 212);
+}
+
+.legal-callout strong {
+	color: rgb(52 211 153);
+	font-weight: 700;
+}
+
+.legal-contact {
+	margin-top: 2.5rem;
+	padding: 1.5rem;
+	border-radius: 1rem;
+	border: 1px solid rgb(38 38 38);
+	background: rgb(23 23 23);
+}
+
+.legal-contact p {
+	color: rgb(163 163 163);
+	margin-bottom: 0.5rem;
+}
+
+.legal-contact a {
+	color: rgb(52 211 153);
+	text-decoration: none;
+	transition: color 0.15s;
+}
+
+.legal-contact a:hover {
+	color: rgb(110 231 183);
+}

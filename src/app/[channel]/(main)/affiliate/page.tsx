@@ -62,7 +62,7 @@ const steps = [
 
 export default function AffiliatePage() {
 	return (
-		<div className="bg-foreground text-white">
+		<div className="bg-neutral-950 text-white">
 			{/* Hero */}
 			<section className="relative overflow-hidden py-24 sm:py-32">
 				<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-transparent to-transparent" />

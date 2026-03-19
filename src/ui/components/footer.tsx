@@ -12,14 +12,14 @@ const defaultFooterLinks = {
 	support: [
 		{ label: "Contact Us", href: "/contact" },
 		{ label: "FAQs", href: "/faq" },
-		{ label: "Shipping", href: "/shipping" },
-		{ label: "Returns", href: "/returns" },
-	],
-	company: [
 		{ label: "About", href: "/about" },
-		{ label: "Sustainability", href: "/sustainability" },
-		{ label: "Careers", href: "/careers" },
 		{ label: "Affiliate Program", href: "/affiliate" },
+	],
+	legal: [
+		{ label: "Privacy Policy", href: "/privacy" },
+		{ label: "Terms of Service", href: "/terms" },
+		{ label: "RUO Policy", href: "/ruo-policy" },
+		{ label: "Waiver Agreement", href: "/waiver" },
 	],
 };
 
@@ -62,14 +62,14 @@ export async function Footer({ channel }: { channel: string }) {
 	const menuItems = footerLinks?.menu?.items || [];
 
 	return (
-		<footer className="bg-foreground text-background">
+		<footer className="bg-neutral-950 text-neutral-400">
 			{/* Extra bottom padding on mobile to account for sticky add-to-cart bar */}
 			<div className="mx-auto max-w-7xl px-4 pb-24 pt-12 sm:px-6 sm:pb-12 lg:px-8 lg:py-16">
 				<div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 					{/* Brand */}
 					<div className="col-span-2 md:col-span-1">
 						<Link href={`/${channel}`} prefetch={false} className="mb-4 inline-block">
-							<Logo className="h-7 w-auto" inverted />
+							<Logo className="h-10 w-auto sm:h-14" inverted />
 						</Link>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-400">
 							Premium research peptides and biotech compounds. Lab-verified purity you can trust.
@@ -160,9 +160,9 @@ export async function Footer({ channel }: { channel: string }) {
 								</ul>
 							</div>
 							<div>
-								<h4 className="mb-4 text-sm font-medium text-neutral-300">Company</h4>
+								<h4 className="mb-4 text-sm font-medium text-neutral-300">Legal</h4>
 								<ul className="space-y-3">
-									{defaultFooterLinks.company.map((link) => (
+									{defaultFooterLinks.legal.map((link) => (
 										<li key={link.href}>
 											<LinkWithChannel
 												href={link.href}

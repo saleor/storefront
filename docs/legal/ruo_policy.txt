@@ -1,0 +1,109 @@
+
+RESEARCH USE ONLY (RUO) POLICY
+
+Last Updated: March 19, 2026
+
+## # 1. Purpose and Scope
+
+Infinity BioLabs (&quot;the Company&quot;) exclusively provides research-grade peptides, compounds, and related materials designated for in-vitro research, laboratory experimentation, and educational purposes only.
+
+All products sold through the Company are classified as &quot;Research Use Only&quot; (RUO). No product offered by the Company is intended, marketed, or approved for human or animal use, diagnostic purposes, therapeutic applications, or any form of consumption. Any use outside of legitimate research constitutes a violation of this policy and applicable law.
+
+## # 2. RUO Classification
+
+&quot;Research Use Only&quot; (RUO) is a regulatory classification recognized by the U.S. Food and Drug Administration (FDA) and equivalent international regulatory bodies. RUO products are laboratory reagents intended for use in controlled research settings by qualified professionals. They have not undergone evaluation or approval for safety, efficacy, or quality under the standards applicable to pharmaceutical drugs, biologics, or medical devices.
+
+In accordance with FDA guidelines, all RUO products must bear the statement: &quot;For Research Use Only. Not for use in diagnostic procedures.&quot; This classification exempts such products from certain regulatory requirements, provided they are used strictly in accordance with their designated purpose.
+
+## # 3. Research Reagents vs. Pharmaceutical Drugs
+
+The following table outlines the critical distinctions between RUO research reagents and regulated pharmaceutical drugs:
+
+## # 4. Authorized Purchasers
+
+Products are available exclusively to qualified individuals and entities engaged in legitimate, lawful research activities. By placing an order, purchasers represent and warrant that they fall within one of the following categories:
+
+- Independent researchers conducting private scientific investigation
+- Academic and educational institutions (universities, colleges, research centers)
+- Private or commercial research laboratories
+- Medical and clinical research facilities engaged in non-therapeutic research
+- Biotechnology and pharmaceutical companies conducting R&amp;D
+
+
+The Company reserves the right to request documentation to verify the purchaser’s status before processing any order.
+
+## # 5. Conditions of Purchase
+
+By purchasing from the Company, the purchaser agrees to and certifies all of the following:
+
+- The purchaser is at least 21 years of age.
+- All purchased products will be used exclusively for in-vitro research and laboratory purposes.
+- Products will NOT be used for human or animal consumption, injection, ingestion, inhalation, or any therapeutic or diagnostic purpose.
+- Products will NOT be resold, redistributed, or relabeled for human or animal use.
+- The purchaser possesses the necessary qualifications, knowledge, and facilities to handle research materials safely and in compliance with applicable safety standards.
+- The purchaser will comply with all applicable local, national, and international laws and regulations regarding the purchase, handling, storage, and use of research materials.
+- The purchaser acknowledges that products have not been evaluated by any regulatory authority for safety, efficacy, or quality for human use.
+- The purchaser assumes full and sole responsibility for the proper use, handling, storage, and disposal of all products purchased.
+
+
+NOTICE: Misuse of RUO products, including but not limited to human or animal administration, is strictly prohibited and may constitute a criminal offense under applicable law. The Company reserves the right to refuse, cancel, or revoke any order where there is reasonable suspicion of intended misuse.
+
+## # 6. Product Documentation
+
+To support legitimate research activities, the Company provides the following documentation for all products:
+
+- Certificate of Analysis (COA) — Third-party laboratory testing results verifying identity and purity
+- Safety Data Sheet (SDS) — Comprehensive safety, handling, storage, and disposal information
+- Product Specifications — Molecular weight, sequence, physical properties, and storage conditions
+
+
+Documentation is available on each product page and may be downloaded in PDF format.
+
+## # 7. Order Verification and Compliance
+
+To ensure compliance with applicable regulatory guidelines and this RUO Policy, the Company may implement verification procedures for orders, including but not limited to:
+
+- Orders exceeding $1,000 in total value
+- Orders containing high-volume quantities
+- First-time orders from new customers
+- Orders flagged by the Company’s automated compliance systems
+- Orders shipped to jurisdictions with heightened regulatory requirements
+
+
+Verification may require providing institutional email addresses, research credentials, a description of research purpose, or other supporting documentation. Orders subject to verification will be held until verification is satisfactorily completed. The Company reserves the right to cancel unverified orders.
+
+## # 8. Regulatory Compliance Notice
+
+The purchaser acknowledges that the regulatory status of research peptides and compounds varies by jurisdiction. It is the purchaser’s sole responsibility to ensure that the purchase, importation, possession, and use of any product complies with all applicable laws and regulations in the purchaser’s jurisdiction, including but not limited to customs regulations, controlled substance laws, and professional licensing requirements.
+
+The Company makes no representation that any product is lawful to purchase, possess, or use in any particular jurisdiction. Products may be subject to import restrictions, seizure, or other regulatory action depending on the destination country.
+
+## # 9. Disclaimer and Limitation of Liability
+
+All products are sold &quot;as is&quot; and exclusively for research purposes. The Company makes no warranties, express or implied, regarding the suitability of any product for any particular purpose beyond in-vitro research. The Company specifically disclaims any warranty of merchantability, fitness for a particular purpose, or non-infringement.
+
+The Company shall not be liable for any direct, indirect, incidental, consequential, special, or punitive damages arising from the use or misuse of products, including but not limited to administration to humans or animals, regardless of whether such damages were foreseeable.
+
+The purchaser agrees to indemnify and hold harmless the Company, its officers, directors, employees, agents, and affiliates from any and all claims, damages, liabilities, costs, and expenses (including reasonable legal fees) arising from the purchaser’s use, misuse, or redistribution of products.
+
+## # 10. Policy Updates
+
+The Company reserves the right to modify this RUO Policy at any time. Changes will be effective immediately upon posting to the Company’s website. Continued use of the website and purchase of products constitutes acceptance of any modifications. The Company encourages purchasers to review this policy periodically.
+
+## # 11. Contact Information
+
+For questions regarding this Research Use Only Policy or product classification, contact:
+
+Email: support@infinitybiolabs.com
+
+Address: Infinity BioLabs, Address TBD
+
+[TABLE]
+Characteristic | Research Reagents (RUO) | Pharmaceutical Drugs
+Intended Use | Laboratory research only | Human/animal treatment
+Regulatory Approval | Not required | Required (FDA, EMA, etc.)
+Clinical Trials | Not conducted | Mandatory (Phase I–III)
+GMP Manufacturing | Not required | Required
+Dosage Guidelines | Not provided | Provided and regulated
+Safety/Efficacy Testing | Not conducted for human use | Extensive pre-market testing
+Legal for Consumption | No | Yes (as prescribed)

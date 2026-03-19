@@ -53,13 +53,13 @@ function FAQItem({
 			<button
 				type="button"
 				onClick={onToggle}
-				className="flex w-full items-center justify-between gap-6 px-8 py-8 text-left sm:px-10 sm:py-9"
+				className="flex w-full items-center justify-between gap-4 px-4 py-5 text-left sm:gap-6 sm:px-8 sm:py-8 lg:px-10 lg:py-9"
 				aria-expanded={isOpen}
 			>
-				<div className="flex items-center gap-6">
+				<div className="flex items-center gap-3 sm:gap-6">
 					<span
 						className={cn(
-							"flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-bold transition-all duration-300",
+							"flex h-10 w-10 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-bold transition-all duration-300 sm:h-12 sm:w-12 sm:rounded-xl sm:text-sm",
 							isOpen
 								? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
 								: "bg-neutral-800 text-neutral-400",
@@ -69,7 +69,7 @@ function FAQItem({
 					</span>
 					<span
 						className={cn(
-							"text-lg font-semibold transition-colors sm:text-xl",
+							"text-base font-semibold transition-colors sm:text-lg lg:text-xl",
 							isOpen ? "text-white" : "text-neutral-200",
 						)}
 					>
@@ -78,7 +78,7 @@ function FAQItem({
 				</div>
 				<span
 					className={cn(
-						"flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300",
+						"flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 sm:h-10 sm:w-10",
 						isOpen
 							? "rotate-45 bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
 							: "bg-neutral-800 text-neutral-400",
@@ -96,7 +96,7 @@ function FAQItem({
 				)}
 			>
 				<div className="overflow-hidden">
-					<div className="px-8 pb-10 pl-[5.5rem] sm:px-10 sm:pl-[6rem]">
+					<div className="px-4 pb-6 pl-[3.75rem] sm:px-8 sm:pb-10 sm:pl-[5.5rem] lg:px-10 lg:pl-[6rem]">
 						<p className="text-base leading-relaxed text-neutral-400">{item.a}</p>
 					</div>
 				</div>
@@ -109,7 +109,10 @@ export function HomepageFAQ() {
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
 
 	return (
-		<section className="border-t border-neutral-800 bg-foreground py-24 text-white sm:py-32" aria-label="FAQ">
+		<section
+			className="border-t border-neutral-800 bg-neutral-950 py-24 text-white sm:py-32"
+			aria-label="FAQ"
+		>
 			<div className="mx-auto max-w-4xl px-6">
 				<div className="mb-12 text-center sm:mb-16">
 					<p className="mb-3 text-sm font-medium uppercase tracking-[0.25em] text-emerald-400">FAQ</p>

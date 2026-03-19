@@ -1,0 +1,109 @@
+
+PRIVACY POLICY
+
+Last Updated: March 19, 2026
+
+Infinity BioLabs (“we,” “us,” or “our”) is committed to protecting the privacy and personal data of those who interact with our website, infinitybiolabs.com (the “Website”), and our services (collectively, the “Services”). This Privacy Policy explains how we collect, use, share, and safeguard your information. By using our Services, you agree to the practices described herein. If you do not agree, please discontinue use of our Services immediately.
+
+## # 1. Updates to This Policy
+
+We may revise this Privacy Policy periodically to reflect changes in our practices, legal obligations, or operational requirements. When we do, we will update the “Last Updated” date and post the revised policy on our Website. Material changes will be communicated via email or a prominent notice on the Website. We encourage you to review this policy regularly.
+
+## # 2. Information We Collect
+
+## ## 2.1 Information You Provide
+
+- Contact information: name, email address, phone number, and mailing address
+- Order details: billing and shipping addresses, payment information, and purchase history
+- Account details: username, password, and account preferences
+- Research credentials: institutional affiliation, professional email, and verification documents (when required under our RUO Policy)
+- Communications: information you share when contacting us, including inquiries, feedback, and support requests
+
+
+## ## 2.2 Information Collected Automatically
+
+When you interact with our Website, we may collect certain data using cookies, web beacons, and similar tracking technologies, including:
+
+- Usage information: pages visited, time spent on site, navigation paths, and referral sources
+- Device information: browser type, operating system, screen resolution, and device identifiers
+- Connection details: IP address, approximate geographic location, and referring URLs
+
+
+## ## 2.3 Information from Third Parties
+
+We may receive information about you from third-party service providers, including payment processors, analytics providers, and marketing partners, solely to the extent necessary to fulfill orders, improve our Services, or comply with legal obligations.
+
+## # 3. How We Use Your Information
+
+- Order fulfillment: processing payments, shipping products, and managing order inquiries
+- Account management: creating and maintaining your account and sending account-related notifications
+- Research verification: verifying credentials for orders requiring compliance checks under our RUO Policy
+- Customer support: responding to questions, resolving issues, and improving service quality
+- Marketing and communications: sending updates, offers, and newsletters (with opt-out available at any time)
+- Personalization: tailoring content and product recommendations based on your activity and preferences
+- Security and fraud prevention: detecting and preventing unauthorized access, fraud, and abuse
+- Legal compliance: meeting regulatory requirements, enforcing our terms, and responding to lawful requests
+
+
+## # 4. Cookies and Tracking Technologies
+
+We use cookies and similar technologies to enhance your experience, analyze Website performance, and deliver relevant content. You can manage cookie preferences through your browser settings or our cookie consent tool. Types of cookies we use:
+
+- Essential cookies: required for the Website to function properly (e.g., session management, shopping cart)
+- Analytics cookies: help us understand visitor behavior and improve Website performance
+- Marketing cookies: used to deliver relevant advertisements and measure campaign effectiveness
+
+
+## # 5. How We Share Your Information
+
+We may share your information with trusted third parties in the following limited circumstances:
+
+- Service providers: payment processors, shipping carriers, hosting providers, and other vendors who perform services on our behalf, bound by contractual confidentiality obligations
+- Analytics providers: companies that help us analyze Website usage and improve performance
+- Legal requirements: when required by law, court order, subpoena, or government request
+- Business transactions: in connection with a merger, acquisition, reorganization, or sale of assets, with reasonable notice to affected users
+- Fraud prevention and safety: to protect against fraudulent, illegal, or harmful activity
+
+
+We do not sell, rent, or trade your personal information to third parties for their marketing purposes.
+
+## # 6. International Data Transfers
+
+Your information may be transferred to and processed in countries other than your country of residence. Where such transfers occur, we will ensure appropriate safeguards are in place in accordance with applicable data protection laws, including the EU General Data Protection Regulation (GDPR) where applicable.
+
+## # 7. Data Security and Retention
+
+We implement reasonable technical and organizational security measures to protect your information from unauthorized access, alteration, disclosure, or destruction, including SSL/TLS encryption for data in transit, PCI-compliant payment processing, access controls, and regular security assessments. However, no method of transmission or storage is completely secure, and we cannot guarantee absolute security.
+
+We retain your information only for as long as necessary to provide our Services, fulfill the purposes outlined in this policy, comply with legal obligations, and resolve disputes. When data is no longer needed, it will be securely deleted or anonymized.
+
+## # 8. Your Privacy Rights
+
+Depending on your jurisdiction, you may have certain rights regarding your personal information, including:
+
+- Access: request a copy of the personal information we hold about you
+- Correction: request correction of inaccurate or incomplete information
+- Deletion: request deletion of your personal information, subject to legal retention requirements
+- Portability: request a machine-readable copy of your data
+- Restriction: request restriction of processing in certain circumstances
+- Objection: object to processing based on legitimate interests or direct marketing
+- Opt-out: unsubscribe from marketing communications at any time
+
+
+To exercise any of these rights, please contact us using the information below. We will respond within the timeframe required by applicable law.
+
+## # 9. Age Restrictions
+
+Our Services are intended exclusively for individuals who are at least 21 years of age. We do not knowingly collect personal data from individuals under 21. If we become aware that such data has been collected, we will take prompt steps to delete it. If you believe a minor has provided personal data to us, please contact us immediately.
+
+## # 10. Third-Party Websites
+
+Our Website may contain links to third-party websites that we do not own or control. We are not responsible for the privacy practices, content, or security of these external sites. We encourage you to review their privacy policies before providing any personal information.
+
+## # 11. Contact Us
+
+For questions about this Privacy Policy, to exercise your privacy rights, or to file a complaint, please contact:
+
+Email: support@infinitybiolabs.com
+
+Address: Infinity BioLabs, Address TBD

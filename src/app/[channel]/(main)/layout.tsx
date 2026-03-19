@@ -16,7 +16,7 @@ function HeaderSkeleton() {
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-16 items-center justify-between gap-4">
 					<div className="flex shrink-0 items-center">
-						<Logo className="h-7 w-auto" />
+						<Logo className="h-10 w-auto sm:h-14 lg:h-16" />
 					</div>
 					<div className="hidden flex-1 justify-center md:flex">
 						<div className="h-10 w-full max-w-md animate-pulse rounded-lg bg-secondary" />
@@ -38,7 +38,7 @@ function HeaderSkeleton() {
  */
 function FooterSkeleton() {
 	return (
-		<footer className="animate-skeleton-delayed bg-foreground text-background opacity-0">
+		<footer className="animate-skeleton-delayed bg-neutral-950 text-neutral-400 opacity-0">
 			<div className="mx-auto max-w-7xl px-4 pb-24 pt-12 sm:px-6 sm:pb-12 lg:px-8 lg:py-16">
 				<div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 					{/* Brand column */}
