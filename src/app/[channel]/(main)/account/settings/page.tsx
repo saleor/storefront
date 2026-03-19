@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Mail, Calendar } from "lucide-react";
 import { EditNameForm } from "@/ui/components/account/edit-name-form";
 import { ChangePasswordForm } from "@/ui/components/account/change-password-form";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { AccountAddressCard } from "@/ui/components/account/address-card";
 import { AddressFormDialog } from "@/ui/components/account/address-form-dialog";
 import { DeleteAddressButton, SetDefaultAddressButton } from "@/ui/components/account/address-actions";

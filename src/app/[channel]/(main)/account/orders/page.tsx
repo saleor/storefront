@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { OrderRow } from "@/ui/components/account/order-row";

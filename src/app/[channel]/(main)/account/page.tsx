@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { ChevronRight } from "lucide-react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
