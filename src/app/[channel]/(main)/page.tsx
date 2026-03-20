@@ -537,12 +537,12 @@ function InstitutionLogosBar() {
 	return (
 		<section className="border-y border-neutral-800 bg-neutral-900/30 py-12">
 			<div className="mx-auto max-w-7xl px-6">
-				<p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.25em] text-neutral-600">
+				<p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.25em] text-neutral-500">
 					Trusted by researchers at
 				</p>
 				<div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
 					{institutions.map((name) => (
-						<span key={name} className="text-base font-semibold tracking-wide text-neutral-700 sm:text-lg">
+						<span key={name} className="text-base font-semibold tracking-wide text-neutral-500 sm:text-lg">
 							{name}
 						</span>
 					))}
