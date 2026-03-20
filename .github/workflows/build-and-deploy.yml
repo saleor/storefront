@@ -39,12 +39,20 @@ jobs:
 
             cd "$REPO_DIR"
 
-            # Build Docker image locally (API is reachable via host port)
+            # Read build args from server's .env (server owns env vars — never override from GitHub)
+            if [ ! -f "$REPO_DIR/.env" ]; then
+              echo "FATAL: $REPO_DIR/.env not found. Create it with NEXT_PUBLIC_* vars before deploying."
+              exit 1
+            fi
+            set -a; source "$REPO_DIR/.env"; set +a
+
             echo "==> Building Docker image..."
+            echo "    NEXT_PUBLIC_SALEOR_API_URL=$NEXT_PUBLIC_SALEOR_API_URL"
+            echo "    NEXT_PUBLIC_DEFAULT_CHANNEL=$NEXT_PUBLIC_DEFAULT_CHANNEL"
             docker build \
-              --build-arg NEXT_PUBLIC_SALEOR_API_URL=${{ vars.NEXT_PUBLIC_SALEOR_API_URL }} \
-              --build-arg NEXT_PUBLIC_STOREFRONT_URL=${{ vars.NEXT_PUBLIC_STOREFRONT_URL }} \
-              --build-arg NEXT_PUBLIC_DEFAULT_CHANNEL=${{ vars.NEXT_PUBLIC_DEFAULT_CHANNEL }} \
+              --build-arg NEXT_PUBLIC_SALEOR_API_URL="$NEXT_PUBLIC_SALEOR_API_URL" \
+              --build-arg NEXT_PUBLIC_STOREFRONT_URL="$NEXT_PUBLIC_STOREFRONT_URL" \
+              --build-arg NEXT_PUBLIC_DEFAULT_CHANNEL="$NEXT_PUBLIC_DEFAULT_CHANNEL" \
               --network=host \
               -t "$IMAGE_NAME" .
 
