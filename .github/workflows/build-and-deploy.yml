@@ -6,7 +6,26 @@ on:
   workflow_dispatch:
 
 jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: "package.json"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Type check
+        run: pnpm exec tsc --noEmit
+      - name: Lint
+        run: pnpm run lint
+
   deploy:
+    needs: quality-gate
     runs-on: ubuntu-latest
     steps:
       - name: Build and deploy on Hetzner
