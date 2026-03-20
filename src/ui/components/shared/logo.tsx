@@ -16,14 +16,14 @@ interface LogoProps {
 	className?: string;
 	/** Accessible label for the logo */
 	ariaLabel?: string;
-	/** Use white logo variant (for dark backgrounds like footer or transparent header) */
+	/** @deprecated No longer used — single logo variant */
 	inverted?: boolean;
 }
 
-export const Logo = ({ className, ariaLabel = "InfinityBio Labs", inverted = false }: LogoProps) => {
+export const Logo = ({ className, ariaLabel = "InfinityBio Labs" }: LogoProps) => {
 	return (
 		<Image
-			src={inverted ? "/logo-dark.svg" : "/logo.svg"}
+			src="/InfinityBio_logo.png"
 			alt={ariaLabel}
 			width={140}
 			height={50}

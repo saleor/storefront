@@ -9,7 +9,14 @@ interface CartContextType {
 	toggleCart: () => void;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+const defaultCartContext: CartContextType = {
+	isOpen: false,
+	openCart: () => {},
+	closeCart: () => {},
+	toggleCart: () => {},
+};
+
+const CartContext = createContext<CartContextType>(defaultCartContext);
 
 export function CartProvider({ children }: { children: ReactNode }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -33,9 +40,5 @@ export function CartProvider({ children }: { children: ReactNode }) {
 }
 
 export function useCart() {
-	const context = useContext(CartContext);
-	if (!context) {
-		throw new Error("useCart must be used within a CartProvider");
-	}
-	return context;
+	return useContext(CartContext);
 }

@@ -33,7 +33,7 @@ export async function Header({ channel }: { channel: string }) {
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-16 items-center justify-between gap-4">
 					{/* Logo - no Suspense needed (simple server component) */}
-					<Logo className="h-10 w-auto sm:h-14 lg:h-16" />
+					<Logo className="h-10 w-auto sm:h-14 lg:h-16" inverted />
 
 					{/* Search bar - Suspense for server action */}
 					<div className="hidden flex-1 justify-center md:flex">

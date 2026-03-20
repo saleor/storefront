@@ -16,7 +16,7 @@ function HeaderSkeleton() {
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-16 items-center justify-between gap-4">
 					<div className="flex shrink-0 items-center">
-						<Logo className="h-10 w-auto sm:h-14 lg:h-16" />
+						<Logo className="h-10 w-auto sm:h-14 lg:h-16" inverted />
 					</div>
 					<div className="hidden flex-1 justify-center md:flex">
 						<div className="h-10 w-full max-w-md animate-pulse rounded-lg bg-secondary" />
