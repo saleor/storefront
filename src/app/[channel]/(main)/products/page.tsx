@@ -9,8 +9,9 @@ import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.serv
 import { ProductsPageClient } from "./products-client";
 
 export const metadata = {
-	title: "Products · Saleor Storefront example",
-	description: "All products in Saleor Storefront example",
+	title: "Research Compounds | InfinityBio Labs",
+	description:
+		"Browse our full catalog of pharmaceutical-grade research peptides and biotech compounds. HPLC-verified ≥98% purity, third-party tested, with Certificate of Analysis for every batch.",
 };
 
 type PageProps = {
@@ -42,8 +43,8 @@ export default async function Page(props: PageProps) {
 		<>
 			{/* Static shell - renders immediately */}
 			<CategoryHero
-				title="All Products"
-				description="Discover our full collection of premium products."
+				title="Research Compounds"
+				description="Pharmaceutical-grade peptides and biotech compounds. HPLC-verified ≥98% purity, independently tested, with COA on every order."
 				breadcrumbs={breadcrumbs}
 			/>
 			{/* Dynamic content - streams in via Suspense */}

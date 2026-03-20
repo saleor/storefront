@@ -7,7 +7,7 @@ import { formatMoney, getHrefForVariant } from "@/lib/utils";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
 export const metadata = {
-	title: "Shopping Cart · Saleor Storefront example",
+	title: "Shopping Cart | InfinityBio Labs",
 };
 
 export default function Page(props: { params: Promise<{ channel: string }> }) {

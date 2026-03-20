@@ -16,7 +16,7 @@ import { type NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
 	const { searchParams } = request.nextUrl;
 
-	const title = searchParams.get("title") || "Saleor Store";
+	const title = searchParams.get("title") || "InfinityBio Labs";
 	const subtitle = searchParams.get("subtitle") || "";
 	const price = searchParams.get("price") || "";
 

@@ -4,7 +4,7 @@ import { RootWrapper } from "./page-wrapper";
 import { Loader } from "@/ui/atoms/loader";
 
 export const metadata = {
-	title: "Checkout · Saleor Storefront example",
+	title: "Checkout | InfinityBio Labs",
 	description: "Complete your purchase securely.",
 };
 
