@@ -15,12 +15,39 @@ const contactReasons = [
 
 export default function ContactPage() {
 	const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+	const [errorMsg, setErrorMsg] = useState("");
 
-	function handleSubmit(e: FormEvent<HTMLFormElement>) {
+	async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setStatus("sending");
-		// TODO: wire to backend/email API
-		setTimeout(() => setStatus("sent"), 1200);
+		setErrorMsg("");
+
+		const formData = new FormData(e.currentTarget);
+		const payload = {
+			name: formData.get("name"),
+			email: formData.get("email"),
+			institution: formData.get("institution"),
+			reason: formData.get("reason"),
+			message: formData.get("message"),
+		};
+
+		try {
+			const res = await fetch("/api/contact", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(payload),
+			});
+			const data = (await res.json()) as { error?: string };
+			if (!res.ok) {
+				setErrorMsg(data.error ?? "Something went wrong. Please try again.");
+				setStatus("error");
+				return;
+			}
+			setStatus("sent");
+		} catch {
+			setErrorMsg("Network error. Please check your connection and try again.");
+			setStatus("error");
+		}
 	}
 
 	return (
@@ -173,6 +200,8 @@ export default function ContactPage() {
 											placeholder="Tell us how we can help..."
 										/>
 									</div>
+
+									{status === "error" && errorMsg && <p className="text-sm text-red-400">{errorMsg}</p>}
 
 									<button
 										type="submit"
