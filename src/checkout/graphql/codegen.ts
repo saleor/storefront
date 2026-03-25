@@ -5,19 +5,37 @@
  */
 import { loadEnvConfig } from "@next/env";
 import type { CodegenConfig } from "@graphql-codegen/cli";
+import { existsSync } from "node:fs";
 
 loadEnvConfig(process.cwd());
 
-const schemaUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+function getSchemaSource(): string | null {
+	const configuredSchemaPath = process.env.SALEOR_SCHEMA_PATH;
 
-if (!schemaUrl) {
-	console.error("Missing NEXT_PUBLIC_SALEOR_API_URL environment variable");
+	if (configuredSchemaPath && existsSync(configuredSchemaPath)) {
+		return configuredSchemaPath;
+	}
+
+	const defaultSchemaPath = "schema.graphql";
+	if (existsSync(defaultSchemaPath)) {
+		return defaultSchemaPath;
+	}
+
+	return process.env.NEXT_PUBLIC_SALEOR_API_URL ?? null;
+}
+
+const schemaSource = getSchemaSource();
+
+if (!schemaSource) {
+	console.error(
+		"Missing GraphQL schema source (NEXT_PUBLIC_SALEOR_API_URL or SALEOR_SCHEMA_PATH/schema.graphql)",
+	);
 	process.exit(1);
 }
 
 const config: CodegenConfig = {
 	overwrite: true,
-	schema: schemaUrl,
+	schema: schemaSource,
 	documents: "src/checkout/graphql/**/*.graphql",
 	generates: {
 		"src/checkout/graphql/generated/index.ts": {

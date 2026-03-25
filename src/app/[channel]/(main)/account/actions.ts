@@ -18,6 +18,11 @@ import { getFormString, getFormStringOptional } from "@/ui/components/account/fo
 
 type ActionResult = { success: true } | { success: false; error: string };
 
+function toChannelPath(formData: FormData, path: string): string {
+	const channel = getFormStringOptional(formData, "channel") ?? process.env.NEXT_PUBLIC_DEFAULT_CHANNEL;
+	return channel ? `/${channel}${path}` : path;
+}
+
 export async function updateProfile(formData: FormData): Promise<ActionResult> {
 	const firstName = getFormString(formData, "firstName");
 	const lastName = getFormString(formData, "lastName");
@@ -36,7 +41,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to update profile" };
 	}
 
-	revalidatePath("/account", "layout");
+	revalidatePath(toChannelPath(formData, "/account"), "layout");
 	return { success: true };
 }
 
@@ -87,7 +92,7 @@ export async function createAddress(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to create address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidatePath(toChannelPath(formData, "/account/addresses"), "page");
 	return { success: true };
 }
 
@@ -109,7 +114,7 @@ export async function updateAddress(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to update address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidatePath(toChannelPath(formData, "/account/addresses"), "page");
 	return { success: true };
 }
 
@@ -130,7 +135,7 @@ export async function deleteAddress(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to delete address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidatePath(toChannelPath(formData, "/account/addresses"), "page");
 	return { success: true };
 }
 
@@ -154,7 +159,7 @@ export async function setDefaultAddress(formData: FormData): Promise<ActionResul
 		return { success: false, error: errors[0].message ?? "Failed to set default address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidatePath(toChannelPath(formData, "/account/addresses"), "page");
 	return { success: true };
 }
 

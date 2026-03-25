@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { WavePattern } from "./wave-pattern";
 
 interface BreadcrumbItem {
 	label: string;
@@ -15,45 +14,33 @@ interface CategoryHeroProps {
 }
 
 export function CategoryHero({ title, description, backgroundImage, breadcrumbs }: CategoryHeroProps) {
-	const hasImage = !!backgroundImage;
-
 	return (
-		<section className="relative h-[340px] overflow-hidden border-b border-border">
-			{/* Background */}
-			<div className="absolute inset-0">
-				{hasImage ? (
-					<>
-						{/* eslint-disable-next-line @next/next/no-img-element */}
-						<img src={backgroundImage} alt={title} className="h-full w-full object-cover" />
-						<div className="from-foreground/70 via-foreground/40 absolute inset-0 bg-gradient-to-r to-transparent" />
-					</>
-				) : (
-					<WavePattern className="h-full w-full" />
-				)}
-			</div>
+		<section className="relative overflow-hidden bg-neutral-950 pb-12 pt-10 sm:pb-16 sm:pt-14">
+			{/* Ambient glow */}
+			<div className="pointer-events-none absolute -left-40 -top-40 h-80 w-80 rounded-full bg-emerald-500/[0.06] blur-[100px]" />
+			<div className="pointer-events-none absolute -bottom-20 right-0 h-60 w-60 rounded-full bg-teal-500/[0.04] blur-[80px]" />
 
-			{/* Content - text colors adapt based on background */}
-			<div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-10 sm:px-6 lg:px-8">
+			{backgroundImage && (
+				<div className="absolute inset-0">
+					{/* eslint-disable-next-line @next/next/no-img-element */}
+					<img src={backgroundImage} alt={title} className="h-full w-full object-cover" />
+					<div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-neutral-950/70 to-neutral-950/50" />
+				</div>
+			)}
+
+			{/* Bottom border glow */}
+			<div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+
+			<div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				{/* Breadcrumbs */}
-				<nav
-					className={`mb-4 flex items-center gap-1.5 text-sm ${
-						hasImage ? "text-background/70" : "text-muted-foreground"
-					}`}
-				>
+				<nav className="mb-6 flex items-center gap-1.5 text-sm text-neutral-500">
 					{breadcrumbs.map((crumb, index) => (
 						<span key={crumb.href} className="flex items-center gap-1.5">
 							{index > 0 && <ChevronRight className="h-3.5 w-3.5" />}
 							{index === breadcrumbs.length - 1 ? (
-								<span className={`font-medium ${hasImage ? "text-background" : "text-foreground"}`}>
-									{crumb.label}
-								</span>
+								<span className="font-medium text-neutral-300">{crumb.label}</span>
 							) : (
-								<Link
-									href={crumb.href}
-									className={`transition-colors ${
-										hasImage ? "hover:text-background" : "hover:text-foreground"
-									}`}
-								>
+								<Link href={crumb.href} className="transition-colors hover:text-neutral-300">
 									{crumb.label}
 								</Link>
 							)}
@@ -61,21 +48,9 @@ export function CategoryHero({ title, description, backgroundImage, breadcrumbs 
 					))}
 				</nav>
 
-				<h1
-					className={`text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl ${
-						hasImage ? "text-background" : "text-foreground"
-					}`}
-				>
-					{title}
-				</h1>
+				<h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">{title}</h1>
 				{description && (
-					<p
-						className={`mt-3 max-w-lg text-base md:text-lg ${
-							hasImage ? "text-background/80" : "text-muted-foreground"
-						}`}
-					>
-						{description}
-					</p>
+					<p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-400 md:text-lg">{description}</p>
 				)}
 			</div>
 		</section>

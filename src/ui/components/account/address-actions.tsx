@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useParams } from "next/navigation";
 import { Trash2, Star } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { deleteAddress, setDefaultAddress } from "@/app/[channel]/(main)/account/actions";
@@ -10,6 +11,8 @@ type DeleteProps = {
 };
 
 export function DeleteAddressButton({ addressId }: DeleteProps) {
+	const params = useParams<{ channel?: string }>();
+	const channel = typeof params.channel === "string" ? params.channel : "";
 	const [isPending, startTransition] = useTransition();
 	const [showConfirm, setShowConfirm] = useState(false);
 
@@ -17,6 +20,9 @@ export function DeleteAddressButton({ addressId }: DeleteProps) {
 		startTransition(async () => {
 			const formData = new FormData();
 			formData.set("id", addressId);
+			if (channel) {
+				formData.set("channel", channel);
+			}
 			await deleteAddress(formData);
 		});
 	}
@@ -53,6 +59,8 @@ type SetDefaultProps = {
 };
 
 export function SetDefaultAddressButton({ addressId, type }: SetDefaultProps) {
+	const params = useParams<{ channel?: string }>();
+	const channel = typeof params.channel === "string" ? params.channel : "";
 	const [isPending, startTransition] = useTransition();
 
 	function handleSetDefault() {
@@ -60,6 +68,9 @@ export function SetDefaultAddressButton({ addressId, type }: SetDefaultProps) {
 			const formData = new FormData();
 			formData.set("id", addressId);
 			formData.set("type", type);
+			if (channel) {
+				formData.set("channel", channel);
+			}
 			await setDefaultAddress(formData);
 		});
 	}

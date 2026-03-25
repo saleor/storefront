@@ -6,7 +6,7 @@ import { Logo } from "@/ui/components/shared/logo";
 
 export const EmptyCartPage = () => {
 	return (
-		<div className="min-h-screen bg-secondary">
+		<div className="min-h-screen bg-neutral-950">
 			{/* Header */}
 			<header className="border-b border-border bg-background">
 				<div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">

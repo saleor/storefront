@@ -1,6 +1,15 @@
 import { type Metadata } from "next";
 import { seoConfig, getMetadataBase } from "./config";
 
+export const noIndexRobots: NonNullable<Metadata["robots"]> = {
+	index: false,
+	follow: false,
+	googleBot: {
+		index: false,
+		follow: false,
+	},
+};
+
 /**
  * Root Metadata
  *

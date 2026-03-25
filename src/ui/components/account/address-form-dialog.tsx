@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { Plus, Pencil } from "lucide-react";
 import { type AddressDetailsFragment } from "@/gql/graphql";
 import { Button } from "@/ui/components/ui/button";
@@ -21,6 +22,8 @@ type Props = {
 };
 
 export function AddressFormDialog({ address }: Props) {
+	const params = useParams<{ channel?: string }>();
+	const channel = typeof params.channel === "string" ? params.channel : "";
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const [error, setError] = useState("");
@@ -67,6 +70,7 @@ export function AddressFormDialog({ address }: Props) {
 					</SheetHeader>
 
 					<form action={handleSubmit} className="space-y-4">
+						{channel && <input type="hidden" name="channel" value={channel} />}
 						{isEditing && <input type="hidden" name="id" value={address.id} />}
 
 						{error && (

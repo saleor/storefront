@@ -36,15 +36,15 @@ export default async function AccountOrdersPage({ searchParams }: Props) {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">Orders</h1>
-				<p className="mt-1 text-sm text-muted-foreground">
+				<h1 className="text-2xl font-semibold tracking-tight text-white">Orders</h1>
+				<p className="mt-1 text-sm text-neutral-400">
 					{totalCount === 0 ? "No orders yet" : `${totalCount} order${totalCount !== 1 ? "s" : ""}`}
 				</p>
 			</div>
 
 			{orders.length === 0 ? (
-				<div className="rounded-lg border border-dashed p-8 text-center">
-					<p className="text-muted-foreground">You haven&apos;t placed any orders yet.</p>
+				<div className="rounded-lg border border-dashed border-white/[0.08] p-8 text-center">
+					<p className="text-neutral-500">You haven&apos;t placed any orders yet.</p>
 				</div>
 			) : (
 				<>

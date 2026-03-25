@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function RootLayout(props: { children: ReactNode }) {
 	return (
-		<main>
+		<main className="min-h-screen bg-neutral-950">
 			<AuthProvider>{props.children}</AuthProvider>
 		</main>
 	);

@@ -43,7 +43,7 @@ export function AccountNav() {
 		<div className="flex flex-col">
 			<LinkWithChannel
 				href="/"
-				className="mb-8 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+				className="mb-8 inline-flex items-center gap-1.5 text-[13px] text-neutral-500 transition-colors hover:text-white"
 			>
 				<span className="text-base leading-none">&lsaquo;</span>
 				Back to store
@@ -59,14 +59,14 @@ export function AccountNav() {
 						className="mb-3 h-11 w-11 rounded-full"
 					/>
 				) : (
-					<div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-foreground text-sm font-bold text-background">
+					<div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/15 text-sm font-bold text-emerald-400">
 						{initials}
 					</div>
 				)}
-				<p className="font-semibold leading-tight">
+				<p className="font-semibold leading-tight text-white">
 					{user.firstName} {user.lastName}
 				</p>
-				<p className="mt-0.5 text-sm text-muted-foreground">{user.email}</p>
+				<p className="mt-0.5 text-sm text-neutral-500">{user.email}</p>
 			</div>
 
 			<nav aria-label="Account" className="flex gap-1 overflow-x-auto md:flex-col md:gap-0.5">
@@ -80,8 +80,8 @@ export function AccountNav() {
 								"flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors",
 								"whitespace-nowrap",
 								active
-									? "bg-foreground text-background"
-									: "text-muted-foreground hover:bg-secondary hover:text-foreground",
+									? "bg-white/[0.08] text-white"
+									: "text-neutral-500 hover:bg-white/[0.04] hover:text-neutral-300",
 							)}
 						>
 							<Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2 : 1.75} />
@@ -95,7 +95,7 @@ export function AccountNav() {
 				<form action={logout}>
 					<button
 						type="submit"
-						className="flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+						className="flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-neutral-500 transition-colors hover:text-white"
 					>
 						<ArrowLeft className="h-[18px] w-[18px]" strokeWidth={1.75} />
 						Sign out

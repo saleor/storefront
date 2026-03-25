@@ -9,7 +9,6 @@ import {
 } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
-import heroPep from "../../../../public/hero-2.png";
 import { ProductTabs } from "./product-tabs";
 
 export const metadata = {
@@ -176,6 +175,22 @@ const collectionIcons: Record<string, string> = {
 		"M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z",
 };
 
+const collectionDescriptions: Record<string, string> = {
+	"anti-aging-longevity": "Peptides targeting cellular repair, telomere support, and age-related pathways.",
+	"cognitive-mood": "Nootropic compounds for memory, focus, and neurotransmitter research.",
+	"growth-recovery": "Growth factor peptides for tissue repair and musculoskeletal studies.",
+	"weight-management": "Metabolic peptides for fat oxidation and appetite regulation research.",
+	performance: "Endurance and strength-related compounds for sports science protocols.",
+	"immune-support": "Thymic peptides and immunomodulators for immune system research.",
+	"sleep-recovery": "Peptides targeting circadian rhythm, deep sleep, and recovery cycles.",
+	"sexual-health": "Compounds for reproductive health and sexual function research.",
+	"tanning-skin": "Melanocortin peptides for dermatological and pigmentation studies.",
+	aesthetics: "Cosmetic peptides for skin elasticity, collagen synthesis, and tissue repair.",
+	"fertility-hormonal": "Hormonal peptides for reproductive and endocrine research.",
+	"vitamins-supplements": "Essential compounds supporting foundational health research.",
+	"recovery-healing": "Restorative peptides for wound healing and tissue regeneration.",
+};
+
 function CollectionIcon({ slug, className }: { slug: string; className?: string }) {
 	const path = collectionIcons[slug];
 	if (!path) {
@@ -292,7 +307,7 @@ function HeroSection() {
 	return (
 		<section className="noise-overlay relative -mt-16 flex min-h-[90vh] items-center overflow-hidden bg-neutral-950 pt-16">
 			{/* Full-bleed background image */}
-			<Image src={heroPep} alt="" fill priority placeholder="blur" className="object-cover object-center" />
+			<Image src="/hero-2.png" alt="" fill priority className="object-cover object-center" />
 
 			{/* Dark gradient overlay for text readability */}
 			<div className="absolute inset-0 bg-gradient-to-r from-neutral-950/95 via-neutral-950/80 to-neutral-950/60" />
@@ -332,11 +347,11 @@ function HeroSection() {
 						tested. Every order documented with a Certificate of Analysis.
 					</p>
 
-					{/* CTA */}
-					<div className="mt-10 animate-fade-in-up-delay-2 opacity-0">
+					{/* CTAs */}
+					<div className="mt-10 flex animate-fade-in-up-delay-2 flex-col gap-4 opacity-0 sm:flex-row sm:items-center">
 						<LinkWithChannel
 							href="/products"
-							className="group inline-flex h-12 items-center gap-2 rounded-full bg-emerald-500 px-6 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25 sm:px-8"
+							className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-emerald-500 px-6 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25 sm:px-8"
 						>
 							Explore Compounds
 							<svg
@@ -349,6 +364,12 @@ function HeroSection() {
 								<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 							</svg>
 						</LinkWithChannel>
+						<a
+							href="#shop-by-goal"
+							className="inline-flex h-12 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950/30 px-6 text-sm font-semibold text-neutral-200 transition-colors hover:border-neutral-500 hover:text-white sm:px-8"
+						>
+							Shop by Goal
+						</a>
 					</div>
 
 					{/* Hero stats */}
@@ -565,6 +586,7 @@ async function ShopByGoalSection({ params }: { params: Promise<{ channel: string
 
 	return (
 		<section
+			id="shop-by-goal"
 			className="noise-overlay relative overflow-hidden bg-neutral-950 text-white"
 			aria-label="Shop by Goal"
 		>
@@ -596,36 +618,62 @@ async function ShopByGoalSection({ params }: { params: Promise<{ channel: string
 					</div>
 				</div>
 
-				{/* Top 6 collections — larger cards, 3-col grid */}
-				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
-					{displayCollections.map((collection) => (
-						<LinkWithChannel
-							key={collection.id}
-							href={`/collections/${collection.slug}`}
-							className="glow-emerald group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 p-5 hover:border-emerald-500/30 hover:bg-neutral-800/80 sm:p-8 lg:p-10"
-						>
-							<div className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 transition-colors duration-300 group-hover:bg-emerald-500/20 sm:mb-8 sm:h-14 sm:w-14">
-								<CollectionIcon slug={collection.slug} className="h-5 w-5 text-emerald-400 sm:h-7 sm:w-7" />
-							</div>
-							<div>
-								<h3 className="text-base font-semibold text-neutral-200 transition-colors duration-300 group-hover:text-white sm:text-lg">
-									{collection.name}
-								</h3>
-								<span className="mt-2 flex items-center gap-1 text-xs font-medium text-neutral-500 transition-colors duration-300 group-hover:text-emerald-400">
-									Browse
-									<svg
-										className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										strokeWidth={2}
-									>
-										<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-									</svg>
-								</span>
-							</div>
-						</LinkWithChannel>
-					))}
+				{/* Top 6 collections */}
+				<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+					{displayCollections.map((collection) => {
+						const description = collectionDescriptions[collection.slug];
+						return (
+							<LinkWithChannel
+								key={collection.id}
+								href={`/collections/${collection.slug}`}
+								className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-b from-neutral-800/80 to-neutral-900/90 shadow-lg shadow-black/25 transition-all duration-500 hover:-translate-y-1 hover:border-emerald-500/20 hover:shadow-xl hover:shadow-emerald-900/30"
+							>
+								{/* Top-edge highlight — simulates light catching the surface */}
+								<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent" />
+
+								<div className="flex flex-1 flex-col justify-between p-7 sm:p-8 lg:p-9">
+									<div>
+										{/* Icon with soft radial glow */}
+										<div className="relative mb-6">
+											<div className="absolute -inset-3 rounded-full bg-emerald-500/[0.06] blur-xl transition-all duration-500 group-hover:bg-emerald-500/[0.12]" />
+											<div className="h-13 w-13 relative flex items-center justify-center rounded-2xl border border-emerald-500/[0.12] bg-emerald-500/[0.08] transition-all duration-300 group-hover:border-emerald-500/25 group-hover:bg-emerald-500/[0.14] sm:h-14 sm:w-14">
+												<CollectionIcon
+													slug={collection.slug}
+													className="h-6 w-6 text-emerald-400 sm:h-7 sm:w-7"
+												/>
+											</div>
+										</div>
+
+										<h3 className="text-lg font-semibold tracking-tight text-white/90 transition-colors duration-300 group-hover:text-white">
+											{collection.name}
+										</h3>
+										{description && (
+											<p className="mt-2.5 text-sm leading-relaxed text-neutral-500 transition-colors duration-300 group-hover:text-neutral-400">
+												{description}
+											</p>
+										)}
+									</div>
+
+									<div className="mt-7 flex items-center justify-between border-t border-white/[0.05] pt-5">
+										<span className="text-xs font-semibold uppercase tracking-[0.15em] text-neutral-600 transition-colors duration-300 group-hover:text-emerald-400">
+											Explore
+										</span>
+										<div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] transition-all duration-300 group-hover:border-emerald-500/30 group-hover:bg-emerald-500/10">
+											<svg
+												className="h-3.5 w-3.5 text-neutral-500 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-emerald-400"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+												strokeWidth={2}
+											>
+												<path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+											</svg>
+										</div>
+									</div>
+								</div>
+							</LinkWithChannel>
+						);
+					})}
 				</div>
 			</div>
 		</section>
@@ -640,7 +688,11 @@ async function TabbedProductsSection({ params }: { params: Promise<{ channel: st
 	if (featured.length === 0 && bestSellers.length === 0) return null;
 
 	return (
-		<section className="bg-neutral-950 py-24 text-white sm:py-32" aria-label="Products">
+		<section
+			id="featured-products"
+			className="bg-neutral-950 py-24 text-white sm:py-32"
+			aria-label="Products"
+		>
 			<div className="mx-auto max-w-7xl px-6">
 				<ProductTabs featured={featured} bestSellers={bestSellers} />
 			</div>
@@ -740,37 +792,42 @@ function TestimonialsSection() {
 function NewsletterSection() {
 	return (
 		<section className="bg-neutral-950 px-6 py-24 sm:py-32" aria-label="Newsletter">
-			{/* Outer glow border */}
-			<div className="relative mx-auto max-w-4xl rounded-[26px] bg-gradient-to-br from-emerald-500/20 via-transparent to-teal-500/20 p-px">
-				<div className="noise-overlay relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 px-5 py-12 text-center sm:px-8 sm:py-16 lg:px-16 lg:py-20">
-					<div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-emerald-500/15 blur-3xl" />
-					<div className="pointer-events-none absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-teal-500/15 blur-3xl" />
+			<div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-b from-neutral-800/80 to-neutral-900/90 shadow-2xl shadow-black/30">
+				{/* Top-edge highlight */}
+				<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent" />
 
+				{/* Ambient glow orbs */}
+				<div className="pointer-events-none absolute -left-20 -top-20 h-60 w-60 rounded-full bg-emerald-500/[0.08] blur-[80px]" />
+				<div className="pointer-events-none absolute -bottom-20 -right-20 h-60 w-60 rounded-full bg-teal-500/[0.06] blur-[80px]" />
+
+				<div className="noise-overlay relative px-6 py-14 text-center sm:px-10 sm:py-20 lg:px-20 lg:py-24">
 					<div className="relative">
-						<p className="mb-4 text-sm font-medium uppercase tracking-[0.25em] text-emerald-400">
+						<p className="mb-5 text-xs font-semibold uppercase tracking-[0.25em] text-emerald-400">
 							Free Resource
 						</p>
-						<h2 className="text-3xl font-bold text-white sm:text-4xl">
+						<h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
 							Peptide Stability &amp; Storage Guide
 						</h2>
-						<p className="mx-auto mt-4 max-w-lg text-neutral-400">
+						<p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-neutral-400">
 							Download our comprehensive guide on peptide reconstitution, storage protocols, and stability
 							data. Plus get early access to new compound launches.
 						</p>
-						<div className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
+
+						<div className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row">
 							<input
 								type="email"
 								placeholder="Enter your email"
-								className="h-12 flex-1 rounded-full border border-neutral-700 bg-neutral-800/50 px-5 text-sm text-white placeholder-neutral-500 outline-none transition-colors focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+								className="h-13 flex-1 rounded-full border border-white/[0.08] bg-white/[0.04] px-6 text-sm text-white placeholder-neutral-500 outline-none transition-all focus:border-emerald-500/60 focus:bg-white/[0.06] focus:ring-1 focus:ring-emerald-500/40"
 							/>
 							<button
 								type="button"
-								className="h-12 rounded-full bg-emerald-500 px-8 text-sm font-semibold text-white transition-all hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25"
+								className="h-13 rounded-full bg-emerald-500 px-8 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-400 hover:shadow-xl hover:shadow-emerald-500/30"
 							>
 								Get Free Guide
 							</button>
 						</div>
-						<p className="mt-4 text-xs text-neutral-500">
+
+						<p className="mt-5 text-xs leading-relaxed text-neutral-600">
 							Free PDF guide + research updates. No spam, ever. Unsubscribe anytime.
 						</p>
 					</div>
@@ -833,10 +890,6 @@ export default function Page(props: { params: Promise<{ channel: string }> }) {
 			<HeroSection />
 			<TrustBar />
 
-			<ScienceQualitySection />
-
-			<InstitutionLogosBar />
-
 			<Suspense fallback={<CollectionsSkeleton />}>
 				<ShopByGoalSection params={props.params} />
 			</Suspense>
@@ -844,6 +897,10 @@ export default function Page(props: { params: Promise<{ channel: string }> }) {
 			<Suspense fallback={<ProductGridSkeleton />}>
 				<TabbedProductsSection params={props.params} />
 			</Suspense>
+
+			<ScienceQualitySection />
+
+			<InstitutionLogosBar />
 
 			<TestimonialsSection />
 

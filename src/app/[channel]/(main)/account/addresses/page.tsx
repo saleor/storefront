@@ -17,15 +17,15 @@ export default async function AddressesPage() {
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-semibold tracking-tight">Addresses</h1>
-					<p className="mt-1 text-sm text-muted-foreground">Manage your saved addresses</p>
+					<h1 className="text-2xl font-semibold tracking-tight text-white">Addresses</h1>
+					<p className="mt-1 text-sm text-neutral-400">Manage your saved addresses</p>
 				</div>
 				<AddressFormDialog />
 			</div>
 
 			{addresses.length === 0 ? (
-				<div className="rounded-lg border border-dashed p-8 text-center">
-					<p className="text-muted-foreground">No saved addresses yet.</p>
+				<div className="rounded-lg border border-dashed border-white/[0.08] p-8 text-center">
+					<p className="text-neutral-500">No saved addresses yet.</p>
 					<div className="mt-4">
 						<AddressFormDialog />
 					</div>

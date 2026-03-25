@@ -104,7 +104,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 				return;
 			}
 
-			revalidatePath("/cart");
+			revalidatePath(`/${channel}/cart`);
 		} catch (error) {
 			// Log error server-side - the UI feedback comes from cart drawer/badge update
 			// For explicit error UI, would need useActionState (separate enhancement)

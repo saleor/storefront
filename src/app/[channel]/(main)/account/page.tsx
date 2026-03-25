@@ -28,17 +28,17 @@ export default async function AccountOverviewPage() {
 	return (
 		<div className="space-y-8">
 			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">Welcome back, {displayName}</h1>
-				<p className="mt-1 text-sm text-muted-foreground">Here is an overview of your account activity.</p>
+				<h1 className="text-2xl font-semibold tracking-tight text-white">Welcome back, {displayName}</h1>
+				<p className="mt-1 text-sm text-neutral-400">Here is an overview of your account activity.</p>
 			</div>
 
 			<section>
 				<div className="mb-4 flex items-center justify-between">
-					<h2 className="text-lg font-semibold">Recent Orders</h2>
+					<h2 className="text-lg font-semibold text-white">Recent Orders</h2>
 					{orders.length > 0 && (
 						<LinkWithChannel
 							href={accountRoutes.orders}
-							className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="inline-flex items-center gap-1 text-sm font-medium text-neutral-500 transition-colors hover:text-white"
 						>
 							View all
 							<ChevronRight className="h-4 w-4" />
@@ -47,7 +47,7 @@ export default async function AccountOverviewPage() {
 				</div>
 
 				{orders.length === 0 ? (
-					<div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+					<div className="rounded-lg border border-dashed border-white/[0.08] p-6 text-center text-sm text-neutral-500">
 						You haven&apos;t placed any orders yet.
 					</div>
 				) : (
@@ -61,10 +61,10 @@ export default async function AccountOverviewPage() {
 
 			<section>
 				<div className="mb-4 flex items-center justify-between">
-					<h2 className="text-lg font-semibold">Default Address</h2>
+					<h2 className="text-lg font-semibold text-white">Default Address</h2>
 					<LinkWithChannel
 						href={accountRoutes.addresses}
-						className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+						className="inline-flex items-center gap-1 text-sm font-medium text-neutral-500 transition-colors hover:text-white"
 					>
 						Manage
 						<ChevronRight className="h-4 w-4" />
@@ -74,7 +74,7 @@ export default async function AccountOverviewPage() {
 				{defaultAddress ? (
 					<AccountAddressCard address={defaultAddress} isDefaultShipping />
 				) : (
-					<div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+					<div className="rounded-lg border border-dashed border-white/[0.08] p-6 text-center text-sm text-neutral-500">
 						No addresses saved yet.
 					</div>
 				)}

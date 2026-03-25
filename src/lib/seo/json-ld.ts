@@ -1,4 +1,4 @@
-import { type WithContext, type Product } from "schema-dts";
+import { type WithContext, type Product, type FAQPage, type BreadcrumbList } from "schema-dts";
 import { seoConfig, getBaseUrl } from "./config";
 
 /**
@@ -103,6 +103,58 @@ export function buildProductJsonLd(options: {
 						},
 					}
 				: undefined,
+	};
+}
+
+/**
+ * FAQPage JSON-LD structured data builder
+ *
+ * Creates Schema.org FAQPage markup for FAQ rich snippets in Google search.
+ * @see https://developers.google.com/search/docs/appearance/structured-data/faqpage
+ */
+export function buildFaqJsonLd(items: { question: string; answer: string }[]): WithContext<FAQPage> | null {
+	if (!seoConfig.enableJsonLd || items.length === 0) {
+		return null;
+	}
+
+	return {
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		mainEntity: items.map((item) => ({
+			"@type": "Question" as const,
+			name: item.question,
+			acceptedAnswer: {
+				"@type": "Answer" as const,
+				text: item.answer,
+			},
+		})),
+	};
+}
+
+/**
+ * BreadcrumbList JSON-LD structured data builder
+ *
+ * Creates Schema.org BreadcrumbList markup for breadcrumb trails in search.
+ * @see https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
+ */
+export function buildBreadcrumbJsonLd(
+	items: { label: string; href?: string }[],
+): WithContext<BreadcrumbList> | null {
+	if (!seoConfig.enableJsonLd || items.length === 0) {
+		return null;
+	}
+
+	const baseUrl = getBaseUrl();
+
+	return {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: items.map((item, index) => ({
+			"@type": "ListItem" as const,
+			position: index + 1,
+			name: item.label,
+			...(item.href && { item: `${baseUrl}${item.href}` }),
+		})),
 	};
 }
 

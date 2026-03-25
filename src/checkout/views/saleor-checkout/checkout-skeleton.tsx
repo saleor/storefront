@@ -6,7 +6,7 @@
  */
 export const CheckoutSkeleton = () => {
 	return (
-		<div className="min-h-screen animate-skeleton-delayed bg-secondary opacity-0">
+		<div className="min-h-screen animate-skeleton-delayed bg-neutral-950 opacity-0">
 			{/* Header skeleton */}
 			<header className="bg-background md:border-b md:border-border">
 				<div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">

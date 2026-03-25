@@ -9,7 +9,6 @@ export {
 	type CategoryFilterOption,
 	type ActiveFilter,
 } from "./filter-bar";
-export { WavePattern } from "./wave-pattern";
 export { transformToProductCard, formatPrice } from "./utils";
 export {
 	// Server-side filter helpers (resolveCategorySlugsToIds is in filter-utils.server.ts)

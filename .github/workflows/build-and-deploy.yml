@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
+      NEXT_PUBLIC_DEFAULT_CHANNEL: default-channel
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
@@ -18,11 +19,15 @@ jobs:
           node-version-file: "package.json"
           cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+      - name: Verify generated GraphQL artifacts
+        run: pnpm run generate:verify
       - name: Type check
         run: pnpm exec tsc --noEmit
-      - name: Lint
-        run: pnpm run lint
+      - name: Unit tests
+        run: pnpm run test:run
+      - name: Production build
+        run: pnpm run build
 
   deploy:
     needs: quality-gate
@@ -44,6 +49,14 @@ jobs:
             REPO_DIR="/opt/storefront"
             REPO_URL="https://${GH_PAT}@github.com/${{ github.repository }}.git"
             IMAGE_NAME="infinitybio-storefront:latest"
+            ENV_BACKUP="/tmp/storefront.env.backup.$$"
+
+            # Backup existing storefront env defensively before git ops.
+            # git reset --hard should not remove untracked files, but this
+            # guarantees we never lose env state across deploy attempts.
+            if [ -f "$REPO_DIR/.env" ]; then
+              cp "$REPO_DIR/.env" "$ENV_BACKUP"
+            fi
 
             # Clone or pull
             if [ ! -d "$REPO_DIR" ]; then
@@ -58,16 +71,21 @@ jobs:
 
             cd "$REPO_DIR"
 
+            # Restore env if needed (e.g. accidental deletion/manual cleanup)
+            if [ ! -f "$REPO_DIR/.env" ] && [ -f "$ENV_BACKUP" ]; then
+              cp "$ENV_BACKUP" "$REPO_DIR/.env"
+            fi
+
             # Read build args from server's .env (server owns env vars — never override from GitHub)
             if [ ! -f "$REPO_DIR/.env" ]; then
               echo "FATAL: $REPO_DIR/.env not found. Create it with NEXT_PUBLIC_* vars before deploying."
               exit 1
             fi
             set -a; source "$REPO_DIR/.env"; set +a
+            : "${NEXT_PUBLIC_SALEOR_API_URL:?FATAL: NEXT_PUBLIC_SALEOR_API_URL missing in $REPO_DIR/.env}"
+            : "${NEXT_PUBLIC_DEFAULT_CHANNEL:?FATAL: NEXT_PUBLIC_DEFAULT_CHANNEL missing in $REPO_DIR/.env}"
 
             echo "==> Building Docker image..."
-            echo "    NEXT_PUBLIC_SALEOR_API_URL=$NEXT_PUBLIC_SALEOR_API_URL"
-            echo "    NEXT_PUBLIC_DEFAULT_CHANNEL=$NEXT_PUBLIC_DEFAULT_CHANNEL"
             docker build \
               --build-arg NEXT_PUBLIC_SALEOR_API_URL="$NEXT_PUBLIC_SALEOR_API_URL" \
               --build-arg NEXT_PUBLIC_STOREFRONT_URL="$NEXT_PUBLIC_STOREFRONT_URL" \
@@ -77,8 +95,13 @@ jobs:
 
             # Restart storefront via the infra compose
             cd /opt/saleor
+            if [ ! -f "/opt/saleor/.env.prod" ]; then
+              echo "FATAL: /opt/saleor/.env.prod not found. Aborting deploy to avoid broken compose state."
+              exit 1
+            fi
             docker compose -f docker-compose.prod.yml --profile frontend --env-file .env.prod up -d --no-deps storefront
 
             # Cleanup
+            rm -f "$ENV_BACKUP"
             docker image prune -f
             echo "==> Storefront deployed!"

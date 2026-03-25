@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
+import { noIndexRobots } from "@/lib/seo";
 
 type Props = {
 	params: Promise<{ channel: string }>;
+};
+
+export const metadata = {
+	robots: noIndexRobots,
 };
 
 /**

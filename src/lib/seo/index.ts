@@ -58,7 +58,7 @@
 export { seoConfig, getBaseUrl, getMetadataBase } from "./config";
 
 // Metadata helpers
-export { rootMetadata, buildPageMetadata, truncateText } from "./metadata";
+export { rootMetadata, buildPageMetadata, truncateText, noIndexRobots } from "./metadata";
 
 // JSON-LD structured data
-export { buildProductJsonLd, jsonLdScriptProps } from "./json-ld";
+export { buildProductJsonLd, buildFaqJsonLd, buildBreadcrumbJsonLd, jsonLdScriptProps } from "./json-ld";

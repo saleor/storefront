@@ -18,18 +18,18 @@ export default async function AccountSettingsPage() {
 	return (
 		<div className="space-y-8">
 			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-				<p className="mt-1 text-sm text-muted-foreground">Manage your account settings</p>
+				<h1 className="text-2xl font-semibold tracking-tight text-white">Settings</h1>
+				<p className="mt-1 text-sm text-neutral-400">Manage your account settings</p>
 			</div>
 
-			<div className="divide-y rounded-lg border">
+			<div className="divide-y divide-white/[0.06] rounded-lg border border-white/[0.06]">
 				<div className="p-4 sm:p-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<p className="text-sm text-muted-foreground">Email</p>
+							<p className="text-sm text-neutral-500">Email</p>
 							<div className="flex items-center gap-2">
-								<Mail className="h-4 w-4 text-muted-foreground" />
-								<p className="font-medium">{user.email}</p>
+								<Mail className="h-4 w-4 text-neutral-500" />
+								<p className="font-medium text-white">{user.email}</p>
 							</div>
 						</div>
 					</div>
@@ -44,14 +44,14 @@ export default async function AccountSettingsPage() {
 				</div>
 
 				<div className="p-4 sm:p-6">
-					<div className="flex items-center gap-2 text-sm text-muted-foreground">
+					<div className="flex items-center gap-2 text-sm text-neutral-500">
 						<Calendar className="h-4 w-4" />
 						<span>Member since {memberSince}</span>
 					</div>
 				</div>
 			</div>
 
-			<div className="border-destructive/20 rounded-lg border p-4 sm:p-6">
+			<div className="rounded-lg border border-red-500/20 p-4 sm:p-6">
 				<DeleteAccountSection />
 			</div>
 		</div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
@@ -12,6 +13,8 @@ type Props = {
 };
 
 export function EditNameForm({ firstName, lastName }: Props) {
+	const params = useParams<{ channel?: string }>();
+	const channel = typeof params.channel === "string" ? params.channel : "";
 	const [isEditing, setIsEditing] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const [error, setError] = useState("");
@@ -60,6 +63,7 @@ export function EditNameForm({ firstName, lastName }: Props) {
 
 	return (
 		<form action={handleSubmit} className="space-y-4">
+			{channel && <input type="hidden" name="channel" value={channel} />}
 			{error && (
 				<p role="alert" className="text-sm text-destructive">
 					{error}

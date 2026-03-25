@@ -2,10 +2,12 @@ import { Suspense } from "react";
 import { invariant } from "ts-invariant";
 import { RootWrapper } from "./page-wrapper";
 import { Loader } from "@/ui/atoms/loader";
+import { noIndexRobots } from "@/lib/seo";
 
 export const metadata = {
 	title: "Checkout | InfinityBio Labs",
 	description: "Complete your purchase securely.",
+	robots: noIndexRobots,
 };
 
 /**
@@ -42,7 +44,7 @@ async function CheckoutContent({
 
 function CheckoutSkeleton() {
 	return (
-		<div className="flex min-h-screen items-center justify-center">
+		<div className="flex min-h-screen items-center justify-center bg-neutral-950">
 			<Loader />
 		</div>
 	);

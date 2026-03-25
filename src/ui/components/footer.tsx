@@ -202,20 +202,20 @@ export async function Footer({ channel }: { channel: string }) {
 						>
 							Affiliate Program
 						</LinkWithChannel>
-						<Link
+						<LinkWithChannel
 							href="/privacy"
 							prefetch={false}
 							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
 						>
 							Privacy Policy
-						</Link>
-						<Link
+						</LinkWithChannel>
+						<LinkWithChannel
 							href="/terms"
 							prefetch={false}
 							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
 						>
 							Terms of Service
-						</Link>
+						</LinkWithChannel>
 					</div>
 				</div>
 			</div>

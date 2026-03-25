@@ -8,9 +8,10 @@ import * as Checkout from "@/lib/checkout";
 type deleteLineFromCheckoutArgs = {
 	lineId: string;
 	checkoutId: string;
+	channel: string;
 };
 
-export const deleteLineFromCheckout = async ({ lineId, checkoutId }: deleteLineFromCheckoutArgs) => {
+export const deleteLineFromCheckout = async ({ lineId, checkoutId, channel }: deleteLineFromCheckoutArgs) => {
 	const result = await executeAuthenticatedGraphQL(CheckoutDeleteLinesDocument, {
 		variables: {
 			checkoutId,
@@ -27,5 +28,6 @@ export const deleteLineFromCheckout = async ({ lineId, checkoutId }: deleteLineF
 		}
 	}
 
-	revalidatePath("/cart");
+	revalidatePath(`/${channel}/cart`);
+	revalidatePath(`/${channel}`);
 };

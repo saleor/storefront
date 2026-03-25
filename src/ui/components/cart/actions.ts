@@ -5,7 +5,7 @@ import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
-export async function deleteCartLine(checkoutId: string, lineId: string) {
+export async function deleteCartLine(checkoutId: string, lineId: string, channel: string) {
 	const result = await executeAuthenticatedGraphQL(CheckoutDeleteLinesDocument, {
 		variables: {
 			checkoutId,
@@ -22,13 +22,18 @@ export async function deleteCartLine(checkoutId: string, lineId: string) {
 		}
 	}
 
-	revalidatePath("/cart");
-	revalidatePath("/");
+	revalidatePath(`/${channel}/cart`);
+	revalidatePath(`/${channel}`);
 }
 
-export async function updateCartLineQuantity(checkoutId: string, lineId: string, quantity: number) {
+export async function updateCartLineQuantity(
+	checkoutId: string,
+	lineId: string,
+	quantity: number,
+	channel: string,
+) {
 	if (quantity < 1) {
-		return deleteCartLine(checkoutId, lineId);
+		return deleteCartLine(checkoutId, lineId, channel);
 	}
 
 	await executeAuthenticatedGraphQL(CheckoutLinesUpdateDocument, {
@@ -39,6 +44,6 @@ export async function updateCartLineQuantity(checkoutId: string, lineId: string,
 		cache: "no-cache",
 	});
 
-	revalidatePath("/cart");
-	revalidatePath("/");
+	revalidatePath(`/${channel}/cart`);
+	revalidatePath(`/${channel}`);
 }

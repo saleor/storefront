@@ -24,13 +24,13 @@ export function OrderRow({ order }: Props) {
 	return (
 		<LinkWithChannel
 			href={accountRoutes.orderDetail(order.number)}
-			className="hover:bg-secondary/30 flex items-center gap-4 rounded-lg border px-5 py-4 transition-colors"
+			className="flex items-center gap-4 rounded-lg border border-white/[0.06] px-5 py-4 transition-colors hover:bg-white/[0.03]"
 		>
 			<div className="flex -space-x-3">
 				{thumbnails.map((thumb, i) => (
 					<div
 						key={i}
-						className="bg-secondary/40 h-12 w-12 shrink-0 overflow-hidden rounded-lg border-2 border-background"
+						className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border-2 border-neutral-950 bg-neutral-900"
 					>
 						<Image
 							src={thumb.url}
@@ -42,15 +42,15 @@ export function OrderRow({ order }: Props) {
 					</div>
 				))}
 				{thumbnails.length === 0 && (
-					<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary text-xs text-muted-foreground">
+					<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-800 text-xs text-neutral-500">
 						#
 					</div>
 				)}
 			</div>
 
 			<div className="min-w-0 flex-1">
-				<p className="text-sm font-semibold">ORD-{order.number}</p>
-				<p className="text-[13px] text-muted-foreground">
+				<p className="text-sm font-semibold text-white">ORD-{order.number}</p>
+				<p className="text-[13px] text-neutral-500">
 					<time dateTime={order.created}>{formatDate(new Date(order.created))}</time>
 					{" · "}
 					{itemCount} {itemCount === 1 ? "item" : "items"}
@@ -62,10 +62,10 @@ export function OrderRow({ order }: Props) {
 					<StatusIcon className="h-4 w-4" strokeWidth={1.75} />
 					<span className="hidden sm:inline">{customerStatusLabel[order.status] ?? order.statusDisplay}</span>
 				</span>
-				<span className="text-sm font-semibold tabular-nums">
+				<span className="text-sm font-semibold tabular-nums text-white">
 					{formatMoney(order.total.gross.amount, order.total.gross.currency)}
 				</span>
-				<ArrowRight className="h-4 w-4 text-muted-foreground" />
+				<ArrowRight className="h-4 w-4 text-neutral-500" />
 			</div>
 		</LinkWithChannel>
 	);

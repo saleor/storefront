@@ -6,10 +6,17 @@ import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
+import Link from "next/link";
 import { executePublicGraphQL } from "@/lib/graphql";
-import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
-import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
+import {
+	ProductDetailsDocument,
+	ProductListByCategoryDocument,
+	type ProductDetailsQuery,
+} from "@/gql/graphql";
+import { buildPageMetadata, buildProductJsonLd, buildFaqJsonLd, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
+import { transformToProductCard } from "@/ui/components/plp";
+import { ProductCard } from "@/ui/components/plp/product-card";
 import {
 	ProductGallery,
 	ProductAttributes,
@@ -57,7 +64,8 @@ export async function generateMetadata(props: {
 		return { title: "Product Not Found" };
 	}
 
-	const description = product.seoDescription || product.name;
+	const attributes = extractProductAttributes(product);
+	const description = product.seoDescription || buildDescriptionFallback(product, attributes);
 	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
 	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
 	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
@@ -138,8 +146,9 @@ async function ProductContent({
 
 	const productJsonLd = buildProductJsonLd({
 		name: product.name,
-		description: product.seoDescription || product.name,
+		description: product.seoDescription || buildDescriptionFallback(product, productAttributes),
 		images: images.length > 0 ? images.map((img) => img.url) : undefined,
+		sku: selectedVariant?.sku ?? variants[0]?.sku,
 		brand: product.category?.name,
 		url: `/${params.channel}/products/${product.slug}`,
 		priceRange: product.pricing?.priceRange?.start?.gross
@@ -154,6 +163,23 @@ async function ProductContent({
 		variantCount: product.variants?.length ?? 0,
 	});
 
+	const faqJsonLd = faqItems ? buildFaqJsonLd(faqItems) : null;
+	const breadcrumbJsonLd = buildBreadcrumbJsonLd(breadcrumbs);
+
+	let relatedProducts: ReturnType<typeof transformToProductCard>[] = [];
+	if (product.category) {
+		const relResult = await executePublicGraphQL(ProductListByCategoryDocument, {
+			variables: { slug: product.category.slug, channel: params.channel, first: 5 },
+			revalidate: 300,
+		});
+		if (relResult.ok && relResult.data.category?.products) {
+			relatedProducts = relResult.data.category.products.edges
+				.map((e) => transformToProductCard(e.node, params.channel))
+				.filter((p) => p.id !== product.id)
+				.slice(0, 4);
+		}
+	}
+
 	const lcpImageUrl = images[0]?.url;
 
 	return (
@@ -164,6 +190,15 @@ async function ProductContent({
 				<script
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+				/>
+			)}
+			{faqJsonLd && (
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+			)}
+			{breadcrumbJsonLd && (
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
 				/>
 			)}
 
@@ -204,6 +239,27 @@ async function ProductContent({
 					</div>
 				</div>
 			</main>
+
+			{relatedProducts.length > 0 && product.category && (
+				<section className="border-t border-border bg-background" aria-label="Related products">
+					<div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+						<div className="mb-8 flex items-center justify-between">
+							<h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Related Compounds</h2>
+							<Link
+								href={`/${params.channel}/categories/${product.category.slug}`}
+								className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							>
+								View all
+							</Link>
+						</div>
+						<div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+							{relatedProducts.map((rp, i) => (
+								<ProductCard key={rp.id} product={rp} priority={i < 2} />
+							))}
+						</div>
+					</div>
+				</section>
+			)}
 		</div>
 	);
 }
@@ -318,6 +374,44 @@ function extractReferences(product: NonNullable<ProductDetailsQuery["product"]>)
 	}
 
 	return refs.length > 0 ? refs : null;
+}
+
+/**
+ * Auto-compose a rich meta description from product attributes
+ * when seoDescription is not set in the admin.
+ */
+function buildDescriptionFallback(
+	product: NonNullable<ProductDetailsQuery["product"]>,
+	attributes: { name: string; value: string | string[] }[],
+): string {
+	const parts: string[] = [product.name];
+
+	if (product.category?.name) {
+		parts.push(`by ${product.category.name}`);
+	}
+
+	const attrMap = new Map(
+		attributes.map((a) => [a.name.toLowerCase(), Array.isArray(a.value) ? a.value.join(", ") : a.value]),
+	);
+
+	const purity = attrMap.get("purity");
+	if (purity) parts.push(`${purity} purity`);
+
+	const form = attrMap.get("form");
+	if (form) parts.push(form.toLowerCase());
+
+	const price = product.pricing?.priceRange?.start?.gross;
+	if (price) {
+		const formatted = new Intl.NumberFormat("en", {
+			style: "currency",
+			currency: price.currency,
+		}).format(price.amount);
+		parts.push(`from ${formatted}`);
+	}
+
+	parts.push("– COA included, free shipping over $150");
+
+	return parts.join(" · ").slice(0, 160);
 }
 
 function getGalleryImages(

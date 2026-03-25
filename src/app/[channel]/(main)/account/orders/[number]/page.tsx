@@ -44,21 +44,19 @@ export default async function OrderDetailPage({ params }: Props) {
 		<div className="space-y-6">
 			<div className="flex flex-wrap items-start justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-semibold tracking-tight">ORD-{order.number}</h1>
-					<p className="mt-1 text-sm text-muted-foreground">
-						Placed on {formatDate(new Date(order.created))}
-					</p>
+					<h1 className="text-2xl font-semibold tracking-tight text-white">ORD-{order.number}</h1>
+					<p className="mt-1 text-sm text-neutral-400">Placed on {formatDate(new Date(order.created))}</p>
 				</div>
 				<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} />
 			</div>
 
 			<div className="grid gap-6 lg:grid-cols-[1fr_320px]">
 				<div className="space-y-6">
-					<div className="rounded-xl border">
-						<div className="border-b px-5 py-4">
-							<h2 className="text-sm font-semibold">Items ({itemCount})</h2>
+					<div className="rounded-xl border border-white/[0.06]">
+						<div className="border-b border-white/[0.06] px-5 py-4">
+							<h2 className="text-sm font-semibold text-white">Items ({itemCount})</h2>
 						</div>
-						<div className="divide-y">
+						<div className="divide-y divide-white/[0.06]">
 							{order.lines.map((line) => {
 								if (!line.variant) return null;
 								const product = line.variant.product;
@@ -69,7 +67,7 @@ export default async function OrderDetailPage({ params }: Props) {
 								return (
 									<div key={line.id} className="flex items-center gap-4 px-5 py-4">
 										{product.thumbnail && (
-											<div className="bg-secondary/30 h-16 w-16 shrink-0 overflow-hidden rounded-lg border">
+											<div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-white/[0.06] bg-neutral-900">
 												<Image
 													src={product.thumbnail.url}
 													alt={product.thumbnail.alt ?? ""}
@@ -82,17 +80,17 @@ export default async function OrderDetailPage({ params }: Props) {
 										<div className="min-w-0 flex-1">
 											<LinkWithChannel
 												href={`/products/${product.slug}`}
-												className="text-sm font-medium hover:underline"
+												className="text-sm font-medium text-white hover:text-emerald-400 hover:underline"
 											>
 												{product.name}
 											</LinkWithChannel>
 											{line.variant.name !== line.variant.id && Boolean(line.variant.name) && (
-												<p className="text-[13px] text-muted-foreground">{line.variant.name}</p>
+												<p className="text-[13px] text-neutral-500">{line.variant.name}</p>
 											)}
-											<p className="text-[13px] text-muted-foreground">Qty: {line.quantity}</p>
+											<p className="text-[13px] text-neutral-500">Qty: {line.quantity}</p>
 										</div>
 										{lineTotal != null && currency && (
-											<span className="text-sm font-medium tabular-nums">
+											<span className="text-sm font-medium tabular-nums text-white">
 												{formatMoney(lineTotal, currency)}
 											</span>
 										)}
@@ -101,17 +99,17 @@ export default async function OrderDetailPage({ params }: Props) {
 							})}
 						</div>
 
-						<div className="border-t px-5 py-4">
+						<div className="border-t border-white/[0.06] px-5 py-4">
 							<dl className="space-y-2 text-sm">
 								<div className="flex justify-between">
-									<dt className="text-muted-foreground">Subtotal</dt>
-									<dd className="tabular-nums">
+									<dt className="text-neutral-500">Subtotal</dt>
+									<dd className="tabular-nums text-white">
 										{formatMoney(order.subtotal.gross.amount, order.subtotal.gross.currency)}
 									</dd>
 								</div>
 								<div className="flex justify-between">
-									<dt className="text-muted-foreground">Shipping</dt>
-									<dd className="tabular-nums">
+									<dt className="text-neutral-500">Shipping</dt>
+									<dd className="tabular-nums text-white">
 										{order.shippingPrice.gross.amount === 0
 											? "Free"
 											: formatMoney(order.shippingPrice.gross.amount, order.shippingPrice.gross.currency)}
@@ -119,13 +117,13 @@ export default async function OrderDetailPage({ params }: Props) {
 								</div>
 								{order.total.tax.amount > 0 && (
 									<div className="flex justify-between">
-										<dt className="text-muted-foreground">Tax</dt>
-										<dd className="tabular-nums">
+										<dt className="text-neutral-500">Tax</dt>
+										<dd className="tabular-nums text-white">
 											{formatMoney(order.total.tax.amount, order.total.tax.currency)}
 										</dd>
 									</div>
 								)}
-								<div className="flex justify-between border-t pt-2 font-semibold">
+								<div className="flex justify-between border-t border-white/[0.06] pt-2 font-semibold text-white">
 									<dt>Total</dt>
 									<dd className="tabular-nums">
 										{formatMoney(order.total.gross.amount, order.total.gross.currency)}
@@ -143,11 +141,11 @@ export default async function OrderDetailPage({ params }: Props) {
 					{order.billingAddress && <OrderAddress title="Billing Address" address={order.billingAddress} />}
 
 					{order.isPaid && (
-						<div className="rounded-xl border px-5 py-4">
-							<h3 className="mb-3 text-sm font-semibold">Payment Method</h3>
+						<div className="rounded-xl border border-white/[0.06] px-5 py-4">
+							<h3 className="mb-3 text-sm font-semibold text-white">Payment Method</h3>
 							<div className="flex items-center gap-3">
-								<CreditCard className="h-4 w-4 text-muted-foreground" />
-								<span className="text-sm">
+								<CreditCard className="h-4 w-4 text-neutral-500" />
+								<span className="text-sm text-neutral-300">
 									{order.paymentStatus === "FULLY_CHARGED" ? "Paid" : order.paymentStatus}
 								</span>
 							</div>
@@ -156,7 +154,7 @@ export default async function OrderDetailPage({ params }: Props) {
 
 					<LinkWithChannel
 						href="/contact"
-						className="hover:bg-secondary/50 block w-full rounded-xl border px-5 py-3 text-center text-sm font-medium transition-colors"
+						className="block w-full rounded-xl border border-white/[0.06] px-5 py-3 text-center text-sm font-medium text-neutral-300 transition-colors hover:bg-white/[0.04] hover:text-white"
 					>
 						Need Help?
 					</LinkWithChannel>
@@ -168,20 +166,20 @@ export default async function OrderDetailPage({ params }: Props) {
 
 function OrderAddress({ title, address }: { title: string; address: AddressDetailsFragment }) {
 	return (
-		<div className="rounded-xl border px-5 py-4">
-			<h3 className="mb-3 text-sm font-semibold">{title}</h3>
+		<div className="rounded-xl border border-white/[0.06] px-5 py-4">
+			<h3 className="mb-3 text-sm font-semibold text-white">{title}</h3>
 			<div className="flex gap-3">
-				<MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+				<MapPin className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
 				<div className="text-sm leading-relaxed">
-					<p className="font-medium">
+					<p className="font-medium text-neutral-300">
 						{address.firstName} {address.lastName}
 					</p>
-					<p className="text-muted-foreground">{address.streetAddress1}</p>
-					{address.streetAddress2 && <p className="text-muted-foreground">{address.streetAddress2}</p>}
-					<p className="text-muted-foreground">
+					<p className="text-neutral-500">{address.streetAddress1}</p>
+					{address.streetAddress2 && <p className="text-neutral-500">{address.streetAddress2}</p>}
+					<p className="text-neutral-500">
 						{address.postalCode} {address.city}
 					</p>
-					<p className="text-muted-foreground">{address.country.country}</p>
+					<p className="text-neutral-500">{address.country.country}</p>
 				</div>
 			</div>
 		</div>

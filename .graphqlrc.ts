@@ -18,18 +18,30 @@
  */
 import { loadEnvConfig } from "@next/env";
 import type { CodegenConfig } from "@graphql-codegen/cli";
+import { existsSync } from "node:fs";
 
 loadEnvConfig(process.cwd());
 
-let schemaUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+function getSchemaSource(): string | null {
+	const configuredSchemaPath = process.env.SALEOR_SCHEMA_PATH;
 
-if (process.env.GITHUB_ACTION === "generate-schema-from-file") {
-	schemaUrl = "schema.graphql";
+	if (configuredSchemaPath && existsSync(configuredSchemaPath)) {
+		return configuredSchemaPath;
+	}
+
+	const defaultSchemaPath = "schema.graphql";
+	if (existsSync(defaultSchemaPath)) {
+		return defaultSchemaPath;
+	}
+
+	return process.env.NEXT_PUBLIC_SALEOR_API_URL ?? null;
 }
 
-if (!schemaUrl) {
+const schemaSource = getSchemaSource();
+
+if (!schemaSource) {
 	console.error(
-		"Before GraphQL types can be generated, you need to set NEXT_PUBLIC_SALEOR_API_URL environment variable.",
+		"Missing GraphQL schema source. Set NEXT_PUBLIC_SALEOR_API_URL or provide SALEOR_SCHEMA_PATH/schema.graphql.",
 	);
 	console.error("Follow development instructions in the README.md file.");
 	process.exit(1);
@@ -37,7 +49,7 @@ if (!schemaUrl) {
 
 const config: CodegenConfig = {
 	overwrite: true,
-	schema: schemaUrl,
+	schema: schemaSource,
 	// Storefront GraphQL queries - add new queries here
 	documents: "src/graphql/**/*.graphql",
 	generates: {

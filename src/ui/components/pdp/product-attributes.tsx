@@ -96,9 +96,11 @@ export function ProductAttributes({
 			<Accordion type="multiple" defaultValue={defaultOpen} className="w-full">
 				{descriptionHtml && descriptionHtml.length > 0 && (
 					<AccordionItemWithContext value="description" className="border-border">
-						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-							Description
-						</AccordionTrigger>
+						<h2>
+							<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+								Description
+							</AccordionTrigger>
+						</h2>
 						<AccordionContent>
 							<div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-foreground prose-strong:text-foreground">
 								{descriptionHtml.map((html, i) => (
@@ -111,9 +113,11 @@ export function ProductAttributes({
 
 				{displayAttributes.length > 0 && (
 					<AccordionItemWithContext value="details" className="border-border">
-						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-							Product Details
-						</AccordionTrigger>
+						<h2>
+							<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+								Product Details
+							</AccordionTrigger>
+						</h2>
 						<AccordionContent>
 							<div className="grid gap-3">
 								{displayAttributes.map((attr) => (
@@ -132,9 +136,11 @@ export function ProductAttributes({
 
 				{careInstructions && (
 					<AccordionItemWithContext value="care" className="border-border">
-						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-							Care Instructions
-						</AccordionTrigger>
+						<h2>
+							<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+								Care Instructions
+							</AccordionTrigger>
+						</h2>
 						<AccordionContent className="leading-relaxed text-muted-foreground">
 							{careInstructions}
 						</AccordionContent>
@@ -143,33 +149,37 @@ export function ProductAttributes({
 
 				{faqItems && faqItems.length > 0 && (
 					<AccordionItemWithContext value="faq" className="border-border">
-						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-							<span className="flex items-center gap-2">
-								<HelpCircle className="h-4 w-4" />
-								Frequently Asked Questions
-							</span>
-						</AccordionTrigger>
+						<h2>
+							<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+								<span className="flex items-center gap-2">
+									<HelpCircle className="h-4 w-4" />
+									Frequently Asked Questions
+								</span>
+							</AccordionTrigger>
+						</h2>
 						<AccordionContent>
-							<div className="grid gap-4">
+							<dl className="grid gap-4">
 								{faqItems.map((faq, i) => (
 									<div key={i}>
-										<p className="mb-1 text-sm font-medium text-foreground">{faq.question}</p>
-										<p className="text-sm leading-relaxed text-muted-foreground">{faq.answer}</p>
+										<dt className="mb-1 text-sm font-medium text-foreground">{faq.question}</dt>
+										<dd className="text-sm leading-relaxed text-muted-foreground">{faq.answer}</dd>
 									</div>
 								))}
-							</div>
+							</dl>
 						</AccordionContent>
 					</AccordionItemWithContext>
 				)}
 
 				{references && references.length > 0 && (
 					<AccordionItemWithContext value="references" className="border-border">
-						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-							<span className="flex items-center gap-2">
-								<BookOpen className="h-4 w-4" />
-								Research References
-							</span>
-						</AccordionTrigger>
+						<h2>
+							<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+								<span className="flex items-center gap-2">
+									<BookOpen className="h-4 w-4" />
+									Research References
+								</span>
+							</AccordionTrigger>
+						</h2>
 						<AccordionContent>
 							<ol className="grid gap-2 pl-4">
 								{references.map((ref, i) => (
@@ -183,12 +193,14 @@ export function ProductAttributes({
 				)}
 
 				<AccordionItemWithContext value="shipping" className="border-border">
-					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						<span className="flex items-center gap-2">
-							<Truck className="h-4 w-4" />
-							Shipping & Returns
-						</span>
-					</AccordionTrigger>
+					<h2>
+						<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
+							<span className="flex items-center gap-2">
+								<Truck className="h-4 w-4" />
+								Shipping & Returns
+							</span>
+						</AccordionTrigger>
+					</h2>
 					<AccordionContent className="leading-relaxed text-muted-foreground">
 						<div className="grid gap-2 text-sm">
 							<p>Free shipping on orders over $150. Standard delivery 3-7 business days.</p>
