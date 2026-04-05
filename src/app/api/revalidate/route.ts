@@ -1,7 +1,14 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
 import { DefaultChannelSlug } from "@/app/config";
-import { CACHE_PROFILES, buildTag, buildPath } from "@/lib/cache-manifest";
+import {
+	CACHE_PROFILES,
+	buildTag,
+	buildPath,
+	findDependentPages,
+	findPageByTag,
+	buildPagePath,
+} from "@/lib/cache-manifest";
 import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
 /**
@@ -90,14 +97,25 @@ function revalidateProfile(
 	tags: string[],
 	paths: string[],
 ) {
+	// NOTE: revalidateTag doesn't work for Cache Components in Next.js 16.
+	// We only use revalidatePath which works reliably.
 	const tag = buildTag(profile, slug);
-	revalidateTag(tag, profile.cacheProfile);
 	tags.push(tag);
 
 	const path = buildPath(profile, channel, slug);
 	if (path) {
 		revalidatePath(path);
 		paths.push(path);
+	}
+
+	// Cascade to dependent pages (e.g., homepage depends on "collection:featured-products")
+	const dependentPages = findDependentPages(tag);
+	for (const page of dependentPages) {
+		const pagePath = buildPagePath(page, channel);
+		if (!paths.includes(pagePath)) {
+			revalidatePath(pagePath);
+			paths.push(pagePath);
+		}
 	}
 }
 
@@ -208,13 +226,10 @@ export async function POST(request: NextRequest) {
  * @example Path-based revalidation:
  * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?path=/default-channel/products/my-product"
  *
- * @example Tag-based revalidation:
- * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=product:my-product"
+ * @example Tag-based revalidation (converts tag to path):
+ * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=product:my-product&channel=default-channel"
  *
- * @example Both at once:
- * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?path=/default-channel/products/my-product&tag=product:my-product"
- *
- * @example Revalidate all cached data:
+ * @example Purge all cached data:
  * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?all=1"
  */
 export async function GET(request: NextRequest) {
@@ -229,33 +244,16 @@ export async function GET(request: NextRequest) {
 	const all = searchParams.get("all");
 
 	if (!path && !tag && !all) {
-		return Response.json({ error: "Provide path, tag, and/or all parameter" }, { status: 400 });
+		return Response.json({ error: "Provide path, tag, or all parameter" }, { status: 400 });
 	}
 
 	const revalidatedPaths: string[] = [];
 	const revalidatedTags: string[] = [];
 
 	if (all === "1" || all === "true") {
+		// Clear all routes — the only reliable way to purge everything in Next.js 16
 		revalidatePath("/", "layout");
 		revalidatedPaths.push("/ (all routes)");
-
-		const fixedTagProfiles = Object.values(CACHE_PROFILES).filter((p) => !p.tagPattern.includes("{slug}"));
-		for (const p of fixedTagProfiles) {
-			revalidateTag(p.tagPattern, p.cacheProfile);
-			revalidatedTags.push(p.tagPattern);
-		}
-
-		const slugProfiles = Object.values(CACHE_PROFILES)
-			.filter((p) => p.tagPattern.includes("{slug}"))
-			.map((p) => p.id);
-
-		console.log(
-			"[Revalidate] Full purge:",
-			'revalidatePath("/", "layout") invalidates all routes (including slug-based:',
-			slugProfiles.join(", ") + ").",
-			"Also revalidated fixed tags:",
-			fixedTagProfiles.map((p) => p.tagPattern).join(", "),
-		);
 	}
 
 	if (path) {
@@ -267,15 +265,51 @@ export async function GET(request: NextRequest) {
 	}
 
 	if (tag) {
-		const profile = searchParams.get("profile") || "minutes";
-		console.log(
-			`[Revalidate] Tag: revalidateTag("${tag.replace(
-				/[\r\n]/g,
-				"",
-			)}", "${profile}") — invalidates "use cache" entries with this tag`,
-		);
-		revalidateTag(tag, profile);
+		// Resolve tag → path(s) and revalidatePath (revalidateTag is unreliable with Cache Components).
 		revalidatedTags.push(tag);
+
+		const channel = searchParams.get("channel") || DefaultChannelSlug || "default-channel";
+
+		// Also revalidate the corresponding path for completeness
+		for (const profile of Object.values(CACHE_PROFILES)) {
+			const pathPattern = profile.pathPattern;
+			if (typeof pathPattern !== "string" || !profile.tagPattern.includes("{slug}")) continue;
+			const prefix = profile.tagPattern.replace("{slug}", "");
+			if (tag.startsWith(prefix)) {
+				const slug = tag.slice(prefix.length);
+				let path = pathPattern.replace("{channel}", channel);
+				path = path.replace("{slug}", slug);
+				if (!revalidatedPaths.includes(path)) {
+					revalidatePath(path);
+					revalidatedPaths.push(path);
+				}
+				break;
+			}
+		}
+
+		// Direct manual page tag support: ?tag=page:homepage&channel=default-channel
+		const pageFromTag = findPageByTag(tag);
+		if (pageFromTag && channel) {
+			const pagePath = buildPagePath(pageFromTag, channel);
+			if (!revalidatedPaths.includes(pagePath)) {
+				revalidatePath(pagePath);
+				revalidatedPaths.push(pagePath);
+				console.log(`[Revalidate] Page tag: "${tag}" -> ${pagePath}`);
+			}
+		}
+
+		// Cascade to dependent pages
+		if (channel) {
+			const dependentPages = findDependentPages(tag);
+			for (const page of dependentPages) {
+				const pagePath = buildPagePath(page, channel);
+				if (!revalidatedPaths.includes(pagePath)) {
+					revalidatePath(pagePath);
+					revalidatedPaths.push(pagePath);
+					console.log(`[Revalidate] Cascade: page "${page.id}" at ${pagePath}`);
+				}
+			}
+		}
 	}
 
 	console.log("[Revalidate] Done:", { paths: revalidatedPaths, tags: revalidatedTags });

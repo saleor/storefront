@@ -387,14 +387,17 @@ revalidatePath(`/channel/products/${slug}`); // Invalidates ISR page
 ### Manual Invalidation
 
 ```bash
-# Invalidate a specific product (both tag and path)
-curl "https://store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie&path=/default-channel/products/blue-hoodie"
+# Invalidate a product (tag → path; include channel)
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:blue-hoodie&channel=default-channel"
 
-# Invalidate just the cached function data
-curl "https://store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie"
+# Or pass path directly
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?path=/default-channel/products/blue-hoodie"
 
-# Invalidate navigation (uses "hours" profile)
-curl "https://store.com/api/revalidate?secret=xxx&tag=navigation&profile=hours"
+# Full purge
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?all=1"
 ```
 
 ### No Webhooks? TTL Takes Over

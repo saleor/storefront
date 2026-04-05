@@ -127,13 +127,56 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 | `footer-menu`       | `footerMenu`  | `getFooterMenu()`                              | Footer menu changed       |
 | `channels`          | `channels`    | `getChannels()`                                | Channel list changed      |
 
+### Page Dependencies
+
+Special pages (homepage, landing pages) can declare dependencies on cache tags. When a dependency tag is invalidated, the page's path is also revalidated automatically.
+
+| Page       | Path Pattern | Dependencies                   | Manual Tag      |
+| ---------- | ------------ | ------------------------------ | --------------- |
+| `homepage` | `/{channel}` | `collection:featured-products` | `page:homepage` |
+
+**How it works:**
+
+```
+Saleor webhook: COLLECTION_UPDATED { slug: "featured-products" }
+                    │
+                    ▼
+revalidatePath("/{channel}/collections/featured-products")  ← collection PLP
+                    │
+                    ▼
+findDependentPages("collection:featured-products")
+                    │
+                    ▼
+revalidatePath("/{channel}")  ← dependent pages (e.g. homepage)
+```
+
+To add a new special page, edit `src/lib/cache-manifest.ts`:
+
+```typescript
+const pages = {
+  homepage: { ... },
+  // Add new pages here:
+  sale: {
+    id: "sale",
+    label: "Sale Page",
+    pathPattern: "/{channel}/sale",
+    dependencies: ["collection:sale-items"],
+    tag: "page:sale",
+  },
+} as const;
+```
+
 ### Cache Introspection Endpoint
 
 `GET /api/cache-info` returns a machine-readable manifest of all profiles. Protected by `REVALIDATE_SECRET` via `Authorization: Bearer` header (timing-safe comparison). Used by the saleor-paper-app to discover what the storefront caches and build its invalidation UI dynamically.
 
 ```bash
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" "https://store.com/api/cache-info"
-# Returns: { version: 1, profiles: [{ id, label, ttlSeconds, cacheProfile, tagPattern, pathPattern }, ...] }
+# Returns: {
+#   version: 2,
+#   profiles: [{ id, label, cacheProfile, tagPattern, pathPattern }, ...],
+#   pages: [{ id, label, pathPattern, dependencies, tag }, ...]
+# }
 ```
 
 ---
@@ -353,9 +396,10 @@ When configured, Saleor sends webhooks on data changes, triggering instant inval
 **What happens on webhook:**
 
 ```typescript
-// Product update webhook triggers:
-revalidateTag(`product:${slug}`, "minutes"); // Invalidates "use cache" data
-revalidatePath(`/channel/products/${slug}`); // Invalidates ISR page
+// Product update: revalidatePath for the product URL + listing + optional category;
+// tags are recorded for logging only (no revalidateTag — unreliable with Cache Components).
+revalidateProfile(CACHE_PROFILES.products, channel, slug, tags, paths); // path + dependent pages
+revalidatePath(`/${channel}/products`);
 ```
 
 ### Manual Invalidation
@@ -363,18 +407,20 @@ revalidatePath(`/channel/products/${slug}`); // Invalidates ISR page
 All manual invalidation requests use the `Authorization: Bearer` header (timing-safe comparison):
 
 ```bash
-# Invalidate a specific product (both tag and path)
+# Invalidate a product: tag is resolved to a path (include channel)
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/default-channel/products/blue-hoodie"
+  "https://store.com/api/revalidate?tag=product:blue-hoodie&channel=default-channel"
 
-# Invalidate just the cached function data
+# Or pass the path directly
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=product:blue-hoodie"
+  "https://store.com/api/revalidate?path=/default-channel/products/blue-hoodie"
 
-# Invalidate navigation (uses "hours" profile)
+# Purge everything (layouts + cached segments)
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=navigation&profile=hours"
+  "https://store.com/api/revalidate?all=1"
 ```
+
+Fixed-tag caches (e.g. `navigation`, `footer-menu`) have no URL in the manifest; use `?all=1` or `?path=...` for routes that embed that data (e.g. layout).
 
 ### No Webhooks? TTL Takes Over
 
@@ -465,13 +511,7 @@ Remove `"use cache"`, `cacheLife()`, and `cacheTag()` from these files:
 
 ### Step 3: Update Revalidation
 
-```typescript
-// src/app/api/revalidate/route.ts
-// Change from:
-revalidateTag(`product:${slug}`, "minutes");
-// To:
-revalidateTag(`product:${slug}`); // Remove second argument
-```
+If you re-enable classic data-cache behavior, you can use `revalidateTag` again per [Next.js docs](https://nextjs.org/docs/app/api-reference/functions/revalidateTag). With Cache Components, this project uses **`revalidatePath`** for on-demand invalidation instead.
 
 ### What You Can Keep
 

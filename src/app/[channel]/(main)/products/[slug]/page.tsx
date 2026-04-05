@@ -76,8 +76,12 @@ export async function generateMetadata(props: {
 	});
 }
 
-// NOTE: generateStaticParams is intentionally omitted for product pages.
-// All product pages are generated on-demand via ISR instead.
+// Return at least one example to enable "use cache" with dynamic routes.
+// Other slugs will be generated on-demand (ISR).
+// See: https://nextjs.org/docs/messages/empty-generate-static-params
+export function generateStaticParams() {
+	return [{ slug: "_placeholder" }];
+}
 
 // ============================================================================
 // Page Component

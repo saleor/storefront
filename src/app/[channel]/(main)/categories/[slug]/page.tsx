@@ -50,6 +50,12 @@ export const generateMetadata = async (props: PageProps, parent: ResolvingMetada
 	};
 };
 
+// Return at least one example to enable "use cache" with dynamic routes.
+// Other slugs will be generated on-demand (ISR).
+export function generateStaticParams() {
+	return [{ slug: "_placeholder" }];
+}
+
 /**
  * Sync page shell with dedicated Suspense boundary.
  * Cached hero + dynamic product grid stream inside this boundary,
