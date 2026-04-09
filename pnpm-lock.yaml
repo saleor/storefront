@@ -25,6 +25,9 @@ importers:
       '@headlessui/react':
         specifier: 1.7.18
         version: 1.7.18(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@opentelemetry/api':
+        specifier: 1.9.0
+        version: 1.9.0
       '@opentelemetry/api-logs':
         specifier: 0.57.2
         version: 0.57.2
