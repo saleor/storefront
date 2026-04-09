@@ -1,3 +1,5 @@
 blockExoticSubdeps: true
 minimumReleaseAge: 1440 # 24h
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - semver
