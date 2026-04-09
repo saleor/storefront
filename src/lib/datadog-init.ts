@@ -15,7 +15,7 @@ datadogRum.init({
 	trackLongTasks: true,
 	allowedTracingUrls: [
 		// TODO: narrow down matching key to specific API endpoints
-		{ match: () => true, propagatorTypes: ["tracecontext"] },
+		{ match: /^https:\/\/[^\/]+\.vercel\.app/, propagatorTypes: ["tracecontext"] },
 	],
 });
 
