@@ -270,6 +270,7 @@ Paper works as a reference implementation and as a starting point for your own s
 - **Colors & typography** → `src/styles/brand.css`
 - **Components** → `src/ui/components/`
 - **Checkout flow** → `src/checkout/views/SaleorCheckout/`
+- **Data model** → [`CONFIGURATOR.md`](CONFIGURATOR.md) — define categories, product types, collections, and menus in `config.yml` and deploy to Saleor
 
 The design token system uses CSS custom properties—swap the entire color palette by editing a few lines.
 
