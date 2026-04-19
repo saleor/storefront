@@ -1,12 +1,12 @@
 # Checkout Management
 
-Understanding checkout session lifecycle, storage, and debugging prevents payment failures, hydration mismatches, and "CHECKOUT_NOT_FULLY_PAID" errors. Use live checkout data for payment amounts and handle stale checkouts gracefully.
+Understanding checkout session lifecycle, storage, payment transactions, and debugging prevents payment failures, hydration mismatches, and "CHECKOUT_NOT_FULLY_PAID" errors. Use live checkout data for payment amounts and handle stale checkouts gracefully.
 
 ---
 
 ## Overview
 
-This skill covers how checkout sessions are created, stored, and managed in the Saleor storefront.
+This skill covers how checkout sessions are created, stored, and managed in the Saleor storefront, including the full payment transaction flow.
 
 ## Checkout ID Storage
 
@@ -76,6 +76,130 @@ When `checkoutComplete` mutation succeeds:
 - The checkout ID becomes invalid
 - A new checkout should be created for future purchases
 
+---
+
+## Payment Transaction Flow
+
+The payment flow follows a 4-step sequence using Saleor's transaction API:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    PAYMENT TRANSACTION FLOW                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   1. paymentGatewayInitialize                                    │
+│      └─ Gets available gateways and their config                 │
+│                                                                  │
+│   2. transactionInitialize                                       │
+│      └─ Creates a transaction with the chosen gateway            │
+│      └─ Returns transaction ID + event data                      │
+│                                                                  │
+│   3. transactionProcess (if needed, e.g. 3D Secure)              │
+│      └─ Processes additional payment steps                       │
+│      └─ Used after redirects (Stripe 3DS, Adyen redirect)        │
+│                                                                  │
+│   4. checkoutComplete                                            │
+│      └─ Converts checkout to order                               │
+│      └─ Requires authorized/charged amount >= checkout total     │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Mutations (in `src/checkout/graphql/payment.graphql`)
+
+```graphql
+# Step 1: Initialize payment gateways
+mutation paymentGatewaysInitialize($checkoutId: ID!, $paymentGateways: [PaymentGatewayToInitialize!]) {
+	paymentGatewayInitialize(id: $checkoutId, paymentGateways: $paymentGateways) {
+		gatewayConfigs { id data errors { field message code } }
+		errors { field message code }
+	}
+}
+
+# Step 2: Initialize a transaction
+mutation transactionInitialize($checkoutId: ID!, $action: TransactionFlowStrategyEnum, ...) {
+	transactionInitialize(id: $checkoutId, action: $action, paymentGateway: $paymentGateway, amount: $amount) {
+		transaction { id actions }
+		transactionEvent { message type }
+		data
+		errors { field code message }
+	}
+}
+
+# Step 3: Process transaction (after redirect)
+mutation transactionProcess($id: ID!, $data: JSON) {
+	transactionProcess(id: $id, data: $data) {
+		transaction { id actions }
+		transactionEvent { message type }
+		data
+		errors { field code message }
+	}
+}
+```
+
+### Dummy Payment Gateway (Testing)
+
+The built-in flow uses `mirumee.payments.dummy` for testing:
+
+```typescript
+const initResult = await transactionInitialize({
+	checkoutId,
+	paymentGateway: {
+		id: "mirumee.payments.dummy",
+		data: {
+			event: {
+				includePspReference: true,
+				type: "CHARGE_SUCCESS",
+			},
+		},
+	},
+});
+```
+
+After successful transaction init, immediately call `checkoutComplete`:
+
+```typescript
+const completeResult = await checkoutComplete({ checkoutId });
+const order = completeResult.data?.checkoutComplete?.order;
+```
+
+### Payment Status Detection
+
+The `usePayments` hook (in `src/_reference/checkout-sections/PaymentSection/usePayments.ts`) auto-completes checkout when payment is detected:
+
+```typescript
+const paidStatuses: PaymentStatus[] = ["overpaid", "paidInFull", "authorized"];
+
+// Auto-complete when payment status changes to paid
+useEffect(() => {
+	if (!completingCheckout && paidStatuses.includes(paymentStatus)) {
+		void onCheckoutComplete();
+	}
+}, [completingCheckout, paymentStatus]);
+```
+
+### Stripe/Adyen Integration (Reference Code)
+
+Reference implementations live in `src/_reference/checkout-sections/PaymentSection/`:
+
+| File                                            | Purpose                                  |
+| ----------------------------------------------- | ---------------------------------------- |
+| `StripeV2DropIn/stripeForm.tsx`                 | Stripe V2 DropIn payment form            |
+| `StripeV2DropIn/useCheckoutCompleteRedirect.ts` | Post-redirect completion (3DS flow)      |
+| `AdyenDropIn/useAdyenDropin.ts`                 | Adyen DropIn integration                 |
+| `DummyDropIn/dummyComponent.tsx`                | Dummy gateway for testing                |
+| `PaymentMethods.tsx`                            | Gateway selection UI                     |
+| `usePayments.ts`                                | Payment status detection + auto-complete |
+
+The Stripe redirect flow:
+
+1. `transactionInitialize` → Stripe creates PaymentIntent
+2. User completes 3DS → Stripe redirects back with `paymentIntent` query param
+3. `useCheckoutCompleteRedirect` detects redirect, calls `transactionProcess` to sync Saleor
+4. Then calls `onCheckoutComplete()` to finalize the order
+
+---
+
 ## Common Issues
 
 ### Hydration Mismatch with Checkout ID
@@ -122,12 +246,14 @@ const totalAmount = checkout.totalPrice.gross.amount;
 
 ## Key Files
 
-| File                                 | Purpose                              |
-| ------------------------------------ | ------------------------------------ |
-| `src/lib/checkout.ts`                | Checkout creation, cookie management |
-| `src/checkout/hooks/use-checkout.ts` | React hook for checkout data         |
-| `src/checkout/lib/utils/url.ts`      | URL query param extraction           |
-| `src/graphql/CheckoutCreate.graphql` | Checkout creation mutation           |
+| File                                                  | Purpose                              |
+| ----------------------------------------------------- | ------------------------------------ |
+| `src/lib/checkout.ts`                                 | Checkout creation, cookie management |
+| `src/checkout/hooks/use-checkout.ts`                  | React hook for checkout data         |
+| `src/checkout/lib/utils/url.ts`                       | URL query param extraction           |
+| `src/graphql/CheckoutCreate.graphql`                  | Checkout creation mutation           |
+| `src/checkout/graphql/payment.graphql`                | Payment transaction mutations        |
+| `src/checkout/views/saleor-checkout/payment-step.tsx` | Payment step UI                      |
 
 ## Debugging Checkout Issues
 
@@ -168,6 +294,10 @@ query {
 			authorizedAmount {
 				amount
 			}
+		}
+		availablePaymentGateways {
+			id
+			name
 		}
 	}
 }
@@ -218,6 +348,20 @@ The authorized amount doesn't cover the checkout's total amount.
 2. If `AUTHORIZATION_FAILURE` → payment app is down/unreachable
 3. If transaction succeeded but amount is wrong → checkout data is stale
 
+## Checkout Components
+
+Reusable checkout UI components in `src/checkout/components/`:
+
+| Directory           | Components                                                        |
+| ------------------- | ----------------------------------------------------------------- |
+| `contact/`          | `SignInForm`, `SignedInUser`, `ResetPasswordForm`, `GuestContact` |
+| `shipping-address/` | `AddressSelector`, `AddressDisplay`, `AddressFields`              |
+| `payment/`          | `PaymentMethodSelector`, `BillingAddressSection`                  |
+
+Steps (e.g., `InformationStep.tsx`) import and compose these based on auth state. Check component prop types directly in the source files.
+
+---
+
 ## Best Practices
 
 1. **Always use live checkout data** for payment amounts
@@ -225,3 +369,4 @@ The authorized amount doesn't cover the checkout's total amount.
 3. **Clear checkout after completion** to avoid stale data
 4. **Test with fresh checkouts** when debugging payment issues
 5. **Check payment app health** when transactions fail with `AUTHORIZATION_FAILURE`
+6. **Check `transactionEvent.type`** after `transactionInitialize` — anything other than `CHARGE_SUCCESS` or `AUTHORIZATION_SUCCESS` means payment failed
