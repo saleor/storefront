@@ -1,12 +1,18 @@
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, type FC, type FormEvent } from "react";
 import Image from "next/image";
-import { Tag, ShieldCheck, RotateCcw, Truck, ChevronDown, ShoppingBag } from "lucide-react";
+import { Tag, ShieldCheck, RotateCcw, Truck, ChevronDown, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { cn } from "@/lib/utils";
-import { type CheckoutFragment, type OrderFragment } from "@/checkout/graphql";
+import {
+	type CheckoutErrorFragment,
+	type CheckoutFragment,
+	type OrderFragment,
+	useCheckoutAddPromoCodeMutation,
+	useCheckoutRemovePromoCodeMutation,
+} from "@/checkout/graphql";
 import { localeConfig } from "@/config/locale";
 
 // ============================================================================
@@ -38,6 +44,7 @@ interface OrderSummaryProps {
 	checkout?: CheckoutFragment;
 	order?: OrderFragment;
 	editable?: boolean;
+	onCheckoutChange?: () => void;
 }
 
 // ============================================================================
@@ -109,15 +116,25 @@ function extractOrderData(order: OrderFragment): OrderSummaryData {
 	};
 }
 
+function getCheckoutErrorMessage(errors: readonly CheckoutErrorFragment[] | undefined) {
+	const firstError = errors?.[0];
+
+	if (!firstError) return null;
+
+	return firstError.message || "This discount code could not be applied.";
+}
+
 // ============================================================================
 // Component
 // ============================================================================
 
-export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable }) => {
+export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable, onCheckoutChange }) => {
 	const [promoCode, setPromoCode] = useState("");
-	const [promoApplied, setPromoApplied] = useState(false);
+	const [promoError, setPromoError] = useState<string | null>(null);
 	// Collapsed by default on mobile
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [{ fetching: isApplyingPromo }, applyPromoCode] = useCheckoutAddPromoCodeMutation();
+	const [{ fetching: isRemovingPromo }, removePromoCode] = useCheckoutRemovePromoCodeMutation();
 
 	// Extract data from either checkout or order
 	const data = checkout ? extractCheckoutData(checkout) : order ? extractOrderData(order) : null;
@@ -129,6 +146,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable 
 	const { lines, currency, subtotal, shipping, tax, discount, total } = data;
 	const isEditable = editable ?? data.editable;
 	const itemCount = lines.reduce((acc, line) => acc + line.quantity, 0);
+	const appliedPromoCode = checkout?.voucherCode;
+	const appliedDiscountName = checkout?.translatedDiscountName || checkout?.discountName;
+	const isPromoBusy = isApplyingPromo || isRemovingPromo;
 
 	const formatMoney = (amount: number) => {
 		return new Intl.NumberFormat(localeConfig.default, {
@@ -137,11 +157,60 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable 
 		}).format(amount);
 	};
 
-	const handleApplyPromo = () => {
-		// TODO: Call Saleor mutation to apply promo code
-		if (promoCode.toLowerCase() === "saleor10") {
-			setPromoApplied(true);
+	const handleApplyPromo = async (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+
+		if (!checkout || isPromoBusy) return;
+
+		const trimmedCode = promoCode.trim();
+		if (!trimmedCode) return;
+
+		setPromoError(null);
+
+		const result = await applyPromoCode({
+			checkoutId: checkout.id,
+			promoCode: trimmedCode,
+			languageCode: localeConfig.graphqlLanguageCode,
+		});
+
+		if (result.error) {
+			setPromoError(result.error.message);
+			return;
 		}
+
+		const errorMessage = getCheckoutErrorMessage(result.data?.checkoutAddPromoCode?.errors);
+		if (errorMessage) {
+			setPromoError(errorMessage);
+			return;
+		}
+
+		setPromoCode("");
+		onCheckoutChange?.();
+	};
+
+	const handleRemovePromo = async () => {
+		if (!checkout || !appliedPromoCode || isPromoBusy) return;
+
+		setPromoError(null);
+
+		const result = await removePromoCode({
+			checkoutId: checkout.id,
+			promoCode: appliedPromoCode,
+			languageCode: localeConfig.graphqlLanguageCode,
+		});
+
+		if (result.error) {
+			setPromoError(result.error.message);
+			return;
+		}
+
+		const errorMessage = getCheckoutErrorMessage(result.data?.checkoutRemovePromoCode?.errors);
+		if (errorMessage) {
+			setPromoError(errorMessage);
+			return;
+		}
+
+		onCheckoutChange?.();
 	};
 
 	// Product thumbnails for collapsed state (show max 2 for cleaner look)
@@ -278,34 +347,57 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable 
 					{/* Discounts - only for editable checkout */}
 					{isEditable && (
 						<section className="border-t border-border px-5 py-4">
-							<form
-								className="flex gap-2"
-								onSubmit={(e) => {
-									e.preventDefault();
-									handleApplyPromo();
-								}}
-							>
-								<div className="relative flex-1">
-									<Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-									<Input
-										placeholder="Discount code"
-										value={promoCode}
-										onChange={(e) => setPromoCode(e.target.value)}
-										className="h-10 bg-white pl-10 text-sm"
-										disabled={promoApplied}
-									/>
+							{appliedPromoCode ? (
+								<div className="flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-3">
+									<Tag className="h-4 w-4 shrink-0 text-green-700" />
+									<div className="min-w-0 flex-1">
+										<p className="truncate text-sm font-medium text-green-800">{appliedPromoCode}</p>
+										{appliedDiscountName && (
+											<p className="truncate text-xs text-green-700">{appliedDiscountName}</p>
+										)}
+									</div>
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon"
+										disabled={isPromoBusy}
+										onClick={handleRemovePromo}
+										aria-label="Remove discount code"
+										className="h-8 w-8 shrink-0 text-green-700 hover:bg-green-100 hover:text-green-800"
+									>
+										<X className="h-4 w-4" />
+									</Button>
 								</div>
-								<Button
-									type="submit"
-									variant="outline-solid"
-									disabled={!promoCode || promoApplied}
-									className="h-10 bg-white px-4 text-sm"
-								>
-									{promoApplied ? "Applied" : "Apply"}
-								</Button>
-							</form>
-							{promoApplied && (
-								<p className="mt-2 text-sm font-medium text-green-600">SALEOR10 - 10% discount applied</p>
+							) : (
+								<form className="flex gap-2" onSubmit={handleApplyPromo}>
+									<div className="relative flex-1">
+										<Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+										<Input
+											placeholder="Discount code"
+											value={promoCode}
+											onChange={(e) => {
+												setPromoCode(e.target.value);
+												setPromoError(null);
+											}}
+											aria-invalid={Boolean(promoError)}
+											className="h-10 bg-white pl-10 text-sm"
+											disabled={isPromoBusy}
+										/>
+									</div>
+									<Button
+										type="submit"
+										variant="outline-solid"
+										disabled={!promoCode.trim() || isPromoBusy}
+										className="h-10 bg-white px-4 text-sm"
+									>
+										{isApplyingPromo ? "Applying..." : "Apply"}
+									</Button>
+								</form>
+							)}
+							{promoError && (
+								<p className="mt-2 text-sm text-destructive" role="alert">
+									{promoError}
+								</p>
 							)}
 						</section>
 					)}
