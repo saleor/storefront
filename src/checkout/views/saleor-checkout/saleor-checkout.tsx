@@ -31,7 +31,7 @@ import { createQueryString } from "@/checkout/lib/utils/url";
 export const SaleorCheckout: FC = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { checkout, fetching: fetchingCheckout, hasCheckoutId } = useCheckout();
+	const { checkout, fetching: fetchingCheckout, hasCheckoutId, refetch } = useCheckout();
 	const { loading: isAuthenticating } = useUser();
 
 	// Auto-attach logged-in user to checkout (runs once, persists across step changes)
@@ -107,7 +107,10 @@ export const SaleorCheckout: FC = () => {
 					<div className="min-w-0 flex-1">
 						{/* Mobile Order Summary - collapsible, inside scrollable content */}
 						<div className="mb-4 overflow-hidden rounded-lg border border-border bg-card md:hidden">
-							<OrderSummary checkout={checkout} />
+							<OrderSummary
+								checkout={checkout}
+								onCheckoutChange={() => refetch({ requestPolicy: "network-only" })}
+							/>
 						</div>
 						<div className="rounded-lg border border-border bg-card p-6 md:p-8">
 							<div ref={stepRef} tabIndex={-1} className="outline-none">
@@ -140,7 +143,10 @@ export const SaleorCheckout: FC = () => {
 					{/* Right column: Summary (~30%) - hidden on mobile, shown on desktop */}
 					<div className="hidden md:block md:shrink-0 md:basis-[30%]">
 						<div className="overflow-hidden rounded-lg border border-border bg-card md:sticky md:top-8">
-							<OrderSummary checkout={checkout} />
+							<OrderSummary
+								checkout={checkout}
+								onCheckoutChange={() => refetch({ requestPolicy: "network-only" })}
+							/>
 						</div>
 					</div>
 				</div>
