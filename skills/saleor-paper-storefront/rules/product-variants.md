@@ -60,7 +60,23 @@ src/ui/components/pdp/variant-selection/
 | `getAdjustedSelections()`       | Clear conflicting selections when needed         |
 | `getUnavailableAttributeInfo()` | Detect dead-end selections                       |
 
-For detailed function signatures and usage, see [../references/variant-utils-reference.md](../references/variant-utils-reference.md).
+### `VariantOption` Interface
+
+```typescript
+interface VariantOption {
+	id: string;
+	name: string;
+	slug: string;
+	available: boolean; // At least one variant in stock
+	compatible: boolean; // Works with current selections
+	hasDiscount?: boolean; // Any variant with this option is discounted
+	discountPercent?: number; // Max discount percentage
+}
+```
+
+### Discount Detection
+
+A variant has a discount when `undiscountedPrice > price`. Options aggregate discounts: `hasDiscount = true` if ANY variant with that option is discounted, `discountPercent` = MAX discount among matching variants.
 
 ## Option States
 
@@ -136,17 +152,41 @@ const deadEnd = getUnavailableAttributeInfo(variants, groups, selections);
 
 ## State Machine
 
-The selection system has 5 states with automatic conflict resolution. For the full state diagram and transition rules, see [../references/variant-state-machine.md](../references/variant-state-machine.md).
+The selection system has 5 states with automatic conflict resolution:
 
-**Quick reference:**
+```mermaid
+stateDiagram-v2
+    [*] --> Empty: Page Load
 
-| State        | Add to Cart | Description                   |
-| ------------ | ----------- | ----------------------------- |
-| **Empty**    | ❌          | No selections                 |
-| **Partial**  | ❌          | Some attributes selected      |
-| **Complete** | ✅          | All selected, variant found   |
-| **Conflict** | —           | Auto-clears to Partial        |
-| **DeadEnd**  | ❌          | Selection blocks other groups |
+    Empty --> Partial: SELECT(attr, value)
+    Empty --> Complete: Single variant product
+
+    Partial --> Partial: SELECT [not all attrs filled]
+    Partial --> Complete: SELECT [all filled, variant exists]
+    Partial --> Conflict: SELECT [all filled, no variant]
+    Partial --> DeadEnd: SELECT blocks other groups
+
+    Complete --> Complete: SELECT [compatible]
+    Complete --> Partial: SELECT [incompatible → adjust]
+
+    Conflict --> Partial: AUTO_ADJUST [clear conflicts]
+
+    DeadEnd --> Partial: SELECT different option
+```
+
+| State        | URL Params                        | Add to Cart | Description                         |
+| ------------ | --------------------------------- | ----------- | ----------------------------------- |
+| **Empty**    | `?`                               | No          | No selections                       |
+| **Partial**  | `?color=black`                    | No          | Some attributes selected            |
+| **Complete** | `?color=black&size=m&variant=abc` | Yes         | All selected, variant found         |
+| **Conflict** | (transient)                       | --          | Impossible combination, auto-clears |
+| **DeadEnd**  | `?color=black`                    | No          | Selection blocks other groups       |
+
+### Transition Rules
+
+- **If variant exists with new selection** — Update selection, keep others
+- **If no variant exists** — Clear conflicting selections (AUTO_ADJUST via `getAdjustedSelections()`)
+- **If all attributes now filled and variant exists** — Set `variant` param
 
 **Key behavior:** When user selects an incompatible option, other selections are cleared automatically (not blocked). Users can always explore all options.
 

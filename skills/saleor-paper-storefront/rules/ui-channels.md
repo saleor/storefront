@@ -135,8 +135,38 @@ const channelLocales: Record<string, string> = {
 
 This is NOT implemented - formatting is currently `en-US` for all channels.
 
+## Stock & Availability
+
+### `quantityAvailable` on ProductVariant
+
+In storefront queries, `variant.quantityAvailable` is the number of units a customer can buy right now. It's computed server-side as:
+
+```
+quantityAvailable = stock.quantity - allocations - reservations
+```
+
+Summed across all warehouses reachable from the queried channel (connected via the fulfillment triangle). You never see the breakdown — only the final number.
+
+### `isAvailable` vs `isAvailableForPurchase`
+
+These are **different fields** with different meanings:
+
+| Field                    | On        | Meaning                                                                                                       |
+| ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------- |
+| `isAvailable`            | `Product` | Has stock in a warehouse reachable through the channel's shipping zones. Dynamic — changes with stock levels. |
+| `isAvailableForPurchase` | `Product` | The `availableForPurchaseAt` date has passed. Static — set in channel listing configuration.                  |
+
+A product can be:
+
+- **Visible but not purchasable**: `isPublished: true` + `isAvailableForPurchase: false` → "coming soon"
+- **Purchasable but out of stock**: `isAvailableForPurchase: true` + `isAvailable: false` → all variants have `quantityAvailable: 0`
+- **Fully available**: Both `true` with stock present
+
+For the complete entity relationship model, see [saleor-domain-model.md](../references/saleor-domain-model.md).
+
 ## Anti-patterns
 
-❌ **Don't assume stock means purchasable** - Warehouse must be in both the channel AND a shipping zone for that channel
-❌ **Don't debug availability client-side only** - Check the 7-point purchasability checklist in Saleor Dashboard first
-❌ **Don't hardcode channel slugs without fallback** - Use `DefaultChannelSlug` from config
+- **Don't assume stock means purchasable** - Warehouse must be in both the channel AND a shipping zone for that channel
+- **Don't debug availability client-side only** - Check the 7-point purchasability checklist in Saleor Dashboard first
+- **Don't hardcode channel slugs without fallback** - Use `DefaultChannelSlug` from config
+- **Don't confuse `isAvailable` with `isAvailableForPurchase`** - They check different things (stock vs. date)
