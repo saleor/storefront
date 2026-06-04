@@ -94,6 +94,38 @@ const config = {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+### Reference Architecture
+
+Target layout for catalog routes with Cache Components enabled:
+
+```
+ProductPage (sync export)
+└── Suspense (page skeleton or route loading.tsx)
+    └── ProductShell (await params + cached data ONLY — never searchParams)
+        ├── breadcrumbs, h1, attributes, JSON-LD, LCP preload
+        ├── Suspense → VariantGalleryDynamic (searchParams)
+        └── Suspense → VariantSectionDynamic (searchParams)
+
+Layout shell
+├── Suspense → Header (cached menu data + dynamic cart/user)
+├── <main>{children}</main>          ← no Suspense wrapper on main
+├── Suspense → Footer (cached menus + channels)
+└── Suspense → CartDrawer (cookies, no-cache)
+
+Invalidation: Saleor webhook → revalidateTag(tag, profile) + revalidatePath per channel
+```
+
+**Key files**
+
+| Purpose             | Location                                |
+| ------------------- | --------------------------------------- |
+| Cache manifest      | `src/lib/cache-manifest.ts`             |
+| Catalog fetches     | `src/lib/catalog/*.ts`                  |
+| Menu fetches        | `src/lib/menus/get-menu-data.ts`        |
+| Channel fetches     | `src/lib/channels/get-channels-data.ts` |
+| Revalidation API    | `src/app/api/revalidate/route.ts`       |
+| Cache introspection | `src/app/api/cache-info/route.ts`       |
+
 ### Cache Manifest — Single Source of Truth
 
 All cache profiles are defined in `src/lib/cache-manifest.ts`. This module is imported by:
@@ -118,14 +150,26 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 
 ### Tag Registry
 
-| Tag Pattern         | Profile ID    | Used By                                        | Invalidated When          |
-| ------------------- | ------------- | ---------------------------------------------- | ------------------------- |
-| `product:{slug}`    | `products`    | `getProductData()`                             | Product updated in Saleor |
-| `category:{slug}`   | `categories`  | `getCategoryData()`                            | Category updated          |
-| `collection:{slug}` | `collections` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
-| `navigation`        | `navigation`  | `NavLinks`                                     | Menu structure changed    |
-| `footer-menu`       | `footerMenu`  | `getFooterMenu()`                              | Footer menu changed       |
-| `channels`          | `channels`    | `getChannels()`                                | Channel list changed      |
+| Tag Pattern             | Profile ID    | Used By                                        | Invalidated When          |
+| ----------------------- | ------------- | ---------------------------------------------- | ------------------------- |
+| `product:{slug}`        | `products`    | PDP `getProductData()`                         | Product updated in Saleor |
+| `category:{slug}`       | `categories`  | `getCategoryData()`                            | Category updated          |
+| `collection:{slug}`     | `collections` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
+| `page:{slug}`           | `pages`       | `getPageData()` (CMS)                          | Page updated              |
+| `navigation:{channel}`  | `navigation`  | `getNavbarMenuItems()`                         | Navbar menu changed       |
+| `footer-menu:{channel}` | `footerMenu`  | `getFooterMenuItems()`                         | Footer menu changed       |
+| `channels`              | `channels`    | `getCachedChannelsList()`                      | Channel list changed      |
+
+**Named `cacheLife` tiers** (via `applyCacheProfile`, configured in `next.config.js`):
+
+| Profile ID                  | Tier name  | Typical TTL | Used for                          |
+| --------------------------- | ---------- | ----------- | --------------------------------- |
+| `products`                  | `catalog`  | ~5 min      | Products, categories, collections |
+| `pages`                     | `catalog`  | ~5 min      | CMS pages                         |
+| `navigation` / `footerMenu` | `menus`    | ~1 hour     | Nav + footer menus                |
+| `channels`                  | `channels` | longer      | Channel metadata list             |
+
+Do **not** add fetch-level `revalidate` on GraphQL calls inside `"use cache"` functions — `cacheLife` + webhooks handle freshness.
 
 ### Cache Introspection Endpoint
 
@@ -140,7 +184,73 @@ curl -H "Authorization: Bearer <REVALIDATE_SECRET>" "https://store.com/api/cache
 
 ## Key Patterns
 
-### 1. Suspense Around Dynamic Content
+### 1. Three-Layer Page Model (CRITICAL)
+
+Every catalog route should follow this boundary stack:
+
+1. **Sync page export** — passes `params` / `searchParams` promises through, no awaits at top level.
+2. **Page-level Suspense** — isolates cached data fetch from the layout; use route `loading.tsx` for outer skeletons.
+3. **Shell** — awaits `params` + `"use cache"` data only. Static UI (h1, breadcrumbs, JSON-LD) lives here.
+4. **Dynamic islands** — nested Suspense per runtime concern (`searchParams`, cookies, client routing hooks).
+
+```tsx
+// ✅ CORRECT
+export default function Page(props: PageProps) {
+	return (
+		<Suspense fallback={<PageSkeleton />}>
+			<PageShell params={props.params} searchParams={props.searchParams} />
+		</Suspense>
+	);
+}
+
+async function PageShell({ params, searchParams }) {
+	const { slug, channel } = await params;
+	const product = await getProductData(slug, channel); // "use cache"
+	return (
+		<>
+			<h1>{product.name}</h1>
+			<Suspense fallback={<GallerySkeleton />}>
+				<VariantGalleryDynamic product={product} searchParams={searchParams} />
+			</Suspense>
+		</>
+	);
+}
+```
+
+```tsx
+// ❌ BAD — awaiting searchParams in shell collapses the whole page into a dynamic hole
+async function ProductShell({ searchParams, ... }) {
+	const { variant } = await searchParams; // Dynamic!
+	const product = await getProductData(...);
+}
+```
+
+### 2. Data Layer Conventions
+
+Place `"use cache"` GraphQL fetches in dedicated modules — not inline in page files long-term:
+
+| Layer    | Location                         | Examples                                                      |
+| -------- | -------------------------------- | ------------------------------------------------------------- |
+| Catalog  | `src/lib/catalog/`               | `get-featured-products`, `get-category-data`, `get-page-data` |
+| Menus    | `src/lib/menus/get-menu-data.ts` | `getNavbarMenuItems`, `getFooterMenuItems`                    |
+| Channels | `src/lib/channels/`              | `getCachedChannelsList`                                       |
+
+Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — never raw `cacheLife("minutes")` or manual `cacheTag` strings that drift from the manifest.
+
+**Do not** re-export server cached helpers from barrels that also export client components (e.g. import `ProductGalleryLcp` directly, not via a mixed `pdp/index.ts` barrel).
+
+### 3. Page Patterns by Route Type
+
+| Route                                  | Shell (cached)                                          | Dynamic islands                                                       |
+| -------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Homepage**                           | Sync `<section>` wrapper                                | `FeaturedProducts` in Suspense → `getFeaturedProducts()`              |
+| **PLP** (category/collection/products) | Hero/title from `getCategoryData` / `getCollectionData` | Product grid in nested Suspense (filters/sort via `searchParams`)     |
+| **PDP**                                | `ProductShell`: name, attributes, JSON-LD, preload      | `VariantGalleryDynamic` + `VariantSectionDynamic` (separate Suspense) |
+| **CMS page**                           | Sync page export                                        | `PageContent` in Suspense → `getPageData()`                           |
+
+See `product-pdp.md` for PDP specifics. PLP routes use `loading.tsx` at the route segment.
+
+### 4. Suspense Around Dynamic Content
 
 Any component accessing runtime data must be wrapped in Suspense.
 
@@ -158,10 +268,11 @@ Any component accessing runtime data must be wrapped in Suspense.
 | `cache: "no-cache"` fetches | Always fresh        |
 
 ```tsx
-// Layout wraps children in Suspense
-<main className="flex-1">
-  <Suspense>{props.children}</Suspense>
-</main>
+// Layout: Header/Footer/Cart each in their own Suspense — NOT a wrapper on <main>
+<main className="flex-1">{props.children}</main>
+
+// Route-level loading UI (preferred for page transitions)
+// src/app/[channel]/(main)/categories/[slug]/loading.tsx
 
 // Header wraps NavLinks in Suspense (uses usePathname for active state)
 <Suspense fallback={<NavLinksSkeleton />}>
@@ -169,9 +280,13 @@ Any component accessing runtime data must be wrapped in Suspense.
 </Suspense>
 ```
 
-### 2. Sync Page Shell Pattern (CRITICAL)
+**Do not** use `Suspense fallback={null}` on `<main>` — it prevents route `loading.tsx` from participating and hides useful skeletons.
 
-Page components that use `"use cache"` data must be **synchronous** and wrap their async content in a **dedicated Suspense boundary**. This prevents the cached async work from flowing through the layout's main Suspense, which can cause hydration/reconciliation issues.
+### 5. Sync Page Shell Pattern (CRITICAL)
+
+Page components that use `"use cache"` data must be **synchronous** and wrap async content in a **dedicated Suspense boundary**. This prevents cached async work from flowing through the layout boundary, which can cause hydration/reconciliation issues.
+
+(See [Three-Layer Page Model](#1-three-layer-page-model-critical) above — this is the same rule, repeated here because it is the most common PPR mistake.)
 
 ```tsx
 // ✅ CORRECT - Page is sync, async content has its own Suspense
@@ -186,20 +301,9 @@ export default function Page(props: PageProps) {
 async function PageContent({ params: paramsPromise }) {
 	const params = await paramsPromise;
 	const data = await getCachedData(params.slug, params.channel);
-	return <ProductList products={data} />;
+	return <ProductList products={data} channel={params.channel} />;
 }
 ```
-
-```tsx
-// ❌ BAD - async Page relies on layout's Suspense for streaming
-export default async function Page(props: PageProps) {
-	const params = await props.params;
-	const data = await getCachedData(params.slug, params.channel);
-	return <ProductList products={data} />;
-}
-```
-
-**Why**: When Cache Components are enabled, the boundary between the static shell and streamed content is determined by Suspense boundaries. If the page itself is async and relies on the layout's `<Suspense>{children}</Suspense>`, the reconciliation between the static shell and the streamed RSC payload happens at the layout level, which can cause DOM structure mismatches and memory issues. A dedicated page-level Suspense isolates this boundary.
 
 All page routes in this project follow this pattern:
 
@@ -209,7 +313,7 @@ All page routes in this project follow this pattern:
 - `src/app/[channel]/(main)/collections/[slug]/page.tsx`
 - `src/app/[channel]/(main)/products/[slug]/page.tsx`
 
-### 3. Public vs Authenticated Queries
+### 6. Public vs Authenticated Queries
 
 Two explicit GraphQL helpers:
 
@@ -233,7 +337,7 @@ const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, {
 });
 ```
 
-### 4. Don't Use `searchParams` Inside `"use cache"`
+### 7. Don't Use `searchParams` Inside `"use cache"`
 
 ```typescript
 // ❌ BAD - searchParams is runtime data
@@ -254,7 +358,7 @@ export async function generateMetadata(props) {
 }
 ```
 
-### 5. CSS Order Pattern for Mixed Static/Dynamic Layouts
+### 8. CSS Order Pattern for Mixed Static/Dynamic Layouts
 
 When you need dynamic content to appear **above** static content visually, use CSS `order`:
 
@@ -287,52 +391,6 @@ When you need dynamic content to appear **above** static content visually, use C
 
 This keeps `<h1>` in the static shell for SEO while allowing dynamic content to appear above it.
 
-### 6. GraphQL Auth Defaults
-
-Two explicit GraphQL helpers ensure you always know what data access level you're using:
-
-- `executePublicGraphQL` - Public queries only (products, menus, categories)
-- `executeAuthenticatedGraphQL` - Requires user session cookies (checkout, user data)
-
-This ensures:
-
-- Only publicly visible products are fetched
-- No user cookies in cache scope (safe for `"use cache"`)
-- No "Signature has expired" errors on public pages
-
-```typescript
-import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
-
-// ✅ Public data (menus, products) - no auth, only public data
-const menu = await executePublicGraphQL(MenuDocument, {
-	variables: { slug: "footer" },
-});
-
-// ✅ User data - requires session cookies
-let user = null;
-try {
-	const result = await executeAuthenticatedGraphQL(CurrentUserDocument, {
-		cache: "no-cache",
-	});
-	user = result.me;
-} catch {
-	// Expired token = treat as not logged in
-}
-
-// ✅ Checkout/cart - requires session cookies
-await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
-	variables: { id: checkoutId, productVariantId: variantId },
-	cache: "no-cache",
-});
-
-// ✅ App token (server-side only) - explicit header
-const channels = await executePublicGraphQL(ChannelsListDocument, {
-	headers: {
-		Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-	},
-});
-```
-
 ---
 
 ## Cache Invalidation
@@ -350,15 +408,25 @@ When configured, Saleor sends webhooks on data changes, triggering instant inval
    - `CATEGORY_CREATED`, `CATEGORY_UPDATED`, `CATEGORY_DELETED`
    - `COLLECTION_CREATED`, `COLLECTION_UPDATED`, `COLLECTION_DELETED`
    - `PAGE_CREATED`, `PAGE_UPDATED`, `PAGE_DELETED`
+   - `MENU_CREATED`, `MENU_UPDATED`, `MENU_DELETED`
+   - `MENU_ITEM_CREATED`, `MENU_ITEM_UPDATED`, `MENU_ITEM_DELETED`
 4. Copy the **secret key** to `SALEOR_WEBHOOK_SECRET` env var
 
-**What happens on webhook:**
+**What happens on webhook** (via `src/app/api/revalidate/route.ts`):
 
 ```typescript
-// Product update webhook triggers:
-revalidateTag(`product:${slug}`, "minutes"); // Invalidates "use cache" data
-revalidatePath(`/channel/products/${slug}`); // Invalidates ISR page
+// Product update — tag + path per storefront channel
+revalidateTag(`product:${slug}`, resolveRevalidateCacheLifeProfile("products"));
+for (const channel of await getStorefrontChannelSlugs()) {
+	revalidatePath(`/${channel}/products/${slug}`);
+}
+
+// Menu update — channel-scoped tags (navbar vs footer mapped by menu slug)
+revalidateTag(`navigation:${channel}`, resolveRevalidateCacheLifeProfile("navigation"));
+revalidateTag(`footer-menu:${channel}`, resolveRevalidateCacheLifeProfile("footerMenu"));
 ```
+
+Path revalidation uses `getStorefrontChannelSlugs()` so multi-channel deployments invalidate every allowed channel. See `ui-channels.md` for allowlist configuration.
 
 ### Manual Invalidation
 
@@ -373,9 +441,13 @@ curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
   "https://store.com/api/revalidate?tag=product:blue-hoodie"
 
-# Invalidate navigation (uses "hours" profile)
+# Invalidate navigation for a channel (uses "menus" profile)
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=navigation&profile=hours"
+  "https://store.com/api/revalidate?tag=navigation:default-channel"
+
+# Invalidate footer menu for a channel
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=footer-menu:default-channel"
 ```
 
 ### No Webhooks? TTL Takes Over
@@ -432,12 +504,17 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 
 ## Anti-patterns
 
-❌ **Don't use `cache: "no-cache"` for display pages** - Destroys performance  
-❌ **Don't skip webhook setup in production** - Users see stale prices  
-❌ **Don't access cookies/searchParams inside `"use cache"`** - Will error  
-❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** - Requires cookies  
-❌ **Don't pass `REVALIDATE_SECRET` in query strings** - Always use the `Authorization: Bearer` header  
-❌ **Don't make page components async when using `"use cache"` data** - Use the sync page shell pattern (see Key Pattern #2) to avoid reconciliation issues with the layout's main Suspense boundary
+❌ **Don't use `cache: "no-cache"` for display pages** — Destroys performance  
+❌ **Don't skip webhook setup in production** — Users see stale prices  
+❌ **Don't access cookies/searchParams inside `"use cache"`** — Will error  
+❌ **Don't await `searchParams` in shell components** — Collapses the whole page into a dynamic hole  
+❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** — Requires cookies  
+❌ **Don't add fetch-level `revalidate` inside `"use cache"` functions** — `cacheLife` + webhooks handle freshness  
+❌ **Don't use raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings** — Use `applyCacheProfile(CACHE_PROFILES.*)` from the manifest  
+❌ **Don't wrap `<main>` in Suspense with `fallback={null}`** — Blocks route `loading.tsx` skeletons  
+❌ **Don't make page components async when using `"use cache"` data** — Use the sync page shell pattern  
+❌ **Don't pass `REVALIDATE_SECRET` in query strings** — Use the `Authorization: Bearer` header  
+❌ **Don't re-export server cached helpers from client-mixed barrels** — Import catalog/menu modules directly
 
 ---
 
@@ -493,7 +570,11 @@ revalidateTag(`product:${slug}`); // Remove second argument
 | `src/lib/cache-manifest.ts`                            | Cache profile definitions (single source of truth)                    |
 | `src/app/api/cache-info/route.ts`                      | Cache introspection endpoint for dashboard app                        |
 | `src/app/api/revalidate/route.ts`                      | Webhook endpoint and manual revalidation                              |
-| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | PDP with "use cache"                                                  |
+| `src/lib/catalog/*.ts`                                 | Catalog `"use cache"` fetches (featured, category, collection, page)  |
+| `src/lib/menus/get-menu-data.ts`                       | Navbar + footer menu cached fetches                                   |
+| `src/lib/channels/get-channels-data.ts`                | Channel list cache                                                    |
+| `src/lib/channel-slugs.ts`                             | Storefront channel allowlist resolution                               |
+| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | PDP with ProductShell + dynamic islands                               |
 | `src/app/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                                             |
 | `src/app/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"                                           |
 | `src/app/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                                             |

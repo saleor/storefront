@@ -34,7 +34,7 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 ```
 saleor-paper-storefront/
 ├── SKILL.md              # Overview and quick reference (agents read this first)
-├── AGENTS.md             # Full compiled document (all rules expanded)
+├── AGENTS.md             # Full compiled document (sync from rules/ when material changes)
 ├── README.md             # This file (for humans)
 ├── rules/                # Individual rule files
 │   ├── data-caching.md

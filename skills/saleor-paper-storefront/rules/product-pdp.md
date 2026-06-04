@@ -11,37 +11,23 @@ For variant selection logic specifically, see `product-variants.md`.
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ page.tsx (Server Component)                                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────────┐    ┌────────────────────────────────────┐ │
-│  │ ProductGallery   │    │ Product Info Column                │ │
-│  │ (Client)         │    │                                    │ │
-│  │                  │    │  <h1>Product Name</h1>  ← Static   │ │
-│  │ • Swipe/arrows   │    │                                    │ │
-│  │ • Thumbnails     │    │  ┌────────────────────────────┐   │ │
-│  │ • LCP optimized  │    │  │ ErrorBoundary              │   │ │
-│  │                  │    │  │  ┌──────────────────────┐  │   │ │
-│  │                  │    │  │  │ Suspense             │  │   │ │
-│  │                  │    │  │  │  VariantSection ←────│──│── Dynamic
-│  │                  │    │  │  │  (Server Action)     │  │   │ │
-│  │                  │    │  │  └──────────────────────┘  │   │ │
-│  │                  │    │  └────────────────────────────┘   │ │
-│  │                  │    │                                    │ │
-│  │                  │    │  ProductAttributes  ← Static       │ │
-│  └──────────────────┘    └────────────────────────────────────┘ │
-│                                                                 │
-│  Data: getProductData() with "use cache"  ← Cached 5 min       │
-└─────────────────────────────────────────────────────────────────┘
+ProductPage (sync export)
+└── Suspense → ProductShell (params + getProductData only — never await searchParams)
+    ├── breadcrumbs, h1, attributes, JSON-LD
+    ├── <link rel="preload"> for default gallery LCP image
+    ├── Suspense → VariantGalleryDynamic (searchParams → variant images)
+    └── ErrorBoundary + Suspense → VariantSectionDynamic (searchParams → price, selectors, add-to-cart)
+
+Data: getProductData() with applyCacheProfile(CACHE_PROFILES.products)  ← catalog tier (~5 min)
 ```
 
 ### Key Principles
 
-1. **Product data is cached** - `getProductData()` uses `"use cache"` (5 min)
-2. **Variant section is dynamic** - Reads `searchParams`, streams via Suspense
-3. **Gallery shows variant images** - Changes based on `?variant=` URL param
-4. **Errors are contained** - ErrorBoundary prevents full page crash
+1. **Product data is cached** — `getProductData()` uses `"use cache"` + cache manifest profile
+2. **Shell stays static** — `ProductShell` awaits `params` only; passes `searchParams` promise through
+3. **Gallery and variant section are separate dynamic islands** — each in its own Suspense boundary
+4. **Gallery shows variant images** — `VariantGalleryDynamic` reads `?variant=` from URL
+5. **Errors are contained** — ErrorBoundary around variant section prevents full page crash
 
 ### Data Flow
 
@@ -52,19 +38,16 @@ URL: /us/products/blue-shirt?variant=abc123
                 │
                 ▼
 ┌───────────────────────────────────────────────────────────────────┐
-│ page.tsx                                                          │
+│ ProductPage (sync) → Suspense → ProductShell                      │
 │                                                                   │
-│   1. getProductData("blue-shirt", "us")                           │
-│      └──► "use cache" ──► GraphQL ──► Returns product + variants  │
+│   1. await params → getProductData("blue-shirt", "us")            │
+│      └──► "use cache" + CACHE_PROFILES.products ──► product data  │
 │                                                                   │
-│   2. searchParams.variant = "abc123"                              │
-│      └──► Find variant ──► Get variant.media ──► Gallery images   │
+│   2. Static shell: h1, breadcrumbs, attributes, JSON-LD, preload  │
 │                                                                   │
-│   3. Render page with:                                            │
-│      • Gallery ──────────────────► Shows variant images           │
-│      • <Suspense> ──► VariantSection streams in                   │
-│                       └──► Reads searchParams (makes it dynamic)  │
-│                       └──► Server Action: addToCart()             │
+│   3. Nested Suspense islands (each awaits searchParams):          │
+│      • VariantGalleryDynamic ──► variant.media for gallery        │
+│      • VariantSectionDynamic ──► price, selectors, add-to-cart      │
 └───────────────────────────────────────────────────────────────────┘
                 │
                 ▼
@@ -104,8 +87,9 @@ src/app/[channel]/(main)/products/[slug]/
 └── page.tsx                          # Main PDP page
 
 src/ui/components/pdp/
-├── index.ts                          # Public exports
-├── product-gallery.tsx               # Gallery wrapper
+├── index.ts                          # Public exports (client-safe only)
+├── variant-gallery-dynamic.tsx       # Server: reads searchParams, renders ProductGallery
+├── product-gallery.tsx               # Client: Embla carousel wrapper
 ├── variant-section-dynamic.tsx       # Variant selection + add to cart
 ├── variant-section-error.tsx         # Error fallback (Client Component)
 ├── add-to-cart.tsx                   # Add to cart button
@@ -125,20 +109,29 @@ src/ui/components/ui/
 
 - **Mobile**: Horizontal swipe (Embla Carousel) + dot indicators
 - **Desktop**: Arrow navigation (hover) + thumbnail strip
-- **LCP optimized**: First image server-rendered via `ProductGalleryImage`
-- **Variant-aware**: Shows variant-specific images when selected
+- **LCP**: `<link rel="preload">` in `ProductShell` for default gallery image + `priority` on first carousel image
+- **Variant-aware**: `VariantGalleryDynamic` resolves images from `searchParams.variant`
 
 ### How Variant Images Work
 
 ```tsx
-// In page.tsx
-const selectedVariant = searchParams.variant
-	? product.variants?.find((v) => v.id === searchParams.variant)
-	: null;
-
-const images = getGalleryImages(product, selectedVariant);
+// variant-gallery-dynamic.tsx — searchParams read here, NOT in ProductShell
+export async function VariantGalleryDynamic({ product, searchParams }) {
+	const { variant: variantId } = await searchParams;
+	const selectedVariant = variantId ? product.variants?.find((v) => v.id === variantId) : null;
+	const images = getGalleryImages(product, selectedVariant);
+	return <ProductGallery images={images} productName={product.name} />;
+}
 // Priority: variant.media → product.media → thumbnail
 ```
+
+### LCP Strategy
+
+Keep LCP simple — no hero-in-fallback pattern:
+
+1. **`ProductShell`** emits `<link rel="preload" as="image" fetchPriority="high">` for the default (non-variant) hero URL
+2. **`ProductGallery`** / `ImageCarousel` sets `priority` on the first visible image
+3. Variant-specific images load when the user selects a variant (acceptable trade-off)
 
 ### Customizing Gallery
 
@@ -167,34 +160,35 @@ Use the `onImageClick` callback:
 ### Data Fetching
 
 ```tsx
+import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+
 async function getProductData(slug: string, channel: string) {
 	"use cache";
-	cacheLife("minutes"); // 5 minute cache
-	cacheTag(`product:${slug}`); // For on-demand revalidation
+	applyCacheProfile(CACHE_PROFILES.products, slug);
 
 	return await executePublicGraphQL(ProductDetailsDocument, {
-		variables: { slug, channel },
+		variables: { slug: decodeURIComponent(slug), channel },
 	});
 }
 ```
 
-**Note:** `executePublicGraphQL` fetches only publicly visible data, which is safe inside `"use cache"` functions. For user-specific queries, use `executeAuthenticatedGraphQL` (but NOT inside `"use cache"`).
+**Note:** Do not add fetch-level `revalidate` here — the cache manifest profile + webhooks handle freshness. See `data-caching.md`.
 
 ### What's Cached vs Dynamic
 
-| Part                     | Cached? | Why                            |
-| ------------------------ | ------- | ------------------------------ |
-| Product data             | ✅ Yes  | `"use cache"` directive        |
-| Gallery images           | ✅ Yes  | Derived from cached data       |
-| Product name/description | ✅ Yes  | Static content                 |
-| Variant section          | ❌ No   | Reads `searchParams` (dynamic) |
-| Prices                   | ❌ No   | Part of variant section        |
+| Part                     | Cached? | Why                                         |
+| ------------------------ | ------- | ------------------------------------------- |
+| Product data             | ✅ Yes  | `"use cache"` in `getProductData()`         |
+| h1, breadcrumbs, JSON-LD | ✅ Yes  | Rendered in `ProductShell` from cached data |
+| Default LCP preload URL  | ✅ Yes  | Derived from cached product media           |
+| Gallery (variant images) | ❌ No   | `VariantGalleryDynamic` reads searchParams  |
+| Variant section (price)  | ❌ No   | `VariantSectionDynamic` reads searchParams  |
 
 ### On-Demand Revalidation
 
 ```bash
-# Revalidate specific product
-curl "/api/revalidate?tag=product:my-product-slug"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:my-product-slug"
 ```
 
 ## Error Handling
@@ -336,18 +330,27 @@ pnpm test src/ui/components/pdp  # Run PDP tests
 // See variant-section-error.tsx
 ```
 
-❌ **Don't read searchParams in cached functions**
+❌ **Don't read searchParams in ProductShell or cached functions**
 
 ```tsx
-// ❌ Bad - breaks caching
-async function getProductData(slug: string, searchParams: SearchParams) {
-  "use cache";
-  const variant = searchParams.variant; // Dynamic data in cache!
+// ❌ Bad — collapses entire PDP into dynamic hole
+async function ProductShell({ searchParams, ... }) {
+	const { variant } = await searchParams;
+	const product = await getProductData(...);
 }
 
-// ✅ Good - read searchParams in page, pass result to cached function
-const product = await getProductData(slug, channel);
-const variant = searchParams.variant ? product.variants.find(...) : null;
+// ✅ Good — pass searchParams promise to dynamic islands only
+<Suspense fallback={<GallerySkeleton />}>
+  <VariantGalleryDynamic product={product} searchParams={searchParams} />
+</Suspense>
+```
+
+```tsx
+// ❌ Bad — breaks caching
+async function getProductData(slug: string, searchParams: SearchParams) {
+	"use cache";
+	const variant = searchParams.variant;
+}
 ```
 
 ❌ **Don't use useState for variant selection**
