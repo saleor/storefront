@@ -2,6 +2,7 @@ export { CategoryHero } from "./category-hero";
 export { PageHeader } from "./page-header";
 export { ProductCard, type ProductCardData } from "./product-card";
 export { ProductGrid } from "./product-grid";
+export { ProductsGridSkeleton } from "./products-grid-skeleton";
 export {
 	FilterBar,
 	type SortOption,
