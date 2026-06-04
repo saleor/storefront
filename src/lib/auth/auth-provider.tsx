@@ -69,7 +69,7 @@ export const saleorAuthClient = createSaleorAuthClient({
 
 const makeUrqlClient = () => {
 	const authFetch = (input: RequestInfo | URL, init?: RequestInit) =>
-		saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init);
+		saleorAuthClient.fetchWithAuth(input, init);
 
 	return createClient({
 		url: saleorApiUrl,

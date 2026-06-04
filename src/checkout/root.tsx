@@ -25,7 +25,7 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 		// Build fetch chain: auth -> (monitor with chaos) -> retry -> actual fetch
 		// Chaos is inside retry so failures get retried (tests retry behavior)
 		const authFetch = (input: RequestInfo | URL, init?: RequestInit) =>
-			saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init);
+			saleorAuthClient.fetchWithAuth(input, init);
 
 		const monitoredFetch =
 			process.env.NODE_ENV === "development" ? createMonitoredFetch(authFetch, "checkout") : authFetch;
