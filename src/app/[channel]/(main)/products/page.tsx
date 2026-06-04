@@ -86,7 +86,6 @@ async function ProductsContent({
 			sortBy,
 			filter,
 		},
-		revalidate: 300,
 	});
 
 	if (!result.ok || !result.data.products) {
