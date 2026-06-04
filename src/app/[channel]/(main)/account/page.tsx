@@ -8,15 +8,16 @@ import { accountRoutes } from "@/ui/components/account/routes";
 import { getCurrentUser } from "./get-current-user";
 
 export default async function AccountOverviewPage() {
-	const [user, ordersResult] = await Promise.all([
-		getCurrentUser(),
-		executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
-			variables: { first: 3, after: null },
-			cache: "no-cache",
-		}),
-	]);
+	const user = await getCurrentUser();
 
-	const orders = ordersResult.ok ? ordersResult.data.me?.orders?.edges ?? [] : [];
+	const ordersResult = user
+		? await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
+				variables: { first: 3, after: null },
+				cache: "no-cache",
+			})
+		: null;
+
+	const orders = ordersResult?.ok ? ordersResult.data.me?.orders?.edges ?? [] : [];
 	const defaultAddress = user
 		? user.addresses.find((a) => a.id === user.defaultShippingAddress?.id) ?? user.addresses[0]
 		: null;
