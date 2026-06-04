@@ -27,5 +27,5 @@ async function FeaturedProducts({ params: paramsPromise }: { params: Promise<{ c
 	const { channel } = await paramsPromise;
 	const products = await getFeaturedProducts(channel);
 
-	return <ProductList products={products} />;
+	return <ProductList products={products} channel={channel} />;
 }

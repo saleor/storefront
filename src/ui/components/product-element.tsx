@@ -1,4 +1,4 @@
-import { LinkWithChannel } from "../atoms/link-with-channel";
+import Link from "next/link";
 import { ProductImageWrapper } from "@/ui/atoms/product-image-wrapper";
 
 import type { ProductListItemFragment } from "@/gql/graphql";
@@ -6,12 +6,20 @@ import { formatMoneyRange } from "@/lib/utils";
 
 export function ProductElement({
 	product,
+	channel,
 	loading,
 	priority,
-}: { product: ProductListItemFragment } & { loading: "eager" | "lazy"; priority?: boolean }) {
+}: {
+	product: ProductListItemFragment;
+	channel: string;
+	loading: "eager" | "lazy";
+	priority?: boolean;
+}) {
+	const href = `/${encodeURIComponent(channel)}/products/${encodeURIComponent(product.slug)}`;
+
 	return (
 		<li data-testid="ProductElement">
-			<LinkWithChannel href={`/products/${product.slug}`} key={product.id} prefetch={false}>
+			<Link href={href} prefetch={false}>
 				<div>
 					{product?.thumbnail?.url && (
 						<ProductImageWrapper
@@ -39,7 +47,7 @@ export function ProductElement({
 						</p>
 					</div>
 				</div>
-			</LinkWithChannel>
+			</Link>
 		</li>
 	);
 }

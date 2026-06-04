@@ -1,7 +1,8 @@
 import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
-import { CartProvider, CartDrawerWrapper } from "@/ui/components/cart";
+import { CartDrawerWrapper } from "@/ui/components/cart/cart-drawer-wrapper";
+import { StorefrontProviders } from "@/ui/components/storefront-providers";
 import { brandConfig } from "@/config/brand";
 import { Logo } from "@/ui/components/shared/logo";
 
@@ -81,7 +82,7 @@ export default async function RootLayout(props: {
 	const channel = (await props.params).channel;
 
 	return (
-		<CartProvider>
+		<StorefrontProviders>
 			<Suspense fallback={<HeaderSkeleton />}>
 				<Header channel={channel} />
 			</Suspense>
@@ -94,6 +95,6 @@ export default async function RootLayout(props: {
 			<Suspense fallback={null}>
 				<CartDrawerWrapper channel={channel} />
 			</Suspense>
-		</CartProvider>
+		</StorefrontProviders>
 	);
 }
