@@ -8,8 +8,10 @@ import {
 	resolveCacheProfileForMenuSlug,
 	isKnownStorefrontMenuSlug,
 	extractMenuSlugFromWebhookPayload,
+	extractPageSlugFromWebhookPayload,
 	buildMenuRevalidationTags,
 	planMenuRevalidation,
+	planPageRevalidation,
 } from "./cache-manifest";
 import { PAPER_CACHE_LIFE_PROFILE_NAMES, paperCacheLifeProfiles } from "./cache-life-profiles";
 
@@ -127,6 +129,39 @@ describe("menu revalidation helpers", () => {
 				{ tag: "navigation:us", profile: "menus" },
 				{ tag: "navigation:uk", profile: "menus" },
 			],
+		});
+	});
+});
+
+describe("page revalidation helpers", () => {
+	it("extracts page slug from page webhook payloads", () => {
+		expect(extractPageSlugFromWebhookPayload({ page: { slug: "about-us" } })).toBe("about-us");
+		expect(extractPageSlugFromWebhookPayload({ page: { slug: "" } })).toBeNull();
+		expect(extractPageSlugFromWebhookPayload({ product: { slug: "shirt" } })).toBeNull();
+	});
+
+	it("plans tag + channel paths for CMS pages", () => {
+		expect(planPageRevalidation("about-us", ["us", "uk"], null)).toEqual({
+			action: "revalidate",
+			slug: "about-us",
+			tag: "page:about-us",
+			profile: "catalog",
+			paths: ["/us/pages/about-us", "/uk/pages/about-us"],
+		});
+		expect(planPageRevalidation(undefined, ["us"])).toEqual({
+			action: "skip",
+			reason: "missing_slug",
+		});
+		expect(planPageRevalidation("about-us", [], "default-channel")).toEqual({
+			action: "revalidate",
+			slug: "about-us",
+			tag: "page:about-us",
+			profile: "catalog",
+			paths: ["/default-channel/pages/about-us"],
+		});
+		expect(planPageRevalidation("about-us", [], null)).toEqual({
+			action: "error",
+			reason: "no_channels",
 		});
 	});
 });

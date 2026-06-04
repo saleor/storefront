@@ -193,7 +193,7 @@ Configure Saleor webhooks to invalidate cache immediately when data changes:
 
 1. Create webhook in Saleor Dashboard → Configuration → Webhooks, **or** install the **Paper Storefront** app (registers product, category, collection, and menu webhooks automatically)
 2. Point to `https://your-store.com/api/revalidate`
-3. Subscribe to product/category/collection events; for menus use `MENU_*` / `MENU_ITEM_*` (Paper app forwards `{ menu: { slug } }` for `navbar` and `footer` menus)
+3. Subscribe to product/category/collection/page events; for menus use `MENU_*` / `MENU_ITEM_*` (Paper app forwards `{ menu: { slug } }` for `navbar` and `footer` menus)
 4. Set `SALEOR_WEBHOOK_SECRET` env var
 
 **Manual revalidation** (requires `REVALIDATE_SECRET`):
@@ -201,6 +201,9 @@ Configure Saleor webhooks to invalidate cache immediately when data changes:
 ```bash
 # Single product
 curl "https://your-store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie"
+
+# CMS page (tag only — invalidates getPageData across channels)
+curl "https://your-store.com/api/revalidate?secret=xxx&tag=page:about-us"
 
 # Navigation for one channel (tag or tag + channel query)
 curl "https://your-store.com/api/revalidate?secret=xxx&tag=navigation:us"

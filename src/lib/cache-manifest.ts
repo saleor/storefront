@@ -137,6 +137,20 @@ export function extractMenuSlugFromWebhookPayload(payload: unknown): string | nu
 	return null;
 }
 
+/** Extract page slug from a Saleor page webhook payload. */
+export function extractPageSlugFromWebhookPayload(payload: unknown): string | null {
+	if (!payload || typeof payload !== "object") return null;
+
+	const data = payload as Record<string, unknown>;
+
+	if (data.page && typeof data.page === "object") {
+		const slug = (data.page as Record<string, unknown>).slug;
+		if (typeof slug === "string" && slug.length > 0) return slug;
+	}
+
+	return null;
+}
+
 /** Build channel-scoped menu tags for every storefront channel. */
 export function buildMenuRevalidationTags(
 	menuSlug: string,
@@ -168,6 +182,35 @@ export function planMenuRevalidation(
 	if (tags.length === 0) return { action: "skip", reason: "unknown_menu" };
 
 	return { action: "revalidate", menuSlug, tags };
+}
+
+export type PageRevalidationPlan =
+	| { action: "revalidate"; slug: string; tag: string; profile: CacheLifeProfile; paths: string[] }
+	| { action: "skip"; reason: "missing_slug" }
+	| { action: "error"; reason: "no_channels" };
+
+/** Plan CMS page invalidation — tag is slug-scoped; paths are per storefront channel. */
+export function planPageRevalidation(
+	slug: string | undefined,
+	channels: readonly string[],
+	fallbackChannel?: string | null,
+): PageRevalidationPlan {
+	if (!slug) return { action: "skip", reason: "missing_slug" };
+
+	const channelList = channels.length > 0 ? channels : fallbackChannel ? [fallbackChannel] : [];
+	if (channelList.length === 0) return { action: "error", reason: "no_channels" };
+
+	const paths = channelList
+		.map((channel) => buildPath(CACHE_PROFILES.pages, channel, slug))
+		.filter((path): path is string => path !== null);
+
+	return {
+		action: "revalidate",
+		slug,
+		tag: buildTag(CACHE_PROFILES.pages, slug),
+		profile: CACHE_PROFILES.pages.cacheProfile,
+		paths,
+	};
 }
 
 function normalizeTagParams(params?: string | CacheTagParams): CacheTagParams {

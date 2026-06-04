@@ -349,6 +349,7 @@ When configured, Saleor sends webhooks on data changes, triggering instant inval
    - `PRODUCT_CREATED`, `PRODUCT_UPDATED`, `PRODUCT_DELETED`
    - `CATEGORY_CREATED`, `CATEGORY_UPDATED`, `CATEGORY_DELETED`
    - `COLLECTION_CREATED`, `COLLECTION_UPDATED`, `COLLECTION_DELETED`
+   - `PAGE_CREATED`, `PAGE_UPDATED`, `PAGE_DELETED`
 4. Copy the **secret key** to `SALEOR_WEBHOOK_SECRET` env var
 
 **What happens on webhook:**
@@ -384,6 +385,7 @@ curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
 | Products    | 5 minutes   |
 | Categories  | 5 minutes   |
 | Collections | 5 minutes   |
+| CMS pages   | 5 minutes   |
 | Navigation  | 1 hour      |
 
 ---
