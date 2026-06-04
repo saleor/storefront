@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-import { paperCacheLifeProfiles } from "./src/lib/cache-life-profiles.ts";
+import { paperCacheLifeProfiles } from "./src/lib/cache-life-profiles.data.mjs";
 
 const config = {
 	// Cache Components (Partial Prerendering)
