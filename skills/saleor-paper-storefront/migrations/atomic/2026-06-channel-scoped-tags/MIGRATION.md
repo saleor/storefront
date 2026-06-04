@@ -10,8 +10,11 @@ Scope nav/footer cache tags per channel (`navigation:{channel}`, `footer-menu:{c
 
 ## Prerequisites
 
-- [`2026-06-cache-manifest-v3`](../2026-06-cache-manifest-v3/MIGRATION.md)
-- [`2026-06-menu-data-layer`](../2026-06-menu-data-layer/MIGRATION.md)
+None in manifest — this migration shipped before cache-life and menu-data-layer in upstream git.
+
+If [`2026-06-cache-manifest-v3`](../2026-06-cache-manifest-v3/MIGRATION.md) is not applied yet, port tag patterns onto the fork's current manifest/revalidate code; reconcile with manifest v3 when that migration runs.
+
+If nav/footer still use inline `"use cache"` (menu-data-layer not applied), apply channel-scoped tags at the current fetch sites. [`2026-06-menu-data-layer`](../2026-06-menu-data-layer/MIGRATION.md) will move fetches into `get-menu-data.ts` — ensure channel tags follow the data layer.
 
 ## Optional
 

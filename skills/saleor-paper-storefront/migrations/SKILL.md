@@ -27,7 +27,7 @@ Chronological upgrade prompts for forks of the Saleor Paper storefront. **Rules*
 1. Read [`manifest.json`](manifest.json) for ordered registry and upstream SHAs.
 2. Read repo-root **`paper-version.json`** at the storefront project root.
 3. Compute **pending** migrations: manifest order minus applied/skipped entries.
-4. Never run a migration whose `requires` entries are not applied (skipped optional deps block dependents — confirm with user).
+4. Never run a migration whose `requires` entries are not applied (skipped optional deps block dependents — confirm with user). If blocked, **skip and revisit** in a later pass — see [Manifest order](#manifest-order) below.
 5. Read [`../rules/data-caching.md`](../rules/data-caching.md) for destination patterns.
 
 ## Resolution order (SHA vs detect)
@@ -67,6 +67,18 @@ Skeleton components (`PlpPageLoading`, `GallerySkeleton`, `FeaturedProductsSkele
 ### Optional migrations
 
 When `optional: true` in manifest, **always present** the migration and ask using `skipPrompt`. Record `"skipped": true` and optional `skipReason` in `paper-version.json` if user skips.
+
+## Manifest order
+
+`manifest.json` array order is **upstream ship chronology** (oldest first) — the reverse of the internal changelog in the caching batch doc.
+
+| Field       | Purpose                                            |
+| ----------- | -------------------------------------------------- |
+| Array order | How Paper evolved; narrative for forks catching up |
+| `landedAt`  | Commit timestamp metadata (informational)          |
+| `requires`  | Hard execution dependencies                        |
+
+When manifest order and `requires` conflict (e.g. menu webhooks shipped before menu data layer in git), **respect `requires` at execution time**: skip blocked migrations, continue down the list, then loop until no pending applicable migrations remain.
 
 ## Workflow
 
