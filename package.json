@@ -19,6 +19,7 @@
 		"generate:all": "pnpm run generate && pnpm run generate:checkout",
 		"test": "vitest",
 		"test:run": "vitest run",
+		"typecheck": "tsc --noEmit",
 		"knip": "knip",
 		"prepare": "husky install"
 	},

@@ -69,7 +69,7 @@ export const saleorAuthClient = createSaleorAuthClient({
 });
 
 const makeUrqlClient = () => {
-	const authFetch = wrapFetchWithAuth(saleorAuthClient.fetchWithAuth.bind(saleorAuthClient));
+	const authFetch = wrapFetchWithAuth((input, init) => saleorAuthClient.fetchWithAuth(input, init));
 
 	return createClient({
 		url: saleorApiUrl,

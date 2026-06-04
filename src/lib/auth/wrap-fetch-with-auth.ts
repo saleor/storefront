@@ -1,11 +1,11 @@
+import type { FetchWithAdditionalParams } from "@saleor/auth-sdk";
+
 type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
-type AuthFetchWithAuth = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
-
 /**
- * Bridge standard fetch (RequestInfo | URL) to @saleor/auth-sdk fetchWithAuth.
- * The SDK types input as RequestInfo only; urql and fetch callers pass URL too.
+ * Bridge standard fetch to @saleor/auth-sdk fetchWithAuth (FetchWithAdditionalParams).
+ * Keeps the optional third SDK argument internal; urql only passes input + init.
  */
-export function wrapFetchWithAuth(fetchWithAuth: AuthFetchWithAuth): FetchFn {
-	return (input, init) => fetchWithAuth(input as RequestInfo, init);
+export function wrapFetchWithAuth(fetchWithAuth: FetchWithAdditionalParams): FetchFn {
+	return (input, init) => fetchWithAuth(input, init);
 }
