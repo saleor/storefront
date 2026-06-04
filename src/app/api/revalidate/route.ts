@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
 import { DefaultChannelSlug } from "@/app/config";
-import { getKnownChannelSlugs } from "@/lib/channel-slugs";
+import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import {
 	CACHE_PROFILES,
 	buildTag,
@@ -253,11 +253,11 @@ export async function GET(request: NextRequest) {
 		}
 
 		const channelTagProfiles = getChannelScopedTagProfiles();
-		const channelSlugs = await getKnownChannelSlugs();
+		const channelSlugs = await getStorefrontChannelSlugs();
 		if (channelSlugs.length === 0 && channelTagProfiles.length > 0) {
 			console.warn(
 				"[Revalidate] Full purge: no channel slugs resolved — channel-scoped tags skipped. " +
-					"Set NEXT_PUBLIC_DEFAULT_CHANNEL or SALEOR_APP_TOKEN.",
+					"Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
 			);
 		}
 		for (const p of channelTagProfiles) {

@@ -3,7 +3,14 @@ import { LinkWithChannel } from "../atoms/link-with-channel";
 import { ChannelSelect } from "./channel-select";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
+import {
+	filterToStorefrontChannels,
+	getStaticStorefrontChannelSlugs,
+	needsAsyncChannelDiscovery,
+	shouldFetchChannelMetadata,
+} from "@/config/channels";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
 
@@ -55,9 +62,20 @@ async function getFooterMenu(channel: string) {
 }
 
 export async function Footer({ channel }: { channel: string }) {
-	const [footerLinks, channels] = await Promise.all([getFooterMenu(channel), getChannels()]);
+	const resolvedSlugs = needsAsyncChannelDiscovery()
+		? await getStorefrontChannelSlugs()
+		: getStaticStorefrontChannelSlugs();
+
+	const [footerLinks, channels] = await Promise.all([
+		getFooterMenu(channel),
+		shouldFetchChannelMetadata(resolvedSlugs) ? getChannels() : Promise.resolve(null),
+	]);
 
 	const menuItems = footerLinks?.menu?.items || [];
+	const selectorChannels =
+		channels?.channels && resolvedSlugs.length > 0
+			? filterToStorefrontChannels(channels.channels, resolvedSlugs)
+			: [];
 
 	return (
 		<footer className="bg-foreground text-background">
@@ -177,12 +195,12 @@ export async function Footer({ channel }: { channel: string }) {
 					)}
 				</div>
 
-				{/* Channel selector */}
-				{channels?.channels && (
+				{/* Channel selector — only storefront channels, hidden when single-channel */}
+				{selectorChannels.length > 1 && (
 					<div className="mt-8 text-neutral-400">
 						<label className="flex items-center gap-2 text-sm">
 							<span>Change currency:</span>
-							<ChannelSelect channels={channels.channels} />
+							<ChannelSelect channels={selectorChannels} />
 						</label>
 					</div>
 				)}

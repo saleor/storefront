@@ -1,23 +1,40 @@
 import { type ReactNode } from "react";
-import { getKnownChannelSlugs } from "@/lib/channel-slugs";
+import { notFound } from "next/navigation";
+import { isAllowedStorefrontChannel } from "@/config/channels";
+import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 
 /**
  * Generate static params for channel routes.
  *
- * Uses NEXT_PUBLIC_DEFAULT_CHANNEL as the primary channel.
- * Optionally discovers additional channels via SALEOR_APP_TOKEN (for multi-channel builds).
+ * Uses NEXT_PUBLIC_DEFAULT_CHANNEL as fallback.
+ * Prefer STOREFRONT_CHANNELS allowlist; API discovery is opt-in via STOREFRONT_DISCOVER_CHANNELS.
  */
 export const generateStaticParams = async () => {
-	const channels = await getKnownChannelSlugs();
+	const channels = await getStorefrontChannelSlugs();
 
 	if (channels.length === 0) {
-		console.warn("[Channels] No channels configured. Set NEXT_PUBLIC_DEFAULT_CHANNEL.");
+		console.warn(
+			"[Channels] No channels configured. Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
+		);
 		return [];
 	}
 
 	return channels.map((channel) => ({ channel }));
 };
 
-export default function ChannelLayout({ children }: { children: ReactNode }) {
+export default async function ChannelLayout({
+	children,
+	params,
+}: {
+	children: ReactNode;
+	params: Promise<{ channel: string }>;
+}) {
+	const { channel } = await params;
+	const allowedSlugs = await getStorefrontChannelSlugs();
+
+	if (!isAllowedStorefrontChannel(channel, allowedSlugs)) {
+		notFound();
+	}
+
 	return children;
 }
