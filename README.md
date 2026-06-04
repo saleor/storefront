@@ -93,10 +93,10 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 | **Checkout**         | Multi-step flow with guest/auth support, address selector, international forms    |
 | **Cart**             | Slide-over drawer with real-time updates, quantity editing                        |
 | **Product Pages**    | Multi-attribute variants, image gallery, sticky add-to-cart                       |
-| **Product Listings** | Category & collection pages with pagination                                       |
+| **Product Listings** | Category & collection pages with PPR (cached hero + dynamic filters), pagination  |
 | **Navigation**       | Dynamic menus from Saleor, mobile hamburger                                       |
 | **SEO**              | Metadata, JSON-LD, Open Graph images                                              |
-| **Caching**          | Cache Components (PPR), channel-scoped tags, on-demand revalidation via webhooks  |
+| **Caching**          | Cache Components (PPR), named cacheLife tiers, channel-scoped tags, webhooks      |
 | **Customer Profile** | Account dashboard, address book, order history, password change, account deletion |
 | **Authentication**   | Login, register, password reset, guest checkout                                   |
 | **API Resilience**   | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully   |
@@ -131,13 +131,48 @@ The **display-cached, checkout-live** model ensures fast browsing with accurate 
 
 | Component               | Freshness          | Why                                                               |
 | ----------------------- | ------------------ | ----------------------------------------------------------------- |
-| **Product pages**       | Cached (5 min TTL) | Static shell + dynamic variant islands (PPR)                      |
-| **Category/Collection** | Cached (5 min TTL) | Fast browsing experience                                          |
-| **Navigation / footer** | Cached (~1 hr TTL) | Per-channel tags: `navigation:{channel}`, `footer-menu:{channel}` |
+| **Product pages**       | Cached (`catalog`) | Static shell + dynamic variant islands (PPR)                      |
+| **Category/Collection** | Cached (`catalog`) | Cached hero from params; filters/pagination stream in Suspense    |
+| **Homepage featured**   | Cached (`catalog`) | Sync page shell; product grid streams in nested Suspense          |
+| **Navigation / footer** | Cached (`menus`)   | Per-channel tags: `navigation:{channel}`, `footer-menu:{channel}` |
 | **Cart drawer**         | Always live        | Saleor API with `cache: "no-cache"`                               |
 | **Checkout**            | Always live        | Direct API calls, real-time totals                                |
 
-**PDP pattern:** Product data is fetched inside `"use cache"` using route `params` only. Gallery and variant selection read `searchParams` in nested `<Suspense>` boundaries so the product name, attributes, and JSON-LD stay in the prerendered shell.
+**cacheLife tiers** (see `src/lib/cache-life-profiles.ts`):
+
+| Profile    | Fallback TTL | Used for                                    |
+| ---------- | ------------ | ------------------------------------------- |
+| `catalog`  | ~5 min       | Products, categories, collections, homepage |
+| `menus`    | ~1 hr        | Header nav, footer menu                     |
+| `channels` | ~1 day       | Footer channel metadata                     |
+
+Webhook `revalidateTag(tag, profile)` clears data immediately; TTL is the safety net when webhooks are missing.
+
+### PPR page patterns
+
+Cached GraphQL lives in **`src/lib/catalog/`**, **`src/lib/menus/`**, and **`src/lib/channels/`** — not in layout or page components. Pages are thin orchestrators with nested `<Suspense>` for dynamic islands.
+
+**PDP** — `params` only in the static shell; gallery and variant selection read `searchParams`:
+
+```
+ProductPage (sync)
+└── ProductShell → getProductData "use cache"
+    ├── h1, attributes, JSON-LD, LCP preload
+    ├── Suspense → VariantGalleryDynamic (searchParams)
+    └── Suspense → VariantSectionDynamic (searchParams)
+```
+
+**PLP** (category, collection, all products) — cached hero/metadata from params; filter/sort/pagination in a dynamic grid:
+
+```
+Page
+├── CategoryHero ← getCategoryData "use cache"
+└── Suspense → CategoryProducts (searchParams, always fresh fetch)
+```
+
+**Homepage** — sync `<section>` shell; featured collection grid in nested Suspense.
+
+**Loading UX** — route-level `loading.tsx` files (products, categories, collections) show skeletons during navigation. The main layout does not wrap `{children}` in `Suspense fallback={null}`.
 
 **Cache tags** (see `src/lib/cache-manifest.ts`):
 
@@ -148,14 +183,17 @@ The **display-cached, checkout-live** model ensures fast browsing with accurate 
 | `collection:{slug}`     | Collection updated              |
 | `navigation:{channel}`  | Main menu changed for channel   |
 | `footer-menu:{channel}` | Footer menu changed for channel |
+| `channels`              | Channel list metadata           |
+
+Featured homepage products use tag `collection:featured-products` (same `catalog` profile as collections).
 
 ### Instant Updates with Webhooks
 
 Configure Saleor webhooks to invalidate cache immediately when data changes:
 
-1. Create webhook in Saleor Dashboard → Configuration → Webhooks
+1. Create webhook in Saleor Dashboard → Configuration → Webhooks, **or** install the **Paper Storefront** app (registers product, category, collection, and menu webhooks automatically)
 2. Point to `https://your-store.com/api/revalidate`
-3. Subscribe to `PRODUCT_UPDATED`, `CATEGORY_UPDATED`, `MENU_ITEM_UPDATED`, etc. (or use the **Paper Storefront** app — it registers webhooks automatically)
+3. Subscribe to product/category/collection events; for menus use `MENU_*` / `MENU_ITEM_*` (Paper app forwards `{ menu: { slug } }` for `navbar` and `footer` menus)
 4. Set `SALEOR_WEBHOOK_SECRET` env var
 
 **Manual revalidation** (requires `REVALIDATE_SECRET`):
@@ -164,14 +202,15 @@ Configure Saleor webhooks to invalidate cache immediately when data changes:
 # Single product
 curl "https://your-store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie"
 
-# Navigation for one channel
+# Navigation for one channel (tag or tag + channel query)
+curl "https://your-store.com/api/revalidate?secret=xxx&tag=navigation:us"
 curl "https://your-store.com/api/revalidate?secret=xxx&tag=navigation&channel=us"
 
 # All tags for every storefront channel
 curl "https://your-store.com/api/revalidate?secret=xxx&all=1"
 ```
 
-Without webhooks? TTL handles it—cached data expires naturally after 5 minutes.
+Without webhooks? TTL handles it—cached data expires per the `catalog` / `menus` / `channels` profiles above.
 
 ### Why This Is Safe
 
@@ -258,6 +297,12 @@ src/
 ├── checkout/               # Checkout components & logic
 ├── graphql/                # GraphQL queries
 ├── gql/                    # Generated types (don't edit)
+├── lib/                    # Server utilities & cached data layer
+│   ├── catalog/            # getCategoryData, getCollectionData, getFeaturedProducts
+│   ├── menus/              # getNavbarMenuItems, getFooterMenuItems
+│   ├── channels/           # getCachedChannelsList
+│   ├── cache-manifest.ts   # Tag registry + cacheLife mapping
+│   └── cache-life-profiles.ts
 ├── ui/components/          # UI components
 │   ├── account/            # Customer profile & address book
 │   ├── pdp/                # Product detail page
@@ -331,7 +376,7 @@ The design token system uses CSS custom properties—swap the entire color palet
 Features planned for future development:
 
 - **Filtering logic iteration.** Fetching attributes from API for dynamic product filters.
-- **Paper App.** Iteration on the revalidation logic and supported webhooks, providing a _Preview in storefront_ feature in Saleor Dashboard.
+- **Paper App.** Revalidation webhooks (products, categories, collections, menus) and _Preview in storefront_ in Dashboard.
 - **Opinionated model for standard content.** Moving currently hardcoded stuff like Credibility or Free checkout information to API models.
 
 ---
