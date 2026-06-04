@@ -191,7 +191,7 @@ Featured homepage products use tag `collection:featured-products` (same `catalog
 
 Configure Saleor webhooks to invalidate cache immediately when data changes:
 
-1. Create webhook in Saleor Dashboard → Configuration → Webhooks, **or** install the **Paper Storefront** app (registers product, category, collection, and menu webhooks automatically)
+1. Create webhook in Saleor Dashboard → Configuration → Webhooks, **or** install the **Paper Storefront** app (registers product, category, collection, page, menu, and promotion webhooks automatically)
 2. Point to `https://your-store.com/api/revalidate`
 3. Subscribe to product/category/collection/page events; for menus use `MENU_*` / `MENU_ITEM_*` (Paper app forwards `{ menu: { slug } }` for `navbar` and `footer` menus)
 4. Set `SALEOR_WEBHOOK_SECRET` env var
