@@ -86,9 +86,7 @@ export default async function RootLayout(props: {
 				<Header channel={channel} />
 			</Suspense>
 			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
-				<main className="flex-1">
-					<Suspense fallback={null}>{props.children}</Suspense>
-				</main>
+				<main className="flex-1">{props.children}</main>
 				<Suspense fallback={<FooterSkeleton />}>
 					<Footer channel={channel} />
 				</Suspense>
