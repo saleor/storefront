@@ -1,76 +1,29 @@
 import Link from "next/link";
-import { LinkWithChannel } from "../atoms/link-with-channel";
 import { ChannelSelect } from "./channel-select";
-import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
 import {
 	filterToStorefrontChannels,
 	getStaticStorefrontChannelSlugs,
 	needsAsyncChannelDiscovery,
 	shouldFetchChannelMetadata,
 } from "@/config/channels";
-import { CACHE_PROFILES, applyCacheProfile, FOOTER_MENU_SLUG } from "@/lib/cache-manifest";
+import { getCachedChannelsList } from "@/lib/channels/get-channels-data";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
+import { getFooterMenuItems } from "@/lib/menus/get-menu-data";
+import { FooterMenuColumns } from "./footer-menu-columns";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
-
-// Default footer links when no CMS data is available
-const defaultFooterLinks = {
-	support: [
-		{ label: "Contact Us", href: "/contact" },
-		{ label: "FAQs", href: "/faq" },
-		{ label: "Shipping", href: "/shipping" },
-		{ label: "Returns", href: "/returns" },
-	],
-	company: [
-		{ label: "About", href: "/about" },
-		{ label: "Sustainability", href: "/sustainability" },
-		{ label: "Careers", href: "/careers" },
-		{ label: "Press", href: "/press" },
-	],
-};
-
-/** Cached channels list - rarely changes */
-async function getChannels() {
-	"use cache";
-	applyCacheProfile(CACHE_PROFILES.channels);
-
-	if (!process.env.SALEOR_APP_TOKEN) {
-		return null;
-	}
-
-	const result = await executePublicGraphQL(ChannelsListDocument, {
-		headers: {
-			Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-		},
-	});
-
-	return result.ok ? result.data : null;
-}
-
-/** Cached footer menu */
-async function getFooterMenu(channel: string) {
-	"use cache";
-	applyCacheProfile(CACHE_PROFILES.footerMenu, { channel });
-
-	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: FOOTER_MENU_SLUG, channel },
-	});
-
-	return result.ok ? result.data : null;
-}
 
 export async function Footer({ channel }: { channel: string }) {
 	const resolvedSlugs = needsAsyncChannelDiscovery()
 		? await getStorefrontChannelSlugs()
 		: getStaticStorefrontChannelSlugs();
 
-	const [footerLinks, channels] = await Promise.all([
-		getFooterMenu(channel),
-		shouldFetchChannelMetadata(resolvedSlugs) ? getChannels() : Promise.resolve(null),
+	const [menuItems, channels] = await Promise.all([
+		getFooterMenuItems(channel),
+		shouldFetchChannelMetadata(resolvedSlugs) ? getCachedChannelsList() : Promise.resolve(null),
 	]);
 
-	const menuItems = footerLinks?.menu?.items || [];
+	const footerMenuItems = menuItems ?? [];
 	const selectorChannels =
 		channels?.channels && resolvedSlugs.length > 0
 			? filterToStorefrontChannels(channels.channels, resolvedSlugs)
@@ -91,107 +44,7 @@ export async function Footer({ channel }: { channel: string }) {
 						</p>
 					</div>
 
-					{/* Dynamic menu items from Saleor CMS */}
-					{menuItems.map((item) => (
-						<div key={item.id}>
-							<h4 className="mb-4 text-sm font-medium text-neutral-300">{item.name}</h4>
-							<ul className="space-y-3">
-								{item.children?.map((child) => {
-									if (child.category) {
-										return (
-											<li key={child.id}>
-												<LinkWithChannel
-													href={`/categories/${child.category.slug}`}
-													prefetch={false}
-													className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-												>
-													{child.category.name}
-												</LinkWithChannel>
-											</li>
-										);
-									}
-									if (child.collection) {
-										return (
-											<li key={child.id}>
-												<LinkWithChannel
-													href={`/collections/${child.collection.slug}`}
-													prefetch={false}
-													className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-												>
-													{child.collection.name}
-												</LinkWithChannel>
-											</li>
-										);
-									}
-									if (child.page) {
-										return (
-											<li key={child.id}>
-												<LinkWithChannel
-													href={`/pages/${child.page.slug}`}
-													prefetch={false}
-													className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-												>
-													{child.page.title}
-												</LinkWithChannel>
-											</li>
-										);
-									}
-									if (child.url) {
-										return (
-											<li key={child.id}>
-												<Link
-													href={child.url}
-													prefetch={false}
-													className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-												>
-													{child.name}
-												</Link>
-											</li>
-										);
-									}
-									return null;
-								})}
-							</ul>
-						</div>
-					))}
-
-					{/* Static Support links (if no CMS data) */}
-					{menuItems.length === 0 && (
-						<>
-							<div>
-								<h4 className="mb-4 text-sm font-medium text-neutral-300">Support</h4>
-								<ul className="space-y-3">
-									{defaultFooterLinks.support.map((link) => (
-										<li key={link.href}>
-											<Link
-												href={link.href}
-												prefetch={false}
-												className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-											>
-												{link.label}
-											</Link>
-										</li>
-									))}
-								</ul>
-							</div>
-							<div>
-								<h4 className="mb-4 text-sm font-medium text-neutral-300">Company</h4>
-								<ul className="space-y-3">
-									{defaultFooterLinks.company.map((link) => (
-										<li key={link.href}>
-											<Link
-												href={link.href}
-												prefetch={false}
-												className="text-sm text-neutral-400 transition-colors hover:text-neutral-200"
-											>
-												{link.label}
-											</Link>
-										</li>
-									))}
-								</ul>
-							</div>
-						</>
-					)}
+					<FooterMenuColumns items={footerMenuItems} />
 				</div>
 
 				{/* Channel selector — only storefront channels, hidden when single-channel */}
