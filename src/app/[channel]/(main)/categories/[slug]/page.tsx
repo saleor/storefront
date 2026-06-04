@@ -16,7 +16,6 @@ async function getCategoryData(slug: string, channel: string) {
 
 	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: { slug, channel, first: 1 },
-		revalidate: 300,
 	});
 
 	if (!result.ok) {

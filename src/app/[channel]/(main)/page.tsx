@@ -27,7 +27,6 @@ async function getFeaturedProducts(channel: string) {
 			first: 12,
 			sortBy: { field: ProductOrderField.Collection, direction: OrderDirection.Asc },
 		},
-		revalidate: 300,
 	});
 
 	if (!result.ok) {

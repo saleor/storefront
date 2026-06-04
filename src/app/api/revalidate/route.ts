@@ -8,8 +8,8 @@ import {
 	buildPath,
 	isGlobalTagProfile,
 	getChannelScopedTagProfiles,
-	resolveCacheLifeProfileForTag,
 	resolveManualRevalidateTag,
+	resolveRevalidateProfileForTag,
 	type CacheProfile,
 } from "@/lib/cache-manifest";
 import { revalidateTags } from "@/lib/revalidate-tags";
@@ -291,7 +291,7 @@ export async function GET(request: NextRequest) {
 
 	if (tagParam) {
 		const tag = resolveManualRevalidateTag(tagParam, channelParam);
-		const profile = (profileOverride ?? resolveCacheLifeProfileForTag(tag)) as CacheProfile["cacheProfile"];
+		const profile = resolveRevalidateProfileForTag(tag, profileOverride);
 		console.log(
 			`[Revalidate] Tag: revalidateTag("${tag.replace(
 				/[\r\n]/g,

@@ -55,7 +55,6 @@ async function getFooterMenu(channel: string) {
 
 	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "footer", channel },
-		revalidate: 60 * 60 * 24,
 	});
 
 	return result.ok ? result.data : null;

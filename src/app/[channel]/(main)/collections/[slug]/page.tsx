@@ -16,7 +16,6 @@ async function getCollectionData(slug: string, channel: string) {
 
 	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: { slug, channel, first: 1 },
-		revalidate: 300,
 	});
 
 	if (!result.ok) {

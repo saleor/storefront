@@ -33,7 +33,6 @@ async function getProductData(slug: string, channel: string) {
 			slug: decodeURIComponent(slug),
 			channel,
 		},
-		revalidate: 300,
 	});
 
 	if (!result.ok) {

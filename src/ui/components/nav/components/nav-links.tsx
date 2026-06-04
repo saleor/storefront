@@ -10,7 +10,6 @@ export const NavLinks = async ({ channel }: { channel: string }) => {
 
 	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "navbar", channel },
-		revalidate: 60 * 60, // 1 hour
 	});
 
 	if (!result.ok) {

@@ -1,22 +1,31 @@
 import { cacheLife, cacheTag } from "next/cache";
+import {
+	DEFAULT_PAPER_CACHE_LIFE_PROFILE,
+	type PaperCacheLifeProfile,
+	paperCacheLifeProfileDocs,
+	resolveRevalidateCacheLifeProfile,
+} from "@/lib/cache-life-profiles";
 
 // ============================================================================
 // Cache Profile Definitions — single source of truth
 //
+// **cacheLife profile names** live in src/lib/cache-life-profiles.ts (with docs).
+// This file maps Saleor cache *tags* to those profiles and builds invalidation paths.
+//
 // Imported by:
-//   - Cached functions (for cacheLife/cacheTag calls)
-//   - Revalidation endpoint (for tag/path construction)
-//   - /api/cache-info (to serve the manifest to the dashboard app)
+//   - Cached functions (applyCacheProfile → cacheLife + cacheTag)
+//   - Revalidation endpoint (revalidateTag tag + profile)
+//   - /api/cache-info (manifest for dashboard)
 // ============================================================================
 
-type CacheLifeProfile = "default" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "max";
-
 const UNRESOLVED_PLACEHOLDER = /\{(slug|channel)\}/;
+
+export type CacheLifeProfile = PaperCacheLifeProfile;
 
 export interface CacheProfile {
 	readonly id: string;
 	readonly label: string;
-	/** Next.js cacheLife profile name */
+	/** Paper cacheLife tier — see src/lib/cache-life-profiles.ts */
 	readonly cacheProfile: CacheLifeProfile;
 	/** Tag pattern — use {slug} and/or {channel} placeholders */
 	readonly tagPattern: string;
@@ -33,42 +42,42 @@ const profiles = {
 	products: {
 		id: "products",
 		label: "Product Pages",
-		cacheProfile: "minutes",
+		cacheProfile: "catalog",
 		tagPattern: "product:{slug}",
 		pathPattern: "/{channel}/products/{slug}",
 	},
 	categories: {
 		id: "categories",
 		label: "Category Pages",
-		cacheProfile: "minutes",
+		cacheProfile: "catalog",
 		tagPattern: "category:{slug}",
 		pathPattern: "/{channel}/categories/{slug}",
 	},
 	collections: {
 		id: "collections",
 		label: "Collection Pages",
-		cacheProfile: "minutes",
+		cacheProfile: "catalog",
 		tagPattern: "collection:{slug}",
 		pathPattern: "/{channel}/collections/{slug}",
 	},
 	navigation: {
 		id: "navigation",
 		label: "Navigation Menus",
-		cacheProfile: "hours",
+		cacheProfile: "menus",
 		tagPattern: "navigation:{channel}",
 		pathPattern: null,
 	},
 	footerMenu: {
 		id: "footer-menu",
 		label: "Footer Menu",
-		cacheProfile: "hours",
+		cacheProfile: "menus",
 		tagPattern: "footer-menu:{channel}",
 		pathPattern: null,
 	},
 	channels: {
 		id: "channels",
 		label: "Channel List",
-		cacheProfile: "days",
+		cacheProfile: "channels",
 		tagPattern: "channels",
 		pathPattern: null,
 	},
@@ -109,9 +118,13 @@ function tagPatternToRegExp(pattern: string): RegExp {
 
 /**
  * Resolve the cacheLife profile for a concrete tag string (manual revalidation).
- * Falls back to "minutes" for unknown tags.
+ * Falls back to catalog tier for unknown tags.
  */
 export function resolveCacheLifeProfileForTag(tag: string): CacheLifeProfile {
+	return resolveRevalidateCacheLifeProfile(tag, null, resolveCacheLifeProfileForTagFromManifest);
+}
+
+function resolveCacheLifeProfileForTagFromManifest(tag: string): CacheLifeProfile {
 	for (const profile of CACHE_PROFILE_LIST) {
 		if (isGlobalTagProfile(profile)) {
 			if (tag === profile.tagPattern) return profile.cacheProfile;
@@ -121,7 +134,15 @@ export function resolveCacheLifeProfileForTag(tag: string): CacheLifeProfile {
 			return profile.cacheProfile;
 		}
 	}
-	return "minutes";
+	return DEFAULT_PAPER_CACHE_LIFE_PROFILE;
+}
+
+/** @internal Exported for revalidate route profile override resolution. */
+export function resolveRevalidateProfileForTag(
+	tag: string,
+	profileOverride: string | null | undefined,
+): CacheLifeProfile {
+	return resolveRevalidateCacheLifeProfile(tag, profileOverride, resolveCacheLifeProfileForTagFromManifest);
 }
 
 /**
@@ -154,9 +175,7 @@ export function resolveManualRevalidateTag(tag: string, channel?: string | null)
  * Apply cacheLife + cacheTag for a profile inside a "use cache" function body.
  * Pass `slug` and/or `channel` when the profile's tagPattern contains placeholders.
  *
- * Note: TypeScript cannot resolve cacheLife's overloads when passed a union
- * type, so we cast through `string`. This is safe because CacheLifeProfile
- * only contains valid Next.js built-in profile names.
+ * Profile timings are defined in src/lib/cache-life-profiles.ts (registered in next.config.js).
  */
 export function applyCacheProfile(profile: CacheProfile, params?: string | CacheTagParams) {
 	(cacheLife as (p: string) => void)(profile.cacheProfile);
@@ -195,11 +214,12 @@ export function buildPath(profile: CacheProfile, channel: string, slug?: string)
 // Manifest for /api/cache-info
 // ============================================================================
 
-const MANIFEST_VERSION = 2;
+const MANIFEST_VERSION = 3;
 
 export function buildManifest() {
 	return {
 		version: MANIFEST_VERSION,
+		cacheLifeTiers: paperCacheLifeProfileDocs,
 		profiles: CACHE_PROFILE_LIST.map((p) => ({
 			id: p.id,
 			label: p.label,
