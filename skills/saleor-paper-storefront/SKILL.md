@@ -32,6 +32,7 @@ Reference these guidelines when:
 - Modifying checkout flow or payment integration
 - Editing GraphQL queries or regenerating types
 - Debugging caching, stale content, or revalidation
+- Upgrading a forked shop — see **Migrations** below
 - Creating UI components with design tokens
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
@@ -93,6 +94,18 @@ Each rule file contains:
 - File locations and architecture diagrams
 - Code examples (correct and incorrect patterns)
 - Anti-patterns to avoid
+
+## Migrations (fork upgrades)
+
+Chronological upgrade prompts for forks behind upstream Paper. **Not** for greenfield work — use `rules/` for current patterns.
+
+| Task                   | Location                         |
+| ---------------------- | -------------------------------- |
+| Apply pending upgrades | `migrations/SKILL.md`            |
+| Migration registry     | `migrations/manifest.json`       |
+| Fork baseline          | `paper-version.json` (repo root) |
+
+Trigger phrases: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching", "paper-version".
 
 ## Full Compiled Document
 

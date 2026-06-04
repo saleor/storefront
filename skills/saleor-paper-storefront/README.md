@@ -48,11 +48,26 @@ saleor-paper-storefront/
 │   ├── ui-channels.md
 │   ├── seo-metadata.md
 │   └── dev-investigation.md
+├── migrations/         # Fork upgrade prompts (chronological)
+│   ├── SKILL.md        # Orchestrator — read when upgrading a fork
+│   ├── manifest.json   # Ordered registry + upstream SHAs
+│   └── atomic/         # One folder per migration
 └── references/           # Supporting deep-dive documentation
     ├── variant-state-machine.md
     ├── variant-utils-reference.md
     └── saleor-key-directories.md
 ```
+
+## Upgrading a fork
+
+If you forked Paper and want to catch up with upstream changes (without losing custom styling):
+
+1. Pull latest `skills/saleor-paper-storefront/migrations/` from upstream.
+2. Check repo-root [`paper-version.json`](../../paper-version.json) — lists applied migrations.
+3. Ask your AI agent: **"Apply pending Paper migrations"** — it should read [`migrations/SKILL.md`](migrations/SKILL.md).
+4. Migrations port **architecture and behavior**, not your brand styling. Skeleton structure is ported; existing `classNames` are preserved.
+
+Optional migrations (multi-channel allowlist, menu webhooks) are always presented — confirm skip at runtime.
 
 ## Related Skills
 
