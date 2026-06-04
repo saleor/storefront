@@ -13,6 +13,8 @@ export {
 	TextOption,
 } from "./variant-selection";
 
-// Cache Components - Dynamic variant section with Suspense support
+// Cache Components - Dynamic PDP islands with Suspense support
+export { VariantGalleryDynamic, GallerySkeleton } from "./variant-gallery-dynamic";
 export { VariantSectionDynamic, VariantSectionSkeleton } from "./variant-section-dynamic";
 export { VariantSectionError } from "./variant-section-error";
+export { getGalleryImages, getDefaultGalleryImages, resolveSelectedVariantId } from "./gallery-utils";
