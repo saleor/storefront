@@ -60,6 +60,13 @@ const profiles = {
 		tagPattern: "collection:{slug}",
 		pathPattern: "/{channel}/collections/{slug}",
 	},
+	pages: {
+		id: "pages",
+		label: "CMS Pages",
+		cacheProfile: "catalog",
+		tagPattern: "page:{slug}",
+		pathPattern: "/{channel}/pages/{slug}",
+	},
 	navigation: {
 		id: "navigation",
 		label: "Navigation Menus",

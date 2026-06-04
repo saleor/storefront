@@ -1,20 +1,16 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
-import { PageGetBySlugDocument } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { getPageData } from "@/lib/catalog/get-page-data";
+import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
 
 const parser = edjsHTML();
 
 export const generateMetadata = async (props: { params: Promise<{ slug: string }> }): Promise<Metadata> => {
 	const params = await props.params;
-	const result = await executePublicGraphQL(PageGetBySlugDocument, {
-		variables: { slug: params.slug },
-		revalidate: 60,
-	});
-
-	const page = result.ok ? result.data.page : null;
+	const page = await getPageData(params.slug);
 
 	return {
 		title: `${page?.seoTitle || page?.title || "Page"} · Saleor Storefront example`,
@@ -22,18 +18,24 @@ export const generateMetadata = async (props: { params: Promise<{ slug: string }
 	};
 };
 
-export default async function Page(props: { params: Promise<{ slug: string }> }) {
-	const params = await props.params;
-	const result = await executePublicGraphQL(PageGetBySlugDocument, {
-		variables: { slug: params.slug },
-		revalidate: 60,
-	});
+/**
+ * Sync page shell — CMS content streams inside a Suspense island (Cache Components / PPR).
+ */
+export default function Page(props: { params: Promise<{ slug: string }> }) {
+	return (
+		<Suspense fallback={<PageContentSkeleton />}>
+			<PageContent params={props.params} />
+		</Suspense>
+	);
+}
 
-	if (!result.ok || !result.data.page) {
+async function PageContent({ params: paramsPromise }: { params: Promise<{ slug: string }> }) {
+	const params = await paramsPromise;
+	const page = await getPageData(params.slug);
+
+	if (!page) {
 		notFound();
 	}
-
-	const page = result.data.page;
 
 	const { title, content } = page;
 

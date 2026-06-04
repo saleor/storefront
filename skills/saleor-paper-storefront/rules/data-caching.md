@@ -204,6 +204,7 @@ export default async function Page(props: PageProps) {
 All page routes in this project follow this pattern:
 
 - `src/app/[channel]/(main)/page.tsx` (homepage)
+- `src/app/[channel]/(main)/pages/[slug]/page.tsx` (CMS pages)
 - `src/app/[channel]/(main)/categories/[slug]/page.tsx`
 - `src/app/[channel]/(main)/collections/[slug]/page.tsx`
 - `src/app/[channel]/(main)/products/[slug]/page.tsx`

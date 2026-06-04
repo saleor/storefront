@@ -38,6 +38,7 @@ describe("resolveCacheLifeProfileForTag", () => {
 		expect(resolveCacheLifeProfileForTag("navigation:default-channel")).toBe("menus");
 		expect(resolveCacheLifeProfileForTag("footer-menu:us")).toBe("menus");
 		expect(resolveCacheLifeProfileForTag("product:blue-shirt")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("page:about-us")).toBe("catalog");
 		expect(resolveCacheLifeProfileForTag("channels")).toBe("channels");
 	});
 
