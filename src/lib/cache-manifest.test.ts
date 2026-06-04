@@ -5,6 +5,11 @@ import {
 	resolveCacheLifeProfileForTag,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
+	resolveCacheProfileForMenuSlug,
+	isKnownStorefrontMenuSlug,
+	extractMenuSlugFromWebhookPayload,
+	buildMenuRevalidationTags,
+	planMenuRevalidation,
 } from "./cache-manifest";
 import { PAPER_CACHE_LIFE_PROFILE_NAMES, paperCacheLifeProfiles } from "./cache-life-profiles";
 
@@ -70,5 +75,57 @@ describe("resolveRevalidateProfileForTag", () => {
 
 	it("falls back to tag resolution for unknown overrides", () => {
 		expect(resolveRevalidateProfileForTag("product:foo", "bogus")).toBe("catalog");
+	});
+});
+
+describe("menu revalidation helpers", () => {
+	it("maps storefront menu slugs to cache profiles", () => {
+		expect(isKnownStorefrontMenuSlug("navbar")).toBe(true);
+		expect(isKnownStorefrontMenuSlug("footer")).toBe(true);
+		expect(isKnownStorefrontMenuSlug("sidebar")).toBe(false);
+		expect(resolveCacheProfileForMenuSlug("navbar")).toBe(CACHE_PROFILES.navigation);
+		expect(resolveCacheProfileForMenuSlug("footer")).toBe(CACHE_PROFILES.footerMenu);
+		expect(resolveCacheProfileForMenuSlug("sidebar")).toBeNull();
+	});
+
+	it("extracts menu slug from menu and menuItem webhook payloads", () => {
+		expect(extractMenuSlugFromWebhookPayload({ menu: { slug: "navbar" } })).toBe("navbar");
+		expect(extractMenuSlugFromWebhookPayload({ menuItem: { menu: { slug: "footer" } } })).toBe("footer");
+		expect(extractMenuSlugFromWebhookPayload({ menu: { slug: "" } })).toBeNull();
+		expect(extractMenuSlugFromWebhookPayload({ product: { slug: "shirt" } })).toBeNull();
+	});
+
+	it("builds channel-scoped tags for all storefront channels", () => {
+		expect(buildMenuRevalidationTags("navbar", ["us", "uk"])).toEqual([
+			{ tag: "navigation:us", profile: "menus" },
+			{ tag: "navigation:uk", profile: "menus" },
+		]);
+		expect(buildMenuRevalidationTags("footer", ["default-channel"])).toEqual([
+			{ tag: "footer-menu:default-channel", profile: "menus" },
+		]);
+		expect(buildMenuRevalidationTags("unknown", ["us"])).toEqual([]);
+	});
+
+	it("plans menu revalidation outcomes", () => {
+		expect(planMenuRevalidation(undefined, ["us"])).toEqual({
+			action: "skip",
+			reason: "missing_slug",
+		});
+		expect(planMenuRevalidation("sidebar", ["us"])).toEqual({
+			action: "skip",
+			reason: "unknown_menu",
+		});
+		expect(planMenuRevalidation("navbar", [])).toEqual({
+			action: "error",
+			reason: "no_channels",
+		});
+		expect(planMenuRevalidation("navbar", ["us", "uk"])).toEqual({
+			action: "revalidate",
+			menuSlug: "navbar",
+			tags: [
+				{ tag: "navigation:us", profile: "menus" },
+				{ tag: "navigation:uk", profile: "menus" },
+			],
+		});
 	});
 });

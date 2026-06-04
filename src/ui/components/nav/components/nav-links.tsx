@@ -2,14 +2,14 @@ import Link from "next/link";
 import { NavLink } from "./nav-link";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { MenuGetBySlugDocument } from "@/gql/graphql";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { CACHE_PROFILES, applyCacheProfile, NAVBAR_MENU_SLUG } from "@/lib/cache-manifest";
 
 export const NavLinks = async ({ channel }: { channel: string }) => {
 	"use cache";
 	applyCacheProfile(CACHE_PROFILES.navigation, { channel });
 
 	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "navbar", channel },
+		variables: { slug: NAVBAR_MENU_SLUG, channel },
 	});
 
 	if (!result.ok) {

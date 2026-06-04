@@ -155,7 +155,7 @@ Configure Saleor webhooks to invalidate cache immediately when data changes:
 
 1. Create webhook in Saleor Dashboard → Configuration → Webhooks
 2. Point to `https://your-store.com/api/revalidate`
-3. Subscribe to `PRODUCT_UPDATED`, `CATEGORY_UPDATED`, etc.
+3. Subscribe to `PRODUCT_UPDATED`, `CATEGORY_UPDATED`, `MENU_ITEM_UPDATED`, etc. (or use the **Paper Storefront** app — it registers webhooks automatically)
 4. Set `SALEOR_WEBHOOK_SECRET` env var
 
 **Manual revalidation** (requires `REVALIDATE_SECRET`):

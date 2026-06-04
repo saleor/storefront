@@ -9,7 +9,7 @@ import {
 	needsAsyncChannelDiscovery,
 	shouldFetchChannelMetadata,
 } from "@/config/channels";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { CACHE_PROFILES, applyCacheProfile, FOOTER_MENU_SLUG } from "@/lib/cache-manifest";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import { CopyrightText } from "./copyright-text";
 import { Logo } from "./shared/logo";
@@ -54,7 +54,7 @@ async function getFooterMenu(channel: string) {
 	applyCacheProfile(CACHE_PROFILES.footerMenu, { channel });
 
 	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "footer", channel },
+		variables: { slug: FOOTER_MENU_SLUG, channel },
 	});
 
 	return result.ok ? result.data : null;

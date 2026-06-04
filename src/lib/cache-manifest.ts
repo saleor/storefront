@@ -87,6 +87,82 @@ export const CACHE_PROFILES = profiles;
 
 export const CACHE_PROFILE_LIST = Object.values(profiles);
 
+/** Saleor menu slugs used by cached layout components — keep in sync with saleor-paper-app storefront-menus.ts */
+export const NAVBAR_MENU_SLUG = "navbar" as const;
+export const FOOTER_MENU_SLUG = "footer" as const;
+
+/** Saleor menu slugs fetched by the storefront → cache profile for invalidation. */
+export const STOREFRONT_MENU_SLUGS = {
+	[NAVBAR_MENU_SLUG]: profiles.navigation,
+	[FOOTER_MENU_SLUG]: profiles.footerMenu,
+} as const satisfies Record<string, CacheProfile>;
+
+export type StorefrontMenuSlug = keyof typeof STOREFRONT_MENU_SLUGS;
+
+export function resolveCacheProfileForMenuSlug(menuSlug: string): CacheProfile | null {
+	if (!isKnownStorefrontMenuSlug(menuSlug)) return null;
+	return STOREFRONT_MENU_SLUGS[menuSlug];
+}
+
+export function isKnownStorefrontMenuSlug(menuSlug: string): menuSlug is StorefrontMenuSlug {
+	return menuSlug in STOREFRONT_MENU_SLUGS;
+}
+
+/** Extract menu slug from a Saleor menu or menu-item webhook payload. */
+export function extractMenuSlugFromWebhookPayload(payload: unknown): string | null {
+	if (!payload || typeof payload !== "object") return null;
+
+	const data = payload as Record<string, unknown>;
+
+	if (data.menu && typeof data.menu === "object") {
+		const slug = (data.menu as Record<string, unknown>).slug;
+		if (typeof slug === "string" && slug.length > 0) return slug;
+	}
+
+	if (data.menuItem && typeof data.menuItem === "object") {
+		const menu = (data.menuItem as Record<string, unknown>).menu;
+		if (menu && typeof menu === "object") {
+			const slug = (menu as Record<string, unknown>).slug;
+			if (typeof slug === "string" && slug.length > 0) return slug;
+		}
+	}
+
+	return null;
+}
+
+/** Build channel-scoped menu tags for every storefront channel. */
+export function buildMenuRevalidationTags(
+	menuSlug: string,
+	channels: readonly string[],
+): Array<{ tag: string; profile: CacheLifeProfile }> {
+	const profile = resolveCacheProfileForMenuSlug(menuSlug);
+	if (!profile || channels.length === 0) return [];
+
+	return channels.map((channel) => ({
+		tag: buildTag(profile, { channel }),
+		profile: profile.cacheProfile,
+	}));
+}
+
+export type MenuRevalidationPlan =
+	| { action: "revalidate"; menuSlug: string; tags: Array<{ tag: string; profile: CacheLifeProfile }> }
+	| { action: "skip"; reason: "missing_slug" | "unknown_menu" }
+	| { action: "error"; reason: "no_channels" };
+
+/** Pure planner for menu webhook invalidation — keeps route handler thin and testable. */
+export function planMenuRevalidation(
+	menuSlug: string | undefined,
+	channels: readonly string[],
+): MenuRevalidationPlan {
+	if (!menuSlug) return { action: "skip", reason: "missing_slug" };
+	if (channels.length === 0) return { action: "error", reason: "no_channels" };
+
+	const tags = buildMenuRevalidationTags(menuSlug, channels);
+	if (tags.length === 0) return { action: "skip", reason: "unknown_menu" };
+
+	return { action: "revalidate", menuSlug, tags };
+}
+
 function normalizeTagParams(params?: string | CacheTagParams): CacheTagParams {
 	if (typeof params === "string") {
 		return { slug: params };

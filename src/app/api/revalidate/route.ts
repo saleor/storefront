@@ -6,8 +6,10 @@ import {
 	CACHE_PROFILES,
 	buildTag,
 	buildPath,
+	extractMenuSlugFromWebhookPayload,
 	isGlobalTagProfile,
 	getChannelScopedTagProfiles,
+	planMenuRevalidation,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
 	type CacheProfile,
@@ -21,7 +23,7 @@ import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/
  * Configure in Saleor Dashboard:
  * 1. Go to Configuration → Webhooks
  * 2. Create webhook pointing to: https://your-site.com/api/revalidate
- * 3. Select events: PRODUCT_UPDATED, CATEGORY_UPDATED, etc.
+ * 3. Select events: PRODUCT_UPDATED, CATEGORY_UPDATED, MENU_ITEM_UPDATED, etc.
  * 4. Copy the secret key and set as SALEOR_WEBHOOK_SECRET env var
  *
  * Security:
@@ -34,13 +36,18 @@ import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/
 // ============================================================================
 
 function parseWebhookPayload(payload: unknown): {
-	type: "product" | "category" | "collection" | "unknown";
+	type: "product" | "category" | "collection" | "menu" | "unknown";
 	slug?: string;
 	channel?: string;
 	categorySlug?: string;
 } {
 	if (!payload || typeof payload !== "object") {
 		return { type: "unknown" };
+	}
+
+	const menuSlug = extractMenuSlugFromWebhookPayload(payload);
+	if (menuSlug) {
+		return { type: "menu", slug: menuSlug };
 	}
 
 	const data = payload as Record<string, unknown>;
@@ -135,6 +142,40 @@ export async function POST(request: NextRequest) {
 
 		const { type, slug, channel, categorySlug } = parseWebhookPayload(payload);
 
+		const revalidatedPaths: string[] = [];
+		const tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }> = [];
+
+		if (type === "menu") {
+			const plan = planMenuRevalidation(slug, await getStorefrontChannelSlugs());
+
+			if (plan.action === "error") {
+				console.warn(
+					"[Revalidate] Menu webhook: no storefront channels resolved. " +
+						"Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
+				);
+				return Response.json({ error: "No storefront channels configured" }, { status: 400 });
+			}
+
+			if (plan.action === "skip") {
+				if (plan.reason === "missing_slug") {
+					console.warn("[Revalidate] Menu webhook missing slug");
+				} else {
+					console.log(`[Revalidate] Ignoring unknown menu slug: ${slug?.replace(/[\r\n]/g, "") ?? ""}`);
+				}
+				return Response.json({ paths: [], tags: [], success: true, skipped: true, reason: plan.reason });
+			}
+
+			tagEntries.push(...plan.tags);
+			const revalidatedTags = await revalidateTags(tagEntries);
+			console.log("[Revalidate] Success:", {
+				type,
+				slug: plan.menuSlug.replace(/[\r\n]/g, ""),
+				paths: revalidatedPaths,
+				tags: revalidatedTags.map((t) => t.replace(/[\r\n]/g, "")),
+			});
+			return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
+		}
+
 		const targetChannel = channel || DefaultChannelSlug;
 		if (!targetChannel) {
 			return Response.json(
@@ -142,8 +183,6 @@ export async function POST(request: NextRequest) {
 				{ status: 400 },
 			);
 		}
-		const revalidatedPaths: string[] = [];
-		const tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }> = [];
 
 		switch (type) {
 			case "product":
@@ -209,6 +248,10 @@ export async function POST(request: NextRequest) {
  *
  * @example Tag-based revalidation:
  * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=product:my-product"
+ *
+ * @example Menu webhook (Paper app or direct Saleor subscription):
+ * curl -X POST -H "Authorization: Bearer <token>" -H "Content-Type: application/json" \
+ *   -d '{"menu":{"slug":"navbar"}}' "https://store.com/api/revalidate"
  *
  * @example Channel-scoped tag (navigation, footer menu):
  * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=navigation:default-channel"
