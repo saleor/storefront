@@ -1,7 +1,18 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
 import { DefaultChannelSlug } from "@/app/config";
-import { CACHE_PROFILES, buildTag, buildPath } from "@/lib/cache-manifest";
+import { getKnownChannelSlugs } from "@/lib/channel-slugs";
+import {
+	CACHE_PROFILES,
+	buildTag,
+	buildPath,
+	isGlobalTagProfile,
+	getChannelScopedTagProfiles,
+	resolveCacheLifeProfileForTag,
+	resolveManualRevalidateTag,
+	type CacheProfile,
+} from "@/lib/cache-manifest";
+import { revalidateTags } from "@/lib/revalidate-tags";
 import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
 /**
@@ -84,15 +95,13 @@ function parseWebhookPayload(payload: unknown): {
 // ============================================================================
 
 function revalidateProfile(
-	profile: (typeof CACHE_PROFILES)[keyof typeof CACHE_PROFILES],
+	profile: CacheProfile,
 	channel: string,
 	slug: string,
-	tags: string[],
+	tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }>,
 	paths: string[],
 ) {
-	const tag = buildTag(profile, slug);
-	revalidateTag(tag, profile.cacheProfile);
-	tags.push(tag);
+	tagEntries.push({ tag: buildTag(profile, { slug, channel }), profile: profile.cacheProfile });
 
 	const path = buildPath(profile, channel, slug);
 	if (path) {
@@ -134,12 +143,12 @@ export async function POST(request: NextRequest) {
 			);
 		}
 		const revalidatedPaths: string[] = [];
-		const revalidatedTags: string[] = [];
+		const tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }> = [];
 
 		switch (type) {
 			case "product":
 				if (slug) {
-					revalidateProfile(CACHE_PROFILES.products, targetChannel, slug, revalidatedTags, revalidatedPaths);
+					revalidateProfile(CACHE_PROFILES.products, targetChannel, slug, tagEntries, revalidatedPaths);
 				}
 				revalidatePath(`/${targetChannel}/products`);
 				revalidatedPaths.push(`/${targetChannel}/products`);
@@ -149,7 +158,7 @@ export async function POST(request: NextRequest) {
 						CACHE_PROFILES.categories,
 						targetChannel,
 						categorySlug,
-						revalidatedTags,
+						tagEntries,
 						revalidatedPaths,
 					);
 				}
@@ -157,25 +166,13 @@ export async function POST(request: NextRequest) {
 
 			case "category":
 				if (slug) {
-					revalidateProfile(
-						CACHE_PROFILES.categories,
-						targetChannel,
-						slug,
-						revalidatedTags,
-						revalidatedPaths,
-					);
+					revalidateProfile(CACHE_PROFILES.categories, targetChannel, slug, tagEntries, revalidatedPaths);
 				}
 				break;
 
 			case "collection":
 				if (slug) {
-					revalidateProfile(
-						CACHE_PROFILES.collections,
-						targetChannel,
-						slug,
-						revalidatedTags,
-						revalidatedPaths,
-					);
+					revalidateProfile(CACHE_PROFILES.collections, targetChannel, slug, tagEntries, revalidatedPaths);
 				}
 				break;
 
@@ -183,6 +180,8 @@ export async function POST(request: NextRequest) {
 				revalidatePath(`/${targetChannel}/products`);
 				revalidatedPaths.push(`/${targetChannel}/products`);
 		}
+
+		const revalidatedTags = await revalidateTags(tagEntries);
 
 		const sanitizedSlug = slug?.replace(/[\r\n]/g, "") ?? "";
 		const sanitizedPaths = revalidatedPaths.map((s) => s.replace(/[\r\n]/g, ""));
@@ -211,6 +210,10 @@ export async function POST(request: NextRequest) {
  * @example Tag-based revalidation:
  * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=product:my-product"
  *
+ * @example Channel-scoped tag (navigation, footer menu):
+ * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=navigation:default-channel"
+ * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?tag=navigation&channel=default-channel"
+ *
  * @example Both at once:
  * curl -H "Authorization: Bearer <token>" "https://store.com/api/revalidate?path=/default-channel/products/my-product&tag=product:my-product"
  *
@@ -225,10 +228,12 @@ export async function GET(request: NextRequest) {
 
 	const searchParams = request.nextUrl.searchParams;
 	const path = searchParams.get("path");
-	const tag = searchParams.get("tag");
+	const tagParam = searchParams.get("tag");
+	const channelParam = searchParams.get("channel");
 	const all = searchParams.get("all");
+	const profileOverride = searchParams.get("profile");
 
-	if (!path && !tag && !all) {
+	if (!path && !tagParam && !all) {
 		return Response.json({ error: "Provide path, tag, and/or all parameter" }, { status: 400 });
 	}
 
@@ -239,11 +244,29 @@ export async function GET(request: NextRequest) {
 		revalidatePath("/", "layout");
 		revalidatedPaths.push("/ (all routes)");
 
-		const fixedTagProfiles = Object.values(CACHE_PROFILES).filter((p) => !p.tagPattern.includes("{slug}"));
-		for (const p of fixedTagProfiles) {
-			revalidateTag(p.tagPattern, p.cacheProfile);
-			revalidatedTags.push(p.tagPattern);
+		const tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }> = [];
+
+		for (const p of Object.values(CACHE_PROFILES)) {
+			if (isGlobalTagProfile(p)) {
+				tagEntries.push({ tag: buildTag(p), profile: p.cacheProfile });
+			}
 		}
+
+		const channelTagProfiles = getChannelScopedTagProfiles();
+		const channelSlugs = await getKnownChannelSlugs();
+		if (channelSlugs.length === 0 && channelTagProfiles.length > 0) {
+			console.warn(
+				"[Revalidate] Full purge: no channel slugs resolved — channel-scoped tags skipped. " +
+					"Set NEXT_PUBLIC_DEFAULT_CHANNEL or SALEOR_APP_TOKEN.",
+			);
+		}
+		for (const p of channelTagProfiles) {
+			for (const channel of channelSlugs) {
+				tagEntries.push({ tag: buildTag(p, { channel }), profile: p.cacheProfile });
+			}
+		}
+
+		revalidatedTags.push(...(await revalidateTags(tagEntries)));
 
 		const slugProfiles = Object.values(CACHE_PROFILES)
 			.filter((p) => p.tagPattern.includes("{slug}"))
@@ -253,8 +276,8 @@ export async function GET(request: NextRequest) {
 			"[Revalidate] Full purge:",
 			'revalidatePath("/", "layout") invalidates all routes (including slug-based:',
 			slugProfiles.join(", ") + ").",
-			"Also revalidated fixed tags:",
-			fixedTagProfiles.map((p) => p.tagPattern).join(", "),
+			"Also revalidated tags:",
+			revalidatedTags.join(", ") || "(none)",
 		);
 	}
 
@@ -266,16 +289,16 @@ export async function GET(request: NextRequest) {
 		revalidatedPaths.push(path);
 	}
 
-	if (tag) {
-		const profile = searchParams.get("profile") || "minutes";
+	if (tagParam) {
+		const tag = resolveManualRevalidateTag(tagParam, channelParam);
+		const profile = (profileOverride ?? resolveCacheLifeProfileForTag(tag)) as CacheProfile["cacheProfile"];
 		console.log(
 			`[Revalidate] Tag: revalidateTag("${tag.replace(
 				/[\r\n]/g,
 				"",
 			)}", "${profile}") — invalidates "use cache" entries with this tag`,
 		);
-		revalidateTag(tag, profile);
-		revalidatedTags.push(tag);
+		revalidatedTags.push(...(await revalidateTags([{ tag, profile }])));
 	}
 
 	console.log("[Revalidate] Done:", { paths: revalidatedPaths, tags: revalidatedTags });

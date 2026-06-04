@@ -44,7 +44,7 @@ async function getChannels() {
 /** Cached footer menu */
 async function getFooterMenu(channel: string) {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.footerMenu);
+	applyCacheProfile(CACHE_PROFILES.footerMenu, { channel });
 
 	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
 		variables: { slug: "footer", channel },
