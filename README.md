@@ -349,7 +349,7 @@ REVALIDATE_SECRET=                           # Manual cache invalidation (GET /a
 SALEOR_WEBHOOK_SECRET=                       # Webhook HMAC verification
 SALEOR_APP_TOKEN=                            # Server-side: footer channel metadata (never exposed to client)
 STOREFRONT_DISCOVER_CHANNELS=true            # Opt-in: discover ALL active Saleor channels from API
-                                             # (not recommended for large catalogs; prefer STOREFRONT_CHANNELS)
+                                             # (not recommended when Saleor has many channels; prefer STOREFRONT_CHANNELS)
 ```
 
 **Channel resolution order** (`getStorefrontChannelSlugs`):
