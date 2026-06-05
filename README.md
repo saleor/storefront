@@ -7,7 +7,7 @@
 <div align="center">
 <img width="180" height="180" alt="apple-touch-icon-dark" src="https://github.com/user-attachments/assets/5327c1d3-86eb-4e5b-811a-81e8a5561d19" />
   <h1>Paper</h1>
-  <p>A minimal, production-ready storefront template for <a href="https://github.com/saleor/saleor">Saleor</a>.<br/>Clean as a blank page — built to ship.</p>
+  <p>A minimal, production-ready storefront template for <a href="https://github.com/saleor/saleor">Saleor</a>.<br/>Clean as a blank page — built to ship with agents and humans.</p>
 </div>
 
 <br/>
@@ -20,8 +20,6 @@
   <a href="https://docs.saleor.io/docs/3.x">Docs</a>
   <span> · </span>
   <a href="https://saleor.io/discord">Discord</a>
-  <span> · </span>
-  <a href="https://saleor.io/roadmap">Roadmap</a>
 </div>
 
 <br/>
