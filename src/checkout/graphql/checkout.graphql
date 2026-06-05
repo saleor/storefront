@@ -63,22 +63,20 @@ fragment CheckoutFragment on Checkout {
 	availablePaymentGateways {
 		...PaymentGatewayFragment
 	}
-	deliveryMethod {
-		... on ShippingMethod {
+	delivery {
+		id
+		shippingMethod {
 			id
-		}
-		... on Warehouse {
-			id
+			name
 		}
 	}
-	shippingMethods {
-		id
-		name
-		price {
-			...Money
+	problems {
+		... on CheckoutProblemDeliveryMethodStale {
+			__typename
 		}
-		maximumDeliveryDays
-		minimumDeliveryDays
+		... on CheckoutProblemDeliveryMethodInvalid {
+			__typename
+		}
 	}
 	totalPrice {
 		gross {
@@ -334,6 +332,29 @@ mutation checkoutComplete($checkoutId: ID!) {
 		}
 		order {
 			id
+		}
+	}
+}
+
+mutation deliveryOptionsCalculate($id: ID!) {
+	deliveryOptionsCalculate(id: $id) {
+		deliveries {
+			id
+			shippingMethod {
+				id
+				name
+				active
+				price {
+					...Money
+				}
+				minimumDeliveryDays
+				maximumDeliveryDays
+			}
+		}
+		errors {
+			field
+			message
+			code
 		}
 	}
 }

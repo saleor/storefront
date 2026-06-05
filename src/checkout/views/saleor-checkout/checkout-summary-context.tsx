@@ -56,15 +56,12 @@ export function formatAddressLine(address: CheckoutFragment["shippingAddress"]):
 
 /** Get shipping method display string */
 export function formatShippingMethod(checkout: CheckoutFragment): string {
-	const deliveryMethod = checkout.deliveryMethod;
-	const methodId = deliveryMethod?.__typename === "ShippingMethod" ? deliveryMethod.id : undefined;
-	const method = checkout.shippingMethods?.find((m) => m.id === methodId);
-
-	if (!method) return "—";
+	const delivery = checkout.delivery;
+	if (!delivery?.shippingMethod) return "—";
 
 	const priceStr = formatShippingPrice(checkout.shippingPrice?.gross);
 
-	return `${method.name}${priceStr ? ` · ${priceStr}` : ""}`;
+	return `${delivery.shippingMethod.name}${priceStr ? ` · ${priceStr}` : ""}`;
 }
 
 /** Build standard summary rows for shipping step */
