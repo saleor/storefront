@@ -7,7 +7,7 @@
 <div align="center">
 <img width="180" height="180" alt="apple-touch-icon-dark" src="https://github.com/user-attachments/assets/5327c1d3-86eb-4e5b-811a-81e8a5561d19" />
   <h1>Paper</h1>
-  <p>A minimal, production-ready storefront template for <a href="https://github.com/saleor/saleor">Saleor</a>.<br/>Clean as a blank page — built to ship.</p>
+  <p>A minimal, production-ready storefront template for <a href="https://github.com/saleor/saleor">Saleor</a>.<br/>Clean as a blank page — built to ship with agents and humans.</p>
 </div>
 
 <br/>
@@ -20,8 +20,6 @@
   <a href="https://docs.saleor.io/docs/3.x">Docs</a>
   <span> · </span>
   <a href="https://saleor.io/discord">Discord</a>
-  <span> · </span>
-  <a href="https://saleor.io/roadmap">Roadmap</a>
 </div>
 
 <br/>
@@ -71,7 +69,7 @@ Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
 - **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 13 task-specific rules covering GraphQL, caching, variant selection, checkout, and more
-- **[`.agents/skills/`](.agents/skills/)** — Installed community skills (Vercel React best practices, composition patterns)
+- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor API patterns; install additional skills (React best practices, composition patterns) via `npx skills add`
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
 Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase is designed to help them help you.
@@ -88,18 +86,19 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ## What's in the Box
 
-| Feature              | Description                                                                       |
-| -------------------- | --------------------------------------------------------------------------------- |
-| **Checkout**         | Multi-step flow with guest/auth support, address selector, international forms    |
-| **Cart**             | Slide-over drawer with real-time updates, quantity editing                        |
-| **Product Pages**    | Multi-attribute variants, image gallery, sticky add-to-cart                       |
-| **Product Listings** | Category & collection pages with PPR (cached hero + dynamic filters), pagination  |
-| **Navigation**       | Dynamic menus from Saleor, mobile hamburger                                       |
-| **SEO**              | Metadata, JSON-LD, Open Graph images                                              |
-| **Caching**          | Cache Components (PPR), named cacheLife tiers, channel-scoped tags, webhooks      |
-| **Customer Profile** | Account dashboard, address book, order history, password change, account deletion |
-| **Authentication**   | Login, register, password reset, guest checkout                                   |
-| **API Resilience**   | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully   |
+| Feature                    | Description                                                                                         |
+| -------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Checkout**               | Multi-step flow with guest/auth support, address selector, international forms                      |
+| **Cart**                   | Slide-over drawer with real-time updates, quantity editing                                          |
+| **Product Pages**          | Multi-attribute variants, image gallery, sticky add-to-cart                                         |
+| **Product Listings**       | Category & collection pages with PPR (cached hero + dynamic filters), pagination                    |
+| **Navigation**             | Dynamic menus from Saleor, mobile hamburger                                                         |
+| **SEO**                    | Metadata, JSON-LD, Open Graph images                                                                |
+| **Caching**                | Cache Components (PPR), named cacheLife tiers, channel-scoped tags, webhooks                        |
+| **Saleor Cloud Paper app** | Saleor Cloud only — Dashboard extension for cache invalidation webhooks and _Preview in storefront_ |
+| **Customer Profile**       | Account dashboard, address book, order history, password change, account deletion                   |
+| **Authentication**         | Login, register, password reset, guest checkout                                                     |
+| **API Resilience**         | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully                     |
 
 ---
 
@@ -189,11 +188,13 @@ Featured homepage products use tag `collection:featured-products` (same `catalog
 
 ### Instant Updates with Webhooks
 
-Configure Saleor webhooks to invalidate cache immediately when data changes:
+**Saleor Cloud (recommended):** Install the [**Saleor Cloud Paper app**](https://github.com/saleor/saleor-paper-app) from Dashboard → Extensions. Available on Saleor Cloud only for now. It registers revalidation webhooks for products, categories, collections, pages, menus, and promotions; discovers cache tags via `/api/cache-info`; and adds _Preview in storefront_ on product pages in Dashboard.
 
-1. Create webhook in Saleor Dashboard → Configuration → Webhooks, **or** install the **Paper Storefront** app (registers product, category, collection, page, menu, and promotion webhooks automatically)
+**Self-hosted / manual setup:**
+
+1. Create webhooks in Saleor Dashboard → Configuration → Webhooks
 2. Point to `https://your-store.com/api/revalidate`
-3. Subscribe to product/category/collection/page events; for menus use `MENU_*` / `MENU_ITEM_*` (Paper app forwards `{ menu: { slug } }` for `navbar` and `footer` menus)
+3. Subscribe to product/category/collection/page events; for menus use `MENU_*` / `MENU_ITEM_*` and include `{ menu: { slug } }` for `navbar` and `footer` menus
 4. Set `SALEOR_WEBHOOK_SECRET` env var
 
 **Manual revalidation** (requires `REVALIDATE_SECRET`):
@@ -321,12 +322,16 @@ If you're working with AI coding assistants, point them to:
 
 - **`AGENTS.md`** — Architecture, commands, gotchas
 - **`skills/saleor-paper-storefront/`** — 13 project-specific rules (GraphQL, caching, checkout, etc.)
-- **`.agents/skills/`** — Installed community skills (React best practices, composition patterns)
+- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor patterns and optional community skills (React best practices, composition patterns, etc.)
 
-To install the project skill for agent auto-discovery:
+To install skills for agent auto-discovery:
 
 ```shell
+# Project skill (already in this repo)
 npx skills add . --skill saleor-paper-storefront
+
+# Universal Saleor API patterns
+npx skills add saleor/agent-skills --skill saleor-storefront
 ```
 
 ### Environment Variables
@@ -345,7 +350,7 @@ REVALIDATE_SECRET=                           # Manual cache invalidation (GET /a
 SALEOR_WEBHOOK_SECRET=                       # Webhook HMAC verification
 SALEOR_APP_TOKEN=                            # Server-side: footer channel metadata (never exposed to client)
 STOREFRONT_DISCOVER_CHANNELS=true            # Opt-in: discover ALL active Saleor channels from API
-                                             # (not recommended for large catalogs; prefer STOREFRONT_CHANNELS)
+                                             # (not recommended when Saleor has many channels; prefer STOREFRONT_CHANNELS)
 ```
 
 **Channel resolution order** (`getStorefrontChannelSlugs`):
@@ -379,7 +384,6 @@ The design token system uses CSS custom properties—swap the entire color palet
 Features planned for future development:
 
 - **Filtering logic iteration.** Fetching attributes from API for dynamic product filters.
-- **Paper App.** Revalidation webhooks (products, categories, collections, menus) and _Preview in storefront_ in Dashboard.
 - **Opinionated model for standard content.** Moving currently hardcoded stuff like Credibility or Free checkout information to API models.
 
 ---

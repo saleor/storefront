@@ -81,6 +81,17 @@ export function normalizeHex(value: string): string {
 	return `#${value}`;
 }
 
+export type SaleorAttributeValue = {
+	name?: string | null;
+	value?: string | null;
+	file?: { url?: string | null } | null;
+};
+
+export type SwatchData = {
+	colorHex?: string;
+	imageUrl?: string;
+};
+
 /**
  * Get hex color from a Saleor attribute value.
  *
@@ -92,7 +103,7 @@ export function normalizeHex(value: string): string {
  * @param value - The attribute value from Saleor
  * @returns Hex color string (with #) or undefined
  */
-export function getColorHex(value: { name?: string | null; value?: string | null }): string | undefined {
+export function getColorHex(value: SaleorAttributeValue): string | undefined {
 	// Try hex value first (from Swatch attributes)
 	if (value.value && isValidHex(value.value)) {
 		return normalizeHex(value.value);
@@ -105,6 +116,36 @@ export function getColorHex(value: { name?: string | null; value?: string | null
 	}
 
 	return undefined;
+}
+
+/**
+ * Extract swatch display data from a Saleor attribute value.
+ * Swatch attributes may provide a hex color, an image file, or both.
+ */
+export function getSwatchData(value: SaleorAttributeValue): SwatchData {
+	const colorHex = getColorHex(value);
+	const imageUrl = value.file?.url ?? undefined;
+
+	return {
+		...(colorHex ? { colorHex } : {}),
+		...(imageUrl ? { imageUrl } : {}),
+	};
+}
+
+/** Saleor attribute input type for swatch pickers. */
+export function isSwatchInputType(inputType?: string | null): boolean {
+	return inputType === "SWATCH";
+}
+
+/**
+ * Whether an attribute should render as visual swatches in variant selectors.
+ */
+export function shouldRenderAsSwatch(
+	inputType: string | null | undefined,
+	slug: string,
+	swatch: SwatchData,
+): boolean {
+	return isSwatchInputType(inputType) || isColorAttribute(slug) || !!swatch.colorHex || !!swatch.imageUrl;
 }
 
 /**

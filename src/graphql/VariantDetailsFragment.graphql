@@ -7,20 +7,28 @@ fragment VariantDetails on ProductVariant {
 		values {
 			name
 			value
+			file {
+				url
+			}
 		}
 		attribute {
 			name
 			slug
+			inputType
 		}
 	}
 	nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {
 		values {
 			name
 			value
+			file {
+				url
+			}
 		}
 		attribute {
 			name
 			slug
+			inputType
 		}
 	}
 	media {

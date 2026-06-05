@@ -4,23 +4,13 @@ import { cn } from "@/lib/utils";
 import type { OptionRendererProps } from "../types";
 
 /**
- * Renders a swatch option as a circular button.
- *
- * Supports Saleor Swatch attributes with hex colors (image swatches use ImageSwatchPillOption).
- *
- * Visual states:
- * - Normal: Full color/image, clickable
- * - Selected: Ring indicator
- * - Incompatible: Dimmed (50% opacity), still clickable
- * - Out of stock: Diagonal strikethrough, disabled
- * - On sale: Small red dot indicator
+ * Renders an image swatch as a pill: thumbnail + label in a fully rounded button.
  */
-export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: OptionRendererProps) {
+export function ImageSwatchPillOption({ option, isSelected, onSelect, isPending }: OptionRendererProps) {
 	const isOutOfStock = !option.available;
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
 
-	// Build accessible label with all relevant info
 	const accessibleLabel = [
 		option.name,
 		isOutOfStock && "out of stock",
@@ -44,13 +34,14 @@ export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: O
 				disabled={isOutOfStock || isPending}
 				aria-disabled={isOutOfStock || isPending}
 				className={cn(
-					"relative h-12 w-12 rounded-full transition-all",
+					"inline-flex h-12 items-center gap-2.5 rounded-full border pl-1 pr-4 text-sm font-medium transition-all",
 					"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 					isSelected
-						? "ring-2 ring-foreground ring-offset-[3px] ring-offset-background"
-						: "hover:ring-foreground/50 ring-1 ring-border",
-					isIncompatible && "opacity-50",
-					isOutOfStock && "cursor-not-allowed",
+						? "border-foreground bg-foreground text-background"
+						: isIncompatible
+							? "border-gray-200 text-muted-foreground hover:border-gray-300"
+							: "border-gray-400 bg-background text-foreground hover:border-foreground",
+					isOutOfStock && "cursor-not-allowed opacity-60",
 				)}
 				title={
 					isOutOfStock
@@ -64,26 +55,23 @@ export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: O
 				aria-label={accessibleLabel}
 				aria-pressed={isSelected}
 			>
-				{option.colorHex ? (
+				{option.swatchImageUrl ? (
 					<span
-						className="absolute inset-[3px] rounded-full"
-						style={{ backgroundColor: option.colorHex }}
-						aria-hidden="true"
-					/>
-				) : (
-					<span
-						className="absolute inset-[3px] flex items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground"
+						className={cn(
+							"flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full",
+							isSelected ? "bg-background/15" : "bg-muted/50",
+						)}
 						aria-hidden="true"
 					>
-						{option.name.charAt(0)}
+						{/* eslint-disable-next-line @next/next/no-img-element -- swatch thumbnails may be SVGs from Saleor media */}
+						<img
+							src={option.swatchImageUrl}
+							alt=""
+							className={cn("h-5 w-5 object-contain object-center", isSelected && "brightness-0 invert")}
+						/>
 					</span>
-				)}
-				{/* Out of stock: diagonal strikethrough */}
-				{isOutOfStock && (
-					<span className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
-						<span className="h-px w-full rotate-45 bg-muted-foreground" />
-					</span>
-				)}
+				) : null}
+				<span className={cn(isOutOfStock && "line-through")}>{option.name}</span>
 			</button>
 			{hasDiscount && (
 				<span

@@ -7,6 +7,7 @@ import {
 	isStorefrontChannelDiscoveryEnabled,
 	needsAsyncChannelDiscovery,
 	shouldFetchChannelMetadata,
+	toChannelSelectOptions,
 } from "./channels";
 
 const ENV_KEYS = [
@@ -90,6 +91,18 @@ describe("storefront channel config", () => {
 
 		expect(filterToStorefrontChannels(channels, ["us", "uk"])).toEqual([
 			{ slug: "us", isActive: true, currencyCode: "USD" },
+		]);
+	});
+
+	it("builds channel selector options from active storefront channels only", () => {
+		const channels = [
+			{ id: "1", slug: "us", isActive: true, currencyCode: "USD" },
+			{ id: "2", slug: "internal-b2b", isActive: true, currencyCode: "USD" },
+			{ id: "3", slug: "uk", isActive: false, currencyCode: "GBP" },
+		];
+
+		expect(toChannelSelectOptions(channels, ["us", "uk"])).toEqual([
+			{ id: "1", slug: "us", currencyCode: "USD" },
 		]);
 	});
 

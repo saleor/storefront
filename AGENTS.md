@@ -19,12 +19,12 @@ pnpm test                   # Run tests (watch mode)
 
 ### Skills Architecture
 
-Skills are organized in two locations:
+Skills are organized as follows:
 
-| Location                          | Purpose                           | Contents                                                                 |
-| --------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
-| `skills/saleor-paper-storefront/` | Project-specific domain knowledge | 13 rules + fork migrations under `migrations/`                           |
-| `.agents/skills/`                 | Installed community skills        | Vercel React best practices, composition patterns, web design guidelines |
+| Location                                                      | Purpose                           | Contents                                                                                             |
+| ------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 13 rules + fork migrations under `migrations/`                                                       |
+| [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Saleor API patterns, React best practices, composition patterns, etc. (install via `npx skills add`) |
 
 ### When to Use Which Skill
 
@@ -45,10 +45,11 @@ Skills are organized in two locations:
 | Investigating Saleor API       | `dev-investigation`   |
 | Upgrading a forked Paper shop  | `migrations/SKILL.md` |
 
-**Community skills** (`.agents/skills/`) -- use for generic best practices:
+**External skills** ([saleor/agent-skills](https://github.com/saleor/agent-skills)) — install for generic best practices:
 
 | Task                           | Skill                         |
 | ------------------------------ | ----------------------------- |
+| Saleor GraphQL API patterns    | `saleor-storefront`           |
 | Writing React components       | `vercel-react-best-practices` |
 | Component composition patterns | `vercel-composition-patterns` |
 | UI accessibility/UX review     | `web-design-guidelines`       |
@@ -247,10 +248,13 @@ Rules by category:
 
 Full compiled document: [`skills/saleor-paper-storefront/AGENTS.md`](skills/saleor-paper-storefront/AGENTS.md)
 
-### Installed Community Skills
+### External Skills
 
-Installed via `npx skills add vercel-labs/agent-skills`:
+Install from [saleor/agent-skills](https://github.com/saleor/agent-skills) and [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills):
 
-1. **[vercel-react-best-practices](.agents/skills/vercel-react-best-practices/SKILL.md)** - 57 React/Next.js performance rules
-2. **[vercel-composition-patterns](.agents/skills/vercel-composition-patterns/SKILL.md)** - React composition patterns (compound components, state management)
-3. **[web-design-guidelines](.agents/skills/web-design-guidelines/SKILL.md)** - 100+ accessibility, UX, and performance rules
+```shell
+npx skills add saleor/agent-skills --skill saleor-storefront
+npx skills add vercel-labs/agent-skills --skill react-best-practices
+npx skills add vercel-labs/agent-skills --skill composition-patterns
+npx skills add vercel-labs/agent-skills --skill web-design-guidelines
+```

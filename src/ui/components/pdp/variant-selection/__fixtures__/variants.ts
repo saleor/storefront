@@ -318,3 +318,58 @@ export const nameOnlyDifferentPrices: SaleorVariant[] = [
 		},
 	},
 ];
+
+// =============================================================================
+// Audiobook: 3 selection attributes (medium + audio quality + instant delivery)
+// Mirrors demo Saleor "Battle-tested at brands like Lush" matrix
+// =============================================================================
+export const audiobookVariants: SaleorVariant[] = [
+	{
+		id: "audiobook-dvd",
+		name: "DVD",
+		quantityAvailable: 50,
+		selectionAttributes: [
+			{ attribute: { slug: "medium", name: "Medium", inputType: "DROPDOWN" }, values: [{ name: "DVD" }] },
+			{
+				attribute: { slug: "audio-quality", name: "Audio quality", inputType: "SWATCH" },
+				values: [{ name: "Hi-Res 24-bit", file: { url: "https://example.com/hires.svg" } }],
+			},
+			{
+				attribute: { slug: "instant-delivery", name: "Instant Delivery", inputType: "BOOLEAN" },
+				values: [{ name: "Instant Delivery: No" }],
+			},
+		],
+	},
+	{
+		id: "audiobook-itunes",
+		name: "iTunes",
+		quantityAvailable: 50,
+		selectionAttributes: [
+			{ attribute: { slug: "medium", name: "Medium", inputType: "DROPDOWN" }, values: [{ name: "iTunes" }] },
+			{
+				attribute: { slug: "audio-quality", name: "Audio quality", inputType: "SWATCH" },
+				values: [{ name: "Hi-Res 24-bit", file: { url: "https://example.com/hires.svg" } }],
+			},
+			{
+				attribute: { slug: "instant-delivery", name: "Instant Delivery", inputType: "BOOLEAN" },
+				values: [{ name: "Instant Delivery: Yes" }],
+			},
+		],
+	},
+	{
+		id: "audiobook-mp3",
+		name: "MP3",
+		quantityAvailable: 50,
+		selectionAttributes: [
+			{ attribute: { slug: "medium", name: "Medium", inputType: "DROPDOWN" }, values: [{ name: "MP3" }] },
+			{
+				attribute: { slug: "audio-quality", name: "Audio quality", inputType: "SWATCH" },
+				values: [{ name: "Standard", file: { url: "https://example.com/standard.svg" } }],
+			},
+			{
+				attribute: { slug: "instant-delivery", name: "Instant Delivery", inputType: "BOOLEAN" },
+				values: [{ name: "Instant Delivery: Yes" }],
+			},
+		],
+	},
+];

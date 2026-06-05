@@ -31,23 +31,27 @@
  */
 
 export { ColorSwatchOption } from "./color-swatch-option";
+export { ImageSwatchPillOption } from "./image-swatch-pill-option";
 export { ButtonOption, SizeButtonOption, TextOption, type ButtonOptionProps } from "./button-option";
 
 import type { RendererRegistry } from "../types";
 import { ColorSwatchOption } from "./color-swatch-option";
+import { ImageSwatchPillOption } from "./image-swatch-pill-option";
 import { SizeButtonOption, TextOption } from "./button-option";
 
 /**
  * Default renderer registry.
  *
  * Special keys:
+ * - `_imageSwatch`: Used when an option has a swatchImageUrl value
  * - `_color`: Used when an option has a colorHex value (regardless of attribute)
  * - `_default`: Fallback for any unmatched options
  *
  * Attribute slugs (like "size", "color") can also be used as keys.
  */
 export const defaultRenderers: RendererRegistry = {
-	// Special: render as color swatch when colorHex is present
+	// Special: image swatches as labeled pills, hex swatches as circles
+	_imageSwatch: ImageSwatchPillOption,
 	_color: ColorSwatchOption,
 
 	// Size-related attributes

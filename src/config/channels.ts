@@ -79,6 +79,24 @@ export function filterToStorefrontChannels<T extends { slug: string; isActive?: 
 	return channels.filter((channel) => channel.isActive !== false && allowed.has(channel.slug));
 }
 
+export type ChannelSelectOption = {
+	id: string;
+	slug: string;
+	currencyCode: string;
+};
+
+/** Active storefront channels only — slim shape for the footer client selector. */
+export function toChannelSelectOptions(
+	channels: Array<ChannelSelectOption & { isActive?: boolean | null }>,
+	allowedSlugs: readonly string[],
+): ChannelSelectOption[] {
+	return filterToStorefrontChannels(channels, allowedSlugs).map(({ id, slug, currencyCode }) => ({
+		id,
+		slug,
+		currencyCode,
+	}));
+}
+
 /** Whether the footer needs channel metadata from Saleor (multi-channel + app token). */
 export function shouldFetchChannelMetadata(allowedSlugs: readonly string[]): boolean {
 	return allowedSlugs.length > 1 && Boolean(process.env.SALEOR_APP_TOKEN);

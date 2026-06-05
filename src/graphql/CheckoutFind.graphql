@@ -44,20 +44,28 @@ query CheckoutFind($id: ID!) {
 					attribute {
 						name
 						slug
+						inputType
 					}
 					values {
 						name
 						value
+						file {
+							url
+						}
 					}
 				}
 				nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {
 					attribute {
 						name
 						slug
+						inputType
 					}
 					values {
 						name
 						value
+						file {
+							url
+						}
 					}
 				}
 			}

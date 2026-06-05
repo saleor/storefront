@@ -1,13 +1,14 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import type { ChannelSelectOption } from "@/config/channels";
 import { cn } from "@/lib/utils";
 
 export const ChannelSelect = ({
 	channels,
 	className,
 }: {
-	channels: { id: string; name: string; slug: string; currencyCode: string }[];
+	channels: ChannelSelectOption[];
 	className?: string;
 }) => {
 	const router = useRouter();

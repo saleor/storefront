@@ -230,6 +230,34 @@
 			"category": "caching",
 			"touchPaths": ["src/lib/channel-slugs.ts"],
 			"detectMarkers": ["getCachedChannelsList", "activeChannelSlugsFromList"]
+		},
+		{
+			"id": "2026-06-pdp-swatch-selectors",
+			"title": "PDP SWATCH image pills and multi-attribute selection fixes",
+			"upstreamSha": "df9dd13b",
+			"landedAt": "2026-06-05T14:52:11+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-pdp-ppr-islands"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "product",
+			"touchPaths": [
+				"src/graphql/VariantDetailsFragment.graphql",
+				"src/graphql/ProductListItem.graphql",
+				"src/graphql/CheckoutFind.graphql",
+				"src/lib/colors.ts",
+				"src/ui/components/pdp/variant-selection/utils.ts",
+				"src/ui/components/pdp/variant-selection/variant-selection-section.tsx",
+				"src/ui/components/pdp/variant-selection/variant-selector.tsx",
+				"src/ui/components/pdp/variant-selection/renderers/image-swatch-pill-option.tsx",
+				"src/ui/components/pdp/variant-selection/renderers/index.ts"
+			],
+			"detectMarkers": [
+				"ImageSwatchPillOption",
+				"getImplicitSelections",
+				"hasCompatibleVariant",
+				"getSwatchData"
+			]
 		}
 	]
 }
