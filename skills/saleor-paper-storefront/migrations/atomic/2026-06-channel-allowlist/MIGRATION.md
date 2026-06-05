@@ -31,10 +31,10 @@ Prevent every Saleor channel from becoming a storefront route. Explicit allowlis
 ### 2. channel-slugs.ts resolution order `[architecture]`
 
 1. `STOREFRONT_CHANNELS`
-2. Discovery + token (if enabled)
+2. Discovery + token (if enabled) — **must** use `getCachedChannelsList()` (`"use cache"`), not raw `executePublicGraphQL` in the layout path (see [`2026-06-channel-discovery-cache`](../2026-06-channel-discovery-cache/MIGRATION.md))
 3. Default channel only
 
-Use `React.cache()` for dedupe.
+Use `React.cache()` for dedupe. Requires [`2026-06-menu-data-layer`](../2026-06-menu-data-layer/MIGRATION.md) before discovery works under Cache Components.
 
 ### 3. Route guard `[architecture]`
 

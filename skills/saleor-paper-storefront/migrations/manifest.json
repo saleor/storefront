@@ -217,6 +217,19 @@
 				"src/ui/components/account/account-skeleton.tsx"
 			],
 			"detectMarkers": ["AccountLogin", "AccountShell", "useAccountUser"]
+		},
+		{
+			"id": "2026-06-channel-discovery-cache",
+			"title": "PPR-safe channel discovery via cached ChannelsList",
+			"upstreamSha": "223382c0",
+			"landedAt": "2026-06-05T18:00:00+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-channel-allowlist", "2026-06-menu-data-layer"],
+			"optional": true,
+			"skipPrompt": "Skip if the fork only uses STOREFRONT_CHANNELS (no API discovery at build time)?",
+			"category": "caching",
+			"touchPaths": ["src/lib/channel-slugs.ts"],
+			"detectMarkers": ["getCachedChannelsList", "activeChannelSlugsFromList"]
 		}
 	]
 }
