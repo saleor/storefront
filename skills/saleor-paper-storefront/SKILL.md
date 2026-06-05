@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.2.0"
+  version: "1.3.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -60,7 +60,8 @@ Reference these guidelines when:
 ### 2. Product Pages (HIGH)
 
 - `product-pdp` - ProductShell + dynamic islands, gallery, LCP preload, add-to-cart
-- `product-variants` - Variant selection state machine, option states, discount badges
+- `product-variants` - Variant selection state machine, swatch renderers, partial selection
+- `references/variant-selector-ui.md` - Border states, pill/circle sizing, renderer routing (read before editing renderers)
 - `product-filtering` - Server vs client filtering, category slug resolution
 
 ### 3. Checkout Flow (HIGH)

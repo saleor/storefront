@@ -4,107 +4,94 @@ Detailed reference for functions in `src/ui/components/pdp/variant-selection/uti
 
 ## Core Functions
 
-### `groupVariantsByAttributes(variants)`
+### `normalizeAttributeValueId(name)`
 
-Extracts unique attribute values from all variants.
-
-**Input**: Array of Saleor variants with attributes
-**Output**: Map of attribute slugs to value arrays
+Converts Saleor value display name to URL option id:
 
 ```typescript
-const groups = groupVariantsByAttributes(variants);
-// {
-//   color: [{ id: "1", name: "Black", slug: "black" }, ...],
-//   size: [{ id: "2", name: "Medium", slug: "m" }, ...]
-// }
+normalizeAttributeValueId("Hi-Res 24-bit"); // "hi-res-24-bit"
+normalizeAttributeValueId("Instant Delivery: Yes"); // "instant-delivery:-yes"
 ```
+
+### `variantMatchesSelections(variant, selections)`
+
+True when variant matches every key in `selections`.
+
+### `hasCompatibleVariant(variants, selections)`
+
+True when at least one variant satisfies all current selections. Used for **partial** selection — does not require all attribute groups to be filled.
+
+### `groupVariantsByAttributes(variants)`
+
+Extracts unique attribute values from all variants. Populates `colorHex` / `swatchImageUrl` on options when `inputType: SWATCH` or color slug (see `src/lib/colors.ts`).
 
 ### `findMatchingVariant(variants, selections)`
 
-Finds a variant that matches ALL selected attribute values.
+Finds a variant matching ALL selected attribute values.
 
-**Input**:
+**Returns `undefined` when:**
 
-- `variants`: All product variants
-- `selections`: `Record<attributeSlug, valueSlug>` (e.g., `{ color: "black", size: "m" }`)
-
-**Output**: Matching variant or `undefined`
+- No selections
+- **Partial selections** (not every attribute group has a value)
+- Complete selections with no matching variant
 
 ```typescript
-const variant = findMatchingVariant(variants, { color: "black", size: "m" });
-if (variant) {
-	// Can add to cart with variant.id
-}
+const variant = findMatchingVariant(variants, {
+	medium: "mp3",
+	"audio-quality": "standard",
+	"instant-delivery": "instant-delivery:-yes",
+});
 ```
 
-### `getOptionsForAttribute(variants, attributeSlug, selections)`
+### `getOptionsForAttribute(variants, attributeGroups, selections, attributeSlug)`
 
-Gets options for a single attribute with availability/compatibility info.
-
-**Output**: Array of `VariantOption`:
+Gets options for one attribute with availability and compatibility:
 
 ```typescript
 interface VariantOption {
 	id: string;
 	name: string;
-	slug: string;
-	available: boolean; // At least one variant in stock
-	compatible: boolean; // Works with current selections
-	hasDiscount?: boolean; // Any variant with this option is discounted
-	discountPercent?: number; // Max discount percentage
+	available: boolean;
+	existsWithCurrentSelection?: boolean; // false = incompatible with other picks
+	colorHex?: string;
+	swatchImageUrl?: string;
+	hasDiscount?: boolean;
+	discountPercent?: number;
 }
 ```
+
+`existsWithCurrentSelection: false` drives **incompatible** UI (`border-gray-200`, muted). See [variant-selector-ui.md](variant-selector-ui.md).
 
 ### `getAdjustedSelections(variants, currentSelections, attributeSlug, value)`
 
-Returns new selections after user picks an option, auto-clearing conflicts.
+Returns new selections after user picks an option.
 
-**Logic**:
+**Logic:**
 
-1. Add new selection to current selections
-2. If valid variant exists -- return updated selections
-3. If no valid variant -- return only the new selection (clear others)
+1. Merge new value into current selections
+2. If `findMatchingVariant` succeeds → return merged (complete match)
+3. If **not all** groups filled and `hasCompatibleVariant` → return merged (partial accumulate)
+4. Else → return only `{ [attributeSlug]: value }` (clear conflicts)
 
-See [variant-state-machine.md](variant-state-machine.md) for transition details.
+See [variant-state-machine.md](variant-state-machine.md).
 
 ### `getUnavailableAttributeInfo(variants, groups, selections)`
 
-Detects "dead end" selections where an attribute group has no valid options.
+Detects dead-end selections. Output: `{ slug, name, blockedBy }` or `null`.
 
-**Output**: `{ slug, name, blockedBy }` or `null`
+## Swatch helpers (`src/lib/colors.ts`)
 
-```typescript
-const deadEnd = getUnavailableAttributeInfo(variants, groups, { color: "red" });
-if (deadEnd) {
-	// Show: "No {deadEnd.name} available in {deadEnd.blockedBy}"
-}
-```
+| Function                                        | Purpose                                              |
+| ----------------------------------------------- | ---------------------------------------------------- |
+| `getSwatchData(value)`                          | `{ colorHex?, imageUrl? }` from `value` + `file.url` |
+| `isSwatchInputType(inputType)`                  | `inputType === "SWATCH"`                             |
+| `shouldRenderAsSwatch(inputType, slug, swatch)` | Whether to attach swatch fields to option            |
 
 ## Discount Detection
 
-### How Discounts Are Detected
+A variant has a discount when `priceUndiscounted.gross.amount > price.gross.amount`.
 
-A variant has a discount when `undiscountedPrice > price`:
-
-```typescript
-const hasDiscount = variant.pricing?.priceUndiscounted?.gross?.amount > variant.pricing?.price?.gross?.amount;
-```
-
-### Discount Percentage Calculation
-
-```typescript
-const discountPercent = Math.round(((undiscounted - price) / undiscounted) * 100);
-```
-
-### Option-Level Discount Aggregation
-
-When building options, we aggregate discounts across all variants with that option:
-
-```typescript
-// For color "Black", check all Black variants
-// hasDiscount = true if ANY Black variant is discounted
-// discountPercent = MAX discount among Black variants
-```
+Option-level: aggregate across all variants with that option value (`hasDiscount`, max `discountPercent`).
 
 ## Type Definitions
 
@@ -114,9 +101,10 @@ See `src/ui/components/pdp/variant-selection/types.ts`:
 export interface VariantOption {
 	id: string;
 	name: string;
-	slug: string;
 	available: boolean;
-	compatible: boolean;
+	existsWithCurrentSelection?: boolean;
+	colorHex?: string;
+	swatchImageUrl?: string;
 	hasDiscount?: boolean;
 	discountPercent?: number;
 }
@@ -124,8 +112,14 @@ export interface VariantOption {
 export interface AttributeGroup {
 	slug: string;
 	name: string;
-	values: VariantOption[];
+	options: VariantOption[];
 }
-
-export type Selections = Record<string, string>;
 ```
+
+## Tests
+
+```bash
+pnpm test src/ui/components/pdp/variant-selection/utils.test.ts
+```
+
+`audiobookVariants` fixture — 3 selection attributes, partial selection tests.

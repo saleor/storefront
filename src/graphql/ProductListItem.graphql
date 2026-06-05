@@ -48,10 +48,14 @@ fragment ProductListItem on Product {
 			attribute {
 				slug
 				name
+				inputType
 			}
 			values {
 				name
 				value
+				file {
+					url
+				}
 			}
 		}
 	}

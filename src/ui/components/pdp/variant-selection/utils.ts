@@ -6,7 +6,14 @@
  */
 
 import type { VariantOption, AttributeGroup } from "./types";
-import { getColorHex, isColorAttribute, isSizeAttribute, COLOR_NAME_TO_HEX } from "@/lib/colors";
+import {
+	getSwatchData,
+	isColorAttribute,
+	isSizeAttribute,
+	isSwatchInputType,
+	shouldRenderAsSwatch,
+	COLOR_NAME_TO_HEX,
+} from "@/lib/colors";
 import { getMaxDiscountInfo as getMaxDiscountInfoBase } from "@/lib/pricing";
 import { sortBySizeProperty } from "@/lib/sizes";
 
@@ -21,12 +28,20 @@ export type SaleorVariant = {
 	name: string;
 	quantityAvailable?: number | null;
 	selectionAttributes: Array<{
-		attribute: { slug?: string | null; name?: string | null };
-		values: Array<{ name?: string | null; value?: string | null }>;
+		attribute: { slug?: string | null; name?: string | null; inputType?: string | null };
+		values: Array<{
+			name?: string | null;
+			value?: string | null;
+			file?: { url?: string | null } | null;
+		}>;
 	}>;
 	nonSelectionAttributes?: Array<{
-		attribute: { slug?: string | null; name?: string | null };
-		values: Array<{ name?: string | null; value?: string | null }>;
+		attribute: { slug?: string | null; name?: string | null; inputType?: string | null };
+		values: Array<{
+			name?: string | null;
+			value?: string | null;
+			file?: { url?: string | null } | null;
+		}>;
 	}>;
 	pricing?: {
 		price?: { gross: { amount: number; currency: string } } | null;
@@ -53,6 +68,72 @@ function getMaxDiscountInfo(variants: SaleorVariant[]): { hasDiscount: boolean; 
 }
 
 // ============================================================================
+// Selection helpers
+// ============================================================================
+
+/** Normalize attribute value names to URL-safe option IDs. */
+export function normalizeAttributeValueId(name: string): string {
+	return name.toLowerCase().replace(/\s+/g, "-");
+}
+
+/** True when a variant matches every entry in partial or complete selections. */
+export function variantMatchesSelections(
+	variant: SaleorVariant,
+	selections: Record<string, string>,
+): boolean {
+	for (const [attrSlug, selectedValue] of Object.entries(selections)) {
+		if (!selectedValue) continue;
+
+		const attr = variant.selectionAttributes.find(
+			(a) => (a.attribute.slug ?? "").toLowerCase() === attrSlug.toLowerCase(),
+		);
+		if (!attr) return false;
+
+		const hasMatchingValue = attr.values.some(
+			(v) => normalizeAttributeValueId(v.name ?? "") === normalizeAttributeValueId(selectedValue),
+		);
+		if (!hasMatchingValue) return false;
+	}
+
+	return true;
+}
+
+/** True when at least one variant satisfies all current selections. */
+export function hasCompatibleVariant(
+	variants: SaleorVariant[],
+	selections: Record<string, string>,
+	attributeGroups?: AttributeGroup[],
+): boolean {
+	const groups = attributeGroups ?? groupVariantsByAttributes(variants);
+	const effectiveSelections = { ...getImplicitSelections(groups), ...selections };
+	const selectionEntries = Object.entries(effectiveSelections).filter(([, value]) => value);
+	if (selectionEntries.length === 0) return true;
+
+	return variants.some((variant) => variantMatchesSelections(variant, effectiveSelections));
+}
+
+/** Auto-selected values for attributes with only one option across all variants. */
+export function getImplicitSelections(attributeGroups: AttributeGroup[]): Record<string, string> {
+	const implicit: Record<string, string> = {};
+
+	for (const group of attributeGroups) {
+		if (group.options.length === 1) {
+			const onlyOption = group.options[0];
+			if (onlyOption) {
+				implicit[group.slug] = onlyOption.id;
+			}
+		}
+	}
+
+	return implicit;
+}
+
+/** Attribute groups that need a visible selector (more than one option). */
+export function getInteractiveAttributeGroups(attributeGroups: AttributeGroup[]): AttributeGroup[] {
+	return attributeGroups.filter((group) => group.options.length > 1);
+}
+
+// ============================================================================
 // Main Functions
 // ============================================================================
 
@@ -69,16 +150,18 @@ function getMaxDiscountInfo(variants: SaleorVariant[]): { hasDiscount: boolean; 
  * - Show availability based on other selections
  * - Find the matching variant when all attributes are selected
  *
- * NOTE: Attributes with only one unique value are filtered out, as they don't
- * differentiate variants (likely product-level attributes incorrectly assigned to variants).
+ * Single-option attributes are kept in the returned groups for matching logic.
+ * Hide them in the UI via `getInteractiveAttributeGroups()` and auto-apply with
+ * `getImplicitSelections()` when resolving the variant.
  */
 export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeGroup[] {
-	// Map: attributeSlug -> { name, values: Map<valueName, { variantIds, colorHex }> }
+	// Map: attributeSlug -> { name, inputType, values: Map<valueName, swatch data> }
 	const attributeMap = new Map<
 		string,
 		{
 			name: string;
-			values: Map<string, { variantIds: Set<string>; colorHex?: string }>;
+			inputType?: string | null;
+			values: Map<string, { variantIds: Set<string>; colorHex?: string; swatchImageUrl?: string }>;
 		}
 	>();
 
@@ -89,7 +172,11 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 			const name = attr.attribute.name ?? slug;
 
 			if (!attributeMap.has(slug)) {
-				attributeMap.set(slug, { name, values: new Map() });
+				attributeMap.set(slug, {
+					name,
+					inputType: attr.attribute.inputType,
+					values: new Map(),
+				});
 			}
 
 			const attrData = attributeMap.get(slug)!;
@@ -99,9 +186,13 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 				if (!valueName) continue;
 
 				if (!attrData.values.has(valueName)) {
+					const swatch = getSwatchData(val);
+					const useSwatch = shouldRenderAsSwatch(attr.attribute.inputType, slug, swatch);
+
 					attrData.values.set(valueName, {
 						variantIds: new Set(),
-						colorHex: isColorAttribute(slug) ? getColorHex(val) : undefined,
+						colorHex: useSwatch ? swatch.colorHex : undefined,
+						swatchImageUrl: useSwatch ? swatch.imageUrl : undefined,
 					});
 				}
 
@@ -129,12 +220,13 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 			const { hasDiscount, maxPercent } = getMaxDiscountInfo(variantsWithValue);
 
 			options.push({
-				id: valueName.toLowerCase().replace(/\s+/g, "-"),
+				id: normalizeAttributeValueId(valueName),
 				name: valueName,
 				available,
 				hasDiscount,
 				discountPercent: maxPercent > 0 ? maxPercent : undefined,
 				colorHex: valueData.colorHex,
+				swatchImageUrl: valueData.swatchImageUrl,
 				variantIds: [...valueData.variantIds],
 			});
 		}
@@ -145,15 +237,23 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 		groups.push({ slug, name: data.name, options: sortedOptions });
 	}
 
-	// Sort: color attributes first, then size, then others
+	// Sort: swatch/color attributes first, then size, then others
 	groups.sort((a, b) => {
-		const aIsColor = isColorAttribute(a.slug);
-		const bIsColor = isColorAttribute(b.slug);
+		const aData = attributeMap.get(a.slug);
+		const bData = attributeMap.get(b.slug);
+		const aIsSwatch =
+			isSwatchInputType(aData?.inputType) ||
+			isColorAttribute(a.slug) ||
+			a.options.some((o) => o.colorHex || o.swatchImageUrl);
+		const bIsSwatch =
+			isSwatchInputType(bData?.inputType) ||
+			isColorAttribute(b.slug) ||
+			b.options.some((o) => o.colorHex || o.swatchImageUrl);
 		const aIsSize = isSizeAttribute(a.slug);
 		const bIsSize = isSizeAttribute(b.slug);
 
-		if (aIsColor && !bIsColor) return -1;
-		if (!aIsColor && bIsColor) return 1;
+		if (aIsSwatch && !bIsSwatch) return -1;
+		if (!aIsSwatch && bIsSwatch) return 1;
 		if (aIsSize && !bIsSize) return -1;
 		if (!aIsSize && bIsSize) return 1;
 		return 0;
@@ -171,42 +271,23 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 export function findMatchingVariant(
 	variants: SaleorVariant[],
 	selections: Record<string, string>,
+	attributeGroups?: AttributeGroup[],
 ): string | undefined {
-	const selectionEntries = Object.entries(selections).filter(([, value]) => value);
+	const groups = attributeGroups ?? groupVariantsByAttributes(variants);
+	const effectiveSelections = { ...getImplicitSelections(groups), ...selections };
+	const selectionEntries = Object.entries(effectiveSelections).filter(([, value]) => value);
 	if (selectionEntries.length === 0) return undefined;
 
-	// Get all attribute groups to verify all are selected
-	const attributeGroups = groupVariantsByAttributes(variants);
-	const allAttributesSelected = attributeGroups.every(
-		(group) => selections[group.slug] !== undefined && selections[group.slug] !== "",
+	const allAttributesSelected = groups.every(
+		(group) => effectiveSelections[group.slug] !== undefined && effectiveSelections[group.slug] !== "",
 	);
 
 	if (!allAttributesSelected) return undefined;
 
 	for (const variant of variants) {
-		let allMatch = true;
-
-		for (const [attrSlug, selectedValue] of selectionEntries) {
-			const attr = variant.selectionAttributes.find(
-				(a) => (a.attribute.slug ?? "").toLowerCase() === attrSlug.toLowerCase(),
-			);
-
-			if (!attr) {
-				allMatch = false;
-				break;
-			}
-
-			const hasMatchingValue = attr.values.some(
-				(v) => (v.name ?? "").toLowerCase().replace(/\s+/g, "-") === selectedValue.toLowerCase(),
-			);
-
-			if (!hasMatchingValue) {
-				allMatch = false;
-				break;
-			}
+		if (variantMatchesSelections(variant, effectiveSelections)) {
+			return variant.id;
 		}
-
-		if (allMatch) return variant.id;
 	}
 
 	return undefined;
@@ -228,7 +309,7 @@ export function getSelectionsFromVariant(
 		const slug = attr.attribute.slug ?? "";
 		const value = attr.values[0]?.name ?? "";
 		if (slug && value) {
-			selections[slug] = value.toLowerCase().replace(/\s+/g, "-");
+			selections[slug] = normalizeAttributeValueId(value);
 		}
 	}
 
@@ -261,7 +342,7 @@ export function getOptionsForAttribute(
 			const attr = variant.selectionAttributes.find(
 				(a) => (a.attribute.slug ?? "").toLowerCase() === targetAttributeSlug.toLowerCase(),
 			);
-			return attr?.values.some((v) => (v.name ?? "").toLowerCase().replace(/\s+/g, "-") === option.id);
+			return attr?.values.some((v) => normalizeAttributeValueId(v.name ?? "") === option.id);
 		});
 
 		// Check availability and discount
@@ -279,7 +360,7 @@ export function getOptionsForAttribute(
 					if (!attr) return false;
 
 					const hasValue = attr.values.some(
-						(v) => (v.name ?? "").toLowerCase().replace(/\s+/g, "-") === selectedValue,
+						(v) => normalizeAttributeValueId(v.name ?? "") === normalizeAttributeValueId(selectedValue),
 					);
 					if (!hasValue) return false;
 				}
@@ -307,13 +388,28 @@ export function getAdjustedSelections(
 	currentSelections: Record<string, string>,
 	attributeSlug: string,
 	newValue: string,
+	attributeGroups?: AttributeGroup[],
 ): Record<string, string> {
+	const groups = attributeGroups ?? groupVariantsByAttributes(variants);
 	const newSelections = { ...currentSelections, [attributeSlug]: newValue };
-	const matchingVariant = findMatchingVariant(variants, newSelections);
 
-	if (matchingVariant) return newSelections;
+	if (findMatchingVariant(variants, newSelections, groups)) {
+		return newSelections;
+	}
 
-	// No exact match - keep only the newly selected attribute
+	const effectiveSelections = { ...getImplicitSelections(groups), ...newSelections };
+	const allAttributesSelected = groups.every(
+		(group) => effectiveSelections[group.slug] !== undefined && effectiveSelections[group.slug] !== "",
+	);
+
+	// Partial selection: keep building unless the combo is impossible
+	if (!allAttributesSelected) {
+		if (hasCompatibleVariant(variants, newSelections, groups)) {
+			return newSelections;
+		}
+	}
+
+	// Complete but impossible combo — clear conflicting selections
 	return { [attributeSlug]: newValue };
 }
 
@@ -333,7 +429,7 @@ export function getUnavailableAttributeInfo(
 	if (selectionEntries.length === 0) return null;
 
 	for (const group of attributeGroups) {
-		if (currentSelections[group.slug]) continue;
+		if (group.options.length <= 1 || currentSelections[group.slug]) continue;
 
 		const options = getOptionsForAttribute(variants, attributeGroups, currentSelections, group.slug);
 		const hasAnyAvailable = options.some((opt) => opt.available && opt.existsWithCurrentSelection !== false);

@@ -11,9 +11,9 @@ stateDiagram-v2
     Empty --> Partial: SELECT(attr, value)
     Empty --> Complete: Single variant product
 
-    Partial --> Partial: SELECT [not all attrs filled]
+    Partial --> Partial: SELECT [compatible, not all attrs filled]
     Partial --> Complete: SELECT [all filled, variant exists]
-    Partial --> Conflict: SELECT [all filled, no variant]
+    Partial --> Partial: SELECT [incompatible partial]
     Partial --> DeadEnd: SELECT blocks other groups
 
     Complete --> Complete: SELECT [compatible]
@@ -24,6 +24,8 @@ stateDiagram-v2
     DeadEnd --> Partial: SELECT different option
 ```
 
+Note: **Conflict** only applies when all attribute groups have a selection but no variant matches.
+
 ## States
 
 | State        | URL Params                        | Add to Cart | Description                         |
@@ -31,7 +33,7 @@ stateDiagram-v2
 | **Empty**    | `?`                               | No          | No selections                       |
 | **Partial**  | `?color=black`                    | No          | Some attributes selected            |
 | **Complete** | `?color=black&size=m&variant=abc` | Yes         | All selected, variant found         |
-| **Conflict** | (transient)                       | --          | Impossible combination, auto-clears |
+| **Conflict** | (transient, all attrs filled)     | --          | Impossible combination, auto-clears |
 | **DeadEnd**  | `?color=black`                    | No          | Selection blocks other groups       |
 
 ## Example User Flow
@@ -47,13 +49,19 @@ stateDiagram-v2
    State: Complete -> URL: ?color=black&size=medium&variant=abc123
    -> Add to Cart enabled
 
-4. User clicks "XL" (but Black/XL doesn't exist)
+4. User clicks "XL" (but Black/XL doesn't exist, all attrs were filled)
    State: Conflict -> AUTO_ADJUST -> Partial
    -> URL: ?size=xl (color cleared)
-   -> User can now pick a color that has XL
 ```
 
-This "smart adjustment" pattern ensures users are never stuck. They can always explore all options.
+### Multi-attribute partial flow (audiobook-style)
+
+```
+1. Click Medium MP3        -> Partial: ?medium=mp3
+2. Click Audio Standard    -> Partial: ?medium=mp3&audio-quality=standard
+   (medium MUST stay selected — not a conflict)
+3. Click Instant Delivery  -> Complete: ?variant=... added
+```
 
 ## Transition Rules
 
@@ -61,9 +69,10 @@ This "smart adjustment" pattern ensures users are never stuck. They can always e
 
 When user clicks an option:
 
-1. **If variant exists with new selection** -- Update selection, keep others
-2. **If no variant exists** -- Clear conflicting selections (AUTO_ADJUST)
-3. **If all attributes now filled and variant exists** -- Set `variant` param
+1. **If all attributes selected and variant exists** — keep selections, set `variant` param
+2. **If partial and `hasCompatibleVariant(newSelections)`** — accumulate selections
+3. **If partial and incompatible** — keep only the new attribute value
+4. **If all attributes selected but no variant** — AUTO_ADJUST (clear to new value only)
 
 ### AUTO_ADJUST Logic
 
@@ -77,15 +86,25 @@ function getAdjustedSelections(variants, currentSelections, newAttr, newValue) {
 		return newSelections;
 	}
 
+	const allAttributesSelected = attributeGroups.every(
+		(g) => newSelections[g.slug] !== undefined && newSelections[g.slug] !== "",
+	);
+
+	// Partial: keep building when combo can still complete
+	if (!allAttributesSelected && hasCompatibleVariant(variants, newSelections)) {
+		return newSelections;
+	}
+
+	// Complete but impossible, or incompatible partial
 	return { [newAttr]: newValue };
 }
 ```
 
+**Critical:** `findMatchingVariant()` returns `undefined` for partial selections by design. Do not use it alone to decide whether to clear other groups.
+
 ## Dead End Detection
 
 A "dead end" occurs when a selection makes ALL options in another attribute group unavailable.
-
-Example: Red only exists in Size S. User selects Red -- Size dropdown shows only S (or shows "No sizes available in Red").
 
 Detected via `getUnavailableAttributeInfo()`:
 

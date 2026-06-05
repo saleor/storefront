@@ -19,6 +19,8 @@ export interface VariantOption {
 	existsWithCurrentSelection?: boolean;
 	/** Hex color code for swatch display (e.g., "#ff0000") */
 	colorHex?: string;
+	/** Image URL for swatch display (Saleor Swatch attribute file) */
+	swatchImageUrl?: string;
 	/** Variant IDs that have this option value */
 	variantIds?: string[];
 	/** Whether any variant with this option is on sale */
@@ -64,7 +66,7 @@ export type OptionRenderer = React.ComponentType<OptionRendererProps>;
  * Configuration for mapping attribute types to renderers.
  *
  * Keys are attribute slugs (e.g., "color", "size") or special keys:
- * - "_color": Used when option has a colorHex value
+ * - "_color": Used when option has a colorHex or swatchImageUrl value
  * - "_default": Fallback for unmatched options
  */
 export interface RendererRegistry {
@@ -87,6 +89,8 @@ export interface VariantSelectorProps {
 	onSelect: (attributeSlug: string, optionId: string) => void;
 	/** Optional: Custom renderer to use for all options */
 	renderer?: OptionRenderer;
+	/** Optional: Renderer registry (merged with defaults) */
+	renderers?: Partial<RendererRegistry>;
 	/** Optional: Message to show when no options available (replaces selected value display) */
 	unavailableMessage?: string;
 	/** Whether a transition is in progress */
