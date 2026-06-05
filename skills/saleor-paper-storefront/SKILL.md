@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-11 rules across 6 categories covering caching, PDP architecture, checkout
+12 rules across 6 categories covering caching, PDP architecture, checkout
 components, UI patterns, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
@@ -33,6 +33,7 @@ Reference these guidelines when:
 - Editing GraphQL queries or regenerating types
 - Debugging caching, stale content, or revalidation
 - Migrating authenticated routes (account, session cookies) under Cache Components / PPR
+- Upgrading a forked shop — see **Migrations** below
 - Creating UI components with design tokens
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
@@ -95,6 +96,18 @@ Each rule file contains:
 - File locations and architecture diagrams
 - Code examples (correct and incorrect patterns)
 - Anti-patterns to avoid
+
+## Migrations (fork upgrades)
+
+Chronological upgrade prompts for forks behind upstream Paper. **Not** for greenfield work — use `rules/` for current patterns.
+
+| Task                   | Location                         |
+| ---------------------- | -------------------------------- |
+| Apply pending upgrades | `migrations/SKILL.md`            |
+| Migration registry     | `migrations/manifest.json`       |
+| Fork baseline          | `paper-version.json` (repo root) |
+
+Trigger phrases: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching", "paper-version".
 
 ## Full Compiled Document
 

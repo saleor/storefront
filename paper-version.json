@@ -1,0 +1,78 @@
+{
+	"schemaVersion": 1,
+	"lastUpstreamSha": "3b27d901",
+	"appliedMigrations": [
+		{
+			"id": "2026-06-pdp-ppr-islands",
+			"upstreamSha": "651f7dd0",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-channel-scoped-tags",
+			"upstreamSha": "e0ba7249",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-channel-allowlist",
+			"upstreamSha": "3553c93e",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-cache-life-profiles",
+			"upstreamSha": "9f662a68",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-cache-manifest-v3",
+			"upstreamSha": "9f662a68",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-menu-data-layer",
+			"upstreamSha": "72a0a6d6",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-menu-webhooks",
+			"upstreamSha": "7a0eda01",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-plp-shell-split",
+			"upstreamSha": "3be1d7e6",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-layout-route-loading",
+			"upstreamSha": "be97b7e6",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-homepage-featured-layer",
+			"upstreamSha": "b0e1b869",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-client-boundaries",
+			"upstreamSha": "41851941",
+			"appliedAt": "2026-06-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-account-ppr-auth",
+			"upstreamSha": "3b27d901",
+			"appliedAt": "2026-06-05",
+			"skipped": false
+		}
+	]
+}
