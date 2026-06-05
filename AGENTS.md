@@ -23,7 +23,7 @@ Skills are organized in two locations:
 
 | Location                          | Purpose                           | Contents                                                                 |
 | --------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
-| `skills/saleor-paper-storefront/` | Project-specific domain knowledge | 13 rules covering caching, PDP, checkout, GraphQL, etc.                  |
+| `skills/saleor-paper-storefront/` | Project-specific domain knowledge | 13 rules + fork migrations under `migrations/`                           |
 | `.agents/skills/`                 | Installed community skills        | Vercel React best practices, composition patterns, web design guidelines |
 
 ### When to Use Which Skill
@@ -43,6 +43,7 @@ Skills are organized in two locations:
 | Channels, fulfillment & stock  | `ui-channels`         |
 | SEO, metadata, OG images       | `seo-metadata`        |
 | Investigating Saleor API       | `dev-investigation`   |
+| Upgrading a forked Paper shop  | `migrations/SKILL.md` |
 
 **Community skills** (`.agents/skills/`) -- use for generic best practices:
 
@@ -241,6 +242,8 @@ Rules by category:
 4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`
 5. **SEO** (MEDIUM): `seo-metadata`
 6. **Development** (MEDIUM): `dev-investigation`
+
+**Fork upgrades:** [`skills/saleor-paper-storefront/migrations/SKILL.md`](skills/saleor-paper-storefront/migrations/SKILL.md) — chronological migrations; track state in repo-root [`paper-version.json`](paper-version.json). Trigger: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching".
 
 Full compiled document: [`skills/saleor-paper-storefront/AGENTS.md`](skills/saleor-paper-storefront/AGENTS.md)
 
