@@ -4,7 +4,11 @@
 gql/
 src/checkout/graphql/generated/
 
-.env
+# Secrets & environment (keep only placeholder examples in git)
+.env*
+!.env.example
+.cf.env
+.dev.vars
 
 # dependencies
 /node_modules
@@ -31,11 +35,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# Cloudflare / OpenNext (build output embeds env vars at build time)
+.open-next/
+.wrangler/
 
 # vercel
 .vercel
+
+# local-only tooling
+.paper/
 
 # typescript
 *.tsbuildinfo
