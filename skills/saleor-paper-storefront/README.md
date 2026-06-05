@@ -53,6 +53,7 @@ saleor-paper-storefront/
 │   ├── manifest.json   # Ordered registry + upstream SHAs
 │   └── atomic/         # One folder per migration
 └── references/           # Supporting deep-dive documentation
+    ├── variant-selector-ui.md   # Renderer routing, border states, swatch pills
     ├── variant-state-machine.md
     ├── variant-utils-reference.md
     └── saleor-key-directories.md

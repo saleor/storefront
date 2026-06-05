@@ -9,7 +9,7 @@ import { defaultRenderers } from "./renderers";
  * Renders options using the appropriate renderer based on:
  * 1. Explicit `renderer` prop
  * 2. `attributeSlug` for registry lookup
- * 3. `colorHex` presence (uses `_color` renderer)
+ * 3. `swatchImageUrl` (pill) or `colorHex` (circle swatch)
  * 4. `_default` fallback
  */
 export function VariantSelector({
@@ -19,9 +19,11 @@ export function VariantSelector({
 	attributeSlug,
 	onSelect,
 	renderer: explicitRenderer,
+	renderers,
 	unavailableMessage,
 	isPending,
 }: VariantSelectorProps) {
+	const registry = { ...defaultRenderers, ...renderers };
 	const selectedOption = options.find((opt) => opt.id === selectedId);
 
 	const handleSelect = (optionId: string) => {
@@ -37,23 +39,27 @@ export function VariantSelector({
 		// 1. Explicit renderer prop takes precedence
 		if (explicitRenderer) return explicitRenderer;
 
-		// 2. If option has colorHex, use color swatch
-		if (option.colorHex && defaultRenderers._color) {
-			return defaultRenderers._color;
+		// 2. Image swatches → pill; hex swatches → circle
+		if (option.swatchImageUrl && registry._imageSwatch) {
+			return registry._imageSwatch;
+		}
+		if (option.colorHex && registry._color) {
+			return registry._color;
 		}
 
 		// 3. Try attribute slug
-		if (attributeSlug && attributeSlug in defaultRenderers) {
-			return defaultRenderers[attributeSlug];
+		const slugRenderer = attributeSlug ? registry[attributeSlug] : undefined;
+		if (slugRenderer) {
+			return slugRenderer;
 		}
 
 		// 4. Fallback to default
-		return defaultRenderers._default;
+		return registry._default ?? defaultRenderers._default!;
 	};
 
 	// Group options by renderer for better layout
-	const colorOptions = options.filter((opt) => opt.colorHex);
-	const textOptions = options.filter((opt) => !opt.colorHex);
+	const swatchOptions = options.filter((opt) => opt.colorHex || opt.swatchImageUrl);
+	const textOptions = options.filter((opt) => !opt.colorHex && !opt.swatchImageUrl);
 
 	const labelId = `variant-label-${attributeSlug}`;
 
@@ -72,10 +78,10 @@ export function VariantSelector({
 				) : null}
 			</div>
 
-			{/* Color swatches row */}
-			{colorOptions.length > 0 && (
+			{/* Swatch row (image pills and/or color circles) */}
+			{swatchOptions.length > 0 && (
 				<div role="group" aria-labelledby={labelId} className="flex flex-wrap gap-4">
-					{colorOptions.map((option) => {
+					{swatchOptions.map((option) => {
 						const Renderer = getRendererForOption(option);
 						return (
 							<Renderer

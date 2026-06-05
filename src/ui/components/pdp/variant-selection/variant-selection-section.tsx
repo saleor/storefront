@@ -7,6 +7,7 @@ import { VariantSelector } from "./variant-selector";
 import { VariantNameSelector } from "./variant-name-selector";
 import {
 	groupVariantsByAttributes,
+	getInteractiveAttributeGroups,
 	findMatchingVariant,
 	getSelectionsFromVariant,
 	getOptionsForAttribute,
@@ -14,6 +15,8 @@ import {
 	getUnavailableAttributeInfo,
 	type SaleorVariant,
 } from "./utils";
+import { defaultRenderers } from "./renderers";
+import type { RendererRegistry } from "./types";
 import { VariantAttributeBadges, extractOptionalAttributes } from "./optional-attributes";
 
 /**
@@ -51,6 +54,7 @@ export function VariantSelectionSection({
 	selectedVariantId,
 	productSlug,
 	channel,
+	renderers: customRenderers,
 	children,
 }: VariantSelectionSectionProps) {
 	const router = useRouter();
@@ -58,6 +62,11 @@ export function VariantSelectionSection({
 	const [isPending, startTransition] = useTransition();
 
 	const attributeGroups = useMemo(() => groupVariantsByAttributes(variants as SaleorVariant[]), [variants]);
+	const interactiveGroups = useMemo(() => getInteractiveAttributeGroups(attributeGroups), [attributeGroups]);
+	const rendererRegistry = useMemo(
+		() => ({ ...defaultRenderers, ...customRenderers }) as RendererRegistry,
+		[customRenderers],
+	);
 
 	// Get current selections from URL params OR from selected variant
 	const currentSelections = useMemo(() => {
@@ -87,8 +96,8 @@ export function VariantSelectionSection({
 
 	// Compute the matching variant from optimistic selections
 	const currentVariantId = useMemo(
-		() => findMatchingVariant(variants as SaleorVariant[], optimisticSelections),
-		[variants, optimisticSelections],
+		() => findMatchingVariant(variants as SaleorVariant[], optimisticSelections, attributeGroups),
+		[variants, optimisticSelections, attributeGroups],
 	);
 
 	const optionalAttributes = useMemo(
@@ -104,6 +113,7 @@ export function VariantSelectionSection({
 				optimisticSelections,
 				attributeSlug,
 				optionId,
+				attributeGroups,
 			);
 
 			const params = new URLSearchParams();
@@ -111,7 +121,11 @@ export function VariantSelectionSection({
 				if (value) params.set(slug, value);
 			}
 
-			const matchingVariantId = findMatchingVariant(variants as SaleorVariant[], newSelections);
+			const matchingVariantId = findMatchingVariant(
+				variants as SaleorVariant[],
+				newSelections,
+				attributeGroups,
+			);
 			if (matchingVariantId) {
 				params.set("variant", matchingVariantId);
 			}
@@ -121,7 +135,16 @@ export function VariantSelectionSection({
 				router.push(`/${channel}/products/${productSlug}?${params.toString()}`, { scroll: false });
 			});
 		},
-		[optimisticSelections, variants, channel, productSlug, router, startTransition, setOptimisticSelections],
+		[
+			optimisticSelections,
+			variants,
+			attributeGroups,
+			channel,
+			productSlug,
+			router,
+			startTransition,
+			setOptimisticSelections,
+		],
 	);
 
 	// Check if any attribute group is completely unavailable
@@ -175,7 +198,7 @@ export function VariantSelectionSection({
 
 	return (
 		<div className="space-y-6 py-2">
-			{attributeGroups.map((group) => {
+			{interactiveGroups.map((group) => {
 				const options = getOptionsForAttribute(
 					variants as SaleorVariant[],
 					attributeGroups,
@@ -196,6 +219,7 @@ export function VariantSelectionSection({
 						selectedId={optimisticSelections[group.slug]}
 						attributeSlug={group.slug}
 						onSelect={handleSelect}
+						renderers={rendererRegistry}
 						unavailableMessage={unavailableMessage}
 						isPending={isPending}
 					/>

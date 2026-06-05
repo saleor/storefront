@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import {
 	groupVariantsByAttributes,
+	getInteractiveAttributeGroups,
+	getImplicitSelections,
 	findMatchingVariant,
 	getAdjustedSelections,
 	getOptionsForAttribute,
@@ -14,6 +16,7 @@ import {
 	singleAttributeVariants,
 	nameOnlyVariants,
 	nameOnlyDifferentPrices,
+	audiobookVariants,
 } from "./__fixtures__/variants";
 
 // =============================================================================
@@ -60,6 +63,34 @@ describe("findMatchingVariant", () => {
 		const result = findMatchingVariant(singleAttributeVariants, { color: "navy" });
 		expect(result).toBe("single-navy");
 	});
+
+	it("auto-applies single-option attributes when resolving a variant", () => {
+		const variants = [
+			{
+				id: "hoodie-m",
+				name: "Hoodie / M",
+				quantityAvailable: 5,
+				selectionAttributes: [
+					{ attribute: { slug: "brand", name: "Brand" }, values: [{ name: "Saleor" }] },
+					{ attribute: { slug: "size", name: "Size" }, values: [{ name: "M" }] },
+				],
+			},
+			{
+				id: "hoodie-l",
+				name: "Hoodie / L",
+				quantityAvailable: 5,
+				selectionAttributes: [
+					{ attribute: { slug: "brand", name: "Brand" }, values: [{ name: "Saleor" }] },
+					{ attribute: { slug: "size", name: "Size" }, values: [{ name: "L" }] },
+				],
+			},
+		];
+		const groups = groupVariantsByAttributes(variants);
+
+		expect(getInteractiveAttributeGroups(groups).map((g) => g.slug)).toEqual(["size"]);
+		expect(getImplicitSelections(groups)).toEqual({ brand: "saleor" });
+		expect(findMatchingVariant(variants, { size: "m" }, groups)).toBe("hoodie-m");
+	});
 });
 
 // =============================================================================
@@ -99,6 +130,24 @@ describe("getAdjustedSelections", () => {
 		// Blue comes in S, M, L - switching sizes should preserve color
 		const result = getAdjustedSelections(sparseVariants, { color: "blue", size: "s" }, "size", "m");
 		expect(result).toEqual({ color: "blue", size: "m" });
+	});
+
+	it("keeps partial selections across attribute groups when compatible", () => {
+		// 3-attribute product: picking medium then audio quality must not wipe medium
+		const afterMedium = getAdjustedSelections(audiobookVariants, {}, "medium", "mp3");
+		expect(afterMedium).toEqual({ medium: "mp3" });
+
+		const afterQuality = getAdjustedSelections(audiobookVariants, afterMedium, "audio-quality", "standard");
+		expect(afterQuality).toEqual({ medium: "mp3", "audio-quality": "standard" });
+	});
+
+	it("resolves a full audiobook selection to the matching variant", () => {
+		const selections = {
+			medium: "mp3",
+			"audio-quality": "standard",
+			"instant-delivery": "instant-delivery:-yes",
+		};
+		expect(findMatchingVariant(audiobookVariants, selections)).toBe("audiobook-mp3");
 	});
 });
 
@@ -162,6 +211,77 @@ describe("groupVariantsByAttributes", () => {
 
 		expect(groups[0]?.slug).toBe("color");
 		expect(groups[1]?.slug).toBe("size");
+	});
+
+	it("extracts hex from SWATCH color attributes", () => {
+		const swatchVariants = [
+			{
+				id: "sneaker-39",
+				name: "Sky blue / 39",
+				quantityAvailable: 5,
+				selectionAttributes: [
+					{
+						attribute: { slug: "color", name: "Color", inputType: "SWATCH" },
+						values: [{ name: "Sky blue", value: "#87CEEB" }],
+					},
+				],
+			},
+		];
+
+		const groups = groupVariantsByAttributes(swatchVariants);
+		const colorGroup = groups.find((g) => g.slug === "color");
+
+		expect(colorGroup?.options[0]?.colorHex).toBe("#87CEEB");
+	});
+
+	it("extracts image URL from SWATCH attributes (non-color slug)", () => {
+		const swatchVariants = [
+			{
+				id: "audio-standard",
+				name: "MP3 / Standard",
+				quantityAvailable: 10,
+				selectionAttributes: [
+					{
+						attribute: { slug: "audio-quality", name: "Audio quality", inputType: "SWATCH" },
+						values: [
+							{
+								name: "Standard",
+								value: "",
+								file: { url: "https://example.com/waveform.svg" },
+							},
+						],
+					},
+				],
+			},
+			{
+				id: "audio-hires",
+				name: "MP3 / Hi-Res",
+				quantityAvailable: 10,
+				selectionAttributes: [
+					{
+						attribute: { slug: "audio-quality", name: "Audio quality", inputType: "SWATCH" },
+						values: [
+							{
+								name: "Hi-Res 24-bit",
+								value: "",
+								file: { url: "https://example.com/hires.svg" },
+							},
+						],
+					},
+				],
+			},
+		];
+
+		const groups = groupVariantsByAttributes(swatchVariants);
+		const qualityGroup = groups.find((g) => g.slug === "audio-quality");
+
+		expect(qualityGroup?.options).toHaveLength(2);
+		expect(qualityGroup?.options.find((o) => o.name === "Standard")?.swatchImageUrl).toBe(
+			"https://example.com/waveform.svg",
+		);
+		expect(qualityGroup?.options.find((o) => o.name === "Hi-Res 24-bit")?.swatchImageUrl).toBe(
+			"https://example.com/hires.svg",
+		);
 	});
 });
 
