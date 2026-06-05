@@ -19,6 +19,7 @@ import {
 	isMatchingAddressData,
 } from "@/checkout/components/address-form/utils";
 import { useUser } from "@/checkout/hooks/use-user";
+import { hasAuthCookies } from "@/lib/auth/has-auth-cookies";
 import { getQueryParams, createQueryString } from "@/checkout/lib/utils/url";
 import { localeConfig } from "@/config/locale";
 import { getStepNumber } from "./flow";
@@ -46,7 +47,8 @@ interface InformationStepProps {
 export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { user, authenticated } = useUser();
+	const { user, authenticated, loading: userLoading, refetch: refetchUser } = useUser();
+	const contactLoading = userLoading && hasAuthCookies();
 	const { availableShippingCountries } = useAvailableShippingCountries();
 	const shippingAddress = checkout.shippingAddress;
 
@@ -415,7 +417,10 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 				<SignInForm
 					initialEmail={email}
 					channelSlug={checkout.channel.slug}
-					onSuccess={() => setContactView("main")}
+					onSuccess={async () => {
+						await refetchUser({ requestPolicy: "network-only" });
+						setContactView("main");
+					}}
 					onGuestCheckout={() => setContactView("main")}
 				/>
 			</div>
@@ -436,6 +441,7 @@ export const InformationStep: FC<InformationStepProps> = ({ checkout, onNext }) 
 			<ContactSection
 				isSignedIn={authenticated}
 				user={user}
+				isLoading={contactLoading}
 				onSignOut={() => {}} // User signs out via header
 				onSignInClick={() => setContactView("signIn")}
 				email={email}

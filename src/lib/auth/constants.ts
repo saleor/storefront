@@ -15,3 +15,6 @@ export const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60; // 7 days
 export const encodeCookieName = (key: string): string => {
 	return key.replace(/[^a-zA-Z0-9_-]/g, "_");
 };
+
+/** Substrings matched against encoded Saleor auth cookie names (client + server). */
+export const AUTH_COOKIE_MARKERS = ["saleor_auth_access_token", "saleor_auth_refresh_token"] as const;

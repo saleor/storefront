@@ -21,6 +21,8 @@ interface ContactSectionProps {
 	// Auth state
 	isSignedIn: boolean;
 	user: User | null | undefined;
+	/** True while resolving session (avoids guest UI flash when auth cookies exist) */
+	isLoading?: boolean;
 	onSignOut: () => void;
 	onSignInClick: () => void;
 
@@ -49,6 +51,7 @@ interface ContactSectionProps {
 export const ContactSection: FC<ContactSectionProps> = ({
 	isSignedIn,
 	user,
+	isLoading = false,
 	onSignOut,
 	onSignInClick,
 	email,
@@ -63,6 +66,15 @@ export const ContactSection: FC<ContactSectionProps> = ({
 	subscribeNews,
 	onSubscribeChange,
 }) => {
+	if (isLoading) {
+		return (
+			<section className="space-y-4">
+				<div className="h-7 w-24 animate-pulse rounded bg-muted" />
+				<div className="h-16 animate-pulse rounded-lg bg-muted" />
+			</section>
+		);
+	}
+
 	return (
 		<section className="space-y-4">
 			{isSignedIn && user ? (

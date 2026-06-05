@@ -1,8 +1,7 @@
 import "server-only";
 
 import { cookies } from "next/headers";
-
-const AUTH_COOKIE_MARKERS = ["saleor_auth_access_token", "saleor_auth_refresh_token"] as const;
+import { AUTH_COOKIE_MARKERS } from "./constants";
 
 /**
  * True when Saleor auth cookies are present on the request.

@@ -12,8 +12,8 @@ export interface SignInFormProps {
 	initialEmail?: string;
 	/** Saleor channel slug for password reset */
 	channelSlug: string;
-	/** Called when sign-in is successful */
-	onSuccess: () => void;
+	/** Called when sign-in is successful (may be async — form waits before clearing loading state) */
+	onSuccess: () => void | Promise<void>;
 	/** Called when user wants to checkout as guest */
 	onGuestCheckout: () => void;
 }
@@ -57,7 +57,7 @@ export const SignInForm: FC<SignInFormProps> = ({
 				const err = result.data.tokenCreate.errors[0];
 				setError(err.message || "Invalid email or password");
 			} else if (result.data?.tokenCreate?.token) {
-				onSuccess();
+				await onSuccess();
 			} else {
 				setError("Sign in failed. Please try again.");
 			}
