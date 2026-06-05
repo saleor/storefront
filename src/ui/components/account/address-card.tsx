@@ -7,6 +7,7 @@ type Props = {
 	isDefaultBilling?: boolean;
 	className?: string;
 	children?: React.ReactNode;
+	footer?: React.ReactNode;
 };
 
 export function AccountAddressCard({
@@ -15,11 +16,12 @@ export function AccountAddressCard({
 	isDefaultBilling,
 	className,
 	children,
+	footer,
 }: Props) {
 	return (
-		<div className={cn("rounded-lg border p-4", className)}>
-			<div className="flex items-start justify-between gap-4">
-				<div className="min-w-0 space-y-1">
+		<div className={cn("flex h-full flex-col rounded-lg border p-4", className)}>
+			<div className="flex flex-1 items-start justify-between gap-4">
+				<div className="min-w-0 flex-1 space-y-1">
 					<div className="flex flex-wrap items-center gap-2">
 						<span className="font-semibold">
 							{address.firstName} {address.lastName}
@@ -48,6 +50,11 @@ export function AccountAddressCard({
 				</div>
 				{children && <div className="flex shrink-0 items-center gap-1">{children}</div>}
 			</div>
+			{footer && (
+				<div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-3">
+					{footer}
+				</div>
+			)}
 		</div>
 	);
 }

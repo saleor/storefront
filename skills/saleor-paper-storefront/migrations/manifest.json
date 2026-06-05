@@ -1,0 +1,235 @@
+{
+	"schemaVersion": 1,
+	"batch": "2026-06-cache-ppr",
+	"ordering": "Array order matches upstream ship chronology (oldest first). Use requires for hard execution dependencies; skip and revisit in a later pass when deps are not yet applied.",
+	"migrations": [
+		{
+			"id": "2026-06-pdp-ppr-islands",
+			"title": "PDP static shell with dynamic gallery and variant islands",
+			"upstreamSha": "651f7dd0",
+			"landedAt": "2026-06-04T16:38:29+02:00",
+			"introducedIn": "2026.06",
+			"requires": [],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/app/[channel]/(main)/products/[slug]/page.tsx",
+				"src/ui/components/pdp/variant-gallery-dynamic.tsx",
+				"src/ui/components/pdp/gallery-utils.ts"
+			],
+			"detectMarkers": ["ProductShell", "VariantGalleryDynamic"]
+		},
+		{
+			"id": "2026-06-channel-scoped-tags",
+			"title": "Scope navigation and footer cache tags per channel",
+			"upstreamSha": "e0ba7249",
+			"landedAt": "2026-06-04T16:38:52+02:00",
+			"introducedIn": "2026.06",
+			"requires": [],
+			"optional": true,
+			"skipPrompt": "This migration scopes nav/footer cache tags per channel (navigation:{channel}). Skip if you run a single-channel storefront with no multi-channel cache invalidation needs?",
+			"category": "caching",
+			"touchPaths": [
+				"src/lib/cache-manifest.ts",
+				"src/lib/channel-slugs.ts",
+				"src/app/api/revalidate/route.ts"
+			],
+			"detectMarkers": ["navigation:{channel}", "buildTag", "getStorefrontChannelSlugs"]
+		},
+		{
+			"id": "2026-06-channel-allowlist",
+			"title": "Storefront channel allowlist with opt-in API discovery",
+			"upstreamSha": "3553c93e",
+			"landedAt": "2026-06-04T16:48:56+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-channel-scoped-tags"],
+			"optional": true,
+			"skipPrompt": "This migration adds STOREFRONT_CHANNELS allowlist and route guards. Skip if you intentionally expose every Saleor channel as a storefront route?",
+			"category": "caching",
+			"touchPaths": [
+				"src/config/channels.ts",
+				"src/lib/channel-slugs.ts",
+				"src/app/[channel]/layout.tsx",
+				".env.example"
+			],
+			"detectMarkers": ["STOREFRONT_CHANNELS", "getConfiguredStorefrontChannelSlugs", "notFound"]
+		},
+		{
+			"id": "2026-06-cache-life-profiles",
+			"title": "Named cacheLife tiers (catalog, menus, channels)",
+			"upstreamSha": "9f662a68",
+			"landedAt": "2026-06-04T17:16:47+02:00",
+			"introducedIn": "2026.06",
+			"requires": [],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/lib/cache-life-profiles.ts",
+				"src/lib/cache-life-profiles.data.mjs",
+				"next.config.js"
+			],
+			"detectMarkers": ["paperCacheLifeProfiles", "catalog", "menus", "channels"]
+		},
+		{
+			"id": "2026-06-cache-manifest-v3",
+			"title": "Cache manifest v3 with named profile mapping",
+			"upstreamSha": "9f662a68",
+			"landedAt": "2026-06-04T17:16:47+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-cache-life-profiles"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": ["src/lib/cache-manifest.ts", "src/lib/revalidate-tags.ts"],
+			"detectMarkers": ["CACHE_PROFILES", "manifestVersion", "applyCacheProfile"]
+		},
+		{
+			"id": "2026-06-menu-data-layer",
+			"title": "Extract cached menu/channel data from layout components",
+			"upstreamSha": "72a0a6d6",
+			"landedAt": "2026-06-04T18:22:43+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-cache-manifest-v3"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/lib/menus/get-menu-data.ts",
+				"src/lib/channels/get-channels-data.ts",
+				"src/ui/components/nav/components/nav-links.tsx",
+				"src/ui/components/footer.tsx"
+			],
+			"detectMarkers": ["getNavbarMenuItems", "getFooterMenuItems", "NavLinksView"]
+		},
+		{
+			"id": "2026-06-menu-webhooks",
+			"title": "Menu webhook revalidation for nav and footer caches",
+			"upstreamSha": "7a0eda01",
+			"landedAt": "2026-06-04T17:54:50+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-menu-data-layer", "2026-06-channel-scoped-tags"],
+			"optional": true,
+			"skipPrompt": "Menu instant invalidation requires paper-app webhook forwarding (manual setup for now). Skip menu webhook revalidation and rely on menus TTL (~1 hr)?",
+			"category": "caching",
+			"touchPaths": [
+				"src/lib/cache-manifest.ts",
+				"src/app/api/revalidate/route.ts",
+				"src/lib/cache-manifest.test.ts"
+			],
+			"detectMarkers": ["planMenuRevalidation", "STOREFRONT_MENU_SLUGS", "MENU_ITEM"]
+		},
+		{
+			"id": "2026-06-plp-shell-split",
+			"title": "PLP cached hero shell and dynamic product grid",
+			"upstreamSha": "3be1d7e6",
+			"landedAt": "2026-06-04T19:00:45+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-cache-life-profiles"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/lib/catalog/get-category-data.ts",
+				"src/lib/catalog/get-collection-data.ts",
+				"src/app/[channel]/(main)/categories/[slug]/page.tsx",
+				"src/app/[channel]/(main)/collections/[slug]/page.tsx"
+			],
+			"detectMarkers": ["getCategoryData", "getCollectionData", "ProductsGridSkeleton"]
+		},
+		{
+			"id": "2026-06-layout-route-loading",
+			"title": "Unlock route loading.tsx by removing layout main Suspense null fallback",
+			"upstreamSha": "be97b7e6",
+			"landedAt": "2026-06-04T19:07:44+02:00",
+			"introducedIn": "2026.06",
+			"requires": [],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/app/[channel]/(main)/layout.tsx",
+				"src/ui/components/plp/plp-page-loading.tsx",
+				"src/app/[channel]/(main)/categories/[slug]/loading.tsx",
+				"src/app/[channel]/(main)/collections/[slug]/loading.tsx"
+			],
+			"detectMarkers": ["PlpPageLoading"]
+		},
+		{
+			"id": "2026-06-homepage-featured-layer",
+			"title": "Extract homepage featured products to catalog data layer",
+			"upstreamSha": "b0e1b869",
+			"landedAt": "2026-06-04T19:37:16+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-cache-life-profiles"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/lib/catalog/get-featured-products.ts",
+				"src/app/[channel]/(main)/page.tsx",
+				"src/ui/components/featured-products-skeleton.tsx"
+			],
+			"detectMarkers": ["getFeaturedProducts", "FeaturedProductsSkeleton"]
+		},
+		{
+			"id": "2026-06-client-boundaries",
+			"title": "Tighten client boundaries and homepage product links",
+			"upstreamSha": "41851941",
+			"landedAt": "2026-06-04T20:56:20+02:00",
+			"introducedIn": "2026.06",
+			"requires": [],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/ui/components/storefront-providers.tsx",
+				"src/app/[channel]/(main)/layout.tsx",
+				"src/ui/components/product-element.tsx"
+			],
+			"detectMarkers": ["StorefrontProviders"]
+		},
+		{
+			"id": "2026-06-account-ppr-auth",
+			"title": "Account layout Suspense, profile context, and PPR-safe pages",
+			"upstreamSha": "3b27d901",
+			"landedAt": "2026-06-05T12:50:56+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-layout-route-loading"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/app/[channel]/(main)/account/layout.tsx",
+				"src/app/[channel]/(main)/account/get-current-user.ts",
+				"src/app/[channel]/(main)/account/page.tsx",
+				"src/app/[channel]/(main)/account/addresses/page.tsx",
+				"src/app/[channel]/(main)/account/settings/page.tsx",
+				"src/app/[channel]/(main)/account/orders/page.tsx",
+				"src/app/[channel]/(main)/account/orders/[number]/page.tsx",
+				"src/app/[channel]/(main)/account/actions.ts",
+				"src/ui/components/account/account-login.tsx",
+				"src/ui/components/account/account-context.tsx",
+				"src/ui/components/account/addresses-page.tsx",
+				"src/ui/components/account/settings-page.tsx",
+				"src/ui/components/account/recent-orders-section.tsx",
+				"src/ui/components/account/account-skeleton.tsx"
+			],
+			"detectMarkers": ["AccountLogin", "AccountShell", "useAccountUser"]
+		},
+		{
+			"id": "2026-06-channel-discovery-cache",
+			"title": "PPR-safe channel discovery via cached ChannelsList",
+			"upstreamSha": "223382c0",
+			"landedAt": "2026-06-05T18:00:00+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-channel-allowlist", "2026-06-menu-data-layer"],
+			"optional": true,
+			"skipPrompt": "Skip if the fork only uses STOREFRONT_CHANNELS (no API discovery at build time)?",
+			"category": "caching",
+			"touchPaths": ["src/lib/channel-slugs.ts"],
+			"detectMarkers": ["getCachedChannelsList", "activeChannelSlugsFromList"]
+		}
+	]
+}

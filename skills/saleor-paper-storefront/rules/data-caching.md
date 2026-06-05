@@ -241,14 +241,16 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — never raw `c
 
 ### 3. Page Patterns by Route Type
 
-| Route                                  | Shell (cached)                                          | Dynamic islands                                                       |
-| -------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------- |
-| **Homepage**                           | Sync `<section>` wrapper                                | `FeaturedProducts` in Suspense → `getFeaturedProducts()`              |
-| **PLP** (category/collection/products) | Hero/title from `getCategoryData` / `getCollectionData` | Product grid in nested Suspense (filters/sort via `searchParams`)     |
-| **PDP**                                | `ProductShell`: name, attributes, JSON-LD, preload      | `VariantGalleryDynamic` + `VariantSectionDynamic` (separate Suspense) |
-| **CMS page**                           | Sync page export                                        | `PageContent` in Suspense → `getPageData()`                           |
+| Route                                  | Shell (cached)                                          | Dynamic islands                                                               |
+| -------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Homepage**                           | Sync `<section>` wrapper                                | `FeaturedProducts` in Suspense → `getFeaturedProducts()`                      |
+| **PLP** (category/collection/products) | Hero/title from `getCategoryData` / `getCollectionData` | Product grid in nested Suspense (filters/sort via `searchParams`)             |
+| **PDP**                                | `ProductShell`: name, attributes, JSON-LD, preload      | `VariantGalleryDynamic` + `VariantSectionDynamic` (separate Suspense)         |
+| **CMS page**                           | Sync page export                                        | `PageContent` in Suspense → `getPageData()`                                   |
+| **Account** (`/account/*`)             | Layout `AccountShell` + `AccountProvider`               | Per-page Suspense for orders; profile via context (see `data-auth-routes.md`) |
 
-See `product-pdp.md` for PDP specifics. PLP routes use `loading.tsx` at the route segment.
+See `product-pdp.md` for PDP specifics. PLP routes use `loading.tsx` at the route segment.  
+See `data-auth-routes.md` for migrating other logged-in route trees.
 
 ### 4. Suspense Around Dynamic Content
 
