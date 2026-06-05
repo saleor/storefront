@@ -6,7 +6,7 @@ Project-specific agent skill for the Saleor Paper storefront built with Next.js 
 
 ## Installation
 
-If working within this repo, the skill is already available in `skills/`. To install it in `.agents/skills/` for agent auto-discovery:
+If working within this repo, the skill is already available in `skills/`. To install it elsewhere for agent auto-discovery:
 
 ```shell
 # Install this project skill

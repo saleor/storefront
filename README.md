@@ -71,7 +71,7 @@ Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
 - **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 13 task-specific rules covering GraphQL, caching, variant selection, checkout, and more
-- **[`.agents/skills/`](.agents/skills/)** — Installed community skills (Vercel React best practices, composition patterns)
+- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor API patterns; install additional skills (React best practices, composition patterns) via `npx skills add`
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
 Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase is designed to help them help you.
@@ -321,12 +321,16 @@ If you're working with AI coding assistants, point them to:
 
 - **`AGENTS.md`** — Architecture, commands, gotchas
 - **`skills/saleor-paper-storefront/`** — 13 project-specific rules (GraphQL, caching, checkout, etc.)
-- **`.agents/skills/`** — Installed community skills (React best practices, composition patterns)
+- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor patterns and optional community skills (React best practices, composition patterns, etc.)
 
-To install the project skill for agent auto-discovery:
+To install skills for agent auto-discovery:
 
 ```shell
+# Project skill (already in this repo)
 npx skills add . --skill saleor-paper-storefront
+
+# Universal Saleor API patterns
+npx skills add saleor/agent-skills --skill saleor-storefront
 ```
 
 ### Environment Variables
