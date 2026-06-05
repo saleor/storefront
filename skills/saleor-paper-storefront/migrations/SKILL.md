@@ -110,7 +110,7 @@ Update `lastUpstreamSha` to the migration's `upstreamSha`.
 
 ## First batch
 
-All migrations in manifest batch `2026-06-cache-ppr` — see [`manifest.json`](manifest.json).
+Manifest batch `2026-06-cache-ppr` (caching/PPR) plus product migrations such as `2026-06-pdp-swatch-selectors` — see [`manifest.json`](manifest.json).
 
 Deep background: [`references/caching-overview.md`](references/caching-overview.md).
 
