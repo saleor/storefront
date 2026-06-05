@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { LinkWithChannel } from "../atoms/link-with-channel";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney, getHrefForVariant } from "@/lib/utils";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { PaymentStatus } from "@/ui/components/payment-status";

@@ -82,6 +82,38 @@ The `channels` query requires an authenticated app token. No specific permission
 4. Save and copy the generated token
 5. Add to `.env.local` as `SALEOR_APP_TOKEN`
 
+## Storefront Channel Allowlist
+
+Not every Saleor channel should become a storefront route. Use an explicit allowlist in production:
+
+```env
+# Recommended — only these channels get /{channel}/... routes
+STOREFRONT_CHANNELS=us,uk
+
+# Default channel (must be in allowlist when allowlist is set)
+NEXT_PUBLIC_DEFAULT_CHANNEL=us
+
+# Optional — discover additional channels from Saleor API at build time
+# Requires SALEOR_APP_TOKEN; merged with allowlist, not a replacement
+STOREFRONT_DISCOVER_CHANNELS=true
+```
+
+**Resolution order** (`src/lib/channel-slugs.ts` → `getStorefrontChannelSlugs()`):
+
+1. `STOREFRONT_CHANNELS` — comma-separated allowlist (recommended)
+2. If `STOREFRONT_DISCOVER_CHANNELS=true` — slugs from `getCachedChannelsList()` (`"use cache"`; required for PPR builds)
+3. Fallback — `NEXT_PUBLIC_DEFAULT_CHANNEL` only
+
+### Where the allowlist is enforced
+
+| Location                          | Behavior                                                |
+| --------------------------------- | ------------------------------------------------------- |
+| `src/app/[channel]/layout.tsx`    | `generateStaticParams` + `notFound()` for unknown slugs |
+| `src/app/api/revalidate/route.ts` | Path revalidation loops over allowed channels only      |
+| `src/ui/components/footer.tsx`    | Channel selector lists allowed channels                 |
+
+See `data-caching.md` for how webhooks use `getStorefrontChannelSlugs()` during invalidation.
+
 ## Architecture
 
 ### Storefront (channel in URL)
@@ -112,13 +144,15 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 
 ## Key Files
 
-| File                                   | Purpose                              |
-| -------------------------------------- | ------------------------------------ |
-| `src/app/[channel]/layout.tsx`         | Generates static params for channels |
-| `src/ui/components/channel-select.tsx` | Channel switcher dropdown            |
-| `src/ui/components/footer.tsx`         | Renders channel selector             |
-| `src/graphql/ChannelsList.graphql`     | Query for fetching channels          |
-| `src/app/config.ts`                    | `DefaultChannelSlug` fallback        |
+| File                                   | Purpose                                     |
+| -------------------------------------- | ------------------------------------------- |
+| `src/config/channels.ts`               | Allowlist env parsing + validation          |
+| `src/lib/channel-slugs.ts`             | `getStorefrontChannelSlugs()` (React.cache) |
+| `src/app/[channel]/layout.tsx`         | Route guard + `generateStaticParams`        |
+| `src/ui/components/channel-select.tsx` | Channel switcher dropdown                   |
+| `src/ui/components/footer.tsx`         | Renders channel selector                    |
+| `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
+| `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
 
 ## Locale Considerations
 
@@ -137,6 +171,7 @@ This is NOT implemented - formatting is currently `en-US` for all channels.
 
 ## Anti-patterns
 
-❌ **Don't assume stock means purchasable** - Warehouse must be in both the channel AND a shipping zone for that channel
+❌ **Don't expose every Saleor channel as a route** — Use `STOREFRONT_CHANNELS` allowlist in production  
+❌ **Don't assume stock means purchasable** — Warehouse must be in both the channel AND a shipping zone for that channel
 ❌ **Don't debug availability client-side only** - Check the 7-point purchasability checklist in Saleor Dashboard first
 ❌ **Don't hardcode channel slugs without fallback** - Use `DefaultChannelSlug` from config

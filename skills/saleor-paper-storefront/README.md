@@ -18,11 +18,11 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 ## What's Included
 
-11 rules across 6 categories covering the full storefront:
+12 rules across 6 categories covering the full storefront:
 
 | Category      | Rules                                                  | Topics                                                       |
 | ------------- | ------------------------------------------------------ | ------------------------------------------------------------ |
-| Data Layer    | `data-caching`, `data-graphql`                         | Cache Components, PPR, GraphQL codegen, schema types         |
+| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`     | Cache Components, PPR, account auth routes, GraphQL codegen  |
 | Product Pages | `product-pdp`, `product-variants`, `product-filtering` | PDP architecture, variant selection, server/client filtering |
 | Checkout      | `checkout-management`, `checkout-components`           | Session lifecycle, reusable UI components                    |
 | UI & Channels | `ui-components`, `ui-channels`                         | Design tokens, multi-currency                                |
@@ -34,7 +34,7 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 ```
 saleor-paper-storefront/
 ├── SKILL.md              # Overview and quick reference (agents read this first)
-├── AGENTS.md             # Full compiled document (all rules expanded)
+├── AGENTS.md             # Full compiled document (sync from rules/ when material changes)
 ├── README.md             # This file (for humans)
 ├── rules/                # Individual rule files
 │   ├── data-caching.md
@@ -48,11 +48,26 @@ saleor-paper-storefront/
 │   ├── ui-channels.md
 │   ├── seo-metadata.md
 │   └── dev-investigation.md
+├── migrations/         # Fork upgrade prompts (chronological)
+│   ├── SKILL.md        # Orchestrator — read when upgrading a fork
+│   ├── manifest.json   # Ordered registry + upstream SHAs
+│   └── atomic/         # One folder per migration
 └── references/           # Supporting deep-dive documentation
     ├── variant-state-machine.md
     ├── variant-utils-reference.md
     └── saleor-key-directories.md
 ```
+
+## Upgrading a fork
+
+If you forked Paper and want to catch up with upstream changes (without losing custom styling):
+
+1. Pull latest `skills/saleor-paper-storefront/migrations/` from upstream.
+2. Check repo-root [`paper-version.json`](../../paper-version.json) — lists applied migrations.
+3. Ask your AI agent: **"Apply pending Paper migrations"** — it should read [`migrations/SKILL.md`](migrations/SKILL.md).
+4. Migrations port **architecture and behavior**, not your brand styling. Skeleton structure is ported; existing `classNames` are preserved.
+
+Optional migrations (multi-channel allowlist, menu webhooks) are always presented — confirm skip at runtime.
 
 ## Related Skills
 

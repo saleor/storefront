@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Pencil } from "lucide-react";
 import { type AddressDetailsFragment } from "@/gql/graphql";
 import { Button } from "@/ui/components/ui/button";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export function AddressFormDialog({ address }: Props) {
+	const router = useRouter();
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const [error, setError] = useState("");
@@ -38,10 +40,11 @@ export function AddressFormDialog({ address }: Props) {
 					setError(result.error);
 				} else {
 					setOpen(false);
+					router.refresh();
 				}
 			});
 		},
-		[isEditing, startTransition],
+		[isEditing, router, startTransition],
 	);
 
 	return (

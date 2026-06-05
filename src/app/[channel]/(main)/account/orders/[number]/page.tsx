@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { MapPin, CreditCard } from "lucide-react";
@@ -7,13 +8,22 @@ import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { OrderTimeline } from "@/ui/components/account/order-timeline";
 import { OrderStatusBadge } from "@/ui/components/account/order-status-badge";
+import { AccountOrderDetailSkeleton } from "@/ui/components/account/account-skeleton";
 import { type AddressDetailsFragment } from "@/gql/graphql";
 
 type Props = {
 	params: Promise<{ number: string }>;
 };
 
-export default async function OrderDetailPage({ params }: Props) {
+export default function OrderDetailPage({ params }: Props) {
+	return (
+		<Suspense fallback={<AccountOrderDetailSkeleton />}>
+			<OrderDetailContent params={params} />
+		</Suspense>
+	);
+}
+
+async function OrderDetailContent({ params }: Props) {
 	const { number } = await params;
 
 	// Saleor's `me.orders` doesn't support filtering by number (UserOrdersArgs
@@ -25,8 +35,14 @@ export default async function OrderDetailPage({ params }: Props) {
 		cache: "no-cache",
 	});
 
-	if (!result.ok || !result.data.me) {
-		return null;
+	if (!result.ok) {
+		return (
+			<p className="text-sm text-muted-foreground">We couldn&apos;t load this order. Please try again.</p>
+		);
+	}
+
+	if (!result.data.me) {
+		return <p className="text-sm text-muted-foreground">Sign in to view this order.</p>;
 	}
 
 	const orders = result.data.me.orders?.edges ?? [];

@@ -16,6 +16,7 @@ import { RootViews } from "./views/root-views";
 import { PageNotFound } from "@/checkout/views/page-not-found";
 import { GraphQLMonitor, createMonitoredFetch } from "@/ui/components/dev/graphql-monitor";
 import { withRetry } from "@/lib/fetch-retry";
+import { wrapFetchWithAuth } from "@/lib/auth/wrap-fetch-with-auth";
 import "./index.css";
 
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
@@ -24,8 +25,7 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 	const makeUrqlClient = () => {
 		// Build fetch chain: auth -> (monitor with chaos) -> retry -> actual fetch
 		// Chaos is inside retry so failures get retried (tests retry behavior)
-		const authFetch = (input: RequestInfo | URL, init?: RequestInit) =>
-			saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init);
+		const authFetch = wrapFetchWithAuth((input, init) => saleorAuthClient.fetchWithAuth(input, init));
 
 		const monitoredFetch =
 			process.env.NODE_ENV === "development" ? createMonitoredFetch(authFetch, "checkout") : authFetch;

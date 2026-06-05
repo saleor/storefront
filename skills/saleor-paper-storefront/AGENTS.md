@@ -4,11 +4,14 @@
 Saleor Paper  
 February 2026
 
-> **Note:**  
-> This document is mainly for agents and LLMs to follow when maintaining,  
-> generating, or refactoring this Saleor storefront codebase. Humans  
-> may also find it useful, but guidance here is optimized for automation  
+> **Note:** This document is mainly for agents and LLMs to follow when maintaining,
+> generating, or refactoring this Saleor storefront codebase. Humans
+> may also find it useful, but guidance here is optimized for automation
 > and consistency by AI-assisted workflows.
+>
+> **Source of truth:** Individual rule files in `rules/` are updated first. This compiled
+> document may lag — for caching architecture details, prefer `rules/data-caching.md`,
+> `rules/product-pdp.md`, and `rules/ui-channels.md`.
 
 ---
 
@@ -157,14 +160,17 @@ async function getProductData(slug: string, channel: string) {
 
 ### Tag Registry
 
-| Tag Pattern         | Used By                                        | Invalidated When          |
-| ------------------- | ---------------------------------------------- | ------------------------- |
-| `product:{slug}`    | `getProductData()`                             | Product updated in Saleor |
-| `category:{slug}`   | `getCategoryData()`                            | Category updated          |
-| `collection:{slug}` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
-| `navigation`        | `NavLinks`                                     | Menu structure changed    |
-| `footer-menu`       | `getFooterMenu()`                              | Footer menu changed       |
-| `channels`          | `getChannels()`                                | Channel list changed      |
+| Tag Pattern             | Profile ID    | Used By                                        | Invalidated When          |
+| ----------------------- | ------------- | ---------------------------------------------- | ------------------------- |
+| `product:{slug}`        | `products`    | PDP `getProductData()`                         | Product updated in Saleor |
+| `category:{slug}`       | `categories`  | `getCategoryData()`                            | Category updated          |
+| `collection:{slug}`     | `collections` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
+| `page:{slug}`           | `pages`       | `getPageData()` (CMS)                          | Page updated              |
+| `navigation:{channel}`  | `navigation`  | `getNavbarMenuItems()`                         | Navbar menu changed       |
+| `footer-menu:{channel}` | `footerMenu`  | `getFooterMenuItems()`                         | Footer menu changed       |
+| `channels`              | `channels`    | `getCachedChannelsList()`                      | Channel list changed      |
+
+Use `applyCacheProfile(CACHE_PROFILES.*)` — see `rules/data-caching.md` for the full three-layer page model, data layer paths, and webhook events.
 
 ## Key Patterns
 
@@ -232,6 +238,7 @@ export default async function Page(props: PageProps) {
 All page routes in this project follow this pattern:
 
 - `src/app/[channel]/(main)/page.tsx` (homepage)
+- `src/app/[channel]/(main)/pages/[slug]/page.tsx` (CMS pages)
 - `src/app/[channel]/(main)/categories/[slug]/page.tsx`
 - `src/app/[channel]/(main)/collections/[slug]/page.tsx`
 - `src/app/[channel]/(main)/products/[slug]/page.tsx`
@@ -374,6 +381,7 @@ When configured, Saleor sends webhooks on data changes, triggering instant inval
    - `PRODUCT_CREATED`, `PRODUCT_UPDATED`, `PRODUCT_DELETED`
    - `CATEGORY_CREATED`, `CATEGORY_UPDATED`, `CATEGORY_DELETED`
    - `COLLECTION_CREATED`, `COLLECTION_UPDATED`, `COLLECTION_DELETED`
+   - `PAGE_CREATED`, `PAGE_UPDATED`, `PAGE_DELETED`
 4. Copy the **secret key** to `SALEOR_WEBHOOK_SECRET` env var
 
 **What happens on webhook:**

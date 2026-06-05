@@ -1,9 +1,9 @@
 import { type ReactNode, Suspense } from "react";
-import { cookies } from "next/headers";
-import { LoginForm } from "@/ui/components/login-form";
+import { AccountLogin } from "@/ui/components/account/account-login";
 import { AccountNav } from "@/ui/components/account/account-nav";
 import { AccountSkeleton } from "@/ui/components/account/account-skeleton";
 import { AccountProvider } from "@/ui/components/account/account-context";
+import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { getCurrentUser } from "./get-current-user";
 
 export const metadata = {
@@ -19,22 +19,14 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
 }
 
 async function AccountShell({ children }: { children: ReactNode }) {
-	let hasCookies = false;
-	try {
-		const cookieStore = await cookies();
-		hasCookies = cookieStore.getAll().length > 0;
-	} catch {
-		// Static generation
-	}
-
-	if (!hasCookies) {
-		return <LoginForm />;
+	if (!(await hasAuthSession())) {
+		return <AccountLogin />;
 	}
 
 	const user = await getCurrentUser();
 
 	if (!user) {
-		return <LoginForm />;
+		return <AccountLogin />;
 	}
 
 	return (

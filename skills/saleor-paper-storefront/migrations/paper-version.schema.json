@@ -1,0 +1,47 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://github.com/saleor/storefront/paper-version.schema.json",
+	"title": "Paper Storefront Version",
+	"description": "Tracks which Paper migrations a fork has applied or skipped.",
+	"type": "object",
+	"required": ["schemaVersion", "appliedMigrations"],
+	"properties": {
+		"schemaVersion": {
+			"type": "integer",
+			"const": 1
+		},
+		"lastUpstreamSha": {
+			"type": "string",
+			"description": "Most recent upstream commit SHA from an applied migration",
+			"pattern": "^[0-9a-f]{7,40}$"
+		},
+		"appliedMigrations": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": ["id", "upstreamSha"],
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "Migration id from migrations/manifest.json"
+					},
+					"upstreamSha": {
+						"type": "string",
+						"pattern": "^[0-9a-f]{7,40}$"
+					},
+					"appliedAt": {
+						"type": "string",
+						"format": "date"
+					},
+					"skipped": {
+						"type": "boolean",
+						"default": false
+					},
+					"skipReason": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}

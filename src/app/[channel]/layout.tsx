@@ -1,53 +1,40 @@
 import { type ReactNode } from "react";
-import { executePublicGraphQL } from "@/lib/graphql";
-import { ChannelsListDocument } from "@/gql/graphql";
-import { DefaultChannelSlug } from "@/app/config";
+import { notFound } from "next/navigation";
+import { isAllowedStorefrontChannel } from "@/config/channels";
+import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 
 /**
  * Generate static params for channel routes.
  *
- * Uses NEXT_PUBLIC_DEFAULT_CHANNEL as the primary channel.
- * Optionally discovers additional channels via SALEOR_APP_TOKEN (for multi-channel builds).
+ * Uses NEXT_PUBLIC_DEFAULT_CHANNEL as fallback.
+ * Prefer STOREFRONT_CHANNELS allowlist; API discovery is opt-in via STOREFRONT_DISCOVER_CHANNELS.
  */
 export const generateStaticParams = async () => {
-	const channels: string[] = [];
+	const channels = await getStorefrontChannelSlugs();
 
-	// 1. Add default channel (required)
-	if (DefaultChannelSlug) {
-		channels.push(DefaultChannelSlug);
-	}
-
-	// 2. Optionally discover additional channels via API (for multi-channel setups)
-	if (process.env.SALEOR_APP_TOKEN) {
-		const result = await executePublicGraphQL(ChannelsListDocument, {
-			headers: {
-				Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-			},
-		});
-
-		if (result.ok && result.data.channels) {
-			const activeChannelSlugs = result.data.channels.filter((ch) => ch.isActive).map((ch) => ch.slug);
-
-			// Add channels not already in the list
-			for (const slug of activeChannelSlugs) {
-				if (!channels.includes(slug)) {
-					channels.push(slug);
-				}
-			}
-		} else if (!result.ok) {
-			console.warn("[Channels] Failed to fetch additional channels from API:", result.error.message);
-		}
-	}
-
-	// Return channels (or empty if none configured - will show setup page)
 	if (channels.length === 0) {
-		console.warn("[Channels] No channels configured. Set NEXT_PUBLIC_DEFAULT_CHANNEL.");
+		console.warn(
+			"[Channels] No channels configured. Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
+		);
 		return [];
 	}
 
 	return channels.map((channel) => ({ channel }));
 };
 
-export default function ChannelLayout({ children }: { children: ReactNode }) {
+export default async function ChannelLayout({
+	children,
+	params,
+}: {
+	children: ReactNode;
+	params: Promise<{ channel: string }>;
+}) {
+	const { channel } = await params;
+	const allowedSlugs = await getStorefrontChannelSlugs();
+
+	if (!isAllowedStorefrontChannel(channel, allowedSlugs)) {
+		notFound();
+	}
+
 	return children;
 }

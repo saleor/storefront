@@ -11,11 +11,13 @@ import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
-	ProductGallery,
 	ProductAttributes,
+	VariantGalleryDynamic,
+	GallerySkeleton,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
 	VariantSectionError,
+	getDefaultGalleryImages,
 } from "@/ui/components/pdp";
 
 // ============================================================================
@@ -31,7 +33,6 @@ async function getProductData(slug: string, channel: string) {
 			slug: decodeURIComponent(slug),
 			channel,
 		},
-		revalidate: 300,
 	});
 
 	if (!result.ok) {
@@ -86,9 +87,8 @@ export async function generateMetadata(props: {
 const parser = edjsHTML();
 
 /**
- * Sync page shell with dedicated Suspense boundary.
- * All cached product data + dynamic variant section stream inside
- * this boundary, not through the layout's main Suspense.
+ * Sync page entry — Suspense while params resolve and cached product data loads.
+ * searchParams is passed through without being awaited here or in the shell.
  */
 export default function ProductPage(props: {
 	params: Promise<{ slug: string; channel: string }>;
@@ -96,34 +96,33 @@ export default function ProductPage(props: {
 }) {
 	return (
 		<Suspense fallback={<ProductPageSkeleton />}>
-			<ProductContent params={props.params} searchParams={props.searchParams} />
+			<ProductShell params={props.params} searchParams={props.searchParams} />
 		</Suspense>
 	);
 }
 
-async function ProductContent({
+/**
+ * Static product shell — only reads route params (cacheable / prerenderable).
+ * Dynamic islands (gallery + variant section) read searchParams in nested Suspense.
+ */
+async function ProductShell({
 	params: paramsPromise,
-	searchParams: searchParamsPromise,
+	searchParams,
 }: {
 	params: Promise<{ slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
-	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
-
+	const params = await paramsPromise;
 	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
 		notFound();
 	}
 
-	const variants = product.variants || [];
-	const selectedVariantId = searchParams.variant || (variants.length === 1 ? variants[0].id : undefined);
-	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
-
 	const descriptionHtml = parseDescription(product.description);
-	const images = getGalleryImages(product, selectedVariant);
 	const productAttributes = extractProductAttributes(product);
 	const careInstructions = extractCareInstructions(product);
+	const defaultImages = getDefaultGalleryImages(product);
 
 	const breadcrumbs = [
 		{ label: "Home", href: `/${params.channel}` },
@@ -136,7 +135,7 @@ async function ProductContent({
 	const productJsonLd = buildProductJsonLd({
 		name: product.name,
 		description: product.seoDescription || product.name,
-		images: images.length > 0 ? images.map((img) => img.url) : undefined,
+		images: defaultImages.length > 0 ? defaultImages.map((img) => img.url) : undefined,
 		brand: product.category?.name,
 		url: `/${params.channel}/products/${product.slug}`,
 		priceRange: product.pricing?.priceRange?.start?.gross
@@ -151,7 +150,7 @@ async function ProductContent({
 		variantCount: product.variants?.length ?? 0,
 	});
 
-	const lcpImageUrl = images[0]?.url;
+	const lcpImageUrl = defaultImages[0]?.url;
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
@@ -171,7 +170,9 @@ async function ProductContent({
 
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 					<div className="lg:sticky lg:top-24 lg:self-start">
-						<ProductGallery images={images} productName={product.name} />
+						<Suspense fallback={<GallerySkeleton />}>
+							<VariantGalleryDynamic product={product} searchParams={searchParams} />
+						</Suspense>
 					</div>
 
 					<div className="flex flex-col gap-3">
@@ -184,7 +185,7 @@ async function ProductContent({
 								<VariantSectionDynamic
 									product={product}
 									channel={params.channel}
-									searchParams={searchParamsPromise}
+									searchParams={searchParams}
 								/>
 							</Suspense>
 						</ErrorBoundary>
@@ -213,7 +214,7 @@ function ProductPageSkeleton() {
 			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
 				<div className="mb-6 hidden h-4 w-64 animate-pulse rounded bg-secondary sm:block" />
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-					<div className="aspect-square animate-pulse rounded-lg bg-secondary" />
+					<GallerySkeleton />
 					<div className="flex flex-col gap-4">
 						<div className="h-8 w-3/4 animate-pulse rounded bg-secondary" />
 						<div className="h-6 w-24 animate-pulse rounded bg-secondary" />
@@ -279,31 +280,4 @@ function extractCareInstructions(product: NonNullable<ProductDetailsQuery["produ
 			.filter(Boolean)
 			.join(". ") || null
 	);
-}
-
-type Product = NonNullable<ProductDetailsQuery["product"]>;
-type Variant = NonNullable<Product["variants"]>[number];
-
-function getGalleryImages(
-	product: Product,
-	selectedVariant: Variant | null | undefined,
-): { url: string; alt: string | null | undefined }[] {
-	if (selectedVariant?.media && selectedVariant.media.length > 0) {
-		const variantImages = selectedVariant.media
-			.filter((m) => m.type === "IMAGE")
-			.map((m) => ({ url: m.url, alt: m.alt }));
-		if (variantImages.length > 0) {
-			return variantImages;
-		}
-	}
-
-	if (product.media && product.media.length > 0) {
-		return product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }));
-	}
-
-	if (product.thumbnail) {
-		return [{ url: product.thumbnail.url, alt: product.thumbnail.alt }];
-	}
-
-	return [];
 }
