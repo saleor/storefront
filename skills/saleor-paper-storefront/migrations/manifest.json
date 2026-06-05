@@ -189,6 +189,47 @@
 				"src/ui/components/product-element.tsx"
 			],
 			"detectMarkers": ["StorefrontProviders"]
+		},
+		{
+			"id": "2026-06-account-ppr-auth",
+			"title": "Account layout Suspense, profile context, and PPR-safe pages",
+			"upstreamSha": "3b27d901",
+			"landedAt": "2026-06-05T12:50:56+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-layout-route-loading"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/app/[channel]/(main)/account/layout.tsx",
+				"src/app/[channel]/(main)/account/get-current-user.ts",
+				"src/app/[channel]/(main)/account/page.tsx",
+				"src/app/[channel]/(main)/account/addresses/page.tsx",
+				"src/app/[channel]/(main)/account/settings/page.tsx",
+				"src/app/[channel]/(main)/account/orders/page.tsx",
+				"src/app/[channel]/(main)/account/orders/[number]/page.tsx",
+				"src/app/[channel]/(main)/account/actions.ts",
+				"src/ui/components/account/account-login.tsx",
+				"src/ui/components/account/account-context.tsx",
+				"src/ui/components/account/addresses-page.tsx",
+				"src/ui/components/account/settings-page.tsx",
+				"src/ui/components/account/recent-orders-section.tsx",
+				"src/ui/components/account/account-skeleton.tsx"
+			],
+			"detectMarkers": ["AccountLogin", "AccountShell", "useAccountUser"]
+		},
+		{
+			"id": "2026-06-channel-discovery-cache",
+			"title": "PPR-safe channel discovery via cached ChannelsList",
+			"upstreamSha": "223382c0",
+			"landedAt": "2026-06-05T18:00:00+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-channel-allowlist", "2026-06-menu-data-layer"],
+			"optional": true,
+			"skipPrompt": "Skip if the fork only uses STOREFRONT_CHANNELS (no API discovery at build time)?",
+			"category": "caching",
+			"touchPaths": ["src/lib/channel-slugs.ts"],
+			"detectMarkers": ["getCachedChannelsList", "activeChannelSlugsFromList"]
 		}
 	]
 }

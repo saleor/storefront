@@ -18,11 +18,11 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 ## What's Included
 
-11 rules across 6 categories covering the full storefront:
+12 rules across 6 categories covering the full storefront:
 
 | Category      | Rules                                                  | Topics                                                       |
 | ------------- | ------------------------------------------------------ | ------------------------------------------------------------ |
-| Data Layer    | `data-caching`, `data-graphql`                         | Cache Components, PPR, GraphQL codegen, schema types         |
+| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`     | Cache Components, PPR, account auth routes, GraphQL codegen  |
 | Product Pages | `product-pdp`, `product-variants`, `product-filtering` | PDP architecture, variant selection, server/client filtering |
 | Checkout      | `checkout-management`, `checkout-components`           | Session lifecycle, reusable UI components                    |
 | UI & Channels | `ui-components`, `ui-channels`                         | Design tokens, multi-currency                                |

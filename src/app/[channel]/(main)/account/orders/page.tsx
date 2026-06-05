@@ -1,10 +1,11 @@
+import { Suspense } from "react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Button } from "@/ui/components/ui/button";
 import { accountRoutes } from "@/ui/components/account/routes";
+import { AccountOrdersListSkeleton } from "@/ui/components/account/account-skeleton";
 
 const ORDERS_PER_PAGE = 10;
 
@@ -12,11 +13,15 @@ type Props = {
 	searchParams: Promise<{ after?: string }>;
 };
 
-export default async function AccountOrdersPage({ searchParams }: Props) {
-	if (!(await hasAuthSession())) {
-		return null;
-	}
+export default function AccountOrdersPage({ searchParams }: Props) {
+	return (
+		<Suspense fallback={<AccountOrdersListSkeleton />}>
+			<AccountOrdersContent searchParams={searchParams} />
+		</Suspense>
+	);
+}
 
+async function AccountOrdersContent({ searchParams }: Props) {
 	const { after } = await searchParams;
 
 	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
@@ -27,8 +32,12 @@ export default async function AccountOrdersPage({ searchParams }: Props) {
 		cache: "no-cache",
 	});
 
-	if (!result.ok || !result.data.me) {
-		return null;
+	if (!result.ok) {
+		return <AccountOrdersError message="We couldn't load your orders. Please try again in a moment." />;
+	}
+
+	if (!result.data.me) {
+		return <AccountOrdersError message="Sign in to view your orders." />;
 	}
 
 	const ordersConnection = result.data.me.orders;
@@ -66,6 +75,19 @@ export default async function AccountOrdersPage({ searchParams }: Props) {
 					)}
 				</>
 			)}
+		</div>
+	);
+}
+
+function AccountOrdersError({ message }: { message: string }) {
+	return (
+		<div className="space-y-6">
+			<div>
+				<h1 className="text-2xl font-semibold tracking-tight">Orders</h1>
+			</div>
+			<div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+				{message}
+			</div>
 		</div>
 	);
 }
