@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, type FC } from "react";
+import { useState, useCallback, useEffect, useRef, type FC } from "react";
 import { Truck, Clock, Leaf, ChevronLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -41,7 +41,7 @@ function hasDeliveryProblem(
 
 export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout, onBack, onNext }) => {
 	// Use live checkout data that updates after mutations
-	const { checkout: liveCheckout, fetching } = useCheckout();
+	const { checkout: liveCheckout, fetching, refetch } = useCheckout();
 	const checkout = liveCheckout || initialCheckout;
 
 	const hasShippingAddress = !!checkout.shippingAddress;
@@ -82,42 +82,36 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 			const newDeliveries = data?.deliveries ?? [];
 			setDeliveries(newDeliveries);
 
-			// If current selection is not in the new list, reset
-			if (selectedMethod && !newDeliveries.some((d) => d.id === selectedMethod)) {
-				setSelectedMethod(newDeliveries[0]?.id);
-			}
-			// If no selection yet, default to first
-			if (!selectedMethod && newDeliveries.length > 0) {
-				setSelectedMethod(newDeliveries[0]?.id);
-			}
+			setSelectedMethod((current) => {
+				if (current && newDeliveries.some((d) => d.id === current)) {
+					return current;
+				}
+				return newDeliveries[0]?.id;
+			});
+
+			// Sync checkout.problems after server re-validates delivery (clears stale flag)
+			await refetch({ requestPolicy: "network-only" });
 		} finally {
 			setIsLoadingDeliveries(false);
 		}
-	}, [calculateDeliveryOptions, checkout.id, selectedMethod]);
+	}, [calculateDeliveryOptions, checkout.id, refetch]);
 
-	// Fetch on mount when address is available
+	const prevIsStale = useRef(isStale);
+
+	// Fetch when address is available or changes
 	useEffect(() => {
 		if (hasShippingAddress) {
 			void fetchDeliveryOptions();
 		}
-		// Only run on mount and when address changes
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [hasShippingAddress, checkout.shippingAddress?.id]);
+	}, [hasShippingAddress, checkout.shippingAddress?.id, fetchDeliveryOptions]);
 
-	// Auto-refresh when delivery is stale
+	// Re-fetch when delivery becomes stale (e.g. after promo or cart change)
 	useEffect(() => {
-		if (isStale) {
+		if (hasShippingAddress && isStale && !prevIsStale.current) {
 			void fetchDeliveryOptions();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isStale]);
-
-	// Clear selection when delivery becomes invalid
-	useEffect(() => {
-		if (isInvalid) {
-			setSelectedMethod(undefined);
-		}
-	}, [isInvalid]);
+		prevIsStale.current = isStale;
+	}, [isStale, hasShippingAddress, fetchDeliveryOptions]);
 
 	// Summary rows for context display
 	const summaryRows = buildShippingSummaryRows(checkout);
@@ -165,6 +159,12 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 
 				if (result.error) {
 					setError("Failed to update shipping method");
+					return;
+				}
+
+				const mutationErrors = result.data?.checkoutDeliveryMethodUpdate?.errors;
+				if (mutationErrors?.length) {
+					setError(mutationErrors[0].message ?? "Failed to update shipping method");
 					return;
 				}
 
