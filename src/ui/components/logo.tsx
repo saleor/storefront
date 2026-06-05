@@ -1,4 +1,4 @@
-import { LinkWithChannel } from "../atoms/link-with-channel";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Logo as SharedLogo } from "./shared/logo";
 
 /**

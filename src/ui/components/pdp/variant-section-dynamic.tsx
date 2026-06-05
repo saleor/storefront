@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { getDiscountInfo } from "@/lib/pricing";
-import { CheckoutAddLineDocument, type ProductDetailsQuery } from "@/gql/graphql";
+import { CheckoutAddLineDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
 
@@ -10,8 +10,7 @@ import { AddToCart } from "./add-to-cart";
 import { VariantSelectionSection } from "./variant-selection";
 import { StickyBar } from "./sticky-bar";
 import { Badge } from "@/ui/components/ui/badge";
-
-type Product = NonNullable<ProductDetailsQuery["product"]>;
+import { resolveSelectedVariantId, type Product } from "./gallery-utils";
 
 interface VariantSectionDynamicProps {
 	product: Product;
@@ -22,16 +21,14 @@ interface VariantSectionDynamicProps {
 /**
  * Dynamic variant section for PDP.
  *
- * With Cache Components enabled, this component streams at request time
- * because it accesses searchParams (runtime data). The product data is
- * already cached in the static shell - this just adds the interactive parts.
+ * Reads searchParams inside a Suspense boundary so the product shell
+ * (name, attributes, JSON-LD) stays in the static prerender cache.
+ * Product data is passed from the shell and backed by getProductData() "use cache".
  */
 export async function VariantSectionDynamic({ product, channel, searchParams }: VariantSectionDynamicProps) {
 	const { variant: variantParam } = await searchParams;
 	const variants = product.variants || [];
-
-	// Auto-select variant: use URL param, or auto-select if only one variant exists
-	const selectedVariantID = variantParam || (variants.length === 1 ? variants[0].id : undefined);
+	const selectedVariantID = resolveSelectedVariantId(product, variantParam);
 	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
 
 	// Check availability

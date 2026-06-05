@@ -2,6 +2,8 @@ export { CategoryHero } from "./category-hero";
 export { PageHeader } from "./page-header";
 export { ProductCard, type ProductCardData } from "./product-card";
 export { ProductGrid } from "./product-grid";
+export { ProductsGridSkeleton } from "./products-grid-skeleton";
+export { PlpPageLoading } from "./plp-page-loading";
 export {
 	FilterBar,
 	type SortOption,

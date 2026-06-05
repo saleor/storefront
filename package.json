@@ -19,6 +19,7 @@
 		"generate:all": "pnpm run generate && pnpm run generate:checkout",
 		"test": "vitest",
 		"test:run": "vitest run",
+		"typecheck": "tsc --noEmit",
 		"knip": "knip",
 		"prepare": "husky install"
 	},
@@ -60,7 +61,7 @@
 		"@tailwindcss/forms": "0.5.7",
 		"@tailwindcss/typography": "0.5.10",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "20.10.0",
+		"@types/node": "^24.0.0",
 		"@types/react": "^19.0.0",
 		"@types/react-dom": "^19.0.0",
 		"autoprefixer": "10.4.23",
@@ -93,6 +94,6 @@
 	"packageManager": "pnpm@10.28.1",
 	"engines": {
 		"pnpm": ">=9.4.0",
-		"node": ">=20 <21"
+		"node": "24.x"
 	}
 }

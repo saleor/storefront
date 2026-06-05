@@ -13,6 +13,7 @@ import {
 	fetchExchange,
 } from "urql";
 import { withRetry } from "@/lib/fetch-retry";
+import { wrapFetchWithAuth } from "@/lib/auth/wrap-fetch-with-auth";
 import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE, encodeCookieName } from "./constants";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
@@ -68,8 +69,7 @@ export const saleorAuthClient = createSaleorAuthClient({
 });
 
 const makeUrqlClient = () => {
-	const authFetch = (input: RequestInfo | URL, init?: RequestInit) =>
-		saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init);
+	const authFetch = wrapFetchWithAuth((input, init) => saleorAuthClient.fetchWithAuth(input, init));
 
 	return createClient({
 		url: saleorApiUrl,

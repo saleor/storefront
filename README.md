@@ -1,4 +1,4 @@
-[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL,NEXT_PUBLIC_DEFAULT_CHANNEL&envDescription=Your%20Saleor%20API%20URL%20is%20the%20GraphQL%20endpoint%20of%20your%20instance%20(e.g.%20https%3A%2F%2Fyour-instance.saleor.cloud%2Fgraphql%2F).%20The%20channel%20slug%20can%20be%20found%20in%20Saleor%20Dashboard%20under%20Configuration%20%3E%20Channels%20(e.g.%20default-channel).%20For%20multi-channel%20support%2C%20add%20SALEOR_APP_TOKEN%20after%20deploy.&envLink=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront%23environment-variables&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af>)
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL,NEXT_PUBLIC_DEFAULT_CHANNEL&envDescription=Your%20Saleor%20API%20URL%20is%20the%20GraphQL%20endpoint%20of%20your%20instance%20(e.g.%20https%3A%2F%2Fyour-instance.saleor.cloud%2Fgraphql%2F).%20The%20channel%20slug%20can%20be%20found%20in%20Saleor%20Dashboard%20under%20Configuration%20%3E%20Channels%20(e.g.%20default-channel).%20For%20multi-channel%2C%20set%20STOREFRONT_CHANNELS%20(e.g.%20us%2Cuk)%20and%20optionally%20SALEOR_APP_TOKEN%20for%20the%20footer%20selector.&envLink=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront%23environment-variables&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af>)
 
 <img width="1920" height="1080" alt="saleor-storefront-paper-fin" src="https://github.com/user-attachments/assets/a8e37c20-35c8-42e0-a9c5-5c0b6097b921" />
 
@@ -50,10 +50,13 @@ The checkout is where most storefronts fall apart or fall short. Paper's doesn't
 
 One codebase, many storefronts. Channel-scoped routing means `/us/products` and `/eu/products` can serve different catalogs, prices, and shipping options—all from the same deployment.
 
+**Storefront channels are explicit.** Saleor may have many channels (B2B, wholesale, internal regions); Paper only exposes the slugs you configure via `STOREFRONT_CHANNELS`. Disallowed channel URLs return 404. For a single-channel store, set `NEXT_PUBLIC_DEFAULT_CHANNEL` only—the footer channel selector is hidden automatically.
+
 ### 📱 Product Pages Done Right
 
 The hard parts are solved. Adapt the look, keep the logic.
 
+- **Partial Prerendering (PPR)** — Product name, attributes, and SEO stay in a static cached shell; variant gallery and add-to-cart stream in via Suspense when `searchParams` change.
 - **Multi-attribute variant selection** — Color + Size + Material? Handled. Complex variant matrices just work.
 - **Dynamic pricing** — Sale prices, variant-specific pricing, channel pricing—all reactive.
 - **Image gallery** — Next.js Image optimization, proper aspect ratios, keyboard navigation.
@@ -67,7 +70,7 @@ Not an afterthought. Focus management on step transitions, keyboard navigation e
 Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
-- **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 11 task-specific rules covering GraphQL, caching, variant selection, checkout, and more
+- **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 13 task-specific rules covering GraphQL, caching, variant selection, checkout, and more
 - **[`.agents/skills/`](.agents/skills/)** — Installed community skills (Vercel React best practices, composition patterns)
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
@@ -90,10 +93,10 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 | **Checkout**         | Multi-step flow with guest/auth support, address selector, international forms    |
 | **Cart**             | Slide-over drawer with real-time updates, quantity editing                        |
 | **Product Pages**    | Multi-attribute variants, image gallery, sticky add-to-cart                       |
-| **Product Listings** | Category & collection pages with pagination                                       |
+| **Product Listings** | Category & collection pages with PPR (cached hero + dynamic filters), pagination  |
 | **Navigation**       | Dynamic menus from Saleor, mobile hamburger                                       |
 | **SEO**              | Metadata, JSON-LD, Open Graph images                                              |
-| **Caching**          | ISR with on-demand revalidation via webhooks                                      |
+| **Caching**          | Cache Components (PPR), named cacheLife tiers, channel-scoped tags, webhooks      |
 | **Customer Profile** | Account dashboard, address book, order history, password change, account deletion |
 | **Authentication**   | Login, register, password reset, guest checkout                                   |
 | **API Resilience**   | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully   |
@@ -126,23 +129,91 @@ The **display-cached, checkout-live** model ensures fast browsing with accurate 
 
 ### How It Works
 
-| Component               | Freshness          | Why                                  |
-| ----------------------- | ------------------ | ------------------------------------ |
-| **Product pages**       | Cached (5 min TTL) | Instant loads, great Core Web Vitals |
-| **Category/Collection** | Cached (5 min TTL) | Fast browsing experience             |
-| **Cart drawer**         | Always live        | Saleor API with `cache: "no-cache"`  |
-| **Checkout**            | Always live        | Direct API calls, real-time totals   |
+| Component               | Freshness          | Why                                                               |
+| ----------------------- | ------------------ | ----------------------------------------------------------------- |
+| **Product pages**       | Cached (`catalog`) | Static shell + dynamic variant islands (PPR)                      |
+| **Category/Collection** | Cached (`catalog`) | Cached hero from params; filters/pagination stream in Suspense    |
+| **Homepage featured**   | Cached (`catalog`) | Sync page shell; product grid streams in nested Suspense          |
+| **Navigation / footer** | Cached (`menus`)   | Per-channel tags: `navigation:{channel}`, `footer-menu:{channel}` |
+| **Cart drawer**         | Always live        | Saleor API with `cache: "no-cache"`                               |
+| **Checkout**            | Always live        | Direct API calls, real-time totals                                |
+
+**cacheLife tiers** (see `src/lib/cache-life-profiles.ts`):
+
+| Profile    | Fallback TTL | Used for                                    |
+| ---------- | ------------ | ------------------------------------------- |
+| `catalog`  | ~5 min       | Products, categories, collections, homepage |
+| `menus`    | ~1 hr        | Header nav, footer menu                     |
+| `channels` | ~1 day       | Footer channel metadata                     |
+
+Webhook `revalidateTag(tag, profile)` clears data immediately; TTL is the safety net when webhooks are missing.
+
+### PPR page patterns
+
+Cached GraphQL lives in **`src/lib/catalog/`**, **`src/lib/menus/`**, and **`src/lib/channels/`** — not in layout or page components. Pages are thin orchestrators with nested `<Suspense>` for dynamic islands.
+
+**PDP** — `params` only in the static shell; gallery and variant selection read `searchParams`:
+
+```
+ProductPage (sync)
+└── ProductShell → getProductData "use cache"
+    ├── h1, attributes, JSON-LD, LCP preload
+    ├── Suspense → VariantGalleryDynamic (searchParams)
+    └── Suspense → VariantSectionDynamic (searchParams)
+```
+
+**PLP** (category, collection, all products) — cached hero/metadata from params; filter/sort/pagination in a dynamic grid:
+
+```
+Page
+├── CategoryHero ← getCategoryData "use cache"
+└── Suspense → CategoryProducts (searchParams, always fresh fetch)
+```
+
+**Homepage** — sync `<section>` shell; featured collection grid in nested Suspense.
+
+**Loading UX** — route-level `loading.tsx` files (products, categories, collections) show skeletons during navigation. The main layout does not wrap `{children}` in `Suspense fallback={null}`.
+
+**Cache tags** (see `src/lib/cache-manifest.ts`):
+
+| Tag pattern             | Invalidated when                |
+| ----------------------- | ------------------------------- |
+| `product:{slug}`        | Product updated                 |
+| `category:{slug}`       | Category updated                |
+| `collection:{slug}`     | Collection updated              |
+| `navigation:{channel}`  | Main menu changed for channel   |
+| `footer-menu:{channel}` | Footer menu changed for channel |
+| `channels`              | Channel list metadata           |
+
+Featured homepage products use tag `collection:featured-products` (same `catalog` profile as collections).
 
 ### Instant Updates with Webhooks
 
 Configure Saleor webhooks to invalidate cache immediately when data changes:
 
-1. Create webhook in Saleor Dashboard → Configuration → Webhooks
+1. Create webhook in Saleor Dashboard → Configuration → Webhooks, **or** install the **Paper Storefront** app (registers product, category, collection, page, menu, and promotion webhooks automatically)
 2. Point to `https://your-store.com/api/revalidate`
-3. Subscribe to `PRODUCT_UPDATED`, `CATEGORY_UPDATED`, etc.
+3. Subscribe to product/category/collection/page events; for menus use `MENU_*` / `MENU_ITEM_*` (Paper app forwards `{ menu: { slug } }` for `navbar` and `footer` menus)
 4. Set `SALEOR_WEBHOOK_SECRET` env var
 
-Without webhooks? TTL handles it—cached data expires naturally after 5 minutes.
+**Manual revalidation** (requires `REVALIDATE_SECRET`):
+
+```bash
+# Single product
+curl "https://your-store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie"
+
+# CMS page (tag only — invalidates getPageData across channels)
+curl "https://your-store.com/api/revalidate?secret=xxx&tag=page:about-us"
+
+# Navigation for one channel (tag or tag + channel query)
+curl "https://your-store.com/api/revalidate?secret=xxx&tag=navigation:us"
+curl "https://your-store.com/api/revalidate?secret=xxx&tag=navigation&channel=us"
+
+# All tags for every storefront channel
+curl "https://your-store.com/api/revalidate?secret=xxx&all=1"
+```
+
+Without webhooks? TTL handles it—cached data expires per the `catalog` / `menus` / `channels` profiles above.
 
 ### Why This Is Safe
 
@@ -186,7 +257,17 @@ NEXT_PUBLIC_SALEOR_API_URL=https://your-instance.saleor.cloud/graphql/
 NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel  # Your Saleor channel slug
 ```
 
+**Multi-channel** (recommended — explicit allowlist):
+
+```bash
+STOREFRONT_CHANNELS=us,uk,eu
+NEXT_PUBLIC_DEFAULT_CHANNEL=us
+SALEOR_APP_TOKEN=...  # Server-side only — footer currency selector metadata
+```
+
 > **Finding your channel slug:** In Saleor Dashboard → Configuration → Channels → copy the slug
+
+> **Note:** `SALEOR_APP_TOKEN` alone no longer auto-discovers every Saleor channel. Set `STOREFRONT_CHANNELS` or opt in with `STOREFRONT_DISCOVER_CHANNELS=true` (see [Environment Variables](#environment-variables)).
 
 ### 3. Run
 
@@ -219,6 +300,12 @@ src/
 ├── checkout/               # Checkout components & logic
 ├── graphql/                # GraphQL queries
 ├── gql/                    # Generated types (don't edit)
+├── lib/                    # Server utilities & cached data layer
+│   ├── catalog/            # getCategoryData, getCollectionData, getFeaturedProducts
+│   ├── menus/              # getNavbarMenuItems, getFooterMenuItems
+│   ├── channels/           # getCachedChannelsList
+│   ├── cache-manifest.ts   # Tag registry + cacheLife mapping
+│   └── cache-life-profiles.ts
 ├── ui/components/          # UI components
 │   ├── account/            # Customer profile & address book
 │   ├── pdp/                # Product detail page
@@ -233,7 +320,7 @@ src/
 If you're working with AI coding assistants, point them to:
 
 - **`AGENTS.md`** — Architecture, commands, gotchas
-- **`skills/saleor-paper-storefront/`** — 11 project-specific rules (GraphQL, caching, checkout, etc.)
+- **`skills/saleor-paper-storefront/`** — 13 project-specific rules (GraphQL, caching, checkout, etc.)
 - **`.agents/skills/`** — Installed community skills (React best practices, composition patterns)
 
 To install the project skill for agent auto-discovery:
@@ -247,13 +334,25 @@ npx skills add . --skill saleor-paper-storefront
 ```env
 # Required
 NEXT_PUBLIC_SALEOR_API_URL=https://your-instance.saleor.cloud/graphql/
+NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel  # Fallback channel; root "/" redirects here
+
+# Multi-channel (recommended)
+STOREFRONT_CHANNELS=us,uk,eu               # Comma-separated allowlist — routes, revalidation, footer
 
 # Optional
-NEXT_PUBLIC_STOREFRONT_URL=   # For canonical URLs and OG images
-REVALIDATE_SECRET=            # Manual cache invalidation
-SALEOR_WEBHOOK_SECRET=        # Webhook HMAC verification
-SALEOR_APP_TOKEN=             # For channels query
+NEXT_PUBLIC_STOREFRONT_URL=                  # Canonical URLs and OG images
+REVALIDATE_SECRET=                           # Manual cache invalidation (GET /api/revalidate)
+SALEOR_WEBHOOK_SECRET=                       # Webhook HMAC verification
+SALEOR_APP_TOKEN=                            # Server-side: footer channel metadata (never exposed to client)
+STOREFRONT_DISCOVER_CHANNELS=true            # Opt-in: discover ALL active Saleor channels from API
+                                             # (not recommended for large catalogs; prefer STOREFRONT_CHANNELS)
 ```
+
+**Channel resolution order** (`getStorefrontChannelSlugs`):
+
+1. `STOREFRONT_CHANNELS` — explicit allowlist _(recommended)_
+2. `STOREFRONT_DISCOVER_CHANNELS=true` + `SALEOR_APP_TOKEN` — all active channels from API
+3. `NEXT_PUBLIC_DEFAULT_CHANNEL` only — single-channel storefront
 
 ---
 
@@ -280,7 +379,7 @@ The design token system uses CSS custom properties—swap the entire color palet
 Features planned for future development:
 
 - **Filtering logic iteration.** Fetching attributes from API for dynamic product filters.
-- **Paper App.** Iteration on the revalidation logic and supported webhooks, providing a _Preview in storefront_ feature in Saleor Dashboard.
+- **Paper App.** Revalidation webhooks (products, categories, collections, menus) and _Preview in storefront_ in Dashboard.
 - **Opinionated model for standard content.** Moving currently hardcoded stuff like Credibility or Free checkout information to API models.
 
 ---

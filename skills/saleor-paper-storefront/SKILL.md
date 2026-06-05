@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.1.0"
+  version: "1.2.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -51,12 +51,12 @@ Reference these guidelines when:
 
 ### 1. Data Layer (CRITICAL)
 
-- `data-caching` - Cache Components (PPR), cache tags, revalidation, price flow
+- `data-caching` - Cache Components (PPR), three-layer page model, cache manifest, webhooks
 - `data-graphql` - Two codegen setups, permission patterns, nullable fields
 
 ### 2. Product Pages (HIGH)
 
-- `product-pdp` - PDP architecture, gallery, data flow, add-to-cart, ErrorBoundary
+- `product-pdp` - ProductShell + dynamic islands, gallery, LCP preload, add-to-cart
 - `product-variants` - Variant selection state machine, option states, discount badges
 - `product-filtering` - Server vs client filtering, category slug resolution
 
@@ -68,7 +68,7 @@ Reference these guidelines when:
 ### 4. UI & Channels (MEDIUM)
 
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
-- `ui-channels` - Multi-channel URLs, fulfillment model, purchasability debugging, channel selector
+- `ui-channels` - Channel allowlist, fulfillment triangle, multi-currency, channel selector
 
 ### 5. SEO (MEDIUM)
 
