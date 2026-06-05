@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ChannelSelect } from "./channel-select";
 import {
-	filterToStorefrontChannels,
 	getStaticStorefrontChannelSlugs,
 	needsAsyncChannelDiscovery,
 	shouldFetchChannelMetadata,
+	toChannelSelectOptions,
 } from "@/config/channels";
 import { getCachedChannelsList } from "@/lib/channels/get-channels-data";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
@@ -26,7 +26,7 @@ export async function Footer({ channel }: { channel: string }) {
 	const footerMenuItems = menuItems ?? [];
 	const selectorChannels =
 		channels?.channels && resolvedSlugs.length > 0
-			? filterToStorefrontChannels(channels.channels, resolvedSlugs)
+			? toChannelSelectOptions(channels.channels, resolvedSlugs)
 			: [];
 
 	return (
