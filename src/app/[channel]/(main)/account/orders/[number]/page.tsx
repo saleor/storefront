@@ -1,9 +1,9 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { MapPin, CreditCard } from "lucide-react";
 import { OrderByNumberDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { OrderTimeline } from "@/ui/components/account/order-timeline";
@@ -14,11 +14,15 @@ type Props = {
 	params: Promise<{ number: string }>;
 };
 
-export default async function OrderDetailPage({ params }: Props) {
-	if (!(await hasAuthSession())) {
-		return null;
-	}
+export default function OrderDetailPage({ params }: Props) {
+	return (
+		<Suspense fallback={null}>
+			<OrderDetailContent params={params} />
+		</Suspense>
+	);
+}
 
+async function OrderDetailContent({ params }: Props) {
 	const { number } = await params;
 
 	// Saleor's `me.orders` doesn't support filtering by number (UserOrdersArgs

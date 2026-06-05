@@ -1,5 +1,4 @@
 import { type ReactNode, Suspense } from "react";
-import { connection } from "next/server";
 import { LoginForm } from "@/ui/components/login-form";
 import { AccountNav } from "@/ui/components/account/account-nav";
 import { AccountSkeleton } from "@/ui/components/account/account-skeleton";
@@ -20,9 +19,6 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
 }
 
 async function AccountShell({ children }: { children: ReactNode }) {
-	// Account pages require cookies/auth — never prerender at build time.
-	await connection();
-
 	if (!(await hasAuthSession())) {
 		return <LoginForm />;
 	}

@@ -1,6 +1,6 @@
+import { Suspense } from "react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Button } from "@/ui/components/ui/button";
@@ -12,11 +12,15 @@ type Props = {
 	searchParams: Promise<{ after?: string }>;
 };
 
-export default async function AccountOrdersPage({ searchParams }: Props) {
-	if (!(await hasAuthSession())) {
-		return null;
-	}
+export default function AccountOrdersPage({ searchParams }: Props) {
+	return (
+		<Suspense fallback={null}>
+			<AccountOrdersContent searchParams={searchParams} />
+		</Suspense>
+	);
+}
 
+async function AccountOrdersContent({ searchParams }: Props) {
 	const { after } = await searchParams;
 
 	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
