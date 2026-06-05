@@ -101,7 +101,7 @@ STOREFRONT_DISCOVER_CHANNELS=true
 **Resolution order** (`src/lib/channel-slugs.ts` → `getStorefrontChannelSlugs()`):
 
 1. `STOREFRONT_CHANNELS` — comma-separated allowlist (recommended)
-2. If `STOREFRONT_DISCOVER_CHANNELS=true` — fetch from Saleor API and merge
+2. If `STOREFRONT_DISCOVER_CHANNELS=true` — slugs from `getCachedChannelsList()` (`"use cache"`; required for PPR builds)
 3. Fallback — `NEXT_PUBLIC_DEFAULT_CHANNEL` only
 
 ### Where the allowlist is enforced

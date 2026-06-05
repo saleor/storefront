@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Trash2, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { deleteAddress, setDefaultAddress } from "@/app/[channel]/(main)/account/actions";
 
@@ -10,6 +11,7 @@ type DeleteProps = {
 };
 
 export function DeleteAddressButton({ addressId }: DeleteProps) {
+	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 	const [showConfirm, setShowConfirm] = useState(false);
 
@@ -17,7 +19,11 @@ export function DeleteAddressButton({ addressId }: DeleteProps) {
 		startTransition(async () => {
 			const formData = new FormData();
 			formData.set("id", addressId);
-			await deleteAddress(formData);
+			const result = await deleteAddress(formData);
+			if (result.success) {
+				setShowConfirm(false);
+				router.refresh();
+			}
 		});
 	}
 
@@ -53,6 +59,7 @@ type SetDefaultProps = {
 };
 
 export function SetDefaultAddressButton({ addressId, type }: SetDefaultProps) {
+	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 
 	function handleSetDefault() {
@@ -60,15 +67,23 @@ export function SetDefaultAddressButton({ addressId, type }: SetDefaultProps) {
 			const formData = new FormData();
 			formData.set("id", addressId);
 			formData.set("type", type);
-			await setDefaultAddress(formData);
+			const result = await setDefaultAddress(formData);
+			if (result.success) {
+				router.refresh();
+			}
 		});
 	}
 
-	const label = type === "SHIPPING" ? "Set as default shipping" : "Set as default billing";
+	const label = type === "SHIPPING" ? "Make default shipping" : "Make default billing";
 
 	return (
-		<Button variant="ghost" size="sm" onClick={handleSetDefault} disabled={isPending} aria-label={label}>
-			<Star className="h-3.5 w-3.5 text-muted-foreground" />
-		</Button>
+		<button
+			type="button"
+			onClick={handleSetDefault}
+			disabled={isPending}
+			className="text-xs text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+		>
+			{isPending ? "Saving…" : label}
+		</button>
 	);
 }

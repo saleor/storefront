@@ -4,28 +4,31 @@ import {
 	getStaticStorefrontChannelSlugs,
 	needsAsyncChannelDiscovery,
 } from "@/config/channels";
-import { ChannelsListDocument } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { getCachedChannelsList } from "@/lib/channels/get-channels-data";
 
-async function discoverActiveChannelsFromApi(): Promise<string[]> {
-	const result = await executePublicGraphQL(ChannelsListDocument, {
-		headers: {
-			Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-		},
-	});
-
-	if (!result.ok) {
-		console.warn("[Channels] Failed to discover channels from API:", result.error.message);
-		return getStaticStorefrontChannelSlugs();
-	}
-
+/** Active channel slugs from a ChannelsList query result. */
+export function activeChannelSlugsFromList(
+	channels: ReadonlyArray<{ slug: string; isActive?: boolean | null }> | null | undefined,
+): string[] {
 	const slugs: string[] = [];
-	for (const channel of result.data.channels ?? []) {
-		if (channel.isActive && !slugs.includes(channel.slug)) {
+	for (const channel of channels ?? []) {
+		if (channel.isActive !== false && !slugs.includes(channel.slug)) {
 			slugs.push(channel.slug);
 		}
 	}
+	return slugs;
+}
 
+async function discoverActiveChannelsFromApi(): Promise<string[]> {
+	// Reuse "use cache" ChannelsList fetch — safe during PPR (unlike raw executePublicGraphQL in layout).
+	const data = await getCachedChannelsList();
+
+	if (!data?.channels) {
+		console.warn("[Channels] Failed to discover channels from API (no cached list)");
+		return getStaticStorefrontChannelSlugs();
+	}
+
+	const slugs = activeChannelSlugsFromList(data.channels);
 	return slugs.length > 0 ? slugs : getStaticStorefrontChannelSlugs();
 }
 
