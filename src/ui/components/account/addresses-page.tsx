@@ -34,16 +34,26 @@ export function AddressesPage() {
 						const isDefaultShipping = address.id === defaultShippingId;
 						const isDefaultBilling = address.id === defaultBillingId;
 
+						const showDefaultLinks = !isDefaultShipping || !isDefaultBilling;
+
 						return (
 							<AccountAddressCard
 								key={address.id}
 								address={address}
 								isDefaultShipping={isDefaultShipping}
 								isDefaultBilling={isDefaultBilling}
+								footer={
+									showDefaultLinks ? (
+										<>
+											{!isDefaultShipping && (
+												<SetDefaultAddressButton addressId={address.id} type="SHIPPING" />
+											)}
+											{!isDefaultBilling && <SetDefaultAddressButton addressId={address.id} type="BILLING" />}
+										</>
+									) : undefined
+								}
 							>
 								<AddressFormDialog address={address} />
-								{!isDefaultShipping && <SetDefaultAddressButton addressId={address.id} type="SHIPPING" />}
-								{!isDefaultBilling && <SetDefaultAddressButton addressId={address.id} type="BILLING" />}
 								<DeleteAddressButton addressId={address.id} />
 							</AccountAddressCard>
 						);

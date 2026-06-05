@@ -1,5 +1,5 @@
 import { type ReactNode, Suspense } from "react";
-import { LoginForm } from "@/ui/components/login-form";
+import { AccountLogin } from "@/ui/components/account/account-login";
 import { AccountNav } from "@/ui/components/account/account-nav";
 import { AccountSkeleton } from "@/ui/components/account/account-skeleton";
 import { AccountProvider } from "@/ui/components/account/account-context";
@@ -20,13 +20,13 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
 
 async function AccountShell({ children }: { children: ReactNode }) {
 	if (!(await hasAuthSession())) {
-		return <LoginForm />;
+		return <AccountLogin />;
 	}
 
 	const user = await getCurrentUser();
 
 	if (!user) {
-		return <LoginForm />;
+		return <AccountLogin />;
 	}
 
 	return (

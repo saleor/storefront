@@ -5,6 +5,7 @@ import { OrderRow } from "@/ui/components/account/order-row";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Button } from "@/ui/components/ui/button";
 import { accountRoutes } from "@/ui/components/account/routes";
+import { AccountOrdersListSkeleton } from "@/ui/components/account/account-skeleton";
 
 const ORDERS_PER_PAGE = 10;
 
@@ -14,7 +15,7 @@ type Props = {
 
 export default function AccountOrdersPage({ searchParams }: Props) {
 	return (
-		<Suspense fallback={null}>
+		<Suspense fallback={<AccountOrdersListSkeleton />}>
 			<AccountOrdersContent searchParams={searchParams} />
 		</Suspense>
 	);
@@ -31,8 +32,12 @@ async function AccountOrdersContent({ searchParams }: Props) {
 		cache: "no-cache",
 	});
 
-	if (!result.ok || !result.data.me) {
-		return null;
+	if (!result.ok) {
+		return <AccountOrdersError message="We couldn't load your orders. Please try again in a moment." />;
+	}
+
+	if (!result.data.me) {
+		return <AccountOrdersError message="Sign in to view your orders." />;
 	}
 
 	const ordersConnection = result.data.me.orders;
@@ -70,6 +75,19 @@ async function AccountOrdersContent({ searchParams }: Props) {
 					)}
 				</>
 			)}
+		</div>
+	);
+}
+
+function AccountOrdersError({ message }: { message: string }) {
+	return (
+		<div className="space-y-6">
+			<div>
+				<h1 className="text-2xl font-semibold tracking-tight">Orders</h1>
+			</div>
+			<div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+				{message}
+			</div>
 		</div>
 	);
 }

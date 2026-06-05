@@ -36,7 +36,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to update profile" };
 	}
 
-	revalidatePath("/account", "layout");
+	revalidateAccountLayout();
 	return { success: true };
 }
 
@@ -87,7 +87,7 @@ export async function createAddress(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to create address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidateAccountLayout();
 	return { success: true };
 }
 
@@ -109,7 +109,7 @@ export async function updateAddress(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to update address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidateAccountLayout();
 	return { success: true };
 }
 
@@ -130,7 +130,7 @@ export async function deleteAddress(formData: FormData): Promise<ActionResult> {
 		return { success: false, error: errors[0].message ?? "Failed to delete address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidateAccountLayout();
 	return { success: true };
 }
 
@@ -154,7 +154,7 @@ export async function setDefaultAddress(formData: FormData): Promise<ActionResul
 		return { success: false, error: errors[0].message ?? "Failed to set default address" };
 	}
 
-	revalidatePath("/account/addresses", "page");
+	revalidateAccountLayout();
 	return { success: true };
 }
 
@@ -177,6 +177,11 @@ export async function requestAccountDeletion(formData: FormData): Promise<Action
 	}
 
 	return { success: true };
+}
+
+/** Account UI reads profile data from layout-level AccountProvider (client context). */
+function revalidateAccountLayout() {
+	revalidatePath("/account", "layout");
 }
 
 function extractAddressInput(formData: FormData): AddressInput {

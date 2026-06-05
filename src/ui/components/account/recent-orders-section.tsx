@@ -11,7 +11,18 @@ export async function RecentOrdersSection() {
 		cache: "no-cache",
 	});
 
-	const orders = result.ok ? result.data.me?.orders?.edges ?? [] : [];
+	if (!result.ok) {
+		return (
+			<section>
+				<h2 className="mb-4 text-lg font-semibold">Recent Orders</h2>
+				<div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+					We couldn&apos;t load your recent orders.
+				</div>
+			</section>
+		);
+	}
+
+	const orders = result.data.me?.orders?.edges ?? [];
 
 	return (
 		<section>
