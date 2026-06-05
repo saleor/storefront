@@ -32,6 +32,7 @@ Reference these guidelines when:
 - Modifying checkout flow or payment integration
 - Editing GraphQL queries or regenerating types
 - Debugging caching, stale content, or revalidation
+- Migrating authenticated routes (account, session cookies) under Cache Components / PPR
 - Creating UI components with design tokens
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
@@ -52,6 +53,7 @@ Reference these guidelines when:
 ### 1. Data Layer (CRITICAL)
 
 - `data-caching` - Cache Components (PPR), three-layer page model, cache manifest, webhooks
+- `data-auth-routes` - Authenticated route segments (account layout, Suspense, AuthProvider login gate)
 - `data-graphql` - Two codegen setups, permission patterns, nullable fields
 
 ### 2. Product Pages (HIGH)
