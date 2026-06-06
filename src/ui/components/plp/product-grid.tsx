@@ -1,4 +1,4 @@
-import { GRID_ABOVE_FOLD_PRIORITY_COUNT } from "@/lib/images";
+import { LCP_IMAGE_PRIORITY_COUNT } from "@/lib/images";
 import { ProductCard, type ProductCardData } from "./product-card";
 
 interface ProductGridProps {
@@ -9,7 +9,7 @@ export function ProductGrid({ products }: ProductGridProps) {
 	return (
 		<div className="grid w-full grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
 			{products.map((product, index) => (
-				<ProductCard key={product.id} product={product} priority={index < GRID_ABOVE_FOLD_PRIORITY_COUNT} />
+				<ProductCard key={product.id} product={product} priority={index < LCP_IMAGE_PRIORITY_COUNT} />
 			))}
 		</div>
 	);

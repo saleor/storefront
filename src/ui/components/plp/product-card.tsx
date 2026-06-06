@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, type MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Plus } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Badge } from "@/ui/components/ui/badge";
 import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
-import { cn } from "@/lib/utils";
 
 export interface ProductCardData {
 	id: string;
@@ -19,7 +18,6 @@ export interface ProductCardData {
 	currency: string;
 	image: string;
 	imageAlt?: string;
-	hoverImage?: string | null;
 	href: string;
 	badge?: "Sale" | "New" | null;
 	colors?: { name: string; hex: string }[];
@@ -42,13 +40,6 @@ interface ProductCardProps {
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
 	const canQuickAdd = !product.hasVariants && product.onQuickAdd;
-	const [hoverImageSrc, setHoverImageSrc] = useState<string | null>(null);
-
-	const loadHoverImage = () => {
-		if (product.hoverImage && !hoverImageSrc) {
-			setHoverImageSrc(product.hoverImage);
-		}
-	};
 
 	const handleQuickAdd = (e: MouseEvent) => {
 		e.preventDefault();
@@ -67,36 +58,16 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 		<article className="group">
 			<Link href={product.href} className="block">
 				{/* Image Container */}
-				<div
-					className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary"
-					onMouseEnter={loadHoverImage}
-				>
-					{/* Primary Image */}
+				<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
 					<Image
 						src={product.image}
 						alt={product.imageAlt || product.name}
 						fill
 						sizes={PLP_IMAGE_SIZES}
 						quality={PRODUCT_IMAGE_QUALITY}
-						className={cn(
-							"object-cover transition-all duration-500 ease-out md:group-hover:scale-105",
-							product.hoverImage && "md:group-hover:opacity-0",
-						)}
+						className="object-cover transition-transform duration-500 ease-out md:group-hover:scale-105"
 						priority={priority}
 					/>
-
-					{/* Hover image loads on first pointer enter — not on initial page load */}
-					{hoverImageSrc && (
-						<Image
-							src={hoverImageSrc}
-							alt={`${product.name} - alternate view`}
-							fill
-							sizes={PLP_IMAGE_SIZES}
-							quality={PRODUCT_IMAGE_QUALITY}
-							loading="lazy"
-							className="object-cover opacity-0 transition-all duration-500 ease-out md:group-hover:scale-105 md:group-hover:opacity-100"
-						/>
-					)}
 
 					{/* Badge */}
 					{product.badge && (

@@ -1,6 +1,6 @@
 import { ProductElement } from "./product-element";
 import { type ProductListItemFragment } from "@/gql/graphql";
-import { GRID_ABOVE_FOLD_PRIORITY_COUNT } from "@/lib/images";
+import { LCP_IMAGE_PRIORITY_COUNT } from "@/lib/images";
 
 export const ProductList = ({
 	products,
@@ -20,7 +20,7 @@ export const ProductList = ({
 					key={product.id}
 					product={product}
 					channel={channel}
-					priority={index < GRID_ABOVE_FOLD_PRIORITY_COUNT}
+					priority={index < LCP_IMAGE_PRIORITY_COUNT}
 				/>
 			))}
 		</ul>

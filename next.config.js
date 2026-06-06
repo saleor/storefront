@@ -18,7 +18,8 @@ const config = {
 		// (max 3 concurrent requests + 200ms delay between requests)
 	},
 	images: {
-		formats: ["image/avif", "image/webp"],
+		// WebP only: AVIF cold-encodes add ~500ms+ to first /_next/image hit on Vercel (hurts LCP).
+		formats: ["image/webp"],
 		remotePatterns: [
 			{
 				// Saleor Cloud CDN

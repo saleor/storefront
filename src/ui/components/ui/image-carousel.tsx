@@ -45,7 +45,7 @@ interface ImageCarouselProps {
  * - Arrow navigation on desktop (hover to reveal)
  * - Thumbnail strip on desktop
  * - Dot indicators on mobile
- * - First image has priority={true} for LCP optimization
+ * - First slide uses loading="eager" (LCP priority lives in ProductGalleryFallback)
  * - Other slides and thumbnails use loading="lazy"
  *
  * Zoom is intentionally not included - use `onImageClick` to integrate
@@ -129,8 +129,8 @@ export function ImageCarousel({
 										className="object-cover"
 										sizes={PDP_MAIN_IMAGE_SIZES}
 										quality={PRODUCT_IMAGE_QUALITY}
-										priority={index === 0}
-										loading={index === 0 ? undefined : "lazy"}
+										priority={false}
+										loading={index === 0 ? "eager" : "lazy"}
 									/>
 								</div>
 							</CarouselItem>

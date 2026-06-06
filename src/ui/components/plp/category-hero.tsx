@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { WavePattern } from "./wave-pattern";
 
 interface BreadcrumbItem {
@@ -23,8 +25,15 @@ export function CategoryHero({ title, description, backgroundImage, breadcrumbs 
 			<div className="absolute inset-0">
 				{hasImage ? (
 					<>
-						{/* eslint-disable-next-line @next/next/no-img-element */}
-						<img src={backgroundImage} alt={title} className="h-full w-full object-cover" />
+						<Image
+							src={backgroundImage}
+							alt=""
+							fill
+							className="object-cover"
+							sizes={PLP_HERO_IMAGE_SIZES}
+							quality={PRODUCT_IMAGE_QUALITY}
+							priority
+						/>
 						<div className="from-foreground/70 via-foreground/40 absolute inset-0 bg-gradient-to-r to-transparent" />
 					</>
 				) : (
