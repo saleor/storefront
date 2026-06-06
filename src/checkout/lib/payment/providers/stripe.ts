@@ -131,7 +131,9 @@ type TransactionPayload = {
 };
 
 /** User-facing error when paymentGatewayInitialize did not return Stripe config. */
-export function getPaymentGatewayInitializeError(payload: TransactionPayload | null | undefined): string | null {
+export function getPaymentGatewayInitializeError(
+	payload: TransactionPayload | null | undefined,
+): string | null {
 	const errors = payload?.errors;
 	if (errors?.length) {
 		return errors[0]?.message || "Payment gateway initialization failed";

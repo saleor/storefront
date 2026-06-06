@@ -24,12 +24,7 @@ describe("isStripeGateway", () => {
 describe("findStripeGateway", () => {
 	it("returns the stripe gateway from checkout gateways", () => {
 		const stripe = { id: STRIPE_GATEWAY_ID, name: "Stripe" };
-		expect(
-			findStripeGateway([
-				{ id: "saleor.io.dummy-payment-app", name: "Dummy" },
-				stripe,
-			]),
-		).toEqual(stripe);
+		expect(findStripeGateway([{ id: "saleor.io.dummy-payment-app", name: "Dummy" }, stripe])).toEqual(stripe);
 	});
 });
 
