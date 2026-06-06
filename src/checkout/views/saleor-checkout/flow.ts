@@ -65,6 +65,15 @@ export const getCurrentStepFromParams = (
 	isShippingRequired: boolean,
 ): CheckoutStep => {
 	const steps = getCheckoutSteps(isShippingRequired);
+
+	// Returning from Stripe 3DS — finish on payment even if step param was dropped.
+	if (searchParams.get("processingPayment") === "true") {
+		const paymentStep = steps.find((step) => step.id === "PAYMENT");
+		if (paymentStep) {
+			return paymentStep;
+		}
+	}
+
 	const slug = searchParams.get("step");
 
 	if (!slug) {

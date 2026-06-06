@@ -29,7 +29,13 @@ export function useCheckoutStep({ isShippingRequired, searchParams, setCheckout 
 
 	const syncStepUrl = useCallback(
 		(step: CheckoutStep) => {
-			const query = createQueryString(searchParams, { step: step.slug });
+			// Use the live URL bar — React searchParams can lag behind replaceState and would
+			// drop Stripe return params (payment_intent, processingPayment) on step sync.
+			const liveParams =
+				typeof window !== "undefined"
+					? new URLSearchParams(window.location.search)
+					: new URLSearchParams(searchParams.toString());
+			const query = createQueryString(liveParams as ReadonlyURLSearchParams, { step: step.slug });
 			window.history.replaceState(window.history.state, "", `${window.location.pathname}?${query}`);
 		},
 		[searchParams],

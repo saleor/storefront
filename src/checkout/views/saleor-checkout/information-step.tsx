@@ -2,7 +2,7 @@
 
 /* eslint-disable react-hooks/preserve-manual-memoization -- large submit handler; refactor separately */
 
-import { useState, useCallback, type FC } from "react";
+import { useState, useCallback, useEffect, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { syncAuthSurfacesAfterSignIn } from "@/lib/auth";
 import { Button } from "@/ui/components/ui/button";
@@ -51,6 +51,8 @@ interface InformationStepFormProps extends InformationStepProps {
 	user: CheckoutUser | null;
 	authenticated: boolean;
 	userLoading: boolean;
+	isAuthTransitionLoading: boolean;
+	onAuthSessionPending: () => void;
 }
 
 // =============================================================================
@@ -59,10 +61,20 @@ interface InformationStepFormProps extends InformationStepProps {
 
 export const InformationStep: FC<InformationStepProps> = (props) => {
 	const { user, authenticated, loading: userLoading } = useUser();
+	const [isAwaitingAuthRefresh, setIsAwaitingAuthRefresh] = useState(false);
 	const linesKey = checkoutLinesSignature(props.checkout);
 	const formKey = userLoading
 		? `${props.checkout.id}:${linesKey}:loading`
 		: `${props.checkout.id}:${linesKey}:${user?.id ?? "guest"}`;
+
+	useEffect(() => {
+		if (authenticated) {
+			// eslint-disable-next-line react-hooks/set-state-in-effect -- clear sign-in transition once session is live
+			setIsAwaitingAuthRefresh(false);
+		}
+	}, [authenticated]);
+
+	const isAuthTransitionLoading = isAwaitingAuthRefresh && !authenticated;
 
 	return (
 		<InformationStepForm
@@ -71,6 +83,8 @@ export const InformationStep: FC<InformationStepProps> = (props) => {
 			user={user}
 			authenticated={authenticated}
 			userLoading={userLoading}
+			isAuthTransitionLoading={isAuthTransitionLoading}
+			onAuthSessionPending={() => setIsAwaitingAuthRefresh(true)}
 		/>
 	);
 };
@@ -81,6 +95,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	user,
 	authenticated,
 	userLoading,
+	isAuthTransitionLoading,
+	onAuthSessionPending,
 }) => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -90,7 +106,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 		error: recoveryError,
 		recoverAsGuest,
 	} = useOrphanedCheckoutRecovery(checkout);
-	const contactLoading = userLoading;
+	const contactLoading = userLoading || isAuthTransitionLoading;
 	const { availableShippingCountries } = useAvailableShippingCountries();
 	const shippingAddress = checkout.shippingAddress;
 
@@ -418,6 +434,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 				<ExpressCheckout />
 				<ResetPasswordForm
 					onSuccess={async () => {
+						onAuthSessionPending();
 						await syncAuthSurfacesAfterSignIn(checkout.channel.slug, router);
 						setContactView("main");
 					}}
@@ -443,13 +460,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					initialEmail={email}
 					channelSlug={checkout.channel.slug}
 					onSuccess={async () => {
+						onAuthSessionPending();
 						await syncAuthSurfacesAfterSignIn(checkout.channel.slug, router);
-						// Keep typed address when signing in mid-checkout
-						if (formData.streetAddress1) {
-							setShowNewAddressForm(true);
-							setIsEnteringNewAddress(true);
-							setSelectedAddressId(null);
-						}
 						setContactView("main");
 					}}
 					onGuestCheckout={() => setContactView("main")}
@@ -520,6 +532,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 			{checkout.isShippingRequired && (
 				<ShippingAddressSection
+					isLoading={isAuthTransitionLoading}
 					isAuthenticated={authenticated}
 					userAddresses={user?.addresses || []}
 					defaultAddressId={user?.defaultShippingAddress?.id}

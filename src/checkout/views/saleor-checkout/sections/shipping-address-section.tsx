@@ -13,6 +13,9 @@ import type { AddressField } from "@/checkout/components/address-form/types";
 // =============================================================================
 
 interface ShippingAddressSectionProps {
+	/** True while session refresh is in flight after sign-in (avoids guest form flash) */
+	isLoading?: boolean;
+
 	// Auth state
 	isAuthenticated: boolean;
 	userAddresses: AddressFragment[];
@@ -44,6 +47,7 @@ interface ShippingAddressSectionProps {
 // =============================================================================
 
 export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
+	isLoading = false,
 	isAuthenticated,
 	userAddresses,
 	defaultAddressId,
@@ -64,6 +68,15 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 }) => {
 	const hasAddresses = userAddresses.length > 0;
 	const showAddressList = isAuthenticated && hasAddresses && !showNewAddressForm;
+
+	if (isLoading) {
+		return (
+			<section className="space-y-4">
+				<div className="h-7 w-40 animate-pulse rounded bg-muted" />
+				<div className="h-24 animate-pulse rounded-lg bg-muted" />
+			</section>
+		);
+	}
 
 	return (
 		<section className="space-y-4">
