@@ -25,8 +25,8 @@ export async function VariantGalleryDynamic({ product, searchParams }: VariantGa
 
 export function GallerySkeleton() {
 	return (
-		<ProductGalleryShell imageCount={4}>
-			<div className="aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
+		<ProductGalleryShell imageCount={1} showChrome={false}>
+			<div className="relative aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
 		</ProductGalleryShell>
 	);
 }

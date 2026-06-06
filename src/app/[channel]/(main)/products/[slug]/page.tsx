@@ -152,6 +152,9 @@ async function ProductShell({
 	});
 
 	const lcpImage = defaultImages[0];
+	const variants = product.variants ?? [];
+	// Fallback chrome only when image count is predictable (multi-variant + ?variant= can differ)
+	const showGalleryChrome = defaultImages.length > 1 && variants.length <= 1;
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
@@ -176,6 +179,7 @@ async function ProductShell({
 										src={lcpImage.url}
 										alt={lcpImage.alt ?? product.name}
 										imageCount={defaultImages.length}
+										showChrome={showGalleryChrome}
 									/>
 								) : null
 							}

@@ -1,8 +1,10 @@
 import { cn } from "@/lib/utils";
 
 interface ProductGalleryShellProps {
-	/** Total images — chrome (dots, thumbnails) renders only when > 1 */
+	/** Total images — used for dots/thumbnail placeholder count when chrome is shown */
 	imageCount: number;
+	/** When false, only the main stage is rendered (avoids chrome flicker in skeletons/fallbacks) */
+	showChrome?: boolean;
 	children: React.ReactNode;
 }
 
@@ -10,9 +12,11 @@ interface ProductGalleryShellProps {
  * Shared PDP gallery layout: main stage + mobile dots + desktop thumbnail strip.
  * Used by the Suspense fallback and skeleton so the streamed carousel does not shift layout.
  */
-export function ProductGalleryShell({ imageCount, children }: ProductGalleryShellProps) {
-	const showChrome = imageCount > 1;
-
+export function ProductGalleryShell({
+	imageCount,
+	children,
+	showChrome = imageCount > 1,
+}: ProductGalleryShellProps) {
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="w-full">

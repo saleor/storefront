@@ -6,15 +6,17 @@ interface ProductGalleryFallbackProps {
 	src: string;
 	alt: string;
 	imageCount: number;
+	/** Omit chrome when image count may differ after searchParams resolve (e.g. multi-variant PDP) */
+	showChrome?: boolean;
 }
 
 /**
  * Server-rendered PDP gallery for Suspense fallback.
  * Matches carousel chrome so the streamed gallery does not shift layout.
  */
-export function ProductGalleryFallback({ src, alt, imageCount }: ProductGalleryFallbackProps) {
+export function ProductGalleryFallback({ src, alt, imageCount, showChrome }: ProductGalleryFallbackProps) {
 	return (
-		<ProductGalleryShell imageCount={imageCount}>
+		<ProductGalleryShell imageCount={imageCount} showChrome={showChrome}>
 			<div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
 				<Image
 					src={src}
