@@ -1,12 +1,14 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { clearPendingOrderId } from "@/checkout/lib/payment/checkout-completion-storage";
+import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { CheckCircle, Mail, MapPin, Package, CreditCard } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { useOrder } from "@/checkout/hooks/use-order";
 import { OrderSummary } from "@/checkout/views/saleor-checkout/order-summary";
-import { CheckoutPageShell } from "@/checkout/views/saleor-checkout/checkout-page-shell";
-import { getCheckoutSteps } from "@/checkout/views/saleor-checkout/flow";
+import { OrderConfirmationPageShell } from "./order-confirmation-page-shell";
 import { PageNotFound } from "@/checkout/views/page-not-found";
 import { localeConfig } from "@/config/locale";
 
@@ -29,6 +31,15 @@ export const OrderConfirmation = () => {
 	const router = useRouter();
 	const { order } = useOrder();
 
+	useEffect(() => {
+		if (!order?.id) {
+			return;
+		}
+
+		clearPendingOrderId();
+		clearPaymentCompleting();
+	}, [order?.id]);
+
 	if (!order) {
 		return (
 			<PageNotFound
@@ -39,8 +50,6 @@ export const OrderConfirmation = () => {
 	}
 
 	const channel = order.channel?.slug ?? "";
-	const isShippingRequired = !!order.shippingAddress;
-	const completedStep = getCheckoutSteps(isShippingRequired).length + 1;
 
 	const estimatedDelivery = new Date();
 	estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
@@ -55,7 +64,7 @@ export const OrderConfirmation = () => {
 	const email = order.userEmail || "";
 
 	return (
-		<CheckoutPageShell step={completedStep} onStepClick={() => {}} isShippingRequired={isShippingRequired}>
+		<OrderConfirmationPageShell>
 			<main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				<div className="flex flex-col gap-8 md:flex-row">
 					<div className="order-2 min-w-0 flex-1 md:order-1">
@@ -138,6 +147,6 @@ export const OrderConfirmation = () => {
 					</div>
 				</div>
 			</main>
-		</CheckoutPageShell>
+		</OrderConfirmationPageShell>
 	);
 };
