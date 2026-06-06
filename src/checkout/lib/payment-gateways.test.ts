@@ -10,6 +10,7 @@ import {
 	isDummyPaymentAllowed,
 	resolvePaymentGatewayStatus,
 } from "./payment-gateways";
+import { STRIPE_GATEWAY_ID } from "./payment/providers/stripe";
 
 describe("isDummyGateway", () => {
 	it("matches known dummy app ids", () => {
@@ -90,7 +91,12 @@ describe("findDummyGateway", () => {
 });
 
 describe("hasUnsupportedPaymentGateway", () => {
-	it("returns false when only dummy and gift card are available", () => {
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
+	it("returns false when only dummy and gift card are available in development", () => {
+		vi.stubEnv("NODE_ENV", "development");
 		expect(
 			hasUnsupportedPaymentGateway([
 				{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" },
@@ -99,13 +105,25 @@ describe("hasUnsupportedPaymentGateway", () => {
 		).toBe(false);
 	});
 
-	it("returns true when stripe is available", () => {
+	it("returns true when stripe is available but not enabled", () => {
+		vi.stubEnv("NODE_ENV", "production");
 		expect(
 			hasUnsupportedPaymentGateway([
 				{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" },
-				{ id: "saleor.app.payment.stripe", name: "Stripe" },
+				{ id: STRIPE_GATEWAY_ID, name: "Stripe" },
 			]),
 		).toBe(true);
+	});
+
+	it("returns false when stripe is enabled and is the only substantive gateway", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS", "true");
+		expect(
+			hasUnsupportedPaymentGateway([
+				{ id: STRIPE_GATEWAY_ID, name: "Stripe" },
+				{ id: "saleor.io.gift-card-payment-gateway", name: "Gift Card Payment Gateway" },
+			]),
+		).toBe(false);
 	});
 });
 
@@ -135,11 +153,21 @@ describe("resolvePaymentGatewayStatus", () => {
 		vi.unstubAllEnvs();
 	});
 
-	it("returns ready when dummy gateway is present in development", () => {
+	it("returns dummy when dummy gateway is present in development", () => {
 		vi.stubEnv("NODE_ENV", "development");
 		expect(resolvePaymentGatewayStatus(dummyAndGiftCard)).toEqual({
-			kind: "ready",
-			dummyGateway: dummyAndGiftCard[0],
+			kind: "dummy",
+			gateway: dummyAndGiftCard[0],
+		});
+	});
+
+	it("returns stripe when stripe is enabled and present", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS", "true");
+		const stripe = { id: STRIPE_GATEWAY_ID, name: "Stripe" };
+		expect(resolvePaymentGatewayStatus([stripe])).toEqual({
+			kind: "stripe",
+			gateway: stripe,
 		});
 	});
 

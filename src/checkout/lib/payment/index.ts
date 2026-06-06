@@ -8,3 +8,17 @@ export {
 	type ResolvedPaymentProvider,
 	type PaymentGatewayLike,
 } from "./types";
+export {
+	STRIPE_GATEWAY_ID,
+	isStripeGateway,
+	findStripeGateway,
+	isStripePaymentEnabled,
+	getStripePaymentGuardError,
+	getStripeClientSecret,
+	getStripeTransactionError,
+	parseStripeGatewayConfig,
+	parseStripeTransactionData,
+	type StripeGatewayConfig,
+	type StripeGatewayConfigData,
+	type StripeTransactionData,
+} from "./providers/stripe";

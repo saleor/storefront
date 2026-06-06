@@ -1,5 +1,6 @@
 import { type PaymentGatewayFragment } from "@/checkout/graphql";
 import { resolvePaymentProvider } from "@/checkout/lib/payment/resolve-provider";
+import { isStripeGateway, isStripePaymentEnabled } from "@/checkout/lib/payment/providers/stripe";
 
 /** Known Saleor Dummy Payment app IDs (legacy + current). */
 export const DUMMY_GATEWAY_IDS = ["saleor.io.dummy-payment-app", "mirumee.payments.dummy"] as const;
@@ -62,7 +63,8 @@ export function getDummyPaymentGuardError(gatewayId: string | null | undefined):
 }
 
 export type PaymentGatewayStatus =
-	| { kind: "ready"; dummyGateway: GatewayLike }
+	| { kind: "dummy"; gateway: GatewayLike }
+	| { kind: "stripe"; gateway: GatewayLike }
 	| { kind: "none" }
 	| { kind: "unsupported" }
 	| { kind: "dummy_missing" };
@@ -75,7 +77,9 @@ export function resolvePaymentGatewayStatus(
 
 	switch (provider.type) {
 		case "dummy":
-			return { kind: "ready", dummyGateway: provider.gateway };
+			return { kind: "dummy", gateway: provider.gateway };
+		case "stripe":
+			return { kind: "stripe", gateway: provider.gateway };
 		case "none":
 			return { kind: "none" };
 		case "unsupported":
@@ -85,11 +89,23 @@ export function resolvePaymentGatewayStatus(
 	}
 }
 
-/** Production gateways this checkout UI cannot process (Stripe, Adyen, etc.). */
+function isCheckoutIntegratableGateway(gateway: GatewayLike): boolean {
+	if (isDummyGateway(gateway) && isDummyPaymentAllowed()) {
+		return true;
+	}
+	if (isStripeGateway(gateway.id) && isStripePaymentEnabled()) {
+		return true;
+	}
+	return false;
+}
+
+/** Production gateways this checkout UI cannot process (e.g. Adyen when not wired). */
 export function hasUnsupportedPaymentGateway(
 	gateways: ReadonlyArray<GatewayLike> | null | undefined,
 ): boolean {
-	return (gateways ?? []).some((gateway) => !isDummyGateway(gateway) && !isIgnorableGateway(gateway));
+	return (gateways ?? []).some(
+		(gateway) => !isIgnorableGateway(gateway) && !isCheckoutIntegratableGateway(gateway),
+	);
 }
 
 export function formatGatewayList(gateways: ReadonlyArray<GatewayLike> | null | undefined): string {

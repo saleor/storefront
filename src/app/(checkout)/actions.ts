@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import {
 	AddressValidationRulesDocument,
 	CheckoutAddPromoCodeDocument,
@@ -14,7 +15,9 @@ import {
 	CheckoutShippingAddressUpdateDocument,
 	DeliveryOptionsCalculateDocument,
 	RequestPasswordResetDocument,
+	PaymentGatewaysInitializeDocument,
 	TransactionInitializeDocument,
+	TransactionProcessDocument,
 	UserSetDefaultAddressDocument,
 	type AddressValidationRulesQuery,
 	type AddressValidationRulesQueryVariables,
@@ -42,8 +45,12 @@ import {
 	type DeliveryOptionsCalculateMutationVariables,
 	type RequestPasswordResetMutation,
 	type RequestPasswordResetMutationVariables,
+	type PaymentGatewaysInitializeMutation,
+	type PaymentGatewaysInitializeMutationVariables,
 	type TransactionInitializeMutation,
 	type TransactionInitializeMutationVariables,
+	type TransactionProcessMutation,
+	type TransactionProcessMutationVariables,
 	type UserSetDefaultAddressMutation,
 	type UserSetDefaultAddressMutationVariables,
 	type AddressInput,
@@ -56,11 +63,14 @@ import type {
 	CheckoutCompleteActionResult,
 	CheckoutFieldError,
 	DeliveryOptionsActionResult,
+	PaymentGatewaysInitializeActionResult,
 	SimpleActionResult,
 	TransactionInitializeActionResult,
+	TransactionProcessActionResult,
 } from "@/checkout/lib/checkout-action-types";
 import type { CheckoutFetchResult } from "@/checkout/lib/checkout-types";
 import { getDummyPaymentGuardError } from "@/checkout/lib/payment-gateways";
+import { getStripePaymentGuardError } from "@/checkout/lib/payment/providers/stripe";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
@@ -107,10 +117,20 @@ const checkoutBillingAddressUpdateDocument = toTypedDocument<
 	CheckoutBillingAddressUpdateMutationVariables
 >(CheckoutBillingAddressUpdateDocument);
 
+const paymentGatewaysInitializeDocument = toTypedDocument<
+	PaymentGatewaysInitializeMutation,
+	PaymentGatewaysInitializeMutationVariables
+>(PaymentGatewaysInitializeDocument);
+
 const transactionInitializeDocument = toTypedDocument<
 	TransactionInitializeMutation,
 	TransactionInitializeMutationVariables
 >(TransactionInitializeDocument);
+
+const transactionProcessDocument = toTypedDocument<
+	TransactionProcessMutation,
+	TransactionProcessMutationVariables
+>(TransactionProcessDocument);
 
 const checkoutCompleteDocument = toTypedDocument<CheckoutCompleteMutation, CheckoutCompleteMutationVariables>(
 	CheckoutCompleteDocument,
@@ -366,12 +386,41 @@ export async function updateCheckoutBillingAddress(input: {
 	return toCheckoutActionResult(result.data.checkoutBillingAddressUpdate);
 }
 
+export async function initializePaymentGateways(
+	variables: PaymentGatewaysInitializeMutationVariables,
+): Promise<PaymentGatewaysInitializeActionResult> {
+	const result = await executeAuthenticatedGraphQL(paymentGatewaysInitializeDocument, {
+		variables,
+		cache: "no-cache",
+	});
+
+	if (!result.ok) {
+		return { ok: false, error: result.error.message };
+	}
+
+	const payload = result.data.paymentGatewayInitialize;
+	if (!payload) {
+		return { ok: false, error: "No response from Saleor" };
+	}
+
+	if (payload.errors?.length) {
+		return { ok: false, error: payload.errors[0].message ?? "Payment gateway initialization failed" };
+	}
+
+	return { ok: true, data: payload };
+}
+
 export async function initializeCheckoutTransaction(
 	variables: TransactionInitializeMutationVariables,
 ): Promise<TransactionInitializeActionResult> {
 	const dummyGuardError = getDummyPaymentGuardError(variables.paymentGateway?.id);
 	if (dummyGuardError) {
 		return { ok: false, error: dummyGuardError };
+	}
+
+	const stripeGuardError = getStripePaymentGuardError(variables.paymentGateway?.id);
+	if (stripeGuardError) {
+		return { ok: false, error: stripeGuardError };
 	}
 
 	const result = await executeAuthenticatedGraphQL(transactionInitializeDocument, {
@@ -390,6 +439,30 @@ export async function initializeCheckoutTransaction(
 
 	if (payload.errors?.length) {
 		return { ok: false, error: payload.errors[0].message ?? "Payment initialization failed" };
+	}
+
+	return { ok: true, data: payload };
+}
+
+export async function processCheckoutTransaction(
+	variables: TransactionProcessMutationVariables,
+): Promise<TransactionProcessActionResult> {
+	const result = await executeAuthenticatedGraphQL(transactionProcessDocument, {
+		variables,
+		cache: "no-cache",
+	});
+
+	if (!result.ok) {
+		return { ok: false, error: result.error.message };
+	}
+
+	const payload = result.data.transactionProcess;
+	if (!payload) {
+		return { ok: false, error: "No response from Saleor" };
+	}
+
+	if (payload.errors?.length) {
+		return { ok: false, error: payload.errors[0].message ?? "Payment processing failed" };
 	}
 
 	return { ok: true, data: payload };
@@ -423,11 +496,20 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 	}
 
 	const orderId = payload.order?.id;
+	const channelSlug = payload.order?.channel?.slug;
 	if (!orderId) {
 		return {
 			ok: false,
 			error: "Payment was processed but the order could not be created. Please try again or contact support.",
 		};
+	}
+
+	// Clear cart cookie server-side once — avoids a client server-action loop on order confirmation
+	// (calling clearCheckout from useEffect re-triggers RSC refresh indefinitely).
+	await Checkout.clearCheckoutCookieByValue(checkoutId);
+	if (channelSlug) {
+		revalidatePath(`/${channelSlug}/cart`);
+		revalidatePath(`/${channelSlug}`, "layout");
 	}
 
 	return { ok: true, orderId };

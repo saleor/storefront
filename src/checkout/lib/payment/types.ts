@@ -22,6 +22,7 @@ export type PaymentContext = {
 /** Which payment integration handles the current checkout. */
 export type ResolvedPaymentProvider =
 	| { type: "dummy"; gateway: PaymentGatewayLike }
+	| { type: "stripe"; gateway: PaymentGatewayLike }
 	| { type: "none" }
 	| { type: "unsupported"; gateways: ReadonlyArray<PaymentGatewayLike> }
 	| { type: "dummy_missing" };

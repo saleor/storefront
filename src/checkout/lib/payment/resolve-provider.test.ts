@@ -55,6 +55,29 @@ describe("resolvePaymentProvider", () => {
 		});
 	});
 
+	it("prefers stripe over dummy when stripe is enabled", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS", "true");
+		vi.stubEnv("NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT", "true");
+		const stripe = { id: "saleor.app.payment.stripe", name: "Stripe" };
+		expect(
+			resolvePaymentProvider([{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" }, stripe]),
+		).toEqual({
+			type: "stripe",
+			gateway: stripe,
+		});
+	});
+
+	it("returns stripe when enabled and stripe is the only gateway", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS", "true");
+		const stripe = { id: "saleor.app.payment.stripe", name: "Stripe" };
+		expect(resolvePaymentProvider([stripe])).toEqual({
+			type: "stripe",
+			gateway: stripe,
+		});
+	});
+
 	it("returns none for an empty gateway list", () => {
 		expect(resolvePaymentProvider([])).toEqual({ type: "none" });
 	});
@@ -84,6 +107,12 @@ describe("canSubmitPayment", () => {
 				gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" },
 			}),
 		).toBe(true);
+		expect(
+			canSubmitPayment({
+				type: "stripe",
+				gateway: { id: "saleor.app.payment.stripe", name: "Stripe" },
+			}),
+		).toBe(false);
 		expect(canSubmitPayment({ type: "none" })).toBe(false);
 		expect(canSubmitPayment({ type: "dummy_missing" })).toBe(false);
 		expect(canSubmitPayment({ type: "unsupported", gateways: [] })).toBe(false);

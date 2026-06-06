@@ -59,6 +59,19 @@ describe("executePayment", () => {
 		});
 	});
 
+	it("completes checkout without payment when amount is zero", async () => {
+		vi.mocked(runCheckoutComplete).mockResolvedValue({ ok: true, orderId: "order-free" });
+
+		const result = await executePayment(
+			{ type: "stripe", gateway: { id: "stripe", name: "Stripe" } },
+			{ checkoutId: "checkout-1", amount: 0 },
+		);
+
+		expect(result).toEqual({ ok: true, orderId: "order-free" });
+		expect(initializeCheckoutTransaction).not.toHaveBeenCalled();
+		expect(runCheckoutComplete).toHaveBeenCalledWith("checkout-1");
+	});
+
 	it("returns error for unsupported provider", async () => {
 		const result = await executePayment(
 			{ type: "unsupported", gateways: [{ id: "stripe", name: "Stripe" }] },

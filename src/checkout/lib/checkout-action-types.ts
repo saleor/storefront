@@ -27,3 +27,27 @@ export type TransactionInitializeActionResult =
 export type CheckoutCompleteActionResult =
 	| { ok: true; orderId: string }
 	| { ok: false; error: string; fieldErrors?: CheckoutFieldError[] };
+
+export type PaymentGatewayInitializePayload = {
+	errors?: ReadonlyArray<{ message?: string | null }> | null;
+	gatewayConfigs?: ReadonlyArray<{
+		id: string;
+		data?: unknown;
+		errors?: ReadonlyArray<{ message?: string | null }> | null;
+	}> | null;
+};
+
+export type PaymentGatewaysInitializeActionResult =
+	| { ok: true; data: NonNullable<PaymentGatewayInitializePayload> }
+	| { ok: false; error: string };
+
+export type TransactionProcessPayload = {
+	errors?: ReadonlyArray<{ message?: string | null }> | null;
+	transactionEvent?: { type?: string | null; message?: string | null } | null;
+	transaction?: { id?: string | null } | null;
+	data?: unknown;
+};
+
+export type TransactionProcessActionResult =
+	| { ok: true; data: NonNullable<TransactionProcessPayload> }
+	| { ok: false; error: string };

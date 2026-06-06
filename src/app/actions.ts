@@ -40,11 +40,14 @@ export async function saveCheckoutId(channel: string, checkoutId: string) {
 
 /**
  * Clear the checkout cookie after a successful order.
- * Call this after checkoutComplete succeeds.
+ * Call after checkoutComplete succeeds — typically after navigating to order confirmation.
+ * Never revalidates `/checkout` (that remounts the flow and resets the step mid-payment).
  */
 export async function clearCheckout(channel: string) {
 	"use server";
 	await Checkout.clearCheckoutCookie(channel);
+	revalidatePath(`/${channel}/cart`);
+	revalidatePath(`/${channel}`, "layout");
 }
 
 export async function deleteCartLine(checkoutId: string, lineId: string, channel: string) {

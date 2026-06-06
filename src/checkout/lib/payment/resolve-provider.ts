@@ -5,6 +5,7 @@ import {
 	isDummyPaymentAllowed,
 	isIgnorableGateway,
 } from "@/checkout/lib/payment-gateways";
+import { findStripeGateway, isStripePaymentEnabled } from "./providers/stripe";
 import { type PaymentGatewayLike, type ResolvedPaymentProvider } from "./types";
 
 function hasSubstantiveGateway(gateways: ReadonlyArray<PaymentGatewayLike>): boolean {
@@ -16,8 +17,13 @@ export function resolvePaymentProvider(
 	gateways: ReadonlyArray<PaymentGatewayLike> | null | undefined,
 ): ResolvedPaymentProvider {
 	const list = gateways ?? [];
-	const dummyGateway = findDummyGateway(list);
 
+	const stripeGateway = findStripeGateway(list);
+	if (stripeGateway && isStripePaymentEnabled()) {
+		return { type: "stripe", gateway: stripeGateway };
+	}
+
+	const dummyGateway = findDummyGateway(list);
 	if (dummyGateway && isDummyPaymentAllowed()) {
 		return { type: "dummy", gateway: dummyGateway };
 	}
@@ -35,7 +41,7 @@ export function resolvePaymentProvider(
 	return { type: "dummy_missing" };
 }
 
-/** Whether the Pay button can run for the resolved provider. */
+/** Whether the checkout Pay button can run for the resolved provider. */
 export function canSubmitPayment(provider: ResolvedPaymentProvider): boolean {
 	return provider.type === "dummy";
 }
