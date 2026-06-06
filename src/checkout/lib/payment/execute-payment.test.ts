@@ -41,6 +41,24 @@ describe("executePayment", () => {
 		});
 	});
 
+	it("surfaces initializeCheckoutTransaction error message", async () => {
+		vi.mocked(initializeCheckoutTransaction).mockResolvedValue({
+			ok: false,
+			error: "Test payment is not available in this environment.",
+		});
+
+		const result = await executePayment(
+			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" } },
+			{ checkoutId: "checkout-1", amount: 10 },
+		);
+
+		expect(result).toEqual({
+			ok: false,
+			error: "Test payment is not available in this environment.",
+			errorKey: "payment",
+		});
+	});
+
 	it("returns error for unsupported provider", async () => {
 		const result = await executePayment(
 			{ type: "unsupported", gateways: [{ id: "stripe", name: "Stripe" }] },

@@ -60,6 +60,7 @@ import type {
 	TransactionInitializeActionResult,
 } from "@/checkout/lib/checkout-action-types";
 import type { CheckoutFetchResult } from "@/checkout/lib/checkout-types";
+import { getDummyPaymentGuardError } from "@/checkout/lib/payment-gateways";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
@@ -368,6 +369,11 @@ export async function updateCheckoutBillingAddress(input: {
 export async function initializeCheckoutTransaction(
 	variables: TransactionInitializeMutationVariables,
 ): Promise<TransactionInitializeActionResult> {
+	const dummyGuardError = getDummyPaymentGuardError(variables.paymentGateway?.id);
+	if (dummyGuardError) {
+		return { ok: false, error: dummyGuardError };
+	}
+
 	const result = await executeAuthenticatedGraphQL(transactionInitializeDocument, {
 		variables,
 		cache: "no-cache",

@@ -30,15 +30,35 @@ export function findDummyGateway(
 	return gateways?.find(isDummyGateway);
 }
 
+/** Shown when dummy payment is blocked (UI and server actions). */
+export const DUMMY_PAYMENT_NOT_ALLOWED_MESSAGE = "Test payment is not available in this environment.";
+
 /**
  * Dummy Payment is for local/staging test checkouts only.
- * Enabled in development, or when NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT=true (e.g. preview deploys).
+ * Enabled in development, or when ALLOW_DUMMY_PAYMENT / NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT is true.
  */
 export function isDummyPaymentAllowed(): boolean {
+	if (process.env.ALLOW_DUMMY_PAYMENT === "true") {
+		return true;
+	}
 	if (process.env.NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT === "true") {
 		return true;
 	}
 	return process.env.NODE_ENV === "development";
+}
+
+/**
+ * Server-side guard for transactionInitialize — blocks dummy gateways in production
+ * even when callers bypass the checkout UI (e.g. direct server action invocation).
+ */
+export function getDummyPaymentGuardError(gatewayId: string | null | undefined): string | null {
+	if (!gatewayId || !isDummyGateway({ id: gatewayId, name: "" })) {
+		return null;
+	}
+	if (isDummyPaymentAllowed()) {
+		return null;
+	}
+	return DUMMY_PAYMENT_NOT_ALLOWED_MESSAGE;
 }
 
 export type PaymentGatewayStatus =

@@ -27,7 +27,11 @@ export async function executeDummyPayment(
 
 	if (!initResult.ok) {
 		console.error("Payment initialization error:", initResult.error);
-		return { ok: false, error: "Payment failed. Please try again.", errorKey: "payment" };
+		return {
+			ok: false,
+			error: initResult.error || "Payment failed. Please try again.",
+			errorKey: "payment",
+		};
 	}
 
 	const transactionError = getTransactionInitializeError(initResult.data);

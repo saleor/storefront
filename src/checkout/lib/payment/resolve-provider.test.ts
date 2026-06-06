@@ -28,6 +28,15 @@ describe("resolvePaymentProvider", () => {
 		});
 	});
 
+	it("returns dummy in production when ALLOW_DUMMY_PAYMENT is set", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("ALLOW_DUMMY_PAYMENT", "true");
+		expect(resolvePaymentProvider(dummyAndGiftCard)).toEqual({
+			type: "dummy",
+			gateway: dummyAndGiftCard[0],
+		});
+	});
+
 	it("treats dummy-only checkout as none in production", () => {
 		vi.stubEnv("NODE_ENV", "production");
 		expect(

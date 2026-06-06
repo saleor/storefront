@@ -2,10 +2,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
 	findDummyGateway,
 	formatGatewayList,
+	getDummyPaymentGuardError,
 	getTransactionInitializeError,
 	getUnsupportedGatewayMessage,
 	hasUnsupportedPaymentGateway,
 	isDummyGateway,
+	isDummyPaymentAllowed,
 	resolvePaymentGatewayStatus,
 } from "./payment-gateways";
 
@@ -17,6 +19,55 @@ describe("isDummyGateway", () => {
 
 	it("matches dummy by name when id differs", () => {
 		expect(isDummyGateway({ id: "custom.app.id", name: "Dummy Payment Gateway" })).toBe(true);
+	});
+});
+
+describe("isDummyPaymentAllowed", () => {
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
+	it("allows dummy in development", () => {
+		vi.stubEnv("NODE_ENV", "development");
+		expect(isDummyPaymentAllowed()).toBe(true);
+	});
+
+	it("blocks dummy in production by default", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		expect(isDummyPaymentAllowed()).toBe(false);
+	});
+
+	it("allows dummy in production when ALLOW_DUMMY_PAYMENT is set", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("ALLOW_DUMMY_PAYMENT", "true");
+		expect(isDummyPaymentAllowed()).toBe(true);
+	});
+
+	it("allows dummy in production when NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT is set", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT", "true");
+		expect(isDummyPaymentAllowed()).toBe(true);
+	});
+});
+
+describe("getDummyPaymentGuardError", () => {
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
+	it("returns null for non-dummy gateways", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		expect(getDummyPaymentGuardError("saleor.app.payment.stripe")).toBeNull();
+	});
+
+	it("blocks dummy gateway in production", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		expect(getDummyPaymentGuardError("saleor.io.dummy-payment-app")).toMatch(/not available/);
+	});
+
+	it("allows dummy gateway in development", () => {
+		vi.stubEnv("NODE_ENV", "development");
+		expect(getDummyPaymentGuardError("saleor.io.dummy-payment-app")).toBeNull();
 	});
 });
 
