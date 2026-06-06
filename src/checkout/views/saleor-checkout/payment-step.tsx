@@ -17,7 +17,7 @@ import {
 	type BillingAddressData,
 } from "@/checkout/components/payment";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
-import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
+import { getFormattedMoney, formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -48,15 +48,16 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 		},
 	}));
 
-	const { submit, errors, provider, canSubmit, isLoading, isCompletingOrder } = useCheckoutPayment({
-		checkout,
-		billingData,
-		sameAsBilling,
-		hasShippingAddress,
-		shippingAddress,
-		userAddresses: user?.addresses,
-		authenticated,
-	});
+	const { submit, errors, priceChangeNotice, provider, canSubmit, isLoading, isCompletingOrder } =
+		useCheckoutPayment({
+			checkout,
+			billingData,
+			sameAsBilling,
+			hasShippingAddress,
+			shippingAddress,
+			userAddresses: user?.addresses,
+			authenticated,
+		});
 
 	const handleBillingDataChange = useCallback((data: BillingAddressData) => {
 		setBillingData(data);
@@ -94,6 +95,35 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 
 	return (
 		<form className="space-y-8" onSubmit={submit}>
+			{priceChangeNotice ? (
+				<div
+					className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4"
+					role="status"
+				>
+					<AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+					<div>
+						<p className="font-medium text-amber-800">Your order total was updated</p>
+						<p className="mt-1 text-sm text-amber-700">
+							The total changed from{" "}
+							<span className="font-medium">
+								{getFormattedMoney({
+									amount: priceChangeNotice.previousAmount,
+									currency: priceChangeNotice.currency,
+								})}
+							</span>{" "}
+							to{" "}
+							<span className="font-medium">
+								{getFormattedMoney({
+									amount: priceChangeNotice.newAmount,
+									currency: priceChangeNotice.currency,
+								})}
+							</span>
+							. Review the updated order summary before completing your payment.
+						</p>
+					</div>
+				</div>
+			) : null}
+
 			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={handleGoToStep} />
 
 			{hasInvalidDelivery && (

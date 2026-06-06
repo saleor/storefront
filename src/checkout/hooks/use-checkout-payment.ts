@@ -12,7 +12,13 @@ import {
 	type ResolvedPaymentProvider,
 } from "@/checkout/lib/payment";
 import { clearCheckout } from "@/app/actions";
-import { getCheckoutPayAmount } from "@/checkout/lib/payment/checkout-pay-amount";
+import {
+	buildCheckoutPriceChangeNotice,
+	getCheckoutPayAmount,
+	getCheckoutPayCurrency,
+	hasMaterialCheckoutTotalChange,
+	type CheckoutPriceChangeNotice,
+} from "@/checkout/lib/payment/checkout-pay-amount";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { createQueryString } from "@/checkout/lib/utils/url";
 
@@ -41,6 +47,7 @@ export function useCheckoutPayment({
 
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [priceChangeNotice, setPriceChangeNotice] = useState<CheckoutPriceChangeNotice | null>(null);
 
 	const provider: ResolvedPaymentProvider = resolvePaymentProvider(checkout.availablePaymentGateways);
 
@@ -52,6 +59,8 @@ export function useCheckoutPayment({
 
 			setErrors({});
 			setIsProcessing(true);
+
+			const displayedAmount = getCheckoutPayAmount(checkout);
 
 			try {
 				const billingResult = await updateCheckoutBilling({
@@ -88,6 +97,21 @@ export function useCheckoutPayment({
 					});
 					return;
 				}
+
+				const currency = getCheckoutPayCurrency(liveCheckout);
+				if (!currency) {
+					setErrors({
+						payment: "Checkout currency is unavailable. Please refresh the page and try again.",
+					});
+					return;
+				}
+
+				if (displayedAmount !== null && hasMaterialCheckoutTotalChange(displayedAmount, payAmount)) {
+					setPriceChangeNotice(buildCheckoutPriceChangeNotice(displayedAmount, payAmount, currency));
+					return;
+				}
+
+				setPriceChangeNotice(null);
 
 				const payResult = await executePayment(provider, {
 					checkoutId: liveCheckout.id,
@@ -138,6 +162,7 @@ export function useCheckoutPayment({
 	return {
 		submit,
 		errors,
+		priceChangeNotice,
 		provider,
 		canSubmit: canSubmitPayment(provider),
 		isProcessing,
