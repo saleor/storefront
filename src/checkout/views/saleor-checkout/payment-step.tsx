@@ -18,6 +18,8 @@ import {
 } from "@/checkout/components/payment";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { getFormattedMoney, formatMoneyWithFallback } from "@/checkout/lib/utils/money";
+import { AuthorizedPaymentRecovery } from "@/checkout/components/payment/stripe/authorized-payment-recovery";
+import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -48,16 +50,29 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 		},
 	}));
 
-	const { submit, errors, priceChangeNotice, provider, canSubmit, isLoading, isCompletingOrder } =
-		useCheckoutPayment({
-			checkout,
-			billingData,
-			sameAsBilling,
-			hasShippingAddress,
-			shippingAddress,
-			userAddresses: user?.addresses,
-			authenticated,
-		});
+	const {
+		submit,
+		errors,
+		setPaymentError,
+		setBillingErrors,
+		setPriceChangeNotice,
+		priceChangeNotice,
+		provider,
+		canSubmit,
+		isLoading,
+		isCompletingOrder,
+	} = useCheckoutPayment({
+		checkout,
+		billingData,
+		sameAsBilling,
+		hasShippingAddress,
+		shippingAddress,
+		userAddresses: user?.addresses,
+		authenticated,
+	});
+
+	const isStripe = provider.type === "stripe";
+	const isFreeOrder = isCheckoutFreeOrder(checkout);
 
 	const handleBillingDataChange = useCallback((data: BillingAddressData) => {
 		setBillingData(data);
@@ -79,8 +94,12 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 	const buttonText = isLoading
 		? isCompletingOrder
 			? "Creating order..."
-			: "Processing payment..."
-		: `Pay ${totalStr}`;
+			: isFreeOrder
+				? "Placing order..."
+				: "Processing payment..."
+		: isFreeOrder
+			? "Complete order"
+			: `Pay ${totalStr}`;
 
 	const hasInvalidDelivery = checkout.problems?.some(
 		(p) => p.__typename === "CheckoutProblemDeliveryMethodInvalid",
@@ -91,10 +110,10 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 		return fieldErrors;
 	}, [errors]);
 
-	const isDisabled = isLoading || hasInvalidDelivery || !canSubmit;
+	const isDisabled = isLoading || hasInvalidDelivery || (!canSubmit && !isFreeOrder);
 
-	return (
-		<form className="space-y-8" onSubmit={submit}>
+	const paymentContent = (
+		<>
 			{priceChangeNotice ? (
 				<div
 					className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4"
@@ -141,22 +160,57 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 
 			<PaymentGatewayAlerts gateways={checkout.availablePaymentGateways} />
 
-			<PaymentMethodArea provider={provider} />
+			{isStripe && !isFreeOrder ? (
+				<AuthorizedPaymentRecovery checkout={checkout} onError={setPaymentError} />
+			) : null}
+
+			{isStripe ? (
+				<BillingAddressSection
+					billingAddress={checkout.billingAddress}
+					shippingAddress={shippingAddress}
+					userAddresses={authenticated ? (user?.addresses as AddressFragment[]) : undefined}
+					defaultBillingAddressId={user?.defaultBillingAddress?.id}
+					isShippingRequired={isShippingRequired}
+					errors={billingFieldErrors}
+					sectionError={errors.billing}
+					onChange={handleBillingDataChange}
+					onSameAsShippingChange={setSameAsBilling}
+					initialSameAsShipping={sameAsBilling}
+				/>
+			) : null}
+
+			<PaymentMethodArea
+				provider={provider}
+				checkout={checkout}
+				billing={{
+					billingData,
+					sameAsBilling,
+					hasShippingAddress,
+					shippingAddress,
+					userAddresses: user?.addresses,
+					authenticated,
+				}}
+				onPaymentError={setPaymentError}
+				onBillingErrors={setBillingErrors}
+				onPriceChangeNotice={setPriceChangeNotice}
+			/>
 
 			<PaymentError message={errors.payment} />
 
-			<BillingAddressSection
-				billingAddress={checkout.billingAddress}
-				shippingAddress={shippingAddress}
-				userAddresses={authenticated ? (user?.addresses as AddressFragment[]) : undefined}
-				defaultBillingAddressId={user?.defaultBillingAddress?.id}
-				isShippingRequired={isShippingRequired}
-				errors={billingFieldErrors}
-				sectionError={errors.billing}
-				onChange={handleBillingDataChange}
-				onSameAsShippingChange={setSameAsBilling}
-				initialSameAsShipping={sameAsBilling}
-			/>
+			{!isStripe ? (
+				<BillingAddressSection
+					billingAddress={checkout.billingAddress}
+					shippingAddress={shippingAddress}
+					userAddresses={authenticated ? (user?.addresses as AddressFragment[]) : undefined}
+					defaultBillingAddressId={user?.defaultBillingAddress?.id}
+					isShippingRequired={isShippingRequired}
+					errors={billingFieldErrors}
+					sectionError={errors.billing}
+					onChange={handleBillingDataChange}
+					onSameAsShippingChange={setSameAsBilling}
+					initialSameAsShipping={sameAsBilling}
+				/>
+			) : null}
 
 			<div className="flex items-center justify-between">
 				<button
@@ -167,28 +221,44 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 					<ChevronLeft className="h-4 w-4" />
 					{isShippingRequired ? "Return to shipping" : "Return to information"}
 				</button>
-				<Button type="submit" disabled={isDisabled} className="hidden h-12 min-w-[200px] px-8 md:flex">
-					{isLoading ? (
-						<span className="flex items-center gap-2">
-							<LoadingSpinner />
-							{buttonText}
-						</span>
-					) : (
-						buttonText
-					)}
-				</Button>
+				{!isStripe ? (
+					<Button type="submit" disabled={isDisabled} className="hidden h-12 min-w-[200px] px-8 md:flex">
+						{isLoading ? (
+							<span className="flex items-center gap-2">
+								<LoadingSpinner />
+								{buttonText}
+							</span>
+						) : (
+							buttonText
+						)}
+					</Button>
+				) : null}
 			</div>
 
-			<MobileStickyAction
-				step={getStepNumber("PAYMENT", isShippingRequired)}
-				isShippingRequired={isShippingRequired}
-				type="submit"
-				onAction={submit}
-				isLoading={isLoading}
-				disabled={isDisabled}
-				total={totalStr}
-				loadingText={isCompletingOrder ? "Creating order..." : "Processing payment..."}
-			/>
-		</form>
+			{!isStripe ? (
+				<MobileStickyAction
+					step={getStepNumber("PAYMENT", isShippingRequired)}
+					isShippingRequired={isShippingRequired}
+					type="submit"
+					onAction={submit}
+					isLoading={isLoading}
+					disabled={isDisabled}
+					total={totalStr}
+					loadingText={isCompletingOrder ? "Creating order..." : "Processing payment..."}
+				/>
+			) : null}
+		</>
+	);
+
+	return (
+		<>
+			{isStripe ? (
+				<div className="space-y-8">{paymentContent}</div>
+			) : (
+				<form className="space-y-8" onSubmit={submit}>
+					{paymentContent}
+				</form>
+			)}
+		</>
 	);
 };

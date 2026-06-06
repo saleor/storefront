@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { type AddressFragment, type CheckoutFragment } from "@/checkout/graphql";
 import { type BillingAddressData } from "@/checkout/components/payment";
 import {
@@ -11,7 +10,6 @@ import {
 	updateCheckoutBilling,
 	type ResolvedPaymentProvider,
 } from "@/checkout/lib/payment";
-import { clearCheckout } from "@/app/actions";
 import {
 	buildCheckoutPriceChangeNotice,
 	getCheckoutPayAmount,
@@ -20,7 +18,11 @@ import {
 	type CheckoutPriceChangeNotice,
 } from "@/checkout/lib/payment/checkout-pay-amount";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
-import { createQueryString } from "@/checkout/lib/utils/url";
+import {
+	clearPaymentCompleting,
+	markPaymentCompleting,
+} from "@/checkout/lib/payment/checkout-payment-completion";
+import { navigateToOrderConfirmation } from "@/checkout/lib/payment/navigate-to-order";
 
 type UseCheckoutPaymentParams = {
 	checkout: CheckoutFragment;
@@ -41,13 +43,33 @@ export function useCheckoutPayment({
 	userAddresses,
 	authenticated,
 }: UseCheckoutPaymentParams) {
-	const router = useRouter();
-	const searchParams = useSearchParams();
 	const { refreshCheckout } = useCheckoutData();
 
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [priceChangeNotice, setPriceChangeNotice] = useState<CheckoutPriceChangeNotice | null>(null);
+
+	const setPaymentError = useCallback((message: string) => {
+		setErrors((current) => {
+			if (!message) {
+				const { payment: _payment, ...rest } = current;
+				return rest;
+			}
+			return { ...current, payment: message };
+		});
+	}, []);
+
+	const setBillingErrors = useCallback((fieldErrors: Record<string, string>, focusField?: string) => {
+		setErrors(fieldErrors);
+		if (focusField) {
+			const element = document.querySelector(`[name="${focusField}"]`) as HTMLElement;
+			element?.focus();
+		}
+	}, []);
+
+	const setPriceChangeNoticeState = useCallback((notice: CheckoutPriceChangeNotice) => {
+		setPriceChangeNotice(notice);
+	}, []);
 
 	const provider: ResolvedPaymentProvider = resolvePaymentProvider(checkout.availablePaymentGateways);
 
@@ -59,6 +81,7 @@ export function useCheckoutPayment({
 
 			setErrors({});
 			setIsProcessing(true);
+			let orderPlaced = false;
 
 			const displayedAmount = getCheckoutPayAmount(checkout);
 
@@ -112,6 +135,7 @@ export function useCheckoutPayment({
 				}
 
 				setPriceChangeNotice(null);
+				markPaymentCompleting(liveCheckout.id);
 
 				const payResult = await executePayment(provider, {
 					checkoutId: liveCheckout.id,
@@ -133,14 +157,13 @@ export function useCheckoutPayment({
 					return;
 				}
 
-				const newQuery = createQueryString(searchParams, {
-					orderId: payResult.orderId,
-					checkoutId: null,
-				});
-				router.replace(`?${newQuery}`, { scroll: false });
-				void clearCheckout(checkout.channel.slug);
+				orderPlaced = true;
+				navigateToOrderConfirmation(payResult.orderId);
 			} finally {
 				setIsProcessing(false);
+				if (!orderPlaced) {
+					clearPaymentCompleting();
+				}
 			}
 		},
 		[
@@ -154,14 +177,15 @@ export function useCheckoutPayment({
 			authenticated,
 			provider,
 			refreshCheckout,
-			searchParams,
-			router,
 		],
 	);
 
 	return {
 		submit,
 		errors,
+		setPaymentError,
+		setBillingErrors,
+		setPriceChangeNotice: setPriceChangeNoticeState,
 		priceChangeNotice,
 		provider,
 		canSubmit: canSubmitPayment(provider),

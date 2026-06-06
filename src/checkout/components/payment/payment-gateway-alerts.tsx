@@ -16,7 +16,7 @@ type PaymentGatewayAlertsProps = {
 export const PaymentGatewayAlerts: FC<PaymentGatewayAlertsProps> = ({ gateways }) => {
 	const status = resolvePaymentGatewayStatus(gateways);
 
-	if (status.kind === "ready") {
+	if (status.kind === "dummy" || status.kind === "stripe") {
 		return null;
 	}
 
