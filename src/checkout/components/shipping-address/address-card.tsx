@@ -1,7 +1,7 @@
 "use client";
 
 import { type FC } from "react";
-import { MapPin, ChevronRight, Check } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { type AddressFragment } from "@/checkout/graphql";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,8 @@ export interface AddressCardProps {
 	compact?: boolean;
 	/** Additional class names */
 	className?: string;
+	/** Non-interactive display (e.g. "same as shipping" preview) */
+	disabled?: boolean;
 }
 
 /**
@@ -34,6 +36,7 @@ export const AddressCard: FC<AddressCardProps> = ({
 	onChangeClick,
 	compact = false,
 	className,
+	disabled = false,
 }) => {
 	const handleChangeClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -48,23 +51,13 @@ export const AddressCard: FC<AddressCardProps> = ({
 			onKeyDown={onClick ? (e) => e.key === "Enter" && onClick() : undefined}
 			className={cn(
 				"relative flex items-start gap-3 rounded-lg border p-4 transition-colors",
-				onClick && "hover:border-muted-foreground/50 cursor-pointer",
+				onClick && !disabled && "hover:border-muted-foreground/50 cursor-pointer",
 				isSelected && "bg-muted/30 border-foreground",
 				!isSelected && "border-border",
+				disabled && "bg-muted/20 pointer-events-none opacity-70",
 				className,
 			)}
 		>
-			{/* Icon or check mark */}
-			<div
-				className={cn(
-					"flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
-					isSelected ? "bg-foreground text-background" : "bg-muted",
-				)}
-			>
-				{isSelected ? <Check className="h-4 w-4" /> : <MapPin className="h-4 w-4 text-muted-foreground" />}
-			</div>
-
-			{/* Address content */}
 			<div className="min-w-0 flex-1">
 				<div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
 					<span className="font-medium">

@@ -297,8 +297,10 @@ pnpm run generate:checkout  # Regenerate GraphQL types (checkout)
 src/
 ├── app/                    # Next.js App Router
 │   ├── [channel]/          # Channel-scoped routes
-│   └── checkout/           # Checkout pages
-├── checkout/               # Checkout components & logic
+│   ├── (storefront)/[channel]/  # Browse, cart, account
+│   └── (checkout)/checkout/     # Checkout route (/checkout)
+├── session-bridge/         # @paper/session-bridge — storefront ↔ checkout handoff
+├── checkout/               # Checkout UI, urql, GraphQL
 ├── graphql/                # GraphQL queries
 ├── gql/                    # Generated types (don't edit)
 ├── lib/                    # Server utilities & cached data layer

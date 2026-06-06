@@ -1,12 +1,12 @@
 /**
- * Re-export all generated GraphQL types and hooks.
+ * Re-export generated GraphQL types for checkout.
  *
- * This barrel file allows importing from "@/checkout/graphql" without
- * changing existing imports. The actual types are generated in ./generated/.
+ * Mutations and queries run via server actions (`src/app/(checkout)/actions.ts`),
+ * not urql hooks. Hook exports live in `./generated/index.ts` for codegen only.
  *
  * To regenerate types, run: pnpm generate:checkout
  */
-export * from "./generated";
+export * from "./generated/operations";
 
 // Type aliases for backwards compatibility
 // The codegen adds "Fragment" suffix to fragment types (e.g., AddressFragmentFragment)
@@ -25,4 +25,4 @@ export type {
 	MoneyFragment as Money,
 	AccountErrorFragmentFragment as AccountErrorFragment,
 	UserFragmentFragment as UserFragment,
-} from "./generated";
+} from "./generated/operations";

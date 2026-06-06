@@ -13,17 +13,12 @@ interface CheckoutHeaderProps {
 }
 
 export function CheckoutHeader({ step, onStepClick, isShippingRequired = true }: CheckoutHeaderProps) {
-	// Use centralized flow definition, filtering out confirmation for progress bar
-	const allSteps = getCheckoutSteps(isShippingRequired);
-	const steps = allSteps
-		.filter((s) => s.id !== "CONFIRMATION")
-		.map((s) => ({
-			number: s.index,
-			label: s.label,
-		}));
+	const steps = getCheckoutSteps(isShippingRequired).map((s) => ({
+		number: s.index,
+		label: s.label,
+	}));
 
 	const totalSteps = steps.length;
-	const confirmationStepIndex = allSteps.find((s) => s.id === "CONFIRMATION")?.index ?? steps.length + 1;
 
 	// Calculate progress percentage dynamically
 	const progressPercentage = Math.min((step / totalSteps) * 100, 100);
@@ -79,7 +74,7 @@ export function CheckoutHeader({ step, onStepClick, isShippingRequired = true }:
 				{/* Mobile Progress Bar */}
 				<div className="mt-3 md:hidden">
 					<div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-						<span>{step === confirmationStepIndex ? "Complete" : `Step ${step} of ${totalSteps}`}</span>
+						<span>{step > totalSteps ? "Complete" : `Step ${step} of ${totalSteps}`}</span>
 						<span>{steps[step - 1]?.label}</span>
 					</div>
 					<div

@@ -10,8 +10,8 @@ February 2026
 > and consistency by AI-assisted workflows.
 >
 > **Source of truth:** Individual rule files in `rules/` are updated first. This compiled
-> document may lag — for caching architecture details, prefer `rules/data-caching.md`,
-> `rules/product-pdp.md`, and `rules/ui-channels.md`.
+> document may lag — prefer `rules/data-caching.md`, `rules/data-auth-routes.md`,
+> `rules/paper-surfaces.md`, `rules/product-pdp.md`, and `rules/ui-channels.md`.
 
 ---
 
@@ -26,6 +26,7 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 1. [Data Layer](#1-data-layer) — **CRITICAL**
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
+   - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
 2. [Product Pages](#2-product-pages) — **HIGH**
    - 2.1 [Product Detail Page](#21-product-detail-page)
    - 2.2 [Variant Selection](#22-variant-selection)
@@ -68,7 +69,8 @@ Understanding the caching architecture, Cache Components (PPR), and revalidation
 | **Homepage**                  | `getFeaturedProducts()`                     | ⚠️ Cached (5 min TTL)  | Performance                 |
 | **Navigation**                | `NavLinks`                                  | ⚠️ Cached (1 hour TTL) | Rarely changes              |
 | **Cart Drawer**               | `Checkout.find()`                           | ✅ Always fresh        | Uses `cache: "no-cache"`    |
-| **Checkout Page**             | `useCheckoutQuery()`                        | ✅ Always fresh        | Direct API call via urql    |
+| **Checkout Page**             | `syncCheckoutFromServer()` + server actions | ✅ Always fresh        | Server actions + RSC        |
+| **Auth (login/session)**      | `POST /api/auth/*` + server cookies         | ✅ Always fresh        | BFF — not browser → Saleor  |
 | **Add to Cart action**        | Saleor mutation                             | ✅ Always fresh        | Saleor calculates price     |
 
 ### Price Flow Diagram
@@ -528,7 +530,7 @@ Modifying GraphQL queries and regenerating types correctly ensures type safety, 
 | Storefront (products, cart, etc.) | `src/graphql/*.graphql`          | `src/gql/`                        | `pnpm generate`          |
 | Checkout flow                     | `src/checkout/graphql/*.graphql` | `src/checkout/graphql/generated/` | `pnpm generate:checkout` |
 
-> **Note**: Checkout uses urql (client-side), storefront uses Next.js fetch (server-side). That's why they have separate codegen setups.
+> **Note**: Storefront and checkout have separate codegen outputs (`src/gql/` vs `src/checkout/graphql/generated/`). Both fetch at runtime via server helpers and checkout server actions. Auth uses BFF routes (`/api/auth/*`), not client GraphQL.
 
 ## Making Changes
 
@@ -621,6 +623,25 @@ if (!product.defaultVariant) {
 ❌ **Don't forget to regenerate types** - Run the appropriate `generate` command  
 ❌ **Don't assume fields are non-null** - Check generated types and handle nulls explicitly  
 ❌ **Don't mix up the two codegen setups** - Storefront ≠ Checkout
+
+### 1.3 Auth Routes (BFF)
+
+Session lifecycle (login, logout, password reset) goes through **Next.js API routes** with **HttpOnly** cookies set server-side via `getServerAuthClient()`. Commerce (cart, checkout lines) stays on **server actions**.
+
+| Route                         | Purpose                                   |
+| ----------------------------- | ----------------------------------------- |
+| `POST /api/auth/login`        | `tokenCreate` → Set-Cookie (rate limited) |
+| `POST /api/auth/register`     | Account registration                      |
+| `POST /api/auth/set-password` | Reset token → session                     |
+| `logout()` server action      | Clear cookies + detach checkout           |
+
+**Client forms:** `loginWithBff()` / `setPasswordWithBff()` from `src/lib/auth/bff-client.ts`.
+
+**Header:** `UserMenuServer` → `getHeaderUser()` inside Suspense (no browser `me` fetch).
+
+**Checkout sign-in:** same BFF; `router.refresh()` after success to re-fetch RSC `me`.
+
+Full detail: `rules/data-auth-routes.md`. Surface split: `rules/paper-surfaces.md`.
 
 ---
 

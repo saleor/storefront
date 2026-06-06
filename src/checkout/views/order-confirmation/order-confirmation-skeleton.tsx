@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { CheckoutHeader } from "@/checkout/views/saleor-checkout/checkout-header";
+import { CheckoutPageShell } from "@/checkout/views/saleor-checkout/checkout-page-shell";
 
 /**
  * Skeleton primitive - matches design system tokens.
@@ -20,62 +20,60 @@ const Bone = ({ className }: { className?: string }) => (
  * - two-column layout same as checkout
  */
 export const OrderConfirmationSkeleton = () => (
-	<div className="min-h-screen animate-skeleton-delayed bg-secondary opacity-0">
-		{/* Real header at step 4 */}
-		<CheckoutHeader step={4} onStepClick={() => {}} />
+	<CheckoutPageShell step={4} onStepClick={() => {}}>
+		<div className="animate-skeleton-delayed opacity-0">
+			<main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+				<div className="flex flex-col gap-8 md:flex-row">
+					{/* Left column - Confirmation content */}
+					<div className="order-2 min-w-0 flex-1 md:order-1">
+						<div className="rounded-lg border border-border bg-card p-6 md:p-8">
+							<div className="space-y-8">
+								{/* Success header */}
+								<div className="space-y-4 text-center">
+									<div className="flex justify-center">
+										<Bone className="h-16 w-16 rounded-full" />
+									</div>
+									<div className="space-y-2">
+										<Bone className="mx-auto h-4 w-24" />
+										<Bone className="mx-auto h-7 w-64" />
+									</div>
+								</div>
 
-		{/* Main content */}
-		<main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			<div className="flex flex-col gap-8 md:flex-row">
-				{/* Left column - Confirmation content */}
-				<div className="order-2 min-w-0 flex-1 md:order-1">
-					<div className="rounded-lg border border-border bg-card p-6 md:p-8">
-						<div className="space-y-8">
-							{/* Success header */}
-							<div className="space-y-4 text-center">
-								<div className="flex justify-center">
-									<Bone className="h-16 w-16 rounded-full" />
-								</div>
-								<div className="space-y-2">
-									<Bone className="mx-auto h-4 w-24" />
-									<Bone className="mx-auto h-7 w-64" />
-								</div>
-							</div>
-
-							{/* Confirmation card */}
-							<div className="overflow-hidden rounded-lg border border-border">
-								<div className="bg-secondary/50 border-b border-border p-4">
-									<Bone className="h-5 w-48" />
-									<Bone className="mt-2 h-4 w-64" />
-								</div>
-								<div className="space-y-4 p-4">
-									{[1, 2, 3, 4].map((i) => (
-										<div key={i} className="flex items-start gap-3">
-											<Bone className="mt-0.5 h-5 w-5" />
-											<div className="space-y-1">
-												<Bone className="h-4 w-32" />
-												<Bone className="h-4 w-48" />
+								{/* Confirmation card */}
+								<div className="overflow-hidden rounded-lg border border-border">
+									<div className="bg-secondary/50 border-b border-border p-4">
+										<Bone className="h-5 w-48" />
+										<Bone className="mt-2 h-4 w-64" />
+									</div>
+									<div className="space-y-4 p-4">
+										{[1, 2, 3, 4].map((i) => (
+											<div key={i} className="flex items-start gap-3">
+												<Bone className="mt-0.5 h-5 w-5" />
+												<div className="space-y-1">
+													<Bone className="h-4 w-32" />
+													<Bone className="h-4 w-48" />
+												</div>
 											</div>
-										</div>
-									))}
+										))}
+									</div>
 								</div>
-							</div>
 
-							{/* Action button */}
-							<Bone className="h-12 w-full rounded-md" />
+								{/* Action button */}
+								<Bone className="h-12 w-full rounded-md" />
+							</div>
+						</div>
+					</div>
+
+					{/* Right column - Summary */}
+					<div className="order-1 md:order-2 md:w-[380px] md:shrink-0">
+						<div className="overflow-hidden rounded-lg border border-border bg-card md:sticky md:top-8">
+							<SummarySkeleton />
 						</div>
 					</div>
 				</div>
-
-				{/* Right column - Summary */}
-				<div className="order-1 md:order-2 md:w-[380px] md:shrink-0">
-					<div className="overflow-hidden rounded-lg border border-border bg-card md:sticky md:top-8">
-						<SummarySkeleton />
-					</div>
-				</div>
-			</div>
-		</main>
-	</div>
+			</main>
+		</div>
+	</CheckoutPageShell>
 );
 
 /**

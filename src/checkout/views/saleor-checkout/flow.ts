@@ -1,8 +1,8 @@
 import { type ReadonlyURLSearchParams } from "next/navigation";
 
-export type CheckoutStepType = "INFO" | "SHIPPING" | "PAYMENT" | "CONFIRMATION";
+export type CheckoutStepType = "INFO" | "SHIPPING" | "PAYMENT";
 
-interface CheckoutStep {
+export interface CheckoutStep {
 	id: CheckoutStepType;
 	label: string;
 	/** 1-based index for display */
@@ -22,10 +22,7 @@ export const getCheckoutSteps = (isShippingRequired: boolean): CheckoutStep[] =>
 		steps.push({ id: "SHIPPING", label: "Shipping", slug: "shipping" });
 	}
 
-	steps.push(
-		{ id: "PAYMENT", label: "Payment", slug: "payment" },
-		{ id: "CONFIRMATION", label: "Confirmation", slug: "confirmation" },
-	);
+	steps.push({ id: "PAYMENT", label: "Payment", slug: "payment" });
 
 	// Add 1-based indices
 	return steps.map((step, i) => ({
@@ -64,7 +61,7 @@ export const getStepBySlug = (slug: string, isShippingRequired: boolean): Checko
  * Defaults to the first step if missing or invalid.
  */
 export const getCurrentStepFromParams = (
-	searchParams: ReadonlyURLSearchParams,
+	searchParams: ReadonlyURLSearchParams | URLSearchParams,
 	isShippingRequired: boolean,
 ): CheckoutStep => {
 	const steps = getCheckoutSteps(isShippingRequired);

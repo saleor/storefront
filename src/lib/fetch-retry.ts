@@ -1,5 +1,5 @@
 /**
- * Retry wrapper for fetch. Used in urql client setup (Root.tsx, AuthProvider.tsx).
+ * Retry wrapper for fetch.
  * Retries on network errors and 5xx responses with exponential backoff.
  */
 const RETRYABLE_STATUS_CODES = new Set([408, 429, 500, 502, 503, 504]);

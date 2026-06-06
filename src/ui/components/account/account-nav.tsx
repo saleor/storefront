@@ -5,7 +5,7 @@ import Image from "next/image";
 import { LayoutGrid, Receipt, MapPin, Settings, ArrowLeft } from "lucide-react";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { cn } from "@/lib/utils";
-import { logout } from "@/app/actions";
+import { LogoutButton } from "@/lib/auth/logout-button";
 import { useAccountUser } from "@/ui/components/account/account-context";
 import { accountRoutes } from "@/ui/components/account/routes";
 
@@ -92,15 +92,10 @@ export function AccountNav() {
 			</nav>
 
 			<div className="mt-auto hidden pt-10 md:block">
-				<form action={logout}>
-					<button
-						type="submit"
-						className="flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-					>
-						<ArrowLeft className="h-[18px] w-[18px]" strokeWidth={1.75} />
-						Sign out
-					</button>
-				</form>
+				<LogoutButton className="flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+					<ArrowLeft className="h-[18px] w-[18px]" strokeWidth={1.75} />
+					Sign out
+				</LogoutButton>
 			</div>
 		</div>
 	);

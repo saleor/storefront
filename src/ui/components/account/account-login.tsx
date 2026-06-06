@@ -1,7 +1,4 @@
-"use client";
-
 import { Suspense } from "react";
-import { AuthProvider } from "@/lib/auth";
 import { LoginForm } from "@/ui/components/login-form";
 
 function LoginFormSkeleton() {
@@ -25,10 +22,8 @@ function LoginFormSkeleton() {
 /** Login UI for /account when the user is signed out or the session is invalid. */
 export function AccountLogin() {
 	return (
-		<AuthProvider>
-			<Suspense fallback={<LoginFormSkeleton />}>
-				<LoginForm />
-			</Suspense>
-		</AuthProvider>
+		<Suspense fallback={<LoginFormSkeleton />}>
+			<LoginForm />
+		</Suspense>
 	);
 }

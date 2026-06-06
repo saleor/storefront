@@ -1,4 +1,8 @@
-// Re-export client-safe items only
-// Server code should import directly from "./server"
-export { AuthProvider, saleorAuthClient } from "./auth-provider";
-export { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE, encodeCookieName } from "./constants";
+export type { AuthApiError } from "./auth-api-types";
+export { loginWithBff, setPasswordWithBff } from "./bff-client";
+export { LogoutButton } from "./logout-button";
+export { useLogout } from "./use-logout";
+export {
+	syncAuthSurfacesAfterSignIn,
+	type SyncAuthSurfacesAfterSignInOptions,
+} from "./sync-auth-surfaces-after-sign-in";

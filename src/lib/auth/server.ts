@@ -4,6 +4,7 @@ import { createSaleorAuthClient } from "@saleor/auth-sdk";
 import { cookies } from "next/headers";
 import { invariant } from "ts-invariant";
 import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE, encodeCookieName } from "./constants";
+import { readAuthCookieValue } from "./read-auth-cookie";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
@@ -18,15 +19,14 @@ const createServerCookieStorage = async () => {
 
 	return {
 		getItem: (key: string): string | null => {
-			const cookieName = encodeCookieName(key);
-			return cookieStore.get(cookieName)?.value ?? null;
+			return readAuthCookieValue(cookieStore, key, saleorApiUrl);
 		},
 		setItem: (key: string, value: string): void => {
 			const cookieName = encodeCookieName(key);
 			const maxAge = key.includes("refresh") ? REFRESH_TOKEN_MAX_AGE : ACCESS_TOKEN_MAX_AGE;
 			try {
 				cookieStore.set(cookieName, value, {
-					httpOnly: false,
+					httpOnly: true,
 					sameSite: "lax",
 					secure: isSecure,
 					path: "/",

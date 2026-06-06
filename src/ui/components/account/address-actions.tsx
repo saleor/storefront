@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
-import { deleteAddress, setDefaultAddress } from "@/app/[channel]/(main)/account/actions";
+import { deleteAddress, setDefaultAddress } from "@/app/(storefront)/[channel]/(main)/account/actions";
 
 type DeleteProps = {
 	addressId: string;

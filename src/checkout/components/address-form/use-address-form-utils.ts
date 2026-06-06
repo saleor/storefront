@@ -1,15 +1,11 @@
 import camelCase from "lodash-es/camelCase";
-import { useCallback, useMemo } from "react";
-import {
-	type CountryCode,
-	useAddressValidationRulesQuery,
-	type ValidationRulesFragment,
-} from "@/checkout/graphql";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getAddressValidationRules } from "@/app/(checkout)/actions";
+import { type CountryCode, type ValidationRulesFragment } from "@/checkout/graphql";
 import { type OptionalAddress, type AddressField } from "@/checkout/components/address-form/types";
 import { defaultCountry } from "@/checkout/lib/consts/countries";
 import { getOrderedAddressFields, getRequiredAddressFields } from "@/checkout/components/address-form/utils";
 
-// Default fields to show while loading country-specific validation rules
 const DEFAULT_ADDRESS_FIELDS: AddressField[] = [
 	"firstName",
 	"lastName",
@@ -56,11 +52,23 @@ export const localizedAddressFieldMessages: Record<LocalizedAddressFieldLabel, s
 };
 
 export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
-	const [{ data, fetching }] = useAddressValidationRulesQuery({
-		variables: { countryCode },
-	});
+	const [validationRules, setValidationRules] = useState<ValidationRulesFragment | undefined>();
+	const [loadedCountry, setLoadedCountry] = useState<CountryCode | null>(null);
+	const fetching = loadedCountry !== countryCode;
 
-	const validationRules = data?.addressValidationRules as ValidationRulesFragment;
+	useEffect(() => {
+		let cancelled = false;
+
+		void getAddressValidationRules(countryCode).then((result) => {
+			if (cancelled) return;
+			setValidationRules(result.ok ? result.rules : undefined);
+			setLoadedCountry(countryCode);
+		});
+
+		return () => {
+			cancelled = true;
+		};
+	}, [countryCode]);
 
 	const { countryAreaType, postalCodeType, cityType } = validationRules || {};
 
@@ -130,12 +138,10 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
 		[getLocalizedFieldLabel, localizedFields],
 	);
 
-	// Calculate ordered address fields from validation rules
 	const orderedAddressFields = useMemo(() => {
 		if (validationRules?.allowedFields) {
 			return getOrderedAddressFields(validationRules.allowedFields as AddressField[]);
 		}
-		// While loading, show default fields
 		return DEFAULT_ADDRESS_FIELDS;
 	}, [validationRules?.allowedFields]);
 

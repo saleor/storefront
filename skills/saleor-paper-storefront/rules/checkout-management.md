@@ -76,23 +76,27 @@ When `checkoutComplete` mutation succeeds:
 - The checkout ID becomes invalid
 - A new checkout should be created for future purchases
 
+## Checkout auth (BFF)
+
+Sign-in during checkout uses the same BFF as storefront (`POST /api/auth/login` via `loginWithBff()`). `CheckoutUserProvider` hydrates `me` from the RSC page; after sign-in, call `refetchUser()` → `router.refresh()` so the server re-fetches the session. Sign-out uses the `logout()` server action + `detachCheckoutCustomer` when needed.
+
+See `data-auth-routes.md` for HttpOnly cookies, header `getHeaderUser()`, and rate limits.
+
+## Data loading (RSC + client sync)
+
+1. **RSC page** (`checkout/page.tsx`) — routing (`fetchCheckoutRoutingOnServer`), `me`, order, channel countries.
+2. **Client** — `CheckoutDataProvider` calls `syncCheckoutFromServer` when `loadState === "ready"`.
+3. **Mutations** — `src/app/(checkout)/actions.ts` server actions; `refreshCheckout` / `adoptCheckoutSnapshot` in `checkout-sync.ts`.
+
+`useCheckout()` reads from `CheckoutDataProvider` context (not urql).
+
 ## Common Issues
 
-### Hydration Mismatch with Checkout ID
+### Stale cart after editing from storefront
 
-**Problem**: `extractCheckoutIdFromUrl()` called during SSR reads an empty URL, causing React hydration mismatch and "PageNotFound" flash.
+**Problem**: User changes cart on `/{channel}/cart`, returns to checkout — old lines or totals.
 
-**Symptom**: Checkout page briefly shows error then loads correctly on refresh.
-
-**Fix**: Delay extraction until after client-side mount:
-
-```tsx
-const [mounted, setMounted] = useState(false);
-useEffect(() => setMounted(true), []);
-const id = useMemo(() => (mounted ? extractCheckoutIdFromUrl() : null), [mounted]);
-```
-
-See `src/checkout/hooks/use-checkout.ts` for the full implementation.
+**Fix**: `syncCheckoutFromServer` uses `refreshCheckout` (full replace). Cart drawer uses `Link` to checkout with `router.refresh()` after mutations.
 
 ### Stale Checkout with Failed Transactions
 
@@ -112,22 +116,19 @@ CHECKOUT_NOT_FULLY_PAID: The authorized amount doesn't cover the checkout's tota
 
 **Problem**: Checkout total changes after transactions are initialized (e.g., shipping added).
 
-**Solution**: Always use live checkout data via `useCheckout()` hook before payment:
-
-```typescript
-const { checkout: liveCheckout } = useCheckout();
-const checkout = liveCheckout || initialCheckout;
-const totalAmount = checkout.totalPrice.gross.amount;
-```
+**Solution**: Always use live checkout from `useCheckout()` / `CheckoutDataProvider` before payment — never cached PDP prices.
 
 ## Key Files
 
-| File                                 | Purpose                              |
-| ------------------------------------ | ------------------------------------ |
-| `src/lib/checkout.ts`                | Checkout creation, cookie management |
-| `src/checkout/hooks/use-checkout.ts` | React hook for checkout data         |
-| `src/checkout/lib/utils/url.ts`      | URL query param extraction           |
-| `src/graphql/CheckoutCreate.graphql` | Checkout creation mutation           |
+| File                                       | Purpose                              |
+| ------------------------------------------ | ------------------------------------ |
+| `src/lib/checkout.ts`                      | Checkout creation, cookie management |
+| `src/app/(checkout)/checkout/page.tsx`     | RSC entry, routing + `me`            |
+| `src/app/(checkout)/actions.ts`            | Checkout server actions              |
+| `src/checkout/providers/checkout-data.tsx` | Client cart state + sync             |
+| `src/checkout/lib/checkout-sync.ts`        | adopt vs refresh semantics           |
+| `src/checkout/hooks/use-checkout.ts`       | Context hook for steps               |
+| `src/checkout/lib/utils/url.ts`            | URL query param extraction           |
 
 ## Debugging Checkout Issues
 

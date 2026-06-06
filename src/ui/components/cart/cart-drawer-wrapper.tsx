@@ -1,3 +1,4 @@
+import { deleteCartLine, updateCartLineQuantity } from "@/app/actions";
 import * as Checkout from "@/lib/checkout";
 import { CartDrawer } from "./cart-drawer";
 
@@ -15,6 +16,8 @@ export async function CartDrawerWrapper({ channel }: CartDrawerWrapperProps) {
 			lines={checkout?.lines ?? []}
 			totalPrice={checkout?.totalPrice ?? null}
 			channel={channel}
+			deleteCartLine={deleteCartLine}
+			updateCartLineQuantity={updateCartLineQuantity}
 		/>
 	);
 }

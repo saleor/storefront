@@ -25,12 +25,12 @@ import {
 } from "@/checkout/components/contact";
 ```
 
-| Component           | Props                                                          | Use Case                 |
-| ------------------- | -------------------------------------------------------------- | ------------------------ |
-| `SignInForm`        | `initialEmail?`, `channelSlug`, `onSuccess`, `onGuestCheckout` | Sign-in form             |
-| `SignedInUser`      | `user`, `onSignOut`                                            | Show logged-in user info |
-| `ResetPasswordForm` | `onSuccess`, `onBackToSignIn`                                  | Password reset callback  |
-| `GuestContact`      | `email`, `onEmailChange`, `emailError?`, `onSignInClick`       | Guest email entry        |
+| Component           | Props                                                          | Use Case                     |
+| ------------------- | -------------------------------------------------------------- | ---------------------------- |
+| `SignInForm`        | `initialEmail?`, `channelSlug`, `onSuccess`, `onGuestCheckout` | BFF sign-in (`loginWithBff`) |
+| `SignedInUser`      | `user`, `onSignOut`                                            | Show logged-in user info     |
+| `ResetPasswordForm` | `onSuccess`, `onBackToSignIn`                                  | Password reset callback      |
+| `GuestContact`      | `email`, `onEmailChange`, `emailError?`, `onSignInClick`       | Guest email entry            |
 
 ## Address Components
 

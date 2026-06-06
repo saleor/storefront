@@ -1,29 +1,28 @@
 "use client";
 
 import { type FC } from "react";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import { detachCheckoutCustomer } from "@/app/(checkout)/actions";
+import { useLogout } from "@/lib/auth/use-logout";
 
 export interface SignedInUserProps {
 	/** User email or basic info */
 	user: { email: string };
+	checkoutId?: string;
 	/** Called after sign-out */
 	onSignOut: () => void;
 }
 
 /**
  * Displays signed-in user info with sign-out option.
- *
- * Shows:
- * - User avatar (first letter of email)
- * - Email address
- * - "Signed in" status
- * - Sign out button
  */
-export const SignedInUser: FC<SignedInUserProps> = ({ user, onSignOut }) => {
-	const { signOut } = useSaleorAuthContext();
+export const SignedInUser: FC<SignedInUserProps> = ({ user, checkoutId, onSignOut }) => {
+	const logout = useLogout();
 
-	const handleSignOut = () => {
-		signOut();
+	const handleSignOut = async () => {
+		if (checkoutId) {
+			await detachCheckoutCustomer(checkoutId);
+		}
+		await logout();
 		onSignOut();
 	};
 
@@ -40,7 +39,7 @@ export const SignedInUser: FC<SignedInUserProps> = ({ user, onSignOut }) => {
 			</div>
 			<button
 				type="button"
-				onClick={handleSignOut}
+				onClick={() => void handleSignOut()}
 				className="shrink-0 text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground hover:no-underline"
 			>
 				Sign out

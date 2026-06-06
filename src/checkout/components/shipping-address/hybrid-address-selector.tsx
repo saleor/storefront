@@ -1,11 +1,12 @@
 "use client";
 
 import { type FC, useState, useCallback } from "react";
-import {
-	type AddressFragment,
-	type AddressTypeEnum,
-	useUserSetDefaultAddressMutation,
-} from "@/checkout/graphql";
+import { useRouter } from "next/navigation";
+
+import { setUserDefaultAddress } from "@/app/(checkout)/actions";
+import { type AddressFragment, type AddressTypeEnum } from "@/checkout/graphql";
+import { Plus } from "lucide-react";
+import { Button } from "@/ui/components/ui/button";
 import { Checkbox } from "@/ui/components/ui/checkbox";
 import { Label } from "@/ui/components/ui/label";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
@@ -58,7 +59,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 	const [sheetOpen, setSheetOpen] = useState(false);
 
 	// For collapsed mode: manage "set as default" state here
-	const [, setDefaultAddress] = useUserSetDefaultAddressMutation();
+	const router = useRouter();
 	const [isSettingDefault, setIsSettingDefault] = useState(false);
 	const [setAsDefault, setSetAsDefault] = useState(false);
 
@@ -85,15 +86,13 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 			if (checked && selectedAddressId) {
 				setIsSettingDefault(true);
 				try {
-					const result = await setDefaultAddress({
-						id: selectedAddressId,
-						type: addressType,
-					});
+					const result = await setUserDefaultAddress(selectedAddressId, addressType);
 
-					if (result.data?.accountSetDefaultAddress?.errors?.length) {
+					if (!result.ok) {
 						setSetAsDefault(false);
 					} else {
 						onDefaultChange?.(selectedAddressId);
+						router.refresh();
 					}
 				} catch {
 					setSetAsDefault(false);
@@ -102,7 +101,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 				}
 			}
 		},
-		[selectedAddressId, setDefaultAddress, addressType, onDefaultChange],
+		[selectedAddressId, addressType, onDefaultChange, router],
 	);
 
 	// Empty state
@@ -123,6 +122,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 				addressType={addressType}
 				onDefaultChange={onDefaultChange}
 				onEdit={onEdit}
+				onAddNew={onAddNew}
 			/>
 		);
 	}
@@ -181,6 +181,13 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 						Set as my default {addressType === "SHIPPING" ? "shipping" : "billing"} address
 					</Label>
 				</div>
+			)}
+
+			{onAddNew && (
+				<Button type="button" variant="outline-solid" className="w-full" onClick={onAddNew}>
+					<Plus className="h-4 w-4" />
+					Add new address
+				</Button>
 			)}
 		</div>
 	);

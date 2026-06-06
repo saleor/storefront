@@ -1,17 +1,18 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Truck, RotateCcw } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetCloseButton } from "@/ui/components/ui/sheet";
 import { useCart } from "./cart-context";
-import { deleteCartLine, updateCartLineQuantity } from "./actions";
+import type { DeleteCartLine, UpdateCartLineQuantity } from "./cart-mutations";
 import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
 import { localeConfig } from "@/config/locale";
 import { hasDiscount } from "@/lib/pricing";
+import { buildCheckoutPath } from "@paper/session-bridge";
 
 interface CartLine {
 	id: string;
@@ -109,29 +110,43 @@ interface CartDrawerProps {
 		};
 	} | null;
 	channel: string;
+	deleteCartLine: DeleteCartLine;
+	updateCartLineQuantity: UpdateCartLineQuantity;
 }
 
-export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawerProps) {
+export function CartDrawer({
+	checkoutId,
+	lines,
+	totalPrice,
+	channel,
+	deleteCartLine,
+	updateCartLineQuantity,
+}: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
-	const [isPending, startTransition] = useTransition();
+	const [isCartBusy, setIsCartBusy] = useState(false);
 
 	const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
 	const subtotal = totalPrice?.gross.amount ?? 0;
 	const currency = totalPrice?.gross.currency ?? localeConfig.fallbackCurrency;
 
+	const runCartMutation = (mutation: () => Promise<void>) => {
+		setIsCartBusy(true);
+		void mutation().finally(() => {
+			setIsCartBusy(false);
+		});
+	};
+
 	const handleRemove = (lineId: string) => {
 		if (!checkoutId) return;
-		startTransition(() => {
-			deleteCartLine(checkoutId, lineId);
-		});
+		runCartMutation(() => deleteCartLine(checkoutId, lineId, channel));
 	};
 
 	const handleUpdateQuantity = (lineId: string, newQuantity: number) => {
 		if (!checkoutId || newQuantity < 1) return;
-		startTransition(() => {
-			updateCartLineQuantity(checkoutId, lineId, newQuantity);
-		});
+		runCartMutation(() => updateCartLineQuantity(checkoutId, lineId, newQuantity, channel));
 	};
+
+	const checkoutHref = checkoutId ? buildCheckoutPath({ checkoutId, step: "contact" }) : "/checkout";
 
 	const freeShippingThreshold = 100;
 	const progressToFreeShipping = Math.min((subtotal / freeShippingThreshold) * 100, 100);
@@ -259,7 +274,7 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 														size="icon"
 														className="-mr-2 -mt-1 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
 														onClick={() => handleRemove(line.id)}
-														disabled={isPending}
+														disabled={isCartBusy}
 													>
 														<Trash2 className="h-4 w-4" />
 														<span className="sr-only">Remove {line.variant.product.name}</span>
@@ -273,7 +288,7 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 														<button
 															type="button"
 															onClick={() => handleUpdateQuantity(line.id, line.quantity - 1)}
-															disabled={line.quantity <= 1 || isPending}
+															disabled={line.quantity <= 1 || isCartBusy}
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Minus className="h-3 w-3" />
@@ -283,7 +298,7 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 														<button
 															type="button"
 															onClick={() => handleUpdateQuantity(line.id, line.quantity + 1)}
-															disabled={isPending}
+															disabled={isCartBusy}
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Plus className="h-3 w-3" />
@@ -337,9 +352,17 @@ export function CartDrawer({ checkoutId, lines, totalPrice, channel }: CartDrawe
 						{/* Actions */}
 						<div className="space-y-3 px-6 pb-6">
 							<Link
-								href={`/checkout?checkout=${checkoutId}`}
-								onClick={closeCart}
-								className="hover:bg-primary/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary text-base font-medium text-primary-foreground transition-colors"
+								href={checkoutHref}
+								prefetch={false}
+								onClick={(event) => {
+									if (isCartBusy) {
+										event.preventDefault();
+										return;
+									}
+									closeCart();
+								}}
+								aria-disabled={isCartBusy}
+								className="hover:bg-primary/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary text-base font-medium text-primary-foreground transition-colors aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
 							>
 								<span>Checkout</span>
 								<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />

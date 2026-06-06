@@ -1,0 +1,154 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+	findDummyGateway,
+	formatGatewayList,
+	getTransactionInitializeError,
+	getUnsupportedGatewayMessage,
+	hasUnsupportedPaymentGateway,
+	isDummyGateway,
+	resolvePaymentGatewayStatus,
+} from "./payment-gateways";
+
+describe("isDummyGateway", () => {
+	it("matches known dummy app ids", () => {
+		expect(isDummyGateway({ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" })).toBe(true);
+		expect(isDummyGateway({ id: "mirumee.payments.dummy", name: "Dummy" })).toBe(true);
+	});
+
+	it("matches dummy by name when id differs", () => {
+		expect(isDummyGateway({ id: "custom.app.id", name: "Dummy Payment Gateway" })).toBe(true);
+	});
+});
+
+describe("findDummyGateway", () => {
+	it("finds the current Saleor dummy app id", () => {
+		const gateway = findDummyGateway([
+			{ id: "stripe", name: "Stripe" },
+			{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" },
+		]);
+		expect(gateway?.id).toBe("saleor.io.dummy-payment-app");
+	});
+
+	it("ignores gift card when looking for dummy", () => {
+		const gateway = findDummyGateway([
+			{ id: "saleor.io.gift-card-payment-gateway", name: "Gift Card Payment Gateway" },
+			{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" },
+		]);
+		expect(gateway?.id).toBe("saleor.io.dummy-payment-app");
+	});
+});
+
+describe("hasUnsupportedPaymentGateway", () => {
+	it("returns false when only dummy and gift card are available", () => {
+		expect(
+			hasUnsupportedPaymentGateway([
+				{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" },
+				{ id: "saleor.io.gift-card-payment-gateway", name: "Gift Card Payment Gateway" },
+			]),
+		).toBe(false);
+	});
+
+	it("returns true when stripe is available", () => {
+		expect(
+			hasUnsupportedPaymentGateway([
+				{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" },
+				{ id: "saleor.app.payment.stripe", name: "Stripe" },
+			]),
+		).toBe(true);
+	});
+});
+
+describe("formatGatewayList", () => {
+	it("formats gateway names and ids", () => {
+		expect(formatGatewayList([{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" }])).toBe(
+			"Dummy Payment App (saleor.io.dummy-payment-app)",
+		);
+	});
+});
+
+describe("getUnsupportedGatewayMessage", () => {
+	it("includes available gateways", () => {
+		expect(getUnsupportedGatewayMessage([{ id: "saleor.app.payment.stripe", name: "Stripe" }])).toContain(
+			"Stripe (saleor.app.payment.stripe)",
+		);
+	});
+});
+
+describe("resolvePaymentGatewayStatus", () => {
+	const dummyAndGiftCard = [
+		{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" },
+		{ id: "saleor.io.gift-card-payment-gateway", name: "Gift Card Payment Gateway" },
+	];
+
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
+	it("returns ready when dummy gateway is present in development", () => {
+		vi.stubEnv("NODE_ENV", "development");
+		expect(resolvePaymentGatewayStatus(dummyAndGiftCard)).toEqual({
+			kind: "ready",
+			dummyGateway: dummyAndGiftCard[0],
+		});
+	});
+
+	it("returns none when only dummy is available in production", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		expect(
+			resolvePaymentGatewayStatus([{ id: "saleor.io.dummy-payment-app", name: "Dummy Payment App" }]),
+		).toEqual({ kind: "none" });
+	});
+
+	it("returns none for an empty gateway list", () => {
+		expect(resolvePaymentGatewayStatus([])).toEqual({ kind: "none" });
+	});
+
+	it("returns unsupported when only production gateways are available", () => {
+		expect(resolvePaymentGatewayStatus([{ id: "saleor.app.payment.stripe", name: "Stripe" }])).toEqual({
+			kind: "unsupported",
+		});
+	});
+
+	it("returns none when gift card is the only gateway", () => {
+		expect(
+			resolvePaymentGatewayStatus([
+				{ id: "saleor.io.gift-card-payment-gateway", name: "Gift Card Payment Gateway" },
+			]),
+		).toEqual({ kind: "none" });
+	});
+});
+
+describe("getTransactionInitializeError", () => {
+	it("returns mutation errors", () => {
+		expect(
+			getTransactionInitializeError({
+				errors: [{ message: "Gateway unavailable" }],
+				transaction: { id: "tx-1" },
+			}),
+		).toBe("Gateway unavailable");
+	});
+
+	it("returns webhook delivery guidance for authorization failures", () => {
+		expect(
+			getTransactionInitializeError({
+				transactionEvent: { type: "AUTHORIZATION_FAILURE", message: "Failed to delivery request." },
+				transaction: { id: "tx-1" },
+			}),
+		).toMatch(/webhook/i);
+	});
+
+	it("returns message when transaction id is missing", () => {
+		expect(getTransactionInitializeError({ transactionEvent: { type: "CHARGE_SUCCESS" } })).toMatch(
+			/Payment could not be initialized/,
+		);
+	});
+
+	it("returns null for a successful initialize payload", () => {
+		expect(
+			getTransactionInitializeError({
+				transactionEvent: { type: "CHARGE_SUCCESS" },
+				transaction: { id: "tx-1" },
+			}),
+		).toBeNull();
+	});
+});

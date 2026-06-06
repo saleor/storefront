@@ -26,7 +26,8 @@
 		],
 		"paths": {
 			"@/*": ["./src/*"],
-			"@ui/*": ["./src/components/*"]
+			"@ui/*": ["./src/components/*"],
+			"@paper/session-bridge": ["./src/session-bridge/index.ts"]
 		},
 		"types": ["react-dom/canary"]
 	},

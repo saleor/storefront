@@ -19,7 +19,7 @@ Understanding the caching architecture, Cache Components (PPR), and revalidation
 | **Homepage**                  | `getFeaturedProducts()`                     | ⚠️ Cached (5 min TTL)  | Performance                 |
 | **Navigation**                | `NavLinks`                                  | ⚠️ Cached (1 hour TTL) | Rarely changes              |
 | **Cart Drawer**               | `Checkout.find()`                           | ✅ Always fresh        | Uses `cache: "no-cache"`    |
-| **Checkout Page**             | `useCheckoutQuery()`                        | ✅ Always fresh        | Direct API call via urql    |
+| **Checkout Page**             | `syncCheckoutFromServer()` + server actions | ✅ Always fresh        | Server actions + RSC        |
 | **Add to Cart action**        | Saleor mutation                             | ✅ Always fresh        | Saleor calculates price     |
 
 ### Price Flow Diagram

@@ -20,14 +20,14 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 12 rules across 6 categories covering the full storefront:
 
-| Category      | Rules                                                  | Topics                                                       |
-| ------------- | ------------------------------------------------------ | ------------------------------------------------------------ |
-| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`     | Cache Components, PPR, account auth routes, GraphQL codegen  |
-| Product Pages | `product-pdp`, `product-variants`, `product-filtering` | PDP architecture, variant selection, server/client filtering |
-| Checkout      | `checkout-management`, `checkout-components`           | Session lifecycle, reusable UI components                    |
-| UI & Channels | `ui-components`, `ui-channels`                         | Design tokens, multi-currency                                |
-| SEO           | `seo-metadata`                                         | JSON-LD, OG images, metadata                                 |
-| Development   | `dev-investigation`                                    | Saleor API investigation via generated types and source      |
+| Category      | Rules                                                          | Topics                                                       |
+| ------------- | -------------------------------------------------------------- | ------------------------------------------------------------ |
+| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`             | Cache Components, PPR, account auth routes, GraphQL codegen  |
+| Product Pages | `product-pdp`, `product-variants`, `product-filtering`         | PDP architecture, variant selection, server/client filtering |
+| Checkout      | `paper-surfaces`, `checkout-management`, `checkout-components` | Surface split, session lifecycle, UI components              |
+| UI & Channels | `ui-components`, `ui-channels`                                 | Design tokens, multi-currency                                |
+| SEO           | `seo-metadata`                                                 | JSON-LD, OG images, metadata                                 |
+| Development   | `dev-investigation`                                            | Saleor API investigation via generated types and source      |
 
 ## Structure
 
@@ -38,7 +38,9 @@ saleor-paper-storefront/
 ├── README.md             # This file (for humans)
 ├── rules/                # Individual rule files
 │   ├── data-caching.md
+│   ├── data-auth-routes.md
 │   ├── data-graphql.md
+│   ├── paper-surfaces.md
 │   ├── product-pdp.md
 │   ├── product-variants.md
 │   ├── product-filtering.md

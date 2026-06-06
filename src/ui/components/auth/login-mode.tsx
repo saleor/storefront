@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import { loginWithBff, syncAuthSurfacesAfterSignIn } from "@/lib/auth";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
@@ -12,9 +12,8 @@ import { Label } from "@/ui/components/ui/label";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginMode() {
-	const router = useRouter();
 	const params = useParams<{ channel: string }>();
-	const { signIn } = useSaleorAuthContext();
+	const router = useRouter();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -41,25 +40,34 @@ export function LoginMode() {
 		setIsSubmitting(true);
 
 		try {
-			const result = await signIn({ email, password });
+			const result = await loginWithBff(email, password);
 
-			if (result.data?.tokenCreate?.errors?.length) {
-				const err = result.data.tokenCreate.errors[0];
+			if (result.errors?.length) {
+				const err = result.errors[0];
 				const isInvalidCredentials =
+					err.code === "INVALID_CREDENTIALS" ||
+					err.code === "INVALID_PASSWORD" ||
 					err.message?.toLowerCase().includes("invalid") ||
 					err.message?.toLowerCase().includes("credentials");
+				const isRateLimited = err.code === "RATE_LIMITED";
 				setError(
-					isInvalidCredentials
-						? "Invalid email or password. Please try again."
-						: err.message || "Sign in failed",
+					isRateLimited
+						? "Too many sign-in attempts. Please wait and try again."
+						: isInvalidCredentials
+							? "Invalid email or password. Please try again."
+							: err.message || "Sign in failed",
 				);
 				return;
 			}
 
-			if (result.data?.tokenCreate?.token) {
-				router.push(`/${params.channel}`);
-				router.refresh();
+			if (result.ok) {
+				await syncAuthSurfacesAfterSignIn(params.channel, router, {
+					redirectTo: `/${params.channel}`,
+				});
+				return;
 			}
+
+			setError("Sign in failed. Please try again.");
 		} catch {
 			setError("An error occurred. Please try again.");
 		} finally {

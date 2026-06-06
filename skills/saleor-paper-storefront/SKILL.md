@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.3.0"
+  version: "1.4.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -54,7 +54,7 @@ Reference these guidelines when:
 ### 1. Data Layer (CRITICAL)
 
 - `data-caching` - Cache Components (PPR), three-layer page model, cache manifest, webhooks
-- `data-auth-routes` - Authenticated route segments (account layout, Suspense, AuthProvider login gate)
+- `data-auth-routes` - Authenticated route segments (account layout, Suspense, BFF auth)
 - `data-graphql` - Two codegen setups, permission patterns, nullable fields
 
 ### 2. Product Pages (HIGH)
@@ -66,6 +66,7 @@ Reference these guidelines when:
 
 ### 3. Checkout Flow (HIGH)
 
+- `paper-surfaces` - Storefront vs checkout surfaces, `@paper/session-bridge`, RSC checkout + BFF auth
 - `checkout-management` - Checkout lifecycle, cookie storage, payment debugging
 - `checkout-components` - Reusable checkout UI (SignInForm, AddressSelector, PaymentMethodSelector)
 

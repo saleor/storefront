@@ -21,6 +21,7 @@ interface ContactSectionProps {
 	// Auth state
 	isSignedIn: boolean;
 	user: User | null | undefined;
+	checkoutId?: string;
 	/** True while resolving session (avoids guest UI flash when auth cookies exist) */
 	isLoading?: boolean;
 	onSignOut: () => void;
@@ -51,6 +52,7 @@ interface ContactSectionProps {
 export const ContactSection: FC<ContactSectionProps> = ({
 	isSignedIn,
 	user,
+	checkoutId,
 	isLoading = false,
 	onSignOut,
 	onSignInClick,
@@ -80,7 +82,7 @@ export const ContactSection: FC<ContactSectionProps> = ({
 			{isSignedIn && user ? (
 				<>
 					<h2 className="text-xl font-semibold">Contact</h2>
-					<SignedInUser user={user} onSignOut={onSignOut} />
+					<SignedInUser user={user} checkoutId={checkoutId} onSignOut={onSignOut} />
 				</>
 			) : (
 				<>

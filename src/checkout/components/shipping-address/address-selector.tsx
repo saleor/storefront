@@ -1,12 +1,13 @@
 "use client";
 
 import { type FC, useState, useCallback } from "react";
-import {
-	type AddressFragment,
-	type AddressTypeEnum,
-	useUserSetDefaultAddressMutation,
-} from "@/checkout/graphql";
+import { useRouter } from "next/navigation";
+
+import { setUserDefaultAddress } from "@/app/(checkout)/actions";
+import { type AddressFragment, type AddressTypeEnum } from "@/checkout/graphql";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/ui/components/ui/button";
 import { Checkbox } from "@/ui/components/ui/checkbox";
 import { Label } from "@/ui/components/ui/label";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
@@ -32,6 +33,8 @@ export interface AddressSelectorProps {
 	onEdit?: (id: string) => void;
 	/** Whether to show the "set as default" checkbox (default: true) */
 	showSetAsDefault?: boolean;
+	/** Called when "Add new address" is clicked */
+	onAddNew?: () => void;
 }
 
 /** Radio-button list for selecting from saved addresses. */
@@ -46,8 +49,9 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 	onDefaultChange,
 	onEdit,
 	showSetAsDefault = true,
+	onAddNew,
 }) => {
-	const [, setDefaultAddress] = useUserSetDefaultAddressMutation();
+	const router = useRouter();
 	const [isSettingDefault, setIsSettingDefault] = useState(false);
 	const [setAsDefault, setSetAsDefault] = useState(false);
 
@@ -68,17 +72,13 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 			if (checked && selectedAddressId) {
 				setIsSettingDefault(true);
 				try {
-					const result = await setDefaultAddress({
-						id: selectedAddressId,
-						type: addressType,
-					});
+					const result = await setUserDefaultAddress(selectedAddressId, addressType);
 
-					if (result.data?.accountSetDefaultAddress?.errors?.length) {
-						// If there's an error, uncheck the box
+					if (!result.ok) {
 						setSetAsDefault(false);
 					} else {
-						// Notify parent of the change
 						onDefaultChange?.(selectedAddressId);
+						router.refresh();
 					}
 				} catch {
 					setSetAsDefault(false);
@@ -87,7 +87,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 				}
 			}
 		},
-		[selectedAddressId, setDefaultAddress, addressType, onDefaultChange],
+		[selectedAddressId, addressType, onDefaultChange, router],
 	);
 
 	if (addresses.length === 0) {
@@ -184,6 +184,13 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 						Set as my default {addressType === "SHIPPING" ? "shipping" : "billing"} address
 					</Label>
 				</div>
+			)}
+
+			{onAddNew && (
+				<Button type="button" variant="outline-solid" className="w-full" onClick={onAddNew}>
+					<Plus className="h-4 w-4" />
+					Add new address
+				</Button>
 			)}
 		</div>
 	);

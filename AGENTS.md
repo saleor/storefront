@@ -75,7 +75,10 @@ src/
 │   ├── [channel]/          # Channel-scoped routes
 │   │   └── (main)/         # Main layout (header/footer)
 │   ├── api/                # API routes (og/, revalidate/)
-│   └── checkout/           # Checkout flow
+│   ├── (storefront)/[channel]/  # Browse, cart, account
+│   └── (checkout)/checkout/     # Checkout surface
+├── session-bridge/         # @paper/session-bridge (cross-surface only)
+├── checkout/               # Checkout flow (do not import from storefront)
 ├── graphql/                # GraphQL queries (run `pnpm run generate` after changes)
 ├── gql/                    # AUTO-GENERATED - Do not edit (storefront types)
 ├── ui/components/          # UI components

@@ -8,7 +8,7 @@ Fork has account routes **and** any of:
 # Async account page calling getCurrentUser (common #1201 regression)
 grep -r "getCurrentUser" src/app/\[channel\]/\(main\)/account/*/page.tsx 2>/dev/null
 
-# Bare LoginForm without AuthProvider in account layout
+# Bare LoginForm in account layout (must use AccountLogin wrapper)
 grep "LoginForm" src/app/\[channel\]/\(main\)/account/layout.tsx 2>/dev/null | grep -v AccountLogin
 
 # connection() in account layout (problematic with CartProvider)

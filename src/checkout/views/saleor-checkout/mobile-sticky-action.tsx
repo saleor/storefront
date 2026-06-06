@@ -66,7 +66,7 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 		<div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card p-4 md:hidden">
 			<Button
 				type={type}
-				onClick={onAction}
+				onClick={type === "button" ? onAction : undefined}
 				disabled={disabled || isLoading}
 				className="h-12 w-full text-base font-semibold"
 			>

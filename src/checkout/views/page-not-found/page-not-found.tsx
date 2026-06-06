@@ -3,7 +3,7 @@
 import { type FallbackProps } from "react-error-boundary";
 import Link from "next/link";
 import { ShoppingBag, ArrowLeft, AlertCircle } from "lucide-react";
-import { Logo } from "@/ui/components/shared/logo";
+import { CheckoutPageShell } from "@/checkout/views/saleor-checkout/checkout-page-shell";
 
 interface PageNotFoundProps extends Partial<FallbackProps> {
 	title?: string;
@@ -15,32 +15,17 @@ export const PageNotFound = ({
 	message = "We couldn't find your checkout session. It may have expired or been completed.",
 }: PageNotFoundProps) => {
 	return (
-		<div className="min-h-screen bg-secondary">
-			{/* Header */}
-			<header className="border-b border-border bg-background">
-				<div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-					<Link href="/" className="flex items-center">
-						<Logo className="h-5 w-auto text-foreground" />
-					</Link>
-				</div>
-			</header>
-
-			{/* Main content */}
+		<CheckoutPageShell>
 			<main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
 				<div className="mx-auto max-w-md">
 					<div className="rounded-lg border border-border bg-card p-8 text-center shadow-sm">
-						{/* Icon */}
 						<div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
 							<AlertCircle className="h-8 w-8 text-muted-foreground" />
 						</div>
 
-						{/* Title */}
 						<h1 className="mb-2 text-xl font-semibold text-foreground">{title}</h1>
-
-						{/* Message */}
 						<p className="mb-8 text-muted-foreground">{message}</p>
 
-						{/* Actions */}
 						<div className="flex flex-col gap-3">
 							<Link
 								href="/"
@@ -59,12 +44,11 @@ export const PageNotFound = ({
 						</div>
 					</div>
 
-					{/* Help text */}
 					<p className="mt-6 text-center text-sm text-muted-foreground">
 						If you believe this is an error, please try adding items to your cart again or contact support.
 					</p>
 				</div>
 			</main>
-		</div>
+		</CheckoutPageShell>
 	);
 };

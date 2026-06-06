@@ -6,13 +6,9 @@ import { Tag, ShieldCheck, RotateCcw, Truck, ChevronDown, ShoppingBag, X } from 
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { cn } from "@/lib/utils";
-import {
-	type CheckoutErrorFragment,
-	type CheckoutFragment,
-	type OrderFragment,
-	useCheckoutAddPromoCodeMutation,
-	useCheckoutRemovePromoCodeMutation,
-} from "@/checkout/graphql";
+import { applyCheckoutPromoCode, removeCheckoutPromoCode } from "@/app/(checkout)/actions";
+import { type CheckoutErrorFragment, type CheckoutFragment, type OrderFragment } from "@/checkout/graphql";
+import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { localeConfig } from "@/config/locale";
 
 // ============================================================================
@@ -131,10 +127,10 @@ function getCheckoutErrorMessage(errors: readonly CheckoutErrorFragment[] | unde
 export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable, onCheckoutChange }) => {
 	const [promoCode, setPromoCode] = useState("");
 	const [promoError, setPromoError] = useState<string | null>(null);
+	const [isPromoBusy, setIsPromoBusy] = useState(false);
+	const { setCheckout } = useCheckoutData();
 	// Collapsed by default on mobile
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [{ fetching: isApplyingPromo }, applyPromoCode] = useCheckoutAddPromoCodeMutation();
-	const [{ fetching: isRemovingPromo }, removePromoCode] = useCheckoutRemovePromoCodeMutation();
 
 	// Extract data from either checkout or order
 	const data = checkout ? extractCheckoutData(checkout) : order ? extractOrderData(order) : null;
@@ -148,7 +144,6 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 	const itemCount = lines.reduce((acc, line) => acc + line.quantity, 0);
 	const appliedPromoCode = checkout?.voucherCode;
 	const appliedDiscountName = checkout?.translatedDiscountName || checkout?.discountName;
-	const isPromoBusy = isApplyingPromo || isRemovingPromo;
 
 	const formatMoney = (amount: number) => {
 		return new Intl.NumberFormat(localeConfig.default, {
@@ -166,51 +161,49 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 		if (!trimmedCode) return;
 
 		setPromoError(null);
+		setIsPromoBusy(true);
 
-		const result = await applyPromoCode({
-			checkoutId: checkout.id,
-			promoCode: trimmedCode,
-			languageCode: localeConfig.graphqlLanguageCode,
-		});
+		try {
+			const result = await applyCheckoutPromoCode(checkout.id, trimmedCode);
 
-		if (result.error) {
-			setPromoError(result.error.message);
-			return;
+			if (!result.ok) {
+				const errorMessage =
+					result.error ??
+					getCheckoutErrorMessage(result.fieldErrors) ??
+					"This discount code could not be applied.";
+				setPromoError(errorMessage);
+				return;
+			}
+
+			setCheckout(result.checkout);
+			setPromoCode("");
+			onCheckoutChange?.();
+		} finally {
+			setIsPromoBusy(false);
 		}
-
-		const errorMessage = getCheckoutErrorMessage(result.data?.checkoutAddPromoCode?.errors);
-		if (errorMessage) {
-			setPromoError(errorMessage);
-			return;
-		}
-
-		setPromoCode("");
-		onCheckoutChange?.();
 	};
 
 	const handleRemovePromo = async () => {
 		if (!checkout || !appliedPromoCode || isPromoBusy) return;
 
 		setPromoError(null);
+		setIsPromoBusy(true);
 
-		const result = await removePromoCode({
-			checkoutId: checkout.id,
-			promoCode: appliedPromoCode,
-			languageCode: localeConfig.graphqlLanguageCode,
-		});
+		try {
+			const result = await removeCheckoutPromoCode(checkout.id, appliedPromoCode);
 
-		if (result.error) {
-			setPromoError(result.error.message);
-			return;
+			if (!result.ok) {
+				const errorMessage =
+					result.error ?? getCheckoutErrorMessage(result.fieldErrors) ?? "Failed to remove discount code.";
+				setPromoError(errorMessage);
+				return;
+			}
+
+			setCheckout(result.checkout);
+			onCheckoutChange?.();
+		} finally {
+			setIsPromoBusy(false);
 		}
-
-		const errorMessage = getCheckoutErrorMessage(result.data?.checkoutRemovePromoCode?.errors);
-		if (errorMessage) {
-			setPromoError(errorMessage);
-			return;
-		}
-
-		onCheckoutChange?.();
 	};
 
 	// Product thumbnails for collapsed state (show max 2 for cleaner look)
@@ -390,7 +383,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 										disabled={!promoCode.trim() || isPromoBusy}
 										className="h-10 bg-white px-4 text-sm"
 									>
-										{isApplyingPromo ? "Applying..." : "Apply"}
+										{isPromoBusy ? "Applying..." : "Apply"}
 									</Button>
 								</form>
 							)}

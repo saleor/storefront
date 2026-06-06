@@ -1,5 +1,5 @@
 import { ChannelsListDocument, type ChannelsListQuery } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { executeAppGraphQL } from "@/lib/graphql";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 
 export async function getCachedChannelsList(): Promise<ChannelsListQuery | null> {
@@ -10,11 +10,7 @@ export async function getCachedChannelsList(): Promise<ChannelsListQuery | null>
 		return null;
 	}
 
-	const result = await executePublicGraphQL(ChannelsListDocument, {
-		headers: {
-			Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-		},
-	});
+	const result = await executeAppGraphQL(ChannelsListDocument, {});
 
 	return result.ok ? result.data : null;
 }

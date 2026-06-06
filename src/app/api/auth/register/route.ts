@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
 import { executeRawGraphQL, asValidationError, getUserMessage } from "@/lib/graphql";
 
 const REGISTER_MUTATION = `
@@ -34,7 +35,21 @@ interface AccountRegisterResult {
 }
 
 export async function POST(request: NextRequest) {
-	const body = (await request.json()) as RegisterRequest;
+	const rateLimited = rejectIfRateLimited(request, "register", { limit: 5, windowMs: 60 * 60 * 1000 });
+	if (rateLimited) {
+		return rateLimited;
+	}
+
+	let body: RegisterRequest;
+	try {
+		body = (await request.json()) as RegisterRequest;
+	} catch {
+		return NextResponse.json(
+			{ errors: [{ message: "Invalid request body", code: "INVALID_JSON" }] },
+			{ status: 400 },
+		);
+	}
+
 	const { email, password, firstName, lastName, channel, redirectUrl } = body;
 
 	if (!email || !password) {

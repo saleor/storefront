@@ -23,8 +23,6 @@ export interface PaymentMethodSelectorProps {
 	cardData?: CardData;
 	/** Called when card data changes */
 	onCardDataChange?: (data: CardData) => void;
-	/** Whether card form is in test/demo mode */
-	isTestMode?: boolean;
 	/** Available payment methods to show */
 	availableMethods?: PaymentMethodType[];
 }
@@ -93,8 +91,10 @@ export const PaymentMethodSelector: FC<PaymentMethodSelectorProps> = ({
 
 	return (
 		<section className="space-y-4">
-			<h2 className="text-lg font-semibold">Payment</h2>
-			<p className="text-sm text-muted-foreground">All transactions are secure and encrypted.</p>
+			<div className="space-y-2">
+				<h2 className="text-lg font-semibold">Payment</h2>
+				<p className="text-sm text-muted-foreground">All transactions are secure and encrypted.</p>
+			</div>
 
 			<div className="space-y-3">
 				{/* Credit Card */}
