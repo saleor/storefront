@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Plus } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Badge } from "@/ui/components/ui/badge";
+import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
 export interface ProductCardData {
@@ -75,7 +76,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 						src={product.image}
 						alt={product.imageAlt || product.name}
 						fill
-						sizes="(max-width: 1024px) 50vw, 33vw"
+						sizes={PLP_IMAGE_SIZES}
+						quality={PRODUCT_IMAGE_QUALITY}
 						className={cn(
 							"object-cover transition-all duration-500 ease-out md:group-hover:scale-105",
 							product.hoverImage && "md:group-hover:opacity-0",
@@ -89,7 +91,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 							src={hoverImageSrc}
 							alt={`${product.name} - alternate view`}
 							fill
-							sizes="(max-width: 1024px) 50vw, 33vw"
+							sizes={PLP_IMAGE_SIZES}
+							quality={PRODUCT_IMAGE_QUALITY}
+							loading="lazy"
 							className="object-cover opacity-0 transition-all duration-500 ease-out md:group-hover:scale-105 md:group-hover:opacity-100"
 						/>
 					)}

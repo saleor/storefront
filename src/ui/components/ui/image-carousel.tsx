@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { PDP_MAIN_IMAGE_SIZES, PDP_THUMBNAIL_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import {
 	Carousel,
@@ -126,7 +127,8 @@ export function ImageCarousel({
 										alt={image.alt || `${productName} - View ${index + 1}`}
 										fill
 										className="object-cover"
-										sizes="(max-width: 768px) 100vw, 50vw"
+										sizes={PDP_MAIN_IMAGE_SIZES}
+										quality={PRODUCT_IMAGE_QUALITY}
 										priority={index === 0}
 										loading={index === 0 ? undefined : "lazy"}
 									/>
@@ -180,7 +182,8 @@ export function ImageCarousel({
 								alt={`${productName} - Thumbnail ${index + 1}`}
 								fill
 								className="object-cover"
-								sizes="80px"
+								sizes={PDP_THUMBNAIL_IMAGE_SIZES}
+								quality={PRODUCT_IMAGE_QUALITY}
 								loading="lazy"
 							/>
 						</button>

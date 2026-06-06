@@ -2,17 +2,16 @@ import Link from "next/link";
 import { ProductImageWrapper } from "@/ui/atoms/product-image-wrapper";
 
 import type { ProductListItemFragment } from "@/gql/graphql";
+import { HOMEPAGE_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { formatMoneyRange } from "@/lib/utils";
 
 export function ProductElement({
 	product,
 	channel,
-	loading,
 	priority,
 }: {
 	product: ProductListItemFragment;
 	channel: string;
-	loading: "eager" | "lazy";
 	priority?: boolean;
 }) {
 	const href = `/${encodeURIComponent(channel)}/products/${encodeURIComponent(product.slug)}`;
@@ -23,13 +22,12 @@ export function ProductElement({
 				<div>
 					{product?.thumbnail?.url && (
 						<ProductImageWrapper
-							loading={loading}
 							src={product.thumbnail.url}
 							alt={product.thumbnail.alt ?? ""}
-							width={512}
-							height={512}
-							sizes={"512px"}
+							sizes={HOMEPAGE_IMAGE_SIZES}
+							quality={PRODUCT_IMAGE_QUALITY}
 							priority={priority}
+							loading={priority ? undefined : "lazy"}
 						/>
 					)}
 					<div className="mt-2 flex justify-between">
