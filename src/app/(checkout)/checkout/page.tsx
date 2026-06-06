@@ -3,13 +3,13 @@ import { redirect } from "next/navigation";
 import { invariant } from "ts-invariant";
 import { buildCheckoutPath } from "@paper/session-bridge";
 import { CheckoutApp } from "@/checkout/checkout-app";
+import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
 import { fetchCheckoutRoutingOnServer } from "@/checkout/lib/server/fetch-checkout-routing";
 import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-user";
 import { fetchChannelCountriesOnServer } from "@/checkout/lib/server/fetch-channel-countries";
 import { fetchOrderOnServer } from "@/checkout/lib/server/fetch-order";
 import type { ShippingCountries } from "@/checkout/lib/checkout-types";
 import type { CheckoutLoadState } from "@/checkout/providers/checkout-data";
-import { CheckoutSkeleton } from "@/checkout/views/saleor-checkout";
 import * as Checkout from "@/lib/checkout";
 
 export const metadata = {
@@ -26,7 +26,7 @@ export default function CheckoutPage(props: {
 	searchParams: Promise<{ checkout?: string; order?: string }>;
 }) {
 	return (
-		<Suspense fallback={<CheckoutSkeleton />}>
+		<Suspense fallback={<CheckoutLoadingFallback />}>
 			<CheckoutContent searchParams={props.searchParams} />
 		</Suspense>
 	);

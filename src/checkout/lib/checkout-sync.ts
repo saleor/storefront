@@ -41,3 +41,19 @@ export function adoptCheckoutSnapshot(current: ServerCheckout | null, fresh: Ser
 	}
 	return current;
 }
+
+/**
+ * Only expose checkout data when it belongs to the active session id.
+ * Prevents flashing a previous cart after order completion or checkout id change.
+ */
+export function resolveSessionCheckout(
+	checkout: ServerCheckout | null,
+	checkoutId: string | null,
+	loadState: "order" | "none" | "not_found" | "empty" | "error" | "ready",
+): ServerCheckout | null {
+	if (loadState !== "ready" || !checkoutId || !checkout) {
+		return null;
+	}
+
+	return checkout.id === checkoutId ? checkout : null;
+}

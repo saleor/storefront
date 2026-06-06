@@ -4,9 +4,14 @@ import { createContext, type ReactNode, use, useCallback, useEffect, useMemo, us
 
 import { syncCheckoutFromServer } from "@/app/(checkout)/actions";
 import type { ServerCheckout, ServerOrder, ShippingCountries } from "@/checkout/lib/checkout-types";
-import { adoptCheckoutSnapshot } from "@/checkout/lib/checkout-sync";
+import { adoptCheckoutSnapshot, resolveSessionCheckout } from "@/checkout/lib/checkout-sync";
 
 export type CheckoutLoadState = "order" | "none" | "not_found" | "empty" | "error" | "ready";
+
+export type RefreshCheckoutOptions = {
+	/** When false, returns fresh data without updating context (keeps Stripe Elements mounted). */
+	updateState?: boolean;
+};
 
 export type CheckoutDataContextValue = {
 	loadState: CheckoutLoadState;
@@ -20,7 +25,7 @@ export type CheckoutDataContextValue = {
 	 * Always replaces — does not merge with in-flow form edits.
 	 */
 	/** Re-fetch from Saleor; returns null when the checkout is missing or the request fails. */
-	refreshCheckout: () => Promise<ServerCheckout | null>;
+	refreshCheckout: (options?: RefreshCheckoutOptions) => Promise<ServerCheckout | null>;
 };
 
 const CheckoutDataContext = createContext<CheckoutDataContextValue | null>(null);
@@ -42,24 +47,36 @@ export function CheckoutDataProvider({
 }: CheckoutDataProviderProps) {
 	const [checkout, setCheckout] = useState<ServerCheckout | null>(null);
 
-	const refreshCheckout = useCallback(async (): Promise<ServerCheckout | null> => {
-		if (!checkoutId) {
-			return null;
-		}
+	const refreshCheckout = useCallback(
+		async (options?: RefreshCheckoutOptions): Promise<ServerCheckout | null> => {
+			if (!checkoutId) {
+				return null;
+			}
 
-		const result = await syncCheckoutFromServer(checkoutId);
-		if (!result.ok || !result.checkout) {
-			return null;
-		}
+			const result = await syncCheckoutFromServer(checkoutId);
+			if (!result.ok || !result.checkout) {
+				return null;
+			}
 
-		// Explicit refresh: always adopt server snapshot (cart totals, promos, line items).
-		setCheckout(result.checkout);
-		return result.checkout;
-	}, [checkoutId]);
+			if (result.checkout.id !== checkoutId) {
+				return null;
+			}
+
+			if (options?.updateState !== false) {
+				// Explicit refresh: always adopt server snapshot (cart totals, promos, line items).
+				setCheckout(result.checkout);
+			}
+
+			return result.checkout;
+		},
+		[checkoutId],
+	);
 
 	// Live load on entry — bypasses Next.js router/RSC cache after cart edits.
 	useEffect(() => {
 		if (!checkoutId || loadState !== "ready") {
+			// eslint-disable-next-line react-hooks/set-state-in-effect -- drop stale cart when leaving checkout
+			setCheckout(null);
 			return;
 		}
 
@@ -85,16 +102,21 @@ export function CheckoutDataProvider({
 		};
 	}, [checkoutId, loadState]);
 
+	const sessionCheckout = useMemo(
+		() => resolveSessionCheckout(checkout, checkoutId, loadState),
+		[checkout, checkoutId, loadState],
+	);
+
 	const value = useMemo(
 		() => ({
 			loadState,
-			checkout,
+			checkout: sessionCheckout,
 			order: initialOrder,
 			shippingCountries,
 			setCheckout,
 			refreshCheckout,
 		}),
-		[checkout, initialOrder, loadState, refreshCheckout, shippingCountries],
+		[initialOrder, loadState, refreshCheckout, sessionCheckout, shippingCountries],
 	);
 
 	return <CheckoutDataContext value={value}>{children}</CheckoutDataContext>;

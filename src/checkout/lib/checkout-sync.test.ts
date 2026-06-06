@@ -5,6 +5,7 @@ import {
 	adoptCheckoutSnapshot,
 	checkoutsHaveSameLines,
 	checkoutLinesSignature,
+	resolveSessionCheckout,
 } from "@/checkout/lib/checkout-sync";
 
 function makeCheckout(lines: Array<{ id: string; quantity: number }>): ServerCheckout {
@@ -55,6 +56,26 @@ describe("adoptCheckoutSnapshot", () => {
 		const server = makeCheckout([{ id: "line-a", quantity: 1 }]);
 
 		expect(adoptCheckoutSnapshot(client, server)).toBe(server);
+	});
+});
+
+describe("resolveSessionCheckout", () => {
+	it("hides checkout when session id does not match", () => {
+		const stale = { ...makeCheckout([{ id: "line-a", quantity: 1 }]), id: "old-checkout" } as ServerCheckout;
+
+		expect(resolveSessionCheckout(stale, "new-checkout", "ready")).toBeNull();
+	});
+
+	it("returns checkout when session id matches", () => {
+		const current = makeCheckout([{ id: "line-a", quantity: 1 }]);
+
+		expect(resolveSessionCheckout(current, "checkout-1", "ready")).toBe(current);
+	});
+
+	it("returns null when load state is not ready", () => {
+		const current = makeCheckout([{ id: "line-a", quantity: 1 }]);
+
+		expect(resolveSessionCheckout(current, "checkout-1", "order")).toBeNull();
 	});
 });
 
