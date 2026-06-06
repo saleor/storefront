@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import { useState, type MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Plus } from "lucide-react";
@@ -41,8 +41,15 @@ interface ProductCardProps {
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
 	const canQuickAdd = !product.hasVariants && product.onQuickAdd;
+	const [hoverImageSrc, setHoverImageSrc] = useState<string | null>(null);
 
-	const handleQuickAdd = (e: React.MouseEvent) => {
+	const loadHoverImage = () => {
+		if (product.hoverImage && !hoverImageSrc) {
+			setHoverImageSrc(product.hoverImage);
+		}
+	};
+
+	const handleQuickAdd = (e: MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
 		product.onQuickAdd?.(product.id);
@@ -59,7 +66,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 		<article className="group">
 			<Link href={product.href} className="block">
 				{/* Image Container */}
-				<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
+				<div
+					className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary"
+					onMouseEnter={loadHoverImage}
+				>
 					{/* Primary Image */}
 					<Image
 						src={product.image}
@@ -73,10 +83,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 						priority={priority}
 					/>
 
-					{/* Hover Image - desktop only to avoid double-tap on touch */}
-					{product.hoverImage && (
+					{/* Hover image loads on first pointer enter — not on initial page load */}
+					{hoverImageSrc && (
 						<Image
-							src={product.hoverImage}
+							src={hoverImageSrc}
 							alt={`${product.name} - alternate view`}
 							fill
 							sizes="(max-width: 1024px) 50vw, 33vw"

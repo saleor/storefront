@@ -45,6 +45,7 @@ interface ImageCarouselProps {
  * - Thumbnail strip on desktop
  * - Dot indicators on mobile
  * - First image has priority={true} for LCP optimization
+ * - Other slides and thumbnails use loading="lazy"
  *
  * Zoom is intentionally not included - use `onImageClick` to integrate
  * with a separate lightbox/zoom component when needed.
@@ -127,6 +128,7 @@ export function ImageCarousel({
 										className="object-cover"
 										sizes="(max-width: 768px) 100vw, 50vw"
 										priority={index === 0}
+										loading={index === 0 ? undefined : "lazy"}
 									/>
 								</div>
 							</CarouselItem>
@@ -179,6 +181,7 @@ export function ImageCarousel({
 								fill
 								className="object-cover"
 								sizes="80px"
+								loading="lazy"
 							/>
 						</button>
 					))}
