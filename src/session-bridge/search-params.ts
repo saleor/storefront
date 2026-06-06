@@ -20,6 +20,7 @@ export const checkoutSearchParamKeys = {
 	type: "type",
 	payment_intent: "paymentIntent",
 	payment_intent_client_secret: "paymentIntentClientSecret",
+	redirect_status: "redirectStatus",
 	step: "step",
 } as const;
 
