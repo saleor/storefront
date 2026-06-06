@@ -1,66 +1,18 @@
 import { type PaymentGatewayFragment } from "@/checkout/graphql";
 import { resolvePaymentProvider } from "@/checkout/lib/payment/resolve-provider";
-import { isStripeGateway, isStripePaymentEnabled } from "@/checkout/lib/payment/providers/stripe";
 
-/** Known Saleor Dummy Payment app IDs (legacy + current). */
-export const DUMMY_GATEWAY_IDS = ["saleor.io.dummy-payment-app", "mirumee.payments.dummy"] as const;
+export {
+	DUMMY_GATEWAY_IDS,
+	DUMMY_PAYMENT_NOT_ALLOWED_MESSAGE,
+	findDummyGateway,
+	getDummyPaymentGuardError,
+	isDummyGateway,
+	isDummyPaymentAllowed,
+} from "@/checkout/lib/payment/providers/dummy";
 
-/** Built-in gateways this UI does not integrate with but should not block dummy checkout. */
-export const IGNORABLE_GATEWAY_IDS = ["saleor.io.gift-card-payment-gateway"] as const;
+export { hasUnsupportedPaymentGateway, isIgnorableGateway } from "@/checkout/lib/payment/integrated-gateways";
 
 type GatewayLike = Pick<PaymentGatewayFragment, "id" | "name">;
-
-export function isDummyGateway(gateway: GatewayLike): boolean {
-	if ((DUMMY_GATEWAY_IDS as readonly string[]).includes(gateway.id)) {
-		return true;
-	}
-
-	const id = String(gateway.id).toLowerCase();
-	const name = String(gateway.name ?? "").toLowerCase();
-
-	return id.includes("dummy") || name.includes("dummy");
-}
-
-export function isIgnorableGateway(gateway: GatewayLike): boolean {
-	return (IGNORABLE_GATEWAY_IDS as readonly string[]).includes(gateway.id);
-}
-
-export function findDummyGateway(
-	gateways: ReadonlyArray<GatewayLike> | null | undefined,
-): GatewayLike | undefined {
-	return gateways?.find(isDummyGateway);
-}
-
-/** Shown when dummy payment is blocked (UI and server actions). */
-export const DUMMY_PAYMENT_NOT_ALLOWED_MESSAGE = "Test payment is not available in this environment.";
-
-/**
- * Dummy Payment is for local/staging test checkouts only.
- * Enabled in development, or when ALLOW_DUMMY_PAYMENT / NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT is true.
- */
-export function isDummyPaymentAllowed(): boolean {
-	if (process.env.ALLOW_DUMMY_PAYMENT === "true") {
-		return true;
-	}
-	if (process.env.NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT === "true") {
-		return true;
-	}
-	return process.env.NODE_ENV === "development";
-}
-
-/**
- * Server-side guard for transactionInitialize — blocks dummy gateways in production
- * even when callers bypass the checkout UI (e.g. direct server action invocation).
- */
-export function getDummyPaymentGuardError(gatewayId: string | null | undefined): string | null {
-	if (!gatewayId || !isDummyGateway({ id: gatewayId, name: "" })) {
-		return null;
-	}
-	if (isDummyPaymentAllowed()) {
-		return null;
-	}
-	return DUMMY_PAYMENT_NOT_ALLOWED_MESSAGE;
-}
 
 export type PaymentGatewayStatus =
 	| { kind: "dummy"; gateway: GatewayLike }
@@ -89,25 +41,6 @@ export function resolvePaymentGatewayStatus(
 	}
 }
 
-function isCheckoutIntegratableGateway(gateway: GatewayLike): boolean {
-	if (isDummyGateway(gateway) && isDummyPaymentAllowed()) {
-		return true;
-	}
-	if (isStripeGateway(gateway.id) && isStripePaymentEnabled()) {
-		return true;
-	}
-	return false;
-}
-
-/** Production gateways this checkout UI cannot process (e.g. Adyen when not wired). */
-export function hasUnsupportedPaymentGateway(
-	gateways: ReadonlyArray<GatewayLike> | null | undefined,
-): boolean {
-	return (gateways ?? []).some(
-		(gateway) => !isIgnorableGateway(gateway) && !isCheckoutIntegratableGateway(gateway),
-	);
-}
-
 export function formatGatewayList(gateways: ReadonlyArray<GatewayLike> | null | undefined): string {
 	return (gateways ?? []).map((gateway) => `${gateway.name ?? gateway.id} (${gateway.id})`).join(", ");
 }
@@ -118,8 +51,8 @@ export function getUnsupportedGatewayMessage(
 ): string {
 	const listed = formatGatewayList(gateways);
 	return listed
-		? `This checkout only supports the Saleor Dummy Payment app. Available on this checkout: ${listed}.`
-		: "This checkout only supports the Saleor Dummy Payment app for test orders.";
+		? `This checkout does not support the available payment gateway(s): ${listed}.`
+		: "No supported payment gateway is available for this checkout.";
 }
 
 /** Shown when Dummy Payment is installed in Dashboard but missing from checkout.availablePaymentGateways. */

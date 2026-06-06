@@ -16,6 +16,7 @@ Two skill sources are available:
 | Variant selection on PDP | `product-variants` |
 | Product filtering/sorting | `product-filtering` |
 | Checkout flow debugging | `checkout-management` |
+| Adding a payment gateway | `checkout-payment-gateways` |
 | Checkout UI components | `checkout-components` |
 | Creating/styling components | `ui-components` |
 | Channels, fulfillment & stock | `ui-channels` |

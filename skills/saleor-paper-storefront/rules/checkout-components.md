@@ -52,21 +52,24 @@ import { AddressFields, FormInput, FormSelect, FieldError } from "@/checkout/com
 
 ## Payment Components
 
+Integrated Saleor payment apps render via `IntegratedPaymentUi` (see `checkout-payment-gateways` rule). Steps compose billing + provider UI — there is no generic card-form fallback.
+
 ```tsx
 import {
-	PaymentMethodSelector, // Card/PayPal/iDEAL tabs
-	BillingAddressSection, // Same-as-shipping toggle + form
-	isCardDataValid, // Helper function
-	type PaymentMethodType, // "card" | "paypal" | "ideal"
-	type CardData, // { cardNumber, expiry, cvc, nameOnCard }
-	type BillingAddressData, // { countryCode, formData, selectedAddressId? }
+	PaymentMethodArea, // Resolves provider → IntegratedPaymentUi
+	IntegratedPaymentUi,
+	PaymentGatewayAlerts,
+	BillingAddressSection,
+	type BillingAddressData,
 } from "@/checkout/components/payment";
 ```
 
-| Component               | Props                                                                                                 | Use Case                      |
-| ----------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `PaymentMethodSelector` | `value`, `onChange`, `cardData?`, `onCardDataChange?`                                                 | Payment method picker         |
-| `BillingAddressSection` | `billingAddress?`, `shippingAddress?`, `userAddresses?`, `isShippingRequired?`, `errors?`, `onChange` | Billing with same-as-shipping |
+| Component               | Props                                                                                                 | Use Case                                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `PaymentMethodArea`     | `provider`, `checkout`, `billing`, error/notice callbacks                                             | Payment step wrapper                           |
+| `IntegratedPaymentUi`   | Same — maps `provider.type` to Stripe, Dummy, or future gateway components                            | Add new gateway UI in one switch               |
+| `PaymentGatewayAlerts`  | `gateways`                                                                                            | Warn when no / unsupported gateway on checkout |
+| `BillingAddressSection` | `billingAddress?`, `shippingAddress?`, `userAddresses?`, `isShippingRequired?`, `errors?`, `onChange` | Billing with same-as-shipping                  |
 
 ## Usage Pattern
 

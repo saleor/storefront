@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { canSubmitPayment, resolvePaymentProvider } from "./resolve-provider";
+import { canSubmitPayment, resolvePaymentProvider, usesClientPaymentSubmit } from "./resolve-provider";
 
 describe("resolvePaymentProvider", () => {
 	const dummyAndGiftCard = [
@@ -16,6 +16,7 @@ describe("resolvePaymentProvider", () => {
 		expect(resolvePaymentProvider(dummyAndGiftCard)).toEqual({
 			type: "dummy",
 			gateway: dummyAndGiftCard[0],
+			submitMode: "server",
 		});
 	});
 
@@ -25,6 +26,7 @@ describe("resolvePaymentProvider", () => {
 		expect(resolvePaymentProvider(dummyAndGiftCard)).toEqual({
 			type: "dummy",
 			gateway: dummyAndGiftCard[0],
+			submitMode: "server",
 		});
 	});
 
@@ -34,6 +36,7 @@ describe("resolvePaymentProvider", () => {
 		expect(resolvePaymentProvider(dummyAndGiftCard)).toEqual({
 			type: "dummy",
 			gateway: dummyAndGiftCard[0],
+			submitMode: "server",
 		});
 	});
 
@@ -65,6 +68,7 @@ describe("resolvePaymentProvider", () => {
 		).toEqual({
 			type: "stripe",
 			gateway: stripe,
+			submitMode: "client",
 		});
 	});
 
@@ -75,6 +79,7 @@ describe("resolvePaymentProvider", () => {
 		expect(resolvePaymentProvider([stripe])).toEqual({
 			type: "stripe",
 			gateway: stripe,
+			submitMode: "client",
 		});
 	});
 
@@ -99,18 +104,40 @@ describe("resolvePaymentProvider", () => {
 	});
 });
 
+describe("usesClientPaymentSubmit", () => {
+	it("is true only for client-submit providers", () => {
+		expect(
+			usesClientPaymentSubmit({
+				type: "stripe",
+				gateway: { id: "saleor.app.payment.stripe", name: "Stripe" },
+				submitMode: "client",
+			}),
+		).toBe(true);
+		expect(
+			usesClientPaymentSubmit({
+				type: "dummy",
+				gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" },
+				submitMode: "server",
+			}),
+		).toBe(false);
+		expect(usesClientPaymentSubmit({ type: "none" })).toBe(false);
+	});
+});
+
 describe("canSubmitPayment", () => {
-	it("allows pay only for dummy provider", () => {
+	it("allows pay only for server-submit dummy provider", () => {
 		expect(
 			canSubmitPayment({
 				type: "dummy",
 				gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" },
+				submitMode: "server",
 			}),
 		).toBe(true);
 		expect(
 			canSubmitPayment({
 				type: "stripe",
 				gateway: { id: "saleor.app.payment.stripe", name: "Stripe" },
+				submitMode: "client",
 			}),
 		).toBe(false);
 		expect(canSubmitPayment({ type: "none" })).toBe(false);

@@ -1,6 +1,13 @@
 export { executePayment } from "./execute-payment";
 export { completeCheckoutOrder } from "./complete-order";
-export { resolvePaymentProvider, canSubmitPayment } from "./resolve-provider";
+export { resolvePaymentProvider, canSubmitPayment, usesClientPaymentSubmit } from "./resolve-provider";
+export {
+	INTEGRATED_GATEWAYS,
+	hasUnsupportedPaymentGateway,
+	isIntegratedGateway,
+	type IntegratedGatewayType,
+} from "./integrated-gateways";
+export { isIntegratedPaymentProvider } from "./types";
 export { updateCheckoutBilling, type BillingUpdateResult } from "./update-billing";
 export {
 	type PaymentContext,

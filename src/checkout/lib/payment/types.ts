@@ -2,6 +2,8 @@ import { type PaymentGatewayFragment } from "@/checkout/graphql";
 
 export type PaymentGatewayLike = Pick<PaymentGatewayFragment, "id" | "name">;
 
+export type PaymentSubmitMode = "client" | "server";
+
 /** Result of a payment attempt after billing has been updated. */
 export type PaymentResult =
 	| { ok: true; orderId: string }
@@ -19,10 +21,13 @@ export type PaymentContext = {
 	amount: number;
 };
 
+type IntegratedPaymentProvider =
+	| { type: "stripe"; gateway: PaymentGatewayLike; submitMode: PaymentSubmitMode }
+	| { type: "dummy"; gateway: PaymentGatewayLike; submitMode: PaymentSubmitMode };
+
 /** Which payment integration handles the current checkout. */
 export type ResolvedPaymentProvider =
-	| { type: "dummy"; gateway: PaymentGatewayLike }
-	| { type: "stripe"; gateway: PaymentGatewayLike }
+	| IntegratedPaymentProvider
 	| { type: "none" }
 	| { type: "unsupported"; gateways: ReadonlyArray<PaymentGatewayLike> }
 	| { type: "dummy_missing" };
@@ -36,3 +41,9 @@ export type TransactionInitializePayload =
 	  }
 	| null
 	| undefined;
+
+export function isIntegratedPaymentProvider(
+	provider: ResolvedPaymentProvider,
+): provider is IntegratedPaymentProvider {
+	return provider.type === "stripe" || provider.type === "dummy";
+}

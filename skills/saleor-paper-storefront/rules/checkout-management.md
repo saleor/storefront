@@ -90,6 +90,93 @@ See `data-auth-routes.md` for HttpOnly cookies, header `getHeaderUser()`, and ra
 
 `useCheckout()` reads from `CheckoutDataProvider` context (not urql).
 
+## Payment completion and transition UX
+
+Gateway-agnostic infrastructure shared by Dummy, Stripe, and future payment apps. Provider-specific SDK steps live in `checkout-payment-gateways.md`; this section covers what happens **after** the PSP authorizes payment through Saleor.
+
+### Flow
+
+```
+User clicks Pay (or returns from 3DS redirect)
+        │
+        ▼
+markPaymentCompleting(checkoutId)     ← sessionStorage: checkout:payment-completing
+        │
+        ▼
+transactionInitialize / process       ← provider-specific (may already be done)
+        │
+        ▼
+finalizeCheckoutOrder()               ← runCheckoutComplete mutation
+        │
+        ├── failure → clearPaymentCompleting(), show error
+        │
+        └── success → setPendingOrderId(orderId)
+                      window.location.replace(/checkout?order=…)
+        │
+        ▼
+Order confirmation page               ← clearPendingOrderId(), clearPaymentCompleting()
+                                      cookie/session cleanup here (not on ?checkout= URL)
+```
+
+### Why sessionStorage + hard navigation?
+
+| Mechanism                     | Purpose                                                                                                                                       |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `checkout:payment-completing` | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                    |
+| `?processingPayment=true`     | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                             |
+| `checkout:pending-order`      | Bridges the gap between `setPendingOrderId()` and the hard nav landing on `?order=`                                                           |
+| `window.location.replace`     | Checkout `loadState` is derived from URL on the server; client `router.replace` does not reliably switch to order view under Cache Components |
+
+**Do not** clear the checkout cookie or revalidate cart while still on `/checkout?checkout=…` after payment succeeds — that can flash "session expired". Cleanup runs on the order confirmation view once `order.id` is available.
+
+### Transition guard
+
+`useCheckoutTransition()` (used in `saleor-checkout.tsx` and `root-views.tsx`) returns:
+
+| Value                   | When                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `"completing"`          | `isCheckoutPaymentActive()` — storage key matches checkout id or `processingPayment` param |
+| `"navigating-to-order"` | `getPendingOrderId()` set but URL not yet on `?order=`                                     |
+| `null`                  | Normal checkout UI                                                                         |
+
+When `transition === "completing"`, render `PaymentCompletingScreen` instead of the step flow.
+
+### Stripe 3DS / redirect return
+
+`StripeCheckoutReturnHandler` mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step. After redirect, the payment step may be unmounted — shell-level completion avoids losing the return handler.
+
+Return URL includes `processingPayment`, `paymentIntent`, and `paymentIntentClientSecret` query params (see `build-stripe-return-url.ts`).
+
+### Live total before charge
+
+Before any `transactionInitialize`, payment flows:
+
+1. Call `updateCheckoutBilling()`
+2. `refreshCheckout()` for a live gross total
+3. If `hasMaterialCheckoutTotalChange(displayed, live)` → show price-change notice and **block** pay
+
+Saleor validates amounts at `checkoutComplete`, but blocking early avoids authorizing the wrong amount. See `checkout-pay-amount.ts`.
+
+### Key files
+
+| File                                                                        | Purpose                                            |
+| --------------------------------------------------------------------------- | -------------------------------------------------- |
+| `src/checkout/lib/payment/checkout-payment-completion.ts`                   | `markPaymentCompleting`, `isCheckoutPaymentActive` |
+| `src/checkout/lib/payment/checkout-completion-storage.ts`                   | `setPendingOrderId` / `getPendingOrderId`          |
+| `src/checkout/lib/payment/finalize-checkout-order.ts`                       | Deduped `checkoutComplete` + navigation            |
+| `src/checkout/lib/payment/navigate-to-order.ts`                             | Hard nav to `?order=`                              |
+| `src/checkout/hooks/use-checkout-transition.ts`                             | `completing` / `navigating-to-order` guard         |
+| `src/checkout/views/saleor-checkout/payment-completing-screen.tsx`          | Full-page "Processing your order" UI               |
+| `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx` | Post-redirect completion                           |
+| `src/checkout/views/order-confirmation/order-confirmation.tsx`              | Clears completion storage on mount                 |
+
+### Anti-patterns
+
+❌ **Don't use `router.push` for order confirmation** — use `navigateToOrderConfirmation()`  
+❌ **Don't clear checkout cookie before leaving `?checkout=`** — wait for order confirmation  
+❌ **Don't mount redirect completion only inside payment step** — shell survives step unmount  
+❌ **Don't skip `clearPaymentCompleting()` on payment failure** — user must be able to retry
+
 ## Common Issues
 
 ### Stale cart after editing from storefront
@@ -120,15 +207,17 @@ CHECKOUT_NOT_FULLY_PAID: The authorized amount doesn't cover the checkout's tota
 
 ## Key Files
 
-| File                                       | Purpose                              |
-| ------------------------------------------ | ------------------------------------ |
-| `src/lib/checkout.ts`                      | Checkout creation, cookie management |
-| `src/app/(checkout)/checkout/page.tsx`     | RSC entry, routing + `me`            |
-| `src/app/(checkout)/actions.ts`            | Checkout server actions              |
-| `src/checkout/providers/checkout-data.tsx` | Client cart state + sync             |
-| `src/checkout/lib/checkout-sync.ts`        | adopt vs refresh semantics           |
-| `src/checkout/hooks/use-checkout.ts`       | Context hook for steps               |
-| `src/checkout/lib/utils/url.ts`            | URL query param extraction           |
+| File                                                  | Purpose                              |
+| ----------------------------------------------------- | ------------------------------------ |
+| `src/lib/checkout.ts`                                 | Checkout creation, cookie management |
+| `src/app/(checkout)/checkout/page.tsx`                | RSC entry, routing + `me`            |
+| `src/app/(checkout)/actions.ts`                       | Checkout server actions              |
+| `src/checkout/providers/checkout-data.tsx`            | Client cart state + sync             |
+| `src/checkout/lib/checkout-sync.ts`                   | adopt vs refresh semantics           |
+| `src/checkout/hooks/use-checkout.ts`                  | Context hook for steps               |
+| `src/checkout/hooks/use-checkout-transition.ts`       | Payment → order transition guard     |
+| `src/checkout/lib/payment/finalize-checkout-order.ts` | `checkoutComplete` + navigation      |
+| `src/checkout/lib/utils/url.ts`                       | URL query param extraction           |
 
 ## Debugging Checkout Issues
 

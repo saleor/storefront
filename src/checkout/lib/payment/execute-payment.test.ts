@@ -26,7 +26,7 @@ describe("executePayment", () => {
 		vi.mocked(runCheckoutComplete).mockResolvedValue({ ok: true, orderId: "order-1" });
 
 		const result = await executePayment(
-			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" } },
+			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" }, submitMode: "server" },
 			{ checkoutId: "checkout-1", amount: 42.5 },
 		);
 
@@ -48,7 +48,7 @@ describe("executePayment", () => {
 		});
 
 		const result = await executePayment(
-			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" } },
+			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" }, submitMode: "server" },
 			{ checkoutId: "checkout-1", amount: 10 },
 		);
 
@@ -63,7 +63,7 @@ describe("executePayment", () => {
 		vi.mocked(runCheckoutComplete).mockResolvedValue({ ok: true, orderId: "order-free" });
 
 		const result = await executePayment(
-			{ type: "stripe", gateway: { id: "stripe", name: "Stripe" } },
+			{ type: "stripe", gateway: { id: "stripe", name: "Stripe" }, submitMode: "client" },
 			{ checkoutId: "checkout-1", amount: 0 },
 		);
 

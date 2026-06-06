@@ -1,11 +1,13 @@
 import {
 	findDummyGateway,
-	hasUnsupportedPaymentGateway,
 	isDummyGateway,
 	isDummyPaymentAllowed,
+} from "@/checkout/lib/payment/providers/dummy";
+import {
 	isIgnorableGateway,
-} from "@/checkout/lib/payment-gateways";
-import { findStripeGateway, isStripePaymentEnabled } from "./providers/stripe";
+	findEnabledIntegratedGateway,
+	hasUnsupportedPaymentGateway,
+} from "./integrated-gateways";
 import { type PaymentGatewayLike, type ResolvedPaymentProvider } from "./types";
 
 function hasSubstantiveGateway(gateways: ReadonlyArray<PaymentGatewayLike>): boolean {
@@ -18,17 +20,17 @@ export function resolvePaymentProvider(
 ): ResolvedPaymentProvider {
 	const list = gateways ?? [];
 
-	const stripeGateway = findStripeGateway(list);
-	if (stripeGateway && isStripePaymentEnabled()) {
-		return { type: "stripe", gateway: stripeGateway };
-	}
-
-	const dummyGateway = findDummyGateway(list);
-	if (dummyGateway && isDummyPaymentAllowed()) {
-		return { type: "dummy", gateway: dummyGateway };
+	const integrated = findEnabledIntegratedGateway(list);
+	if (integrated) {
+		return {
+			type: integrated.definition.type,
+			gateway: integrated.gateway,
+			submitMode: integrated.definition.submitMode,
+		};
 	}
 
 	// In production, ignore dummy even if Saleor exposes it on the checkout.
+	const dummyGateway = findDummyGateway(list);
 	const effectiveList =
 		dummyGateway && !isDummyPaymentAllowed() ? list.filter((gateway) => !isDummyGateway(gateway)) : list;
 
@@ -41,7 +43,12 @@ export function resolvePaymentProvider(
 	return { type: "dummy_missing" };
 }
 
+/** Client-driven gateways render their own Pay button (e.g. Stripe Elements). */
+export function usesClientPaymentSubmit(provider: ResolvedPaymentProvider): boolean {
+	return provider.type === "stripe" || provider.type === "dummy" ? provider.submitMode === "client" : false;
+}
+
 /** Whether the checkout Pay button can run for the resolved provider. */
 export function canSubmitPayment(provider: ResolvedPaymentProvider): boolean {
-	return provider.type === "dummy";
+	return provider.type === "dummy" && provider.submitMode === "server";
 }

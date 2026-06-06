@@ -68,7 +68,8 @@ Reference these guidelines when:
 
 - `paper-surfaces` - Storefront vs checkout surfaces, `@paper/session-bridge`, RSC checkout + BFF auth
 - `checkout-management` - Checkout lifecycle, cookie storage, payment debugging
-- `checkout-components` - Reusable checkout UI (SignInForm, AddressSelector, PaymentMethodSelector)
+- `checkout-payment-gateways` - Payment app registry, submit modes, adding a new gateway
+- `checkout-components` - Reusable checkout UI (SignInForm, AddressSelector, billing, integrated payment UI)
 
 ### 4. UI & Channels (MEDIUM)
 

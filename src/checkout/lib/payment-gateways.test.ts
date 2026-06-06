@@ -137,9 +137,9 @@ describe("formatGatewayList", () => {
 
 describe("getUnsupportedGatewayMessage", () => {
 	it("includes available gateways", () => {
-		expect(getUnsupportedGatewayMessage([{ id: "saleor.app.payment.stripe", name: "Stripe" }])).toContain(
-			"Stripe (saleor.app.payment.stripe)",
-		);
+		const message = getUnsupportedGatewayMessage([{ id: "saleor.app.payment.stripe", name: "Stripe" }]);
+		expect(message).toContain("Stripe (saleor.app.payment.stripe)");
+		expect(message).toMatch(/does not support/i);
 	});
 });
 

@@ -30,20 +30,21 @@ Skills are organized as follows:
 
 **Project skill** ([`saleor-paper-storefront`](skills/saleor-paper-storefront/SKILL.md)) -- use for all Saleor storefront tasks:
 
-| Task                           | Rule                  |
-| ------------------------------ | --------------------- |
-| Modifying `.graphql` files     | `data-graphql`        |
-| Caching, ISR, webhooks         | `data-caching`        |
-| Product detail page (PDP)      | `product-pdp`         |
-| Variant/attribute selection    | `product-variants`    |
-| Product list filtering/sorting | `product-filtering`   |
-| Checkout flow debugging        | `checkout-management` |
-| Checkout UI components         | `checkout-components` |
-| Creating/styling components    | `ui-components`       |
-| Channels, fulfillment & stock  | `ui-channels`         |
-| SEO, metadata, OG images       | `seo-metadata`        |
-| Investigating Saleor API       | `dev-investigation`   |
-| Upgrading a forked Paper shop  | `migrations/SKILL.md` |
+| Task                           | Rule                        |
+| ------------------------------ | --------------------------- |
+| Modifying `.graphql` files     | `data-graphql`              |
+| Caching, ISR, webhooks         | `data-caching`              |
+| Product detail page (PDP)      | `product-pdp`               |
+| Variant/attribute selection    | `product-variants`          |
+| Product list filtering/sorting | `product-filtering`         |
+| Checkout flow debugging        | `checkout-management`       |
+| Adding a payment gateway       | `checkout-payment-gateways` |
+| Checkout UI components         | `checkout-components`       |
+| Creating/styling components    | `ui-components`             |
+| Channels, fulfillment & stock  | `ui-channels`               |
+| SEO, metadata, OG images       | `seo-metadata`              |
+| Investigating Saleor API       | `dev-investigation`         |
+| Upgrading a forked Paper shop  | `migrations/SKILL.md`       |
 
 **External skills** ([saleor/agent-skills](https://github.com/saleor/agent-skills)) — install for generic best practices:
 
@@ -242,7 +243,7 @@ Rules by category:
 
 1. **Data Layer** (CRITICAL): `data-caching`, `data-graphql`
 2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
-3. **Checkout Flow** (HIGH): `checkout-management`, `checkout-components`
+3. **Checkout Flow** (HIGH): `checkout-management`, `checkout-payment-gateways`, `checkout-components`
 4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`
 5. **SEO** (MEDIUM): `seo-metadata`
 6. **Development** (MEDIUM): `dev-investigation`

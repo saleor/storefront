@@ -20,6 +20,7 @@ import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { getFormattedMoney, formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { AuthorizedPaymentRecovery } from "@/checkout/components/payment/stripe/authorized-payment-recovery";
 import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
+import { usesClientPaymentSubmit } from "@/checkout/lib/payment";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -71,7 +72,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 		authenticated,
 	});
 
-	const isStripe = provider.type === "stripe";
+	const usesClientSubmit = usesClientPaymentSubmit(provider);
 	const isFreeOrder = isCheckoutFreeOrder(checkout);
 
 	const handleBillingDataChange = useCallback((data: BillingAddressData) => {
@@ -160,11 +161,11 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 
 			<PaymentGatewayAlerts gateways={checkout.availablePaymentGateways} />
 
-			{isStripe && !isFreeOrder ? (
+			{usesClientSubmit && !isFreeOrder ? (
 				<AuthorizedPaymentRecovery checkout={checkout} onError={setPaymentError} />
 			) : null}
 
-			{isStripe ? (
+			{usesClientSubmit ? (
 				<BillingAddressSection
 					billingAddress={checkout.billingAddress}
 					shippingAddress={shippingAddress}
@@ -197,7 +198,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 
 			<PaymentError message={errors.payment} />
 
-			{!isStripe ? (
+			{!usesClientSubmit ? (
 				<BillingAddressSection
 					billingAddress={checkout.billingAddress}
 					shippingAddress={shippingAddress}
@@ -221,7 +222,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 					<ChevronLeft className="h-4 w-4" />
 					{isShippingRequired ? "Return to shipping" : "Return to information"}
 				</button>
-				{!isStripe ? (
+				{!usesClientSubmit ? (
 					<Button type="submit" disabled={isDisabled} className="hidden h-12 min-w-[200px] px-8 md:flex">
 						{isLoading ? (
 							<span className="flex items-center gap-2">
@@ -235,7 +236,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 				) : null}
 			</div>
 
-			{!isStripe ? (
+			{!usesClientSubmit ? (
 				<MobileStickyAction
 					step={getStepNumber("PAYMENT", isShippingRequired)}
 					isShippingRequired={isShippingRequired}
@@ -252,7 +253,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 
 	return (
 		<>
-			{isStripe ? (
+			{usesClientSubmit ? (
 				<div className="space-y-8">{paymentContent}</div>
 			) : (
 				<form className="space-y-8" onSubmit={submit}>
