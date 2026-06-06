@@ -15,6 +15,8 @@ export type PaymentResult =
 
 export type PaymentContext = {
 	checkoutId: string;
+	/** Live gross total from Saleor — required so authorization matches checkoutComplete. */
+	amount: number;
 };
 
 /** Which payment integration handles the current checkout. */

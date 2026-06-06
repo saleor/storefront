@@ -13,6 +13,7 @@ export async function executeDummyPayment(
 ): Promise<PaymentResult> {
 	const initResult = await initializeCheckoutTransaction({
 		checkoutId: context.checkoutId,
+		amount: context.amount,
 		paymentGateway: {
 			id: gatewayId,
 			data: {

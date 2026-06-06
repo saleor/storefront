@@ -12,6 +12,8 @@ import {
 	type ResolvedPaymentProvider,
 } from "@/checkout/lib/payment";
 import { clearCheckout } from "@/app/actions";
+import { getCheckoutPayAmount } from "@/checkout/lib/payment/checkout-pay-amount";
+import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { createQueryString } from "@/checkout/lib/utils/url";
 
 type UseCheckoutPaymentParams = {
@@ -35,6 +37,7 @@ export function useCheckoutPayment({
 }: UseCheckoutPaymentParams) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const { refreshCheckout } = useCheckoutData();
 
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
@@ -70,7 +73,26 @@ export function useCheckoutPayment({
 					return;
 				}
 
-				const payResult = await executePayment(provider, { checkoutId: checkout.id });
+				const liveCheckout = await refreshCheckout();
+				if (!liveCheckout) {
+					setErrors({
+						payment: "Could not refresh checkout totals. Please try again.",
+					});
+					return;
+				}
+
+				const payAmount = getCheckoutPayAmount(liveCheckout);
+				if (payAmount === null) {
+					setErrors({
+						payment: "Checkout total is unavailable. Please refresh the page and try again.",
+					});
+					return;
+				}
+
+				const payResult = await executePayment(provider, {
+					checkoutId: liveCheckout.id,
+					amount: payAmount,
+				});
 
 				if (!payResult.ok) {
 					const nextErrors: Record<string, string> = {};
@@ -107,6 +129,7 @@ export function useCheckoutPayment({
 			userAddresses,
 			authenticated,
 			provider,
+			refreshCheckout,
 			searchParams,
 			router,
 		],

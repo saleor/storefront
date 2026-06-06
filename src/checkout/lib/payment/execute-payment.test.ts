@@ -27,12 +27,13 @@ describe("executePayment", () => {
 
 		const result = await executePayment(
 			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" } },
-			{ checkoutId: "checkout-1" },
+			{ checkoutId: "checkout-1", amount: 42.5 },
 		);
 
 		expect(result).toEqual({ ok: true, orderId: "order-1" });
 		expect(initializeCheckoutTransaction).toHaveBeenCalledWith({
 			checkoutId: "checkout-1",
+			amount: 42.5,
 			paymentGateway: {
 				id: "saleor.io.dummy-payment-app",
 				data: { event: { includePspReference: true, type: "CHARGE_SUCCESS" } },
@@ -43,7 +44,7 @@ describe("executePayment", () => {
 	it("returns error for unsupported provider", async () => {
 		const result = await executePayment(
 			{ type: "unsupported", gateways: [{ id: "stripe", name: "Stripe" }] },
-			{ checkoutId: "checkout-1" },
+			{ checkoutId: "checkout-1", amount: 10 },
 		);
 
 		expect(result.ok).toBe(false);

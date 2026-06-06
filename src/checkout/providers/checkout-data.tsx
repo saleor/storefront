@@ -19,7 +19,8 @@ export type CheckoutDataContextValue = {
 	 * Use after promo changes or when the cart must reflect server totals immediately.
 	 * Always replaces — does not merge with in-flow form edits.
 	 */
-	refreshCheckout: () => Promise<void>;
+	/** Re-fetch from Saleor; returns null when the checkout is missing or the request fails. */
+	refreshCheckout: () => Promise<ServerCheckout | null>;
 };
 
 const CheckoutDataContext = createContext<CheckoutDataContextValue | null>(null);
@@ -41,18 +42,19 @@ export function CheckoutDataProvider({
 }: CheckoutDataProviderProps) {
 	const [checkout, setCheckout] = useState<ServerCheckout | null>(null);
 
-	const refreshCheckout = useCallback(async () => {
+	const refreshCheckout = useCallback(async (): Promise<ServerCheckout | null> => {
 		if (!checkoutId) {
-			return;
+			return null;
 		}
 
 		const result = await syncCheckoutFromServer(checkoutId);
 		if (!result.ok || !result.checkout) {
-			return;
+			return null;
 		}
 
 		// Explicit refresh: always adopt server snapshot (cart totals, promos, line items).
 		setCheckout(result.checkout);
+		return result.checkout;
 	}, [checkoutId]);
 
 	// Live load on entry — bypasses Next.js router/RSC cache after cart edits.
