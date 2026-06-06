@@ -143,12 +143,16 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 );
 Carousel.displayName = "Carousel";
 
-const CarouselContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-	({ className, ...props }, ref) => {
+type CarouselContentProps = React.HTMLAttributes<HTMLDivElement> & {
+	viewportClassName?: string;
+};
+
+const CarouselContent = React.forwardRef<HTMLDivElement, CarouselContentProps>(
+	({ className, viewportClassName, ...props }, ref) => {
 		const { carouselRef, orientation } = useCarousel();
 
 		return (
-			<div ref={carouselRef} className="overflow-hidden">
+			<div ref={carouselRef} className={cn("overflow-hidden", viewportClassName)}>
 				<div
 					ref={ref}
 					className={cn("flex", orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col", className)}
@@ -237,15 +241,21 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
 );
 CarouselNext.displayName = "CarouselNext";
 
-const CarouselDots = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-	({ className, ...props }, ref) => {
-		const { selectedIndex, scrollTo, slideCount } = useCarousel();
+type CarouselDotsProps = React.HTMLAttributes<HTMLDivElement> & {
+	/** Known slide count — avoids a layout shift before Embla reports slideCount */
+	count?: number;
+};
 
-		if (slideCount <= 1) return null;
+const CarouselDots = React.forwardRef<HTMLDivElement, CarouselDotsProps>(
+	({ className, count, ...props }, ref) => {
+		const { selectedIndex, scrollTo, slideCount } = useCarousel();
+		const dotCount = count ?? slideCount;
+
+		if (dotCount <= 1) return null;
 
 		return (
 			<div ref={ref} className={cn("flex justify-center gap-1.5", className)} {...props}>
-				{Array.from({ length: slideCount }).map((_, index) => (
+				{Array.from({ length: dotCount }).map((_, index) => (
 					<button
 						key={index}
 						type="button"

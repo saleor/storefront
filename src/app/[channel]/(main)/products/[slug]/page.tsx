@@ -152,9 +152,8 @@ async function ProductShell({
 	});
 
 	const lcpImage = defaultImages[0];
-	const variants = product.variants ?? [];
-	// Fallback chrome only when image count is predictable (multi-variant + ?variant= can differ)
-	const showGalleryChrome = defaultImages.length > 1 && variants.length <= 1;
+	// Reserve mobile dots / desktop thumbs in fallback when product has multiple images
+	const showGalleryChrome = defaultImages.length > 1;
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
