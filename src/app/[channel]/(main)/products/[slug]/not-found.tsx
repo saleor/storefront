@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Search, Home, ArrowLeft } from "lucide-react";
+import { buttonClassName } from "@/ui/components/ui/button";
 
 /**
  * Product not found page.
@@ -10,9 +11,6 @@ import { Search, Home, ArrowLeft } from "lucide-react";
  * Provides helpful navigation options.
  */
 export default function ProductNotFound() {
-	const buttonBase =
-		"inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
-
 	return (
 		<div className="flex min-h-[50vh] flex-col items-center justify-center px-4 py-16">
 			<div className="mx-auto max-w-md text-center">
@@ -31,18 +29,12 @@ export default function ProductNotFound() {
 
 				{/* Actions */}
 				<div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-					<Link
-						href="/products"
-						className={`${buttonBase} hover:bg-primary/90 bg-primary text-primary-foreground`}
-					>
+					<Link href="/products" className={buttonClassName({ asLink: true })}>
 						<Search className="h-4 w-4" />
 						Browse Products
 					</Link>
 
-					<Link
-						href="/"
-						className={`${buttonBase} border border-input bg-background hover:bg-accent hover:text-accent-foreground`}
-					>
+					<Link href="/" className={buttonClassName({ asLink: true, variant: "outline-solid" })}>
 						<Home className="h-4 w-4" />
 						Go Home
 					</Link>

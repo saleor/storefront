@@ -23,7 +23,7 @@ export function VariantAttributeBadges({ attributes }: VariantAttributeBadgesPro
 			{attributes.map((attr) => (
 				<span
 					key={attr.slug}
-					className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs text-muted-foreground"
+					className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground"
 				>
 					<span className="font-medium">{attr.name}:</span>
 					<span>{attr.values.join(", ")}</span>

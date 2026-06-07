@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { type NextRequest } from "next/server";
+import { ogBrandColors } from "@/lib/seo/og-brand-colors";
 
 /**
  * Dynamic OG Image Generator
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest) {
 					flexDirection: "column",
 					alignItems: "center",
 					justifyContent: "center",
-					backgroundColor: "#FAF9F7", // --background
+					backgroundColor: ogBrandColors.background,
 					fontFamily: "system-ui, sans-serif",
 				}}
 			>
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
 					style={{
 						position: "absolute",
 						inset: 0,
-						backgroundImage: "radial-gradient(circle at 25px 25px, #E5E4DF 2px, transparent 0)",
+						backgroundImage: `radial-gradient(circle at 25px 25px, ${ogBrandColors.border} 2px, transparent 0)`,
 						backgroundSize: "50px 50px",
 						opacity: 0.5,
 					}}
@@ -65,13 +66,16 @@ export async function GET(request: NextRequest) {
 							marginBottom: "40px",
 							fontSize: "24px",
 							fontWeight: "600",
-							color: "#1A1A1A",
+							color: ogBrandColors.foreground,
 							letterSpacing: "-0.02em",
 						}}
 					>
 						{/* Simple sparkle icon */}
 						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ marginRight: "12px" }}>
-							<path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="#1A1A1A" />
+							<path
+								d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z"
+								fill={ogBrandColors.foreground}
+							/>
 						</svg>
 						saleor
 					</div>
@@ -81,7 +85,7 @@ export async function GET(request: NextRequest) {
 						style={{
 							fontSize: "64px",
 							fontWeight: "700",
-							color: "#1A1A1A",
+							color: ogBrandColors.foreground,
 							lineHeight: 1.1,
 							letterSpacing: "-0.03em",
 							marginBottom: subtitle || price ? "20px" : "0",
@@ -95,7 +99,7 @@ export async function GET(request: NextRequest) {
 						<div
 							style={{
 								fontSize: "28px",
-								color: "#737373", // --muted-foreground
+								color: ogBrandColors.mutedForeground,
 								marginBottom: price ? "20px" : "0",
 							}}
 						>
@@ -109,11 +113,11 @@ export async function GET(request: NextRequest) {
 							style={{
 								fontSize: "36px",
 								fontWeight: "600",
-								color: "#1A1A1A",
-								backgroundColor: "#FFFFFF",
+								color: ogBrandColors.foreground,
+								backgroundColor: ogBrandColors.card,
 								padding: "12px 32px",
 								borderRadius: "8px",
-								border: "2px solid #E5E4DF",
+								border: `2px solid ${ogBrandColors.border}`,
 							}}
 						>
 							{price}

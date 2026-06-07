@@ -22,6 +22,9 @@ Copy and metadata (site name, tagline) live in `src/config/brand.ts`.
 | Site name, tagline, copyright, social | `src/config/brand.ts`                                         |
 | Logo                                  | `public/logo.svg`, `public/logo-dark.svg` (inverted surfaces) |
 | Favicons                              | `public/favicon*`                                             |
+| OG image hex colors                   | `src/lib/seo/og-brand-colors.ts` (sync with `brand.css`)      |
+
+**Light-only UI:** Storefront pages use the light theme only (no `.dark` class). Browser tab favicons in `src/lib/seo/metadata.ts` still follow `prefers-color-scheme` so icons stay readable on dark browser chrome — that is intentional and not an in-app dark mode.
 
 ---
 

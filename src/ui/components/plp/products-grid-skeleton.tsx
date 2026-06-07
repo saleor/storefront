@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 export function ProductsGridSkeleton({ className }: { className?: string }) {
 	return (
 		<div className={cn("mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8", className)}>
-			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
+			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6" data-testid="ProductList">
 				{Array.from({ length: 6 }).map((_, i) => (
 					<div key={i} className="animate-pulse">
 						<div className="mb-4 aspect-[3/4] rounded-xl bg-muted" />

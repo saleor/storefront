@@ -14,7 +14,7 @@
 
 import type { ProductOrder, ProductOrderField, OrderDirection, ProductFilterInput } from "@/gql/graphql";
 import { compareSizes } from "@/lib/sizes";
-import type { ProductCardData } from "./product-card";
+import type { ProductCardData } from "./product-card-data";
 import type { FilterOption, ActiveFilter, SortOption } from "./filter-bar";
 
 // ============================================================================

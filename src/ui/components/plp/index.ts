@@ -1,6 +1,7 @@
 export { CategoryHero } from "./category-hero";
 export { PageHeader } from "./page-header";
 export { ProductCard, type ProductCardData } from "./product-card";
+export { ProductCardWithQuickAdd } from "./product-card-with-quick-add";
 export { ProductGrid } from "./product-grid";
 export { ProductsGridSkeleton } from "./products-grid-skeleton";
 export { PlpPageLoading } from "./plp-page-loading";
@@ -12,7 +13,7 @@ export {
 	type ActiveFilter,
 } from "./filter-bar";
 export { WavePattern } from "./wave-pattern";
-export { transformToProductCard, formatPrice } from "./utils";
+export { toProductCardData, transformToProductCard, formatPrice } from "./utils";
 export {
 	// Server-side filter helpers (resolveCategorySlugsToIds is in filter-utils.server.ts)
 	buildFilterVariables,

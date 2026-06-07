@@ -59,8 +59,8 @@ export function ButtonOption({
 					isSelected
 						? "border-foreground bg-foreground text-background"
 						: isIncompatible
-							? "border-gray-200 text-muted-foreground hover:border-gray-300"
-							: "border-gray-400 bg-background text-foreground hover:border-foreground",
+							? "hover:border-muted-foreground/40 border-border text-muted-foreground"
+							: "border-input bg-background text-foreground hover:border-foreground",
 					isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
 				)}
 				title={
