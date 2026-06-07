@@ -31,7 +31,7 @@ export function useCheckoutStep({ isShippingRequired, searchParams, setCheckout 
 			if (!step) return;
 
 			setCheckout(checkout);
-			updateCheckoutQuery({ step: step.slug });
+			updateCheckoutQuery({ step: step.slug }, { history: "push" });
 		},
 		[setCheckout],
 	);

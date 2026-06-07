@@ -3,15 +3,22 @@ import { type ReadonlyURLSearchParams } from "next/navigation";
 
 import { createQueryString } from "@/session-bridge/search-params";
 
-/** Fired after shallow `history.replaceState` updates so subscribers see the new query. */
+/** Fired after shallow history updates so subscribers see the new query. */
 export const CHECKOUT_QUERY_CHANGE = "checkout:query-change";
 
 export type CheckoutQueryUpdate = Record<string, string | null>;
+
+export type CheckoutQueryHistory = "push" | "replace";
 
 export type UpdateCheckoutQueryOptions = {
 	/** `shallow` (default) avoids re-running the checkout RSC page on step-only changes. */
 	mode?: "shallow" | "navigate";
 	pathname?: string;
+	/**
+	 * `replace` (default) overwrites the current entry — use for stepper jumps and Stripe cleanup.
+	 * `push` adds a history entry — use when advancing via Continue so browser Back walks steps.
+	 */
+	history?: CheckoutQueryHistory;
 };
 
 function normalizeSearchString(search: string): string {
@@ -37,7 +44,7 @@ function getLiveSearchString(): string {
 }
 
 /**
- * Live checkout query string, including shallow `replaceState` updates that Next's
+ * Live checkout query string, including shallow history updates that Next's
  * `useSearchParams()` does not reflect until a full navigation.
  */
 export function useLiveCheckoutSearchString(serverFallback: string): string {
@@ -46,7 +53,7 @@ export function useLiveCheckoutSearchString(serverFallback: string): string {
 	);
 }
 
-/** Live checkout query params — includes shallow `replaceState` updates. */
+/** Live checkout query params — includes shallow history updates. */
 export function useLiveCheckoutSearchParams(serverSearchParams: ReadonlyURLSearchParams): URLSearchParams {
 	const searchString = useLiveCheckoutSearchString(serverSearchParams.toString());
 
@@ -75,11 +82,23 @@ export function buildCheckoutQueryUrl(
  * Step changes use shallow mode intentionally — same pattern as legacy Pages Router
  * `shallow: true`, which App Router does not expose for search-only updates.
  */
+export function writeCheckoutQueryHistory(url: string, history: CheckoutQueryHistory = "replace"): void {
+	const state = window.history.state;
+
+	if (history === "push") {
+		window.history.pushState(state, "", url);
+	} else {
+		window.history.replaceState(state, "", url);
+	}
+
+	window.dispatchEvent(new Event(CHECKOUT_QUERY_CHANGE));
+}
+
 export function updateCheckoutQuery(
 	updates: CheckoutQueryUpdate,
 	options: UpdateCheckoutQueryOptions = {},
 ): void {
-	const { mode = "shallow", pathname = window.location.pathname } = options;
+	const { mode = "shallow", pathname = window.location.pathname, history = "replace" } = options;
 
 	if (mode === "navigate") {
 		throw new Error(
@@ -88,6 +107,5 @@ export function updateCheckoutQuery(
 	}
 
 	const url = buildCheckoutQueryUrl(window.location.search, updates, pathname);
-	window.history.replaceState(window.history.state, "", url);
-	window.dispatchEvent(new Event(CHECKOUT_QUERY_CHANGE));
+	writeCheckoutQueryHistory(url, history);
 }
