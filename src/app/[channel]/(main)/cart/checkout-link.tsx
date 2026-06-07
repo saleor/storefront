@@ -1,19 +1,28 @@
 "use client";
 
+import { buttonClassName } from "@/ui/components/ui/button";
+import { cn } from "@/lib/utils";
+
 type Props = {
 	disabled?: boolean;
 	checkoutId?: string;
 	className?: string;
 };
 
-export const CheckoutLink = ({ disabled, checkoutId, className = "" }: Props) => {
+export const CheckoutLink = ({ disabled, checkoutId, className }: Props) => {
 	return (
 		<a
 			data-testid="CheckoutLink"
 			aria-disabled={disabled}
 			onClick={(e) => disabled && e.preventDefault()}
 			href={`/checkout?checkout=${checkoutId}`}
-			className={`inline-block max-w-full rounded border border-transparent bg-neutral-900 px-6 py-3 text-center font-medium text-neutral-50 hover:bg-neutral-800 aria-disabled:cursor-not-allowed aria-disabled:bg-neutral-500 sm:px-16 ${className}`}
+			className={buttonClassName({
+				className: cn(
+					"max-w-full sm:px-16",
+					"aria-disabled:pointer-events-none aria-disabled:opacity-50",
+					className,
+				),
+			})}
 		>
 			Checkout
 		</a>

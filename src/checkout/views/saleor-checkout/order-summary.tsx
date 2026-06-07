@@ -380,7 +380,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 												setPromoError(null);
 											}}
 											aria-invalid={Boolean(promoError)}
-											className="h-10 bg-white pl-10 text-sm"
+											className="h-10 pl-10 text-sm"
 											disabled={isPromoBusy}
 										/>
 									</div>
@@ -388,7 +388,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 										type="submit"
 										variant="outline-solid"
 										disabled={!promoCode.trim() || isPromoBusy}
-										className="h-10 bg-white px-4 text-sm"
+										className="h-10 px-4 text-sm"
 									>
 										{isApplyingPromo ? "Applying..." : "Apply"}
 									</Button>

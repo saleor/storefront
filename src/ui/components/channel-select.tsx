@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils";
 
 export const ChannelSelect = ({
 	channels,
+	variant = "default",
 	className,
 }: {
 	channels: ChannelSelectOption[];
+	variant?: "default" | "inverted";
 	className?: string;
 }) => {
 	const router = useRouter();
@@ -17,10 +19,12 @@ export const ChannelSelect = ({
 	return (
 		<select
 			className={cn(
-				"h-10 w-fit rounded-md border border-input bg-background px-4 py-2 pr-10 text-sm",
-				"text-foreground",
+				"h-10 w-fit rounded-md border px-4 py-2 pr-10 text-sm",
 				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 				"disabled:cursor-not-allowed disabled:opacity-50",
+				variant === "inverted"
+					? "border-on-foreground bg-transparent text-on-foreground-subtle focus-visible:ring-offset-foreground"
+					: "border-input bg-background text-foreground focus-visible:ring-offset-background",
 				className,
 			)}
 			onChange={(e) => {

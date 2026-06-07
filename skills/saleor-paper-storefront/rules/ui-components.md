@@ -17,16 +17,18 @@ Create and style UI components with design tokens and shadcn/ui primitives.
 
 ## Design Tokens
 
-Use semantic Tailwind classes that reference CSS variables from `src/styles/brand.css`:
+**Single source of truth:** `src/styles/brand.css`. See `src/styles/README.md` for the full workflow.
+
+Use semantic Tailwind classes (mapped in `tailwind.config.cjs`):
 
 ```tsx
-// ✅ Good - uses design tokens
+// Resolves to brand.css via tailwind.config.cjs
 <div className="bg-background text-foreground border-border">
 <button className="bg-primary text-primary-foreground">
 <span className="text-muted-foreground">
 
-// ❌ Bad - hardcoded colors
-<div className="bg-white text-black border-gray-200">
+// Inverted footer (bg-foreground)
+<p className="text-on-foreground-subtle">
 ```
 
 Available tokens:
@@ -35,7 +37,8 @@ Available tokens:
 - `primary`, `primary-foreground` - Primary actions
 - `secondary`, `secondary-foreground` - Secondary elements
 - `muted`, `muted-foreground` - Subdued elements
-- `border` - Border color
+- `on-foreground`, `on-foreground-subtle`, `on-foreground-muted` - Text on inverted surfaces
+- `border`, `border-on-foreground` - Borders
 - `destructive` - Error/danger states
 
 ## Using shadcn/ui Primitives
@@ -83,7 +86,7 @@ export function Card({ title, children, className }: CardProps) {
 
 ## Anti-patterns
 
-❌ **Don't use hardcoded colors** - Use design tokens  
+❌ **Don't hardcode brand colors** (hex/rgb in components) when a token exists — edit `brand.css` instead  
 ❌ **Don't add `"use client"` unless needed** - Prefer Server Components  
 ❌ **Don't create new primitives** - Use existing shadcn/ui components  
-❌ **Don't use inline styles** - Use Tailwind classes
+❌ **Don't use inline styles** for brand colors - Use Tailwind classes backed by tokens

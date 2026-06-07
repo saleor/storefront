@@ -11,6 +11,7 @@ import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import { getFooterMenuItems } from "@/lib/menus/get-menu-data";
 import { FooterMenuColumns } from "./footer-menu-columns";
 import { CopyrightText } from "./copyright-text";
+import { brandConfig } from "@/config/brand";
 import { Logo } from "./shared/logo";
 
 export async function Footer({ channel }: { channel: string }) {
@@ -39,8 +40,8 @@ export async function Footer({ channel }: { channel: string }) {
 						<Link href={`/${channel}`} prefetch={false} className="mb-4 inline-block">
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
-						<p className="mt-4 max-w-xs text-sm leading-relaxed text-neutral-400">
-							Minimal design, maximum impact. Thoughtfully crafted essentials for everyday comfort.
+						<p className="mt-4 max-w-xs text-sm leading-relaxed text-on-foreground-subtle">
+							{brandConfig.tagline}
 						</p>
 					</div>
 
@@ -49,31 +50,31 @@ export async function Footer({ channel }: { channel: string }) {
 
 				{/* Channel selector — only storefront channels, hidden when single-channel */}
 				{selectorChannels.length > 1 && (
-					<div className="mt-8 text-neutral-400">
+					<div className="mt-8 text-on-foreground-subtle">
 						<label className="flex items-center gap-2 text-sm">
 							<span>Change currency:</span>
-							<ChannelSelect channels={selectorChannels} />
+							<ChannelSelect channels={selectorChannels} variant="inverted" />
 						</label>
 					</div>
 				)}
 
 				{/* Bottom bar */}
-				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-neutral-800 pt-8 sm:flex-row">
-					<p className="text-xs text-neutral-500">
+				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-on-foreground pt-8 sm:flex-row">
+					<p className="text-xs text-on-foreground-muted">
 						<CopyrightText />
 					</p>
 					<div className="flex items-center gap-6">
 						<Link
 							href="/privacy"
 							prefetch={false}
-							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+							className="text-xs text-on-foreground-muted transition-colors hover:text-on-foreground-subtle"
 						>
 							Privacy Policy
 						</Link>
 						<Link
 							href="/terms"
 							prefetch={false}
-							className="text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+							className="text-xs text-on-foreground-muted transition-colors hover:text-on-foreground-subtle"
 						>
 							Terms of Service
 						</Link>
