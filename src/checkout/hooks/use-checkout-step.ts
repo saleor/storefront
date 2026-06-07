@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from "react";
-import { flushSync } from "react-dom";
 import { type ReadonlyURLSearchParams } from "next/navigation";
 
 import { updateCheckoutQuery } from "@/checkout/lib/checkout-search-params";
@@ -31,9 +30,7 @@ export function useCheckoutStep({ isShippingRequired, searchParams, setCheckout 
 			const step = getCheckoutSteps(checkout.isShippingRequired).find((s) => s.id === stepType);
 			if (!step) return;
 
-			flushSync(() => {
-				setCheckout(checkout);
-			});
+			setCheckout(checkout);
 			updateCheckoutQuery({ step: step.slug });
 		},
 		[setCheckout],
