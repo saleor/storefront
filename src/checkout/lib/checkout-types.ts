@@ -1,6 +1,5 @@
 import type {
 	CheckoutQuery,
-	CheckoutRoutingQuery,
 	DeliveryOptionsCalculateMutation,
 	OrderQuery,
 	UserQuery,
@@ -10,6 +9,8 @@ import type { CountryCode } from "@/checkout/graphql";
 /** Checkout object returned by the server-side checkout query. */
 export type ServerCheckout = NonNullable<CheckoutQuery["checkout"]>;
 
+export type CheckoutLoadState = "order" | "none" | "not_found" | "empty" | "error" | "ready";
+
 /** Customer profile from `me` — shared by RSC fetch and client context. */
 export type CheckoutUser = NonNullable<UserQuery["user"]>;
 
@@ -18,12 +19,6 @@ export type ServerOrder = NonNullable<OrderQuery["order"]>;
 
 /** Result of `fetchCheckoutOnServer` — distinct from urql/client checkout state. */
 export type CheckoutFetchResult = { ok: false } | { ok: true; checkout: ServerCheckout | null };
-
-/** Minimal checkout for RSC routing (channel slug, line count, cookie redirect). */
-export type CheckoutRouting = NonNullable<CheckoutRoutingQuery["checkout"]>;
-
-/** Result of `fetchCheckoutRoutingOnServer`. */
-export type CheckoutRoutingFetchResult = { ok: false } | { ok: true; checkout: CheckoutRouting | null };
 
 export type DeliveryOption = DeliveryOptionsCalculateMutation["deliveryOptionsCalculate"] extends
 	| { deliveries: infer D }

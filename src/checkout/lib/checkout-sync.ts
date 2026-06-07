@@ -1,4 +1,4 @@
-import type { ServerCheckout } from "@/checkout/lib/checkout-types";
+import type { CheckoutLoadState, ServerCheckout } from "@/checkout/lib/checkout-types";
 
 /** Stable fingerprint of cart line items for comparing checkout snapshots. */
 export function checkoutLinesSignature(checkout: ServerCheckout | null | undefined): string {
@@ -40,6 +40,26 @@ export function adoptCheckoutSnapshot(current: ServerCheckout | null, fresh: Ser
 		return fresh;
 	}
 	return current;
+}
+
+/**
+ * Whether checkout entry needs a client-side `syncCheckoutFromServer` fallback.
+ * Normal loads hydrate from RSC `initialCheckout`; sync only when that snapshot is missing or mismatched.
+ */
+export function needsCheckoutEntrySync(
+	checkoutId: string | null,
+	loadState: CheckoutLoadState,
+	initialCheckout: ServerCheckout | null | undefined,
+): boolean {
+	if (!checkoutId || loadState !== "ready") {
+		return false;
+	}
+
+	if (!initialCheckout) {
+		return true;
+	}
+
+	return initialCheckout.id !== checkoutId;
 }
 
 /**

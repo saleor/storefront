@@ -184,19 +184,6 @@ query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
 	}
 }
 
-# Minimal fields for RSC routing (existence, empty cart, channel, cookie redirect).
-query checkoutRouting($id: ID!) {
-	checkout(id: $id) {
-		id
-		channel {
-			slug
-		}
-		lines {
-			id
-		}
-	}
-}
-
 query channel($slug: String!) {
 	channel(slug: $slug) {
 		countries {

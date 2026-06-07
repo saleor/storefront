@@ -4,12 +4,11 @@ import { invariant } from "ts-invariant";
 import { buildCheckoutPath } from "@paper/session-bridge";
 import { CheckoutApp } from "@/checkout/checkout-app";
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
-import { fetchCheckoutRoutingOnServer } from "@/checkout/lib/server/fetch-checkout-routing";
 import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-user";
 import { fetchChannelCountriesOnServer } from "@/checkout/lib/server/fetch-channel-countries";
 import { fetchOrderOnServer } from "@/checkout/lib/server/fetch-order";
-import type { ShippingCountries } from "@/checkout/lib/checkout-types";
-import type { CheckoutLoadState } from "@/checkout/providers/checkout-data";
+import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
+import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import * as Checkout from "@/lib/checkout";
 
 export const metadata = {
@@ -51,42 +50,42 @@ async function CheckoutContent({
 		}
 	}
 
-	const [initialUser, initialOrder] = await Promise.all([
+	const [initialUser, initialOrder, checkoutResult] = await Promise.all([
 		fetchCheckoutUserOnServer(),
 		orderId ? fetchOrderOnServer(orderId) : Promise.resolve(null),
+		checkoutIdFromUrl && !orderId ? fetchCheckoutOnServer(checkoutIdFromUrl) : Promise.resolve(null),
 	]);
 
 	let loadState: CheckoutLoadState = "none";
 	let channelSlug: string | null = null;
+	let initialCheckout: ServerCheckout | null = null;
 	let shippingCountries: ShippingCountries = [];
 
 	if (orderId) {
 		loadState = initialOrder ? "order" : "not_found";
 	} else if (!checkoutIdFromUrl) {
 		loadState = "none";
+	} else if (!checkoutResult) {
+		loadState = "error";
+	} else if (!checkoutResult.ok) {
+		loadState = "error";
+	} else if (!checkoutResult.checkout) {
+		loadState = "not_found";
+		await Checkout.clearCheckoutCookieByValue(checkoutIdFromUrl);
 	} else {
-		// Routing only (empty/not_found/cookie redirect/channel). Full cart loads client-side via syncCheckoutFromServer.
-		const checkoutResult = await fetchCheckoutRoutingOnServer(checkoutIdFromUrl);
+		channelSlug = checkoutResult.checkout.channel.slug;
+		const checkoutIdFromChannelCookie = await Checkout.getIdFromCookies(channelSlug);
 
-		if (!checkoutResult.ok) {
-			loadState = "error";
-		} else if (!checkoutResult.checkout) {
-			loadState = "not_found";
-			await Checkout.clearCheckoutCookieByValue(checkoutIdFromUrl);
+		// Stale or shared `?checkout=` link: channel cookie is the shopper's current cart.
+		if (checkoutIdFromChannelCookie && checkoutIdFromChannelCookie !== checkoutIdFromUrl) {
+			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromChannelCookie }));
+		}
+
+		if (!checkoutResult.checkout.lines.length) {
+			loadState = "empty";
 		} else {
-			channelSlug = checkoutResult.checkout.channel.slug;
-			const checkoutIdFromChannelCookie = await Checkout.getIdFromCookies(channelSlug);
-
-			// Stale or shared `?checkout=` link: channel cookie is the shopper's current cart.
-			if (checkoutIdFromChannelCookie && checkoutIdFromChannelCookie !== checkoutIdFromUrl) {
-				redirect(buildCheckoutPath({ checkoutId: checkoutIdFromChannelCookie }));
-			}
-
-			if (!checkoutResult.checkout.lines.length) {
-				loadState = "empty";
-			} else {
-				loadState = "ready";
-			}
+			loadState = "ready";
+			initialCheckout = checkoutResult.checkout;
 		}
 	}
 
@@ -99,6 +98,7 @@ async function CheckoutContent({
 			checkoutId={checkoutIdFromUrl}
 			orderId={orderId}
 			loadState={loadState}
+			initialCheckout={initialCheckout}
 			initialOrder={initialOrder}
 			initialUser={initialUser}
 			shippingCountries={shippingCountries}

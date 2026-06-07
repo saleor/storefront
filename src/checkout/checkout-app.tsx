@@ -3,7 +3,12 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import type { CheckoutUser, ServerOrder, ShippingCountries } from "@/checkout/lib/checkout-types";
+import type {
+	CheckoutUser,
+	ServerCheckout,
+	ServerOrder,
+	ShippingCountries,
+} from "@/checkout/lib/checkout-types";
 import { CheckoutDataProvider, type CheckoutLoadState } from "@/checkout/providers/checkout-data";
 import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
@@ -18,6 +23,7 @@ type CheckoutAppProps = {
 	checkoutId: string | null;
 	orderId: string | null;
 	loadState: CheckoutLoadState;
+	initialCheckout: ServerCheckout | null;
 	initialOrder: ServerOrder | null;
 	initialUser: CheckoutUser | null;
 	shippingCountries: ShippingCountries;
@@ -30,6 +36,7 @@ export function CheckoutApp({
 	checkoutId,
 	orderId,
 	loadState,
+	initialCheckout,
 	initialOrder,
 	initialUser,
 	shippingCountries,
@@ -42,6 +49,7 @@ export function CheckoutApp({
 					key={checkoutId ?? orderId ?? "none"}
 					checkoutId={checkoutId}
 					loadState={loadState}
+					initialCheckout={initialCheckout}
 					initialOrder={initialOrder}
 					shippingCountries={shippingCountries}
 				>
