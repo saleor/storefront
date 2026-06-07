@@ -1,9 +1,8 @@
 "use client";
 
-import { useMemo, useState, type FC } from "react";
-import { useSearchParams } from "next/navigation";
-import { getQueryParams } from "@/checkout/lib/utils/url";
-import { PaymentError } from "@/checkout/components/payment/payment-error";
+import { type FC } from "react";
+
+import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
 import { useStripeReturnCompletion } from "./use-stripe-return-completion";
 
 type StripeCheckoutReturnHandlerProps = {
@@ -13,35 +12,19 @@ type StripeCheckoutReturnHandlerProps = {
 
 /**
  * Runs after Stripe redirect (3DS, etc.) at checkout-shell level so completion
- * is not tied to the payment step being mounted.
+ * is not tied to the payment step being mounted. Errors surface on the payment step.
  */
 export const StripeCheckoutReturnHandler: FC<StripeCheckoutReturnHandlerProps> = ({
 	checkoutId,
 	channelSlug,
 }) => {
-	const searchParams = useSearchParams();
-	const [error, setError] = useState<string | null>(null);
-	const isReturnUrl = useMemo(() => {
-		const { processingPayment, paymentIntent, paymentIntentClientSecret } = getQueryParams(searchParams);
-		return Boolean(processingPayment && paymentIntent && paymentIntentClientSecret);
-	}, [searchParams]);
-
-	const [, setIsProcessing] = useState(isReturnUrl);
+	const { setError } = useCheckoutPaymentReturnError();
 
 	useStripeReturnCompletion({
 		checkoutId,
 		channelSlug,
 		onError: setError,
-		onProcessingChange: setIsProcessing,
 	});
 
-	if (!error) {
-		return null;
-	}
-
-	return (
-		<div className="mx-auto mb-6 max-w-7xl px-4 sm:px-6 lg:px-8">
-			<PaymentError message={error} />
-		</div>
-	);
+	return null;
 };

@@ -10,6 +10,7 @@ import {
 	markPaymentCompleting,
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
+import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { Button } from "@/ui/components/ui/button";
 
@@ -44,6 +45,7 @@ export const AuthorizedPaymentRecovery: FC<AuthorizedPaymentRecoveryProps> = ({ 
 				setIsCompleting(false);
 			}
 		} catch (error) {
+			rethrowNextInternalError(error);
 			console.error("Failed to complete authorized checkout:", error);
 			onError("Could not place your order. Please try again or contact support.");
 			setIsCompleting(false);

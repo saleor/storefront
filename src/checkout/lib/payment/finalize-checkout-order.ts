@@ -30,7 +30,7 @@ export async function finalizeCheckoutOrder(
 			return { ok: false, error: formatCheckoutCompleteError(result.error) };
 		}
 
-		// Navigate to `/checkout/complete` before any checkout RSC revalidation on `?checkout=…`.
+		// Client hard nav — see navigate-to-order.ts (server redirect would false-trigger payment errors).
 		navigateToOrderConfirmation(result.orderId);
 
 		return { ok: true, orderId: result.orderId };

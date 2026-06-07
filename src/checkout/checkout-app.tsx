@@ -7,6 +7,7 @@ import type { CheckoutUser, ServerCheckout, ShippingCountries } from "@/checkout
 import { CheckoutDataProvider, type CheckoutLoadState } from "@/checkout/providers/checkout-data";
 import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
+import { CheckoutPaymentReturnErrorProvider } from "@/checkout/providers/checkout-payment-return-error";
 import { RootViews } from "./views/root-views";
 import { CheckoutSessionCleanup } from "@/checkout/components/checkout-session-cleanup";
 import { StripeCheckoutCompletionHost } from "@/checkout/components/payment/stripe/stripe-checkout-completion-host";
@@ -44,14 +45,16 @@ export function CheckoutApp({
 					initialCheckout={initialCheckout}
 					shippingCountries={shippingCountries}
 				>
-					<Suspense fallback={null}>
-						<StripeCheckoutCompletionHost />
-					</Suspense>
-					<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
-						<Suspense fallback={<CheckoutLoadingFallback />}>
-							<RootViews />
+					<CheckoutPaymentReturnErrorProvider>
+						<Suspense fallback={null}>
+							<StripeCheckoutCompletionHost />
 						</Suspense>
-					</ErrorBoundary>
+						<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
+							<Suspense fallback={<CheckoutLoadingFallback />}>
+								<RootViews />
+							</Suspense>
+						</ErrorBoundary>
+					</CheckoutPaymentReturnErrorProvider>
 				</CheckoutDataProvider>
 			</CheckoutUserProvider>
 		</CheckoutSessionProvider>

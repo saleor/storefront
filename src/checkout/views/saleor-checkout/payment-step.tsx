@@ -21,6 +21,7 @@ import { getFormattedMoney, formatMoneyWithFallback } from "@/checkout/lib/utils
 import { AuthorizedPaymentRecovery } from "@/checkout/components/payment/stripe/authorized-payment-recovery";
 import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
 import { usesClientPaymentSubmit } from "@/checkout/lib/payment";
+import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -51,6 +52,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 		},
 	}));
 
+	const { error: returnError, clearError: clearReturnError } = useCheckoutPaymentReturnError();
+
 	const {
 		submit,
 		errors,
@@ -74,6 +77,14 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 
 	const usesClientSubmit = usesClientPaymentSubmit(provider);
 	const isFreeOrder = isCheckoutFreeOrder(checkout);
+
+	const handlePaymentError = useCallback(
+		(message: string) => {
+			clearReturnError();
+			setPaymentError(message);
+		},
+		[clearReturnError, setPaymentError],
+	);
 
 	const handleBillingDataChange = useCallback((data: BillingAddressData) => {
 		setBillingData(data);
@@ -162,7 +173,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 			<PaymentGatewayAlerts gateways={checkout.availablePaymentGateways} />
 
 			{usesClientSubmit && !isFreeOrder ? (
-				<AuthorizedPaymentRecovery checkout={checkout} onError={setPaymentError} />
+				<AuthorizedPaymentRecovery checkout={checkout} onError={handlePaymentError} />
 			) : null}
 
 			{usesClientSubmit ? (
@@ -191,12 +202,12 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 					userAddresses: user?.addresses,
 					authenticated,
 				}}
-				onPaymentError={setPaymentError}
+				onPaymentError={handlePaymentError}
 				onBillingErrors={setBillingErrors}
 				onPriceChangeNotice={setPriceChangeNotice}
 			/>
 
-			<PaymentError message={errors.payment} />
+			<PaymentError message={errors.payment || returnError || undefined} />
 
 			{!usesClientSubmit ? (
 				<BillingAddressSection

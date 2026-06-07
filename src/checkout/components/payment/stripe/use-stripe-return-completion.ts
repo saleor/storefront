@@ -3,20 +3,18 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { processCheckoutTransaction, syncCheckoutFromServer } from "@/app/(checkout)/actions";
-import {
-	clearPaymentCompleting,
-	markPaymentCompleting,
-} from "@/checkout/lib/payment/checkout-payment-completion";
+import { markPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
+import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import { getStripeTransactionError } from "@/checkout/lib/payment/providers/stripe";
 import { getQueryParams } from "@/checkout/lib/utils/url";
+import { reportStripeReturnFailure } from "./report-stripe-return-failure";
 import { clearStripeTransactionId, STRIPE_TRANSACTION_STORAGE_KEY } from "./use-stripe-checkout-redirect";
 
 type UseStripeReturnCompletionParams = {
 	checkoutId: string;
 	channelSlug?: string;
 	onError: (message: string) => void;
-	onProcessingChange?: (processing: boolean) => void;
 };
 
 /**
@@ -27,7 +25,6 @@ export function useStripeReturnCompletion({
 	checkoutId,
 	channelSlug,
 	onError,
-	onProcessingChange,
 }: UseStripeReturnCompletionParams) {
 	const searchParams = useSearchParams();
 	const isProcessingRef = useRef(false);
@@ -45,7 +42,10 @@ export function useStripeReturnCompletion({
 		}
 
 		if (redirectStatus === "failed") {
-			onError("Your bank declined the payment. Please try again or use a different card.");
+			reportStripeReturnFailure(
+				"Your bank declined the payment. Please try again or use a different card.",
+				onError,
+			);
 			return;
 		}
 
@@ -54,34 +54,27 @@ export function useStripeReturnCompletion({
 		const transactionId = transactionIdFromStorage ?? transactionIdFromQuery;
 
 		if (!transactionId) {
-			onError("Payment session expired after redirect. Please try again.");
+			reportStripeReturnFailure("Payment session expired after redirect. Please try again.", onError);
 			return;
 		}
 
 		isProcessingRef.current = true;
 		markPaymentCompleting(checkoutId);
-		onProcessingChange?.(true);
 
 		const completeAfterRedirect = async () => {
 			try {
 				const processResult = await processCheckoutTransaction({ id: transactionId });
 
 				if (!processResult.ok) {
-					onError(processResult.error);
-					clearPaymentCompleting();
-					onProcessingChange?.(false);
+					reportStripeReturnFailure(processResult.error, onError);
 					return;
 				}
 
 				const processError = getStripeTransactionError(processResult.data);
 				if (processError) {
-					onError(processError);
-					clearPaymentCompleting();
-					onProcessingChange?.(false);
+					reportStripeReturnFailure(processError, onError);
 					return;
 				}
-
-				clearStripeTransactionId();
 
 				let resolvedChannelSlug = channelSlug;
 				if (!resolvedChannelSlug) {
@@ -90,29 +83,29 @@ export function useStripeReturnCompletion({
 				}
 
 				if (!resolvedChannelSlug) {
-					onError("Could not resolve checkout channel after payment. Please contact support.");
-					clearPaymentCompleting();
-					onProcessingChange?.(false);
+					reportStripeReturnFailure(
+						"Could not resolve checkout channel after payment. Please contact support.",
+						onError,
+					);
 					return;
 				}
 
+				clearStripeTransactionId();
+
 				const completeResult = await finalizeCheckoutOrder(checkoutId, resolvedChannelSlug);
 				if (!completeResult.ok) {
-					onError(completeResult.error);
-					clearPaymentCompleting();
-					onProcessingChange?.(false);
+					reportStripeReturnFailure(completeResult.error, onError);
 				}
 				// Success: keep overlay until hard navigation unloads the page.
 			} catch (error) {
+				rethrowNextInternalError(error);
 				console.error("Stripe redirect completion failed:", error);
-				onError("An unexpected error occurred while completing your payment.");
-				clearPaymentCompleting();
-				onProcessingChange?.(false);
+				reportStripeReturnFailure("An unexpected error occurred while completing your payment.", onError);
 			} finally {
 				isProcessingRef.current = false;
 			}
 		};
 
 		void completeAfterRedirect();
-	}, [channelSlug, checkoutId, onError, onProcessingChange, searchParams]);
+	}, [channelSlug, checkoutId, onError, searchParams]);
 }

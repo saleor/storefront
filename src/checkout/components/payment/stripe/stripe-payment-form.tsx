@@ -24,6 +24,7 @@ import {
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
 import { formatStripePayError } from "@/checkout/lib/payment/format-stripe-pay-error";
+import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { buildStripeReturnUrl } from "./build-stripe-return-url";
@@ -232,6 +233,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 
 			orderPlaced = true;
 		} catch (error) {
+			rethrowNextInternalError(error);
 			console.error("Stripe payment failed:", error);
 			onError(formatStripePayError(error));
 		} finally {

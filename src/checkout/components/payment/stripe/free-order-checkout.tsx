@@ -7,6 +7,7 @@ import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { updateCheckoutBilling } from "@/checkout/lib/payment/update-billing";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
+import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { type StripeBillingContext } from "./stripe-payment-form";
@@ -65,6 +66,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 
 			orderPlaced = true;
 		} catch (error) {
+			rethrowNextInternalError(error);
 			console.error("Free order completion failed:", error);
 			onError("Could not complete your order. Please try again.");
 		} finally {

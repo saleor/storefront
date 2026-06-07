@@ -120,15 +120,25 @@ Order confirmation page (`/checkout/complete`) ← clearPaymentCompleting()
 
 ### Routes and transition storage
 
-| Mechanism                     | Purpose                                                                                                                      |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `/checkout?checkout=`         | Active cart flow — `CheckoutApp` + step UI                                                                                   |
-| `/checkout/complete?order=`   | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                              |
-| `checkout:payment-completing` | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                   |
-| `?processingPayment=true`     | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                            |
-| `window.location.replace`     | Navigates to a **different pathname** so the confirmation RSC tree loads reliably (legacy `/checkout?order=` redirects here) |
+| Mechanism                          | Purpose                                                                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                  |
+| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                                             |
+| `checkout:payment-completing`      | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                  |
+| `?processingPayment=true`          | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                           |
+| `window.location.replace`          | Navigates to a **different pathname** so the confirmation RSC tree loads reliably (legacy `/checkout?order=` redirects here)                |
+| `?step=contact\|shipping\|payment` | Checkout step deep link; URL is the source of truth via `useLiveCheckoutSearchString()`                                                     |
+| `updateCheckoutQuery()`            | Shallow step changes (`history.replaceState`) — avoids re-running checkout RSC on every Continue click; always merges into the live URL bar |
 
-**Do not** clear the checkout cookie while still on `/checkout?checkout=…` after payment succeeds — that can flash "session expired". `runCheckoutComplete` clears the cookie server-side, then navigation leaves the checkout URL immediately.
+**Do not** clear the checkout cookie synchronously on `/checkout?checkout=…` after payment succeeds — Next.js re-renders the checkout RSC tree when the cookie changes, which briefly shows `not_found` ("session expired") before navigation lands. `runCheckoutComplete` clears the cookie in `after()`; the client calls `navigateToOrderConfirmation()`. `RootViews` keeps `PaymentCompletingScreen` up while `checkout:payment-completing` is set. Do **not** call `redirect()` from `runCheckoutComplete` — it throws `NEXT_REDIRECT`, which Stripe payment catch blocks surface as a false "Payment failed" banner.
+
+### Checkout step URL (shallow navigation)
+
+Step changes inside `/checkout` use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout-search-params.ts`), not `router.replace`. App Router treats `searchParams` as dynamic page input — a router navigation would re-fetch checkout on every step click. Shallow `replaceState` updates the URL for back/refresh/deep links without a server round-trip.
+
+`useLiveCheckoutSearchString()` (`useSyncExternalStore`) keeps step UI in sync with shallow updates and `popstate`. Ephemeral Stripe return params are preserved by merging from `window.location.search`, never from stale React `searchParams` alone.
+
+Use `router.replace` only for **real** navigations (e.g. orphaned checkout recovery changing `?checkout=`).
 
 ### Transition guard
 
@@ -143,7 +153,7 @@ When `transition === "completing"`, render `PaymentCompletingScreen` instead of 
 
 ### Stripe 3DS / redirect return
 
-`StripeCheckoutReturnHandler` mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step. After redirect, the payment step may be unmounted — shell-level completion avoids losing the return handler.
+`StripeCheckoutReturnHandler` mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step. After redirect, the payment step may be unmounted — shell-level completion avoids losing the return handler. Real failures clear Stripe return URL params, exit the processing screen, and show `PaymentError` **inline on the payment step** (not as a banner above the processing overlay).
 
 Return URL includes `processingPayment`, `paymentIntent`, and `paymentIntentClientSecret` query params (see `build-stripe-return-url.ts`).
 

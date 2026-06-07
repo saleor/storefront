@@ -1,5 +1,6 @@
 "use server";
 
+import { after } from "next/server";
 import { revalidatePath } from "next/cache";
 import {
 	AddressValidationRulesDocument,
@@ -504,13 +505,16 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 		};
 	}
 
-	// Clear cart cookie server-side once — avoids a client server-action loop on order confirmation
-	// (calling clearCheckout from useEffect re-triggers RSC refresh indefinitely).
-	await Checkout.clearCheckoutCookieByValue(checkoutId);
-	if (channelSlug) {
-		revalidatePath(`/${channelSlug}/cart`);
-		revalidatePath(`/${channelSlug}`, "layout");
-	}
+	// Return orderId for client `navigateToOrderConfirmation()` — do not `redirect()` here (see
+	// navigate-to-order.ts). Cookie clear + cart revalidation run in `after()` so the client can
+	// leave `/checkout?checkout=…` first; RootViews keeps PaymentCompletingScreen up meanwhile.
+	after(async () => {
+		await Checkout.clearCheckoutCookieByValue(checkoutId);
+		if (channelSlug) {
+			revalidatePath(`/${channelSlug}/cart`);
+			revalidatePath(`/${channelSlug}`, "layout");
+		}
+	});
 
 	return { ok: true, orderId };
 }
