@@ -322,6 +322,23 @@ describe("getOptionsForAttribute", () => {
 			expect(opt.existsWithCurrentSelection).toBe(true);
 		});
 	});
+
+	it("uses contextual discounts based on other selections", () => {
+		const groups = groupVariantsByAttributes(discountedVariants);
+
+		// Without context, Purple shows max discount across S (20%) and M (0%)
+		const colorOptions = getOptionsForAttribute(discountedVariants, groups, {}, "color");
+		expect(colorOptions.find((o) => o.name === "Purple")?.discountPercent).toBe(20);
+
+		// With size M selected, Purple has no discount on that variant
+		const colorWithSizeM = getOptionsForAttribute(discountedVariants, groups, { size: "m" }, "color");
+		expect(colorWithSizeM.find((o) => o.name === "Purple")?.discountPercent).toBeUndefined();
+
+		// With color Purple selected, only size S is discounted (20%), not Orange's 100%
+		const sizeWithPurple = getOptionsForAttribute(discountedVariants, groups, { color: "purple" }, "size");
+		expect(sizeWithPurple.find((o) => o.name === "S")?.discountPercent).toBe(20);
+		expect(sizeWithPurple.find((o) => o.name === "M")?.discountPercent).toBeUndefined();
+	});
 });
 
 // =============================================================================
