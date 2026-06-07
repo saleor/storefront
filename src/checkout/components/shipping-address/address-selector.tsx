@@ -1,9 +1,9 @@
 "use client";
 
 import { type FC, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 
 import { setUserDefaultAddress } from "@/app/(checkout)/actions";
+import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import { type AddressFragment, type AddressTypeEnum } from "@/checkout/graphql";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -51,7 +51,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 	showSetAsDefault = true,
 	onAddNew,
 }) => {
-	const router = useRouter();
+	const refreshCheckoutRsc = useRefreshCheckoutRsc();
 	const [isSettingDefault, setIsSettingDefault] = useState(false);
 	const [setAsDefault, setSetAsDefault] = useState(false);
 
@@ -78,7 +78,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 						setSetAsDefault(false);
 					} else {
 						onDefaultChange?.(selectedAddressId);
-						router.refresh();
+						refreshCheckoutRsc();
 					}
 				} catch {
 					setSetAsDefault(false);
@@ -87,7 +87,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 				}
 			}
 		},
-		[selectedAddressId, addressType, onDefaultChange, router],
+		[addressType, onDefaultChange, refreshCheckoutRsc, selectedAddressId],
 	);
 
 	if (addresses.length === 0) {

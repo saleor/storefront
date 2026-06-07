@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { recoverOrphanedCheckout } from "@/app/(checkout)/actions";
 import type { CheckoutFragment } from "@/checkout/graphql";
+import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import { useUser } from "@/checkout/hooks/use-user";
 import { createQueryString } from "@/checkout/lib/utils/url";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
@@ -12,6 +13,7 @@ import { useCheckoutData } from "@/checkout/providers/checkout-data";
  */
 export function useOrphanedCheckoutRecovery(checkout: CheckoutFragment) {
 	const router = useRouter();
+	const refreshCheckoutRsc = useRefreshCheckoutRsc();
 	const searchParams = useSearchParams();
 	const { authenticated } = useUser();
 	const { setCheckout } = useCheckoutData();
@@ -48,13 +50,22 @@ export function useOrphanedCheckoutRecovery(checkout: CheckoutFragment) {
 				router.replace(`?${newQuery}`, { scroll: false });
 			}
 
-			router.refresh();
+			refreshCheckoutRsc();
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Could not continue as guest");
 		} finally {
 			setIsRecovering(false);
 		}
-	}, [checkout.channel.slug, checkout.lines, isOrphaned, isRecovering, router, searchParams, setCheckout]);
+	}, [
+		checkout.channel.slug,
+		checkout.lines,
+		isOrphaned,
+		isRecovering,
+		refreshCheckoutRsc,
+		router,
+		searchParams,
+		setCheckout,
+	]);
 
 	return { isOrphaned, isRecovering, error, recoverAsGuest };
 }

@@ -85,7 +85,7 @@ See `data-auth-routes.md` for HttpOnly cookies, header `getHeaderUser()`, and ra
 ## Data loading (RSC + client sync)
 
 1. **RSC page** (`checkout/page.tsx`) — full checkout (`fetchCheckoutOnServer`), `me`, order, channel countries. Passes `initialCheckout` when `loadState === "ready"`.
-2. **Client** — `CheckoutDataProvider` hydrates from `initialCheckout`. `syncCheckoutFromServer` runs only as a fallback when the RSC snapshot is missing or the session id mismatches (`needsCheckoutEntrySync`). Cart mutations revalidate `/checkout` via `revalidateAuthSurfaces`.
+2. **Client** — `CheckoutDataProvider` hydrates from `initialCheckout` (`CheckoutSessionLoader` always pairs `ready` with a snapshot). RSC updates merge via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` replaces state. Cart mutations revalidate `/checkout` via `revalidateAuthSurfaces`. Use `useRefreshCheckoutRsc()` after auth or address-book changes.
 3. **Mutations** — `src/app/(checkout)/actions.ts` server actions; `refreshCheckout` / `adoptCheckoutSnapshot` in `checkout-sync.ts`.
 
 `useCheckout()` reads from `CheckoutDataProvider` context (not urql).

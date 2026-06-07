@@ -4,11 +4,7 @@ import { createContext, type ReactNode, use, useCallback, useEffect, useMemo, us
 
 import { syncCheckoutFromServer } from "@/app/(checkout)/actions";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
-import {
-	adoptCheckoutSnapshot,
-	needsCheckoutEntrySync,
-	resolveSessionCheckout,
-} from "@/checkout/lib/checkout-sync";
+import { adoptCheckoutSnapshot, resolveSessionCheckout } from "@/checkout/lib/checkout-sync";
 
 export type { CheckoutLoadState };
 
@@ -22,11 +18,6 @@ export type CheckoutDataContextValue = {
 	checkout: ServerCheckout | null;
 	shippingCountries: ShippingCountries;
 	setCheckout: (checkout: ServerCheckout) => void;
-	/**
-	 * Re-fetch checkout from Saleor and replace client state.
-	 * Use after promo changes or when the cart must reflect server totals immediately.
-	 * Always replaces — does not merge with in-flow form edits.
-	 */
 	/** Re-fetch from Saleor; returns null when the checkout is missing or the request fails. */
 	refreshCheckout: (options?: RefreshCheckoutOptions) => Promise<ServerCheckout | null>;
 };
@@ -75,13 +66,16 @@ export function CheckoutDataProvider({
 		[checkoutId],
 	);
 
-	// Pick up RSC snapshot updates (e.g. after cart mutation revalidates /checkout).
+	// Pick up RSC snapshot updates (e.g. after cart revalidation or `useRefreshCheckoutRsc()`).
 	useEffect(() => {
 		if (loadState !== "ready" || !initialCheckout) {
+			if (loadState !== "ready") {
+				// eslint-disable-next-line react-hooks/set-state-in-effect -- drop cart when leaving checkout
+				setCheckout(null);
+			}
 			return;
 		}
 
-		// eslint-disable-next-line react-hooks/set-state-in-effect -- merge RSC revalidation without wiping in-flow edits
 		setCheckout((current) => {
 			if (!current) {
 				return initialCheckout;
@@ -90,36 +84,6 @@ export function CheckoutDataProvider({
 			return adoptCheckoutSnapshot(current, initialCheckout);
 		});
 	}, [initialCheckout, loadState]);
-
-	// Fallback when RSC did not hydrate checkout (missing snapshot or session id mismatch).
-	useEffect(() => {
-		if (!needsCheckoutEntrySync(checkoutId, loadState, initialCheckout)) {
-			if (loadState !== "ready") {
-				// eslint-disable-next-line react-hooks/set-state-in-effect -- drop cart when leaving checkout
-				setCheckout(null);
-			}
-			return;
-		}
-
-		let cancelled = false;
-
-		void syncCheckoutFromServer(checkoutId!).then((result) => {
-			if (cancelled || !result.ok) {
-				return;
-			}
-
-			const freshCheckout = result.checkout;
-			if (!freshCheckout) {
-				return;
-			}
-
-			setCheckout((current) => adoptCheckoutSnapshot(current, freshCheckout));
-		});
-
-		return () => {
-			cancelled = true;
-		};
-	}, [checkoutId, initialCheckout, loadState]);
 
 	const sessionCheckout = useMemo(
 		() => resolveSessionCheckout(checkout, checkoutId, loadState),

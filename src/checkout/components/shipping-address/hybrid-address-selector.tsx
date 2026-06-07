@@ -1,9 +1,9 @@
 "use client";
 
 import { type FC, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 
 import { setUserDefaultAddress } from "@/app/(checkout)/actions";
+import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import { type AddressFragment, type AddressTypeEnum } from "@/checkout/graphql";
 import { Plus } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
@@ -59,7 +59,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 	const [sheetOpen, setSheetOpen] = useState(false);
 
 	// For collapsed mode: manage "set as default" state here
-	const router = useRouter();
+	const refreshCheckoutRsc = useRefreshCheckoutRsc();
 	const [isSettingDefault, setIsSettingDefault] = useState(false);
 	const [setAsDefault, setSetAsDefault] = useState(false);
 
@@ -92,7 +92,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 						setSetAsDefault(false);
 					} else {
 						onDefaultChange?.(selectedAddressId);
-						router.refresh();
+						refreshCheckoutRsc();
 					}
 				} catch {
 					setSetAsDefault(false);
@@ -101,7 +101,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 				}
 			}
 		},
-		[selectedAddressId, addressType, onDefaultChange, router],
+		[addressType, onDefaultChange, refreshCheckoutRsc, selectedAddressId],
 	);
 
 	// Empty state

@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { createContext, type ReactNode, use, useCallback, useMemo } from "react";
+import { createContext, type ReactNode, use, useMemo } from "react";
 
+import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import type { CheckoutUser } from "@/checkout/lib/checkout-types";
 
 type CheckoutUserContextValue = {
@@ -16,7 +16,7 @@ const CheckoutUserContext = createContext<CheckoutUserContextValue | null>(null)
 
 /**
  * Customer session hydrated from the RSC page (executeAuthenticatedGraphQL).
- * Sign-in uses syncAuthSurfacesAfterSignIn; sign-out uses logout() + router.refresh().
+ * Sign-in uses syncAuthSurfacesAfterSignIn; sign-out uses logout() + `useRefreshCheckoutRsc()`.
  */
 export function CheckoutUserProvider({
 	initialUser,
@@ -25,20 +25,18 @@ export function CheckoutUserProvider({
 	initialUser: CheckoutUser | null;
 	children: ReactNode;
 }) {
-	const router = useRouter();
-
-	const refetch = useCallback(async () => {
-		router.refresh();
-	}, [router]);
+	const refreshCheckoutRsc = useRefreshCheckoutRsc();
 
 	const value = useMemo(
 		() => ({
 			user: initialUser,
 			authenticated: Boolean(initialUser?.id),
 			loading: false,
-			refetch,
+			refetch: async () => {
+				refreshCheckoutRsc();
+			},
 		}),
-		[initialUser, refetch],
+		[initialUser, refreshCheckoutRsc],
 	);
 
 	return <CheckoutUserContext value={value}>{children}</CheckoutUserContext>;

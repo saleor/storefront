@@ -5,7 +5,6 @@ import {
 	adoptCheckoutSnapshot,
 	checkoutsHaveSameLines,
 	checkoutLinesSignature,
-	needsCheckoutEntrySync,
 	resolveSessionCheckout,
 } from "@/checkout/lib/checkout-sync";
 
@@ -77,30 +76,6 @@ describe("resolveSessionCheckout", () => {
 		const current = makeCheckout([{ id: "line-a", quantity: 1 }]);
 
 		expect(resolveSessionCheckout(current, "checkout-1", "none")).toBeNull();
-	});
-});
-
-describe("needsCheckoutEntrySync", () => {
-	it("returns false when load state is not ready", () => {
-		expect(needsCheckoutEntrySync("checkout-1", "empty", makeCheckout([{ id: "line-a", quantity: 1 }]))).toBe(
-			false,
-		);
-	});
-
-	it("returns true when ready but initial snapshot is missing", () => {
-		expect(needsCheckoutEntrySync("checkout-1", "ready", null)).toBe(true);
-	});
-
-	it("returns true when initial snapshot id does not match session", () => {
-		const initial = { ...makeCheckout([{ id: "line-a", quantity: 1 }]), id: "other" } as ServerCheckout;
-
-		expect(needsCheckoutEntrySync("checkout-1", "ready", initial)).toBe(true);
-	});
-
-	it("returns false when ready with matching hydrated snapshot", () => {
-		const initial = makeCheckout([{ id: "line-a", quantity: 1 }]);
-
-		expect(needsCheckoutEntrySync("checkout-1", "ready", initial)).toBe(false);
 	});
 });
 

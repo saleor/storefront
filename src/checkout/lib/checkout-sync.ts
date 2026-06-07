@@ -21,10 +21,10 @@ export function checkoutsHaveSameLines(
 }
 
 /**
- * Merge a live Saleor snapshot into client state on checkout entry.
+ * Merge an incoming RSC snapshot into client checkout state.
  *
- * Use for the mount-time `syncCheckoutFromServer` call — not for explicit `refreshCheckout`,
- * which always replaces client state (promos, cart edits, order summary).
+ * Used when `initialCheckout` updates after `router.refresh()` — not for explicit
+ * `refreshCheckout()`, which always replaces client state (promos, cart edits, totals).
  *
  * Adopts the server when checkout id or line items changed; otherwise keeps client state
  * so in-flow edits (address, shipping method) are not overwritten by a redundant fetch.
@@ -40,26 +40,6 @@ export function adoptCheckoutSnapshot(current: ServerCheckout | null, fresh: Ser
 		return fresh;
 	}
 	return current;
-}
-
-/**
- * Whether checkout entry needs a client-side `syncCheckoutFromServer` fallback.
- * Normal loads hydrate from RSC `initialCheckout`; sync only when that snapshot is missing or mismatched.
- */
-export function needsCheckoutEntrySync(
-	checkoutId: string | null,
-	loadState: CheckoutLoadState,
-	initialCheckout: ServerCheckout | null | undefined,
-): boolean {
-	if (!checkoutId || loadState !== "ready") {
-		return false;
-	}
-
-	if (!initialCheckout) {
-		return true;
-	}
-
-	return initialCheckout.id !== checkoutId;
 }
 
 /**
