@@ -23,7 +23,7 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 			<LinkWithChannel
 				href={`/categories/${child.category.slug}`}
 				prefetch={false}
-				className="text-sm text-on-foreground-subtle transition-colors hover:text-on-foreground"
+				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.category.name}
 			</LinkWithChannel>
@@ -34,7 +34,7 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 			<LinkWithChannel
 				href={`/collections/${child.collection.slug}`}
 				prefetch={false}
-				className="text-sm text-on-foreground-subtle transition-colors hover:text-on-foreground"
+				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.collection.name}
 			</LinkWithChannel>
@@ -45,7 +45,7 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 			<LinkWithChannel
 				href={`/pages/${child.page.slug}`}
 				prefetch={false}
-				className="text-sm text-on-foreground-subtle transition-colors hover:text-on-foreground"
+				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.page.title}
 			</LinkWithChannel>
@@ -56,7 +56,7 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 			<Link
 				href={child.url}
 				prefetch={false}
-				className="text-sm text-on-foreground-subtle transition-colors hover:text-on-foreground"
+				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.name}
 			</Link>
@@ -70,14 +70,14 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 		return (
 			<>
 				<div>
-					<h4 className="mb-4 text-sm font-medium text-on-foreground">Support</h4>
+					<h4 className="mb-4 text-sm font-medium text-inverse">Support</h4>
 					<ul className="space-y-3">
 						{defaultFooterLinks.support.map((link) => (
 							<li key={link.href}>
 								<Link
 									href={link.href}
 									prefetch={false}
-									className="text-sm text-on-foreground-subtle transition-colors hover:text-on-foreground"
+									className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 								>
 									{link.label}
 								</Link>
@@ -86,14 +86,14 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 					</ul>
 				</div>
 				<div>
-					<h4 className="mb-4 text-sm font-medium text-on-foreground">Company</h4>
+					<h4 className="mb-4 text-sm font-medium text-inverse">Company</h4>
 					<ul className="space-y-3">
 						{defaultFooterLinks.company.map((link) => (
 							<li key={link.href}>
 								<Link
 									href={link.href}
 									prefetch={false}
-									className="text-sm text-on-foreground-subtle transition-colors hover:text-on-foreground"
+									className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 								>
 									{link.label}
 								</Link>
@@ -109,7 +109,7 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 		<>
 			{items.map((item) => (
 				<div key={item.id}>
-					<h4 className="mb-4 text-sm font-medium text-on-foreground">{item.name}</h4>
+					<h4 className="mb-4 text-sm font-medium text-inverse">{item.name}</h4>
 					<ul className="space-y-3">
 						{item.children?.map((child) => (
 							<li key={child.id}>

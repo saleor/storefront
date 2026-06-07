@@ -23,7 +23,7 @@ export const ChannelSelect = ({
 				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 				"disabled:cursor-not-allowed disabled:opacity-50",
 				variant === "inverted"
-					? "border-on-foreground bg-transparent text-on-foreground-subtle focus-visible:ring-offset-foreground"
+					? "border-inverse bg-transparent text-inverse-subtle focus-visible:ring-offset-foreground"
 					: "border-input bg-background text-foreground focus-visible:ring-offset-background",
 				className,
 			)}

@@ -1,8 +1,9 @@
 "use client";
 
-import clsx from "clsx";
-import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ariaDisabledClassName, buttonClassName } from "@/ui/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function Pagination({
 	pageInfo,
@@ -17,8 +18,6 @@ export function Pagination({
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	// Construct next and previous page URLs based on the current search parameters
-	// and the pageInfo provided.
 	const nextSearchParams = new URLSearchParams(searchParams);
 	nextSearchParams.set("cursor", pageInfo.endCursor ?? "");
 	nextSearchParams.set("direction", "next");
@@ -29,28 +28,36 @@ export function Pagination({
 	prevSearchParams.set("direction", "prev");
 	const prevPageUrl = `${pathname}?${prevSearchParams.toString()}`;
 
+	const isPrevDisabled = !pageInfo.hasPreviousPage;
+	const isNextDisabled = !pageInfo.hasNextPage;
+
+	const disabledLinkClassName = cn(
+		"rounded-md border border-border px-4 py-2 text-sm font-medium text-muted-foreground",
+		ariaDisabledClassName,
+	);
+
 	return (
 		<nav className="flex items-center justify-center gap-x-4 px-4 pt-12">
 			<Link
-				href={pageInfo.hasPreviousPage ? prevPageUrl : "#"}
-				className={clsx("px-4 py-2 text-sm font-medium", {
-					"hover:bg-primary/90 rounded-md bg-primary text-primary-foreground": pageInfo.hasPreviousPage,
-					"cursor-not-allowed border border-border text-muted-foreground": !pageInfo.hasPreviousPage,
-					"pointer-events-none": !pageInfo.hasPreviousPage,
-				})}
-				aria-disabled={!pageInfo.hasPreviousPage}
+				href={isPrevDisabled ? "#" : prevPageUrl}
+				onClick={(e) => isPrevDisabled && e.preventDefault()}
+				tabIndex={isPrevDisabled ? -1 : undefined}
+				className={
+					isPrevDisabled ? disabledLinkClassName : buttonClassName({ asLink: true, className: "px-4 py-2" })
+				}
+				aria-disabled={isPrevDisabled}
 			>
 				Previous
 			</Link>
 
 			<Link
-				href={pageInfo.hasNextPage ? nextPageUrl : "#"}
-				className={clsx("px-4 py-2 text-sm font-medium", {
-					"hover:bg-primary/90 rounded-md bg-primary text-primary-foreground": pageInfo.hasNextPage,
-					"cursor-not-allowed border border-border text-muted-foreground": !pageInfo.hasNextPage,
-					"pointer-events-none": !pageInfo.hasNextPage,
-				})}
-				aria-disabled={!pageInfo.hasNextPage}
+				href={isNextDisabled ? "#" : nextPageUrl}
+				onClick={(e) => isNextDisabled && e.preventDefault()}
+				tabIndex={isNextDisabled ? -1 : undefined}
+				className={
+					isNextDisabled ? disabledLinkClassName : buttonClassName({ asLink: true, className: "px-4 py-2" })
+				}
+				aria-disabled={isNextDisabled}
 			>
 				Next
 			</Link>

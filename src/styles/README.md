@@ -60,14 +60,14 @@ Layout and spacing stay normal Tailwind: `max-w-7xl`, `gap-4`, `grid-cols-2`, et
 
 ### 3. Inverted surfaces (footer)
 
-Footer uses `bg-foreground text-background`. Muted text on that surface uses **on-foreground** tokens:
+Footer uses `bg-foreground text-background`. Text on that dark band uses **inverse** tokens (not `muted-foreground`, which is for light surfaces):
 
-| Intent          | Classes                                                    |
-| --------------- | ---------------------------------------------------------- |
-| Column headings | `text-on-foreground`                                       |
-| Links           | `text-on-foreground-subtle hover:text-on-foreground`       |
-| Copyright       | `text-on-foreground-muted hover:text-on-foreground-subtle` |
-| Divider         | `border-on-foreground`                                     |
+| Intent          | Classes                                        |
+| --------------- | ---------------------------------------------- |
+| Column headings | `text-inverse`                                 |
+| Links           | `text-inverse-subtle hover:text-inverse`       |
+| Copyright       | `text-inverse-muted hover:text-inverse-subtle` |
+| Divider         | `border-inverse`                               |
 
 ### 4. Use UI primitives for repeated patterns
 
@@ -79,24 +79,26 @@ import { Button } from "@/ui/components/ui/button";
 
 Prefer `Button`, `Input`, `Badge` over hand-rolled color classes.
 
+For primary-styled links (`<a>` / `<Link>`), use `buttonClassName({ asLink: true })` from `button.tsx`. Disabled links use `aria-disabled` — the default variant switches to `bg-muted text-muted-foreground` (solid, not opacity fade). Outline-style disabled links can use `ariaDisabledClassName`.
+
 **Note:** Layout, spacing, and other non-brand utilities are still plain Tailwind. If you need a color that should change when `brand.css` changes, add or use a token — don't hardcode hex/rgb in components.
 
 ---
 
 ## Token reference
 
-| Token                | Role                                        |
-| -------------------- | ------------------------------------------- |
-| `--background`       | Page background                             |
-| `--foreground`       | Primary text                                |
-| `--muted-foreground` | Secondary text                              |
-| `--card`             | Elevated surfaces                           |
-| `--muted`            | Subtle backgrounds, skeletons               |
-| `--primary`          | CTAs                                        |
-| `--destructive`      | Errors, sale badges                         |
-| `--border`           | Dividers                                    |
-| `--radius`           | Border radius scale                         |
-| `--on-foreground*`   | Text on inverted (`bg-foreground`) surfaces |
+| Token                | Role                                               |
+| -------------------- | -------------------------------------------------- |
+| `--background`       | Page background                                    |
+| `--foreground`       | Primary text                                       |
+| `--muted-foreground` | Secondary text                                     |
+| `--card`             | Elevated surfaces                                  |
+| `--muted`            | Subtle backgrounds, skeletons                      |
+| `--primary`          | CTAs                                               |
+| `--destructive`      | Errors, sale badges                                |
+| `--border`           | Dividers                                           |
+| `--radius`           | Border radius scale                                |
+| `--inverse*`         | Text/borders on inverse surfaces (`bg-foreground`) |
 
 Colors use **OKLCH**: `oklch(lightness chroma hue)` — lightness 0–1, hue 0–360.
 

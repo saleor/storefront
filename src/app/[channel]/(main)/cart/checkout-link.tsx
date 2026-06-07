@@ -17,11 +17,8 @@ export const CheckoutLink = ({ disabled, checkoutId, className }: Props) => {
 			onClick={(e) => disabled && e.preventDefault()}
 			href={`/checkout?checkout=${checkoutId}`}
 			className={buttonClassName({
-				className: cn(
-					"max-w-full sm:px-16",
-					"aria-disabled:pointer-events-none aria-disabled:opacity-50",
-					className,
-				),
+				asLink: true,
+				className: cn("max-w-full sm:px-16", className),
 			})}
 		>
 			Checkout

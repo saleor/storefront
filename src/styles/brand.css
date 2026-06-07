@@ -46,11 +46,11 @@
 	--input: oklch(0.9 0.003 90);
 	--ring: oklch(0.12 0 0);
 
-	/* --- Inverted surfaces (e.g. footer: bg-foreground text-background) --- */
-	--on-foreground: oklch(0.82 0 0);
-	--on-foreground-subtle: oklch(0.65 0 0);
-	--on-foreground-muted: oklch(0.55 0 0);
-	--border-on-foreground: oklch(0.28 0 0);
+	/* --- Inverse surfaces (dark bands: bg-foreground text-background) --- */
+	--inverse: oklch(0.82 0 0);
+	--inverse-subtle: oklch(0.65 0 0);
+	--inverse-muted: oklch(0.55 0 0);
+	--border-inverse: oklch(0.28 0 0);
 
 	/* --- Layout --- */
 	--radius: 0.5rem;

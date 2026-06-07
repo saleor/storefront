@@ -12,20 +12,38 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 type ButtonClassNameOptions = {
 	variant?: ButtonVariant;
 	size?: ButtonSize;
+	/** Use on `<a>` / `<Link>` with `aria-disabled` instead of native `disabled`. */
+	asLink?: boolean;
 	className?: string;
 };
+
+/** Disabled styles for links that use `aria-disabled` instead of the `disabled` attribute. */
+export const ariaDisabledClassName = "aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed";
 
 /** Shared button styles for `<button>` and token-backed link CTAs. */
 export function buttonClassName({
 	variant = "default",
 	size = "default",
+	asLink = false,
 	className,
 }: ButtonClassNameOptions = {}) {
+	const disabledClassName =
+		variant === "default"
+			? asLink
+				? cn(
+						ariaDisabledClassName,
+						"aria-disabled:bg-muted aria-disabled:text-muted-foreground aria-disabled:shadow-none hover:aria-disabled:bg-muted",
+					)
+				: "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none hover:disabled:bg-muted"
+			: asLink
+				? cn(ariaDisabledClassName, "aria-disabled:opacity-50")
+				: "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
+
 	return cn(
 		"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium",
 		"transition-all duration-200",
 		"focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-		"disabled:pointer-events-none disabled:opacity-50",
+		disabledClassName,
 		{
 			"hover:bg-primary/90 shadow-xs bg-primary text-primary-foreground": variant === "default",
 			"hover:bg-secondary/80 bg-secondary text-secondary-foreground": variant === "secondary",

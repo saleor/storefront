@@ -41,10 +41,10 @@ module.exports = {
 				border: "var(--border)",
 				input: "var(--input)",
 				ring: "var(--ring)",
-				"on-foreground": {
-					DEFAULT: "var(--on-foreground)",
-					subtle: "var(--on-foreground-subtle)",
-					muted: "var(--on-foreground-muted)",
+				inverse: {
+					DEFAULT: "var(--inverse)",
+					subtle: "var(--inverse-subtle)",
+					muted: "var(--inverse-muted)",
 				},
 			},
 			borderRadius: {
@@ -59,7 +59,7 @@ module.exports = {
 			},
 			borderColor: {
 				DEFAULT: "var(--border)",
-				"on-foreground": "var(--border-on-foreground)",
+				inverse: "var(--border-inverse)",
 			},
 			ringColor: {
 				DEFAULT: "var(--ring)",

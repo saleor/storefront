@@ -40,9 +40,7 @@ export async function Footer({ channel }: { channel: string }) {
 						<Link href={`/${channel}`} prefetch={false} className="mb-4 inline-block">
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
-						<p className="mt-4 max-w-xs text-sm leading-relaxed text-on-foreground-subtle">
-							{brandConfig.tagline}
-						</p>
+						<p className="mt-4 max-w-xs text-sm leading-relaxed text-inverse-subtle">{brandConfig.tagline}</p>
 					</div>
 
 					<FooterMenuColumns items={footerMenuItems} />
@@ -50,7 +48,7 @@ export async function Footer({ channel }: { channel: string }) {
 
 				{/* Channel selector — only storefront channels, hidden when single-channel */}
 				{selectorChannels.length > 1 && (
-					<div className="mt-8 text-on-foreground-subtle">
+					<div className="mt-8 text-inverse-subtle">
 						<label className="flex items-center gap-2 text-sm">
 							<span>Change currency:</span>
 							<ChannelSelect channels={selectorChannels} variant="inverted" />
@@ -59,22 +57,22 @@ export async function Footer({ channel }: { channel: string }) {
 				)}
 
 				{/* Bottom bar */}
-				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-on-foreground pt-8 sm:flex-row">
-					<p className="text-xs text-on-foreground-muted">
+				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-inverse pt-8 sm:flex-row">
+					<p className="text-xs text-inverse-muted">
 						<CopyrightText />
 					</p>
 					<div className="flex items-center gap-6">
 						<Link
 							href="/privacy"
 							prefetch={false}
-							className="text-xs text-on-foreground-muted transition-colors hover:text-on-foreground-subtle"
+							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
 							Privacy Policy
 						</Link>
 						<Link
 							href="/terms"
 							prefetch={false}
-							className="text-xs text-on-foreground-muted transition-colors hover:text-on-foreground-subtle"
+							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
 							Terms of Service
 						</Link>

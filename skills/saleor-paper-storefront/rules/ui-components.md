@@ -27,8 +27,8 @@ Use semantic Tailwind classes (mapped in `tailwind.config.cjs`):
 <button className="bg-primary text-primary-foreground">
 <span className="text-muted-foreground">
 
-// Inverted footer (bg-foreground)
-<p className="text-on-foreground-subtle">
+// Inverse footer (bg-foreground)
+<p className="text-inverse-subtle">
 ```
 
 Available tokens:
@@ -37,8 +37,8 @@ Available tokens:
 - `primary`, `primary-foreground` - Primary actions
 - `secondary`, `secondary-foreground` - Secondary elements
 - `muted`, `muted-foreground` - Subdued elements
-- `on-foreground`, `on-foreground-subtle`, `on-foreground-muted` - Text on inverted surfaces
-- `border`, `border-on-foreground` - Borders
+- `inverse`, `inverse-subtle`, `inverse-muted` - Text on inverse surfaces (`bg-foreground`)
+- `border`, `border-inverse` - Borders
 - `destructive` - Error/danger states
 
 ## Using shadcn/ui Primitives

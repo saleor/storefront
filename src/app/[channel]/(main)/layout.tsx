@@ -63,7 +63,7 @@ function FooterSkeleton() {
 					))}
 				</div>
 				{/* Bottom bar */}
-				<div className="mt-12 flex items-center justify-between border-t border-on-foreground pt-8">
+				<div className="mt-12 flex items-center justify-between border-t border-inverse pt-8">
 					<div className="bg-background/20 h-3 w-32 animate-pulse rounded" />
 					<div className="flex gap-6">
 						<div className="bg-background/20 h-3 w-20 animate-pulse rounded" />
