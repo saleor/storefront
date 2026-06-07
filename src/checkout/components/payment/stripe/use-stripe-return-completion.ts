@@ -28,6 +28,8 @@ export function useStripeReturnCompletion({
 }: UseStripeReturnCompletionParams) {
 	const searchParams = useSearchParams();
 	const isProcessingRef = useRef(false);
+	/** Dedupes effect re-runs while Next `searchParams` still reflects the pre-clear return URL. */
+	const returnAttemptRef = useRef<string | null>(null);
 
 	useEffect(() => {
 		const { paymentIntent, paymentIntentClientSecret, processingPayment, transaction, redirectStatus } =
@@ -37,9 +39,16 @@ export function useStripeReturnCompletion({
 			return;
 		}
 
+		const attemptId = `${paymentIntent}:${paymentIntentClientSecret}`;
+		if (returnAttemptRef.current === attemptId) {
+			return;
+		}
+
 		if (isProcessingRef.current) {
 			return;
 		}
+
+		returnAttemptRef.current = attemptId;
 
 		if (redirectStatus === "failed") {
 			reportStripeReturnFailure(
@@ -62,6 +71,8 @@ export function useStripeReturnCompletion({
 		markPaymentCompleting(checkoutId);
 
 		const completeAfterRedirect = async () => {
+			let keepProcessingLock = false;
+
 			try {
 				const processResult = await processCheckoutTransaction({ id: transactionId });
 
@@ -95,14 +106,19 @@ export function useStripeReturnCompletion({
 				const completeResult = await finalizeCheckoutOrder(checkoutId, resolvedChannelSlug);
 				if (!completeResult.ok) {
 					reportStripeReturnFailure(completeResult.error, onError);
+					return;
 				}
-				// Success: keep overlay until hard navigation unloads the page.
+
+				// Success: hold the processing lock until hard navigation unloads the page.
+				keepProcessingLock = true;
 			} catch (error) {
 				rethrowNextInternalError(error);
 				console.error("Stripe redirect completion failed:", error);
 				reportStripeReturnFailure("An unexpected error occurred while completing your payment.", onError);
 			} finally {
-				isProcessingRef.current = false;
+				if (!keepProcessingLock) {
+					isProcessingRef.current = false;
+				}
 			}
 		};
 

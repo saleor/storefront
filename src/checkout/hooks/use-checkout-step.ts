@@ -1,14 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { flushSync } from "react-dom";
 import { type ReadonlyURLSearchParams } from "next/navigation";
 
-import { updateCheckoutQuery, useLiveCheckoutSearchString } from "@/checkout/lib/checkout-search-params";
+import { updateCheckoutQuery } from "@/checkout/lib/checkout-search-params";
+import { useCheckoutStepFromUrl } from "@/checkout/hooks/use-checkout-step-from-url";
 import type { ServerCheckout } from "@/checkout/lib/checkout-types";
-import {
-	getCheckoutSteps,
-	getCurrentStepFromParams,
-	type CheckoutStepType,
-} from "@/checkout/views/saleor-checkout/flow";
+import { getCheckoutSteps, type CheckoutStepType } from "@/checkout/views/saleor-checkout/flow";
 
 type UseCheckoutStepOptions = {
 	isShippingRequired: boolean;
@@ -17,13 +14,8 @@ type UseCheckoutStepOptions = {
 };
 
 export function useCheckoutStep({ isShippingRequired, searchParams, setCheckout }: UseCheckoutStepOptions) {
-	const searchString = useLiveCheckoutSearchString(searchParams.toString());
 	const stepRef = useRef<HTMLDivElement>(null);
-
-	const currentStep = useMemo(() => {
-		const params = new URLSearchParams(searchString);
-		return getCurrentStepFromParams(params, isShippingRequired);
-	}, [isShippingRequired, searchString]);
+	const currentStep = useCheckoutStepFromUrl(searchParams, isShippingRequired);
 
 	const goToStep = useCallback(
 		(stepType: CheckoutStepType) => {

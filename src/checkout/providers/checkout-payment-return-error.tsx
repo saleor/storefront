@@ -14,7 +14,7 @@ const CheckoutPaymentReturnErrorContext = createContext<CheckoutPaymentReturnErr
 export function CheckoutPaymentReturnErrorProvider({ children }: { children: ReactNode }) {
 	const [error, setErrorState] = useState<string | null>(null);
 	const setError = useCallback((message: string) => {
-		setErrorState(message);
+		setErrorState(message ? message : null);
 	}, []);
 	const clearError = useCallback(() => {
 		setErrorState(null);

@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, type FC } from "react";
+import { type FC } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { isCheckoutPaymentActive } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckout } from "@/checkout/hooks/use-checkout";
 import { useCheckoutStep } from "@/checkout/hooks/use-checkout-step";
+import { useCheckoutStepFromUrl } from "@/checkout/hooks/use-checkout-step-from-url";
 import { useCustomerAttach } from "@/checkout/hooks/use-customer-attach";
 import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries";
 import { getCheckoutSteps } from "./flow";
@@ -15,25 +15,21 @@ import { InformationStep } from "./information-step";
 import { ShippingStep } from "./shipping-step";
 import { PaymentStep } from "./payment-step";
 import { useCheckoutTransition } from "@/checkout/hooks/use-checkout-transition";
-import { getCurrentStepFromParams } from "./flow";
 import { CheckoutSkeleton } from "./checkout-skeleton";
 import { PaymentCompletingScreen } from "./payment-completing-screen";
 
 export const SaleorCheckout: FC = () => {
 	const searchParams = useSearchParams();
 	const transition = useCheckoutTransition();
-	const { checkout, checkoutId, setCheckout, refetch } = useCheckout();
-	const isPaymentFlowActive = useMemo(
-		() => transition === "completing" || isCheckoutPaymentActive(searchParams, checkoutId),
-		[checkoutId, searchParams, transition],
-	);
-	const skeletonStep = useMemo(() => {
-		return getCurrentStepFromParams(searchParams, checkout?.isShippingRequired ?? true).index;
-	}, [checkout?.isShippingRequired, searchParams]);
+	const { checkout, setCheckout, refetch } = useCheckout();
+	// RootViews shows PaymentCompletingScreen while `transition === "completing"` — keep this
+	// as defense-in-depth if SaleorCheckout is ever mounted outside RootViews.
+	const isPaymentFlowActive = transition === "completing";
 
 	useCustomerAttach();
 
 	const isShippingRequired = checkout?.isShippingRequired ?? true;
+	const urlStep = useCheckoutStepFromUrl(searchParams, isShippingRequired);
 	const { currentStep, stepRef, goToStep, completeStep } = useCheckoutStep({
 		isShippingRequired,
 		searchParams,
@@ -50,7 +46,7 @@ export const SaleorCheckout: FC = () => {
 	}
 
 	if (!checkout) {
-		return <CheckoutSkeleton step={skeletonStep} isShippingRequired={isShippingRequired} />;
+		return <CheckoutSkeleton step={urlStep.index} isShippingRequired={isShippingRequired} />;
 	}
 
 	return (
