@@ -69,7 +69,7 @@ export function needsCheckoutEntrySync(
 export function resolveSessionCheckout(
 	checkout: ServerCheckout | null,
 	checkoutId: string | null,
-	loadState: "order" | "none" | "not_found" | "empty" | "error" | "ready",
+	loadState: CheckoutLoadState,
 ): ServerCheckout | null {
 	if (loadState !== "ready" || !checkoutId || !checkout) {
 		return null;

@@ -9,7 +9,7 @@ import type { CountryCode } from "@/checkout/graphql";
 /** Checkout object returned by the server-side checkout query. */
 export type ServerCheckout = NonNullable<CheckoutQuery["checkout"]>;
 
-export type CheckoutLoadState = "order" | "none" | "not_found" | "empty" | "error" | "ready";
+export type CheckoutLoadState = "none" | "not_found" | "empty" | "error" | "ready";
 
 /** Customer profile from `me` — shared by RSC fetch and client context. */
 export type CheckoutUser = NonNullable<UserQuery["user"]>;

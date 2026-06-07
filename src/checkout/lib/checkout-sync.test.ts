@@ -76,7 +76,7 @@ describe("resolveSessionCheckout", () => {
 	it("returns null when load state is not ready", () => {
 		const current = makeCheckout([{ id: "line-a", quantity: 1 }]);
 
-		expect(resolveSessionCheckout(current, "checkout-1", "order")).toBeNull();
+		expect(resolveSessionCheckout(current, "checkout-1", "none")).toBeNull();
 	});
 });
 

@@ -24,7 +24,7 @@ Route groups `(storefront)` and `(checkout)` do not appear in URLs; they separat
 | Checkout   | RSC page + server actions (`execute*GraphQL`)                   | Always fresh (`cache: "no-cache"`) |
 | Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                       |
 
-Checkout page (`checkout/page.tsx`) fetches full checkout and `me` on the server (`initialCheckout` when ready). Order confirmation is a separate route (`checkout/complete/page.tsx` + `OrderConfirmationApp`). Client sync via `syncCheckoutFromServer` is a narrow fallback only. Sign-in posts to `/api/auth/login`; `router.refresh()` updates checkout user state.
+Checkout page (`checkout/page.tsx`) fetches full checkout and `me` on the server (`initialCheckout` when ready). Order confirmation is a separate route (`checkout/complete/page.tsx` + `OrderConfirmationApp` with `OrderDataProvider` — no checkout cart context). Client sync via `syncCheckoutFromServer` is a narrow fallback only. Sign-in posts to `/api/auth/login`; `router.refresh()` updates checkout user state.
 
 ## Handoff
 

@@ -3,12 +3,7 @@
 import { createContext, type ReactNode, use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { syncCheckoutFromServer } from "@/app/(checkout)/actions";
-import type {
-	CheckoutLoadState,
-	ServerCheckout,
-	ServerOrder,
-	ShippingCountries,
-} from "@/checkout/lib/checkout-types";
+import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import {
 	adoptCheckoutSnapshot,
 	needsCheckoutEntrySync,
@@ -25,7 +20,6 @@ export type RefreshCheckoutOptions = {
 export type CheckoutDataContextValue = {
 	loadState: CheckoutLoadState;
 	checkout: ServerCheckout | null;
-	order: ServerOrder | null;
 	shippingCountries: ShippingCountries;
 	setCheckout: (checkout: ServerCheckout) => void;
 	/**
@@ -43,7 +37,6 @@ type CheckoutDataProviderProps = {
 	checkoutId: string | null;
 	loadState: CheckoutLoadState;
 	initialCheckout: ServerCheckout | null;
-	initialOrder: ServerOrder | null;
 	shippingCountries: ShippingCountries;
 	children: ReactNode;
 };
@@ -52,7 +45,6 @@ export function CheckoutDataProvider({
 	checkoutId,
 	loadState,
 	initialCheckout,
-	initialOrder,
 	shippingCountries,
 	children,
 }: CheckoutDataProviderProps) {
@@ -138,12 +130,11 @@ export function CheckoutDataProvider({
 		() => ({
 			loadState,
 			checkout: sessionCheckout,
-			order: initialOrder,
 			shippingCountries,
 			setCheckout,
 			refreshCheckout,
 		}),
-		[initialOrder, loadState, refreshCheckout, sessionCheckout, shippingCountries],
+		[loadState, refreshCheckout, sessionCheckout, shippingCountries],
 	);
 
 	return <CheckoutDataContext value={value}>{children}</CheckoutDataContext>;

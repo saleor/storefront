@@ -42,7 +42,6 @@ export function CheckoutApp({
 					checkoutId={checkoutId}
 					loadState={loadState}
 					initialCheckout={initialCheckout}
-					initialOrder={null}
 					shippingCountries={shippingCountries}
 				>
 					<Suspense fallback={null}>
