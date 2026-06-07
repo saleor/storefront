@@ -5,11 +5,14 @@ import { buildOrderConfirmationPath } from "@paper/session-bridge";
  *
  * Intentionally **not** `redirect()` inside `runCheckoutComplete` — server redirects throw
  * `NEXT_REDIRECT`, which Stripe payment try/catch blocks surface as a false "Payment failed"
- * banner while the order may already exist. Client `window.location.replace` loads the
- * confirmation RSC tree reliably without going through those catch blocks.
+ * banner while the order may already exist.
+ *
+ * Uses `window.location.replace` (not `router.replace`) — soft App Router navigation from
+ * async post-mutation callbacks does not reliably unmount checkout, which leaves
+ * `PaymentCompletingScreen` stuck even after the order is created.
  *
  * Cookie clear is deferred via `after()` in the server action so this navigation can run first;
- * `RootViews` keeps `PaymentCompletingScreen` up until we leave `/checkout?checkout=…`.
+ * `RootViews` keeps `PaymentCompletingScreen` up until the document unloads.
  */
 export function navigateToOrderConfirmation(orderId: string) {
 	const path = buildOrderConfirmationPath({ orderId });

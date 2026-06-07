@@ -109,7 +109,7 @@ export function useStripeReturnCompletion({
 					return;
 				}
 
-				// Success: hold the processing lock until hard navigation unloads the page.
+				// Success: hold the processing lock until navigateToOrderConfirmation unloads the page.
 				keepProcessingLock = true;
 			} catch (error) {
 				rethrowNextInternalError(error);

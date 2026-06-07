@@ -120,15 +120,15 @@ Order confirmation page (`/checkout/complete`) ← clearPaymentCompleting()
 
 ### Routes and transition storage
 
-| Mechanism                          | Purpose                                                                                                                                     |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                  |
-| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                                             |
-| `checkout:payment-completing`      | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                  |
-| `?processingPayment=true`          | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                           |
-| `window.location.replace`          | Navigates to a **different pathname** so the confirmation RSC tree loads reliably (legacy `/checkout?order=` redirects here)                |
-| `?step=contact\|shipping\|payment` | Checkout step deep link; URL is the source of truth via `useLiveCheckoutSearchString()`                                                     |
-| `updateCheckoutQuery()`            | Shallow step changes (`history.replaceState`) — avoids re-running checkout RSC on every Continue click; always merges into the live URL bar |
+| Mechanism                          | Purpose                                                                                                                                              |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                           |
+| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                                                      |
+| `checkout:payment-completing`      | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                           |
+| `?processingPayment=true`          | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                                    |
+| `window.location.replace`          | Navigates to `/checkout/complete` — hard navigation required; `router.replace` from async post-mutation callbacks does not reliably unmount checkout |
+| `?step=contact\|shipping\|payment` | Checkout step deep link; URL is the source of truth via `useLiveCheckoutSearchParams()`                                                              |
+| `updateCheckoutQuery()`            | Shallow step changes (`history.replaceState`) — avoids re-running checkout RSC on every Continue click; always merges into the live URL bar          |
 
 **Do not** clear the checkout cookie synchronously on `/checkout?checkout=…` after payment succeeds — Next.js re-renders the checkout RSC tree when the cookie changes, which briefly shows `not_found` ("session expired") before navigation lands. `runCheckoutComplete` clears the cookie in `after()`; the client calls `navigateToOrderConfirmation()`. `RootViews` keeps `PaymentCompletingScreen` up while `checkout:payment-completing` is set. Do **not** call `redirect()` from `runCheckoutComplete` — it throws `NEXT_REDIRECT`, which Stripe payment catch blocks surface as a false "Payment failed" banner.
 
@@ -136,9 +136,11 @@ Order confirmation page (`/checkout/complete`) ← clearPaymentCompleting()
 
 Step changes inside `/checkout` use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout-search-params.ts`), not `router.replace`. App Router treats `searchParams` as dynamic page input — a router navigation would re-fetch checkout on every step click. Shallow `replaceState` updates the URL for back/refresh/deep links without a server round-trip.
 
-`useLiveCheckoutSearchString()` (`useSyncExternalStore`) keeps step UI in sync with shallow updates and `popstate`. Ephemeral Stripe return params are preserved by merging from `window.location.search`, never from stale React `searchParams` alone.
+`useLiveCheckoutSearchParams()` (`useSyncExternalStore`) keeps step UI, payment transition guards, and Stripe return detection in sync with shallow updates and `popstate`. Ephemeral Stripe return params are preserved by merging from `window.location.search`, never from stale React `searchParams` alone.
 
-Use `router.replace` only for **real** navigations (e.g. orphaned checkout recovery changing `?checkout=`).
+**RSC session boundary:** `CheckoutSessionLoader` (`checkout-session-loader.tsx`) reads only `?checkout=` / `?order=` — never `?step=`. Fetches use `get-checkout-session-data.ts` (`React.cache` per checkout id) so an accidental page re-run dedupes within the request.
+
+Use `router.replace` for **in-checkout** navigations (orphaned checkout recovery changing `?checkout=`). Order confirmation uses `window.location.replace` via `navigateToOrderConfirmation()`.
 
 ### Transition guard
 
@@ -171,6 +173,8 @@ Saleor validates amounts at `checkoutComplete`, but blocking early avoids author
 
 | File                                                                        | Purpose                                            |
 | --------------------------------------------------------------------------- | -------------------------------------------------- |
+| `src/app/(checkout)/checkout/checkout-session-loader.tsx`                   | Active checkout RSC entry (`?checkout=` only)      |
+| `src/checkout/lib/server/get-checkout-session-data.ts`                      | Per-request cached session fetches                 |
 | `src/app/(checkout)/checkout/complete/page.tsx`                             | Order confirmation RSC entry                       |
 | `src/checkout/order-confirmation-app.tsx`                                   | Confirmation client shell                          |
 | `src/checkout/lib/payment/checkout-payment-completion.ts`                   | `markPaymentCompleting`, `isCheckoutPaymentActive` |
@@ -183,7 +187,7 @@ Saleor validates amounts at `checkoutComplete`, but blocking early avoids author
 
 ### Anti-patterns
 
-❌ **Don't use `router.push` for order confirmation** — use `navigateToOrderConfirmation()`  
+❌ **Don't call `router.push`/`replace` directly for order confirmation** — use `navigateToOrderConfirmation()`  
 ❌ **Don't clear checkout cookie before leaving `?checkout=`** — wait for order confirmation  
 ❌ **Don't mount redirect completion only inside payment step** — shell survives step unmount  
 ❌ **Don't skip `clearPaymentCompleting()` on payment failure** — user must be able to retry

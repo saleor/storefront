@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { type ReadonlyURLSearchParams } from "next/navigation";
 
 import { createQueryString } from "@/session-bridge/search-params";
@@ -44,6 +44,13 @@ export function useLiveCheckoutSearchString(serverFallback: string): string {
 	return useSyncExternalStore(subscribeToCheckoutQuery, getLiveSearchString, () =>
 		normalizeSearchString(serverFallback),
 	);
+}
+
+/** Live checkout query params — includes shallow `replaceState` updates. */
+export function useLiveCheckoutSearchParams(serverSearchParams: ReadonlyURLSearchParams): URLSearchParams {
+	const searchString = useLiveCheckoutSearchString(serverSearchParams.toString());
+
+	return useMemo(() => new URLSearchParams(searchString), [searchString]);
 }
 
 /**

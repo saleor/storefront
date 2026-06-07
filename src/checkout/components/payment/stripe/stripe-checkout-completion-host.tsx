@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 
+import { useLiveCheckoutSearchParams } from "@/checkout/lib/checkout-search-params";
 import { isCheckoutPaymentActive } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckoutSession } from "@/checkout/providers/checkout-session";
 import { StripeCheckoutReturnHandler } from "./stripe-checkout-return-handler";
@@ -13,8 +14,9 @@ import { StripeCheckoutReturnHandler } from "./stripe-checkout-return-handler";
 export function StripeCheckoutCompletionHost() {
 	const { checkoutId } = useCheckoutSession();
 	const searchParams = useSearchParams();
+	const liveSearchParams = useLiveCheckoutSearchParams(searchParams);
 
-	if (!checkoutId || !isCheckoutPaymentActive(searchParams, checkoutId)) {
+	if (!checkoutId || !isCheckoutPaymentActive(liveSearchParams, checkoutId)) {
 		return null;
 	}
 
