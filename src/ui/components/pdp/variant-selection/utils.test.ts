@@ -326,9 +326,9 @@ describe("getOptionsForAttribute", () => {
 	it("uses contextual discounts based on other selections", () => {
 		const groups = groupVariantsByAttributes(discountedVariants);
 
-		// Multi-attribute: hide option badges until another attribute is selected
+		// Without context, Purple shows max discount across S (20%) and M (0%)
 		const colorOptions = getOptionsForAttribute(discountedVariants, groups, {}, "color");
-		expect(colorOptions.find((o) => o.name === "Purple")?.discountPercent).toBeUndefined();
+		expect(colorOptions.find((o) => o.name === "Purple")?.discountPercent).toBe(20);
 
 		// With size M selected, Purple has no discount on that variant
 		const colorWithSizeM = getOptionsForAttribute(discountedVariants, groups, { size: "m" }, "color");

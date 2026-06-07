@@ -358,18 +358,12 @@ export function getOptionsForAttribute(
 		// Check availability and discount
 		const available = variantsWithOption.some((v) => (v.quantityAvailable ?? 0) > 0);
 
-		// Discount badges need context on multi-attribute products: wait until at least one
-		// other attribute is selected, then filter to that combination (not the full matrix).
-		const isMultiAttribute = attributeGroups.filter((group) => group.options.length > 1).length > 1;
-		let variantsForDiscount: SaleorVariant[] = [];
-
-		if (!isMultiAttribute || otherSelections.length > 0) {
-			variantsForDiscount =
-				otherSelections.length > 0
-					? variantsWithOption.filter((variant) => variantMatchesOtherSelections(variant, otherSelections))
-					: variantsWithOption;
-		}
-
+		// Discount badges should reflect the current selection context, not every variant
+		// that shares this option value (e.g. another size with a $0 price).
+		const variantsForDiscount =
+			otherSelections.length > 0
+				? variantsWithOption.filter((variant) => variantMatchesOtherSelections(variant, otherSelections))
+				: variantsWithOption;
 		const { hasDiscount, maxPercent } = getMaxDiscountInfo(variantsForDiscount);
 
 		// Check if a variant exists with this option AND all other current selections
