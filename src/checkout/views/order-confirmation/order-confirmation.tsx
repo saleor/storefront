@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { clearPendingOrderId } from "@/checkout/lib/payment/checkout-completion-storage";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { CheckCircle, Mail, MapPin, Package, CreditCard } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
@@ -25,7 +24,7 @@ function formatAddress(address: {
 }
 
 /**
- * Order confirmation — rendered at `/checkout?order=…` after successful payment.
+ * Order confirmation — rendered at `/checkout/complete?order=…` after successful payment.
  */
 export const OrderConfirmation = () => {
 	const router = useRouter();
@@ -36,7 +35,6 @@ export const OrderConfirmation = () => {
 			return;
 		}
 
-		clearPendingOrderId();
 		clearPaymentCompleting();
 	}, [order?.id]);
 

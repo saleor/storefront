@@ -30,8 +30,7 @@ export async function finalizeCheckoutOrder(
 			return { ok: false, error: formatCheckoutCompleteError(result.error) };
 		}
 
-		// Hard-navigate immediately. Cookie cleanup runs on the order confirmation page —
-		// clearing/revalidating while still on `/checkout?checkout=…` can flash "session expired".
+		// Navigate to `/checkout/complete` before any checkout RSC revalidation on `?checkout=…`.
 		navigateToOrderConfirmation(result.orderId);
 
 		return { ok: true, orderId: result.orderId };

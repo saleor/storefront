@@ -2,27 +2,12 @@
 
 import { Suspense } from "react";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
-import { useCheckoutTransition } from "@/checkout/hooks/use-checkout-transition";
 import { PageNotFound } from "@/checkout/views/page-not-found";
 import { SaleorCheckout, CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
-import { OrderConfirmation, OrderConfirmationSkeleton } from "@/checkout/views/order-confirmation";
 import { EmptyCartPage } from "@/checkout/views/empty-cart-page";
 
 export const RootViews = () => {
-	const transition = useCheckoutTransition();
 	const { loadState } = useCheckoutData();
-
-	if (transition === "navigating-to-order") {
-		return <OrderConfirmationSkeleton />;
-	}
-
-	if (loadState === "order") {
-		return (
-			<Suspense fallback={<OrderConfirmationSkeleton />}>
-				<OrderConfirmation />
-			</Suspense>
-		);
-	}
 
 	if (loadState === "none") {
 		return (

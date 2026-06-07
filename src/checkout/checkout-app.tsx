@@ -3,12 +3,7 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import type {
-	CheckoutUser,
-	ServerCheckout,
-	ServerOrder,
-	ShippingCountries,
-} from "@/checkout/lib/checkout-types";
+import type { CheckoutUser, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import { CheckoutDataProvider, type CheckoutLoadState } from "@/checkout/providers/checkout-data";
 import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
@@ -21,36 +16,33 @@ import "./index.css";
 
 type CheckoutAppProps = {
 	checkoutId: string | null;
-	orderId: string | null;
 	loadState: CheckoutLoadState;
 	initialCheckout: ServerCheckout | null;
-	initialOrder: ServerOrder | null;
 	initialUser: CheckoutUser | null;
 	shippingCountries: ShippingCountries;
 };
 
 /**
- * Client shell for checkout UI. Session and cart data flow through RSC + server actions.
+ * Client shell for active checkout UI. Session and cart data flow through RSC + server actions.
+ * Order confirmation uses `OrderConfirmationApp` on `/checkout/complete`.
  */
 export function CheckoutApp({
 	checkoutId,
-	orderId,
 	loadState,
 	initialCheckout,
-	initialOrder,
 	initialUser,
 	shippingCountries,
 }: CheckoutAppProps) {
 	return (
-		<CheckoutSessionProvider checkoutId={checkoutId} orderId={orderId}>
+		<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
 			<CheckoutSessionCleanup />
 			<CheckoutUserProvider initialUser={initialUser}>
 				<CheckoutDataProvider
-					key={checkoutId ?? orderId ?? "none"}
+					key={checkoutId ?? "none"}
 					checkoutId={checkoutId}
 					loadState={loadState}
 					initialCheckout={initialCheckout}
-					initialOrder={initialOrder}
+					initialOrder={null}
 					shippingCountries={shippingCountries}
 				>
 					<Suspense fallback={null}>

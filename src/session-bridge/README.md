@@ -10,11 +10,11 @@ Shared contract between the **storefront** surface (browse, cart) and the **chec
 
 ## Contents
 
-| Module             | Purpose                                              |
-| ------------------ | ---------------------------------------------------- |
-| `cookies.ts`       | `checkoutId-{channel}` cookie name                   |
-| `checkout-url.ts`  | `buildCheckoutPath`, `buildCheckoutUrl`              |
-| `search-params.ts` | URL param map, `getQueryParams`, `createQueryString` |
+| Module             | Purpose                                                        |
+| ------------------ | -------------------------------------------------------------- |
+| `cookies.ts`       | `checkoutId-{channel}` cookie name                             |
+| `checkout-url.ts`  | `buildCheckoutPath`, `buildOrderConfirmationPath`, URL helpers |
+| `search-params.ts` | URL param map, `getQueryParams`, `createQueryString`           |
 
 ## Hosted checkout (future)
 

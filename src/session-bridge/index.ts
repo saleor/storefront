@@ -1,6 +1,12 @@
 export { checkoutIdCookieName } from "./cookies";
-export { buildCheckoutPath, buildCheckoutUrl, getCheckoutOrigin } from "./checkout-url";
-export type { BuildCheckoutPathOptions } from "./checkout-url";
+export {
+	buildCheckoutPath,
+	buildCheckoutUrl,
+	buildOrderConfirmationPath,
+	buildOrderConfirmationUrl,
+	getCheckoutOrigin,
+} from "./checkout-url";
+export type { BuildCheckoutPathOptions, BuildOrderConfirmationPathOptions } from "./checkout-url";
 export {
 	checkoutSearchParamKeys,
 	createQueryString,

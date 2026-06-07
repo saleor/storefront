@@ -7,7 +7,7 @@ One Next.js project, two product surfaces, one shared handoff package.
 ```text
 src/app/
   (storefront)/[channel]/...   # Browse, cart, account — URL: /{channel}/...
-  (checkout)/checkout/...      # Checkout — URL: /checkout?checkout=...
+  (checkout)/checkout/...      # Checkout — /checkout?checkout=…, confirmation — /checkout/complete?order=…
 
 src/session-bridge/            # @paper/session-bridge — only cross-surface import
 src/checkout/                  # Checkout UI + GraphQL (not imported by storefront)
@@ -24,12 +24,12 @@ Route groups `(storefront)` and `(checkout)` do not appear in URLs; they separat
 | Checkout   | RSC page + server actions (`execute*GraphQL`)                   | Always fresh (`cache: "no-cache"`) |
 | Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                       |
 
-Checkout page (`checkout/page.tsx`) fetches full checkout, `me`, and order on the server (`initialCheckout` when ready). Client sync via `syncCheckoutFromServer` is a narrow fallback only. Sign-in posts to `/api/auth/login`; `router.refresh()` updates checkout user state.
+Checkout page (`checkout/page.tsx`) fetches full checkout and `me` on the server (`initialCheckout` when ready). Order confirmation is a separate route (`checkout/complete/page.tsx` + `OrderConfirmationApp`). Client sync via `syncCheckoutFromServer` is a narrow fallback only. Sign-in posts to `/api/auth/login`; `router.refresh()` updates checkout user state.
 
 ## Handoff
 
 1. Storefront creates/updates cart via `src/lib/checkout.ts` (cookie via `checkoutIdCookieName`).
-2. Cart links use `buildCheckoutPath` or `buildCheckoutUrl` from `@paper/session-bridge`.
+2. Cart links use `buildCheckoutPath` / `buildCheckoutUrl`; post-payment navigation uses `buildOrderConfirmationPath` from `@paper/session-bridge`.
 3. Checkout reads session from URL (`?checkout=`) via `getQueryParams` / `extractCheckoutIdFromParams`.
 
 ## Checkout entry

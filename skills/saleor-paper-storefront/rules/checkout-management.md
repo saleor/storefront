@@ -110,34 +110,34 @@ finalizeCheckoutOrder()               ← runCheckoutComplete mutation
         │
         ├── failure → clearPaymentCompleting(), show error
         │
-        └── success → setPendingOrderId(orderId)
-                      window.location.replace(/checkout?order=…)
+        └── success → navigateToOrderConfirmation(orderId)
+                      window.location.replace(/checkout/complete?order=…)
         │
         ▼
-Order confirmation page               ← clearPendingOrderId(), clearPaymentCompleting()
-                                      cookie/session cleanup here (not on ?checkout= URL)
+Order confirmation page (`/checkout/complete`) ← clearPaymentCompleting()
+                                               checkout cookie cleared in runCheckoutComplete
 ```
 
-### Why sessionStorage + hard navigation?
+### Routes and transition storage
 
-| Mechanism                     | Purpose                                                                                                                                       |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `checkout:payment-completing` | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                    |
-| `?processingPayment=true`     | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                             |
-| `checkout:pending-order`      | Bridges the gap between `setPendingOrderId()` and the hard nav landing on `?order=`                                                           |
-| `window.location.replace`     | Checkout `loadState` is derived from URL on the server; client `router.replace` does not reliably switch to order view under Cache Components |
+| Mechanism                     | Purpose                                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`         | Active cart flow — `CheckoutApp` + step UI                                                                                   |
+| `/checkout/complete?order=`   | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                              |
+| `checkout:payment-completing` | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                   |
+| `?processingPayment=true`     | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                            |
+| `window.location.replace`     | Navigates to a **different pathname** so the confirmation RSC tree loads reliably (legacy `/checkout?order=` redirects here) |
 
-**Do not** clear the checkout cookie or revalidate cart while still on `/checkout?checkout=…` after payment succeeds — that can flash "session expired". Cleanup runs on the order confirmation view once `order.id` is available.
+**Do not** clear the checkout cookie while still on `/checkout?checkout=…` after payment succeeds — that can flash "session expired". `runCheckoutComplete` clears the cookie server-side, then navigation leaves the checkout URL immediately.
 
 ### Transition guard
 
-`useCheckoutTransition()` (used in `saleor-checkout.tsx` and `root-views.tsx`) returns:
+`useCheckoutTransition()` (used in `saleor-checkout.tsx`) returns:
 
-| Value                   | When                                                                                       |
-| ----------------------- | ------------------------------------------------------------------------------------------ |
-| `"completing"`          | `isCheckoutPaymentActive()` — storage key matches checkout id or `processingPayment` param |
-| `"navigating-to-order"` | `getPendingOrderId()` set but URL not yet on `?order=`                                     |
-| `null`                  | Normal checkout UI                                                                         |
+| Value          | When                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| `"completing"` | `isCheckoutPaymentActive()` — storage key matches checkout id or `processingPayment` param |
+| `null`         | Normal checkout UI                                                                         |
 
 When `transition === "completing"`, render `PaymentCompletingScreen` instead of the step flow.
 
@@ -161,11 +161,12 @@ Saleor validates amounts at `checkoutComplete`, but blocking early avoids author
 
 | File                                                                        | Purpose                                            |
 | --------------------------------------------------------------------------- | -------------------------------------------------- |
+| `src/app/(checkout)/checkout/complete/page.tsx`                             | Order confirmation RSC entry                       |
+| `src/checkout/order-confirmation-app.tsx`                                   | Confirmation client shell                          |
 | `src/checkout/lib/payment/checkout-payment-completion.ts`                   | `markPaymentCompleting`, `isCheckoutPaymentActive` |
-| `src/checkout/lib/payment/checkout-completion-storage.ts`                   | `setPendingOrderId` / `getPendingOrderId`          |
 | `src/checkout/lib/payment/finalize-checkout-order.ts`                       | Deduped `checkoutComplete` + navigation            |
-| `src/checkout/lib/payment/navigate-to-order.ts`                             | Hard nav to `?order=`                              |
-| `src/checkout/hooks/use-checkout-transition.ts`                             | `completing` / `navigating-to-order` guard         |
+| `src/checkout/lib/payment/navigate-to-order.ts`                             | Nav to `/checkout/complete?order=`                 |
+| `src/checkout/hooks/use-checkout-transition.ts`                             | `completing` guard                                 |
 | `src/checkout/views/saleor-checkout/payment-completing-screen.tsx`          | Full-page "Processing your order" UI               |
 | `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx` | Post-redirect completion                           |
 | `src/checkout/views/order-confirmation/order-confirmation.tsx`              | Clears completion storage on mount                 |

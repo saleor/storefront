@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { invariant } from "ts-invariant";
-import { buildCheckoutPath } from "@paper/session-bridge";
+import { buildCheckoutPath, buildOrderConfirmationPath } from "@paper/session-bridge";
 import { CheckoutApp } from "@/checkout/checkout-app";
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
 import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-user";
 import { fetchChannelCountriesOnServer } from "@/checkout/lib/server/fetch-channel-countries";
-import { fetchOrderOnServer } from "@/checkout/lib/server/fetch-order";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import * as Checkout from "@/lib/checkout";
@@ -17,8 +16,8 @@ export const metadata = {
 };
 
 /**
- * Checkout route (`/checkout`).
- * Session id comes from `?checkout=` or `?order=`; bare `/checkout` falls back to cart cookies.
+ * Active checkout route (`/checkout?checkout=`).
+ * Order confirmation lives at `/checkout/complete?order=`.
  * Per-request via searchParams/cookies — no route segment `dynamic` (incompatible with cacheComponents).
  */
 export default function CheckoutPage(props: {
@@ -42,18 +41,21 @@ async function CheckoutContent({
 	const orderId = searchParams.order ?? null;
 	const checkoutIdFromUrl = searchParams.checkout ?? null;
 
+	if (orderId) {
+		redirect(buildOrderConfirmationPath({ orderId }));
+	}
+
 	// Bare `/checkout` (no query): recover session from cart cookie → `/checkout?checkout=…`
-	if (!orderId && !checkoutIdFromUrl) {
+	if (!checkoutIdFromUrl) {
 		const checkoutIdFromCartCookie = await Checkout.getFirstCheckoutIdFromCartCookies();
 		if (checkoutIdFromCartCookie) {
 			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromCartCookie }));
 		}
 	}
 
-	const [initialUser, initialOrder, checkoutResult] = await Promise.all([
+	const [initialUser, checkoutResult] = await Promise.all([
 		fetchCheckoutUserOnServer(),
-		orderId ? fetchOrderOnServer(orderId) : Promise.resolve(null),
-		checkoutIdFromUrl && !orderId ? fetchCheckoutOnServer(checkoutIdFromUrl) : Promise.resolve(null),
+		checkoutIdFromUrl ? fetchCheckoutOnServer(checkoutIdFromUrl) : Promise.resolve(null),
 	]);
 
 	let loadState: CheckoutLoadState = "none";
@@ -61,9 +63,7 @@ async function CheckoutContent({
 	let initialCheckout: ServerCheckout | null = null;
 	let shippingCountries: ShippingCountries = [];
 
-	if (orderId) {
-		loadState = initialOrder ? "order" : "not_found";
-	} else if (!checkoutIdFromUrl) {
+	if (!checkoutIdFromUrl) {
 		loadState = "none";
 	} else if (!checkoutResult) {
 		loadState = "error";
@@ -96,10 +96,8 @@ async function CheckoutContent({
 	return (
 		<CheckoutApp
 			checkoutId={checkoutIdFromUrl}
-			orderId={orderId}
 			loadState={loadState}
 			initialCheckout={initialCheckout}
-			initialOrder={initialOrder}
 			initialUser={initialUser}
 			shippingCountries={shippingCountries}
 		/>
