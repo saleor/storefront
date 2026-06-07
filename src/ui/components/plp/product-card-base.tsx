@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/ui/components/ui/badge";
+import { DiscountPercentLabel, SaleBadge } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
@@ -47,14 +48,11 @@ export function ProductCardBase({ product, priority = false, imageOverlay }: Pro
 					)}
 				</Link>
 
-				{product.badge && (
-					<Badge
-						variant={product.badge === "Sale" ? "destructive" : "default"}
-						className="pointer-events-none absolute left-3 top-3 z-[1]"
-					>
-						{product.badge}
-					</Badge>
-				)}
+				{product.badge === "Sale" ? (
+					<SaleBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
+				) : product.badge === "New" ? (
+					<Badge className="pointer-events-none absolute left-3 top-3 z-[1]">New</Badge>
+				) : null}
 
 				{imageOverlay ? <div className="absolute inset-0 z-10">{imageOverlay}</div> : null}
 			</div>
@@ -82,12 +80,15 @@ export function ProductCardBase({ product, priority = false, imageOverlay }: Pro
 						</div>
 					)}
 
-					<div className="flex items-center gap-2 pt-0.5">
+					<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 pt-0.5">
 						<span className="font-semibold">{formatProductPrice(product)}</span>
 						{product.compareAtPrice != null && (
 							<span className="text-sm text-muted-foreground line-through">
 								{formatPrice(product.compareAtPrice, product.currency)}
 							</span>
+						)}
+						{product.discountPercent != null && product.discountPercent > 0 && (
+							<DiscountPercentLabel percent={product.discountPercent} />
 						)}
 					</div>
 				</div>

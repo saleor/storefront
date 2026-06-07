@@ -1,6 +1,7 @@
 "use client";
 
 import { cn, formatMoney } from "@/lib/utils";
+import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
 
 /**
  * Fallback selector for variants that have no structured attributes.
@@ -119,14 +120,9 @@ export function VariantNameSelector({
 									)}
 								</span>
 							</button>
-							{discountPercent && !isOutOfStock && (
-								<span
-									className="pointer-events-none absolute -bottom-2 -right-1 rounded-full border border-destructive bg-background px-1.5 py-0.5 text-[10px] font-semibold text-destructive"
-									aria-hidden="true"
-								>
-									-{discountPercent}%
-								</span>
-							)}
+							{discountPercent && !isOutOfStock ? (
+								<DiscountPercentLabel percent={discountPercent} size="pill" />
+							) : null}
 						</div>
 					);
 				})}

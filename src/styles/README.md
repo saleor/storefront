@@ -86,22 +86,55 @@ For primary-styled links (`<a>` / `<Link>`), use `buttonClassName({ asLink: true
 
 **Note:** Layout, spacing, and other non-brand utilities are still plain Tailwind. If you need a color that should change when `brand.css` changes, add or use a token — don't hardcode hex/rgb in components.
 
+### 5. Sale labels
+
+Use `sale-label.tsx` for all sale / discount UI — don't hand-roll `text-destructive` sale styles.
+
+```tsx
+import { SaleBadge, DiscountPercentLabel } from "@/ui/components/ui/sale-label";
+
+<SaleBadge />                                    {/* "Sale" chip on card / PDP */}
+<DiscountPercentLabel percent={20} />            {/* inline, next to price */}
+<DiscountPercentLabel percent={20} size="pill" /> {/* variant option overlay */}
+```
+
+| Component                   | Use for                                      |
+| --------------------------- | -------------------------------------------- |
+| `SaleBadge`                 | Product on sale (image corner, PDP category) |
+| `DiscountPercentLabel`      | `-X%` next to price or on variant options    |
+| `Badge variant="secondary"` | Stock, status (not sale)                     |
+
+Sale color is always `--destructive` (mapped to `text-destructive` / `border-destructive`).
+
+### 6. Border radius
+
+`--radius` (default `0.5rem`) drives `rounded-sm` / `rounded-md` / `rounded-lg` / `rounded-xl` in Tailwind. Use this hierarchy:
+
+| Surface                         | Class          | Notes                                 |
+| ------------------------------- | -------------- | ------------------------------------- |
+| Buttons, inputs, nav controls   | `rounded-md`   | From `Button`, `Input`                |
+| Marketing / empty-state CTAs    | `rounded-lg`   | Optional; links via `buttonClassName` |
+| Product cards, media containers | `rounded-xl`   | PLP cards, gallery frames             |
+| Pills (badges, swatch overlays) | `rounded-full` | `SaleBadge`, discount pills           |
+
+Don't mix arbitrarily on the same component type.
+
 ---
 
 ## Token reference
 
-| Token                | Role                                               |
-| -------------------- | -------------------------------------------------- |
-| `--background`       | Page background                                    |
-| `--foreground`       | Primary text                                       |
-| `--muted-foreground` | Secondary text                                     |
-| `--card`             | Elevated surfaces                                  |
-| `--muted`            | Subtle backgrounds, skeletons                      |
-| `--primary`          | CTAs                                               |
-| `--destructive`      | Errors, sale badges                                |
-| `--border`           | Dividers                                           |
-| `--radius`           | Border radius scale                                |
-| `--inverse*`         | Text/borders on inverse surfaces (`bg-foreground`) |
+| Token                | Role                                                      |
+| -------------------- | --------------------------------------------------------- |
+| `--background`       | Page background                                           |
+| `--foreground`       | Primary text                                              |
+| `--muted-foreground` | Secondary text                                            |
+| `--card`             | Elevated surfaces                                         |
+| `--muted`            | Subtle backgrounds, skeletons                             |
+| `--primary`          | CTAs                                                      |
+| `--destructive`      | Errors, sale labels (`SaleBadge`, `DiscountPercentLabel`) |
+| `--border`           | Dividers                                                  |
+| `--radius`           | Border radius scale                                       |
+| `--inverse*`         | Text/borders on inverse surfaces (`bg-foreground`)        |
 
 Colors use **OKLCH**: `oklch(lightness chroma hue)` — lightness 0–1, hue 0–360.
 

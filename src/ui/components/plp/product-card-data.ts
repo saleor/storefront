@@ -8,6 +8,8 @@ export interface ProductCardData {
 	/** Upper bound when variant prices differ; omit when same as `price`. */
 	priceStop?: number | null;
 	compareAtPrice?: number | null;
+	/** Max discount on the displayed (start) price, when on sale. */
+	discountPercent?: number | null;
 	currency: string;
 	image: string;
 	imageAlt?: string;

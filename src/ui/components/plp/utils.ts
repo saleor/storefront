@@ -3,7 +3,7 @@ import type { ProductCardData } from "./product-card-data";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
 import { localeConfig } from "@/config/locale";
-import { hasDiscountInPriceRange } from "@/lib/pricing";
+import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
 
 /**
  * Extract colors from product variants
@@ -65,6 +65,11 @@ export function toProductCardData(product: ProductListItemFragment, channel: str
 		product.pricing?.priceRange,
 		product.pricing?.priceRangeUndiscounted,
 	);
+	const undiscountedStartAmount = undiscountedStartPrice?.amount;
+	const discountPercent =
+		isSale && hasDiscount(startAmount, undiscountedStartAmount)
+			? calculateDiscountPercent(startAmount, undiscountedStartAmount)
+			: null;
 
 	// Extract colors and sizes from variants
 	const colors = extractColorsFromVariants(product.variants);
@@ -77,7 +82,8 @@ export function toProductCardData(product: ProductListItemFragment, channel: str
 		brand: product.category?.name ?? null,
 		price: startAmount,
 		priceStop: stopAmount != null && stopAmount !== startAmount ? stopAmount : null,
-		compareAtPrice: isSale ? undiscountedStartPrice?.amount : null,
+		compareAtPrice: isSale ? undiscountedStartAmount : null,
+		discountPercent,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? product.name,
