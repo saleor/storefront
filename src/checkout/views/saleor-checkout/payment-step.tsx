@@ -191,6 +191,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 				/>
 			) : null}
 
+			<PaymentError message={errors.payment || returnError || undefined} />
+
 			<PaymentMethodArea
 				provider={provider}
 				checkout={checkout}
@@ -206,8 +208,6 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 				onBillingErrors={setBillingErrors}
 				onPriceChangeNotice={setPriceChangeNotice}
 			/>
-
-			<PaymentError message={errors.payment || returnError || undefined} />
 
 			{!usesClientSubmit ? (
 				<BillingAddressSection

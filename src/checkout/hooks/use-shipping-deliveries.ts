@@ -25,8 +25,10 @@ export function useShippingDeliveries(checkout: ServerCheckout | null, isActive:
 				const result = await calculateDeliveryOptions(checkout.id);
 				if (result.ok) {
 					setDeliveries(result.deliveries);
-					loadedKeyRef.current = key;
+				} else {
+					setDeliveries([]);
 				}
+				loadedKeyRef.current = key;
 			} finally {
 				setIsLoading(false);
 			}
@@ -48,5 +50,8 @@ export function useShippingDeliveries(checkout: ServerCheckout | null, isActive:
 		prevStaleRef.current = isStale;
 	}, [isStale, isActive, checkout, loadDeliveries]);
 
-	return { deliveries, isLoading };
+	const cacheKey = isActive && checkout ? shippingDeliveriesCacheKey(checkout) : null;
+	const awaitingFetch = cacheKey !== null && loadedKeyRef.current !== cacheKey;
+
+	return { deliveries, isLoading: isLoading || awaitingFetch };
 }
