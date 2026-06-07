@@ -1,4 +1,5 @@
 import { UserIcon } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 import { getHeaderUser } from "@/lib/auth/get-header-user";
@@ -6,6 +7,9 @@ import { getHeaderUser } from "@/lib/auth/get-header-user";
 import { UserMenu } from "./user-menu";
 
 export async function UserMenuServer({ channel }: { channel: string }) {
+	// Request-dynamic under PPR — never serve a prerendered anonymous menu when cookies exist.
+	await cookies();
+
 	const user = await getHeaderUser();
 
 	if (user) {

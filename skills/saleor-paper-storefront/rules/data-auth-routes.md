@@ -57,7 +57,8 @@ account/layout.tsx
 
 header.tsx
 └── Suspense
-    └── UserMenuServer (async) → getHeaderUser() or sign-in link
+    └── HeaderAuthRefresh (client) → router.refresh() on pathname change
+        └── UserMenuServer (async) → cookies() + getHeaderUser() or sign-in link
 ```
 
 | Concern            | Location                                  | Notes                                              |
@@ -129,7 +130,8 @@ router.refresh();
 ❌ **`connection()` in account layout** — can break PPR with `CartProvider` in parent tree  
 ❌ **Blanket `<Suspense>{children}</Suspense>` on main layout** — workaround, not architecture  
 ❌ **`revalidatePath("/account/addresses", "page")` only** when addresses read `useAccountUser()` from layout  
-❌ **`fallback={null}`** on account order Suspense — use section skeletons
+❌ **`fallback={null}`** on account order Suspense — use section skeletons  
+❌ **`key={pathname}` without `router.refresh()`** on header auth — remounting RSC children does not bust the Router Cache; stale anonymous menus persist until `revalidateAuthSurfaces`
 
 ## Related Rules
 
