@@ -6,6 +6,7 @@ import { SearchResults } from "@/ui/components/search-results";
 import { Pagination } from "@/ui/components/pagination";
 import { SearchSort } from "./search-sort";
 import { SearchIcon } from "lucide-react";
+import { buttonClassName } from "@/ui/components/ui/button";
 
 export const metadata = {
 	title: "Search products · Saleor Storefront example",
@@ -165,13 +166,17 @@ function EmptyState({ query, channel }: { query: string; channel: string }) {
 			<div className="mt-8 flex flex-col gap-3 sm:flex-row">
 				<Link
 					href={`/${channel}/products`}
-					className="hover:bg-primary/90 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors"
+					className={buttonClassName({ asLink: true, className: "rounded-lg px-6 py-3" })}
 				>
 					Browse All Products
 				</Link>
 				<Link
 					href={`/${channel}`}
-					className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+					className={buttonClassName({
+						asLink: true,
+						variant: "outline-solid",
+						className: "rounded-lg px-6 py-3 hover:bg-muted",
+					})}
 				>
 					Go to Homepage
 				</Link>

@@ -10,6 +10,7 @@ import { AddToCart } from "./add-to-cart";
 import { VariantSelectionSection } from "./variant-selection";
 import { StickyBar } from "./sticky-bar";
 import { Badge } from "@/ui/components/ui/badge";
+import { SaleBadge } from "@/ui/components/ui/sale-label";
 import { resolveSelectedVariantId, type Product } from "./gallery-utils";
 
 interface VariantSectionDynamicProps {
@@ -114,11 +115,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 			{/* Category + Sale/Stock badges row - order:1 so it appears ABOVE the h1 */}
 			<div className="order-1 flex items-center gap-2">
 				{product.category && <span className="text-sm text-muted-foreground">{product.category.name}</span>}
-				{isOnSale && (
-					<Badge variant="destructive" className="text-xs">
-						Sale
-					</Badge>
-				)}
+				{isOnSale && <SaleBadge />}
 				{!isAvailable && (
 					<Badge variant="secondary" className="text-xs">
 						Out of stock

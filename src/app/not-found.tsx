@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Search, Home } from "lucide-react";
+import { buttonClassName } from "@/ui/components/ui/button";
 
 /**
  * Global 404 page.
@@ -7,9 +8,6 @@ import { Search, Home } from "lucide-react";
  * Shown when a route doesn't exist.
  */
 export default function NotFound() {
-	const buttonBase =
-		"inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring";
-
 	return (
 		<div className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-16">
 			<div className="mx-auto max-w-md text-center">
@@ -28,15 +26,12 @@ export default function NotFound() {
 
 				{/* Actions */}
 				<div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-					<Link href="/" className={`${buttonBase} hover:bg-primary/90 bg-primary text-primary-foreground`}>
+					<Link href="/" className={buttonClassName({ asLink: true })}>
 						<Home className="h-4 w-4" />
 						Go Home
 					</Link>
 
-					<Link
-						href="/products"
-						className={`${buttonBase} border border-input bg-background hover:bg-accent hover:text-accent-foreground`}
-					>
+					<Link href="/products" className={buttonClassName({ asLink: true, variant: "outline-solid" })}>
 						<Search className="h-4 w-4" />
 						Browse Products
 					</Link>

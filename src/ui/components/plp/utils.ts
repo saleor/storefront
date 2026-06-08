@@ -1,9 +1,9 @@
 import type { ProductListItemFragment } from "@/gql/graphql";
-import type { ProductCardData } from "./product-card";
+import type { ProductCardData } from "./product-card-data";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
 import { localeConfig } from "@/config/locale";
-import { hasDiscountInPriceRange } from "@/lib/pricing";
+import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
 
 /**
  * Extract colors from product variants
@@ -52,18 +52,24 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
 	return sortSizes(Array.from(sizeSet));
 }
 
-/**
- * Transform Saleor product data to ProductCard format
- */
-export function transformToProductCard(product: ProductListItemFragment, channel: string): ProductCardData {
+/** Map a Saleor list item to {@link ProductCardData} for cards and client filters. */
+export function toProductCardData(product: ProductListItemFragment, channel: string): ProductCardData {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
+	const stopPrice = product.pricing?.priceRange?.stop?.gross;
 	const undiscountedStartPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
+	const startAmount = startPrice?.amount ?? 0;
+	const stopAmount = stopPrice?.amount;
 
 	// Use centralized pricing logic to detect if ANY variant is on sale
 	const isSale = hasDiscountInPriceRange(
 		product.pricing?.priceRange,
 		product.pricing?.priceRangeUndiscounted,
 	);
+	const undiscountedStartAmount = undiscountedStartPrice?.amount;
+	const discountPercent =
+		isSale && hasDiscount(startAmount, undiscountedStartAmount)
+			? calculateDiscountPercent(startAmount, undiscountedStartAmount)
+			: null;
 
 	// Extract colors and sizes from variants
 	const colors = extractColorsFromVariants(product.variants);
@@ -74,12 +80,15 @@ export function transformToProductCard(product: ProductListItemFragment, channel
 		name: product.name,
 		slug: product.slug,
 		brand: product.category?.name ?? null,
-		price: startPrice?.amount ?? 0,
-		compareAtPrice: isSale ? undiscountedStartPrice?.amount : null,
+		price: startAmount,
+		priceStop: stopAmount != null && stopAmount !== startAmount ? stopAmount : null,
+		compareAtPrice: isSale ? undiscountedStartAmount : null,
+		discountPercent,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? product.name,
-		href: `/${channel}/products/${product.slug}`,
+		hoverImage: null, // Would need additional media in fragment
+		href: `/${encodeURIComponent(channel)}/products/${encodeURIComponent(product.slug)}`,
 		badge: isSale ? "Sale" : null,
 		colors,
 		sizes,
@@ -90,6 +99,9 @@ export function transformToProductCard(product: ProductListItemFragment, channel
 		hasVariants: (product.variants?.length ?? 0) > 1,
 	};
 }
+
+/** @deprecated Use {@link toProductCardData} */
+export const transformToProductCard = toProductCardData;
 
 /**
  * Format price with currency

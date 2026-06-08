@@ -6,7 +6,7 @@ import { executePublicGraphQL } from "@/lib/graphql";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
-import { CategoryHero, ProductsGridSkeleton, transformToProductCard } from "@/ui/components/plp";
+import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { CategoryPageClient } from "./client";
 
@@ -95,7 +95,7 @@ async function CategoryProducts({
 		notFound();
 	}
 
-	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
+	const productCards = products.edges.map((e) => toProductCardData(e.node, params.channel));
 
 	return (
 		<CategoryPageClient

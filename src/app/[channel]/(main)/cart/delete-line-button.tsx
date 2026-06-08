@@ -1,6 +1,8 @@
 "use client";
 
 import { useTransition } from "react";
+import { ariaDisabledClassName } from "@/ui/components/ui/button";
+import { cn } from "@/lib/utils";
 import { deleteLineFromCheckout } from "./actions";
 
 type Props = {
@@ -14,7 +16,11 @@ export const DeleteLineButton = ({ lineId, checkoutId }: Props) => {
 	return (
 		<button
 			type="button"
-			className="text-sm text-neutral-500 hover:text-neutral-900"
+			className={cn(
+				"text-sm text-muted-foreground hover:text-foreground",
+				ariaDisabledClassName,
+				"aria-disabled:opacity-60",
+			)}
 			onClick={() => {
 				if (isPending) return;
 				startTransition(() => deleteLineFromCheckout({ lineId, checkoutId }));

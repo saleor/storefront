@@ -3,6 +3,7 @@
 import { useFormStatus } from "react-dom";
 import { ShoppingBag } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
+import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
 
 interface AddToCartProps {
@@ -59,9 +60,7 @@ export function AddToCart({
 				{compareAtPrice && (
 					<>
 						<span className="text-lg text-muted-foreground line-through">{compareAtPrice}</span>
-						{discountPercent && (
-							<span className="text-sm font-medium text-destructive">-{discountPercent}%</span>
-						)}
+						{discountPercent ? <DiscountPercentLabel percent={discountPercent} /> : null}
 					</>
 				)}
 			</div>

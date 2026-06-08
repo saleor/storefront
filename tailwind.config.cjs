@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/**/*.{ts,tsx}"],
-	darkMode: "class",
 	theme: {
 		extend: {
 			colors: {
@@ -42,6 +41,11 @@ module.exports = {
 				border: "var(--border)",
 				input: "var(--input)",
 				ring: "var(--ring)",
+				inverse: {
+					DEFAULT: "var(--inverse)",
+					subtle: "var(--inverse-subtle)",
+					muted: "var(--inverse-muted)",
+				},
 			},
 			borderRadius: {
 				lg: "var(--radius)",
@@ -55,6 +59,7 @@ module.exports = {
 			},
 			borderColor: {
 				DEFAULT: "var(--border)",
+				inverse: "var(--border-inverse)",
 			},
 			ringColor: {
 				DEFAULT: "var(--ring)",

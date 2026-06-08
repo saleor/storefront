@@ -3,7 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import type { SortOption, ActiveFilter } from "./filter-bar";
-import type { ProductCardData } from "./product-card";
+import type { ProductCardData } from "./product-card-data";
 import {
 	extractColorOptions,
 	extractSizeOptions,

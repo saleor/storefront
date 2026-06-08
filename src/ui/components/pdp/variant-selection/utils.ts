@@ -98,6 +98,14 @@ export function variantMatchesSelections(
 	return true;
 }
 
+/** True when a variant matches selections for every attribute except the target group. */
+export function variantMatchesOtherSelections(
+	variant: SaleorVariant,
+	otherSelections: Array<[string, string]>,
+): boolean {
+	return variantMatchesSelections(variant, Object.fromEntries(otherSelections));
+}
+
 /** True when at least one variant satisfies all current selections. */
 export function hasCompatibleVariant(
 	variants: SaleorVariant[],
@@ -334,7 +342,9 @@ export function getOptionsForAttribute(
 	const targetGroup = attributeGroups.find((g) => g.slug === targetAttributeSlug);
 	if (!targetGroup) return [];
 
-	const otherSelections = Object.entries(currentSelections).filter(([slug]) => slug !== targetAttributeSlug);
+	const otherSelections = Object.entries(currentSelections).filter(
+		([slug, value]) => slug !== targetAttributeSlug && value,
+	);
 
 	return targetGroup.options.map((option) => {
 		// Find ALL variants that have this option value
@@ -347,26 +357,19 @@ export function getOptionsForAttribute(
 
 		// Check availability and discount
 		const available = variantsWithOption.some((v) => (v.quantityAvailable ?? 0) > 0);
-		const { hasDiscount, maxPercent } = getMaxDiscountInfo(variantsWithOption);
+
+		// Discount badges should reflect the current selection context, not every variant
+		// that shares this option value (e.g. another size with a $0 price).
+		const variantsForDiscount =
+			otherSelections.length > 0
+				? variantsWithOption.filter((variant) => variantMatchesOtherSelections(variant, otherSelections))
+				: variantsWithOption;
+		const { hasDiscount, maxPercent } = getMaxDiscountInfo(variantsForDiscount);
 
 		// Check if a variant exists with this option AND all other current selections
-		let existsWithCurrentSelection = true;
-		if (otherSelections.length > 0) {
-			existsWithCurrentSelection = variantsWithOption.some((variant) => {
-				for (const [attrSlug, selectedValue] of otherSelections) {
-					const attr = variant.selectionAttributes.find(
-						(a) => (a.attribute.slug ?? "").toLowerCase() === attrSlug.toLowerCase(),
-					);
-					if (!attr) return false;
-
-					const hasValue = attr.values.some(
-						(v) => normalizeAttributeValueId(v.name ?? "") === normalizeAttributeValueId(selectedValue),
-					);
-					if (!hasValue) return false;
-				}
-				return true;
-			});
-		}
+		const existsWithCurrentSelection =
+			otherSelections.length === 0 ||
+			variantsWithOption.some((variant) => variantMatchesOtherSelections(variant, otherSelections));
 
 		return {
 			...option,

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ProductListPaginatedDocument } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
-import { CategoryHero, transformToProductCard } from "@/ui/components/plp";
+import { CategoryHero, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
 import { ProductsPageClient } from "./products-client";
@@ -93,7 +93,7 @@ async function ProductsContent({
 	}
 
 	const products = result.data.products;
-	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
+	const productCards = products.edges.map((e) => toProductCardData(e.node, params.channel));
 
 	// Build resolved categories array for the client (for active filter display)
 	const resolvedCategories = categorySlugs
