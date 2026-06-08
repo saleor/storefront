@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { reconcileCheckoutSessionStorage } from "@/checkout/lib/payment/reconcile-checkout-session-storage";
@@ -11,7 +11,7 @@ export function CheckoutSessionCleanup() {
 	const { checkoutId } = useCheckoutSession();
 	const searchParams = useSearchParams();
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		reconcileCheckoutSessionStorage({
 			checkoutId,
 			processingPayment: searchParams.get("processingPayment") === "true",

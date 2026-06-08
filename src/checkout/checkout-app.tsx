@@ -9,6 +9,7 @@ import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
 import { CheckoutPaymentReturnErrorProvider } from "@/checkout/providers/checkout-payment-return-error";
 import { RootViews } from "./views/root-views";
+import { CheckoutPaymentHistoryGuard } from "@/checkout/components/checkout-payment-history-guard";
 import { CheckoutSessionCleanup } from "@/checkout/components/checkout-session-cleanup";
 import { StripeCheckoutCompletionHost } from "@/checkout/components/payment/stripe/stripe-checkout-completion-host";
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
@@ -37,6 +38,7 @@ export function CheckoutApp({
 	return (
 		<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
 			<CheckoutSessionCleanup />
+			<CheckoutPaymentHistoryGuard />
 			<CheckoutUserProvider initialUser={initialUser}>
 				<CheckoutDataProvider
 					key={checkoutId ?? "none"}

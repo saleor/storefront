@@ -21,6 +21,7 @@ type PaymentMethodAreaProps = {
 	onPaymentError?: (message: string) => void;
 	onBillingErrors?: (errors: Record<string, string>, focusField?: string) => void;
 	onPriceChangeNotice?: (notice: CheckoutPriceChangeNotice) => void;
+	onPaymentActivityChange?: (active: boolean) => void;
 };
 
 /** Renders the payment UI for the resolved provider. */

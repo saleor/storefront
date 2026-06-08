@@ -13,11 +13,19 @@ export function reconcileCheckoutSessionStorage({
 	checkoutId,
 	processingPayment,
 }: ReconcileCheckoutSessionStorageOptions) {
-	if (checkoutId) {
-		isPaymentCompleting(checkoutId);
+	if (!checkoutId) {
+		if (!processingPayment) {
+			clearPaymentCompleting();
+		}
 		return;
 	}
 
+	if (!isPaymentCompleting(checkoutId)) {
+		return;
+	}
+
+	// Full page load with a completing flag but no Stripe return params — leftover from refresh
+	// or an abandoned attempt. Clear so the payment step (or authorized recovery) can render.
 	if (!processingPayment) {
 		clearPaymentCompleting();
 	}

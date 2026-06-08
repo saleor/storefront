@@ -2,6 +2,7 @@ import { runCheckoutComplete } from "@/app/(checkout)/actions";
 import {
 	clearPaymentCompleting,
 	markPaymentCompleting,
+	stashPaymentCompletionError,
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { formatCheckoutCompleteError } from "@/checkout/lib/payment/format-checkout-complete-error";
 import { navigateToOrderConfirmation } from "@/checkout/lib/payment/navigate-to-order";
@@ -26,8 +27,10 @@ export async function finalizeCheckoutOrder(
 		const result = await runCheckoutComplete(checkoutId);
 
 		if (!result.ok) {
+			const error = formatCheckoutCompleteError(result.error);
+			stashPaymentCompletionError(error);
 			clearPaymentCompleting();
-			return { ok: false, error: formatCheckoutCompleteError(result.error) };
+			return { ok: false, error };
 		}
 
 		// Client nav — see navigate-to-order.ts (server redirect would false-trigger payment errors).

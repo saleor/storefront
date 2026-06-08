@@ -5,9 +5,11 @@ import {
 	getStripePaymentGuardError,
 	getStripeTransactionError,
 	isStripeGateway,
+	isStripeExpressCheckoutEnabled,
 	isStripePaymentEnabled,
 	parseStripeGatewayConfig,
 	parseStripeTransactionData,
+	resolveStripePaymentMethodForInitialize,
 	STRIPE_GATEWAY_ID,
 } from "./stripe";
 
@@ -53,6 +55,25 @@ describe("isStripePaymentEnabled", () => {
 		vi.stubEnv("NODE_ENV", "production");
 		vi.stubEnv("ENABLE_STRIPE_PAYMENTS", "true");
 		expect(isStripePaymentEnabled()).toBe(true);
+	});
+});
+
+describe("isStripeExpressCheckoutEnabled", () => {
+	it("is disabled when stripe payments are disabled", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		expect(isStripeExpressCheckoutEnabled()).toBe(false);
+	});
+
+	it("is enabled when stripe payments are enabled", () => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS", "true");
+		expect(isStripeExpressCheckoutEnabled()).toBe(true);
+	});
+
+	it("can be opted out explicitly", () => {
+		vi.stubEnv("NODE_ENV", "development");
+		vi.stubEnv("NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT", "false");
+		expect(isStripeExpressCheckoutEnabled()).toBe(false);
 	});
 });
 
@@ -112,6 +133,80 @@ describe("getStripeTransactionError", () => {
 				transaction: { id: "tx-1" },
 			}),
 		).toMatch(/Stripe app webhook/i);
+	});
+});
+
+describe("resolveStripePaymentMethodForInitialize", () => {
+	it("uses express wallet type from Express Checkout onConfirm", () => {
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "expressCheckout",
+				expressPaymentType: "apple_pay",
+			}),
+		).toBe("apple_pay");
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "expressCheckout",
+				expressPaymentType: "google_pay",
+			}),
+		).toBe("google_pay");
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "expressCheckout",
+				expressPaymentType: "link",
+			}),
+		).toBe("link");
+	});
+
+	it("prefers PaymentElement onChange over elements.submit()", () => {
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "paymentElement",
+				changeType: "link",
+				submitType: "card",
+			}),
+		).toBe("link");
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "paymentElement",
+				changeType: "card",
+				submitType: "link",
+			}),
+		).toBe("card");
+	});
+
+	it("uses submit result when PaymentElement onChange is empty", () => {
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "paymentElement",
+				submitType: "card",
+			}),
+		).toBe("card");
+	});
+
+	it("uses onChange for Link when submit returns unknown", () => {
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "paymentElement",
+				changeType: "link",
+				submitType: "unknown",
+			}),
+		).toBe("link");
+	});
+
+	it("never returns unknown", () => {
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "paymentElement",
+				submitType: "unknown",
+			}),
+		).toBeNull();
+		expect(
+			resolveStripePaymentMethodForInitialize({
+				surface: "expressCheckout",
+				expressPaymentType: "unknown",
+			}),
+		).toBeNull();
 	});
 });
 

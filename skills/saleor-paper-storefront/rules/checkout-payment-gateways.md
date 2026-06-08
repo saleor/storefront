@@ -74,6 +74,89 @@ See `src/checkout/components/payment/stripe/` — especially `stripe-payment-for
 
 ---
 
+## Stripe Express Checkout (wallets)
+
+The payment step mounts **two Stripe Elements** inside one shared `<Elements>` provider. Both paths call the same pipeline (`executeStripeCheckoutPayment`) and the same Saleor mutations afterward.
+
+```
+Payment step (Stripe enabled)
+│
+├── ExpressCheckoutElement          ← wallet shortcuts (top)
+│     Apple Pay · Google Pay · Link
+│     onConfirm → expressPaymentType → transactionInitialize
+│
+├── "Or pay with card" divider      ← hidden when no wallets available
+│
+└── PaymentElement + Pay button     ← card / saved Link in form
+      onChange (value.type) + elements.submit() → transactionInitialize
+```
+
+### What Express Checkout does here
+
+- **Payment shortcut only** — faster pay with saved wallet / card credentials.
+- **No Saleor address flow** — Express options set `billingAddressRequired: false`, `shippingAddressRequired: false`, `emailRequired: false`. Shipping, contact, and billing still come from checkout steps; `updateCheckoutBilling()` runs before charge; `confirmPayment` passes **Saleor checkout** billing into Stripe.
+- **Link in two places** — green Express Link button (wallet) vs saved Link inside Payment Element (Pay button). Different Stripe surfaces; only the path the shopper uses drives `paymentIntent.paymentMethod`.
+
+Wallets are enabled when Stripe is on. Opt out with `NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT=false` (see `.env.example`).
+
+### Payment method → `transactionInitialize`
+
+Saleor's Stripe app expects `paymentGateway.data.paymentIntent.paymentMethod`. Stripe exposes the type differently per surface — encode that in `StripeInitializePaymentMethodContext` (`src/checkout/lib/payment/providers/stripe.ts`):
+
+| Surface           | Stripe signal                                                                              | When                |
+| ----------------- | ------------------------------------------------------------------------------------------ | ------------------- |
+| `expressCheckout` | `onConfirm.expressPaymentType` (`apple_pay`, `google_pay`, `link`, …)                      | Wallet button click |
+| `paymentElement`  | `PaymentElement` `onChange` → `value.type`, then `elements.submit().selectedPaymentMethod` | Pay button          |
+
+`resolveStripePaymentMethodForInitialize()` prefers Payment Element `onChange` over submit, and **never sends `"unknown"`** (saved Link in Payment Element reports `"unknown"` on submit but `"link"` on change).
+
+### Shared pay pipeline
+
+All Stripe pay paths:
+
+1. `updateCheckoutBilling()` — persist billing from checkout form
+2. Refresh checkout — live total before `transactionInitialize`
+3. `transactionInitialize` — with resolved `paymentMethod`
+4. `stripe.confirmPayment()` — Elements stay mounted until confirm succeeds
+5. `transactionProcess` → `finalizeCheckoutOrder()`
+
+Processing UX: local overlay during confirm → `PaymentCompletingScreen` after success. Payment step hides pay UI when `authorizeStatus === FULL` (recovery banner). See `checkout-management` for transition guards, 3DS return, and session storage.
+
+### Stripe file map
+
+| File                                    | Purpose                                                       |
+| --------------------------------------- | ------------------------------------------------------------- |
+| `stripe-payment.tsx`                    | Loads publishable key, wraps `<Elements>`                     |
+| `stripe-payment-form.tsx`               | Express + Payment Element + Pay button                        |
+| `stripe-express-checkout.tsx`           | `ExpressCheckoutElement`, wallet availability                 |
+| `execute-stripe-checkout-payment.ts`    | Shared initialize → confirm → process → complete              |
+| `providers/stripe.ts`                   | Gateway ID, env flags, payment-method resolver, error parsing |
+| `stripe-checkout-completion-host.tsx`   | Shell-level 3DS return handler                                |
+| `stripe-payment-processing-overlay.tsx` | In-form processing state                                      |
+
+### Stripe environment variables
+
+| Variable                                     | Purpose                                                                |
+| -------------------------------------------- | ---------------------------------------------------------------------- |
+| `NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS`         | Master Stripe toggle (required in production)                          |
+| `ENABLE_STRIPE_PAYMENTS`                     | Server-side mirror for `transactionInitialize` guard                   |
+| `NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT` | Wallet buttons; default on when Stripe enabled; set `false` to disable |
+
+Publishable keys come from Saleor `paymentGatewayInitialize`, not env.
+
+### Stripe manual QA (add to gateway checklist)
+
+- [ ] Express wallets appear when device/browser supports them; section hidden when none available
+- [ ] Apple Pay / Google Pay / Express Link complete an order
+- [ ] Payment Element card pay works
+- [ ] Saved Link in Payment Element + **Pay** (not Express button) sends `link`, not `unknown`
+- [ ] Billing from checkout steps is used — Express does not replace shipping/contact
+- [ ] Price change notice when total shifts after billing refresh
+- [ ] 3DS redirect return completes via shell return handler
+- [ ] Browser Back during payment aborts in-flight flow without stuck processing UI
+
+---
+
 ## Adding a new gateway
 
 Example: wiring **Adyen** after Stripe and Dummy are already integrated.

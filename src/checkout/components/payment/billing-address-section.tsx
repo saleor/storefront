@@ -41,6 +41,8 @@ export interface BillingAddressSectionProps {
 	onSameAsShippingChange?: (sameAsShipping: boolean) => void;
 	/** Initial "same as shipping" state */
 	initialSameAsShipping?: boolean;
+	/** Disable edits while payment is in progress */
+	disabled?: boolean;
 }
 
 /**
@@ -78,6 +80,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 	onChange,
 	onSameAsShippingChange,
 	initialSameAsShipping,
+	disabled = false,
 }) => {
 	const { availableShippingCountries } = useAvailableShippingCountries();
 
@@ -196,7 +199,10 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 	const showForm = !sameAsBilling || !hasShippingAddress;
 
 	return (
-		<section className="space-y-4">
+		<section
+			className={cn("space-y-4", disabled && "pointer-events-none opacity-60")}
+			aria-disabled={disabled || undefined}
+		>
 			<h2 className="text-lg font-semibold">Billing address</h2>
 
 			{sectionError ? <p className="text-sm text-destructive">{sectionError}</p> : null}

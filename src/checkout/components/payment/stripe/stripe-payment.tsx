@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type FC } from "react";
+import { subscribePaymentActivityReset } from "@/checkout/lib/payment/checkout-payment-completion";
 import { loadStripe, type Stripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { AlertCircle } from "lucide-react";
@@ -25,6 +26,7 @@ type StripePaymentProps = {
 	onPaymentError: (message: string) => void;
 	onBillingErrors: (errors: Record<string, string>, focusField?: string) => void;
 	onPriceChangeNotice: (notice: CheckoutPriceChangeNotice) => void;
+	onPaymentActivityChange?: (active: boolean) => void;
 };
 
 function buildElementsOptions(checkout: CheckoutFragment): StripeElementsOptions | null {
@@ -65,12 +67,14 @@ const StripePaidPayment: FC<StripePaymentProps> = ({
 	onPaymentError,
 	onBillingErrors,
 	onPriceChangeNotice,
+	onPaymentActivityChange,
 }) => {
 	const { refreshCheckout } = useCheckoutData();
 	const gatewayState = useStripeGatewayConfig(checkout);
 	const [stripePromise, setStripePromise] = useState<Stripe | null>(null);
 	const [lockedElementsOptions, setLockedElementsOptions] = useState<StripeElementsOptions | null>(null);
 	const [isRefreshingTotal, setIsRefreshingTotal] = useState(false);
+	const [isPaymentBusy, setIsPaymentBusy] = useState(false);
 	const refreshedTotalForCheckoutRef = useRef<string | null>(null);
 
 	const hasTotalMismatch = hasCheckoutTotalLoadingMismatch(checkout);
@@ -101,8 +105,17 @@ const StripePaidPayment: FC<StripePaymentProps> = ({
 		};
 	}, [checkout.id, hasTotalMismatch, refreshCheckout]);
 
+	const resetPaymentActivity = useCallback(() => {
+		setIsPaymentBusy(false);
+		setLockedElementsOptions(null);
+		onPaymentActivityChange?.(false);
+	}, [onPaymentActivityChange]);
+
 	const handlePaymentActivityChange = useCallback(
 		(active: boolean) => {
+			setIsPaymentBusy(active);
+			onPaymentActivityChange?.(active);
+
 			if (active) {
 				if (liveElementsOptions) {
 					setLockedElementsOptions(liveElementsOptions);
@@ -112,8 +125,10 @@ const StripePaidPayment: FC<StripePaymentProps> = ({
 
 			setLockedElementsOptions(null);
 		},
-		[liveElementsOptions],
+		[liveElementsOptions, onPaymentActivityChange],
 	);
+
+	useEffect(() => subscribePaymentActivityReset(resetPaymentActivity), [resetPaymentActivity]);
 
 	useEffect(() => {
 		if (gatewayState.status !== "ready") {
@@ -192,6 +207,7 @@ const StripePaidPayment: FC<StripePaymentProps> = ({
 				onBillingErrors={onBillingErrors}
 				onPriceChangeNotice={onPriceChangeNotice}
 				onPaymentActivityChange={handlePaymentActivityChange}
+				isPaymentOverlayVisible={isPaymentBusy}
 			/>
 		</Elements>
 	);

@@ -44,6 +44,19 @@ export function isStripePaymentEnabled(): boolean {
 	return process.env.NODE_ENV === "development";
 }
 
+/** Payment-step wallet buttons (Apple Pay / Google Pay / Link). Opt out with `false`. */
+export function isStripeExpressCheckoutEnabled(): boolean {
+	if (!isStripePaymentEnabled()) {
+		return false;
+	}
+
+	if (process.env.NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT === "false") {
+		return false;
+	}
+
+	return true;
+}
+
 /**
  * Server-side guard for transactionInitialize — blocks Stripe when the storefront flag is off.
  */
@@ -106,6 +119,53 @@ export function getStripeClientSecret(data: unknown): string | null {
 	const parsed = parseStripeTransactionData(data);
 	const secret = parsed?.paymentIntent?.stripeClientSecret;
 	return secret?.trim() ? secret : null;
+}
+
+/**
+ * How the shopper chose to pay — two Stripe surfaces, different signals.
+ *
+ * - **Express Checkout** (wallet buttons): `onConfirm.expressPaymentType` (`apple_pay`, `google_pay`, `link`, …).
+ * - **Payment Element** (Pay button / card form): `onChange.value.type` and/or `elements.submit().selectedPaymentMethod`.
+ *
+ * Saleor's Stripe app expects `paymentIntent.paymentMethod` on `transactionInitialize`. The hosted app
+ * rejects `"unknown"`; Stripe returns that for saved Link inside Payment Element while `onChange` still
+ * reports `"link"`. Express wallets never go through `elements.submit()` for method detection.
+ */
+export type StripeInitializePaymentMethodContext =
+	| {
+			surface: "expressCheckout";
+			expressPaymentType: string;
+	  }
+	| {
+			surface: "paymentElement";
+			/** PaymentElement `onChange` → `value.type` */
+			changeType?: string | null;
+			/** `elements.submit()` → `selectedPaymentMethod` */
+			submitType?: string | null;
+	  };
+
+function normalizeStripePaymentMethodType(type: string | null | undefined): string | null {
+	const normalized = type?.trim() || null;
+	if (!normalized || normalized === "unknown") {
+		return null;
+	}
+	return normalized;
+}
+
+/** Maps Stripe UI signals to Saleor `paymentIntent.paymentMethod`. Never returns `"unknown"`. */
+export function resolveStripePaymentMethodForInitialize(
+	context: StripeInitializePaymentMethodContext,
+): string | null {
+	if (context.surface === "expressCheckout") {
+		return normalizeStripePaymentMethodType(context.expressPaymentType);
+	}
+
+	const fromChange = normalizeStripePaymentMethodType(context.changeType);
+	if (fromChange) {
+		return fromChange;
+	}
+
+	return normalizeStripePaymentMethodType(context.submitType);
 }
 
 const FAILED_TRANSACTION_EVENT_TYPES = new Set([

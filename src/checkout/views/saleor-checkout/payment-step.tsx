@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, type FC } from "react";
+import { useState, useCallback, useMemo, useEffect, type FC } from "react";
 import { ChevronLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { CheckoutSummaryContext, buildPaymentSummaryRows } from "./checkout-summary-context";
@@ -20,22 +20,31 @@ import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { getFormattedMoney, formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { AuthorizedPaymentRecovery } from "@/checkout/components/payment/stripe/authorized-payment-recovery";
 import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
+import { isCheckoutReadyToComplete } from "@/checkout/lib/payment/checkout-payment-status";
 import { usesClientPaymentSubmit } from "@/checkout/lib/payment";
+import { consumePaymentCompletionError } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
 	onBack: () => void;
 	onGoToInformation?: () => void;
+	onPaymentBusyChange?: (busy: boolean) => void;
 }
 
-export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInformation }) => {
+export const PaymentStep: FC<PaymentStepProps> = ({
+	checkout,
+	onBack,
+	onGoToInformation,
+	onPaymentBusyChange,
+}) => {
 	const { user, authenticated } = useUser();
 
 	const isShippingRequired = checkout.isShippingRequired;
 	const hasShippingAddress = !!checkout.shippingAddress;
 	const shippingAddress = checkout.shippingAddress;
 
+	const [isPaymentBusy, setIsPaymentBusy] = useState(false);
 	const [sameAsBilling, setSameAsBilling] = useState(isShippingRequired && hasShippingAddress);
 	const [billingData, setBillingData] = useState<BillingAddressData>(() => ({
 		countryCode: (checkout.billingAddress?.country?.code as CountryCode) || "US",
@@ -77,6 +86,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 
 	const usesClientSubmit = usesClientPaymentSubmit(provider);
 	const isFreeOrder = isCheckoutFreeOrder(checkout);
+	const paymentAlreadyAuthorized = isCheckoutReadyToComplete(checkout);
 
 	const handlePaymentError = useCallback(
 		(message: string) => {
@@ -85,6 +95,27 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 		},
 		[clearReturnError, setPaymentError],
 	);
+
+	useEffect(() => {
+		const stashedError = consumePaymentCompletionError();
+		if (stashedError) {
+			handlePaymentError(stashedError);
+		}
+	}, [handlePaymentError]);
+
+	const handlePaymentActivityChange = useCallback(
+		(active: boolean) => {
+			setIsPaymentBusy(active);
+			onPaymentBusyChange?.(active);
+		},
+		[onPaymentBusyChange],
+	);
+
+	useEffect(() => {
+		return () => {
+			onPaymentBusyChange?.(false);
+		};
+	}, [onPaymentBusyChange]);
 
 	const handleBillingDataChange = useCallback((data: BillingAddressData) => {
 		setBillingData(data);
@@ -155,7 +186,11 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 				</div>
 			) : null}
 
-			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={handleGoToStep} />
+			<CheckoutSummaryContext
+				checkout={checkout}
+				rows={summaryRows}
+				onGoToStep={isPaymentBusy ? undefined : handleGoToStep}
+			/>
 
 			{hasInvalidDelivery && (
 				<div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
@@ -188,26 +223,30 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 					onChange={handleBillingDataChange}
 					onSameAsShippingChange={setSameAsBilling}
 					initialSameAsShipping={sameAsBilling}
+					disabled={isPaymentBusy}
 				/>
 			) : null}
 
 			<PaymentError message={errors.payment || returnError || undefined} />
 
-			<PaymentMethodArea
-				provider={provider}
-				checkout={checkout}
-				billing={{
-					billingData,
-					sameAsBilling,
-					hasShippingAddress,
-					shippingAddress,
-					userAddresses: user?.addresses,
-					authenticated,
-				}}
-				onPaymentError={handlePaymentError}
-				onBillingErrors={setBillingErrors}
-				onPriceChangeNotice={setPriceChangeNotice}
-			/>
+			{paymentAlreadyAuthorized ? null : (
+				<PaymentMethodArea
+					provider={provider}
+					checkout={checkout}
+					billing={{
+						billingData,
+						sameAsBilling,
+						hasShippingAddress,
+						shippingAddress,
+						userAddresses: user?.addresses,
+						authenticated,
+					}}
+					onPaymentError={handlePaymentError}
+					onBillingErrors={setBillingErrors}
+					onPriceChangeNotice={setPriceChangeNotice}
+					onPaymentActivityChange={handlePaymentActivityChange}
+				/>
+			)}
 
 			{!usesClientSubmit ? (
 				<BillingAddressSection
@@ -228,7 +267,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({ checkout, onBack, onGoToInfo
 				<button
 					type="button"
 					onClick={onBack}
-					className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+					disabled={isPaymentBusy}
+					className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
 				>
 					<ChevronLeft className="h-4 w-4" />
 					{isShippingRequired ? "Return to shipping" : "Return to information"}

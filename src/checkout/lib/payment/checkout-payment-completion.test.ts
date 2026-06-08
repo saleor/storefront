@@ -2,10 +2,17 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import {
 	PAYMENT_COMPLETING_STORAGE_KEY,
+	PAYMENT_COMPLETION_ERROR_STORAGE_KEY,
+	abortCheckoutPaymentFlow,
+	beginCheckoutPaymentFlow,
 	clearPaymentCompleting,
+	consumePaymentCompletionError,
 	isCheckoutPaymentActive,
+	isCheckoutPaymentFlowStale,
 	isPaymentCompleting,
 	markPaymentCompleting,
+	stashPaymentCompletionError,
+	subscribePaymentCompleting,
 } from "./checkout-payment-completion";
 
 describe("checkout-payment-completion", () => {
@@ -36,5 +43,38 @@ describe("checkout-payment-completion", () => {
 		markPaymentCompleting("checkout-old");
 		const params = new URLSearchParams("checkout=checkout-new&step=payment");
 		expect(isCheckoutPaymentActive(params, "checkout-new")).toBe(false);
+	});
+
+	it("notifies subscribers when the completing flag changes", () => {
+		let revision = 0;
+		const unsubscribe = subscribePaymentCompleting(() => {
+			revision += 1;
+		});
+
+		markPaymentCompleting("checkout-a");
+		clearPaymentCompleting();
+		unsubscribe();
+
+		expect(revision).toBe(2);
+	});
+
+	it("stashes and consumes post-confirm payment errors once", () => {
+		stashPaymentCompletionError("Order could not be placed.");
+		expect(sessionStorage.getItem(PAYMENT_COMPLETION_ERROR_STORAGE_KEY)).toBe("Order could not be placed.");
+
+		expect(consumePaymentCompletionError()).toBe("Order could not be placed.");
+		expect(consumePaymentCompletionError()).toBeNull();
+		expect(sessionStorage.getItem(PAYMENT_COMPLETION_ERROR_STORAGE_KEY)).toBeNull();
+	});
+
+	it("aborts in-flight payment work and stashes an optional error", () => {
+		const flowGeneration = beginCheckoutPaymentFlow();
+		markPaymentCompleting("checkout-a");
+
+		abortCheckoutPaymentFlow("Payment was interrupted. Please try again.");
+
+		expect(isPaymentCompleting("checkout-a")).toBe(false);
+		expect(consumePaymentCompletionError()).toBe("Payment was interrupted. Please try again.");
+		expect(isCheckoutPaymentFlowStale(flowGeneration)).toBe(true);
 	});
 });

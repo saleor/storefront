@@ -22,6 +22,7 @@ export type IntegratedPaymentUiProps = {
 	onPaymentError?: (message: string) => void;
 	onBillingErrors?: (errors: Record<string, string>, focusField?: string) => void;
 	onPriceChangeNotice?: (notice: CheckoutPriceChangeNotice) => void;
+	onPaymentActivityChange?: (active: boolean) => void;
 };
 
 /**
@@ -35,6 +36,7 @@ export const IntegratedPaymentUi: FC<IntegratedPaymentUiProps> = ({
 	onPaymentError,
 	onBillingErrors,
 	onPriceChangeNotice,
+	onPaymentActivityChange,
 }) => {
 	if (!isIntegratedPaymentProvider(provider)) {
 		return null;
@@ -56,6 +58,7 @@ export const IntegratedPaymentUi: FC<IntegratedPaymentUiProps> = ({
 					onPaymentError={onPaymentError}
 					onBillingErrors={onBillingErrors}
 					onPriceChangeNotice={onPriceChangeNotice}
+					onPaymentActivityChange={onPaymentActivityChange}
 				/>
 			);
 	}

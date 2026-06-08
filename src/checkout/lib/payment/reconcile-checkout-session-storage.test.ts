@@ -28,4 +28,22 @@ describe("reconcileCheckoutSessionStorage", () => {
 		});
 		expect(sessionStorage.getItem(PAYMENT_COMPLETING_STORAGE_KEY)).toBeNull();
 	});
+
+	it("clears stale completing flag on reload without Stripe return params", () => {
+		markPaymentCompleting("checkout-a");
+		reconcileCheckoutSessionStorage({
+			checkoutId: "checkout-a",
+			processingPayment: false,
+		});
+		expect(sessionStorage.getItem(PAYMENT_COMPLETING_STORAGE_KEY)).toBeNull();
+	});
+
+	it("keeps completing flag during Stripe redirect return", () => {
+		markPaymentCompleting("checkout-a");
+		reconcileCheckoutSessionStorage({
+			checkoutId: "checkout-a",
+			processingPayment: true,
+		});
+		expect(sessionStorage.getItem(PAYMENT_COMPLETING_STORAGE_KEY)).toBe("checkout-a");
+	});
 });

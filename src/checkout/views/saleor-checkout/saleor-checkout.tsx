@@ -1,6 +1,6 @@
 "use client";
 
-import { type FC } from "react";
+import { useState, type FC } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { useCheckout } from "@/checkout/hooks/use-checkout";
@@ -24,7 +24,9 @@ export const SaleorCheckout: FC = () => {
 	const { checkout, setCheckout, refetch } = useCheckout();
 	// RootViews shows PaymentCompletingScreen while `transition === "completing"` — keep this
 	// as defense-in-depth if SaleorCheckout is ever mounted outside RootViews.
+	const [isPaymentBusy, setIsPaymentBusy] = useState(false);
 	const isPaymentFlowActive = transition === "completing";
+	const isCheckoutNavigationLocked = isPaymentFlowActive || isPaymentBusy;
 
 	useCustomerAttach();
 
@@ -57,10 +59,14 @@ export const SaleorCheckout: FC = () => {
 	return (
 		<CheckoutPageShell
 			step={currentStep.index}
-			onStepClick={(stepIndex) => {
-				const step = getCheckoutSteps(isShippingRequired).find((s) => s.index === stepIndex);
-				if (step) goToStep(step.id);
-			}}
+			onStepClick={
+				isCheckoutNavigationLocked
+					? undefined
+					: (stepIndex) => {
+							const step = getCheckoutSteps(isShippingRequired).find((s) => s.index === stepIndex);
+							if (step) goToStep(step.id);
+						}
+			}
 			isShippingRequired={isShippingRequired}
 			storefrontChannel={checkout.channel.slug}
 		>
@@ -94,6 +100,7 @@ export const SaleorCheckout: FC = () => {
 										checkout={checkout}
 										onBack={() => goToStep(isShippingRequired ? "SHIPPING" : "INFO")}
 										onGoToInformation={() => goToStep("INFO")}
+										onPaymentBusyChange={setIsPaymentBusy}
 									/>
 								) : null}
 							</div>
