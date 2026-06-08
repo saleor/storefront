@@ -1,12 +1,12 @@
 "use client";
 
-import type React from "react";
+import type { MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Plus } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Badge } from "@/ui/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 
 export interface ProductCardData {
 	id: string;
@@ -18,7 +18,6 @@ export interface ProductCardData {
 	currency: string;
 	image: string;
 	imageAlt?: string;
-	hoverImage?: string | null;
 	href: string;
 	badge?: "Sale" | "New" | null;
 	colors?: { name: string; hex: string }[];
@@ -42,7 +41,7 @@ interface ProductCardProps {
 export function ProductCard({ product, priority = false }: ProductCardProps) {
 	const canQuickAdd = !product.hasVariants && product.onQuickAdd;
 
-	const handleQuickAdd = (e: React.MouseEvent) => {
+	const handleQuickAdd = (e: MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
 		product.onQuickAdd?.(product.id);
@@ -60,29 +59,15 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 			<Link href={product.href} className="block">
 				{/* Image Container */}
 				<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
-					{/* Primary Image */}
 					<Image
 						src={product.image}
 						alt={product.imageAlt || product.name}
 						fill
-						sizes="(max-width: 1024px) 50vw, 33vw"
-						className={cn(
-							"object-cover transition-all duration-500 ease-out md:group-hover:scale-105",
-							product.hoverImage && "md:group-hover:opacity-0",
-						)}
+						sizes={PLP_IMAGE_SIZES}
+						quality={PRODUCT_IMAGE_QUALITY}
+						className="object-cover transition-transform duration-500 ease-out md:group-hover:scale-105"
 						priority={priority}
 					/>
-
-					{/* Hover Image - desktop only to avoid double-tap on touch */}
-					{product.hoverImage && (
-						<Image
-							src={product.hoverImage}
-							alt={`${product.name} - alternate view`}
-							fill
-							sizes="(max-width: 1024px) 50vw, 33vw"
-							className="object-cover opacity-0 transition-all duration-500 ease-out md:group-hover:scale-105 md:group-hover:opacity-100"
-						/>
-					)}
 
 					{/* Badge */}
 					{product.badge && (

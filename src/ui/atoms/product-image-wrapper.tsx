@@ -8,11 +8,19 @@ interface ProductImageWrapperProps extends ImageProps {
 export const ProductImageWrapper = ({
 	containerClassName,
 	className,
+	fill = true,
 	...props
 }: ProductImageWrapperProps) => {
 	return (
-		<div className={clsx("aspect-square overflow-hidden bg-secondary", containerClassName)}>
-			<NextImage {...props} className={clsx("h-full w-full object-cover object-center", className)} />
+		<div className={clsx("relative aspect-square overflow-hidden bg-secondary", containerClassName)}>
+			<NextImage
+				{...props}
+				fill={fill}
+				className={clsx(
+					fill ? "object-cover object-center" : "h-full w-full object-cover object-center",
+					className,
+				)}
+			/>
 		</div>
 	);
 };

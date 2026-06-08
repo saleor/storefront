@@ -79,7 +79,6 @@ export function transformToProductCard(product: ProductListItemFragment, channel
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? product.name,
-		hoverImage: null, // Would need additional media in fragment
 		href: `/${channel}/products/${product.slug}`,
 		badge: isSale ? "Sale" : null,
 		colors,
