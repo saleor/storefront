@@ -60,7 +60,7 @@ function FooterSkeleton() {
 	);
 }
 
-/** Header + page + footer shell. User menu auth refreshes via `HeaderAuthRefresh` (`router.refresh` on navigation). */
+/** Header + page + footer shell. User menu auth syncs via `HeaderAuthRefresh` (refresh on nav, revalidate when tab refocuses). */
 export function MainChrome({ channel, children }: { channel: string; children: ReactNode }) {
 	return (
 		<>

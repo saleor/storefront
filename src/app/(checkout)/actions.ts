@@ -2,6 +2,7 @@
 
 import { after } from "next/server";
 import { revalidatePath } from "next/cache";
+import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
 import {
 	AddressValidationRulesDocument,
 	CheckoutAddPromoCodeDocument,
@@ -512,7 +513,7 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 		await Checkout.clearCheckoutCookieByValue(checkoutId);
 		if (channelSlug) {
 			revalidatePath(`/${channelSlug}/cart`);
-			revalidatePath(`/${channelSlug}`, "layout");
+			revalidateStorefrontChrome(channelSlug);
 		}
 	});
 

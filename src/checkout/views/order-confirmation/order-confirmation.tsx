@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
+import { navigateToStorefrontHome } from "@/lib/auth";
 import { CheckCircle, Mail, MapPin, Package, CreditCard } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { useOrder } from "@/checkout/hooks/use-order";
@@ -27,7 +27,6 @@ function formatAddress(address: {
  * Order confirmation — rendered at `/checkout/complete?order=…` after successful payment.
  */
 export const OrderConfirmation = () => {
-	const router = useRouter();
 	const { order } = useOrder();
 
 	useEffect(() => {
@@ -62,7 +61,7 @@ export const OrderConfirmation = () => {
 	const email = order.userEmail || "";
 
 	return (
-		<OrderConfirmationPageShell>
+		<OrderConfirmationPageShell storefrontChannel={channel}>
 			<main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				<div className="flex flex-col gap-8 md:flex-row">
 					<div className="order-2 min-w-0 flex-1 md:order-1">
@@ -129,7 +128,7 @@ export const OrderConfirmation = () => {
 									<Button
 										type="button"
 										className="min-w-[200px] px-8"
-										onClick={() => router.push(channel ? `/${channel}` : "/")}
+										onClick={() => navigateToStorefrontHome(channel)}
 									>
 										Continue shopping
 									</Button>

@@ -85,7 +85,7 @@ See `data-auth-routes.md` for HttpOnly cookies, header `getHeaderUser()`, and ra
 ## Data loading (RSC + client sync)
 
 1. **RSC page** (`checkout/page.tsx`) — full checkout (`fetchCheckoutOnServer`), `me`, order, channel countries. Passes `initialCheckout` when `loadState === "ready"`.
-2. **Client** — `CheckoutDataProvider` hydrates from `initialCheckout` (`CheckoutSessionLoader` always pairs `ready` with a snapshot). RSC updates merge via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` replaces state. Cart mutations revalidate `/checkout` via `revalidateAuthSurfaces`. Use `useRefreshCheckoutRsc()` after auth or address-book changes.
+2. **Client** — `CheckoutDataProvider` hydrates from `initialCheckout` (`CheckoutSessionLoader` always pairs `ready` with a snapshot). RSC updates merge via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` replaces state. Cart mutations revalidate `/checkout` via `revalidateStorefrontChrome`. Use `useRefreshCheckoutRsc()` after auth or address-book changes.
 3. **Mutations** — `src/app/(checkout)/actions.ts` server actions; `refreshCheckout` / `adoptCheckoutSnapshot` in `checkout-sync.ts`.
 
 `useCheckout()` reads from `CheckoutDataProvider` context (not urql).
@@ -202,7 +202,7 @@ Saleor validates amounts at `checkoutComplete`, but blocking early avoids author
 
 **Problem**: User changes cart on `/{channel}/cart`, returns to checkout — old lines or totals.
 
-**Fix**: Cart server actions call `revalidateAuthSurfaces`, which includes `revalidatePath("/checkout")`, so the next checkout navigation gets a fresh RSC `initialCheckout`. In-flow updates use `refreshCheckout` (full replace).
+**Fix**: Cart server actions call `revalidateStorefrontChrome`, which includes `revalidatePath("/checkout")`, so the next checkout navigation gets a fresh RSC `initialCheckout`. In-flow updates use `refreshCheckout` (full replace).
 
 ### Stale Checkout with Failed Transactions
 

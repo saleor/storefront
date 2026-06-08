@@ -42,7 +42,12 @@ export const SaleorCheckout: FC = () => {
 	);
 
 	if (isPaymentFlowActive) {
-		return <PaymentCompletingScreen isShippingRequired={isShippingRequired} />;
+		return (
+			<PaymentCompletingScreen
+				isShippingRequired={isShippingRequired}
+				storefrontChannel={checkout?.channel.slug}
+			/>
+		);
 	}
 
 	if (!checkout) {
@@ -57,6 +62,7 @@ export const SaleorCheckout: FC = () => {
 				if (step) goToStep(step.id);
 			}}
 			isShippingRequired={isShippingRequired}
+			storefrontChannel={checkout.channel.slug}
 		>
 			<main className="mx-auto max-w-7xl px-4 py-6 pb-24 sm:px-6 md:py-8 md:pb-8 lg:px-8">
 				<div className="flex flex-col gap-8 md:flex-row">

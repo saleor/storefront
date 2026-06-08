@@ -1,20 +1,48 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Fragment, useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+
+import { revalidateStorefrontChromeAction } from "@/app/actions";
 
 /**
  * Keeps header auth chrome in sync with HttpOnly session cookies.
- * `key={pathname}` alone does not re-run `UserMenuServer` — refresh busts the Router Cache
- * (e.g. after checkout sign-in or returning from `/checkout` with a stale anonymous shell).
+ *
+ * - First paint: revalidate channel layout + refresh (busts stale PPR/layout cache with session).
+ * - In-store navigation: `router.refresh()` only.
+ * - Tab becomes visible: revalidate layout + refresh (login/logout in another tab).
  */
-export function HeaderAuthRefresh({ children }: { children: ReactNode }) {
+export function HeaderAuthRefresh({ channel, children }: { channel: string; children: ReactNode }) {
 	const pathname = usePathname();
 	const router = useRouter();
+	const hasSyncedInitialChrome = useRef(false);
 
 	useEffect(() => {
-		router.refresh();
-	}, [pathname, router]);
+		if (!hasSyncedInitialChrome.current) {
+			hasSyncedInitialChrome.current = true;
+			void revalidateStorefrontChromeAction(channel).then(() => {
+				router.refresh();
+			});
+			return;
+		}
 
-	return <Fragment key={pathname}>{children}</Fragment>;
+		router.refresh();
+	}, [pathname, channel, router]);
+
+	useEffect(() => {
+		const syncAuthAfterTabFocus = () => {
+			if (document.visibilityState !== "visible") {
+				return;
+			}
+
+			void revalidateStorefrontChromeAction(channel).then(() => {
+				router.refresh();
+			});
+		};
+
+		document.addEventListener("visibilitychange", syncAuthAfterTabFocus);
+		return () => document.removeEventListener("visibilitychange", syncAuthAfterTabFocus);
+	}, [channel, router]);
+
+	return children;
 }

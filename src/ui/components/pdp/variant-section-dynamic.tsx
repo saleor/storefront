@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { getDiscountInfo } from "@/lib/pricing";
-import { revalidateAuthSurfaces } from "@/lib/auth/revalidate-auth-surfaces";
+import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
 import { CheckoutAddLineDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
@@ -104,7 +104,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 			}
 
 			revalidatePath(`/${channel}/cart`);
-			revalidateAuthSurfaces(channel);
+			revalidateStorefrontChrome(channel);
 		} catch (error) {
 			// Log error server-side - the UI feedback comes from cart drawer/badge update
 			// For explicit error UI, would need useActionState (separate enhancement)

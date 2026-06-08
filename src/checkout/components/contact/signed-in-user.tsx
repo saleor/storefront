@@ -22,7 +22,7 @@ export const SignedInUser: FC<SignedInUserProps> = ({ user, checkoutId, onSignOu
 		if (checkoutId) {
 			await detachCheckoutCustomer(checkoutId);
 		}
-		await logout();
+		await logout({ stayOnPage: true });
 		onSignOut();
 	};
 

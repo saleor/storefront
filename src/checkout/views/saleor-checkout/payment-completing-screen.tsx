@@ -4,17 +4,25 @@ import { CheckoutPageShell } from "./checkout-page-shell";
 
 type PaymentCompletingScreenProps = {
 	isShippingRequired?: boolean;
+	storefrontChannel?: string | null;
 };
 
 /**
  * Full-page state while payment is confirmed and checkoutComplete runs.
  * Gateway-agnostic — shown for Stripe, dummy, and future Saleor payment apps.
  */
-export function PaymentCompletingScreen({ isShippingRequired = true }: PaymentCompletingScreenProps) {
+export function PaymentCompletingScreen({
+	isShippingRequired = true,
+	storefrontChannel,
+}: PaymentCompletingScreenProps) {
 	const step = getStepNumber("PAYMENT", isShippingRequired);
 
 	return (
-		<CheckoutPageShell step={step} isShippingRequired={isShippingRequired}>
+		<CheckoutPageShell
+			step={step}
+			isShippingRequired={isShippingRequired}
+			storefrontChannel={storefrontChannel}
+		>
 			<main className="mx-auto max-w-7xl px-4 py-6 pb-24 sm:px-6 md:py-8 md:pb-8 lg:px-8">
 				<div className="min-w-0 flex-1">
 					<div

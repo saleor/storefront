@@ -3,19 +3,19 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { signOutSession } from "@/lib/auth/bff-server";
-import { revalidateAuthSurfaces } from "@/lib/auth/revalidate-auth-surfaces";
+import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
 function revalidateCart(channel: string) {
 	revalidatePath(`/${channel}/cart`);
-	revalidateAuthSurfaces(channel);
+	revalidateStorefrontChrome(channel);
 }
 
-/** Invalidate cached storefront header and checkout shell. Call from server actions only — never during RSC render. */
-export async function revalidateAuthLayout(channel: string) {
-	revalidateAuthSurfaces(channel);
+/** Invalidate cached storefront chrome (header + checkout shell). Server actions only — not during RSC render. */
+export async function revalidateStorefrontChromeAction(channel: string) {
+	revalidateStorefrontChrome(channel);
 }
 
 export async function logout() {

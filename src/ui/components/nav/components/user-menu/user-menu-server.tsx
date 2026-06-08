@@ -1,28 +1,23 @@
-import { UserIcon } from "lucide-react";
 import { cookies } from "next/headers";
-import Link from "next/link";
 
-import { getHeaderUser } from "@/lib/auth/get-header-user";
+import { getHeaderAuthState } from "@/lib/auth/get-header-user";
 
 import { UserMenu } from "./user-menu";
+import { UserMenuLoginLink } from "./user-menu-login-link";
+import { UserMenuUnavailable } from "./user-menu-unavailable";
 
 export async function UserMenuServer({ channel }: { channel: string }) {
 	// Request-dynamic under PPR — never serve a prerendered anonymous menu when cookies exist.
 	await cookies();
 
-	const user = await getHeaderUser();
+	const auth = await getHeaderAuthState();
 
-	if (user) {
-		return <UserMenu user={user} />;
+	switch (auth.status) {
+		case "authenticated":
+			return <UserMenu user={auth.user} />;
+		case "unavailable":
+			return <UserMenuUnavailable />;
+		case "guest":
+			return <UserMenuLoginLink channel={channel} />;
 	}
-
-	return (
-		<Link
-			href={`/${channel}/login`}
-			className="inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
-		>
-			<UserIcon className="h-5 w-5" aria-hidden="true" />
-			<span className="sr-only">Log in</span>
-		</Link>
-	);
 }

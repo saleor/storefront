@@ -1,18 +1,24 @@
 "use client";
 
-import Link from "next/link";
 import { Lock, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/ui/components/shared/logo";
+import { StorefrontHomeLink } from "@/ui/components/shared/storefront-home-link";
 import { getCheckoutSteps } from "./flow";
 
 interface CheckoutHeaderProps {
 	step: number;
 	onStepClick?: (step: number) => void;
 	isShippingRequired?: boolean;
+	storefrontChannel?: string | null;
 }
 
-export function CheckoutHeader({ step, onStepClick, isShippingRequired = true }: CheckoutHeaderProps) {
+export function CheckoutHeader({
+	step,
+	onStepClick,
+	isShippingRequired = true,
+	storefrontChannel,
+}: CheckoutHeaderProps) {
 	const steps = getCheckoutSteps(isShippingRequired).map((s) => ({
 		number: s.index,
 		label: s.label,
@@ -28,9 +34,9 @@ export function CheckoutHeader({ step, onStepClick, isShippingRequired = true }:
 			<div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 md:pb-4 md:pt-4 lg:px-8">
 				<div className="flex items-center justify-between">
 					{/* Logo */}
-					<Link href="/" className="flex items-center">
+					<StorefrontHomeLink channel={storefrontChannel} className="flex items-center">
 						<Logo className="h-7 w-auto" />
-					</Link>
+					</StorefrontHomeLink>
 
 					{/* Progress Steps - Desktop */}
 					<nav className="hidden items-center gap-2 md:flex" aria-label="Checkout steps">

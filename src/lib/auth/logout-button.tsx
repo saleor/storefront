@@ -1,22 +1,33 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { forwardRef, type ComponentProps, type ReactNode } from "react";
 
-import { useLogout } from "./use-logout";
+import { useLogout, type LogoutOptions } from "./use-logout";
 
 type LogoutButtonProps = {
 	children: ReactNode;
+	channel?: string;
+	redirectTo?: string;
+	stayOnPage?: boolean;
 } & Omit<ComponentProps<"button">, "type">;
 
 /**
- * Ends the Saleor session on server (checkout detach + cookies) and client.
+ * Ends the Saleor session on server (checkout detach + cookies) and hard-navigates.
  * Forwards ref/onClick for Radix `DropdownMenuItem asChild` composition.
  */
 export const LogoutButton = forwardRef<HTMLButtonElement, LogoutButtonProps>(function LogoutButton(
-	{ children, onClick, disabled, ...props },
+	{ children, channel: channelProp, redirectTo, stayOnPage, onClick, disabled, ...props },
 	ref,
 ) {
+	const params = useParams<{ channel?: string }>();
 	const logoutSession = useLogout();
+
+	const logoutOptions: LogoutOptions = {
+		channel: channelProp ?? params.channel,
+		redirectTo,
+		stayOnPage,
+	};
 
 	return (
 		<button
@@ -29,7 +40,7 @@ export const LogoutButton = forwardRef<HTMLButtonElement, LogoutButtonProps>(fun
 				if (event.defaultPrevented) {
 					return;
 				}
-				void logoutSession();
+				void logoutSession(logoutOptions);
 			}}
 		>
 			{children}

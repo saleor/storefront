@@ -1,21 +1,32 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 import { logout } from "@/app/actions";
 
-/** End Saleor session on the server and refresh RSC auth chrome. */
-export function useLogout() {
-	const router = useRouter();
+export type LogoutOptions = {
+	channel?: string;
+	/** Override post-logout destination. Defaults to `/${channel}` or `/`. */
+	redirectTo?: string;
+	/** Reload the current URL (e.g. checkout in-flow sign-out). */
+	stayOnPage?: boolean;
+};
 
-	return useCallback(async () => {
+/** End Saleor session on the server and hard-navigate to bust Router Cache. */
+export function useLogout() {
+	return useCallback(async (options?: LogoutOptions) => {
 		try {
 			await logout();
 		} catch {
 			// Checkout detach / server cookie clear is best-effort.
 		}
 
-		router.refresh();
-	}, [router]);
+		if (options?.stayOnPage) {
+			window.location.reload();
+			return;
+		}
+
+		const target = options?.redirectTo ?? (options?.channel ? `/${options.channel}` : "/");
+		window.location.assign(target);
+	}, []);
 }

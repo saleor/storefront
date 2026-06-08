@@ -7,6 +7,8 @@ type CheckoutPageShellProps = {
 	step?: number;
 	onStepClick?: (step: number) => void;
 	isShippingRequired?: boolean;
+	/** When set, header logo hard-navigates to `/{channel}` (avoids stale storefront Router Cache). */
+	storefrontChannel?: string | null;
 };
 
 /** Shared checkout surface layout — one header + page chrome for all checkout states. */
@@ -15,10 +17,16 @@ export function CheckoutPageShell({
 	step = 1,
 	onStepClick,
 	isShippingRequired = true,
+	storefrontChannel,
 }: CheckoutPageShellProps) {
 	return (
 		<div className="min-h-screen overscroll-none bg-secondary">
-			<CheckoutHeader step={step} onStepClick={onStepClick} isShippingRequired={isShippingRequired} />
+			<CheckoutHeader
+				step={step}
+				onStepClick={onStepClick}
+				isShippingRequired={isShippingRequired}
+				storefrontChannel={storefrontChannel}
+			/>
 			{children}
 		</div>
 	);

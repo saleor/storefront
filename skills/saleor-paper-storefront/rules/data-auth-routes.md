@@ -32,6 +32,21 @@ Client forms call `loginWithBff()` / `setPasswordWithBff()` from `src/lib/auth/b
 
 **Header user menu:** `UserMenuServer` calls `getHeaderUser()` inside Suspense — same server session as account pages. No client `me` fetch.
 
+## Keeping header chrome fresh (Router Cache)
+
+HttpOnly cookies are the source of truth, but the **client Router Cache** can reuse a stale RSC payload for the header after session changes. Paper uses three explicit triggers — no client-side retry loops:
+
+| Trigger                           | When                                           | Mechanism                                                                                         |
+| --------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Initial load / hard refresh**   | Land on storefront with existing session       | `HeaderAuthRefresh` → `revalidateStorefrontChrome` + `router.refresh()` once on mount             |
+| **In-store soft nav**             | User follows a `<Link>` within `/${channel}`   | `HeaderAuthRefresh` → `router.refresh()` on pathname change                                       |
+| **Cross-tab**                     | User returns after login/logout in another tab | `visibilitychange` → `revalidateStorefrontChromeAction` + `router.refresh()`                      |
+| **Cross-surface / auth boundary** | Login, logout, checkout → storefront           | `revalidateStorefrontChrome` + **hard navigation** (`window.location.assign` or plain `<a href>`) |
+
+**Hard navigation** is required when leaving `/checkout` or after login/logout — soft `router.push` / `<Link>` can restore a cached anonymous `UserMenuServer`. Use `syncAuthSurfacesAfterSignIn({ redirectTo })`, `useLogout({ channel })`, `navigateToStorefrontHome()`, or `StorefrontHomeLink` (plain anchor).
+
+**`revalidateStorefrontChrome(channel)`** invalidates `/${channel}` layout (user menu + cart badge) and `/checkout`. Call from server actions after cart mutations, checkout complete, or before client refresh — not during RSC render.
+
 ## Migration Checklist
 
 Use this when moving a logged-in area (account, wishlist, etc.) to PPR-safe patterns:
@@ -61,16 +76,17 @@ header.tsx
         └── UserMenuServer (async) → cookies() + getHeaderUser() or sign-in link
 ```
 
-| Concern            | Location                                  | Notes                                              |
-| ------------------ | ----------------------------------------- | -------------------------------------------------- |
-| Auth cookies check | `has-auth-session.ts`                     | Marker cookie names only; safe in Suspense shell   |
-| User profile       | `get-current-user.ts`                     | `React.cache()` — deduped per request              |
-| Header user        | `get-header-user.ts`                      | `CurrentUser` query for nav menu                   |
-| BFF sign-in        | `bff-server.ts`, `/api/auth/login`        | HttpOnly cookies, rate limited                     |
-| Client forms       | `bff-client.ts`                           | `loginWithBff`, `setPasswordWithBff`               |
-| Client profile     | `account-context.tsx`                     | `useAccountUser()` for settings/addresses/overview |
-| Sign-in UI         | `account-login.tsx`                       | `LoginForm` in Suspense (no SDK provider)          |
-| Order fetches      | `recent-orders-section.tsx`, orders pages | Inside page-level Suspense                         |
+| Concern            | Location                                  | Notes                                                        |
+| ------------------ | ----------------------------------------- | ------------------------------------------------------------ |
+| Auth cookies check | `has-auth-session.ts`                     | Same lookup as auth SDK (`readAuthCookieValue`)              |
+| User profile       | `get-current-user.ts`                     | `React.cache()` — deduped per request                        |
+| Header user        | `get-header-user.ts`                      | `getHeaderAuthState()` — guest / authenticated / unavailable |
+| Session resolution | `resolve-session-user.ts`                 | Classifies `me` fetch; one server retry on transient errors  |
+| BFF sign-in        | `bff-server.ts`, `/api/auth/login`        | HttpOnly cookies, rate limited                               |
+| Client forms       | `bff-client.ts`                           | `loginWithBff`, `setPasswordWithBff`                         |
+| Client profile     | `account-context.tsx`                     | `useAccountUser()` for settings/addresses/overview           |
+| Sign-in UI         | `account-login.tsx`                       | `LoginForm` in Suspense (no SDK provider)                    |
+| Order fetches      | `recent-orders-section.tsx`, orders pages | Inside page-level Suspense                                   |
 
 ## Code Patterns
 
@@ -117,10 +133,10 @@ function revalidateAccountLayout() {
 ```
 
 ```tsx
-// Client form after successful BFF login
-await revalidateAuthLayout(channel);
-router.push(`/${channel}`);
-router.refresh();
+// Client form after successful BFF login — prefer hard nav over soft push + refresh
+await syncAuthSurfacesAfterSignIn(channel, router, {
+	redirectTo: `/${channel}`,
+});
 ```
 
 ## Anti-patterns
@@ -131,7 +147,10 @@ router.refresh();
 ❌ **Blanket `<Suspense>{children}</Suspense>` on main layout** — workaround, not architecture  
 ❌ **`revalidatePath("/account/addresses", "page")` only** when addresses read `useAccountUser()` from layout  
 ❌ **`fallback={null}`** on account order Suspense — use section skeletons  
-❌ **`key={pathname}` without `router.refresh()`** on header auth — remounting RSC children does not bust the Router Cache; stale anonymous menus persist until `revalidateAuthSurfaces`
+❌ **`key={pathname}` without `router.refresh()`** on header auth — remounting RSC children does not bust the Router Cache; stale anonymous menus persist until `revalidateStorefrontChrome`  
+❌ **Client-side sessionStorage retry / recover gates** on header auth — fix cache boundaries server-side; never loop `router.refresh()` from effects  
+❌ **Treating all `me === null` as signed out** — use `resolveSessionUser` (`guest` / `authenticated` / `unavailable`); only show login link on `guest`  
+❌ **`<Link>` from checkout → storefront** when session may have changed — use plain `<a href>` or `navigateToStorefrontHome()`
 
 ## Related Rules
 
@@ -140,15 +159,18 @@ router.refresh();
 
 ## Files
 
-| File                                                              | Purpose                    |
-| ----------------------------------------------------------------- | -------------------------- |
-| `src/app/[channel]/(main)/account/layout.tsx`                     | Suspense + auth gate       |
-| `src/app/[channel]/(main)/account/get-current-user.ts`            | Cached profile fetch       |
-| `src/lib/auth/has-auth-session.ts`                                | Cookie presence check      |
-| `src/lib/auth/bff-server.ts`                                      | Server sign-in / sign-out  |
-| `src/lib/auth/get-header-user.ts`                                 | Header `me` fetch          |
-| `src/app/api/auth/login/route.ts`                                 | BFF login endpoint         |
-| `src/ui/components/account/account-login.tsx`                     | Signed-out account login   |
-| `src/ui/components/account/account-context.tsx`                   | Client profile context     |
-| `src/ui/components/nav/components/user-menu/user-menu-server.tsx` | Header auth chrome         |
-| `src/app/[channel]/(main)/account/actions.ts`                     | Layout revalidation helper |
+| File                                                                 | Purpose                                  |
+| -------------------------------------------------------------------- | ---------------------------------------- |
+| `src/app/[channel]/(main)/account/layout.tsx`                        | Suspense + auth gate                     |
+| `src/app/[channel]/(main)/account/get-current-user.ts`               | Cached profile fetch                     |
+| `src/lib/auth/has-auth-session.ts`                                   | Cookie presence check                    |
+| `src/lib/auth/bff-server.ts`                                         | Server sign-in / sign-out                |
+| `src/lib/auth/get-header-user.ts`                                    | Header `me` fetch                        |
+| `src/app/api/auth/login/route.ts`                                    | BFF login endpoint                       |
+| `src/ui/components/account/account-login.tsx`                        | Signed-out account login                 |
+| `src/ui/components/account/account-context.tsx`                      | Client profile context                   |
+| `src/ui/components/nav/components/user-menu/user-menu-server.tsx`    | Header auth chrome                       |
+| `src/ui/components/nav/components/user-menu/header-auth-refresh.tsx` | Router Cache sync (soft nav + cross-tab) |
+| `src/lib/auth/revalidate-storefront-chrome.ts`                       | Layout + checkout cache bust             |
+| `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                   | Post-login cache bust + hard nav         |
+| `src/app/[channel]/(main)/account/actions.ts`                        | Layout revalidation helper               |

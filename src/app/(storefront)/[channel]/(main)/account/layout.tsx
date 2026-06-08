@@ -4,7 +4,8 @@ import { AccountLogin } from "@/ui/components/account/account-login";
 import { AccountNav } from "@/ui/components/account/account-nav";
 import { AccountSkeleton } from "@/ui/components/account/account-skeleton";
 import { AccountProvider } from "@/ui/components/account/account-context";
-import { getCurrentUser } from "./get-current-user";
+import { AccountUnavailable } from "@/ui/components/account/account-unavailable";
+import { getAccountAuthState } from "./get-current-user";
 
 export const metadata = {
 	title: "My Account",
@@ -19,9 +20,9 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
 }
 
 async function AccountShell({ children }: { children: ReactNode }) {
-	const user = await getCurrentUser();
+	const auth = await getAccountAuthState();
 
-	if (!user) {
+	if (auth.status === "guest") {
 		return (
 			<AuthFormSection>
 				<AccountLogin />
@@ -29,8 +30,12 @@ async function AccountShell({ children }: { children: ReactNode }) {
 		);
 	}
 
+	if (auth.status === "unavailable") {
+		return <AccountUnavailable />;
+	}
+
 	return (
-		<AccountProvider user={user}>
+		<AccountProvider user={auth.user}>
 			<div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
 				<div className="flex flex-col gap-8 md:flex-row">
 					<aside className="shrink-0 md:min-h-[60vh] md:w-52">

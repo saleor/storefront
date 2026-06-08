@@ -2,7 +2,7 @@
 
 import type { useRouter } from "next/navigation";
 
-import { revalidateAuthLayout } from "@/app/actions";
+import { revalidateStorefrontChromeAction } from "@/app/actions";
 
 type Router = ReturnType<typeof useRouter>;
 
@@ -23,7 +23,7 @@ export async function syncAuthSurfacesAfterSignIn(
 		throw new Error("syncAuthSurfacesAfterSignIn requires a channel slug");
 	}
 
-	await revalidateAuthLayout(channel);
+	await revalidateStorefrontChromeAction(channel);
 
 	if (options?.redirectTo) {
 		// Hard navigation: avoids router.refresh() racing on the login page and guarantees
@@ -35,4 +35,13 @@ export async function syncAuthSurfacesAfterSignIn(
 	if (!options?.skipRefresh) {
 		router.refresh();
 	}
+}
+
+/**
+ * Hard navigation to storefront home.
+ * Use after checkout (or any `/checkout` surface) so the header picks up HttpOnly session cookies —
+ * soft `router.push` can restore a cached anonymous `UserMenuServer` shell.
+ */
+export function navigateToStorefrontHome(channel: string) {
+	window.location.assign(channel ? `/${channel}` : "/");
 }

@@ -10,7 +10,7 @@ function UserMenuSkeleton() {
 export function UserMenuContainer({ channel }: { channel: string }) {
 	return (
 		<Suspense fallback={<UserMenuSkeleton />}>
-			<HeaderAuthRefresh>
+			<HeaderAuthRefresh channel={channel}>
 				<UserMenuServer channel={channel} />
 			</HeaderAuthRefresh>
 		</Suspense>
