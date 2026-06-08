@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
-import { HOMEPAGE_IMAGE_SIZES } from "@/lib/images";
 import { ProductGrid, ProductsGridSkeleton } from "@/ui/components/plp";
 
 export const metadata = {
@@ -14,12 +13,12 @@ export const metadata = {
  */
 export default function Page(props: { params: Promise<{ channel: string }> }) {
 	return (
-		<section className="mx-auto max-w-7xl p-8 pb-16">
+		<>
 			<h2 className="sr-only">Product list</h2>
-			<Suspense fallback={<ProductsGridSkeleton className="pb-16" />}>
+			<Suspense fallback={<ProductsGridSkeleton />}>
 				<FeaturedProducts params={props.params} />
 			</Suspense>
-		</section>
+		</>
 	);
 }
 
@@ -28,8 +27,8 @@ async function FeaturedProducts({ params: paramsPromise }: { params: Promise<{ c
 	const products = await getFeaturedProducts(channel);
 
 	return (
-		<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<ProductGrid products={products} channel={channel} imageSizes={HOMEPAGE_IMAGE_SIZES} />
+		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+			<ProductGrid products={products} channel={channel} />
 		</div>
 	);
 }
