@@ -1,4 +1,5 @@
 import { ProductGallery } from "./product-gallery";
+import { ProductGalleryShell } from "./product-gallery-shell";
 import { getGalleryImages, resolveSelectedVariantId, type Product } from "./gallery-utils";
 
 interface VariantGalleryDynamicProps {
@@ -24,18 +25,8 @@ export async function VariantGalleryDynamic({ product, searchParams }: VariantGa
 
 export function GallerySkeleton() {
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
-			<div className="hidden gap-2 sm:flex">
-				{[...Array(4)].map((_, i) => (
-					<div key={i} className="h-20 w-20 animate-pulse rounded-md bg-muted" />
-				))}
-			</div>
-			<div className="flex justify-center gap-1.5 sm:hidden">
-				{[...Array(4)].map((_, i) => (
-					<div key={i} className="h-2 w-2 animate-pulse rounded-full bg-muted" />
-				))}
-			</div>
-		</div>
+		<ProductGalleryShell imageCount={1} showChrome={false}>
+			<div className="relative aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
+		</ProductGalleryShell>
 	);
 }

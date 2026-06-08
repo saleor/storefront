@@ -6,16 +6,23 @@ import { DiscountPercentLabel, SaleBadge } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
+import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import type { ProductCardData } from "./product-card-data";
 
 export interface ProductCardBaseProps {
 	product: ProductCardData;
 	priority?: boolean;
+	imageSizes?: string;
 	/** Slot over the image (e.g. quick-add). Rendered outside the image link so clicks work. */
 	imageOverlay?: ReactNode;
 }
 
-export function ProductCardBase({ product, priority = false, imageOverlay }: ProductCardBaseProps) {
+export function ProductCardBase({
+	product,
+	priority = false,
+	imageSizes = PLP_IMAGE_SIZES,
+	imageOverlay,
+}: ProductCardBaseProps) {
 	return (
 		<article className="group">
 			<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
@@ -29,7 +36,8 @@ export function ProductCardBase({ product, priority = false, imageOverlay }: Pro
 						src={product.image}
 						alt={product.imageAlt || product.name}
 						fill
-						sizes="(max-width: 1024px) 50vw, 33vw"
+						sizes={imageSizes}
+						quality={PRODUCT_IMAGE_QUALITY}
 						className={cn(
 							"object-cover transition-all duration-500 ease-out md:group-hover:scale-105",
 							product.hoverImage && "md:group-hover:opacity-0",
@@ -42,7 +50,8 @@ export function ProductCardBase({ product, priority = false, imageOverlay }: Pro
 							src={product.hoverImage}
 							alt={`${product.name} - alternate view`}
 							fill
-							sizes="(max-width: 1024px) 50vw, 33vw"
+							sizes={imageSizes}
+							quality={PRODUCT_IMAGE_QUALITY}
 							className="object-cover opacity-0 transition-all duration-500 ease-out md:group-hover:scale-105 md:group-hover:opacity-100"
 						/>
 					)}

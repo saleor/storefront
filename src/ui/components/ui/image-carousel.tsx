@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { PDP_MAIN_IMAGE_SIZES, PDP_THUMBNAIL_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import {
 	Carousel,
@@ -44,7 +45,9 @@ interface ImageCarouselProps {
  * - Arrow navigation on desktop (hover to reveal)
  * - Thumbnail strip on desktop
  * - Dot indicators on mobile
- * - First image has priority={true} for LCP optimization
+ * - Main stage is a fixed aspect-[4/5] box; Embla fills it via absolute inset-0
+ * - First slide uses loading="eager" (LCP priority lives in ProductGalleryFallback)
+ * - Other slides and thumbnails use loading="lazy"
  *
  * Zoom is intentionally not included - use `onImageClick` to integrate
  * with a separate lightbox/zoom component when needed.
@@ -113,11 +116,11 @@ export function ImageCarousel({
 				className="group w-full"
 			>
 				<div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
-					<CarouselContent className="ml-0">
+					<CarouselContent className="ml-0 h-full" viewportClassName="absolute inset-0 h-full w-full">
 						{images.map((image, index) => (
-							<CarouselItem key={image.url} className="pl-0">
+							<CarouselItem key={image.url} className="h-full pl-0">
 								<div
-									className={cn("relative aspect-[4/5] w-full", onImageClick && "cursor-pointer")}
+									className={cn("relative h-full min-h-0 w-full", onImageClick && "cursor-pointer")}
 									onClick={() => onImageClick?.(index)}
 								>
 									<Image
@@ -125,8 +128,10 @@ export function ImageCarousel({
 										alt={image.alt || `${productName} - View ${index + 1}`}
 										fill
 										className="object-cover"
-										sizes="(max-width: 768px) 100vw, 50vw"
-										priority={index === 0}
+										sizes={PDP_MAIN_IMAGE_SIZES}
+										quality={PRODUCT_IMAGE_QUALITY}
+										priority={false}
+										loading={index === 0 ? "eager" : "lazy"}
 									/>
 								</div>
 							</CarouselItem>
@@ -139,14 +144,14 @@ export function ImageCarousel({
 							<CarouselPrevious
 								variant="ghost"
 								className={cn(
-									"left-4 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
+									"left-4 z-10 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>
 							<CarouselNext
 								variant="ghost"
 								className={cn(
-									"right-4 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
+									"right-4 z-10 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>
@@ -155,7 +160,7 @@ export function ImageCarousel({
 				</div>
 
 				{/* Dot indicators for mobile */}
-				{showDots && images.length > 1 && <CarouselDots className="mt-4 md:hidden" />}
+				{showDots && images.length > 1 && <CarouselDots className="mt-4 md:hidden" count={images.length} />}
 			</Carousel>
 
 			{/* Thumbnail Strip for desktop */}
@@ -178,7 +183,9 @@ export function ImageCarousel({
 								alt={`${productName} - Thumbnail ${index + 1}`}
 								fill
 								className="object-cover"
-								sizes="80px"
+								sizes={PDP_THUMBNAIL_IMAGE_SIZES}
+								quality={PRODUCT_IMAGE_QUALITY}
+								loading="lazy"
 							/>
 						</button>
 					))}

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
+import { HOMEPAGE_IMAGE_SIZES } from "@/lib/images";
 import { ProductGrid, ProductsGridSkeleton } from "@/ui/components/plp";
 
 export const metadata = {
@@ -28,7 +29,7 @@ async function FeaturedProducts({ params: paramsPromise }: { params: Promise<{ c
 
 	return (
 		<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<ProductGrid products={products} channel={channel} />
+			<ProductGrid products={products} channel={channel} imageSizes={HOMEPAGE_IMAGE_SIZES} />
 		</div>
 	);
 }
