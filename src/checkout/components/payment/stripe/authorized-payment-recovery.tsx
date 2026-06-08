@@ -63,7 +63,12 @@ export const AuthorizedPaymentRecovery: FC<AuthorizedPaymentRecoveryProps> = ({ 
 						order — you will not be charged again at checkout.
 					</p>
 				</div>
-				<Button type="button" variant="outline" disabled={isCompleting} onClick={() => void handleComplete()}>
+				<Button
+					type="button"
+					variant="outline-solid"
+					disabled={isCompleting}
+					onClick={() => void handleComplete()}
+				>
 					{isCompleting ? (
 						<span className="flex items-center gap-2">
 							<LoadingSpinner />

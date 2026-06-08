@@ -90,7 +90,9 @@ export function useStripeReturnCompletion({
 				let resolvedChannelSlug = channelSlug;
 				if (!resolvedChannelSlug) {
 					const syncResult = await syncCheckoutFromServer(checkoutId);
-					resolvedChannelSlug = syncResult.checkout?.channel.slug;
+					if (syncResult.ok) {
+						resolvedChannelSlug = syncResult.checkout?.channel.slug;
+					}
 				}
 
 				if (!resolvedChannelSlug) {
