@@ -15,6 +15,8 @@ Two skill sources are available:
 | Product detail page (PDP) | `product-pdp` |
 | Variant selection on PDP | `product-variants` |
 | Product filtering/sorting | `product-filtering` |
+| Storefront vs checkout (start here) | `paper-surfaces` |
+| BFF auth / session / account PPR | `data-auth-routes` |
 | Checkout flow debugging | `checkout-management` |
 | Adding a payment gateway | `checkout-payment-gateways` |
 | Checkout UI components | `checkout-components` |

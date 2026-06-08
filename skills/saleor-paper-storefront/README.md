@@ -18,23 +18,25 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 ## What's Included
 
-12 rules across 6 categories covering the full storefront:
+14 rules across 6 categories covering the full storefront:
 
-| Category      | Rules                                                          | Topics                                                       |
-| ------------- | -------------------------------------------------------------- | ------------------------------------------------------------ |
-| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`             | Cache Components, PPR, account auth routes, GraphQL codegen  |
-| Product Pages | `product-pdp`, `product-variants`, `product-filtering`         | PDP architecture, variant selection, server/client filtering |
-| Checkout      | `paper-surfaces`, `checkout-management`, `checkout-components` | Surface split, session lifecycle, UI components              |
-| UI & Channels | `ui-components`, `ui-channels`                                 | Design tokens, multi-currency                                |
-| SEO           | `seo-metadata`                                                 | JSON-LD, OG images, metadata                                 |
-| Development   | `dev-investigation`                                            | Saleor API investigation via generated types and source      |
+| Category      | Rules                                                                                       | Topics                                                       |
+| ------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`                                          | Cache Components, PPR, account auth routes, GraphQL codegen  |
+| Product Pages | `product-pdp`, `product-variants`, `product-filtering`                                      | PDP architecture, variant selection, server/client filtering |
+| Checkout      | `paper-surfaces`, `checkout-management`, `checkout-payment-gateways`, `checkout-components` | Checkout v2 (RSC + server actions), payments, UI components  |
+| UI & Channels | `ui-components`, `ui-channels`                                                              | Design tokens, multi-currency                                |
+| SEO           | `seo-metadata`                                                                              | JSON-LD, OG images, metadata                                 |
+| Development   | `dev-investigation`                                                                         | Saleor API investigation via generated types and source      |
 
 ## Structure
 
 ```
 saleor-paper-storefront/
 ├── SKILL.md              # Overview and quick reference (agents read this first)
-├── AGENTS.md             # Full compiled document (sync from rules/ when material changes)
+├── AGENTS.md             # Full compiled document — regenerate: `node scripts/compile-agents.mjs`
+├── scripts/
+│   └── compile-agents.mjs
 ├── README.md             # This file (for humans)
 ├── rules/                # Individual rule files
 │   ├── data-caching.md
@@ -45,6 +47,7 @@ saleor-paper-storefront/
 │   ├── product-variants.md
 │   ├── product-filtering.md
 │   ├── checkout-management.md
+│   ├── checkout-payment-gateways.md
 │   ├── checkout-components.md
 │   ├── ui-components.md
 │   ├── ui-channels.md

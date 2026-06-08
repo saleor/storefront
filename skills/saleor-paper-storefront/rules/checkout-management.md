@@ -334,3 +334,50 @@ The authorized amount doesn't cover the checkout's total amount.
 3. **Clear checkout after completion** to avoid stale data
 4. **Test with fresh checkouts** when debugging payment issues
 5. **Check payment app health** when transactions fail with `AUTHORIZATION_FAILURE`
+
+---
+
+## Appendix: Checkout v2 cheat sheet
+
+Quick reference for common tasks. Full surface layout: [`paper-surfaces.md`](paper-surfaces.md).
+
+### When to use which refresh
+
+| Goal                                                   | Mechanism                                                                                            |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Re-fetch cart after promo / line change in checkout    | `refreshCheckout()` — always replaces client state                                                   |
+| Pick up RSC snapshot after cart edit on storefront     | Automatic via `revalidateAuthSurfaces` + next navigation; or `useRefreshCheckoutRsc()`               |
+| Merge server snapshot without clobbering in-flow edits | `adoptCheckoutSnapshot` (on `initialCheckout` change only)                                           |
+| Update `me` after BFF sign-in                          | `router.refresh()` in checkout; hard nav + `revalidateStorefrontChrome` when returning to storefront |
+| Change checkout step                                   | `updateCheckoutQuery({ step })` — shallow, not `router.replace`                                      |
+| Change `?checkout=` id (orphaned recovery)             | `router.replace` with new checkout id                                                                |
+| After successful payment                               | `navigateToOrderConfirmation()` — `window.location.replace` to `/checkout/complete`                  |
+
+### URL params
+
+| Param                                     | RSC reads?       | Purpose                                                        |
+| ----------------------------------------- | ---------------- | -------------------------------------------------------------- |
+| `checkout`                                | Yes              | Saleor checkout global id (required for active flow)           |
+| `order` on `/checkout`                    | Yes → redirect   | Legacy; canonical confirmation is `/checkout/complete?order=`  |
+| `step`                                    | No (client only) | `contact`, `shipping`, `payment` — shallow history             |
+| `processingPayment`, Stripe return params | Client           | 3DS return; preserved by merging live `window.location.search` |
+
+### Hooks (v2)
+
+| Hook                            | Reads from                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| `useCheckout()`                 | `CheckoutDataProvider` + session id (compat API; `refetch` → `refreshCheckout`) |
+| `useCheckoutData()`             | Full context including `loadState`, `setCheckout`                               |
+| `useLiveCheckoutSearchParams()` | Live URL including shallow step updates                                         |
+| `useCheckoutTransition()`       | `"completing"` during payment → order navigation                                |
+| `useRefreshCheckoutRsc()`       | Triggers `router.refresh()` for RSC `initialCheckout` / `me`                    |
+
+### Session states (`resolveSessionUser`)
+
+| Status          | UI meaning                                                         |
+| --------------- | ------------------------------------------------------------------ |
+| `guest`         | No valid session — show sign-in                                    |
+| `authenticated` | `me` present                                                       |
+| `unavailable`   | Transient failure — do not flash login; optional retry server-side |
+
+Expired JWT maps to **`guest`** via `isDefinitiveAuthFailure` (structured Saleor error codes first, message fallback).

@@ -76,17 +76,18 @@ header.tsx
         └── UserMenuServer (async) → cookies() + getHeaderUser() or sign-in link
 ```
 
-| Concern            | Location                                  | Notes                                                        |
-| ------------------ | ----------------------------------------- | ------------------------------------------------------------ |
-| Auth cookies check | `has-auth-session.ts`                     | Same lookup as auth SDK (`readAuthCookieValue`)              |
-| User profile       | `get-current-user.ts`                     | `React.cache()` — deduped per request                        |
-| Header user        | `get-header-user.ts`                      | `getHeaderAuthState()` — guest / authenticated / unavailable |
-| Session resolution | `resolve-session-user.ts`                 | Classifies `me` fetch; one server retry on transient errors  |
-| BFF sign-in        | `bff-server.ts`, `/api/auth/login`        | HttpOnly cookies, rate limited                               |
-| Client forms       | `bff-client.ts`                           | `loginWithBff`, `setPasswordWithBff`                         |
-| Client profile     | `account-context.tsx`                     | `useAccountUser()` for settings/addresses/overview           |
-| Sign-in UI         | `account-login.tsx`                       | `LoginForm` in Suspense (no SDK provider)                    |
-| Order fetches      | `recent-orders-section.tsx`, orders pages | Inside page-level Suspense                                   |
+| Concern            | Location                                  | Notes                                                           |
+| ------------------ | ----------------------------------------- | --------------------------------------------------------------- |
+| Auth cookies check | `has-auth-session.ts`                     | Same lookup as auth SDK (`readAuthCookieValue`)                 |
+| User profile       | `get-current-user.ts`                     | `React.cache()` — deduped per request                           |
+| Header user        | `get-header-user.ts`                      | `getHeaderAuthState()` — guest / authenticated / unavailable    |
+| Session resolution | `resolve-session-user.ts`                 | Classifies `me` fetch; one server retry on transient errors     |
+| Auth failure codes | `session-auth-state.ts`                   | `isDefinitiveAuthFailure` — Saleor JWT codes + message fallback |
+| BFF sign-in        | `bff-server.ts`, `/api/auth/login`        | HttpOnly cookies, rate limited                                  |
+| Client forms       | `bff-client.ts`                           | `loginWithBff`, `setPasswordWithBff`                            |
+| Client profile     | `account-context.tsx`                     | `useAccountUser()` for settings/addresses/overview              |
+| Sign-in UI         | `account-login.tsx`                       | `LoginForm` in Suspense (no SDK provider)                       |
+| Order fetches      | `recent-orders-section.tsx`, orders pages | Inside page-level Suspense                                      |
 
 ## Code Patterns
 
@@ -164,6 +165,8 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 | `src/app/[channel]/(main)/account/layout.tsx`                        | Suspense + auth gate                     |
 | `src/app/[channel]/(main)/account/get-current-user.ts`               | Cached profile fetch                     |
 | `src/lib/auth/has-auth-session.ts`                                   | Cookie presence check                    |
+| `src/lib/auth/session-auth-state.ts`                                 | JWT failure classification + retry logic |
+| `src/lib/auth/resolve-session-user.ts`                               | `resolveSessionUser()` wrapper           |
 | `src/lib/auth/bff-server.ts`                                         | Server sign-in / sign-out                |
 | `src/lib/auth/get-header-user.ts`                                    | Header `me` fetch                        |
 | `src/app/api/auth/login/route.ts`                                    | BFF login endpoint                       |

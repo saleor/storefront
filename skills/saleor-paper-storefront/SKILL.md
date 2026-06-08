@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.4.0"
+  version: "1.5.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-12 rules across 6 categories covering caching, PDP architecture, checkout
+14 rules across 6 categories covering caching, PDP architecture, checkout v2,
 components, UI patterns, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
@@ -54,8 +54,8 @@ Reference these guidelines when:
 ### 1. Data Layer (CRITICAL)
 
 - `data-caching` - Cache Components (PPR), three-layer page model, cache manifest, webhooks
-- `data-auth-routes` - Authenticated route segments (account layout, Suspense, BFF auth)
-- `data-graphql` - Two codegen setups, permission patterns, nullable fields
+- `data-auth-routes` - BFF auth, `resolveSessionUser`, account PPR, header chrome refresh
+- `data-graphql` - Two codegen setups (checkout types via server actions, not urql runtime)
 
 ### 2. Product Pages (HIGH)
 
@@ -66,8 +66,8 @@ Reference these guidelines when:
 
 ### 3. Checkout Flow (HIGH)
 
-- `paper-surfaces` - Storefront vs checkout surfaces, `@paper/session-bridge`, RSC checkout + BFF auth
-- `checkout-management` - Checkout lifecycle, cookie storage, payment debugging
+- `paper-surfaces` - **Start here for checkout** — surfaces, routes, v2 data flow, session handoff
+- `checkout-management` - Lifecycle, RSC sync, shallow steps, payment transition UX (+ cheat sheet)
 - `checkout-payment-gateways` - Payment app registry, submit modes, adding a new gateway
 - `checkout-components` - Reusable checkout UI (SignInForm, AddressSelector, billing, integrated payment UI)
 
@@ -110,8 +110,10 @@ Chronological upgrade prompts for forks behind upstream Paper. **Not** for green
 | Migration registry     | `migrations/manifest.json`       |
 | Fork baseline          | `paper-version.json` (repo root) |
 
-Trigger phrases: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching", "paper-version".
+Trigger phrases: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching", "checkout v2", "paper-version".
+
+Notable migration: `2026-06-checkout-v2` — RSC checkout, server actions, remove urql runtime (requires `2026-06-account-ppr-auth`).
 
 ## Full Compiled Document
 
-For the complete guide with all rules expanded: `AGENTS.md`
+For the complete guide with all rules expanded: `AGENTS.md` (regenerate from `rules/` with `node scripts/compile-agents.mjs`)

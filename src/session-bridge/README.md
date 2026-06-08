@@ -16,6 +16,10 @@ Shared contract between the **storefront** surface (browse, cart) and the **chec
 | `checkout-url.ts`  | `buildCheckoutPath`, `buildOrderConfirmationPath`, URL helpers |
 | `search-params.ts` | URL param map, `getQueryParams`, `createQueryString`           |
 
-## Hosted checkout (future)
+## Checkout v2
+
+Active checkout: `/checkout?checkout=`. Order confirmation: `/checkout/complete?order=` (separate route). See [`rules/paper-surfaces.md`](../skills/saleor-paper-storefront/rules/paper-surfaces.md).
+
+## Hosted checkout (optional)
 
 Set `NEXT_PUBLIC_CHECKOUT_URL=https://checkout.example.com` so `buildCheckoutUrl` returns absolute links. Optional middleware can block non-checkout routes on a checkout-only deploy.
