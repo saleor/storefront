@@ -1,10 +1,8 @@
-export { ApplePayIcon } from "./apple-pay-icon";
 export { BuildingIcon } from "./building-icon";
 export { CheckIcon } from "./check-icon";
 export { ChevronDownIcon } from "./chevron-down-icon";
 export { EyeHiddenIcon } from "./eye-hidden-icon";
 export { EyeIcon } from "./eye-icon";
-export { GooglePayIcon } from "./google-pay-icon";
 export { LockIcon } from "./lock-icon";
 export { MailIcon } from "./mail-icon";
 export { MapPinIcon } from "./map-pin-icon";

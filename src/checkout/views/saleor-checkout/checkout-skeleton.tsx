@@ -19,39 +19,6 @@ export const CheckoutSkeleton = ({ step = 1, isShippingRequired = true }: Checko
 						<div className="flex-1">
 							<div className="rounded-lg border border-border bg-card p-6 md:p-8">
 								<div className="space-y-8">
-									{/* Express Checkout Section */}
-									<div className="space-y-4">
-										{/* Top divider with label */}
-										<div className="relative">
-											<div className="absolute inset-0 flex items-center">
-												<span className="w-full border-t border-border" />
-											</div>
-											<div className="relative flex justify-center">
-												<span className="bg-card px-4">
-													<div className="h-3 w-28 animate-pulse rounded bg-muted" />
-												</span>
-											</div>
-										</div>
-
-										{/* Express payment buttons - 2 columns */}
-										<div className="grid grid-cols-2 gap-3">
-											<div className="h-12 animate-pulse rounded-md bg-muted" />
-											<div className="h-12 animate-pulse rounded-md bg-muted" />
-										</div>
-
-										{/* Bottom divider with label */}
-										<div className="relative">
-											<div className="absolute inset-0 flex items-center">
-												<span className="w-full border-t border-border" />
-											</div>
-											<div className="relative flex justify-center">
-												<span className="bg-card px-4">
-													<div className="h-3 w-32 animate-pulse rounded bg-muted" />
-												</span>
-											</div>
-										</div>
-									</div>
-
 									{/* Contact Section */}
 									<section className="space-y-4">
 										<div className="flex items-center justify-between">

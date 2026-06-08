@@ -6,7 +6,6 @@ import { useState, useCallback, useEffect, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { syncAuthSurfacesAfterSignIn } from "@/lib/auth";
 import { Button } from "@/ui/components/ui/button";
-import { ExpressCheckout } from "@/checkout/components/express-checkout";
 import {
 	updateCheckoutEmail,
 	updateCheckoutShippingAddress,
@@ -431,7 +430,6 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	if (contactView === "resetPassword") {
 		return (
 			<div className="space-y-8">
-				<ExpressCheckout />
 				<ResetPasswordForm
 					onSuccess={async () => {
 						onAuthSessionPending();
@@ -455,7 +453,6 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	if (contactView === "signIn") {
 		return (
 			<div className="space-y-8">
-				<ExpressCheckout />
 				<SignInForm
 					initialEmail={email}
 					channelSlug={checkout.channel.slug}
@@ -502,8 +499,6 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					{recoveryError ? <p className="text-sm text-destructive">{recoveryError}</p> : null}
 				</div>
 			) : null}
-
-			<ExpressCheckout />
 
 			<ContactSection
 				isSignedIn={authenticated}
