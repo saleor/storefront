@@ -4,6 +4,7 @@ import { type FallbackProps } from "react-error-boundary";
 import Link from "next/link";
 import { ShoppingBag, ArrowLeft, AlertCircle } from "lucide-react";
 import { CheckoutPageShell } from "@/checkout/views/saleor-checkout/checkout-page-shell";
+import { buttonClassName } from "@/ui/components/ui/button";
 
 interface PageNotFoundProps extends Partial<FallbackProps> {
 	title?: string;
@@ -29,7 +30,7 @@ export const PageNotFound = ({
 						<div className="flex flex-col gap-3">
 							<Link
 								href="/"
-								className="shadow-xs hover:bg-primary/90 focus-visible:outline-hidden inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary font-medium text-primary-foreground transition-all duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								className={buttonClassName({ asLink: true, size: "lg", className: "h-12 w-full" })}
 							>
 								<ShoppingBag className="h-4 w-4" />
 								Continue Shopping

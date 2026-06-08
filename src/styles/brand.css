@@ -3,75 +3,65 @@
  * SALEOR STOREFRONT - DESIGN TOKENS
  * ========================================
  *
- * This file defines the visual foundation of the storefront using
- * CSS custom properties. These tokens are consumed by Tailwind CSS
- * via the theme configuration in tailwind.config.ts.
+ * Single source of truth for visual design. Edit this file to rebrand.
+ * Tailwind consumes these via tailwind.config.cjs (see src/styles/README.md).
  *
- * Color Format: OKLCH (Oklab Lightness Chroma Hue)
- * - Modern perceptually uniform color space
- * - Better for programmatic color manipulation
- * - Supported in all modern browsers
+ * Color format: OKLCH (perceptually uniform, good for programmatic tweaks)
  *
- * Design System:
- * - Minimal e-commerce theme with warm neutrals
- * - Near-black for primary actions and headings
- * - Warm off-whites for backgrounds
- * - Red accent for destructive/sale indicators
- *
- * Typography:
- * - Geist font family (loaded via Next.js font system in layout.tsx)
- * - Font variables set on <html> element: --font-geist-sans, --font-geist-mono
+ * @see src/styles/README.md — canonical workflow for Tailwind developers
  */
 
 /* ============================================
- * Light Theme (Default)
+ * Light theme (only)
  * ============================================ */
 :root {
 	/* --- Backgrounds --- */
 	--background: oklch(0.98 0.005 90); /* Page background - warm off-white */
-	--card: oklch(1 0 0); /* Card surfaces - pure white */
-	--popover: oklch(1 0 0); /* Popover/dropdown backgrounds */
-	--secondary: oklch(0.96 0.003 90); /* Secondary surfaces */
-	--muted: oklch(0.94 0.003 90); /* Muted/disabled backgrounds */
-	--accent: oklch(0.94 0.003 90); /* Accent backgrounds */
+	--card: oklch(1 0 0); /* Cards, dropdowns, modals */
+	--popover: oklch(1 0 0);
+	--secondary: oklch(0.96 0.003 90);
+	--muted: oklch(0.94 0.003 90);
+	--accent: oklch(0.94 0.003 90);
 
-	/* --- Foregrounds (Text Colors) --- */
-	--foreground: oklch(0.12 0 0); /* Primary text - near black */
+	/* --- Foregrounds (text on light surfaces) --- */
+	--foreground: oklch(0.12 0 0);
 	--card-foreground: oklch(0.12 0 0);
 	--popover-foreground: oklch(0.12 0 0);
 	--secondary-foreground: oklch(0.12 0 0);
-	--muted-foreground: oklch(0.45 0 0); /* Secondary/muted text */
+	--muted-foreground: oklch(0.45 0 0);
 	--accent-foreground: oklch(0.12 0 0);
 
-	/* --- Primary (CTA buttons, links) --- */
-	--primary: oklch(0.12 0 0); /* Near black */
-	--primary-foreground: oklch(0.98 0 0); /* White text on primary */
+	/* --- Primary (CTAs, key actions) --- */
+	--primary: oklch(0.12 0 0);
+	--primary-foreground: oklch(0.98 0 0);
 
-	/* --- Semantic Colors --- */
-	--destructive: oklch(0.55 0.2 25); /* Error/delete - red */
+	/* --- Semantic --- */
+	--destructive: oklch(0.55 0.2 25);
 	--destructive-foreground: oklch(0.98 0 0);
-	--success: oklch(0.55 0.15 145); /* Success - green */
+	--success: oklch(0.55 0.15 145);
 	--success-foreground: oklch(0.98 0 0);
 
-	/* --- Interactive Elements --- */
-	--border: oklch(0.9 0.003 90); /* Border color */
-	--input: oklch(0.9 0.003 90); /* Input borders */
-	--ring: oklch(0.12 0 0); /* Focus ring color */
+	/* --- Interactive --- */
+	--border: oklch(0.9 0.003 90);
+	--input: oklch(0.9 0.003 90);
+	--ring: oklch(0.12 0 0);
+
+	/* --- Inverse surfaces (dark bands: bg-foreground text-background) --- */
+	--inverse: oklch(0.82 0 0);
+	--inverse-subtle: oklch(0.65 0 0);
+	--inverse-muted: oklch(0.55 0 0);
+	--border-inverse: oklch(0.28 0 0);
 
 	/* --- Layout --- */
-	--radius: 0.5rem; /* Base border radius (8px) */
+	--radius: 0.5rem;
 
-	/* --- Skeleton Delay --- */
-	--skeleton-delay: 300ms; /* Delay before skeleton appears */
+	/* --- Skeleton --- */
+	--skeleton-delay: 300ms;
 }
 
 /* ============================================
- * Delayed Skeleton Animation
- * ============================================
- * Prevents skeleton flash on fast loads.
- * Skeleton stays invisible for --skeleton-delay, then fades in.
- * If content loads before delay, skeleton is never seen.
- */
+ * Delayed skeleton — invisible until --skeleton-delay
+ * ============================================ */
 @keyframes skeleton-fade-in {
 	from {
 		opacity: 0;
@@ -79,41 +69,4 @@
 	to {
 		opacity: 1;
 	}
-}
-
-/* ============================================
- * Dark Theme
- * Activated by adding .dark class to <html>
- * ============================================ */
-.dark {
-	/* --- Backgrounds --- */
-	--background: oklch(0.12 0 0);
-	--card: oklch(0.16 0 0);
-	--popover: oklch(0.16 0 0);
-	--secondary: oklch(0.22 0 0);
-	--muted: oklch(0.22 0 0);
-	--accent: oklch(0.22 0 0);
-
-	/* --- Foregrounds --- */
-	--foreground: oklch(0.98 0 0);
-	--card-foreground: oklch(0.98 0 0);
-	--popover-foreground: oklch(0.98 0 0);
-	--secondary-foreground: oklch(0.98 0 0);
-	--muted-foreground: oklch(0.65 0 0);
-	--accent-foreground: oklch(0.98 0 0);
-
-	/* --- Primary --- */
-	--primary: oklch(0.98 0 0);
-	--primary-foreground: oklch(0.12 0 0);
-
-	/* --- Semantic Colors --- */
-	--destructive: oklch(0.45 0.18 25);
-	--destructive-foreground: oklch(0.98 0 0);
-	--success: oklch(0.65 0.15 145);
-	--success-foreground: oklch(0.12 0 0);
-
-	/* --- Interactive Elements --- */
-	--border: oklch(0.26 0 0);
-	--input: oklch(0.26 0 0);
-	--ring: oklch(0.98 0 0);
 }

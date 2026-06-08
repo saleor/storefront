@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
 import type { OptionRendererProps } from "../types";
 
 export interface ButtonOptionProps extends OptionRendererProps {
@@ -59,8 +60,8 @@ export function ButtonOption({
 					isSelected
 						? "border-foreground bg-foreground text-background"
 						: isIncompatible
-							? "border-gray-200 text-muted-foreground hover:border-gray-300"
-							: "border-gray-400 bg-background text-foreground hover:border-foreground",
+							? "hover:border-muted-foreground/40 border-border text-muted-foreground"
+							: "border-input bg-background text-foreground hover:border-foreground",
 					isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
 				)}
 				title={
@@ -77,14 +78,9 @@ export function ButtonOption({
 			>
 				{option.name}
 			</button>
-			{hasDiscount && (
-				<span
-					className="pointer-events-none absolute -bottom-2 -right-1 rounded-full border border-destructive bg-background px-1.5 py-0.5 text-[10px] font-semibold text-destructive"
-					aria-hidden="true"
-				>
-					-{option.discountPercent}%
-				</span>
-			)}
+			{hasDiscount && option.discountPercent ? (
+				<DiscountPercentLabel percent={option.discountPercent} size="pill" />
+			) : null}
 		</div>
 	);
 }

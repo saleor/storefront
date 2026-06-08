@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Truck, RotateCcw } from "lucide-react";
-import { Button } from "@/ui/components/ui/button";
+import { Button, buttonClassName } from "@/ui/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetCloseButton } from "@/ui/components/ui/sheet";
 import { useCart } from "./cart-context";
 import type { DeleteCartLine, UpdateCartLineQuantity } from "./cart-mutations";
@@ -204,7 +204,7 @@ export function CartDrawer({
 							<Link
 								href={`/${channel}/products`}
 								onClick={closeCart}
-								className="hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors"
+								className={buttonClassName({ asLink: true })}
 							>
 								Start Shopping
 							</Link>
@@ -362,7 +362,11 @@ export function CartDrawer({
 									closeCart();
 								}}
 								aria-disabled={isCartBusy}
-								className="hover:bg-primary/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-primary text-base font-medium text-primary-foreground transition-colors aria-disabled:cursor-not-allowed aria-disabled:opacity-60"
+								className={buttonClassName({
+									asLink: true,
+									size: "lg",
+									className: "group h-12 w-full",
+								})}
 							>
 								<span>Checkout</span>
 								<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
@@ -370,7 +374,12 @@ export function CartDrawer({
 							<Link
 								href={`/${channel}/products`}
 								onClick={closeCart}
-								className="inline-flex h-12 w-full items-center justify-center rounded-md border border-border bg-transparent text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+								className={buttonClassName({
+									asLink: true,
+									variant: "outline-solid",
+									size: "lg",
+									className: "h-12 w-full",
+								})}
 							>
 								Continue Shopping
 							</Link>

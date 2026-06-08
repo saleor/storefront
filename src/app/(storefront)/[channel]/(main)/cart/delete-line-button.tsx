@@ -1,6 +1,9 @@
 "use client";
 
 import { useTransition } from "react";
+import { ariaDisabledClassName } from "@/ui/components/ui/button";
+import { cn } from "@/lib/utils";
+
 type Props = {
 	deleteLine: () => Promise<void>;
 };
@@ -11,7 +14,11 @@ export const DeleteLineButton = ({ deleteLine }: Props) => {
 	return (
 		<button
 			type="button"
-			className="text-sm text-neutral-500 hover:text-neutral-900"
+			className={cn(
+				"text-sm text-muted-foreground hover:text-foreground",
+				ariaDisabledClassName,
+				"aria-disabled:opacity-60",
+			)}
 			onClick={() => {
 				if (isPending) return;
 				startTransition(() => {

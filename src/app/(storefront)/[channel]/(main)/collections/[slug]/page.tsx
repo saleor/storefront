@@ -6,7 +6,7 @@ import { executePublicGraphQL } from "@/lib/graphql";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
-import { CategoryHero, ProductsGridSkeleton, transformToProductCard } from "@/ui/components/plp";
+import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { CollectionPageClient } from "./client";
 
@@ -98,7 +98,7 @@ async function CollectionProducts({
 		notFound();
 	}
 
-	const productCards = products.edges.map((e) => transformToProductCard(e.node, params.channel));
+	const productCards = products.edges.map((e) => toProductCardData(e.node, params.channel));
 
 	return (
 		<CollectionPageClient

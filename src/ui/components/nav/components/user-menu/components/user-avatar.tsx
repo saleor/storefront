@@ -26,7 +26,7 @@ export const UserAvatar = ({ user }: Props) => {
 
 	return (
 		<span
-			className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-center text-xs font-bold uppercase"
+			className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-center text-xs font-bold uppercase text-foreground"
 			aria-hidden="true"
 		>
 			{label}

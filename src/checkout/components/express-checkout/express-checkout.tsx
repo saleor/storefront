@@ -49,7 +49,7 @@ export function ExpressCheckout({ onApplePay, onGooglePay, className }: ExpressC
 				<Button
 					variant="outline-solid"
 					onClick={onGooglePay}
-					className="h-12 border border-neutral-300 bg-white hover:bg-neutral-50"
+					className="h-12"
 					aria-label="Pay with Google Pay"
 				>
 					<GooglePayIcon className="h-5 w-auto" />

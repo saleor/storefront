@@ -12,6 +12,7 @@ import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductAttributes,
+	ProductGalleryFallback,
 	VariantGalleryDynamic,
 	GallerySkeleton,
 	VariantSectionDynamic,
@@ -150,12 +151,12 @@ async function ProductShell({
 		variantCount: product.variants?.length ?? 0,
 	});
 
-	const lcpImageUrl = defaultImages[0]?.url;
+	const lcpImage = defaultImages[0];
+	// Reserve mobile dots / desktop thumbs in fallback when product has multiple images
+	const showGalleryChrome = defaultImages.length > 1;
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
-			{lcpImageUrl && <link rel="preload" as="image" href={lcpImageUrl} fetchPriority="high" />}
-
 			{productJsonLd && (
 				<script
 					type="application/ld+json"
@@ -170,7 +171,18 @@ async function ProductShell({
 
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 					<div className="lg:sticky lg:top-24 lg:self-start">
-						<Suspense fallback={<GallerySkeleton />}>
+						<Suspense
+							fallback={
+								lcpImage ? (
+									<ProductGalleryFallback
+										src={lcpImage.url}
+										alt={lcpImage.alt ?? product.name}
+										imageCount={defaultImages.length}
+										showChrome={showGalleryChrome}
+									/>
+								) : null
+							}
+						>
 							<VariantGalleryDynamic product={product} searchParams={searchParams} />
 						</Suspense>
 					</div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { SearchProduct } from "@/lib/search";
+import { HOMEPAGE_IMAGE_SIZES, LCP_IMAGE_PRIORITY_COUNT, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { localeConfig } from "@/config/locale";
 
 interface SearchResultsProps {
@@ -21,7 +22,7 @@ export function SearchResults({ products, channel }: SearchResultsProps) {
 		<ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 			{products.map((product, index) => (
 				<li key={product.id}>
-					<SearchResultCard product={product} channel={channel} priority={index < 2} />
+					<SearchResultCard product={product} channel={channel} priority={index < LCP_IMAGE_PRIORITY_COUNT} />
 				</li>
 			))}
 		</ul>
@@ -54,9 +55,11 @@ function SearchResultCard({
 						src={product.thumbnailUrl}
 						alt={product.thumbnailAlt || product.name}
 						fill
-						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+						sizes={HOMEPAGE_IMAGE_SIZES}
+						quality={PRODUCT_IMAGE_QUALITY}
 						className="object-cover transition-transform duration-300 group-hover:scale-105"
 						priority={priority}
+						loading={priority ? undefined : "lazy"}
 					/>
 				) : (
 					<div className="flex h-full items-center justify-center text-muted-foreground">No image</div>
