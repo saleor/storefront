@@ -9,7 +9,40 @@ function graphqlFailure(message: string): GraphQLError {
 }
 
 describe("isDefinitiveAuthFailure", () => {
-	it("matches expired JWT messages", () => {
+	it("matches Saleor's structured ExpiredSignatureError code", () => {
+		expect(
+			isDefinitiveAuthFailure({
+				type: "graphql",
+				message: "anything",
+				isRetryable: false,
+				codes: ["ExpiredSignatureError"],
+			}),
+		).toBe(true);
+	});
+
+	it("matches the invalid_token code variant", () => {
+		expect(
+			isDefinitiveAuthFailure({
+				type: "graphql",
+				message: "anything",
+				isRetryable: false,
+				codes: ["invalid_token"],
+			}),
+		).toBe(true);
+	});
+
+	it("does not treat non-auth codes as auth failure", () => {
+		expect(
+			isDefinitiveAuthFailure({
+				type: "graphql",
+				message: "Internal server error",
+				isRetryable: false,
+				codes: ["GraphQLError"],
+			}),
+		).toBe(false);
+	});
+
+	it("falls back to message match when no code is present", () => {
 		expect(isDefinitiveAuthFailure(graphqlFailure("Signature has expired"))).toBe(true);
 	});
 

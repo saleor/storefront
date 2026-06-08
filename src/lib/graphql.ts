@@ -20,6 +20,8 @@ export interface GraphQLError {
 	statusCode?: number;
 	/** Whether the request could succeed if retried */
 	isRetryable: boolean;
+	/** Saleor error codes from `errors[].extensions.code` (only for 'graphql' type) */
+	codes?: readonly string[];
 	/** Original error for debugging */
 	cause?: unknown;
 	/** Saleor validation errors with field info (only for 'validation' type) */
@@ -68,13 +70,14 @@ function httpError(statusCode: number, message: string): GraphQLFailure {
 	};
 }
 
-function graphqlError(messages: string[]): GraphQLFailure {
+function graphqlError(messages: string[], codes: string[] = []): GraphQLFailure {
 	return {
 		ok: false,
 		error: {
 			type: "graphql",
 			message: messages.join("\n"),
 			isRetryable: false,
+			...(codes.length > 0 ? { codes } : {}),
 		},
 	};
 }
@@ -282,8 +285,13 @@ type GraphQLOptions<Variables> = {
 
 type GraphQLResponseBody<T> = {
 	data?: T | null;
-	errors?: readonly { message?: string | null }[];
+	errors?: readonly { message?: string | null; extensions?: { code?: string | null } | null }[];
 };
+
+/** Extract Saleor error codes from `errors[].extensions.code` (e.g. `ExpiredSignatureError`). */
+function extractErrorCodes(errors: GraphQLResponseBody<unknown>["errors"]): string[] {
+	return errors?.map((e) => e.extensions?.code).filter((c): c is string => Boolean(c)) ?? [];
+}
 
 /**
  * Internal base GraphQL executor. Returns a Result type.
@@ -353,7 +361,7 @@ async function executeGraphQL<Result, Variables>(
 	}
 
 	if (messages.length > 0) {
-		return graphqlError(messages);
+		return graphqlError(messages, extractErrorCodes(body.errors));
 	}
 
 	return graphqlError(["No data in GraphQL response"]);
@@ -454,7 +462,7 @@ export async function executeRawGraphQL<T = unknown>(options: RawGraphQLOptions)
 		}
 
 		if (messages.length > 0) {
-			return graphqlError(messages);
+			return graphqlError(messages, extractErrorCodes(body.errors));
 		}
 
 		return graphqlError(["No data in GraphQL response"]);

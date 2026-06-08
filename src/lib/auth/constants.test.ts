@@ -1,18 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { AUTH_COOKIE_MARKERS, decodeCookieValue, encodeCookieName } from "./constants";
+import { decodeCookieValue, encodeCookieName } from "./constants";
 
 describe("auth cookie helpers", () => {
 	const apiUrl = "https://demo.saleor.io/graphql/";
 
-	it("maps SDK storage keys to cookie names that match session markers", () => {
+	it("encodes SDK storage keys into valid cookie names", () => {
 		const accessKey = [apiUrl, "saleor_auth_access_token"].join("+");
-		const refreshKey = [apiUrl, "saleor_auth_module_refresh_token"].join("+");
-
 		const accessCookie = encodeCookieName(accessKey);
-		const refreshCookie = encodeCookieName(refreshKey);
 
-		expect(AUTH_COOKIE_MARKERS.some((marker) => accessCookie.includes(marker))).toBe(true);
-		expect(AUTH_COOKIE_MARKERS.some((marker) => refreshCookie.includes(marker))).toBe(true);
+		// Cookie names must not contain ':' '/' or '+' from the raw SDK key.
+		expect(accessCookie).not.toMatch(/[:/+]/);
+		expect(accessCookie).toContain("saleor_auth_access_token");
 	});
 
 	it("decodes percent-encoded cookie values from the client storage layer", () => {

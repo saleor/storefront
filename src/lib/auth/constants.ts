@@ -16,12 +16,6 @@ export const encodeCookieName = (key: string): string => {
 	return key.replace(/[^a-zA-Z0-9_-]/g, "_");
 };
 
-/**
- * Substrings matched against encoded Saleor auth cookie names (client + server).
- * Must match @saleor/auth-sdk storage keys after `encodeCookieName()`.
- */
-export const AUTH_COOKIE_MARKERS = ["saleor_auth_access_token", "saleor_auth_module_refresh_token"] as const;
-
 /** Decode cookie values set via `encodeURIComponent` on the client. */
 export function decodeCookieValue(value: string): string {
 	try {
