@@ -1,4 +1,4 @@
-import { type CheckoutAuthorizeStatusEnum, type CheckoutFragment } from "@/checkout/graphql";
+import { type CheckoutFragment } from "@/checkout/graphql";
 import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
 import { isCheckoutReadyToComplete } from "@/checkout/lib/payment/checkout-payment-status";
 
