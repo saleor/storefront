@@ -4,12 +4,12 @@ import { useState, type FC } from "react";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { Button } from "@/ui/components/ui/button";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
-import { updateCheckoutBilling } from "@/checkout/lib/payment/update-billing";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
-import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
+import { completeFreeOrderCheckout } from "@/checkout/lib/payment/complete-free-order-checkout";
 import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
+import { PaymentTrustSignals } from "@/checkout/components/payment/payment-trust-signals";
 import { type StripeBillingContext } from "./stripe-payment-form";
 
 type FreeOrderCheckoutProps = {
@@ -17,6 +17,7 @@ type FreeOrderCheckoutProps = {
 	billing: StripeBillingContext;
 	onError: (message: string) => void;
 	onBillingErrors: (errors: Record<string, string>, focusField?: string) => void;
+	onPaymentActivityChange?: (active: boolean) => void;
 };
 
 /** Completes a $0 checkout without mounting Stripe Elements. */
@@ -25,6 +26,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 	billing,
 	onError,
 	onBillingErrors,
+	onPaymentActivityChange,
 }) => {
 	const { refreshCheckout } = useCheckoutData();
 	const [isLoading, setIsLoading] = useState(false);
@@ -33,34 +35,27 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 	const handleComplete = async () => {
 		onError("");
 		setIsLoading(true);
+		onPaymentActivityChange?.(true);
 		let orderPlaced = false;
 
 		try {
-			const billingResult = await updateCheckoutBilling({
-				checkoutId: checkout.id,
+			const result = await completeFreeOrderCheckout({
+				checkout,
+				billingData: billing.billingData,
 				sameAsBilling: billing.sameAsBilling,
 				hasShippingAddress: billing.hasShippingAddress,
-				billingData: billing.billingData,
 				shippingAddress: billing.shippingAddress,
 				userAddresses: billing.userAddresses,
 				authenticated: billing.authenticated,
+				refreshCheckout,
 			});
 
-			if (!billingResult.ok) {
-				onBillingErrors(billingResult.errors, billingResult.focusField);
-				return;
-			}
-
-			const liveCheckout = await refreshCheckout({ updateState: false });
-			const checkoutToComplete = liveCheckout ?? checkout;
-
-			const completeResult = await finalizeCheckoutOrder(
-				checkoutToComplete.id,
-				checkoutToComplete.channel.slug,
-			);
-
-			if (!completeResult.ok) {
-				onError(completeResult.error);
+			if (!result.ok) {
+				if (result.kind === "billing") {
+					onBillingErrors(result.errors, result.focusField);
+				} else {
+					onError(result.error);
+				}
 				return;
 			}
 
@@ -73,6 +68,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 			if (!orderPlaced) {
 				clearPaymentCompleting();
 				setIsLoading(false);
+				onPaymentActivityChange?.(false);
 			}
 		}
 	};
@@ -83,6 +79,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 				Your order total is <span className="font-medium text-foreground">{totalStr}</span>. No payment is
 				required — confirm below to place your order.
 			</p>
+			<PaymentTrustSignals />
 			<Button
 				type="button"
 				className="h-12 w-full md:w-auto md:min-w-[200px]"

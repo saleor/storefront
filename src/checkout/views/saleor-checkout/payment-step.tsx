@@ -13,6 +13,7 @@ import {
 	PaymentGatewayAlerts,
 	PaymentMethodArea,
 	PaymentError,
+	PaymentTrustSignals,
 	BillingAddressSection,
 	type BillingAddressData,
 } from "@/checkout/components/payment";
@@ -20,7 +21,7 @@ import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { getFormattedMoney, formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { AuthorizedPaymentRecovery } from "@/checkout/components/payment/stripe/authorized-payment-recovery";
 import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
-import { isCheckoutReadyToComplete } from "@/checkout/lib/payment/checkout-payment-status";
+import { shouldShowPaymentMethodArea } from "@/checkout/lib/payment/should-show-payment-method-area";
 import { usesClientPaymentSubmit } from "@/checkout/lib/payment";
 import { consumePaymentCompletionError } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
@@ -86,7 +87,6 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 
 	const usesClientSubmit = usesClientPaymentSubmit(provider);
 	const isFreeOrder = isCheckoutFreeOrder(checkout);
-	const paymentAlreadyAuthorized = isCheckoutReadyToComplete(checkout);
 
 	const handlePaymentError = useCallback(
 		(message: string) => {
@@ -229,7 +229,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 
 			<PaymentError message={errors.payment || returnError || undefined} />
 
-			{paymentAlreadyAuthorized ? null : (
+			{shouldShowPaymentMethodArea(checkout) ? (
 				<PaymentMethodArea
 					provider={provider}
 					checkout={checkout}
@@ -246,7 +246,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 					onPriceChangeNotice={setPriceChangeNotice}
 					onPaymentActivityChange={handlePaymentActivityChange}
 				/>
-			)}
+			) : null}
 
 			{!usesClientSubmit ? (
 				<BillingAddressSection
@@ -274,16 +274,19 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 					{isShippingRequired ? "Return to shipping" : "Return to information"}
 				</button>
 				{!usesClientSubmit ? (
-					<Button type="submit" disabled={isDisabled} className="hidden h-12 min-w-[200px] px-8 md:flex">
-						{isLoading ? (
-							<span className="flex items-center gap-2">
-								<LoadingSpinner />
-								{buttonText}
-							</span>
-						) : (
-							buttonText
-						)}
-					</Button>
+					<div className="hidden flex-col items-end gap-3 md:flex">
+						<PaymentTrustSignals />
+						<Button type="submit" disabled={isDisabled} className="h-12 min-w-[200px] px-8">
+							{isLoading ? (
+								<span className="flex items-center gap-2">
+									<LoadingSpinner />
+									{buttonText}
+								</span>
+							) : (
+								buttonText
+							)}
+						</Button>
+					</div>
 				) : null}
 			</div>
 
@@ -297,6 +300,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 					disabled={isDisabled}
 					total={totalStr}
 					loadingText={isCompletingOrder ? "Creating order..." : "Processing payment..."}
+					showPaymentTrust
 				/>
 			) : null}
 		</>

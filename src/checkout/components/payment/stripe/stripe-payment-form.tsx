@@ -16,6 +16,7 @@ import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { executeStripeCheckoutPayment } from "./execute-stripe-checkout-payment";
 import { StripeExpressCheckout } from "./stripe-express-checkout";
 import { StripePaymentProcessingOverlay } from "./stripe-payment-processing-overlay";
+import { PaymentTrustSignals } from "@/checkout/components/payment/payment-trust-signals";
 import { type StripeBillingContext } from "./stripe-billing-context";
 
 export type { StripeBillingContext } from "./stripe-billing-context";
@@ -129,6 +130,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 						paymentElementChangeTypeRef.current = event.value.type ?? null;
 					}}
 				/>
+				<PaymentTrustSignals provider="stripe" className="pt-1" />
 				<Button
 					type="button"
 					className="h-12 w-full md:w-auto md:min-w-[200px]"

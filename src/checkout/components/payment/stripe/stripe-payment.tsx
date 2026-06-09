@@ -53,6 +53,7 @@ export const StripePayment: FC<StripePaymentProps> = (props) => {
 				billing={props.billing}
 				onError={props.onPaymentError}
 				onBillingErrors={props.onBillingErrors}
+				onPaymentActivityChange={props.onPaymentActivityChange}
 			/>
 		);
 	}

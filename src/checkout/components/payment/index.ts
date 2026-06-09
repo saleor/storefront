@@ -8,6 +8,12 @@ export { IntegratedPaymentUi } from "./integrated-payment-ui";
 
 export { PaymentError } from "./payment-error";
 
+export {
+	PaymentTrustSignals,
+	type PaymentTrustProvider,
+	type PaymentTrustSignalsProps,
+} from "./payment-trust-signals";
+
 export { DummyPaymentPlaceholder, type DummyPaymentPlaceholderProps } from "./dummy-payment-placeholder";
 
 export {

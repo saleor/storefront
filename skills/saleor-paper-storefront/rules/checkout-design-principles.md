@@ -43,7 +43,7 @@ Mobile abandonment is ~12pp worse than desktop. Design mobile-first; desktop inh
 - Sticky primary CTA (`MobileStickyAction`) with specific labels: "Continue to shipping", `Pay {total}`.
 - Collapsed order summary with **visible total** at top of mobile checkout.
 - 44×44px minimum tap targets; correct `inputmode` and `autocomplete` on every field.
-- Trust signals and card logos **above** the pay CTA on mobile, not buried in footer.
+- Trust copy **above** the pay CTA on mobile, not buried in footer. Accepted methods come from the payment UI (Stripe Element, express wallets) — do not hardcode card-brand lists.
 
 **Elasticity:** Sticky mobile CTA alone often yields +5–12% checkout completion.
 
@@ -87,7 +87,7 @@ Use reward-early-punish-late validation: clear errors on `input`, validate on `b
 
 Security reassurance matters **at payment**, not on step 1.
 
-- Lock icon, "Secure checkout", and card brand logos adjacent to payment UI.
+- Lock icon and "Secure checkout" adjacent to the pay CTA; processor attribution when relevant (e.g. Stripe).
 - Focused checkout surface: no full storefront nav, no distracting pop-ups.
 - Merchant branding in header (`CheckoutHeader`) — user knows who they're paying.
 
@@ -137,6 +137,7 @@ When reviewing checkout UI changes, verify:
 | Mobile CTA         | `MobileStickyAction`                                               |
 | Step URLs          | `updateCheckoutQuery()`, `useLiveCheckoutSearchParams()`           |
 | Express pay        | `StripeExpressCheckout`, `executeStripeCheckoutPayment`            |
+| Trust at pay       | `PaymentTrustSignals`                                              |
 | Payment transition | `PaymentCompletingScreen`, `finalizeCheckoutOrder`                 |
 | Focused surface    | `(checkout)` layout, `CheckoutPageShell`                           |
 
@@ -147,7 +148,7 @@ When reviewing checkout UI changes, verify:
 | Priority  | Gap                                                                                     | Principle |
 | --------- | --------------------------------------------------------------------------------------- | --------- |
 | Done (P0) | Autofill/`inputmode` on checkout fields — `src/checkout/lib/consts/input-attributes.ts` | #3        |
-| P0        | Trust signals above mobile pay CTA                                                      | #8        |
+| Done (P0) | Trust signals above pay CTA — `PaymentTrustSignals`                                     | #8        |
 | P1        | Address autocomplete                                                                    | #7        |
 | P1        | Post-order account invite on confirmation                                               | #2        |
 | P1        | Auto-apply promo (avoid "Apply" button)                                                 | #1, #5    |
