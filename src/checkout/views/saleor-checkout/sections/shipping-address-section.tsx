@@ -116,10 +116,11 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						</Label>
 						<FormSelect
 							id="country"
+							name="countryCode"
 							value={countryCode}
 							onChange={onCountryChange}
 							placeholder="Select country"
-							autoComplete="country"
+							autoComplete="shipping country"
 							options={availableCountries.map((code) => ({
 								value: code,
 								label: getCountryName(code),

@@ -7,6 +7,7 @@ One Next.js project, two product surfaces, one shared handoff package.
 | Read first                                                                                        | When                                                        |
 | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | **This file**                                                                                     | Where code lives, import boundaries, routes                 |
+| [`checkout-design-principles.md`](checkout-design-principles.md)                                  | UX principles for checkout UI and flow decisions            |
 | [`checkout-management.md`](checkout-management.md)                                                | Cart sync, step URLs, payment → order transition, debugging |
 | [`checkout-payment-gateways.md`](checkout-payment-gateways.md)                                    | Adding or changing payment apps                             |
 | [`checkout-components.md`](checkout-components.md)                                                | Reusable step UI (contact, address, billing)                |

@@ -255,10 +255,11 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 										</Label>
 										<FormSelect
 											id="billing-country"
+											name="countryCode"
 											value={countryCode}
 											onChange={handleCountryChange}
 											placeholder="Select country"
-											autoComplete="country"
+											autoComplete="billing country"
 											options={availableShippingCountries.map((code) => ({
 												value: code,
 												label: getCountryName(code),
@@ -276,6 +277,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 										onFieldChange={updateField}
 										countryAreaChoices={countryAreaChoices}
 										idPrefix="billing-"
+										autocompleteSection="billing"
 									/>
 								</>
 							) : (
@@ -321,10 +323,11 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 								</Label>
 								<FormSelect
 									id="billing-country"
+									name="countryCode"
 									value={countryCode}
 									onChange={handleCountryChange}
 									placeholder="Select country"
-									autoComplete="country"
+									autoComplete="billing country"
 									options={availableShippingCountries.map((code) => ({
 										value: code,
 										label: getCountryName(code),
@@ -342,6 +345,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 								onFieldChange={updateField}
 								countryAreaChoices={countryAreaChoices}
 								idPrefix="billing-"
+								autocompleteSection="billing"
 							/>
 						</>
 					)}

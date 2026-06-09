@@ -67,6 +67,7 @@ Reference these guidelines when:
 ### 3. Checkout Flow (HIGH)
 
 - `paper-surfaces` - **Start here for checkout** — surfaces, routes, v2 data flow, session handoff
+- `checkout-design-principles` - Evidence-based UX principles (guest-first, mobile, pricing, express pay)
 - `checkout-management` - Lifecycle, RSC sync, shallow steps, payment transition UX (+ cheat sheet)
 - `checkout-payment-gateways` - Payment app registry, submit modes, Stripe Express Checkout wallets, adding a new gateway
 - `checkout-components` - Reusable checkout UI (SignInForm, AddressSelector, billing, integrated payment UI)

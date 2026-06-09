@@ -8,6 +8,7 @@ import { Button } from "@/ui/components/ui/button";
 import { Label } from "@/ui/components/ui/label";
 import { Input } from "@/ui/components/ui/input";
 import { getQueryParams, createQueryString } from "@/checkout/lib/utils/url";
+import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
 
 export interface ResetPasswordFormProps {
 	/** Called when password reset is successful */
@@ -91,10 +92,11 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({ onSuccess, onBac
 					<Input
 						id="new-password"
 						type={showPassword ? "text" : "password"}
+						name={contactFieldAttributes.newPassword.name}
 						placeholder="Minimum 8 characters"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						autoComplete="new-password"
+						autoComplete={contactFieldAttributes.newPassword.autoComplete}
 						className="h-12 pl-10 pr-10"
 						required
 						minLength={8}
@@ -118,10 +120,11 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({ onSuccess, onBac
 					<Input
 						id="confirm-password"
 						type={showPassword ? "text" : "password"}
+						name="confirmPassword"
 						placeholder="Re-enter your password"
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
-						autoComplete="new-password"
+						autoComplete={contactFieldAttributes.newPassword.autoComplete}
 						className="h-12 pl-10"
 						required
 					/>

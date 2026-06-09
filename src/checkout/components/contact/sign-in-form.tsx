@@ -6,6 +6,7 @@ import { loginWithBff } from "@/lib/auth/bff-client";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { requestCheckoutPasswordReset } from "@/app/(checkout)/actions";
+import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
 
 export interface SignInFormProps {
 	/** Pre-filled email address */
@@ -126,13 +127,15 @@ export const SignInForm: FC<SignInFormProps> = ({
 					<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 					<Input
 						type="email"
+						name={contactFieldAttributes.email.name}
+						inputMode={contactFieldAttributes.email.inputMode}
 						placeholder="Email address"
 						value={email}
 						onChange={(e) => {
 							setEmail(e.target.value);
 							setPasswordResetSent(false);
 						}}
-						autoComplete="email"
+						autoComplete={contactFieldAttributes.email.autoComplete}
 						className="h-12 pl-10"
 						required
 					/>
@@ -144,10 +147,11 @@ export const SignInForm: FC<SignInFormProps> = ({
 					<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 					<Input
 						type={showPassword ? "text" : "password"}
+						name={contactFieldAttributes.currentPassword.name}
 						placeholder="Password"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						autoComplete="current-password"
+						autoComplete={contactFieldAttributes.currentPassword.autoComplete}
 						className="h-12 pl-10 pr-10"
 						required
 					/>

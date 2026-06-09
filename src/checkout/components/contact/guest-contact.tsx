@@ -6,6 +6,7 @@ import { Label } from "@/ui/components/ui/label";
 import { Checkbox } from "@/ui/components/ui/checkbox";
 import { Input } from "@/ui/components/ui/input";
 import { cn } from "@/lib/utils";
+import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
 
 // Re-export for backward compatibility
 export { FormInput, FieldError } from "@/checkout/views/saleor-checkout/address-form-fields";
@@ -77,11 +78,13 @@ export const GuestContact: FC<GuestContactProps> = ({
 					<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 					<Input
 						type="email"
+						name={contactFieldAttributes.email.name}
+						inputMode={contactFieldAttributes.email.inputMode}
 						placeholder="Email address"
 						value={email}
 						onChange={(e) => onEmailChange(e.target.value)}
 						onBlur={onEmailBlur}
-						autoComplete="email"
+						autoComplete={contactFieldAttributes.email.autoComplete}
 						className={cn("h-12 pl-10", emailError && "border-destructive")}
 						aria-invalid={!!emailError}
 						aria-describedby={emailError ? "email-error" : undefined}
@@ -112,10 +115,11 @@ export const GuestContact: FC<GuestContactProps> = ({
 							<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								type={showPassword ? "text" : "password"}
+								name={contactFieldAttributes.newPassword.name}
 								placeholder="Password (minimum 8 characters)"
 								value={password}
 								onChange={(e) => onPasswordChange(e.target.value)}
-								autoComplete="new-password"
+								autoComplete={contactFieldAttributes.newPassword.autoComplete}
 								className={cn("h-12 pl-10 pr-10", passwordError && "border-destructive")}
 							/>
 							<button

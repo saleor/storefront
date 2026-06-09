@@ -10,6 +10,7 @@ import { applyCheckoutPromoCode, removeCheckoutPromoCode } from "@/app/(checkout
 import { type CheckoutErrorFragment, type CheckoutFragment, type OrderFragment } from "@/checkout/graphql";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { localeConfig } from "@/config/locale";
+import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
 
 // ============================================================================
 // Types
@@ -451,6 +452,9 @@ function CheckoutPromoSection({ checkout, onCheckoutChange }: CheckoutPromoSecti
 					<div className="relative flex-1">
 						<Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 						<Input
+							name={contactFieldAttributes.promoCode.name}
+							inputMode={contactFieldAttributes.promoCode.inputMode}
+							autoComplete={contactFieldAttributes.promoCode.autoComplete}
 							placeholder="Discount code"
 							value={promoCode}
 							onChange={(e) => {
