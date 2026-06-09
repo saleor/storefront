@@ -43,6 +43,7 @@ Mobile abandonment is ~12pp worse than desktop. Design mobile-first; desktop inh
 - Sticky primary CTA (`MobileStickyAction`) with specific labels: "Continue to shipping", `Pay {total}`.
 - Collapsed order summary with **visible total** at top of mobile checkout.
 - 44×44px minimum tap targets; correct `inputmode` and `autocomplete` on every field.
+- **Address entry:** Paper uses **browser autofill** (`input-attributes.ts`) — not paid address APIs (Google Places, Loqate, etc.). Returning shoppers and mobile OS profiles get one-tap fill; that is the default tradeoff vs per-session API cost.
 - Trust copy **above** the pay CTA on mobile, not buried in footer. Accepted methods come from the payment UI (Stripe Element, express wallets) — do not hardcode card-brand lists.
 
 **Elasticity:** Sticky mobile CTA alone often yields +5–12% checkout completion.
@@ -135,6 +136,7 @@ When reviewing checkout UI changes, verify:
 | Fresh totals       | `CheckoutDataProvider`, `refreshCheckout()`, `checkout-pay-amount` |
 | Guest-first        | `GuestContact`, orphaned-cart recovery                             |
 | Mobile CTA         | `MobileStickyAction`                                               |
+| Address autofill   | `input-attributes.ts`, `AddressFields` `autocompleteSection`       |
 | Step URLs          | `updateCheckoutQuery()`, `useLiveCheckoutSearchParams()`           |
 | Express pay        | `StripeExpressCheckout`, `executeStripeCheckoutPayment`            |
 | Trust at pay       | `PaymentTrustSignals`                                              |
@@ -149,12 +151,19 @@ When reviewing checkout UI changes, verify:
 | --------- | --------------------------------------------------------------------------------------- | --------- |
 | Done (P0) | Autofill/`inputmode` on checkout fields — `src/checkout/lib/consts/input-attributes.ts` | #3        |
 | Done (P0) | Trust signals above pay CTA — `PaymentTrustSignals`                                     | #8        |
-| P1        | Address autocomplete                                                                    | #7        |
 | P1        | Post-order account invite on confirmation                                               | #2        |
 | P1        | Auto-apply promo (avoid "Apply" button)                                                 | #1, #5    |
 | P2        | Express checkout on cart                                                                | #6        |
 | P2        | Returning-user fast path                                                                | #4        |
 | P2        | Storefront shipping estimate before checkout                                            | #1        |
+
+### Deferred / fork-only (not Paper core)
+
+| Item                                                   | When to consider                                                                                                                                                                | Principle |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Address API autocomplete (Google Places, Loqate, etc.) | High guest first-order share, measurable address-step drop-off, or weak browser autofill in target markets — not for returning-shopper-heavy stores where P0 autofill is enough | #3        |
+
+Do **not** add Places/Loqate to Paper by default: per-session cost, vendor keys, and intl edge cases. Forks own the integration.
 
 ---
 
@@ -168,7 +177,8 @@ When reviewing checkout UI changes, verify:
 ❌ Accordion checkout without collapsed step summaries or correct back-button behavior  
 ❌ Premature inline validation while user is still typing  
 ❌ One-page checkout as dogma without segment data  
-❌ Upsells or cross-sell that compete with the primary pay CTA
+❌ Upsells or cross-sell that compete with the primary pay CTA  
+❌ Shipping Google Places / Loqate into Paper core without fork-specific ROI data
 
 ---
 
