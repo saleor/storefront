@@ -17,6 +17,7 @@ Two skill sources are available:
 | Product filtering/sorting | `product-filtering` |
 | Storefront vs checkout (start here) | `paper-surfaces` |
 | BFF auth / session / account PPR | `data-auth-routes` |
+| Checkout UX / design principles | `checkout-design-principles` |
 | Checkout flow debugging | `checkout-management` |
 | Adding a payment gateway | `checkout-payment-gateways` |
 | Checkout UI components | `checkout-components` |

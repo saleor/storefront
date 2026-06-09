@@ -23,30 +23,31 @@ Skills are organized as follows:
 
 | Location                                                      | Purpose                           | Contents                                                                                             |
 | ------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 14 rules + fork migrations under `migrations/`                                                       |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 15 rules + fork migrations under `migrations/`                                                       |
 | [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Saleor API patterns, React best practices, composition patterns, etc. (install via `npx skills add`) |
 
 ### When to Use Which Skill
 
 **Project skill** ([`saleor-paper-storefront`](skills/saleor-paper-storefront/SKILL.md)) -- use for all Saleor storefront tasks:
 
-| Task                            | Rule                        |
-| ------------------------------- | --------------------------- |
-| Modifying `.graphql` files      | `data-graphql`              |
-| Caching, ISR, webhooks          | `data-caching`              |
-| Product detail page (PDP)       | `product-pdp`               |
-| Variant/attribute selection     | `product-variants`          |
-| Product list filtering/sorting  | `product-filtering`         |
-| Storefront vs checkout surfaces | `paper-surfaces`            |
-| Checkout flow debugging         | `checkout-management`       |
-| BFF auth, session, PPR account  | `data-auth-routes`          |
-| Adding a payment gateway        | `checkout-payment-gateways` |
-| Checkout UI components          | `checkout-components`       |
-| Creating/styling components     | `ui-components`             |
-| Channels, fulfillment & stock   | `ui-channels`               |
-| SEO, metadata, OG images        | `seo-metadata`              |
-| Investigating Saleor API        | `dev-investigation`         |
-| Upgrading a forked Paper shop   | `migrations/SKILL.md`       |
+| Task                            | Rule                         |
+| ------------------------------- | ---------------------------- |
+| Modifying `.graphql` files      | `data-graphql`               |
+| Caching, ISR, webhooks          | `data-caching`               |
+| Product detail page (PDP)       | `product-pdp`                |
+| Variant/attribute selection     | `product-variants`           |
+| Product list filtering/sorting  | `product-filtering`          |
+| Storefront vs checkout surfaces | `paper-surfaces`             |
+| Checkout flow debugging         | `checkout-management`        |
+| BFF auth, session, PPR account  | `data-auth-routes`           |
+| Adding a payment gateway        | `checkout-payment-gateways`  |
+| Checkout UX / design principles | `checkout-design-principles` |
+| Checkout UI components          | `checkout-components`        |
+| Creating/styling components     | `ui-components`              |
+| Channels, fulfillment & stock   | `ui-channels`                |
+| SEO, metadata, OG images        | `seo-metadata`               |
+| Investigating Saleor API        | `dev-investigation`          |
+| Upgrading a forked Paper shop   | `migrations/SKILL.md`        |
 
 **External skills** ([saleor/agent-skills](https://github.com/saleor/agent-skills)) — install for generic best practices:
 
@@ -253,13 +254,13 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ### Project Skill
 
-**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 14 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 15 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
 Rules by category:
 
 1. **Data Layer** (CRITICAL): `data-caching`, `data-auth-routes`, `data-graphql`
 2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
-3. **Checkout Flow** (HIGH): `paper-surfaces`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
+3. **Checkout Flow** (HIGH): `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
 4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`
 5. **SEO** (MEDIUM): `seo-metadata`
 6. **Development** (MEDIUM): `dev-investigation`

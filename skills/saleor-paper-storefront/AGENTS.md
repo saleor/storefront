@@ -16,7 +16,7 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 14 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 15 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -37,9 +37,10 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 3. [Checkout Flow](#3-checkout-flow) — **HIGH**
 
    - 3.1 [Paper Surfaces](#31-paper-surfaces)
-   - 3.2 [Checkout Management](#32-checkout-management)
-   - 3.3 [Payment Gateways](#33-payment-gateways)
-   - 3.4 [Checkout Components](#34-checkout-components)
+   - 3.2 [Checkout Design Principles](#32-checkout-design-principles)
+   - 3.3 [Checkout Management](#33-checkout-management)
+   - 3.4 [Payment Gateways](#34-payment-gateways)
+   - 3.5 [Checkout Components](#35-checkout-components)
 
 4. [UI & Channels](#4-ui-channels) — **MEDIUM**
 
@@ -1713,6 +1714,7 @@ One Next.js project, two product surfaces, one shared handoff package.
 | Read first                                                                                        | When                                                        |
 | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | **This file**                                                                                     | Where code lives, import boundaries, routes                 |
+| [`checkout-design-principles.md`](checkout-design-principles.md)                                  | UX principles for checkout UI and flow decisions            |
 | [`checkout-management.md`](checkout-management.md)                                                | Cart sync, step URLs, payment → order transition, debugging |
 | [`checkout-payment-gateways.md`](checkout-payment-gateways.md)                                    | Adding or changing payment apps                             |
 | [`checkout-components.md`](checkout-components.md)                                                | Reusable step UI (contact, address, billing)                |
@@ -1810,7 +1812,190 @@ See `data-auth-routes.md` for Router Cache pitfalls (stale header menu) and when
 
 ---
 
-### 3.2 Checkout Management
+### 3.2 Checkout Design Principles
+
+Evidence-based UX principles for Paper Checkout. Grounded in Baymard, Stripe, and conversion research; mapped to Paper's checkout v2 architecture.
+
+> **Related:** `paper-surfaces`, `checkout-management`, `checkout-components`, `checkout-payment-gateways`
+
+---
+
+## Why these exist
+
+Checkout is the last-mile commitment ritual — not a form. ~70% of carts are abandoned (Baymard). The top drivers are **surprise costs**, **forced accounts**, **complexity**, and **mobile friction** — all design-elastic (small changes move conversion measurably).
+
+Paper Checkout defaults should optimize **first-time buyers, mobile, and international shipping**. Forks with mostly returning customers may adopt one-page or accordion variants — but only after measuring step drop-off.
+
+---
+
+## Principles
+
+### 1. Minimize commitment before value
+
+Show total cost, delivery expectation, and return policy **before** pay. Never introduce mandatory new costs at payment.
+
+- Order summary on every step: subtotal → shipping → tax → discount → total.
+- Shipping method and cost on the shipping step, not first revealed at payment.
+- Prefer shipping estimates on cart/PDP (storefront) to reduce checkout shock.
+
+**Elasticity:** Extra costs are the #1 cited abandonment reason (39–48% of US shoppers).
+
+### 2. Guest is the default path
+
+First-time buyers complete as guests. Account creation is an **upgrade**, not a gate.
+
+- `GuestContact` and "Continue as guest" must be visually primary over sign-in.
+- Optional "create account" on the information step — de-emphasized, never required.
+- Prefer post-order account invite on `/checkout/complete` (3–5× higher capture than pre-checkout gates).
+
+**Elasticity:** Forced account creation drives ~19–26% of abandonments.
+
+### 3. Optimize for mobile thumbs
+
+Mobile abandonment is ~12pp worse than desktop. Design mobile-first; desktop inherits.
+
+- Sticky primary CTA (`MobileStickyAction`) with specific labels: "Continue to shipping", `Pay {total}`.
+- Collapsed order summary with **visible total** at top of mobile checkout.
+- 44×44px minimum tap targets; correct `inputmode` and `autocomplete` on every field.
+- Trust signals and card logos **above** the pay CTA on mobile, not buried in footer.
+
+**Elasticity:** Sticky mobile CTA alone often yields +5–12% checkout completion.
+
+### 4. Steps serve cognition, not ceremony
+
+Multi-step is correct for first-time, mobile, and high-AOV flows. Each step must be short, validatable, and skippable for returning users.
+
+- Paper flow: Contact → Shipping (if required) → Payment.
+- Shallow `?step=` URLs via `updateCheckoutQuery()` — not full RSC navigations.
+- Completed steps should collapse to **summaries** (address, method), not bare headers.
+- Returning users with saved addresses: prefer review/skip over re-entry.
+
+**Note:** One-page checkout wins for returning/low-AOV segments — document fork patterns, don't assume universal one-page.
+
+### 5. The order summary is a confidence instrument
+
+Users must always see **what they're buying** and **what they're paying** without memory or detours.
+
+- Desktop: sticky right-hand summary with line items, thumbnails, running totals.
+- Mobile: collapsed bar (item count + total), tap to expand — never fully hidden.
+- Inline edit/remove where possible; explain total changes when shipping or promo updates.
+
+### 6. Express pay is a first-class path
+
+Wallets (Apple Pay, Google Pay, Link) skip the highest-friction fields. Treat them as primary, not decorative.
+
+- Surface express checkout on the payment step (Stripe Express Checkout Element).
+- Extend upstream (cart/PDP) when cart is complete enough to charge.
+- Never show wallet buttons in a disabled state — prompt for missing selections instead (Stripe Apple Pay guidance).
+- Collect mandatory order details (variant, qty, address) before wallet confirmation.
+
+### 7. Validate late, recover gracefully
+
+Use reward-early-punish-late validation: clear errors on `input`, validate on `blur`, batch on submit.
+
+- Preserve entered data on errors — never wipe the form.
+- Specific, plain-language error copy next to the field; error summary on submit for multiple failures.
+- `aria-live` for dynamic errors (accessibility = conversion).
+
+### 8. Trust is contextual
+
+Security reassurance matters **at payment**, not on step 1.
+
+- Lock icon, "Secure checkout", and card brand logos adjacent to payment UI.
+- Focused checkout surface: no full storefront nav, no distracting pop-ups.
+- Merchant branding in header (`CheckoutHeader`) — user knows who they're paying.
+
+### 9. Never lie about price
+
+Display pages may cache prices for performance; checkout must always charge the live total.
+
+- RSC + server actions use `cache: "no-cache"` for checkout data.
+- Refresh checkout before `transactionInitialize`; block pay on `hasMaterialCheckoutTotalChange`.
+- Saleor validates at `checkoutComplete` — but blocking early avoids wrong authorization and trust loss.
+
+### 10. Checkout ends cleanly
+
+A broken ending erodes repeat purchase more than a slow form.
+
+- `PaymentCompletingScreen` while `checkoutComplete` runs — no flash of "session expired".
+- Hard navigation to `/checkout/complete?order=` via `navigateToOrderConfirmation()`.
+- Clear cookie in `after()` — not before leaving `?checkout=`.
+- Confirmation page: receipt, next steps, soft account invite.
+
+### 11. Design for merchant mix, not one platform's median
+
+Paper is a **reference implementation** for Saleor headless. Defaults favor broad DTC; forks customize.
+
+- Multi-step default is research-aligned for Paper's likely audience.
+- Payment registry (`INTEGRATED_GATEWAYS`) lets merchants add Stripe, Adyen, etc. without forking step UI.
+- Document layout variants (one-page, accordion) as fork decisions — not Paper core unless measured.
+
+### 12. Measure step elasticity
+
+Layout debates are resolved with data, not opinions.
+
+- Instrument drop-off per `?step=`, device, new vs returning, AOV.
+- Shallow step URLs keep analytics clean.
+- If checkout CVR is within ~3pp of category median, fix upstream (PDP, cart, traffic) first.
+
+---
+
+## Paper alignment checklist
+
+When reviewing checkout UI changes, verify:
+
+| Principle          | Paper mechanism                                                    |
+| ------------------ | ------------------------------------------------------------------ |
+| Fresh totals       | `CheckoutDataProvider`, `refreshCheckout()`, `checkout-pay-amount` |
+| Guest-first        | `GuestContact`, orphaned-cart recovery                             |
+| Mobile CTA         | `MobileStickyAction`                                               |
+| Step URLs          | `updateCheckoutQuery()`, `useLiveCheckoutSearchParams()`           |
+| Express pay        | `StripeExpressCheckout`, `executeStripeCheckoutPayment`            |
+| Payment transition | `PaymentCompletingScreen`, `finalizeCheckoutOrder`                 |
+| Focused surface    | `(checkout)` layout, `CheckoutPageShell`                           |
+
+---
+
+## Known gaps (prioritized)
+
+| Priority  | Gap                                                                                     | Principle |
+| --------- | --------------------------------------------------------------------------------------- | --------- |
+| Done (P0) | Autofill/`inputmode` on checkout fields — `src/checkout/lib/consts/input-attributes.ts` | #3        |
+| P0        | Trust signals above mobile pay CTA                                                      | #8        |
+| P1        | Address autocomplete                                                                    | #7        |
+| P1        | Post-order account invite on confirmation                                               | #2        |
+| P1        | Auto-apply promo (avoid "Apply" button)                                                 | #1, #5    |
+| P2        | Express checkout on cart                                                                | #6        |
+| P2        | Returning-user fast path                                                                | #4        |
+| P2        | Storefront shipping estimate before checkout                                            | #1        |
+
+---
+
+## Anti-patterns
+
+❌ Forced account creation before pay  
+❌ Hidden totals or shipping revealed only at payment  
+❌ Full RSC navigation for step-only changes (`router.replace` for `?step=`)  
+❌ Caching checkout totals at payment time  
+❌ Clearing checkout cookie before order confirmation navigation  
+❌ Accordion checkout without collapsed step summaries or correct back-button behavior  
+❌ Premature inline validation while user is still typing  
+❌ One-page checkout as dogma without segment data  
+❌ Upsells or cross-sell that compete with the primary pay CTA
+
+---
+
+## References
+
+- [Baymard Checkout Usability](https://baymard.com/research/checkout-usability)
+- [Baymard 2024 Checkout Findings](https://baymard.com/blog/checkout-2024-launch)
+- [Stripe Mobile Checkout UI](https://stripe.com/resources/more/mobile-checkout-ui)
+- [Stripe Express Checkout Element](https://docs.stripe.com/elements/express-checkout-element)
+- [Statista: US checkout abandonment reasons 2025](https://www.statista.com/statistics/1228452/reasons-for-abandonments-during-checkout-united-states/)
+
+---
+
+### 3.3 Checkout Management
 
 Understanding checkout session lifecycle, storage, and debugging prevents payment failures, hydration mismatches, and "CHECKOUT_NOT_FULLY_PAID" errors. Use live checkout data for payment amounts and handle stale checkouts gracefully.
 
@@ -2196,7 +2381,7 @@ Expired JWT maps to **`guest`** via `isDefinitiveAuthFailure` (structured Saleor
 
 ---
 
-### 3.3 Payment Gateways
+### 3.4 Payment Gateways
 
 How to integrate Saleor payment apps in the Paper checkout. Covers the registry architecture, the two payment submit patterns, shared Saleor transaction primitives, and a checklist for wiring a new gateway (e.g. Adyen).
 
@@ -2269,6 +2454,89 @@ See `src/checkout/lib/payment/providers/dummy-pay.ts` + `executePayment()` switc
 See `src/checkout/components/payment/stripe/` — especially `stripe-payment-form.tsx` for the full initialize → confirm → process → complete sequence.
 
 `payment-step.tsx` automatically uses client-submit layout when `usesClientPaymentSubmit(provider)` is true (no outer `<form>`, billing above payment UI, no shared Pay button).
+
+---
+
+## Stripe Express Checkout (wallets)
+
+The payment step mounts **two Stripe Elements** inside one shared `<Elements>` provider. Both paths call the same pipeline (`executeStripeCheckoutPayment`) and the same Saleor mutations afterward.
+
+```
+Payment step (Stripe enabled)
+│
+├── ExpressCheckoutElement          ← wallet shortcuts (top)
+│     Apple Pay · Google Pay · Link
+│     onConfirm → expressPaymentType → transactionInitialize
+│
+├── "Or pay with card" divider      ← hidden when no wallets available
+│
+└── PaymentElement + Pay button     ← card / saved Link in form
+      onChange (value.type) + elements.submit() → transactionInitialize
+```
+
+### What Express Checkout does here
+
+- **Payment shortcut only** — faster pay with saved wallet / card credentials.
+- **No Saleor address flow** — Express options set `billingAddressRequired: false`, `shippingAddressRequired: false`, `emailRequired: false`. Shipping, contact, and billing still come from checkout steps; `updateCheckoutBilling()` runs before charge; `confirmPayment` passes **Saleor checkout** billing into Stripe.
+- **Link in two places** — green Express Link button (wallet) vs saved Link inside Payment Element (Pay button). Different Stripe surfaces; only the path the shopper uses drives `paymentIntent.paymentMethod`.
+
+Wallets are enabled when Stripe is on. Opt out with `NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT=false` (see `.env.example`).
+
+### Payment method → `transactionInitialize`
+
+Saleor's Stripe app expects `paymentGateway.data.paymentIntent.paymentMethod`. Stripe exposes the type differently per surface — encode that in `StripeInitializePaymentMethodContext` (`src/checkout/lib/payment/providers/stripe.ts`):
+
+| Surface           | Stripe signal                                                                              | When                |
+| ----------------- | ------------------------------------------------------------------------------------------ | ------------------- |
+| `expressCheckout` | `onConfirm.expressPaymentType` (`apple_pay`, `google_pay`, `link`, …)                      | Wallet button click |
+| `paymentElement`  | `PaymentElement` `onChange` → `value.type`, then `elements.submit().selectedPaymentMethod` | Pay button          |
+
+`resolveStripePaymentMethodForInitialize()` prefers Payment Element `onChange` over submit, and **never sends `"unknown"`** (saved Link in Payment Element reports `"unknown"` on submit but `"link"` on change).
+
+### Shared pay pipeline
+
+All Stripe pay paths:
+
+1. `updateCheckoutBilling()` — persist billing from checkout form
+2. Refresh checkout — live total before `transactionInitialize`
+3. `transactionInitialize` — with resolved `paymentMethod`
+4. `stripe.confirmPayment()` — Elements stay mounted until confirm succeeds
+5. `transactionProcess` → `finalizeCheckoutOrder()`
+
+Processing UX: local overlay during confirm → `PaymentCompletingScreen` after success. Payment step hides pay UI when `authorizeStatus === FULL` (recovery banner). See `checkout-management` for transition guards, 3DS return, and session storage.
+
+### Stripe file map
+
+| File                                    | Purpose                                                       |
+| --------------------------------------- | ------------------------------------------------------------- |
+| `stripe-payment.tsx`                    | Loads publishable key, wraps `<Elements>`                     |
+| `stripe-payment-form.tsx`               | Express + Payment Element + Pay button                        |
+| `stripe-express-checkout.tsx`           | `ExpressCheckoutElement`, wallet availability                 |
+| `execute-stripe-checkout-payment.ts`    | Shared initialize → confirm → process → complete              |
+| `providers/stripe.ts`                   | Gateway ID, env flags, payment-method resolver, error parsing |
+| `stripe-checkout-completion-host.tsx`   | Shell-level 3DS return handler                                |
+| `stripe-payment-processing-overlay.tsx` | In-form processing state                                      |
+
+### Stripe environment variables
+
+| Variable                                     | Purpose                                                                |
+| -------------------------------------------- | ---------------------------------------------------------------------- |
+| `NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS`         | Master Stripe toggle (required in production)                          |
+| `ENABLE_STRIPE_PAYMENTS`                     | Server-side mirror for `transactionInitialize` guard                   |
+| `NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT` | Wallet buttons; default on when Stripe enabled; set `false` to disable |
+
+Publishable keys come from Saleor `paymentGatewayInitialize`, not env.
+
+### Stripe manual QA (add to gateway checklist)
+
+- [ ] Express wallets appear when device/browser supports them; section hidden when none available
+- [ ] Apple Pay / Google Pay / Express Link complete an order
+- [ ] Payment Element card pay works
+- [ ] Saved Link in Payment Element + **Pay** (not Express button) sends `link`, not `unknown`
+- [ ] Billing from checkout steps is used — Express does not replace shipping/contact
+- [ ] Price change notice when total shifts after billing refresh
+- [ ] 3DS redirect return completes via shell return handler
+- [ ] Browser Back during payment aborts in-flight flow without stuck processing UI
 
 ---
 
@@ -2407,7 +2675,7 @@ Gift card gateway (`saleor.io.gift-card-payment-gateway`) is **ignorable** — i
 
 ---
 
-### 3.4 Checkout Components
+### 3.5 Checkout Components
 
 Reusable checkout UI components for contact, address, and payment flows. Composing these components in checkout steps keeps the flow consistent and maintainable.
 
@@ -2453,11 +2721,32 @@ import {
 import { AddressFields, FormInput, FormSelect, FieldError } from "@/checkout/components/shipping-address";
 ```
 
-| Component         | Props                                                                             | Use Case                     |
-| ----------------- | --------------------------------------------------------------------------------- | ---------------------------- |
-| `AddressSelector` | `addresses`, `selectedAddressId`, `onSelectAddress`, `defaultAddressId?`, `name?` | Pick from saved addresses    |
-| `AddressDisplay`  | `address`, `title?`, `onEdit?`                                                    | Show address read-only       |
-| `AddressFields`   | `orderedFields`, `formData`, `errors`, `onFieldChange`, etc.                      | Dynamic country-aware fields |
+| Component         | Props                                                                                | Use Case                     |
+| ----------------- | ------------------------------------------------------------------------------------ | ---------------------------- |
+| `AddressSelector` | `addresses`, `selectedAddressId`, `onSelectAddress`, `defaultAddressId?`, `name?`    | Pick from saved addresses    |
+| `AddressDisplay`  | `address`, `title?`, `onEdit?`                                                       | Show address read-only       |
+| `AddressFields`   | `orderedFields`, `formData`, `errors`, `onFieldChange`, `autocompleteSection?`, etc. | Dynamic country-aware fields |
+
+## Form field autofill (`input-attributes`)
+
+Checkout text inputs must expose `name`, `autoComplete`, and `inputMode` so mobile keyboards and browser autofill work, and validation can focus the first error (`querySelector('[name="…"]')`).
+
+**Source of truth:** `src/checkout/lib/consts/input-attributes.ts`
+
+| Export                                      | Use                                                  |
+| ------------------------------------------- | ---------------------------------------------------- |
+| `formatAddressAutocomplete(field, section)` | `shipping given-name`, `billing address-line1`, etc. |
+| `inputModeTags`                             | `tel` for phone, `text` for postal code              |
+| `contactFieldAttributes`                    | Email, password, promo code metadata                 |
+
+`AddressFields` accepts `autocompleteSection="shipping" | "billing"` (default `shipping`). Billing passes `"billing"`. Country `<select>` elements use `shipping country` / `billing country` and `name="countryCode"`.
+
+When adding a new checkout input:
+
+1. Add metadata to `input-attributes.ts` (or reuse `contactFieldAttributes`).
+2. Set `name` to match validation error keys.
+3. Pair `autoComplete` with the correct section token for address fields.
+4. See `checkout-design-principles.md` §3 (mobile thumbs).
 
 ## Payment Components
 

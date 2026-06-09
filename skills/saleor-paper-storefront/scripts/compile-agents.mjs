@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 14;
+const RULE_COUNT = 15;
 
 const catalog = [
 	{
@@ -47,9 +47,10 @@ const catalog = [
 			"Checkout handles payment and order completion. Bugs here directly cause lost revenue and poor user experience.",
 		rules: [
 			{ num: "3.1", file: "paper-surfaces.md", title: "Paper Surfaces" },
-			{ num: "3.2", file: "checkout-management.md", title: "Checkout Management" },
-			{ num: "3.3", file: "checkout-payment-gateways.md", title: "Payment Gateways" },
-			{ num: "3.4", file: "checkout-components.md", title: "Checkout Components" },
+			{ num: "3.2", file: "checkout-design-principles.md", title: "Checkout Design Principles" },
+			{ num: "3.3", file: "checkout-management.md", title: "Checkout Management" },
+			{ num: "3.4", file: "checkout-payment-gateways.md", title: "Payment Gateways" },
+			{ num: "3.5", file: "checkout-components.md", title: "Checkout Components" },
 		],
 	},
 	{

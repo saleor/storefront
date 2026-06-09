@@ -144,16 +144,16 @@ When reviewing checkout UI changes, verify:
 
 ## Known gaps (prioritized)
 
-| Priority | Gap                                                                                              | Principle |
-| -------- | ------------------------------------------------------------------------------------------------ | --------- |
-| ~~P0~~   | ~~Autofill/`inputmode` audit on all fields~~ — see `src/checkout/lib/consts/input-attributes.ts` | #3        |
-| P0       | Trust signals above mobile pay CTA                                                               | #8        |
-| P1       | Address autocomplete                                                                             | #7        |
-| P1       | Post-order account invite on confirmation                                                        | #2        |
-| P1       | Auto-apply promo (avoid "Apply" button)                                                          | #1, #5    |
-| P2       | Express checkout on cart                                                                         | #6        |
-| P2       | Returning-user fast path                                                                         | #4        |
-| P2       | Storefront shipping estimate before checkout                                                     | #1        |
+| Priority  | Gap                                                                                     | Principle |
+| --------- | --------------------------------------------------------------------------------------- | --------- |
+| Done (P0) | Autofill/`inputmode` on checkout fields — `src/checkout/lib/consts/input-attributes.ts` | #3        |
+| P0        | Trust signals above mobile pay CTA                                                      | #8        |
+| P1        | Address autocomplete                                                                    | #7        |
+| P1        | Post-order account invite on confirmation                                               | #2        |
+| P1        | Auto-apply promo (avoid "Apply" button)                                                 | #1, #5    |
+| P2        | Express checkout on cart                                                                | #6        |
+| P2        | Returning-user fast path                                                                | #4        |
+| P2        | Storefront shipping estimate before checkout                                            | #1        |
 
 ---
 

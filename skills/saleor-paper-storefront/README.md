@@ -18,16 +18,16 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 ## What's Included
 
-14 rules across 6 categories covering the full storefront:
+15 rules across 6 categories covering the full storefront:
 
-| Category      | Rules                                                                                       | Topics                                                       |
-| ------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`                                          | Cache Components, PPR, account auth routes, GraphQL codegen  |
-| Product Pages | `product-pdp`, `product-variants`, `product-filtering`                                      | PDP architecture, variant selection, server/client filtering |
-| Checkout      | `paper-surfaces`, `checkout-management`, `checkout-payment-gateways`, `checkout-components` | Checkout v2 (RSC + server actions), payments, UI components  |
-| UI & Channels | `ui-components`, `ui-channels`                                                              | Design tokens, multi-currency                                |
-| SEO           | `seo-metadata`                                                                              | JSON-LD, OG images, metadata                                 |
-| Development   | `dev-investigation`                                                                         | Saleor API investigation via generated types and source      |
+| Category      | Rules                                                                                                                     | Topics                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`                                                                        | Cache Components, PPR, account auth routes, GraphQL codegen  |
+| Product Pages | `product-pdp`, `product-variants`, `product-filtering`                                                                    | PDP architecture, variant selection, server/client filtering |
+| Checkout      | `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components` | Checkout v2, UX principles, lifecycle, payments, UI          |
+| UI & Channels | `ui-components`, `ui-channels`                                                                                            | Design tokens, multi-currency                                |
+| SEO           | `seo-metadata`                                                                                                            | JSON-LD, OG images, metadata                                 |
+| Development   | `dev-investigation`                                                                                                       | Saleor API investigation via generated types and source      |
 
 ## Structure
 

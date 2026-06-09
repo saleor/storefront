@@ -44,11 +44,32 @@ import {
 import { AddressFields, FormInput, FormSelect, FieldError } from "@/checkout/components/shipping-address";
 ```
 
-| Component         | Props                                                                             | Use Case                     |
-| ----------------- | --------------------------------------------------------------------------------- | ---------------------------- |
-| `AddressSelector` | `addresses`, `selectedAddressId`, `onSelectAddress`, `defaultAddressId?`, `name?` | Pick from saved addresses    |
-| `AddressDisplay`  | `address`, `title?`, `onEdit?`                                                    | Show address read-only       |
-| `AddressFields`   | `orderedFields`, `formData`, `errors`, `onFieldChange`, etc.                      | Dynamic country-aware fields |
+| Component         | Props                                                                                | Use Case                     |
+| ----------------- | ------------------------------------------------------------------------------------ | ---------------------------- |
+| `AddressSelector` | `addresses`, `selectedAddressId`, `onSelectAddress`, `defaultAddressId?`, `name?`    | Pick from saved addresses    |
+| `AddressDisplay`  | `address`, `title?`, `onEdit?`                                                       | Show address read-only       |
+| `AddressFields`   | `orderedFields`, `formData`, `errors`, `onFieldChange`, `autocompleteSection?`, etc. | Dynamic country-aware fields |
+
+## Form field autofill (`input-attributes`)
+
+Checkout text inputs must expose `name`, `autoComplete`, and `inputMode` so mobile keyboards and browser autofill work, and validation can focus the first error (`querySelector('[name="…"]')`).
+
+**Source of truth:** `src/checkout/lib/consts/input-attributes.ts`
+
+| Export                                      | Use                                                  |
+| ------------------------------------------- | ---------------------------------------------------- |
+| `formatAddressAutocomplete(field, section)` | `shipping given-name`, `billing address-line1`, etc. |
+| `inputModeTags`                             | `tel` for phone, `text` for postal code              |
+| `contactFieldAttributes`                    | Email, password, promo code metadata                 |
+
+`AddressFields` accepts `autocompleteSection="shipping" | "billing"` (default `shipping`). Billing passes `"billing"`. Country `<select>` elements use `shipping country` / `billing country` and `name="countryCode"`.
+
+When adding a new checkout input:
+
+1. Add metadata to `input-attributes.ts` (or reuse `contactFieldAttributes`).
+2. Set `name` to match validation error keys.
+3. Pair `autoComplete` with the correct section token for address fields.
+4. See `checkout-design-principles.md` §3 (mobile thumbs).
 
 ## Payment Components
 
