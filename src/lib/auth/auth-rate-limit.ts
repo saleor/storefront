@@ -69,7 +69,7 @@ export function rateLimitResponse(retryAfterSeconds: number): Response {
 /** Returns a 429 response when the client exceeds the auth route limit. */
 export function rejectIfRateLimited(
 	request: Request,
-	action: "login" | "register" | "set-password",
+	action: "login" | "register" | "set-password" | "reset-password",
 	options?: RateLimitOptions,
 ): Response | null {
 	const key = `${action}:${getClientIp(request)}`;

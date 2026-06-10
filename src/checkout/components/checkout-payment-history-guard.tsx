@@ -3,12 +3,11 @@
 import { useEffect } from "react";
 
 import {
+	ORDER_FINALIZING_INTERRUPTED_MESSAGE,
 	PAYMENT_COMPLETING_STORAGE_KEY,
 	abortCheckoutPaymentFlow,
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckoutSession } from "@/checkout/providers/checkout-session";
-
-const PAYMENT_INTERRUPTED_MESSAGE = "Payment was interrupted. Please try again.";
 
 function hasActiveCompletingFlag(checkoutId: string | null): boolean {
 	try {
@@ -42,8 +41,10 @@ export function CheckoutPaymentHistoryGuard() {
 				return;
 			}
 
+			// Completing flag means payment was already confirmed — the background
+			// process/finalize keeps running, so never suggest paying again.
 			if (hasActiveCompletingFlag(checkoutId)) {
-				abortCheckoutPaymentFlow(PAYMENT_INTERRUPTED_MESSAGE);
+				abortCheckoutPaymentFlow(ORDER_FINALIZING_INTERRUPTED_MESSAGE);
 				return;
 			}
 

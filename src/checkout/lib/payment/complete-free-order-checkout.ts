@@ -1,5 +1,6 @@
 import { type AddressFragment, type CheckoutFragment } from "@/checkout/graphql";
 import { type BillingAddressData } from "@/checkout/components/payment";
+import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
 import { updateCheckoutBilling } from "@/checkout/lib/payment/update-billing";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
 import { type ServerCheckout } from "@/checkout/lib/checkout-types";
@@ -47,6 +48,18 @@ export async function completeFreeOrderCheckout({
 
 	const liveCheckout = await refreshCheckout({ updateState: false });
 	const checkoutToComplete = liveCheckout ?? checkout;
+
+	// Re-verify the live total is still exactly $0 — billing/tax sync above can change it.
+	// A now-positive total must go through the payment flow, not a bare checkoutComplete.
+	if (!isCheckoutFreeOrder(checkoutToComplete)) {
+		// Adopt the live snapshot so the payment step re-renders with the paid flow.
+		await refreshCheckout();
+		return {
+			ok: false,
+			kind: "complete",
+			error: "Your order total has changed and now requires payment. Please review and try again.",
+		};
+	}
 
 	const completeResult = await finalizeCheckoutOrder(checkoutToComplete.id, checkoutToComplete.channel.slug);
 

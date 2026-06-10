@@ -4,6 +4,7 @@ import {
 	PAYMENT_COMPLETING_STORAGE_KEY,
 	markPaymentCompleting,
 } from "@/checkout/lib/payment/checkout-payment-completion";
+import { STRIPE_TRANSACTION_STORAGE_KEY } from "@/checkout/lib/payment/stripe-transaction-storage";
 import { reconcileCheckoutSessionStorage } from "./reconcile-checkout-session-storage";
 
 describe("reconcileCheckoutSessionStorage", () => {
@@ -20,22 +21,24 @@ describe("reconcileCheckoutSessionStorage", () => {
 		expect(sessionStorage.getItem(PAYMENT_COMPLETING_STORAGE_KEY)).toBeNull();
 	});
 
-	it("clears payment completing when checkout session is absent", () => {
+	it("clears payment completing and stripe transaction id when checkout session is absent", () => {
 		markPaymentCompleting("checkout-old");
+		sessionStorage.setItem(STRIPE_TRANSACTION_STORAGE_KEY, "txn-1");
 		reconcileCheckoutSessionStorage({
 			checkoutId: null,
 			processingPayment: false,
 		});
 		expect(sessionStorage.getItem(PAYMENT_COMPLETING_STORAGE_KEY)).toBeNull();
+		expect(sessionStorage.getItem(STRIPE_TRANSACTION_STORAGE_KEY)).toBeNull();
 	});
 
-	it("clears stale completing flag on reload without Stripe return params", () => {
+	it("keeps the completing flag for the current checkout so the resume flow can reconcile it", () => {
 		markPaymentCompleting("checkout-a");
 		reconcileCheckoutSessionStorage({
 			checkoutId: "checkout-a",
 			processingPayment: false,
 		});
-		expect(sessionStorage.getItem(PAYMENT_COMPLETING_STORAGE_KEY)).toBeNull();
+		expect(sessionStorage.getItem(PAYMENT_COMPLETING_STORAGE_KEY)).toBe("checkout-a");
 	});
 
 	it("keeps completing flag during Stripe redirect return", () => {

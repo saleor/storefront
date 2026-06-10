@@ -14,6 +14,8 @@ import {
 	clearPaymentCompleting,
 	isCheckoutPaymentFlowStale,
 	markPaymentCompleting,
+	PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE,
+	PAYMENT_INTERRUPTED_MESSAGE,
 	stashPaymentCompletionError,
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
@@ -29,7 +31,10 @@ import { updateCheckoutBilling } from "@/checkout/lib/payment/update-billing";
 import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import { buildStripeReturnUrl } from "./build-stripe-return-url";
 import { type StripeBillingContext } from "./stripe-billing-context";
-import { clearStripeTransactionId, storeStripeTransactionId } from "./use-stripe-checkout-redirect";
+import {
+	clearStripeTransactionId,
+	storeStripeTransactionId,
+} from "@/checkout/lib/payment/stripe-transaction-storage";
 
 export type StripeCheckoutPayResult =
 	| { ok: true }
@@ -53,7 +58,69 @@ function stripeElementMountError(surface: StripeInitializePaymentMethodContext["
 		: "The payment form was reset before your card could be confirmed. Please try Pay again without refreshing the page.";
 }
 
-export async function executeStripeCheckoutPayment({
+let payInFlight: Promise<StripeCheckoutPayResult> | null = null;
+
+/**
+ * Single-flight wrapper: a double click or double wallet tap must not run
+ * `transactionInitialize` + `confirmPayment` twice (duplicate Saleor transactions
+ * are the classic path to CHECKOUT_NOT_FULLY_PAID). Followers join the in-flight
+ * attempt and receive its result.
+ */
+export async function executeStripeCheckoutPayment(
+	params: ExecuteStripeCheckoutPaymentParams,
+): Promise<StripeCheckoutPayResult> {
+	if (payInFlight) {
+		return payInFlight;
+	}
+
+	const run = runStripeCheckoutPayment(params);
+	payInFlight = run;
+
+	try {
+		return await run;
+	} finally {
+		if (payInFlight === run) {
+			payInFlight = null;
+		}
+	}
+}
+
+/**
+ * The shopper aborted (browser Back) after Stripe already authorized the payment.
+ * "Try again" here is the double-authorization path — instead, sync the existing
+ * transaction into Saleor right away (no webhook wait) and refresh the snapshot so
+ * authorizeStatus FULL hides the pay form and surfaces the "Complete order" banner.
+ * transactionProcess only records the PaymentIntent outcome; it never moves money.
+ */
+async function reconcileInterruptedAuthorizedPayment({
+	transactionId,
+	refreshCheckout,
+}: {
+	transactionId: string;
+	refreshCheckout: ExecuteStripeCheckoutPaymentParams["refreshCheckout"];
+}): Promise<StripeCheckoutPayResult> {
+	try {
+		const processResult = await processCheckoutTransaction({ id: transactionId });
+		const processError = processResult.ok
+			? getStripeTransactionError(processResult.data)
+			: processResult.error;
+
+		if (!processError) {
+			clearStripeTransactionId();
+		}
+
+		await refreshCheckout();
+	} catch (error) {
+		rethrowNextInternalError(error);
+		// Saleor will still reconcile via webhook; the message below keeps the shopper safe meanwhile.
+		console.error("Failed to sync interrupted authorized payment:", error);
+	}
+
+	stashPaymentCompletionError(PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE);
+	return { ok: false, kind: "error", message: PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE };
+}
+
+async function runStripeCheckoutPayment({
 	stripe,
 	elements,
 	checkout,
@@ -65,8 +132,18 @@ export async function executeStripeCheckoutPayment({
 	let stripePaymentConfirmed = false;
 	const paymentFlowGeneration = beginCheckoutPaymentFlow();
 
-	const failAfterStripeConfirm = (message: string): StripeCheckoutPayResult => {
+	const failAfterStripeConfirm = async (message: string): Promise<StripeCheckoutPayResult> => {
 		stashPaymentCompletionError(message);
+
+		// Pull the live authorize status before the payment step re-renders: once the
+		// transaction is processed the pay form must stay hidden (recovery banner instead).
+		try {
+			await refreshCheckout();
+		} catch (error) {
+			rethrowNextInternalError(error);
+			console.error("Failed to refresh checkout after payment error:", error);
+		}
+
 		clearPaymentCompleting();
 		return { ok: false, kind: "error", message };
 	};
@@ -153,6 +230,12 @@ export async function executeStripeCheckoutPayment({
 			};
 		}
 
+		// Browser Back / abandoned wallet sheet bumps the flow generation — stop before
+		// creating a Saleor transaction the shopper no longer expects.
+		if (isCheckoutPaymentFlowStale(paymentFlowGeneration)) {
+			return { ok: false, kind: "error", message: PAYMENT_INTERRUPTED_MESSAGE };
+		}
+
 		const initResult = await initializeCheckoutTransaction({
 			checkoutId: liveCheckout.id,
 			amount: payAmount,
@@ -198,6 +281,11 @@ export async function executeStripeCheckoutPayment({
 			};
 		}
 
+		// Last abort point before money moves — confirmPayment authorizes the charge.
+		if (isCheckoutPaymentFlowStale(paymentFlowGeneration)) {
+			return { ok: false, kind: "error", message: PAYMENT_INTERRUPTED_MESSAGE };
+		}
+
 		const billingAddress = liveCheckout.billingAddress;
 
 		const { error: confirmError } = await stripe.confirmPayment({
@@ -229,7 +317,8 @@ export async function executeStripeCheckoutPayment({
 		}
 
 		if (isCheckoutPaymentFlowStale(paymentFlowGeneration)) {
-			return { ok: false, kind: "error", message: "Payment was interrupted. Please try again." };
+			// Aborted after authorization — never suggest retrying; reconcile instead.
+			return reconcileInterruptedAuthorizedPayment({ transactionId, refreshCheckout });
 		}
 
 		// Stripe confirmed — safe to unmount Elements and show order-completion UI.
@@ -263,7 +352,10 @@ export async function executeStripeCheckoutPayment({
 	} catch (error) {
 		rethrowNextInternalError(error);
 		console.error("Stripe payment failed:", error);
-		const message = formatStripePayError(error);
+		// Post-confirm failures must never read as "retry" — the authorization exists.
+		const message = stripePaymentConfirmed
+			? PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE
+			: formatStripePayError(error);
 		if (stripePaymentConfirmed) {
 			stashPaymentCompletionError(message);
 		}

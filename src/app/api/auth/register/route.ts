@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
+import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { executeRawGraphQL, asValidationError, getUserMessage } from "@/lib/graphql";
 
 const REGISTER_MUTATION = `
@@ -55,6 +56,14 @@ export async function POST(request: NextRequest) {
 	if (!email || !password) {
 		return NextResponse.json(
 			{ errors: [{ message: "Email and password are required", code: "REQUIRED" }] },
+			{ status: 400 },
+		);
+	}
+
+	// Confirmation emails embed this URL — only this deployment's surfaces are allowed.
+	if (redirectUrl && !isAllowedRedirectUrl(redirectUrl, request.nextUrl.origin)) {
+		return NextResponse.json(
+			{ errors: [{ message: "Invalid redirect URL", code: "INVALID" }] },
 			{ status: 400 },
 		);
 	}

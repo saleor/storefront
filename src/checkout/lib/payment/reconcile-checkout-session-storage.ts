@@ -2,6 +2,7 @@ import {
 	clearPaymentCompleting,
 	isPaymentCompleting,
 } from "@/checkout/lib/payment/checkout-payment-completion";
+import { clearStripeTransactionId } from "@/checkout/lib/payment/stripe-transaction-storage";
 
 type ReconcileCheckoutSessionStorageOptions = {
 	checkoutId: string | null;
@@ -16,17 +17,15 @@ export function reconcileCheckoutSessionStorage({
 	if (!checkoutId) {
 		if (!processingPayment) {
 			clearPaymentCompleting();
+			clearStripeTransactionId();
 		}
 		return;
 	}
 
-	if (!isPaymentCompleting(checkoutId)) {
-		return;
-	}
-
-	// Full page load with a completing flag but no Stripe return params — leftover from refresh
-	// or an abandoned attempt. Clear so the payment step (or authorized recovery) can render.
-	if (!processingPayment) {
-		clearPaymentCompleting();
-	}
+	// Side effect: a completing flag for a DIFFERENT checkout is cleared here. A flag for
+	// this checkout is intentionally kept — after a reload the resume flow in
+	// use-stripe-return-completion verifies the interrupted attempt and either finishes
+	// the order or releases the payment form. Wiping it would re-expose the pay form
+	// while an authorization may already exist at the PSP (double-pay risk).
+	isPaymentCompleting(checkoutId);
 }

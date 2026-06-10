@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
+import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { executeRawGraphQL, getUserMessage } from "@/lib/graphql";
 
 const REQUEST_PASSWORD_RESET_MUTATION = `
@@ -26,12 +28,34 @@ interface RequestPasswordResetResult {
 }
 
 export async function POST(request: NextRequest) {
-	const body = (await request.json()) as ResetPasswordRequest;
+	const rateLimited = rejectIfRateLimited(request, "reset-password", { limit: 5, windowMs: 60 * 60 * 1000 });
+	if (rateLimited) {
+		return rateLimited;
+	}
+
+	let body: ResetPasswordRequest;
+	try {
+		body = (await request.json()) as ResetPasswordRequest;
+	} catch {
+		return NextResponse.json(
+			{ errors: [{ message: "Invalid request body", code: "INVALID_JSON" }] },
+			{ status: 400 },
+		);
+	}
+
 	const { email, channel, redirectUrl } = body;
 
 	if (!email || !channel || !redirectUrl) {
 		return NextResponse.json(
 			{ errors: [{ message: "Email, channel, and redirectUrl are required", code: "REQUIRED" }] },
+			{ status: 400 },
+		);
+	}
+
+	// Reset emails embed this URL — only this deployment's surfaces are allowed.
+	if (!isAllowedRedirectUrl(redirectUrl, request.nextUrl.origin)) {
+		return NextResponse.json(
+			{ errors: [{ message: "Invalid redirect URL", code: "INVALID" }] },
 			{ status: 400 },
 		);
 	}

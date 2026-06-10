@@ -19,21 +19,31 @@ export async function getIdFromCookies(channel: string) {
  * Cart checkout id when `/checkout` has no `?checkout=` param.
  *
  * Checkout lives at `/checkout` (no `[channel]` segment), but cart cookies are
- * per channel. Returns the first non-empty `checkoutId-*` cookie. If the shopper
- * has carts in multiple channels, which one wins depends on cookie order.
+ * per channel. With carts in multiple channels the default channel wins;
+ * otherwise channels are compared alphabetically so the pick is deterministic.
  */
 export async function getFirstCheckoutIdFromCartCookies(): Promise<string | null> {
 	try {
-		for (const cookie of (await cookies()).getAll()) {
-			if (cookie.name.startsWith("checkoutId-") && cookie.value) {
-				return cookie.value;
+		const cartCookies = (await cookies())
+			.getAll()
+			.filter((cookie) => cookie.name.startsWith("checkoutId-") && cookie.value);
+
+		if (cartCookies.length === 0) {
+			return null;
+		}
+
+		const defaultChannel = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL;
+		if (defaultChannel) {
+			const preferred = cartCookies.find((cookie) => cookie.name === checkoutIdCookieName(defaultChannel));
+			if (preferred) {
+				return preferred.value;
 			}
 		}
+
+		return [...cartCookies].sort((a, b) => a.name.localeCompare(b.name))[0].value;
 	} catch {
 		return null;
 	}
-
-	return null;
 }
 
 export async function saveIdToCookie(channel: string, checkoutId: string) {

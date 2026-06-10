@@ -71,12 +71,17 @@ import type {
 	TransactionProcessActionResult,
 } from "@/checkout/lib/checkout-action-types";
 import type { CheckoutFetchResult } from "@/checkout/lib/checkout-types";
-import { getDummyPaymentGuardError } from "@/checkout/lib/payment-gateways";
-import { getStripePaymentGuardError } from "@/checkout/lib/payment/providers/stripe";
+import { getDummyPaymentGuardError, isDummyPaymentAllowed } from "@/checkout/lib/payment-gateways";
+import {
+	getCheckoutPayAmount,
+	hasMaterialCheckoutTotalChange,
+} from "@/checkout/lib/payment/checkout-pay-amount";
+import { getStripePaymentGuardError, isStripePaymentEnabled } from "@/checkout/lib/payment/providers/stripe";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { localeConfig } from "@/config/locale";
+import { getRequestOrigin, isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { executeAuthenticatedGraphQL, executePublicGraphQL, executeRawGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
 import { saveCheckoutId } from "@/app/actions";
@@ -229,6 +234,11 @@ export async function registerCheckoutAccount(input: {
 	channel: string;
 	redirectUrl: string;
 }): Promise<SimpleActionResult> {
+	// Confirmation emails embed this URL — reject foreign origins (phishing vector).
+	if (!isAllowedRedirectUrl(input.redirectUrl, await getRequestOrigin())) {
+		return { ok: false, error: "Invalid redirect URL" };
+	}
+
 	const result = await executeRawGraphQL<{
 		accountRegister?: {
 			errors: Array<{ field?: string | null; message?: string | null; code?: string | null }>;
@@ -425,6 +435,23 @@ export async function initializeCheckoutTransaction(
 		return { ok: false, error: stripeGuardError };
 	}
 
+	// Defense in depth: never trust the client-supplied amount. Saleor re-validates
+	// coverage at checkoutComplete, but rejecting here avoids authorizing a wrong amount.
+	if (typeof variables.amount === "number") {
+		const live = await fetchCheckoutOnServer(variables.checkoutId);
+		if (!live.ok || !live.checkout) {
+			return { ok: false, error: "Could not verify the checkout total. Please try again." };
+		}
+
+		const liveAmount = getCheckoutPayAmount(live.checkout);
+		if (liveAmount === null || hasMaterialCheckoutTotalChange(liveAmount, variables.amount)) {
+			return {
+				ok: false,
+				error: "The checkout total has changed. Please review your order and try again.",
+			};
+		}
+	}
+
 	const result = await executeAuthenticatedGraphQL(transactionInitializeDocument, {
 		variables,
 		cache: "no-cache",
@@ -449,6 +476,13 @@ export async function initializeCheckoutTransaction(
 export async function processCheckoutTransaction(
 	variables: TransactionProcessMutationVariables,
 ): Promise<TransactionProcessActionResult> {
+	// Mirror the initialize guards: when every integrated gateway is disabled for this
+	// environment, a direct call to this action must not drive transactions either.
+	// Forks adding gateways should extend this check alongside the initialize guards.
+	if (!isStripePaymentEnabled() && !isDummyPaymentAllowed()) {
+		return { ok: false, error: "Payments are not enabled in this environment." };
+	}
+
 	const result = await executeAuthenticatedGraphQL(transactionProcessDocument, {
 		variables,
 		cache: "no-cache",
@@ -584,6 +618,11 @@ export async function requestCheckoutPasswordReset(input: {
 	channel: string;
 	redirectUrl: string;
 }): Promise<SimpleActionResult> {
+	// Reset emails embed this URL — reject foreign origins (phishing vector).
+	if (!isAllowedRedirectUrl(input.redirectUrl, await getRequestOrigin())) {
+		return { ok: false, error: "Invalid redirect URL" };
+	}
+
 	const result = await executeRawGraphQL<RequestPasswordResetMutation>({
 		query: requestPasswordResetDocument.toString(),
 		variables: input,
@@ -593,12 +632,11 @@ export async function requestCheckoutPasswordReset(input: {
 		return { ok: false, error: result.error.message };
 	}
 
+	// Swallow Saleor validation errors (e.g. unknown email) — same anti-enumeration
+	// posture as POST /api/auth/reset-password.
 	const errors = result.data.requestPasswordReset?.errors ?? [];
 	if (errors.length > 0) {
-		return {
-			ok: false,
-			error: errors[0].message ?? "Failed to send reset link",
-		};
+		console.error("Checkout password reset validation errors");
 	}
 
 	return { ok: true };

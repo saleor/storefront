@@ -1,7 +1,15 @@
-import type { CheckoutFragment } from "@/checkout/graphql";
-import type { ServerCheckout } from "@/checkout/lib/checkout-types";
+type MoneyLike = { amount: number; currency: string };
 
-type CheckoutWithTotal = Pick<CheckoutFragment, "totalPrice" | "subtotalPrice" | "discount"> | ServerCheckout;
+/**
+ * Minimal structural shape these helpers read — satisfied by both `CheckoutFragment`
+ * and `ServerCheckout`. Fields are optional/nullable on purpose: totals can be
+ * missing mid-sync and the helpers must stay defensive at runtime.
+ */
+type CheckoutWithTotal = {
+	totalPrice?: { gross?: MoneyLike | null } | null;
+	subtotalPrice?: { gross?: MoneyLike | null } | null;
+	discount?: MoneyLike | null;
+};
 
 /** Ignore sub-cent drift when comparing displayed vs live checkout totals. */
 export const CHECKOUT_TOTAL_CHANGE_EPSILON = 0.01;

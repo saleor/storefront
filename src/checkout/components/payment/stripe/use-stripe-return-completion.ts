@@ -3,13 +3,25 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { processCheckoutTransaction, syncCheckoutFromServer } from "@/app/(checkout)/actions";
-import { markPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
+import {
+	clearPaymentCompleting,
+	isPaymentCompletingOrphaned,
+	markPaymentCompleting,
+	PAYMENT_INTERRUPTED_MESSAGE,
+	PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE,
+	stashPaymentCompletionError,
+} from "@/checkout/lib/payment/checkout-payment-completion";
+import { isCheckoutReadyToComplete } from "@/checkout/lib/payment/checkout-payment-status";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
 import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import { getStripeTransactionError } from "@/checkout/lib/payment/providers/stripe";
+import {
+	clearStripeTransactionId,
+	getOrphanedStripeTransactionId,
+	STRIPE_TRANSACTION_STORAGE_KEY,
+} from "@/checkout/lib/payment/stripe-transaction-storage";
 import { getQueryParams } from "@/checkout/lib/utils/url";
 import { reportStripeReturnFailure } from "./report-stripe-return-failure";
-import { clearStripeTransactionId, STRIPE_TRANSACTION_STORAGE_KEY } from "./use-stripe-checkout-redirect";
 
 type UseStripeReturnCompletionParams = {
 	checkoutId: string;
@@ -18,7 +30,8 @@ type UseStripeReturnCompletionParams = {
 };
 
 /**
- * Finishes checkout after Stripe redirect (3DS, etc.).
+ * Finishes checkout after Stripe redirect (3DS, etc.) AND resumes attempts that a
+ * page reload interrupted (in-modal 3DS leaves no return params in the URL).
  * Does not depend on Stripe.js — only server actions.
  */
 export function useStripeReturnCompletion({
@@ -30,93 +43,175 @@ export function useStripeReturnCompletion({
 	const isProcessingRef = useRef(false);
 	/** Dedupes effect re-runs while Next `searchParams` still reflects the pre-clear return URL. */
 	const returnAttemptRef = useRef<string | null>(null);
+	const resumeAttemptedRef = useRef(false);
 
 	useEffect(() => {
 		const { paymentIntent, paymentIntentClientSecret, processingPayment, transaction, redirectStatus } =
 			getQueryParams(searchParams);
 
-		if (!processingPayment || !paymentIntent || !paymentIntentClientSecret) {
+		if (processingPayment && paymentIntent && paymentIntentClientSecret) {
+			const attemptId = `${paymentIntent}:${paymentIntentClientSecret}`;
+			if (returnAttemptRef.current === attemptId) {
+				return;
+			}
+
+			if (isProcessingRef.current) {
+				return;
+			}
+
+			returnAttemptRef.current = attemptId;
+
+			if (redirectStatus === "failed") {
+				reportStripeReturnFailure(
+					"Your bank declined the payment. Please try again or use a different card.",
+					onError,
+				);
+				return;
+			}
+
+			const transactionIdFromStorage = sessionStorage.getItem(STRIPE_TRANSACTION_STORAGE_KEY);
+			const transactionIdFromQuery = typeof transaction === "string" ? transaction : undefined;
+			const transactionId = transactionIdFromStorage ?? transactionIdFromQuery;
+
+			if (!transactionId) {
+				reportStripeReturnFailure("Payment session expired after redirect. Please try again.", onError);
+				return;
+			}
+
+			isProcessingRef.current = true;
+			markPaymentCompleting(checkoutId);
+
+			const completeAfterRedirect = async () => {
+				let keepProcessingLock = false;
+
+				try {
+					const processResult = await processCheckoutTransaction({ id: transactionId });
+
+					if (!processResult.ok) {
+						reportStripeReturnFailure(processResult.error, onError);
+						return;
+					}
+
+					const processError = getStripeTransactionError(processResult.data);
+					if (processError) {
+						reportStripeReturnFailure(processError, onError);
+						return;
+					}
+
+					let resolvedChannelSlug = channelSlug;
+					if (!resolvedChannelSlug) {
+						const syncResult = await syncCheckoutFromServer(checkoutId);
+						if (syncResult.ok) {
+							resolvedChannelSlug = syncResult.checkout?.channel.slug;
+						}
+					}
+
+					if (!resolvedChannelSlug) {
+						reportStripeReturnFailure(
+							"Could not resolve checkout channel after payment. Please contact support.",
+							onError,
+						);
+						return;
+					}
+
+					clearStripeTransactionId();
+
+					const completeResult = await finalizeCheckoutOrder(checkoutId, resolvedChannelSlug);
+					if (!completeResult.ok) {
+						reportStripeReturnFailure(completeResult.error, onError);
+						return;
+					}
+
+					// Success: hold the processing lock until navigateToOrderConfirmation unloads the page.
+					keepProcessingLock = true;
+				} catch (error) {
+					rethrowNextInternalError(error);
+					console.error("Stripe redirect completion failed:", error);
+					reportStripeReturnFailure("An unexpected error occurred while completing your payment.", onError);
+				} finally {
+					if (!keepProcessingLock) {
+						isProcessingRef.current = false;
+					}
+				}
+			};
+
+			void completeAfterRedirect();
 			return;
 		}
 
-		const attemptId = `${paymentIntent}:${paymentIntentClientSecret}`;
-		if (returnAttemptRef.current === attemptId) {
+		// Mid-redirect URL state without intent params — not ours to handle.
+		if (processingPayment) {
 			return;
 		}
 
-		if (isProcessingRef.current) {
+		// --- Resume after reload ---------------------------------------------------------
+		// In-modal 3DS (`redirect: "if_required"`) never adds return params to the URL, so a
+		// refresh right after the confirm kills process/finalize with no marker except
+		// sessionStorage: an orphaned transaction id and/or an orphaned completing flag.
+		// Without this, the pay form re-renders while Stripe holds an authorization.
+		const orphanedTransactionId = getOrphanedStripeTransactionId();
+		const orphanedCompleting = isPaymentCompletingOrphaned(checkoutId);
+
+		if (!orphanedTransactionId && !orphanedCompleting) {
 			return;
 		}
 
-		returnAttemptRef.current = attemptId;
-
-		if (redirectStatus === "failed") {
-			reportStripeReturnFailure(
-				"Your bank declined the payment. Please try again or use a different card.",
-				onError,
-			);
+		if (resumeAttemptedRef.current || isProcessingRef.current) {
 			return;
 		}
 
-		const transactionIdFromStorage = sessionStorage.getItem(STRIPE_TRANSACTION_STORAGE_KEY);
-		const transactionIdFromQuery = typeof transaction === "string" ? transaction : undefined;
-		const transactionId = transactionIdFromStorage ?? transactionIdFromQuery;
-
-		if (!transactionId) {
-			reportStripeReturnFailure("Payment session expired after redirect. Please try again.", onError);
-			return;
-		}
-
+		resumeAttemptedRef.current = true;
 		isProcessingRef.current = true;
+		// Keeps the completing screen up (or brings it up) while we verify — the pay form
+		// must not be reachable until the interrupted attempt's outcome is known.
 		markPaymentCompleting(checkoutId);
 
-		const completeAfterRedirect = async () => {
+		const resumeAfterReload = async () => {
 			let keepProcessingLock = false;
 
 			try {
-				const processResult = await processCheckoutTransaction({ id: transactionId });
-
-				if (!processResult.ok) {
-					reportStripeReturnFailure(processResult.error, onError);
-					return;
-				}
-
-				const processError = getStripeTransactionError(processResult.data);
-				if (processError) {
-					reportStripeReturnFailure(processError, onError);
-					return;
-				}
-
-				let resolvedChannelSlug = channelSlug;
-				if (!resolvedChannelSlug) {
-					const syncResult = await syncCheckoutFromServer(checkoutId);
-					if (syncResult.ok) {
-						resolvedChannelSlug = syncResult.checkout?.channel.slug;
+				if (orphanedTransactionId) {
+					try {
+						// Sync the attempt's true outcome from Stripe into Saleor (no webhook wait).
+						// Result errors are non-fatal — authorizeStatus below is the ground truth.
+						await processCheckoutTransaction({ id: orphanedTransactionId });
+					} catch (error) {
+						rethrowNextInternalError(error);
+						console.error("Resuming interrupted payment: transaction process failed:", error);
 					}
 				}
 
-				if (!resolvedChannelSlug) {
-					reportStripeReturnFailure(
-						"Could not resolve checkout channel after payment. Please contact support.",
-						onError,
-					);
+				const syncResult = await syncCheckoutFromServer(checkoutId);
+				if (!syncResult.ok || !syncResult.checkout) {
+					// Cannot verify: keep the transaction id so the next load retries, exit the
+					// completing screen, and warn against paying again.
+					stashPaymentCompletionError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
+					clearPaymentCompleting();
+					onError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
+					return;
+				}
+
+				if (!isCheckoutReadyToComplete(syncResult.checkout)) {
+					// The interrupted attempt never produced an authorization — safe to pay fresh.
+					reportStripeReturnFailure(PAYMENT_INTERRUPTED_MESSAGE, onError);
 					return;
 				}
 
 				clearStripeTransactionId();
 
-				const completeResult = await finalizeCheckoutOrder(checkoutId, resolvedChannelSlug);
+				const completeResult = await finalizeCheckoutOrder(checkoutId, syncResult.checkout.channel.slug);
 				if (!completeResult.ok) {
 					reportStripeReturnFailure(completeResult.error, onError);
 					return;
 				}
 
-				// Success: hold the processing lock until navigateToOrderConfirmation unloads the page.
 				keepProcessingLock = true;
 			} catch (error) {
 				rethrowNextInternalError(error);
-				console.error("Stripe redirect completion failed:", error);
-				reportStripeReturnFailure("An unexpected error occurred while completing your payment.", onError);
+				console.error("Resuming interrupted payment failed:", error);
+				stashPaymentCompletionError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
+				clearPaymentCompleting();
+				onError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
 			} finally {
 				if (!keepProcessingLock) {
 					isProcessingRef.current = false;
@@ -124,6 +219,6 @@ export function useStripeReturnCompletion({
 			}
 		};
 
-		void completeAfterRedirect();
+		void resumeAfterReload();
 	}, [channelSlug, checkoutId, onError, searchParams]);
 }
