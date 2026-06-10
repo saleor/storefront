@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
+import { formatPageTitle } from "@/config/brand";
 import { CheckoutSessionLoader } from "./checkout-session-loader";
 
 export const metadata = {
-	title: "Checkout · Saleor Storefront example",
+	title: formatPageTitle("Checkout"),
 	description: "Complete your purchase securely.",
 };
 

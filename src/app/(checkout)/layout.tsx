@@ -4,6 +4,7 @@ import { brandConfig, formatPageTitle } from "@/config/brand";
 export const metadata = {
 	title: formatPageTitle("Checkout"),
 	description: brandConfig.description,
+	robots: { index: false, follow: false },
 };
 
 /**
