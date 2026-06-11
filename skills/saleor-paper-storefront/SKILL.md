@@ -113,7 +113,7 @@ Chronological upgrade prompts for forks behind upstream Paper. **Not** for green
 
 Trigger phrases: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching", "checkout v2", "paper-version".
 
-Notable migration: `2026-06-checkout-v2` — RSC checkout, server actions, remove urql runtime (requires `2026-06-account-ppr-auth`).
+Notable migration: `2026-06-checkout-v2` — **subsystem replacement** (adopt-then-replay, not incremental port); RSC + server actions; requires `2026-06-account-ppr-auth`. See `migrations/references/checkout-v2-overview.md`.
 
 ## Full Compiled Document
 

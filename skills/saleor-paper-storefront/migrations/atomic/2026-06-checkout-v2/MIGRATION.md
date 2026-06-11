@@ -25,6 +25,28 @@ Replace the legacy **client-side urql checkout** with Paper **checkout v2**:
 - `2026-06-account-ppr-auth` (or equivalent BFF auth) — checkout sign-in uses the same `/api/auth/*` routes
 - Fork uses Saleor transaction API payment apps (Dummy and/or Stripe) — Adyen from old `_reference` is **not** ported automatically
 
+## Migration type
+
+This is a **subsystem replacement** — see [Subsystem replacements](../../SKILL.md#subsystem-replacements-checkout-v2) in the migrations skill. Do **not** conceptually port the old urql checkout file-by-file. **Adopt** the upstream v2 tree, then **replay** fork customizations at extension points.
+
+Background: [`../../references/checkout-v2-overview.md`](../../references/checkout-v2-overview.md).
+
+## Pre-migration inventory
+
+Complete this **before** step 1. List what the fork customized in legacy checkout so nothing is lost during adopt-then-replay.
+
+| Fork customization               | v2 extension point                                            | How to migrate                                          |
+| -------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------- |
+| Custom payment (Adyen, etc.)     | `INTEGRATED_GATEWAYS` + `src/checkout/lib/payment/providers/` | Follow `checkout-payment-gateways.md` — not auto-ported |
+| Extra checkout fields / metadata | `actions.ts` mutations + contact/shipping step components     | Re-wire into steps + server actions                     |
+| Marketing opt-in / consent       | `src/checkout/lib/` + contact section + metadata in actions   | Fork feature — replay after base port                   |
+| Analytics / GTM / pixels         | Step components or `(checkout)` layout                        | Re-mount after base port                                |
+| Extra checkout step              | `flow.ts`, `updateCheckoutQuery`                              | Extend after architecture is in place                   |
+| Checkout-only subdomain          | `NEXT_PUBLIC_CHECKOUT_URL`, middleware                        | Optional — see `paper-surfaces.md`                      |
+| Custom step styling              | Step view components                                          | `presentation-default` — keep fork classNames           |
+
+**Unsupported:** keeping browser-side Saleor GraphQL (urql) for checkout alongside v2.
+
 ## Out of scope
 
 - Visual rebrand of checkout steps (presentation-default — keep fork styling)
@@ -40,7 +62,18 @@ Replace the legacy **client-side urql checkout** with Paper **checkout v2**:
 - Move storefront routes under `src/app/(storefront)/[channel]/` if not already
 - Replace hardcoded `/checkout?checkout=` strings with `@paper/session-bridge`
 
-### 2. RSC checkout entry `[architecture]`
+### 2. Storefront handoff `[architecture]`
+
+Checkout v2 includes the **storefront → checkout** boundary. Port or verify:
+
+- `src/lib/checkout.ts` — `findOrCreate`, cookie `checkoutId-{channel}`, `saveIdToCookie`
+- Cart drawer and cart page links — `buildCheckoutPath` / `buildCheckoutUrl` from `@paper/session-bridge` (not string literals)
+- Cart mutations — call `revalidateStorefrontChrome` (or equivalent) so returning from `/{channel}/cart` shows fresh checkout data
+- Add-to-cart server actions — same checkout cookie + revalidation path as upstream
+
+A fork can pass checkout detect markers while still breaking handoff if storefront cart code was not updated.
+
+### 3. RSC checkout entry `[architecture]`
 
 Port:
 
@@ -54,7 +87,7 @@ Remove or stop using:
 - Client-only checkout bootstrap that fetches cart on mount via urql
 - `dynamic(..., { ssr: false })` around entire checkout tree
 
-### 3. Client data layer `[architecture]`
+### 4. Client data layer `[architecture]`
 
 Port:
 
@@ -71,14 +104,14 @@ Delete fork usage of:
 
 Codegen: keep `src/checkout/graphql/*.graphql` + `pnpm generate:checkout` for **types and documents** — runtime uses server actions, not urql hooks.
 
-### 4. Order confirmation split `[architecture]`
+### 5. Order confirmation split `[architecture]`
 
 - `src/app/(checkout)/checkout/complete/page.tsx`
 - `src/checkout/order-confirmation-app.tsx` + `OrderDataProvider`
 - Post-payment: `navigateToOrderConfirmation()` → `window.location.replace` (not `router.replace`)
 - Do **not** clear checkout cookie synchronously on `/checkout` before navigation
 
-### 5. Step URL (shallow history) `[architecture]`
+### 6. Step URL (shallow history) `[architecture]`
 
 Port:
 
@@ -87,7 +120,7 @@ Port:
 
 **Rule:** step changes must **not** call `router.replace` — that re-runs checkout RSC.
 
-### 6. Payment registry `[architecture]`
+### 7. Payment registry `[architecture]`
 
 Port:
 
@@ -98,7 +131,7 @@ Port:
 
 Re-wire custom payment UI to registry — do not copy monolithic `PaymentSection` from old reference.
 
-### 7. Session management `[architecture]`
+### 8. Session management `[architecture]`
 
 Checkout and storefront share BFF cookies. Port or verify:
 
@@ -110,14 +143,19 @@ Checkout and storefront share BFF cookies. Port or verify:
 
 **Do not** treat every `me === null` as signed out — use `SessionAuthState` (`guest` / `authenticated` / `unavailable`).
 
-### 8. Fork customizations audit
+### 9. Replay fork customizations
 
-| If you customized…      | Action                                              |
-| ----------------------- | --------------------------------------------------- |
-| Extra checkout step     | Add to `flow.ts`, wire `updateCheckoutQuery`        |
-| Custom payment app      | Register in `INTEGRATED_GATEWAYS` + provider module |
-| Checkout-only subdomain | `NEXT_PUBLIC_CHECKOUT_URL` + `buildCheckoutUrl`     |
-| Header link to checkout | Use `buildCheckoutPath` from session-bridge         |
+Using the [pre-migration inventory](#pre-migration-inventory), re-apply fork-only behavior at extension points — **after** steps 1–8 are in place.
+
+| If you customized…       | Action                                              |
+| ------------------------ | --------------------------------------------------- |
+| Extra checkout step      | Add to `flow.ts`, wire `updateCheckoutQuery`        |
+| Custom payment app       | Register in `INTEGRATED_GATEWAYS` + provider module |
+| Checkout metadata/fields | Server actions + relevant step section              |
+| Marketing / consent      | `src/checkout/lib/` module + contact step           |
+| Checkout-only subdomain  | `NEXT_PUBLIC_CHECKOUT_URL` + `buildCheckoutUrl`     |
+| Header link to checkout  | Use `buildCheckoutPath` from session-bridge         |
+| Analytics                | Step components or checkout layout shell            |
 
 ## Verify
 

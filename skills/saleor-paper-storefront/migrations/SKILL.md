@@ -68,6 +68,30 @@ Skeleton components (`PlpPageLoading`, `GallerySkeleton`, `FeaturedProductsSkele
 
 When `optional: true` in manifest, **always present** the migration and ask using `skipPrompt`. Record `"skipped": true` and optional `skipReason` in `paper-version.json` if user skips.
 
+### Subsystem replacements (checkout v2)
+
+Most migrations are **incremental architecture ports** — same pages and components, new data layer (cache tags, Suspense shells, BFF auth). **Checkout v2** (`2026-06-checkout-v2`) is a **subsystem replacement**: it replaces most of `src/checkout/`, adds route groups, and changes the runtime model (urql → RSC + server actions). Do not apply the incremental playbook to checkout.
+
+|               | Incremental (e.g. cache-PPR)    | Subsystem (checkout v2)                            |
+| ------------- | ------------------------------- | -------------------------------------------------- |
+| Change shape  | Touch existing storefront files | Replace checkout tree + new `(checkout)/` routes   |
+| Port strategy | Conceptual port per file        | **Adopt upstream base**, then re-apply fork deltas |
+| Failure mode  | Stale cache, build errors       | Broken payments, session desync, step URL bugs     |
+
+**Rules for subsystem migrations:**
+
+- **One atomic migration** — do not split (e.g. `2026-06-checkout-v2` stays a single manifest entry).
+- **Hard `requires`** — run dependencies first (`2026-06-account-ppr-auth` for BFF auth before checkout).
+- **Default fork workflow:**
+  1. **Inventory** fork deltas before touching code (payments, extra fields, analytics, metadata) — see migration's pre-migration table.
+  2. **Adopt** upstream `src/checkout/`, `src/app/(checkout)/`, `src/session-bridge/`, `src/app/(checkout)/actions.ts` as the base.
+  3. **Replay** customizations at **extension points** (payment registry, contact/shipping sections, server actions metadata) — not by keeping urql hooks or merging old checkout runtime.
+  4. **Preserve styling** in step components (`presentation-default`).
+- **STOP** if the fork must keep browser-side Saleor GraphQL for checkout — v2 does not support that model. Attempting to run urql alongside v2 is unsupported.
+- **Fork-only features** (marketing opt-in, custom analytics, extra metadata) are not separate Paper migrations — implement at extension points after the base port.
+
+Deep background: [`references/checkout-v2-overview.md`](references/checkout-v2-overview.md).
+
 ## Manifest order
 
 `manifest.json` array order is **upstream ship chronology** (oldest first) — the reverse of the internal changelog in the caching batch doc.
@@ -93,7 +117,7 @@ atomic/<id>/
 
 1. Read `detect.md`. If already applied → update `paper-version.json` only.
 2. If optional → ask user with `skipPrompt` from manifest.
-3. Read `MIGRATION.md` and execute steps (conceptual port).
+3. Read `MIGRATION.md` and execute steps — **conceptual port** for incremental migrations; **adopt-then-replay** for subsystem replacements (see above).
 4. Run `verify.md` checklist + `pnpm exec tsc --noEmit`.
 5. Append to `paper-version.json`:
 
@@ -113,6 +137,8 @@ Update `lastUpstreamSha` to the migration's `upstreamSha`.
 Manifest batch `2026-06-cache-ppr` (caching/PPR) plus product migrations such as `2026-06-pdp-swatch-selectors` — see [`manifest.json`](manifest.json).
 
 Deep background: [`references/caching-overview.md`](references/caching-overview.md).
+
+Checkout subsystem: [`references/checkout-v2-overview.md`](references/checkout-v2-overview.md) + [`atomic/2026-06-checkout-v2/`](atomic/2026-06-checkout-v2/MIGRATION.md).
 
 ## Out of scope (v1)
 
