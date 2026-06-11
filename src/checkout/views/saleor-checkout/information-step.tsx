@@ -6,9 +6,11 @@ import { useState, useCallback, useEffect, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { syncAuthSurfacesAfterSignIn } from "@/lib/auth";
 import { buildAccountConfirmationRedirectUrl } from "@/lib/auth/account-confirmation-url";
+import { isCheckoutMarketingConsentEnabled } from "@/checkout/lib/marketing-consent";
 import { Button } from "@/ui/components/ui/button";
 import {
 	updateCheckoutEmail,
+	updateCheckoutMarketingConsent,
 	updateCheckoutShippingAddress,
 	registerCheckoutAccount,
 } from "@/app/(checkout)/actions";
@@ -337,6 +339,10 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					}
 					updatedCheckout = emailResult.checkout;
 
+					if (isCheckoutMarketingConsentEnabled()) {
+						await updateCheckoutMarketingConsent(updatedCheckout.id, subscribeNews);
+					}
+
 					if (createAccount && accountPassword) {
 						const registerResult = await registerCheckoutAccount({
 							email,
@@ -416,6 +422,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			email,
 			createAccount,
 			accountPassword,
+			subscribeNews,
 			user?.addresses,
 			showNewAddressForm,
 			isEnteringNewAddress,

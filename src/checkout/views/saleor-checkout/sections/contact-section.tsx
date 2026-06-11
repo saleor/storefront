@@ -4,6 +4,7 @@ import { type FC } from "react";
 import { Label } from "@/ui/components/ui/label";
 import { Checkbox } from "@/ui/components/ui/checkbox";
 import { SignedInUser, GuestContact } from "@/checkout/components/contact";
+import { isCheckoutMarketingConsentEnabled } from "@/checkout/lib/marketing-consent";
 
 // User type matching what useUser() returns
 type User = {
@@ -99,8 +100,7 @@ export const ContactSection: FC<ContactSectionProps> = ({
 						passwordError={passwordError}
 					/>
 
-					{/* Subscribe checkbox (only for guests not creating account) */}
-					{!createAccount && (
+					{isCheckoutMarketingConsentEnabled() && (
 						<div className="flex items-center gap-3">
 							<Checkbox
 								id="subscribe"

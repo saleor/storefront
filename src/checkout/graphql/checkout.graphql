@@ -229,6 +229,21 @@ mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!, $languageCode: L
 	}
 }
 
+mutation checkoutMetadataUpdate($id: ID!, $input: [MetadataInput!]!) {
+	updateMetadata(id: $id, input: $input) {
+		errors {
+			field
+			code
+			message
+		}
+		item {
+			... on Checkout {
+				id
+			}
+		}
+	}
+}
+
 mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
 	checkoutCustomerAttach(id: $checkoutId) {
 		errors {

@@ -12,6 +12,7 @@ import {
 	CheckoutCustomerAttachDocument,
 	CheckoutDeliveryMethodUpdateDocument,
 	CheckoutEmailUpdateDocument,
+	CheckoutMetadataUpdateDocument,
 	CheckoutLinesAddDocument,
 	CheckoutRemovePromoCodeDocument,
 	CheckoutShippingAddressUpdateDocument,
@@ -37,6 +38,8 @@ import {
 	type CheckoutDeliveryMethodUpdateMutationVariables,
 	type CheckoutEmailUpdateMutation,
 	type CheckoutEmailUpdateMutationVariables,
+	type CheckoutMetadataUpdateMutation,
+	type CheckoutMetadataUpdateMutationVariables,
 	type CheckoutLinesAddMutation,
 	type CheckoutLinesAddMutationVariables,
 	type CheckoutRemovePromoCodeMutation,
@@ -77,6 +80,7 @@ import {
 	hasMaterialCheckoutTotalChange,
 } from "@/checkout/lib/payment/checkout-pay-amount";
 import { getStripePaymentGuardError, isStripePaymentEnabled } from "@/checkout/lib/payment/providers/stripe";
+import { buildMarketingConsentMetadata } from "@/checkout/lib/marketing-consent";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
@@ -90,6 +94,11 @@ const checkoutEmailUpdateDocument = toTypedDocument<
 	CheckoutEmailUpdateMutation,
 	CheckoutEmailUpdateMutationVariables
 >(CheckoutEmailUpdateDocument);
+
+const checkoutMetadataUpdateDocument = toTypedDocument<
+	CheckoutMetadataUpdateMutation,
+	CheckoutMetadataUpdateMutationVariables
+>(CheckoutMetadataUpdateDocument);
 
 const checkoutShippingAddressUpdateDocument = toTypedDocument<
 	CheckoutShippingAddressUpdateMutation,
@@ -188,6 +197,34 @@ export async function updateCheckoutEmail(checkoutId: string, email: string): Pr
 	}
 
 	return toCheckoutActionResult(result.data.checkoutEmailUpdate);
+}
+
+/** Persists guest marketing consent on checkout metadata for ORDER_CREATED webhooks / ESP apps. */
+export async function updateCheckoutMarketingConsent(
+	checkoutId: string,
+	optedIn: boolean,
+): Promise<SimpleActionResult> {
+	const result = await executeAuthenticatedGraphQL(checkoutMetadataUpdateDocument, {
+		variables: {
+			id: checkoutId,
+			input: buildMarketingConsentMetadata(optedIn),
+		},
+		cache: "no-cache",
+	});
+
+	if (!result.ok) {
+		return { ok: false, error: result.error.message };
+	}
+
+	const errors = result.data.updateMetadata?.errors ?? [];
+	if (errors.length > 0) {
+		return {
+			ok: false,
+			error: errors[0]?.message ?? "Failed to save marketing preference",
+		};
+	}
+
+	return { ok: true };
 }
 
 export async function updateCheckoutShippingAddress(
