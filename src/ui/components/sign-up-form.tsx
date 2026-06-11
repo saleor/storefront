@@ -7,6 +7,7 @@ import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
+import { buildAccountConfirmationRedirectUrl } from "@/lib/auth/account-confirmation-url";
 import { cn } from "@/lib/utils";
 
 export function SignUpForm() {
@@ -57,7 +58,7 @@ export function SignUpForm() {
 					firstName,
 					lastName,
 					channel: params.channel,
-					redirectUrl: `${window.location.origin}/${params.channel}/login`,
+					redirectUrl: buildAccountConfirmationRedirectUrl(window.location.origin, params.channel),
 				}),
 			});
 

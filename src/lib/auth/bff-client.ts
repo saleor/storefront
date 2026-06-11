@@ -33,6 +33,23 @@ export async function loginWithBff(email: string, password: string): Promise<Aut
 	return data;
 }
 
+export async function confirmAccountWithBff(email: string, token: string): Promise<AuthApiResponse> {
+	const response = await fetch("/api/auth/confirm-account", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ email, token }),
+		credentials: "same-origin",
+	});
+
+	const data = await parseAuthResponse(response);
+
+	if (!response.ok && !data.errors?.length) {
+		return { errors: [{ message: "Failed to confirm account. Please try again." }] };
+	}
+
+	return data;
+}
+
 export async function setPasswordWithBff(
 	email: string,
 	token: string,

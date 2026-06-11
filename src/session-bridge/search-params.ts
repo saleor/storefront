@@ -10,6 +10,7 @@ export const checkoutSearchParamKeys = {
 	redirectUrl: "redirectUrl",
 	checkout: "checkoutId",
 	order: "orderId",
+	confirm: "accountConfirm",
 	token: "passwordResetToken",
 	email: "passwordResetEmail",
 	saleorApiUrl: "saleorApiUrl",

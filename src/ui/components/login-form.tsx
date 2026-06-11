@@ -1,16 +1,16 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { getEmailAndTokenFromSearchParams } from "@/lib/auth/account-confirmation-url";
 import { LoginMode } from "./auth/login-mode";
 import { SetPasswordMode } from "./auth/set-password-mode";
 
 export function LoginForm() {
 	const searchParams = useSearchParams();
-	const resetEmail = searchParams.get("email");
-	const resetToken = searchParams.get("token");
+	const credentials = getEmailAndTokenFromSearchParams(searchParams);
 
-	if (resetEmail && resetToken) {
-		return <SetPasswordMode email={resetEmail} token={resetToken} />;
+	if (credentials) {
+		return <SetPasswordMode email={credentials.email} token={credentials.token} />;
 	}
 
 	return <LoginMode />;

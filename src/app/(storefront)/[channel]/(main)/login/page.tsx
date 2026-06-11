@@ -1,7 +1,13 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { AuthFormSection } from "@/ui/components/auth/auth-form-section";
+import { ConfirmAccountMode } from "@/ui/components/auth/confirm-account-mode";
 import { LoginForm } from "@/ui/components/login-form";
+import {
+	getEmailAndTokenFromSearchParams,
+	isAccountConfirmationLink,
+} from "@/lib/auth/account-confirmation-url";
+import { searchParamsRecordToGetter } from "@/lib/auth/search-params-record";
 import { CurrentUserDocument } from "@/gql/graphql";
 import { fetchAuthenticatedUserIfSession } from "@/lib/auth/fetch-authenticated-user";
 
@@ -10,10 +16,35 @@ export const metadata = {
 	description: "Sign in to your account to access your orders and saved addresses.",
 };
 
-export default function LoginPage(props: { params: Promise<{ channel: string }> }) {
+type LoginPageProps = {
+	params: Promise<{ channel: string }>;
+	searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default function LoginPage(props: LoginPageProps) {
+	return (
+		<Suspense fallback={null}>
+			<LoginPageEntry {...props} />
+		</Suspense>
+	);
+}
+
+async function LoginPageEntry({ params: paramsPromise, searchParams: searchParamsPromise }: LoginPageProps) {
+	const [{ channel }, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
+	const searchParamsGetter = searchParamsRecordToGetter(searchParams);
+	const credentials = getEmailAndTokenFromSearchParams(searchParamsGetter);
+
+	if (credentials && isAccountConfirmationLink(searchParamsGetter)) {
+		return (
+			<AuthFormSection>
+				<ConfirmAccountMode email={credentials.email} token={credentials.token} channel={channel} />
+			</AuthFormSection>
+		);
+	}
+
 	return (
 		<Suspense fallback={<LoginSkeleton />}>
-			<LoginContent params={props.params} />
+			<LoginContent channel={channel} />
 		</Suspense>
 	);
 }
@@ -47,9 +78,7 @@ function LoginSkeleton() {
 	);
 }
 
-async function LoginContent({ params: paramsPromise }: { params: Promise<{ channel: string }> }) {
-	const { channel } = await paramsPromise;
-
+async function LoginContent({ channel }: { channel: string }) {
 	const result = await fetchAuthenticatedUserIfSession(CurrentUserDocument, {
 		cache: "no-cache",
 	});

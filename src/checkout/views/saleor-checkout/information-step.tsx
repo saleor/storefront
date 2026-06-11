@@ -5,6 +5,7 @@
 import { useState, useCallback, useEffect, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { syncAuthSurfacesAfterSignIn } from "@/lib/auth";
+import { buildAccountConfirmationRedirectUrl } from "@/lib/auth/account-confirmation-url";
 import { Button } from "@/ui/components/ui/button";
 import {
 	updateCheckoutEmail,
@@ -116,7 +117,9 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	// View state - what sub-view are we showing?
 	const [contactView, setContactView] = useState<ContactView>(() => {
 		const { passwordResetToken } = getQueryParams(searchParams);
-		if (passwordResetToken) return "resetPassword";
+		if (passwordResetToken) {
+			return "resetPassword";
+		}
 		return "main";
 	});
 
@@ -339,7 +342,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 							email,
 							password: accountPassword,
 							channel: checkout.channel.slug,
-							redirectUrl: window.location.href,
+							redirectUrl: buildAccountConfirmationRedirectUrl(window.location.origin, checkout.channel.slug),
 						});
 						if (!registerResult.ok) {
 							const fieldError = registerResult.fieldErrors?.[0];
