@@ -2,7 +2,7 @@
 
 import { createContext, type ReactNode, use, useCallback, useEffect, useMemo, useState } from "react";
 
-import { syncCheckoutFromServer } from "@/app/(checkout)/actions";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import { adoptCheckoutSnapshot, resolveSessionCheckout } from "@/checkout/lib/checkout-sync";
 
@@ -47,7 +47,7 @@ export function CheckoutDataProvider({
 				return null;
 			}
 
-			const result = await syncCheckoutFromServer(checkoutId);
+			const result = await getCheckoutTransport().fetchCheckout(checkoutId);
 			if (!result.ok || !result.checkout) {
 				return null;
 			}

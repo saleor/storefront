@@ -1,4 +1,4 @@
-import { initializeCheckoutTransaction } from "@/app/(checkout)/actions";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import { getTransactionInitializeError } from "@/checkout/lib/payment-gateways";
 import { type PaymentContext, type PaymentResult } from "../types";
 import { completeCheckoutOrder } from "../complete-order";
@@ -11,7 +11,7 @@ export async function executeDummyPayment(
 	context: PaymentContext,
 	gatewayId: string,
 ): Promise<PaymentResult> {
-	const initResult = await initializeCheckoutTransaction({
+	const initResult = await getCheckoutTransport().initializeTransaction({
 		checkoutId: context.checkoutId,
 		amount: context.amount,
 		paymentGateway: {

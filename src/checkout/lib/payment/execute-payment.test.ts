@@ -1,21 +1,29 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-vi.mock("@/app/(checkout)/actions", () => ({
-	initializeCheckoutTransaction: vi.fn(),
-	runCheckoutComplete: vi.fn(),
-}));
-
-import { initializeCheckoutTransaction, runCheckoutComplete } from "@/app/(checkout)/actions";
+import { setCheckoutTransport, type CheckoutTransport } from "@/checkout/lib/checkout-transport";
 import { executePayment } from "./execute-payment";
+
+const initializeTransaction = vi.fn<CheckoutTransport["initializeTransaction"]>();
+const completeCheckout = vi.fn<CheckoutTransport["completeCheckout"]>();
+
+const fakeTransport: CheckoutTransport = {
+	fetchCheckout: vi.fn(),
+	updateBillingAddress: vi.fn(),
+	initializePaymentGateways: vi.fn(),
+	initializeTransaction,
+	processTransaction: vi.fn(),
+	completeCheckout,
+};
 
 describe("executePayment", () => {
 	beforeEach(() => {
-		vi.mocked(initializeCheckoutTransaction).mockReset();
-		vi.mocked(runCheckoutComplete).mockReset();
+		initializeTransaction.mockReset();
+		completeCheckout.mockReset();
+		setCheckoutTransport(fakeTransport);
 	});
 
 	it("runs dummy payment flow and completes checkout", async () => {
-		vi.mocked(initializeCheckoutTransaction).mockResolvedValue({
+		initializeTransaction.mockResolvedValue({
 			ok: true,
 			data: {
 				transactionEvent: { type: "CHARGE_SUCCESS", message: "ok" },
@@ -23,7 +31,7 @@ describe("executePayment", () => {
 				errors: [],
 			},
 		});
-		vi.mocked(runCheckoutComplete).mockResolvedValue({ ok: true, orderId: "order-1" });
+		completeCheckout.mockResolvedValue({ ok: true, orderId: "order-1" });
 
 		const result = await executePayment(
 			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" }, submitMode: "server" },
@@ -31,7 +39,7 @@ describe("executePayment", () => {
 		);
 
 		expect(result).toEqual({ ok: true, orderId: "order-1" });
-		expect(initializeCheckoutTransaction).toHaveBeenCalledWith({
+		expect(initializeTransaction).toHaveBeenCalledWith({
 			checkoutId: "checkout-1",
 			amount: 42.5,
 			paymentGateway: {
@@ -41,8 +49,8 @@ describe("executePayment", () => {
 		});
 	});
 
-	it("surfaces initializeCheckoutTransaction error message", async () => {
-		vi.mocked(initializeCheckoutTransaction).mockResolvedValue({
+	it("surfaces initializeTransaction error message", async () => {
+		initializeTransaction.mockResolvedValue({
 			ok: false,
 			error: "Test payment is not available in this environment.",
 		});
@@ -60,7 +68,7 @@ describe("executePayment", () => {
 	});
 
 	it("completes checkout without payment when amount is zero", async () => {
-		vi.mocked(runCheckoutComplete).mockResolvedValue({ ok: true, orderId: "order-free" });
+		completeCheckout.mockResolvedValue({ ok: true, orderId: "order-free" });
 
 		const result = await executePayment(
 			{ type: "stripe", gateway: { id: "stripe", name: "Stripe" }, submitMode: "client" },
@@ -68,8 +76,8 @@ describe("executePayment", () => {
 		);
 
 		expect(result).toEqual({ ok: true, orderId: "order-free" });
-		expect(initializeCheckoutTransaction).not.toHaveBeenCalled();
-		expect(runCheckoutComplete).toHaveBeenCalledWith("checkout-1");
+		expect(initializeTransaction).not.toHaveBeenCalled();
+		expect(completeCheckout).toHaveBeenCalledWith("checkout-1");
 	});
 
 	it("returns error for unsupported provider", async () => {

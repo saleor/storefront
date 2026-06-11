@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { processCheckoutTransaction, syncCheckoutFromServer } from "@/app/(checkout)/actions";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import {
 	clearPaymentCompleting,
 	isPaymentCompletingOrphaned,
@@ -32,7 +32,7 @@ type UseStripeReturnCompletionParams = {
 /**
  * Finishes checkout after Stripe redirect (3DS, etc.) AND resumes attempts that a
  * page reload interrupted (in-modal 3DS leaves no return params in the URL).
- * Does not depend on Stripe.js — only server actions.
+ * Does not depend on Stripe.js — only the checkout transport.
  */
 export function useStripeReturnCompletion({
 	checkoutId,
@@ -85,7 +85,7 @@ export function useStripeReturnCompletion({
 				let keepProcessingLock = false;
 
 				try {
-					const processResult = await processCheckoutTransaction({ id: transactionId });
+					const processResult = await getCheckoutTransport().processTransaction({ id: transactionId });
 
 					if (!processResult.ok) {
 						reportStripeReturnFailure(processResult.error, onError);
@@ -100,7 +100,7 @@ export function useStripeReturnCompletion({
 
 					let resolvedChannelSlug = channelSlug;
 					if (!resolvedChannelSlug) {
-						const syncResult = await syncCheckoutFromServer(checkoutId);
+						const syncResult = await getCheckoutTransport().fetchCheckout(checkoutId);
 						if (syncResult.ok) {
 							resolvedChannelSlug = syncResult.checkout?.channel.slug;
 						}
@@ -174,14 +174,14 @@ export function useStripeReturnCompletion({
 					try {
 						// Sync the attempt's true outcome from Stripe into Saleor (no webhook wait).
 						// Result errors are non-fatal — authorizeStatus below is the ground truth.
-						await processCheckoutTransaction({ id: orphanedTransactionId });
+						await getCheckoutTransport().processTransaction({ id: orphanedTransactionId });
 					} catch (error) {
 						rethrowNextInternalError(error);
 						console.error("Resuming interrupted payment: transaction process failed:", error);
 					}
 				}
 
-				const syncResult = await syncCheckoutFromServer(checkoutId);
+				const syncResult = await getCheckoutTransport().fetchCheckout(checkoutId);
 				if (!syncResult.ok || !syncResult.checkout) {
 					// Cannot verify: keep the transaction id so the next load retries, exit the
 					// completing screen, and warn against paying again.

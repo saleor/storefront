@@ -1,4 +1,4 @@
-import { runCheckoutComplete } from "@/app/(checkout)/actions";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import {
 	clearPaymentCompleting,
 	markPaymentCompleting,
@@ -24,7 +24,7 @@ export async function finalizeCheckoutOrder(
 	const run = (async (): Promise<FinalizeCheckoutOrderResult> => {
 		markPaymentCompleting(checkoutId);
 
-		const result = await runCheckoutComplete(checkoutId);
+		const result = await getCheckoutTransport().completeCheckout(checkoutId);
 
 		if (!result.ok) {
 			const error = formatCheckoutCompleteError(result.error);

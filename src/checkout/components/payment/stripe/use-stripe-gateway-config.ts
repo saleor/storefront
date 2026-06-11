@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { initializePaymentGateways } from "@/app/(checkout)/actions";
 import { type CheckoutFragment } from "@/checkout/graphql";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import {
 	parseStripeGatewayConfig,
 	STRIPE_GATEWAY_ID,
@@ -27,7 +27,7 @@ export function useStripeGatewayConfig(checkout: CheckoutFragment): StripeGatewa
 				return { status: "loading" };
 			});
 
-			const result = await initializePaymentGateways({
+			const result = await getCheckoutTransport().initializePaymentGateways({
 				checkoutId: checkout.id,
 				paymentGateways: [{ id: STRIPE_GATEWAY_ID }],
 			});

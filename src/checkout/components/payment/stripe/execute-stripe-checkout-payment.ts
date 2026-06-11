@@ -1,7 +1,7 @@
 import { type ReadonlyURLSearchParams } from "next/navigation";
 import { type Stripe, type StripeElements } from "@stripe/stripe-js";
-import { initializeCheckoutTransaction, processCheckoutTransaction } from "@/app/(checkout)/actions";
 import { type CheckoutFragment } from "@/checkout/graphql";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import {
 	getCheckoutPayAmount,
 	getCheckoutPayCurrency,
@@ -100,7 +100,7 @@ async function reconcileInterruptedAuthorizedPayment({
 	refreshCheckout: ExecuteStripeCheckoutPaymentParams["refreshCheckout"];
 }): Promise<StripeCheckoutPayResult> {
 	try {
-		const processResult = await processCheckoutTransaction({ id: transactionId });
+		const processResult = await getCheckoutTransport().processTransaction({ id: transactionId });
 		const processError = processResult.ok
 			? getStripeTransactionError(processResult.data)
 			: processResult.error;
@@ -236,7 +236,7 @@ async function runStripeCheckoutPayment({
 			return { ok: false, kind: "error", message: PAYMENT_INTERRUPTED_MESSAGE };
 		}
 
-		const initResult = await initializeCheckoutTransaction({
+		const initResult = await getCheckoutTransport().initializeTransaction({
 			checkoutId: liveCheckout.id,
 			amount: payAmount,
 			paymentGateway: {
@@ -325,7 +325,7 @@ async function runStripeCheckoutPayment({
 		markPaymentCompleting(liveCheckout.id);
 		stripePaymentConfirmed = true;
 
-		const processResult = await processCheckoutTransaction({ id: transactionId });
+		const processResult = await getCheckoutTransport().processTransaction({ id: transactionId });
 		if (!processResult.ok) {
 			return failAfterStripeConfirm(processResult.error);
 		}

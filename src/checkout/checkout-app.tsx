@@ -3,7 +3,9 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+import { nextCheckoutTransport } from "@/app/(checkout)/checkout-transport";
 import type { CheckoutUser, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
+import { setCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import { CheckoutDataProvider, type CheckoutLoadState } from "@/checkout/providers/checkout-data";
 import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
@@ -15,6 +17,11 @@ import { StripeCheckoutCompletionHost } from "@/checkout/components/payment/stri
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
 import { CheckoutCrashFallback } from "@/checkout/views/page-not-found";
 import "./index.css";
+
+// Composition root: payment modules and CheckoutDataProvider reach Saleor only
+// through the CheckoutTransport seam; the checkout shell wires in the Next.js
+// server-action implementation before any of them can run.
+setCheckoutTransport(nextCheckoutTransport);
 
 type CheckoutAppProps = {
 	checkoutId: string | null;

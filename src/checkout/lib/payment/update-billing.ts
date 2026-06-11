@@ -1,6 +1,6 @@
-import { updateCheckoutBillingAddress } from "@/app/(checkout)/actions";
 import { getAddressInputData } from "@/checkout/components/address-form/utils";
 import { type CountryCode, type AddressFragment } from "@/checkout/graphql";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import { getBillingAddressOptions } from "@/checkout/lib/billing-addresses";
 import { getBillingSaveAddressFlag } from "@/checkout/lib/shipping-address-submit";
 import { type BillingAddressData } from "@/checkout/components/payment";
@@ -69,7 +69,7 @@ export async function updateCheckoutBilling(params: UpdateBillingParams): Promis
 			savedAddressIds,
 		});
 
-		const result = await updateCheckoutBillingAddress({
+		const result = await getCheckoutTransport().updateBillingAddress({
 			checkoutId,
 			billingAddress: addressInput,
 			saveAddress,
@@ -104,7 +104,7 @@ export async function updateCheckoutBilling(params: UpdateBillingParams): Promis
 			countryCode: shippingAddress.country?.code as CountryCode,
 		});
 
-		const result = await updateCheckoutBillingAddress({
+		const result = await getCheckoutTransport().updateBillingAddress({
 			checkoutId,
 			billingAddress: addressInput,
 			saveAddress: false,
