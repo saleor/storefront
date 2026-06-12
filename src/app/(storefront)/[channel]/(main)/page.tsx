@@ -1,34 +1,81 @@
 import { Suspense } from "react";
-import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
-import { ProductGrid, ProductsGridSkeleton } from "@/ui/components/plp";
+import { brandConfig } from "@/config/brand";
+import { homepageContent } from "@/config/homepage-content";
+import { FeaturedCollectionSection } from "@/ui/sections/featured-collection-section/featured-collection-section";
+import { FeaturedCollectionSkeleton } from "@/ui/sections/featured-collection-section/featured-collection-skeleton";
+import { HeroBanner } from "@/ui/sections/hero-banner/hero-banner";
+import { ImageWithText } from "@/ui/sections/image-with-text/image-with-text";
+import { MulticolumnSection } from "@/ui/sections/multicolumn-section/multicolumn-section";
+import { RichTextBlock } from "@/ui/sections/rich-text-block/rich-text-block";
 
 export const metadata = {
-	title: "ACME Storefront, powered by Saleor & Next.js",
-	description:
-		"Storefront Next.js Example for building performant e-commerce experiences with Saleor - the composable, headless commerce platform for global brands.",
+	title: brandConfig.siteName,
+	description: brandConfig.description,
 };
 
 /**
- * Sync page shell — static section wrapper streams featured products in a nested Suspense island.
+ * Homepage — sync shell; only the featured collection streams in Suspense.
+ * Static sections use channel-relative hrefs (LinkWithChannel in section CTAs).
  */
 export default function Page(props: { params: Promise<{ channel: string }> }) {
+	const { hero, featuredCollection, brandStory, values, editorial } = homepageContent;
+
 	return (
 		<>
-			<h2 className="sr-only">Product list</h2>
-			<Suspense fallback={<ProductsGridSkeleton />}>
-				<FeaturedProducts params={props.params} />
+			<HeroBanner
+				heading={hero.heading}
+				subheading={hero.subheading}
+				height="large"
+				primaryCta={{
+					label: hero.primaryCtaLabel,
+					href: "/products",
+				}}
+			/>
+
+			<Suspense fallback={<FeaturedCollectionSkeleton heading={featuredCollection.heading} />}>
+				<FeaturedCollectionLoader
+					params={props.params}
+					heading={featuredCollection.heading}
+					limit={featuredCollection.limit}
+				/>
 			</Suspense>
+
+			<ImageWithText
+				heading={editorial.heading}
+				paragraphs={editorial.paragraphs}
+				imagePosition={editorial.imagePosition}
+				cta={{
+					label: editorial.ctaLabel,
+					href: "/collections",
+				}}
+			/>
+
+			<MulticolumnSection
+				heading={values.heading}
+				columns={values.columns}
+				columnsDesktop={values.columnsDesktop}
+			/>
+
+			<RichTextBlock
+				heading={brandStory.heading}
+				paragraphs={brandStory.paragraphs}
+				align="center"
+				width="narrow"
+			/>
 		</>
 	);
 }
 
-async function FeaturedProducts({ params: paramsPromise }: { params: Promise<{ channel: string }> }) {
-	const { channel } = await paramsPromise;
-	const products = await getFeaturedProducts(channel);
+async function FeaturedCollectionLoader({
+	params,
+	heading,
+	limit,
+}: {
+	params: Promise<{ channel: string }>;
+	heading: string;
+	limit: number;
+}) {
+	const { channel } = await params;
 
-	return (
-		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			<ProductGrid products={products} channel={channel} />
-		</div>
-	);
+	return <FeaturedCollectionSection channel={channel} heading={heading} limit={limit} />;
 }

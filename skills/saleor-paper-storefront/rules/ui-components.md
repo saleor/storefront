@@ -6,14 +6,15 @@ Create and style UI components with design tokens and shadcn/ui primitives.
 
 ## Component Location
 
-| Type                       | Location                  |
-| -------------------------- | ------------------------- |
-| Shared components          | `src/ui/components/`      |
-| Product page components    | `src/ui/components/pdp/`  |
-| Product listing components | `src/ui/components/plp/`  |
-| Base primitives            | `src/ui/components/ui/`   |
-| Navigation                 | `src/ui/components/nav/`  |
-| Cart                       | `src/ui/components/cart/` |
+| Type                          | Location                  |
+| ----------------------------- | ------------------------- |
+| Shared components             | `src/ui/components/`      |
+| Homepage & marketing sections | `src/ui/sections/`        |
+| Product page components       | `src/ui/components/pdp/`  |
+| Product listing components    | `src/ui/components/plp/`  |
+| Base primitives               | `src/ui/components/ui/`   |
+| Navigation                    | `src/ui/components/nav/`  |
+| Cart                          | `src/ui/components/cart/` |
 
 ## Design Tokens
 

@@ -1,7 +1,9 @@
 import { type ReactNode, Suspense } from "react";
+import { siteChrome } from "@/config/site-chrome";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
 import { Logo } from "@/ui/components/shared/logo";
+import { AnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar";
 
 function HeaderSkeleton() {
 	return (
@@ -62,8 +64,17 @@ function FooterSkeleton() {
 
 /** Header + page + footer shell. User menu auth syncs via `HeaderAuthRefresh` (refresh on nav, revalidate when tab refocuses). */
 export function MainChrome({ channel, children }: { channel: string; children: ReactNode }) {
+	const { announcementBar } = siteChrome;
+
 	return (
 		<>
+			<AnnouncementBar
+				id={announcementBar.id}
+				message={announcementBar.message}
+				href={announcementBar.href}
+				linkLabel={announcementBar.linkLabel}
+				dismissible={announcementBar.dismissible}
+			/>
 			<Suspense fallback={<HeaderSkeleton />}>
 				<Header channel={channel} />
 			</Suspense>

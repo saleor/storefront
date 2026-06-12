@@ -6,7 +6,7 @@ import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
  * Featured products for the homepage (featured-products collection).
  * Returns [] on failure so callers always render — empty array is cached until revalidation.
  */
-export async function getFeaturedProducts(channel: string) {
+export async function getFeaturedProducts(channel: string, limit = 12) {
 	"use cache";
 	applyCacheProfile(CACHE_PROFILES.collections, "featured-products");
 
@@ -14,7 +14,7 @@ export async function getFeaturedProducts(channel: string) {
 		variables: {
 			slug: "featured-products",
 			channel,
-			first: 12,
+			first: limit,
 			sortBy: { field: ProductOrderField.Collection, direction: OrderDirection.Asc },
 		},
 	});
