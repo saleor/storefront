@@ -5,7 +5,7 @@ import { Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
-import { changePassword } from "@/app/(storefront)/[channel]/(main)/account/actions";
+import { changePassword } from "@/app/(storefront)/[locale]/[channel]/(main)/account/actions";
 
 export function ChangePasswordForm() {
 	const [isOpen, setIsOpen] = useState(false);

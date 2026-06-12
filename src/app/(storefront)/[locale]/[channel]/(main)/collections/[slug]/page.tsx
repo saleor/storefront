@@ -1,17 +1,18 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
-import { ProductListByCategoryDocument } from "@/gql/graphql";
+import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executePublicGraphQL } from "@/lib/graphql";
-import { getCategoryData } from "@/lib/catalog/get-category-data";
+import { getCollectionData } from "@/lib/catalog/get-collection-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
-import { CategoryPageClient } from "./client";
+import { buildStorefrontPath } from "@/lib/storefront-path";
+import { CollectionPageClient } from "./client";
 
 type PageProps = {
-	params: Promise<{ slug: string; channel: string }>;
+	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{
 		cursor?: string;
 		direction?: string;
@@ -24,12 +25,12 @@ type PageProps = {
 
 export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
 	const params = await props.params;
-	const category = await getCategoryData(params.slug, params.channel);
-	const plainDescription = parseEditorJSToText(category?.description);
+	const collection = await getCollectionData(params.slug, params.channel);
+	const plainDescription = parseEditorJSToText(collection?.description);
 
 	return {
-		title: `${category?.name || "Category"} | ${category?.seoTitle || (await parent).title?.absolute}`,
-		description: category?.seoDescription || plainDescription || category?.seoTitle || category?.name,
+		title: `${collection?.name || "Collection"} | ${collection?.seoTitle || (await parent).title?.absolute}`,
+		description: collection?.seoDescription || plainDescription || collection?.seoTitle || collection?.name,
 	};
 };
 
@@ -39,35 +40,38 @@ export const generateMetadata = async (props: PageProps, parent: ResolvingMetada
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
-	const category = await getCategoryData(params.slug, params.channel);
+	const collection = await getCollectionData(params.slug, params.channel);
 
-	if (!category) {
+	if (!collection) {
 		notFound();
 	}
 
-	const plainDescription = parseEditorJSToText(category.description);
+	const plainDescription = parseEditorJSToText(collection.description);
 
 	const breadcrumbs = [
-		{ label: "Home", href: `/${params.channel}` },
-		{ label: category.name, href: `/${params.channel}/categories/${params.slug}` },
+		{ label: "Home", href: buildStorefrontPath(params.locale, params.channel) },
+		{
+			label: collection.name,
+			href: buildStorefrontPath(params.locale, params.channel, `/collections/${params.slug}`),
+		},
 	];
 
 	return (
 		<>
 			<CategoryHero
-				title={category.name}
+				title={collection.name}
 				description={plainDescription}
-				backgroundImage={category.backgroundImage?.url}
+				backgroundImage={collection.backgroundImage?.url}
 				breadcrumbs={breadcrumbs}
 			/>
 			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CategoryProducts params={props.params} searchParams={props.searchParams} />
+				<CollectionProducts params={props.params} searchParams={props.searchParams} />
 			</Suspense>
 		</>
 	);
 }
 
-async function CategoryProducts({
+async function CollectionProducts({
 	params: paramsPromise,
 	searchParams: searchParamsPromise,
 }: {
@@ -77,10 +81,13 @@ async function CategoryProducts({
 	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
 
 	const paginationVariables = getPaginatedListVariables({ params: searchParams });
-	const sortBy = buildSortVariables(searchParams.sort);
+	const sortBy = buildSortVariables(searchParams.sort) ?? {
+		field: ProductOrderField.Collection,
+		direction: OrderDirection.Asc,
+	};
 	const filter = buildFilterVariables({ priceRange: searchParams.price });
 
-	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
+	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: {
 			slug: params.slug,
 			channel: params.channel,
@@ -90,15 +97,15 @@ async function CategoryProducts({
 		},
 	});
 
-	const products = result.ok ? result.data.category?.products : null;
+	const products = result.ok ? result.data.collection?.products : null;
 	if (!products) {
 		notFound();
 	}
 
-	const productCards = products.edges.map((e) => toProductCardData(e.node, params.channel));
+	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
 	return (
-		<CategoryPageClient
+		<CollectionPageClient
 			products={productCards}
 			pageInfo={products.pageInfo}
 			totalCount={products.totalCount ?? productCards.length}

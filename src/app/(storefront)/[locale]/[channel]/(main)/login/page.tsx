@@ -10,6 +10,7 @@ import {
 import { searchParamsRecordToGetter } from "@/lib/auth/search-params-record";
 import { CurrentUserDocument } from "@/gql/graphql";
 import { fetchAuthenticatedUserIfSession } from "@/lib/auth/fetch-authenticated-user";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 export const metadata = {
 	title: "Sign In",
@@ -17,7 +18,7 @@ export const metadata = {
 };
 
 type LoginPageProps = {
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
@@ -30,21 +31,26 @@ export default function LoginPage(props: LoginPageProps) {
 }
 
 async function LoginPageEntry({ params: paramsPromise, searchParams: searchParamsPromise }: LoginPageProps) {
-	const [{ channel }, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
+	const [{ locale, channel }, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
 	const searchParamsGetter = searchParamsRecordToGetter(searchParams);
 	const credentials = getEmailAndTokenFromSearchParams(searchParamsGetter);
 
 	if (credentials && isAccountConfirmationLink(searchParamsGetter)) {
 		return (
 			<AuthFormSection>
-				<ConfirmAccountMode email={credentials.email} token={credentials.token} channel={channel} />
+				<ConfirmAccountMode
+					email={credentials.email}
+					token={credentials.token}
+					locale={locale}
+					channel={channel}
+				/>
 			</AuthFormSection>
 		);
 	}
 
 	return (
 		<Suspense fallback={<LoginSkeleton />}>
-			<LoginContent channel={channel} />
+			<LoginContent locale={locale} channel={channel} />
 		</Suspense>
 	);
 }
@@ -78,13 +84,13 @@ function LoginSkeleton() {
 	);
 }
 
-async function LoginContent({ channel }: { channel: string }) {
+async function LoginContent({ locale, channel }: { locale: string; channel: string }) {
 	const result = await fetchAuthenticatedUserIfSession(CurrentUserDocument, {
 		cache: "no-cache",
 	});
 
 	if (result?.ok && result.data.me) {
-		redirect(`/${channel}`);
+		redirect(buildStorefrontPath(locale, channel));
 	}
 
 	return (

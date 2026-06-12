@@ -4,10 +4,11 @@ import { useState, useTransition } from "react";
 import { useParams } from "next/navigation";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
-import { requestAccountDeletion } from "@/app/(storefront)/[channel]/(main)/account/actions";
+import { requestAccountDeletion } from "@/app/(storefront)/[locale]/[channel]/(main)/account/actions";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 export function DeleteAccountSection() {
-	const params = useParams<{ channel: string }>();
+	const params = useParams<{ locale: string; channel: string }>();
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const [error, setError] = useState("");
@@ -17,7 +18,10 @@ export function DeleteAccountSection() {
 		setError("");
 		startTransition(async () => {
 			const formData = new FormData();
-			formData.set("redirectUrl", `${window.location.origin}/${params.channel}`);
+			formData.set(
+				"redirectUrl",
+				`${window.location.origin}${buildStorefrontPath(params.locale, params.channel)}`,
+			);
 			formData.set("channel", params.channel);
 			const result = await requestAccountDeletion(formData);
 			if (!result.success) {

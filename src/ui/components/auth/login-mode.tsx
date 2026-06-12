@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { loginWithBff, syncAuthSurfacesAfterSignIn } from "@/lib/auth";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
@@ -12,7 +13,7 @@ import { Label } from "@/ui/components/ui/label";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginMode() {
-	const params = useParams<{ channel: string }>();
+	const params = useParams<{ locale: string; channel: string }>();
 	const router = useRouter();
 
 	const [email, setEmail] = useState("");
@@ -62,7 +63,7 @@ export function LoginMode() {
 
 			if (result.ok) {
 				await syncAuthSurfacesAfterSignIn(params.channel, router, {
-					redirectTo: `/${params.channel}`,
+					redirectTo: buildStorefrontPath(params.locale, params.channel),
 				});
 				return;
 			}
@@ -87,13 +88,14 @@ export function LoginMode() {
 		setIsSubmitting(true);
 
 		try {
+			const loginPath = buildStorefrontPath(params.locale, params.channel, "/login");
 			const response = await fetch("/api/auth/reset-password", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					email,
 					channel: params.channel,
-					redirectUrl: `${window.location.origin}/${params.channel}/login`,
+					redirectUrl: `${window.location.origin}${loginPath}`,
 				}),
 			});
 
@@ -126,7 +128,7 @@ export function LoginMode() {
 					<p className="mt-2 text-sm text-muted-foreground">
 						Don&apos;t have an account?{" "}
 						<Link
-							href={`/${params.channel}/signup`}
+							href={buildStorefrontPath(params.locale, params.channel, "/signup")}
 							className="font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
 							Sign up
@@ -142,14 +144,14 @@ export function LoginMode() {
 					)}
 
 					{resetMessage && (
-						<div aria-live="polite" className="rounded-md bg-green-100 p-3 text-sm text-green-800">
+						<div role="status" className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
 							{resetMessage}
 						</div>
 					)}
 
 					<div className="space-y-1.5">
 						<Label htmlFor="email" className="text-sm font-medium">
-							Email address
+							Email
 						</Label>
 						<div className="relative">
 							<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -158,12 +160,8 @@ export function LoginMode() {
 								type="email"
 								placeholder="you@example.com"
 								autoComplete="email"
-								spellCheck={false}
 								value={email}
-								onChange={(e) => {
-									setEmail(e.target.value);
-									setResetEmailSent(false);
-								}}
+								onChange={(e) => setEmail(e.target.value)}
 								className="h-12 pl-10"
 								required
 							/>
@@ -200,11 +198,11 @@ export function LoginMode() {
 					<div className="flex justify-end">
 						<button
 							type="button"
-							onClick={handleForgotPassword}
-							disabled={isSubmitting}
+							onClick={() => void handleForgotPassword()}
+							disabled={isSubmitting || resetEmailSent}
 							className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground hover:no-underline disabled:opacity-50"
 						>
-							{resetEmailSent ? "Resend link?" : "Forgot password?"}
+							Forgot password?
 						</button>
 					</div>
 

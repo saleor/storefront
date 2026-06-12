@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
-import { updateProfile } from "@/app/(storefront)/[channel]/(main)/account/actions";
+import { updateProfile } from "@/app/(storefront)/[locale]/[channel]/(main)/account/actions";
 
 type Props = {
 	firstName: string;

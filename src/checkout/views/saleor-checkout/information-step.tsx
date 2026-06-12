@@ -6,6 +6,7 @@ import { useState, useCallback, useEffect, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { syncAuthSurfacesAfterSignIn } from "@/lib/auth";
 import { buildAccountConfirmationRedirectUrl } from "@/lib/auth/account-confirmation-url";
+import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
 import { isCheckoutMarketingConsentEnabled } from "@/checkout/lib/marketing-consent";
 import { Button } from "@/ui/components/ui/button";
 import {
@@ -348,7 +349,11 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 							email,
 							password: accountPassword,
 							channel: checkout.channel.slug,
-							redirectUrl: buildAccountConfirmationRedirectUrl(window.location.origin, checkout.channel.slug),
+							redirectUrl: buildAccountConfirmationRedirectUrl(
+								window.location.origin,
+								resolveBrowseLocaleSlugWithFallback(),
+								checkout.channel.slug,
+							),
 						});
 						if (!registerResult.ok) {
 							const fieldError = registerResult.fieldErrors?.[0];

@@ -8,10 +8,11 @@ import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
 import { buildAccountConfirmationRedirectUrl } from "@/lib/auth/account-confirmation-url";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { cn } from "@/lib/utils";
 
 export function SignUpForm() {
-	const params = useParams<{ channel: string }>();
+	const params = useParams<{ locale: string; channel: string }>();
 
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
@@ -58,7 +59,11 @@ export function SignUpForm() {
 					firstName,
 					lastName,
 					channel: params.channel,
-					redirectUrl: buildAccountConfirmationRedirectUrl(window.location.origin, params.channel),
+					redirectUrl: buildAccountConfirmationRedirectUrl(
+						window.location.origin,
+						params.locale,
+						params.channel,
+					),
 				}),
 			});
 
@@ -105,7 +110,7 @@ export function SignUpForm() {
 						<h2 className="text-xl font-semibold">Account Created!</h2>
 						<p className="mt-2 text-muted-foreground">Please check your email to verify your account.</p>
 						<Link
-							href={`/${params.channel}/login`}
+							href={buildStorefrontPath(params.locale, params.channel, "/login")}
 							className="mt-6 inline-block text-sm font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
 							Go to Sign In
@@ -124,7 +129,7 @@ export function SignUpForm() {
 					<p className="mt-2 text-sm text-muted-foreground">
 						Already have an account?{" "}
 						<Link
-							href={`/${params.channel}/login`}
+							href={buildStorefrontPath(params.locale, params.channel, "/login")}
 							className="font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
 							Sign in

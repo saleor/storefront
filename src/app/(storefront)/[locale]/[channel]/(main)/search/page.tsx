@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { searchProducts } from "@/lib/search";
 import { SearchResults } from "@/ui/components/search-results";
 import { Pagination } from "@/ui/components/pagination";
 import { SearchSort } from "./search-sort";
 import { SearchIcon } from "lucide-react";
 import { buttonClassName } from "@/ui/components/ui/button";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 export const metadata = {
 	title: "Search products · Saleor Storefront example",
@@ -26,7 +27,7 @@ type SearchParams = {
  */
 export default function Page(props: {
 	searchParams: Promise<SearchParams>;
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 }) {
 	return (
 		<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -45,7 +46,7 @@ async function SearchContent({
 	params: paramsPromise,
 }: {
 	searchParams: Promise<SearchParams>;
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 }) {
 	const [searchParams, params] = await Promise.all([searchParamsPromise, paramsPromise]);
 
@@ -63,7 +64,9 @@ async function SearchContent({
 	}
 
 	if (Array.isArray(queryParam)) {
-		redirect(`/${params.channel}/search?query=${encodeURIComponent(query)}`);
+		redirect(
+			`${buildStorefrontPath(params.locale, params.channel, "/search")}?query=${encodeURIComponent(query)}`,
+		);
 	}
 
 	// Parse pagination
@@ -89,7 +92,7 @@ async function SearchContent({
 	const { products, pagination } = result;
 
 	if (pagination.totalCount === 0) {
-		return <EmptyState query={query} channel={params.channel} />;
+		return <EmptyState query={query} />;
 	}
 
 	return (
@@ -106,7 +109,7 @@ async function SearchContent({
 			</div>
 
 			{/* Results grid */}
-			<SearchResults products={products} channel={params.channel} />
+			<SearchResults products={products} />
 
 			{/* Pagination */}
 			{(pagination.hasNextPage || pagination.hasPreviousPage) && (
@@ -152,7 +155,7 @@ function SearchSkeleton() {
 	);
 }
 
-function EmptyState({ query, channel }: { query: string; channel: string }) {
+function EmptyState({ query }: { query: string }) {
 	return (
 		<div className="flex flex-col items-center justify-center py-16 text-center">
 			<div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
@@ -164,14 +167,14 @@ function EmptyState({ query, channel }: { query: string; channel: string }) {
 				categories.
 			</p>
 			<div className="mt-8 flex flex-col gap-3 sm:flex-row">
-				<Link
-					href={`/${channel}/products`}
+				<LinkWithChannel
+					href="/products"
 					className={buttonClassName({ asLink: true, className: "rounded-lg px-6 py-3" })}
 				>
 					Browse All Products
-				</Link>
-				<Link
-					href={`/${channel}`}
+				</LinkWithChannel>
+				<LinkWithChannel
+					href="/"
 					className={buttonClassName({
 						asLink: true,
 						variant: "outline-solid",
@@ -179,7 +182,7 @@ function EmptyState({ query, channel }: { query: string; channel: string }) {
 					})}
 				>
 					Go to Homepage
-				</Link>
+				</LinkWithChannel>
 			</div>
 		</div>
 	);

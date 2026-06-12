@@ -17,7 +17,7 @@ export const metadata = {
  * Homepage — sync shell; only the featured collection streams in Suspense.
  * Static sections use channel-relative hrefs (LinkWithChannel in section CTAs).
  */
-export default async function Page(props: { params: Promise<{ channel: string }> }) {
+export default async function Page(props: { params: Promise<{ locale: string; channel: string }> }) {
 	const { channel } = await props.params;
 	const {
 		surfaces: { homepage },
@@ -77,15 +77,16 @@ async function FeaturedCollectionLoader({
 	collectionSlug,
 	limit,
 }: {
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 	heading: string;
 	collectionSlug: string;
 	limit: number;
 }) {
-	const { channel } = await params;
+	const { locale, channel } = await params;
 
 	return (
 		<FeaturedCollectionSection
+			locale={locale}
 			channel={channel}
 			heading={heading}
 			collectionSlug={collectionSlug}

@@ -1,0 +1,26 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { getStorefrontLocaleSlugs, isLocaleSlug, isStorefrontLocaleSlug } from "./locale";
+
+describe("isStorefrontLocaleSlug", () => {
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
+	it("accepts slugs in STOREFRONT_LOCALES", () => {
+		vi.stubEnv("STOREFRONT_LOCALES", "en,pl");
+		expect(isStorefrontLocaleSlug("en")).toBe(true);
+		expect(isStorefrontLocaleSlug("pl")).toBe(true);
+	});
+
+	it("rejects defined locales outside the allowlist", () => {
+		vi.stubEnv("STOREFRONT_LOCALES", "en");
+		expect(isLocaleSlug("de")).toBe(true);
+		expect(isStorefrontLocaleSlug("de")).toBe(false);
+	});
+
+	it("defaults to a single locale when STOREFRONT_LOCALES is unset", () => {
+		expect(getStorefrontLocaleSlugs()).toEqual(["en"]);
+		expect(isStorefrontLocaleSlug("en")).toBe(true);
+		expect(isStorefrontLocaleSlug("pl")).toBe(false);
+	});
+});

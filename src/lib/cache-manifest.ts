@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { localeConfig } from "@/config/locale";
+import { getDefaultLocaleSlug, getLocaleBcp47List, getStorefrontLocaleSlugs } from "@/config/locale";
 import {
 	isStorefrontContentPageSlug,
 	resolveStorefrontContentChannelsForPageSlug,
@@ -51,28 +51,28 @@ const profiles = {
 		label: "Product Pages",
 		cacheProfile: "catalog",
 		tagPattern: "product:{slug}",
-		pathPattern: "/{channel}/products/{slug}",
+		pathPattern: "/{locale}/{channel}/products/{slug}",
 	},
 	categories: {
 		id: "categories",
 		label: "Category Pages",
 		cacheProfile: "catalog",
 		tagPattern: "category:{slug}",
-		pathPattern: "/{channel}/categories/{slug}",
+		pathPattern: "/{locale}/{channel}/categories/{slug}",
 	},
 	collections: {
 		id: "collections",
 		label: "Collection Pages",
 		cacheProfile: "catalog",
 		tagPattern: "collection:{slug}",
-		pathPattern: "/{channel}/collections/{slug}",
+		pathPattern: "/{locale}/{channel}/collections/{slug}",
 	},
 	pages: {
 		id: "pages",
 		label: "CMS Pages",
 		cacheProfile: "catalog",
 		tagPattern: "page:{slug}",
-		pathPattern: "/{channel}/pages/{slug}",
+		pathPattern: "/{locale}/{channel}/pages/{slug}",
 	},
 	navigation: {
 		id: "navigation",
@@ -100,7 +100,7 @@ const profiles = {
 		label: "Storefront Content",
 		cacheProfile: "menus",
 		tagPattern: "storefront-content:{channel}:{locale}",
-		pathPattern: "/{channel}",
+		pathPattern: "/{locale}/{channel}",
 	},
 } as const satisfies Record<string, CacheProfile>;
 
@@ -214,9 +214,9 @@ export function planPageRevalidation(
 	const channelList = channels.length > 0 ? channels : fallbackChannel ? [fallbackChannel] : [];
 	if (channelList.length === 0) return { action: "error", reason: "no_channels" };
 
-	const paths = channelList
-		.map((channel) => buildPath(CACHE_PROFILES.pages, channel, slug))
-		.filter((path): path is string => path !== null);
+	const paths = channelList.flatMap((channel) =>
+		buildPathsForAllLocales(CACHE_PROFILES.pages, { channel, slug }),
+	);
 
 	return {
 		action: "revalidate",
@@ -266,15 +266,13 @@ export function planStorefrontContentRevalidation(
 				profile: profile.cacheProfile,
 			})),
 		),
-		paths: targetChannels
-			.map((channel) => buildPath(profile, channel))
-			.filter((path): path is string => path !== null),
+		paths: targetChannels.flatMap((channel) => buildPathsForAllLocales(profile, { channel })),
 	};
 }
 
 /** All locale cache tags for storefront marketing copy on a channel. */
 export function buildStorefrontContentCacheTags(channel: string): string[] {
-	return localeConfig.available.map((locale) =>
+	return getLocaleBcp47List().map((locale) =>
 		buildTag(CACHE_PROFILES.storefrontContent, { channel, locale }),
 	);
 }
@@ -403,11 +401,37 @@ export function buildTag(profile: CacheProfile, params?: string | CacheTagParams
 	return tag;
 }
 
-export function buildPath(profile: CacheProfile, channel: string, slug?: string): string | null {
+export type BuildPathParams = {
+	channel: string;
+	slug?: string;
+	/** URL locale slug — defaults to configured default locale */
+	locale?: string;
+};
+
+export function buildPath(
+	profile: CacheProfile,
+	channelOrParams: string | BuildPathParams,
+	legacySlug?: string,
+): string | null {
 	if (!profile.pathPattern) return null;
-	let path = profile.pathPattern.replace("{channel}", channel);
-	if (slug) path = path.replace("{slug}", slug);
+
+	const params: BuildPathParams =
+		typeof channelOrParams === "string" ? { channel: channelOrParams, slug: legacySlug } : channelOrParams;
+
+	const localeSlug = params.locale ?? getDefaultLocaleSlug();
+	let path = profile.pathPattern.replaceAll("{locale}", localeSlug).replaceAll("{channel}", params.channel);
+	if (params.slug) path = path.replaceAll("{slug}", params.slug);
 	return path;
+}
+
+/** Fan out a path pattern across all configured storefront locale slugs. */
+export function buildPathsForAllLocales(
+	profile: CacheProfile,
+	params: Omit<BuildPathParams, "locale">,
+): string[] {
+	return getStorefrontLocaleSlugs()
+		.map((locale) => buildPath(profile, { ...params, locale }))
+		.filter((path): path is string => path !== null);
 }
 
 // ============================================================================

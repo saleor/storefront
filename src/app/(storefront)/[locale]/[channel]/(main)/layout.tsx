@@ -1,4 +1,5 @@
 import { type ReactNode, Suspense } from "react";
+import { resolveLocaleFromSlug } from "@/config/locale";
 import { getStorefrontContent } from "@/lib/content/server";
 import { CartDrawerWrapper } from "@/ui/components/cart/cart-drawer-wrapper";
 import { StorefrontProviders } from "@/ui/components/storefront-providers";
@@ -12,14 +13,15 @@ export const metadata = {
 
 export default async function RootLayout(props: {
 	children: ReactNode;
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 }) {
-	const channel = (await props.params).channel;
-	const content = await getStorefrontContent(channel);
+	const { locale: localeSlug, channel } = await props.params;
+	const locale = resolveLocaleFromSlug(localeSlug).bcp47;
+	const content = await getStorefrontContent(channel, locale);
 
 	return (
 		<StorefrontProviders>
-			<MainChrome channel={channel} chrome={content.chrome}>
+			<MainChrome locale={localeSlug} channel={channel} chrome={content.chrome}>
 				{props.children}
 			</MainChrome>
 			<Suspense fallback={null}>

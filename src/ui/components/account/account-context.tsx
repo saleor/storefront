@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, use } from "react";
-import { type AccountUser } from "@/app/(storefront)/[channel]/(main)/account/get-current-user";
+import { type AccountUser } from "@/app/(storefront)/[locale]/[channel]/(main)/account/get-current-user";
 
 const AccountContext = createContext<AccountUser | null>(null);
 

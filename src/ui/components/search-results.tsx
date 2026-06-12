@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import Image from "next/image";
 import type { SearchProduct } from "@/lib/search";
 import { HOMEPAGE_IMAGE_SIZES, LCP_IMAGE_PRIORITY_COUNT, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
@@ -6,14 +6,13 @@ import { localeConfig } from "@/config/locale";
 
 interface SearchResultsProps {
 	products: SearchProduct[];
-	channel: string;
 }
 
 /**
  * Renders search results from any search provider.
  * Uses the common SearchProduct type for provider independence.
  */
-export function SearchResults({ products, channel }: SearchResultsProps) {
+export function SearchResults({ products }: SearchResultsProps) {
 	if (products.length === 0) {
 		return null;
 	}
@@ -22,30 +21,22 @@ export function SearchResults({ products, channel }: SearchResultsProps) {
 		<ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 			{products.map((product, index) => (
 				<li key={product.id}>
-					<SearchResultCard product={product} channel={channel} priority={index < LCP_IMAGE_PRIORITY_COUNT} />
+					<SearchResultCard product={product} priority={index < LCP_IMAGE_PRIORITY_COUNT} />
 				</li>
 			))}
 		</ul>
 	);
 }
 
-function SearchResultCard({
-	product,
-	channel,
-	priority,
-}: {
-	product: SearchProduct;
-	channel: string;
-	priority?: boolean;
-}) {
+function SearchResultCard({ product, priority }: { product: SearchProduct; priority?: boolean }) {
 	const formattedPrice = new Intl.NumberFormat(localeConfig.default, {
 		style: "currency",
 		currency: product.currency,
 	}).format(product.price);
 
 	return (
-		<Link
-			href={`/${channel}/products/${product.slug}`}
+		<LinkWithChannel
+			href={`/products/${product.slug}`}
 			className="hover:border-foreground/20 group block overflow-hidden rounded-lg border border-border bg-card transition-colors"
 		>
 			{/* Image */}
@@ -72,6 +63,6 @@ function SearchResultCard({
 				<h3 className="font-medium leading-tight text-foreground group-hover:underline">{product.name}</h3>
 				<p className="mt-2 font-semibold text-foreground">{formattedPrice}</p>
 			</div>
-		</Link>
+		</LinkWithChannel>
 	);
 }

@@ -6,10 +6,14 @@ import { signOutSession } from "@/lib/auth/bff-server";
 import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
+import { getStorefrontLocaleSlugs } from "@/config/locale";
 import * as Checkout from "@/lib/checkout";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 function revalidateCart(channel: string) {
-	revalidatePath(`/${channel}/cart`);
+	for (const locale of getStorefrontLocaleSlugs()) {
+		revalidatePath(buildStorefrontPath(locale, channel, "/cart"));
+	}
 	revalidateStorefrontChrome(channel);
 }
 
@@ -46,8 +50,10 @@ export async function saveCheckoutId(channel: string, checkoutId: string) {
 export async function clearCheckout(channel: string) {
 	"use server";
 	await Checkout.clearCheckoutCookie(channel);
-	revalidatePath(`/${channel}/cart`);
-	revalidatePath(`/${channel}`, "layout");
+	for (const locale of getStorefrontLocaleSlugs()) {
+		revalidatePath(buildStorefrontPath(locale, channel, "/cart"));
+	}
+	revalidateStorefrontChrome(channel);
 }
 
 export async function deleteCartLine(checkoutId: string, lineId: string, channel: string) {

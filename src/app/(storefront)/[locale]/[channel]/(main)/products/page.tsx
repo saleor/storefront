@@ -6,6 +6,7 @@ import { getPaginatedListVariables } from "@/lib/utils";
 import { CategoryHero, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { ProductsPageClient } from "./products-client";
 
 export const metadata = {
@@ -14,7 +15,7 @@ export const metadata = {
 };
 
 type PageProps = {
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 	searchParams: Promise<{
 		cursor?: string | string[];
 		direction?: string | string[];
@@ -34,8 +35,8 @@ export default async function Page(props: PageProps) {
 	const params = await props.params;
 
 	const breadcrumbs = [
-		{ label: "Home", href: `/${params.channel}` },
-		{ label: "Products", href: `/${params.channel}/products` },
+		{ label: "Home", href: buildStorefrontPath(params.locale, params.channel) },
+		{ label: "Products", href: buildStorefrontPath(params.locale, params.channel, "/products") },
 	];
 
 	return (
@@ -61,7 +62,7 @@ async function ProductsContent({
 	params: paramsPromise,
 	searchParams: searchParamsPromise,
 }: {
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 	searchParams: PageProps["searchParams"];
 }) {
 	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
@@ -93,7 +94,7 @@ async function ProductsContent({
 	}
 
 	const products = result.data.products;
-	const productCards = products.edges.map((e) => toProductCardData(e.node, params.channel));
+	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
 	// Build resolved categories array for the client (for active filter display)
 	const resolvedCategories = categorySlugs

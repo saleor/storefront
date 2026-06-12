@@ -6,6 +6,7 @@ import { toProductCardData } from "./utils";
 
 type ProductGridProps =
 	| {
+			locale: string;
 			channel: string;
 			products: readonly ProductListItemFragment[];
 			imageSizes?: string;
@@ -40,7 +41,7 @@ export function ProductGrid(props: ProductGridProps) {
 	const imageSizes = props.imageSizes ?? PLP_IMAGE_SIZES;
 
 	if ("channel" in props) {
-		const cards = props.products.map((product) => toProductCardData(product, props.channel));
+		const cards = props.products.map((product) => toProductCardData(product, props.locale, props.channel));
 		return <ProductGridInner products={cards} imageSizes={imageSizes} />;
 	}
 

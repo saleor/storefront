@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { ProductGrid } from "@/ui/components/plp/product-grid";
 
 export interface FeaturedCollectionSectionProps {
+	locale: string;
 	channel: string;
 	heading?: string;
 	collectionSlug?: string;
@@ -12,6 +13,7 @@ export interface FeaturedCollectionSectionProps {
 }
 
 export async function FeaturedCollectionSection({
+	locale,
 	channel,
 	heading = "Featured products",
 	collectionSlug = "featured-products",
@@ -33,7 +35,12 @@ export async function FeaturedCollectionSection({
 					{heading}
 				</h2>
 				{products.length > 0 ? (
-					<ProductGrid channel={channel} products={products} imageSizes={HOMEPAGE_IMAGE_SIZES} />
+					<ProductGrid
+						locale={locale}
+						channel={channel}
+						products={products}
+						imageSizes={HOMEPAGE_IMAGE_SIZES}
+					/>
 				) : (
 					<p className="text-muted-foreground">
 						No featured products yet. Add products to the {collectionSlug} collection.

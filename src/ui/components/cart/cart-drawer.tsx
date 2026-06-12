@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Truck, RotateCcw } from "lucide-react";
 import { Button, buttonClassName } from "@/ui/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetCloseButton } from "@/ui/components/ui/sheet";
@@ -202,13 +203,13 @@ export function CartDrawer({
 							</div>
 							<h3 className="mb-2 text-lg font-medium">{cart.empty.title}</h3>
 							<p className="mb-6 text-sm text-muted-foreground">{cart.empty.body}</p>
-							<Link
-								href={`/${channel}/products`}
+							<LinkWithChannel
+								href="/products"
 								onClick={closeCart}
 								className={buttonClassName({ asLink: true })}
 							>
 								{cart.empty.ctaLabel}
-							</Link>
+							</LinkWithChannel>
 						</div>
 					) : (
 						<ul className="divide-y divide-border">
@@ -223,8 +224,8 @@ export function CartDrawer({
 									<li key={line.id} className="px-6 py-4">
 										<div className="flex gap-4">
 											{/* Product Image */}
-											<Link
-												href={`/${channel}/products/${line.variant.product.slug}?variant=${line.variant.id}`}
+											<LinkWithChannel
+												href={`/products/${line.variant.product.slug}?variant=${line.variant.id}`}
 												onClick={closeCart}
 												className="group relative h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-secondary"
 											>
@@ -236,19 +237,19 @@ export function CartDrawer({
 														className="object-cover transition-transform duration-300 group-hover:scale-105"
 													/>
 												)}
-											</Link>
+											</LinkWithChannel>
 
 											{/* Product Details */}
 											<div className="min-w-0 flex-1">
 												<div className="flex items-start justify-between gap-2">
 													<div>
-														<Link
-															href={`/${channel}/products/${line.variant.product.slug}?variant=${line.variant.id}`}
+														<LinkWithChannel
+															href={`/products/${line.variant.product.slug}?variant=${line.variant.id}`}
 															onClick={closeCart}
 															className="line-clamp-1 text-sm font-medium hover:underline"
 														>
 															{line.variant.product.name}
-														</Link>
+														</LinkWithChannel>
 														{/* Variant attributes: Color swatch + values separated by | */}
 														{variantAttributes.length > 0 ? (
 															<div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
@@ -372,8 +373,8 @@ export function CartDrawer({
 								<span>Checkout</span>
 								<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
 							</Link>
-							<Link
-								href={`/${channel}/products`}
+							<LinkWithChannel
+								href="/products"
 								onClick={closeCart}
 								className={buttonClassName({
 									asLink: true,
@@ -383,7 +384,7 @@ export function CartDrawer({
 								})}
 							>
 								Continue Shopping
-							</Link>
+							</LinkWithChannel>
 						</div>
 
 						{/* Trust Signals */}

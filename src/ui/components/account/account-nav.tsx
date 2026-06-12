@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { LogoutButton } from "@/lib/auth/logout-button";
 import { useAccountUser } from "@/ui/components/account/account-context";
 import { accountRoutes } from "@/ui/components/account/routes";
+import { stripStorefrontPrefix } from "@/lib/storefront-path";
 
 const navItems: ReadonlyArray<{
 	href: string;
@@ -24,12 +25,10 @@ const navItems: ReadonlyArray<{
 export function AccountNav() {
 	const user = useAccountUser();
 	const pathname = usePathname();
-	const { channel } = useParams<{ channel: string }>();
-
-	const channelPrefix = `/${channel}`;
+	const { locale, channel } = useParams<{ locale?: string; channel?: string }>();
 
 	const isActive = (href: string, exact?: boolean) => {
-		const accountPath = pathname.startsWith(channelPrefix) ? pathname.slice(channelPrefix.length) : pathname;
+		const accountPath = locale && channel ? stripStorefrontPrefix(pathname, locale, channel) : pathname;
 		if (exact) return accountPath === href;
 		return accountPath.startsWith(href);
 	};

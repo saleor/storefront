@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 18;
+const RULE_COUNT = 19;
 
 const catalog = [
 	{
@@ -64,6 +64,7 @@ const catalog = [
 		rules: [
 			{ num: "4.1", file: "ui-components.md", title: "UI Components" },
 			{ num: "4.2", file: "ui-channels.md", title: "Channels & Multi-Currency" },
+			{ num: "4.3", file: "ui-locale-routing.md", title: "Locale & Channel URL Routing" },
 		],
 	},
 	{

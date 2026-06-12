@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CheckCircle, Loader2, Mail } from "lucide-react";
 import { confirmAccountWithBffDeduped } from "@/lib/auth/confirm-account-client";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { buttonClassName } from "@/ui/components/ui/button";
 
 type ConfirmState = "confirming" | "success" | "error";
@@ -11,6 +12,7 @@ type ConfirmState = "confirming" | "success" | "error";
 type Props = {
 	email: string;
 	token: string;
+	locale: string;
 	channel: string;
 	/** Called after a successful confirmation (e.g. refresh checkout session). */
 	onConfirmed?: () => void | Promise<void>;
@@ -21,6 +23,7 @@ type Props = {
 export function ConfirmAccountMode({
 	email,
 	token,
+	locale,
 	channel,
 	onConfirmed,
 	signInHref,
@@ -30,8 +33,8 @@ export function ConfirmAccountMode({
 	const [error, setError] = useState("");
 	const onConfirmedRef = useRef(onConfirmed);
 
-	const loginHref = signInHref ?? `/${channel}/login`;
-	const storeHref = continueShoppingHref ?? `/${channel}`;
+	const loginHref = signInHref ?? buildStorefrontPath(locale, channel, "/login");
+	const storeHref = continueShoppingHref ?? buildStorefrontPath(locale, channel);
 
 	useEffect(() => {
 		onConfirmedRef.current = onConfirmed;

@@ -5,7 +5,7 @@ import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import {
 	CACHE_PROFILES,
 	buildTag,
-	buildPath,
+	buildPathsForAllLocales,
 	extractMenuSlugFromWebhookPayload,
 	extractPageSlugFromWebhookPayload,
 	isGlobalTagProfile,
@@ -17,6 +17,8 @@ import {
 	resolveRevalidateProfileForTag,
 	type CacheProfile,
 } from "@/lib/cache-manifest";
+import { getStorefrontLocaleSlugs } from "@/config/locale";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { revalidateTags } from "@/lib/revalidate-tags";
 import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
@@ -118,8 +120,15 @@ function revalidateProfile(
 ) {
 	tagEntries.push({ tag: buildTag(profile, { slug, channel }), profile: profile.cacheProfile });
 
-	const path = buildPath(profile, channel, slug);
-	if (path) {
+	for (const path of buildPathsForAllLocales(profile, { channel, slug })) {
+		revalidatePath(path);
+		paths.push(path);
+	}
+}
+
+function revalidateProductListing(channel: string, paths: string[]) {
+	for (const locale of getStorefrontLocaleSlugs()) {
+		const path = buildStorefrontPath(locale, channel, "/products");
 		revalidatePath(path);
 		paths.push(path);
 	}
@@ -246,8 +255,7 @@ export async function POST(request: NextRequest) {
 				if (slug) {
 					revalidateProfile(CACHE_PROFILES.products, targetChannel, slug, tagEntries, revalidatedPaths);
 				}
-				revalidatePath(`/${targetChannel}/products`);
-				revalidatedPaths.push(`/${targetChannel}/products`);
+				revalidateProductListing(targetChannel, revalidatedPaths);
 
 				if (categorySlug) {
 					revalidateProfile(
@@ -273,8 +281,7 @@ export async function POST(request: NextRequest) {
 				break;
 
 			default:
-				revalidatePath(`/${targetChannel}/products`);
-				revalidatedPaths.push(`/${targetChannel}/products`);
+				revalidateProductListing(targetChannel, revalidatedPaths);
 		}
 
 		const revalidatedTags = await revalidateTags(tagEntries);

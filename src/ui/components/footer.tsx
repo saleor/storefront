@@ -14,7 +14,9 @@ import { CopyrightText } from "./copyright-text";
 import { brandConfig } from "@/config/brand";
 import { Logo } from "./shared/logo";
 
-export async function Footer({ channel }: { channel: string }) {
+import { buildStorefrontPath } from "@/lib/storefront-path";
+
+export async function Footer({ locale, channel }: { locale: string; channel: string }) {
 	const resolvedSlugs = needsAsyncChannelDiscovery()
 		? await getStorefrontChannelSlugs()
 		: getStaticStorefrontChannelSlugs();
@@ -37,7 +39,7 @@ export async function Footer({ channel }: { channel: string }) {
 				<div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 					{/* Brand */}
 					<div className="col-span-2 md:col-span-1">
-						<Link href={`/${channel}`} prefetch={false} className="mb-4 inline-block">
+						<Link href={buildStorefrontPath(locale, channel)} prefetch={false} className="mb-4 inline-block">
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-inverse-subtle">{brandConfig.tagline}</p>

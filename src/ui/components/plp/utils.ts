@@ -4,6 +4,7 @@ import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
 import { localeConfig } from "@/config/locale";
 import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 /**
  * Extract colors from product variants
@@ -53,7 +54,11 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
 }
 
 /** Map a Saleor list item to {@link ProductCardData} for cards and client filters. */
-export function toProductCardData(product: ProductListItemFragment, channel: string): ProductCardData {
+export function toProductCardData(
+	product: ProductListItemFragment,
+	locale: string,
+	channel: string,
+): ProductCardData {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
 	const stopPrice = product.pricing?.priceRange?.stop?.gross;
 	const undiscountedStartPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
@@ -88,7 +93,7 @@ export function toProductCardData(product: ProductListItemFragment, channel: str
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? product.name,
 		hoverImage: null, // Would need additional media in fragment
-		href: `/${encodeURIComponent(channel)}/products/${encodeURIComponent(product.slug)}`,
+		href: buildStorefrontPath(locale, channel, `/products/${product.slug}`),
 		badge: isSale ? "Sale" : null,
 		colors,
 		sizes,

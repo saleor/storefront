@@ -18,14 +18,14 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 ## What's Included
 
-18 rules across 6 categories covering the full storefront:
+19 rules across 6 categories covering the full storefront:
 
 | Category      | Rules                                                                                                                                                 | Topics                                                            |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes` | Cache, auth, GraphQL, merchandising copy, Models, attribute types |
 | Product Pages | `product-pdp`, `product-variants`, `product-filtering`                                                                                                | PDP architecture, variant selection, server/client filtering      |
 | Checkout      | `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`                             | Checkout v2, UX principles, lifecycle, payments, UI               |
-| UI & Channels | `ui-components`, `ui-channels`                                                                                                                        | Design tokens, multi-currency                                     |
+| UI & Channels | `ui-components`, `ui-channels`, `ui-locale-routing`                                                                                                   | Design tokens, multi-currency, locale URL routing (ADR)           |
 | SEO           | `seo-metadata`                                                                                                                                        | JSON-LD, OG images, metadata                                      |
 | Development   | `dev-investigation`                                                                                                                                   | Saleor API investigation via generated types and source           |
 

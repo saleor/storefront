@@ -135,6 +135,16 @@ export default async function ProductPage({ params }) {
 }
 ```
 
+## International URLs (planned)
+
+Browse canonical URLs will include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`). When implemented:
+
+- `generateMetadata` `url` must include both segments
+- Add `hreflang` alternates per available `(locale, channel)` pairs
+- `<html lang>` comes from the locale segment, not a global constant
+
+Not implemented yet — metadata still uses `/{channel}/…` only.
+
 ## Disabling SEO
 
 To remove SEO features entirely:

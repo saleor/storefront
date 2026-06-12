@@ -148,7 +148,7 @@ describe("page revalidation helpers", () => {
 			slug: "about-us",
 			tag: "page:about-us",
 			profile: "catalog",
-			paths: ["/us/pages/about-us", "/uk/pages/about-us"],
+			paths: ["/en/us/pages/about-us", "/en/uk/pages/about-us"],
 		});
 		expect(planPageRevalidation(undefined, ["us"])).toEqual({
 			action: "skip",
@@ -159,7 +159,7 @@ describe("page revalidation helpers", () => {
 			slug: "about-us",
 			tag: "page:about-us",
 			profile: "catalog",
-			paths: ["/default-channel/pages/about-us"],
+			paths: ["/en/default-channel/pages/about-us"],
 		});
 		expect(planPageRevalidation("about-us", [], null)).toEqual({
 			action: "error",
@@ -183,7 +183,7 @@ describe("storefront content revalidation helpers", () => {
 				{ tag: "storefront-content:us:en-US", profile: "menus" },
 				{ tag: "storefront-content:uk:en-US", profile: "menus" },
 			],
-			paths: ["/us", "/uk"],
+			paths: ["/en/us", "/en/uk"],
 		});
 	});
 
@@ -191,7 +191,7 @@ describe("storefront content revalidation helpers", () => {
 		expect(planStorefrontContentRevalidation("storefront-homepage-us", ["us", "uk"], null)).toEqual({
 			action: "revalidate",
 			tags: [{ tag: "storefront-content:us:en-US", profile: "menus" }],
-			paths: ["/us"],
+			paths: ["/en/us"],
 		});
 	});
 });

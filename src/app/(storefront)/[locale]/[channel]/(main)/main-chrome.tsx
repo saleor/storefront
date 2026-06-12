@@ -64,10 +64,12 @@ function FooterSkeleton() {
 
 /** Header + page + footer shell. User menu auth syncs via `HeaderAuthRefresh` (refresh on nav, revalidate when tab refocuses). */
 export function MainChrome({
+	locale,
 	channel,
 	chrome,
 	children,
 }: {
+	locale: string;
 	channel: string;
 	chrome: StorefrontChromeContent;
 	children: ReactNode;
@@ -84,12 +86,12 @@ export function MainChrome({
 				dismissible={announcementBar.dismissible}
 			/>
 			<Suspense fallback={<HeaderSkeleton />}>
-				<Header channel={channel} />
+				<Header locale={locale} channel={channel} />
 			</Suspense>
 			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
 				<main className="flex-1">{children}</main>
 				<Suspense fallback={<FooterSkeleton />}>
-					<Footer channel={channel} />
+					<Footer locale={locale} channel={channel} />
 				</Suspense>
 			</div>
 		</>

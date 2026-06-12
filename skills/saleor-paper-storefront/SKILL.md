@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-18 rules across 6 categories covering caching, storefront content, PDP architecture, checkout v2,
+19 rules across 6 categories covering caching, storefront content, PDP architecture, checkout v2,
 components, UI patterns, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
@@ -37,6 +37,7 @@ Reference these guidelines when:
 - Migrating authenticated routes (account, session cookies) under Cache Components / PPR
 - Upgrading a forked shop — see **Migrations** below
 - Creating UI components with design tokens
+- Adding locale/channel routing, market picker, or i18n URL structure
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
 
@@ -81,6 +82,7 @@ Reference these guidelines when:
 
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
 - `ui-channels` - Channel allowlist, fulfillment triangle, multi-currency, channel selector
+- `ui-locale-routing` - `/{locale}/{channel}/` routing, middleware redirects, path helpers
 
 ### 5. SEO (MEDIUM)
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
 import { setPasswordWithBff, syncAuthSurfacesAfterSignIn } from "@/lib/auth";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
@@ -16,7 +17,7 @@ type Props = {
 
 export function SetPasswordMode({ email, token }: Props) {
 	const router = useRouter();
-	const params = useParams<{ channel: string }>();
+	const params = useParams<{ locale: string; channel: string }>();
 
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -64,7 +65,7 @@ export function SetPasswordMode({ email, token }: Props) {
 				setSuccess(true);
 				await syncAuthSurfacesAfterSignIn(params.channel, router, { skipRefresh: true });
 				setTimeout(() => {
-					window.location.assign(`/${params.channel}`);
+					window.location.assign(buildStorefrontPath(params.locale, params.channel));
 				}, 2000);
 			}
 		} catch {
@@ -170,7 +171,7 @@ export function SetPasswordMode({ email, token }: Props) {
 
 					<div className="text-center">
 						<Link
-							href={`/${params.channel}/login`}
+							href={buildStorefrontPath(params.locale, params.channel, "/login")}
 							className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground hover:no-underline"
 						>
 							Back to Sign In

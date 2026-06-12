@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { DefaultChannelSlug } from "@/app/config";
+import { getDefaultLocaleSlug } from "@/config/locale";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 /**
  * Root page redirects to the default channel.
@@ -9,7 +11,7 @@ import { DefaultChannelSlug } from "@/app/config";
  */
 export default function RootPage() {
 	if (DefaultChannelSlug) {
-		redirect(`/${DefaultChannelSlug}`);
+		redirect(buildStorefrontPath(getDefaultLocaleSlug(), DefaultChannelSlug));
 	}
 
 	// No channel configured - show setup instructions

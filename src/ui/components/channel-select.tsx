@@ -1,8 +1,9 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import type { ChannelSelectOption } from "@/config/channels";
 import { cn } from "@/lib/utils";
+import { buildStorefrontPath, replaceStorefrontChannel } from "@/lib/storefront-path";
 
 export const ChannelSelect = ({
 	channels,
@@ -14,7 +15,10 @@ export const ChannelSelect = ({
 	className?: string;
 }) => {
 	const router = useRouter();
-	const params = useParams<{ channel: string }>();
+	const pathname = usePathname();
+	const params = useParams<{ locale?: string; channel?: string }>();
+
+	const currentChannel = params.channel ?? "";
 
 	return (
 		<select
@@ -29,9 +33,21 @@ export const ChannelSelect = ({
 			)}
 			onChange={(e) => {
 				const newChannel = e.currentTarget.value;
-				return router.push(`/${newChannel}`);
+				const locale = params.locale;
+
+				if (!locale) {
+					return;
+				}
+
+				const replaced = replaceStorefrontChannel(pathname, newChannel);
+				if (replaced) {
+					router.push(replaced);
+					return;
+				}
+
+				router.push(buildStorefrontPath(locale, newChannel));
 			}}
-			value={params.channel}
+			value={currentChannel}
 		>
 			{channels.map((channel) => (
 				<option key={channel.id} value={channel.slug}>

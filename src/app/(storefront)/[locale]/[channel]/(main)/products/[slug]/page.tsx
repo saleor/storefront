@@ -9,6 +9,7 @@ import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductAttributes,
@@ -49,7 +50,7 @@ async function getProductData(slug: string, channel: string) {
 // ============================================================================
 
 export async function generateMetadata(props: {
-	params: Promise<{ slug: string; channel: string }>;
+	params: Promise<{ locale: string; slug: string; channel: string }>;
 }): Promise<Metadata> {
 	const params = await props.params;
 	const product = await getProductData(params.slug, params.channel);
@@ -67,7 +68,7 @@ export async function generateMetadata(props: {
 		title: product.seoTitle || product.name,
 		description,
 		image: ogImage,
-		url: `/${params.channel}/products/${encodeURIComponent(params.slug)}`,
+		url: buildStorefrontPath(params.locale, params.channel, `/products/${encodeURIComponent(params.slug)}`),
 		openGraph:
 			priceAmount && priceCurrency
 				? {
@@ -92,7 +93,7 @@ const parser = edjsHTML();
  * searchParams is passed through without being awaited here or in the shell.
  */
 export default function ProductPage(props: {
-	params: Promise<{ slug: string; channel: string }>;
+	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
 	return (
@@ -110,10 +111,11 @@ async function ProductShell({
 	params: paramsPromise,
 	searchParams,
 }: {
-	params: Promise<{ slug: string; channel: string }>;
+	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string }>;
 }) {
 	const params = await paramsPromise;
+	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);
 	const product = await getProductData(params.slug, params.channel);
 
 	if (!product) {
@@ -126,9 +128,9 @@ async function ProductShell({
 	const defaultImages = getDefaultGalleryImages(product);
 
 	const breadcrumbs = [
-		{ label: "Home", href: `/${params.channel}` },
+		{ label: "Home", href: browse("/") },
 		...(product.category
-			? [{ label: product.category.name, href: `/${params.channel}/categories/${product.category.slug}` }]
+			? [{ label: product.category.name, href: browse(`/categories/${product.category.slug}`) }]
 			: []),
 		{ label: product.name },
 	];
@@ -138,7 +140,7 @@ async function ProductShell({
 		description: product.seoDescription || product.name,
 		images: defaultImages.length > 0 ? defaultImages.map((img) => img.url) : undefined,
 		brand: product.category?.name,
-		url: `/${params.channel}/products/${product.slug}`,
+		url: browse(`/products/${product.slug}`),
 		priceRange: product.pricing?.priceRange?.start?.gross
 			? {
 					lowPrice: product.pricing.priceRange.start.gross.amount,

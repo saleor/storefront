@@ -1,8 +1,10 @@
 "use server";
 
 import { after } from "next/server";
-import { revalidatePath } from "next/cache";
-import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
+import {
+	revalidateStorefrontBrowsePath,
+	revalidateStorefrontChrome,
+} from "@/lib/auth/revalidate-storefront-chrome";
 import {
 	AddressValidationRulesDocument,
 	CheckoutAddPromoCodeDocument,
@@ -583,7 +585,7 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 	after(async () => {
 		await Checkout.clearCheckoutCookieByValue(checkoutId);
 		if (channelSlug) {
-			revalidatePath(`/${channelSlug}/cart`);
+			revalidateStorefrontBrowsePath(channelSlug, "/cart");
 			revalidateStorefrontChrome(channelSlug);
 		}
 	});

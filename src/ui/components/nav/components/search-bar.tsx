@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import { SearchIcon } from "lucide-react";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
-export const SearchBar = ({ channel }: { channel: string }) => {
+export const SearchBar = ({ locale, channel }: { locale: string; channel: string }) => {
 	async function onSubmit(formData: FormData) {
 		"use server";
 		const search = formData.get("search") as string;
 		if (search && search.trim().length > 0) {
-			redirect(`/${encodeURIComponent(channel)}/search?query=${encodeURIComponent(search)}`);
+			redirect(`${buildStorefrontPath(locale, channel, "/search")}?query=${encodeURIComponent(search)}`);
 		}
 	}
 

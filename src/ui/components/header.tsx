@@ -9,7 +9,7 @@ import { UserMenuContainer } from "./nav/components/user-menu/user-menu-containe
 import { MobileMenu } from "./nav/components/mobile-menu";
 import { SearchBar } from "./nav/components/search-bar";
 
-export async function Header({ channel }: { channel: string }) {
+export async function Header({ locale, channel }: { locale: string; channel: string }) {
 	const navItems = serializeMenuForNav((await getNavbarMenuItems(channel)) ?? []);
 
 	return (
@@ -19,7 +19,7 @@ export async function Header({ channel }: { channel: string }) {
 					<Logo />
 
 					<div className="hidden flex-1 justify-center md:flex">
-						<SearchBar channel={channel} />
+						<SearchBar locale={locale} channel={channel} />
 					</div>
 
 					<nav className="hidden lg:flex" aria-label="Main">
@@ -27,14 +27,14 @@ export async function Header({ channel }: { channel: string }) {
 					</nav>
 
 					<div className="flex items-center gap-1">
-						<UserMenuContainer channel={channel} />
+						<UserMenuContainer locale={locale} channel={channel} />
 						<Suspense fallback={<div className="h-10 w-10" />}>
 							<CartNavItem channel={channel} />
 						</Suspense>
 						<Suspense>
 							<MobileMenu>
 								<li className="py-3">
-									<SearchBar channel={channel} />
+									<SearchBar locale={locale} channel={channel} />
 								</li>
 								<MobileNavLinks items={navItems} />
 							</MobileMenu>
