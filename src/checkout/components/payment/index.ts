@@ -1,12 +1,20 @@
-/** Payment components: method selection, card form, billing address. */
+/** Payment components: billing address and integrated provider UI. */
+
+export { PaymentGatewayAlerts } from "./payment-gateway-alerts";
+
+export { PaymentMethodArea } from "./payment-method-area";
+
+export { IntegratedPaymentUi } from "./integrated-payment-ui";
+
+export { PaymentError } from "./payment-error";
 
 export {
-	PaymentMethodSelector,
-	isCardDataValid,
-	type PaymentMethodType,
-	type CardData,
-	type PaymentMethodSelectorProps,
-} from "./payment-method-selector";
+	PaymentTrustSignals,
+	type PaymentTrustProvider,
+	type PaymentTrustSignalsProps,
+} from "./payment-trust-signals";
+
+export { DummyPaymentPlaceholder, type DummyPaymentPlaceholderProps } from "./dummy-payment-placeholder";
 
 export {
 	BillingAddressSection,

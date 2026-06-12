@@ -5,6 +5,10 @@ import { ChevronRight } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { getStepNumber } from "./flow";
+import {
+	PaymentTrustSignals,
+	type PaymentTrustProvider,
+} from "@/checkout/components/payment/payment-trust-signals";
 
 interface MobileStickyActionProps {
 	/** Current step number */
@@ -23,6 +27,9 @@ interface MobileStickyActionProps {
 	onAction?: () => void;
 	/** Button type */
 	type?: "button" | "submit";
+	/** Show payment trust copy above the CTA (payment step, server-submit flows). */
+	showPaymentTrust?: boolean;
+	paymentTrustProvider?: PaymentTrustProvider;
 }
 
 /**
@@ -38,6 +45,8 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 	total,
 	onAction,
 	type = "button",
+	showPaymentTrust = false,
+	paymentTrustProvider = "default",
 }) => {
 	// Determine button text based on step
 	const getButtonText = () => {
@@ -62,11 +71,17 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 		return "Continue";
 	};
 
+	const paymentStep = getStepNumber("PAYMENT", isShippingRequired);
+	const isPaymentStep = step === paymentStep;
+
 	return (
 		<div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card p-4 md:hidden">
+			{showPaymentTrust && isPaymentStep ? (
+				<PaymentTrustSignals variant="compact" provider={paymentTrustProvider} className="mb-3" />
+			) : null}
 			<Button
 				type={type}
-				onClick={onAction}
+				onClick={type === "button" ? onAction : undefined}
 				disabled={disabled || isLoading}
 				className="h-12 w-full text-base font-semibold"
 			>

@@ -258,6 +258,35 @@
 				"hasCompatibleVariant",
 				"getSwatchData"
 			]
+		},
+		{
+			"id": "2026-06-checkout-v2",
+			"title": "Checkout v2 — RSC entry, server actions, shallow steps, payment registry",
+			"upstreamSha": "8c415655",
+			"landedAt": "2026-06-08T12:00:00+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-account-ppr-auth"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "checkout",
+			"touchPaths": [
+				"src/app/(checkout)/",
+				"src/app/(storefront)/",
+				"src/session-bridge/",
+				"src/app/(checkout)/actions.ts",
+				"src/checkout/checkout-app.tsx",
+				"src/checkout/lib/checkout-search-params.ts",
+				"src/checkout/lib/checkout-sync.ts",
+				"src/checkout/providers/checkout-data.tsx",
+				"src/checkout/lib/payment/integrated-gateways.ts"
+			],
+			"detectMarkers": [
+				"CheckoutSessionLoader",
+				"CheckoutDataProvider",
+				"updateCheckoutQuery",
+				"buildOrderConfirmationPath",
+				"resolveSessionUser"
+			]
 		}
 	]
 }

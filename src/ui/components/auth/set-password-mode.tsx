@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { setPasswordWithBff, syncAuthSurfacesAfterSignIn } from "@/lib/auth";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
@@ -47,16 +48,7 @@ export function SetPasswordMode({ email, token }: Props) {
 		setIsSubmitting(true);
 
 		try {
-			const response = await fetch("/api/auth/set-password", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, token, password }),
-			});
-
-			const data = (await response.json()) as {
-				errors?: Array<{ message: string; code?: string }>;
-				success?: boolean;
-			};
+			const data = await setPasswordWithBff(email, token, password);
 
 			if (data.errors?.length) {
 				const err = data.errors[0];
@@ -70,9 +62,9 @@ export function SetPasswordMode({ email, token }: Props) {
 
 			if (data.success) {
 				setSuccess(true);
+				await syncAuthSurfacesAfterSignIn(params.channel, router, { skipRefresh: true });
 				setTimeout(() => {
-					router.push(`/${params.channel}/login`);
-					router.refresh();
+					window.location.assign(`/${params.channel}`);
 				}, 2000);
 			}
 		} catch {

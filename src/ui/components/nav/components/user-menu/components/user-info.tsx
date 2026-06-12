@@ -8,9 +8,11 @@ export const UserInfo = ({ user }: Props) => {
 	const userName = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null;
 
 	return (
-		<p className="truncate px-5 py-2 text-xs text-foreground">
-			{userName && <span className="mb-0.5 block truncate font-bold">{userName}</span>}
-			{user.email}
-		</p>
+		<div className="truncate text-xs text-muted-foreground">
+			{userName ? (
+				<span className="mb-0.5 block truncate font-medium text-foreground">{userName}</span>
+			) : null}
+			<span className="block truncate">{user.email}</span>
+		</div>
 	);
 };

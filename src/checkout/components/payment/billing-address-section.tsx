@@ -1,6 +1,6 @@
 "use client";
 
-import { type FC, useState, useEffect } from "react";
+import { type FC, useState, useEffect, useMemo } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Label } from "@/ui/components/ui/label";
 import { Checkbox } from "@/ui/components/ui/checkbox";
@@ -10,7 +10,8 @@ import { type CountryCode, type AddressFragment } from "@/checkout/graphql";
 import { useAvailableShippingCountries } from "@/checkout/hooks/use-available-shipping-countries";
 import { getCountryName } from "@/checkout/lib/utils/locale";
 import { useAddressFormUtils } from "@/checkout/components/address-form/use-address-form-utils";
-import { HybridAddressSelector } from "@/checkout/components/shipping-address";
+import { getBillingAddressOptions } from "@/checkout/lib/billing-addresses";
+import { HybridAddressSelector, AddressCard } from "@/checkout/components/shipping-address";
 
 export interface BillingAddressData {
 	countryCode: CountryCode;
@@ -32,12 +33,16 @@ export interface BillingAddressSectionProps {
 	isShippingRequired?: boolean;
 	/** Validation errors */
 	errors?: Record<string, string>;
+	/** Non-field billing section error (e.g. update failure) */
+	sectionError?: string;
 	/** Called when billing address data changes */
 	onChange: (data: BillingAddressData) => void;
 	/** Called when "same as shipping" changes */
 	onSameAsShippingChange?: (sameAsShipping: boolean) => void;
 	/** Initial "same as shipping" state */
 	initialSameAsShipping?: boolean;
+	/** Disable edits while payment is in progress */
+	disabled?: boolean;
 }
 
 /**
@@ -71,14 +76,30 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 	defaultBillingAddressId,
 	isShippingRequired = true,
 	errors = {},
+	sectionError,
 	onChange,
 	onSameAsShippingChange,
 	initialSameAsShipping,
+	disabled = false,
 }) => {
 	const { availableShippingCountries } = useAvailableShippingCountries();
 
 	const hasShippingAddress = !!shippingAddress;
-	const hasSavedAddresses = userAddresses.length > 0;
+	const selectableAddresses = useMemo(
+		() => getBillingAddressOptions(userAddresses, shippingAddress),
+		[userAddresses, shippingAddress],
+	);
+	const hasSavedAddresses = selectableAddresses.length > 0;
+
+	const getPreferredBillingAddressId = () => {
+		if (defaultBillingAddressId && selectableAddresses.some((addr) => addr.id === defaultBillingAddressId)) {
+			return defaultBillingAddressId;
+		}
+		if (billingAddress?.id && selectableAddresses.some((addr) => addr.id === billingAddress.id)) {
+			return billingAddress.id;
+		}
+		return selectableAddresses[0]?.id ?? null;
+	};
 
 	const [sameAsBilling, setSameAsBilling] = useState(
 		initialSameAsShipping ?? (isShippingRequired && hasShippingAddress),
@@ -88,9 +109,8 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 	const [showNewAddressForm, setShowNewAddressForm] = useState(false);
 
 	// Selected saved address ID (for logged-in users)
-	const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
-		// Default to the billing address if it matches a saved address, or the default billing address
-		billingAddress?.id || defaultBillingAddressId || (userAddresses.length > 0 ? userAddresses[0].id : null),
+	const [selectedAddressId, setSelectedAddressId] = useState<string | null>(() =>
+		getPreferredBillingAddressId(),
 	);
 
 	const [countryCode, setCountryCode] = useState<CountryCode>(
@@ -122,15 +142,9 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 		}
 	}, [countryCode, formData, selectedAddressId, hasSavedAddresses, showNewAddressForm, onChange]);
 
-	const handleSameAsShippingChange = (checked: boolean) => {
-		setSameAsBilling(checked);
-		onSameAsShippingChange?.(checked);
-	};
-
-	const handleSelectSavedAddress = (id: string) => {
+	const applySavedAddress = (id: string) => {
 		setSelectedAddressId(id);
-		// Also populate formData from the selected address (for potential editing)
-		const address = userAddresses.find((a) => a.id === id);
+		const address = selectableAddresses.find((a) => a.id === id);
 		if (address) {
 			setCountryCode((address.country?.code as CountryCode) || "US");
 			setFormData({
@@ -147,6 +161,31 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 		}
 	};
 
+	const handleSameAsShippingChange = (checked: boolean) => {
+		setSameAsBilling(checked);
+		onSameAsShippingChange?.(checked);
+
+		if (!checked && hasSavedAddresses) {
+			setShowNewAddressForm(false);
+			const preferredId = getPreferredBillingAddressId();
+			if (preferredId) {
+				applySavedAddress(preferredId);
+			}
+		}
+	};
+
+	const handleSelectSavedAddress = (id: string) => {
+		applySavedAddress(id);
+	};
+
+	const handleBackToSavedAddresses = () => {
+		setShowNewAddressForm(false);
+		const idToRestore = selectedAddressId ?? getPreferredBillingAddressId();
+		if (idToRestore) {
+			applySavedAddress(idToRestore);
+		}
+	};
+
 	const updateField = (field: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
 	};
@@ -160,20 +199,29 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 	const showForm = !sameAsBilling || !hasShippingAddress;
 
 	return (
-		<section className="space-y-4">
+		<section
+			className={cn("space-y-4", disabled && "pointer-events-none opacity-60")}
+			aria-disabled={disabled || undefined}
+		>
 			<h2 className="text-lg font-semibold">Billing address</h2>
+
+			{sectionError ? <p className="text-sm text-destructive">{sectionError}</p> : null}
 
 			{/* Only show "Same as shipping" if there's a shipping address */}
 			{hasShippingAddress && (
-				<div className="flex items-center gap-3">
-					<Checkbox
-						id="same-billing"
-						checked={sameAsBilling}
-						onCheckedChange={(checked) => handleSameAsShippingChange(checked === true)}
-					/>
-					<Label htmlFor="same-billing" className="cursor-pointer text-sm">
-						Same as shipping address
-					</Label>
+				<div className="space-y-3">
+					<div className="flex items-center gap-3">
+						<Checkbox
+							id="same-billing"
+							checked={sameAsBilling}
+							onCheckedChange={(checked) => handleSameAsShippingChange(checked === true)}
+						/>
+						<Label htmlFor="same-billing" className="cursor-pointer text-sm">
+							Same as shipping address
+						</Label>
+					</div>
+
+					{sameAsBilling && shippingAddress && <AddressCard address={shippingAddress} isSelected disabled />}
 				</div>
 			)}
 
@@ -181,8 +229,9 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 			{showForm && (
 				<div
 					className={cn(
-						"space-y-4 rounded-lg border border-border p-4",
-						hasShippingAddress && "bg-secondary/30",
+						"space-y-4",
+						(showNewAddressForm || !hasSavedAddresses) && "rounded-lg border border-border p-4",
+						hasShippingAddress && (showNewAddressForm || !hasSavedAddresses) && "bg-secondary/30",
 					)}
 				>
 					{/* For logged-in users with saved addresses */}
@@ -193,7 +242,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 									{/* Back to saved addresses */}
 									<button
 										type="button"
-										onClick={() => setShowNewAddressForm(false)}
+										onClick={handleBackToSavedAddresses}
 										className="mb-2 flex items-center gap-1 text-sm font-medium text-foreground underline underline-offset-2 hover:no-underline"
 									>
 										<ChevronLeft className="h-4 w-4" /> Back to saved addresses
@@ -206,10 +255,11 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 										</Label>
 										<FormSelect
 											id="billing-country"
+											name="countryCode"
 											value={countryCode}
 											onChange={handleCountryChange}
 											placeholder="Select country"
-											autoComplete="country"
+											autoComplete="billing country"
 											options={availableShippingCountries.map((code) => ({
 												value: code,
 												label: getCountryName(code),
@@ -227,13 +277,14 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 										onFieldChange={updateField}
 										countryAreaChoices={countryAreaChoices}
 										idPrefix="billing-"
+										autocompleteSection="billing"
 									/>
 								</>
 							) : (
 								<>
 									{/* Saved address selector */}
 									<HybridAddressSelector
-										addresses={userAddresses}
+										addresses={selectableAddresses}
 										selectedAddressId={selectedAddressId}
 										onSelectAddress={handleSelectSavedAddress}
 										defaultAddressId={defaultBillingAddressId}
@@ -243,7 +294,6 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 										sheetTitle="Select billing address"
 										onAddNew={() => {
 											setShowNewAddressForm(true);
-											setSelectedAddressId(null);
 											// Clear form for new entry
 											setFormData({
 												firstName: "",
@@ -273,10 +323,11 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 								</Label>
 								<FormSelect
 									id="billing-country"
+									name="countryCode"
 									value={countryCode}
 									onChange={handleCountryChange}
 									placeholder="Select country"
-									autoComplete="country"
+									autoComplete="billing country"
 									options={availableShippingCountries.map((code) => ({
 										value: code,
 										label: getCountryName(code),
@@ -294,6 +345,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 								onFieldChange={updateField}
 								countryAreaChoices={countryAreaChoices}
 								idPrefix="billing-"
+								autocompleteSection="billing"
 							/>
 						</>
 					)}

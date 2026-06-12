@@ -1,30 +1,32 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { type Checkout, useCheckoutQuery } from "@/checkout/graphql";
+import type { Checkout } from "@/checkout/graphql";
 import { extractCheckoutIdFromParams, getQueryParams } from "@/checkout/lib/utils/url";
-import { localeConfig } from "@/config/locale";
+import { useCheckoutData } from "@/checkout/providers/checkout-data";
+import { useCheckoutSession } from "@/checkout/providers/checkout-session";
 
-export const useCheckout = ({ pause = false } = {}) => {
+type UseCheckoutOptions = {
+	pause?: boolean;
+};
+
+export const useCheckout = ({ pause = false }: UseCheckoutOptions = {}) => {
+	const { checkout, setCheckout, refreshCheckout } = useCheckoutData();
+	const { checkoutId: sessionCheckoutId } = useCheckoutSession();
 	const searchParams = useSearchParams();
 	const queryParams = useMemo(() => getQueryParams(searchParams), [searchParams]);
-	const id = extractCheckoutIdFromParams(queryParams);
-
-	// Pause the query if there's no checkout ID
-	const shouldPause = pause || !id;
-
-	const [{ data, fetching, stale }, refetch] = useCheckoutQuery({
-		variables: { id: id || "", languageCode: localeConfig.graphqlLanguageCode },
-		pause: shouldPause,
-	});
+	const checkoutIdFromUrl = extractCheckoutIdFromParams(queryParams);
+	const checkoutId = pause ? null : checkoutIdFromUrl ?? sessionCheckoutId;
 
 	return useMemo(
 		() => ({
-			checkout: data?.checkout as Checkout,
-			fetching: fetching || stale,
-			refetch,
-			hasCheckoutId: !!id,
+			checkout: checkout as Checkout | null,
+			setCheckout,
+			checkoutResolved: checkout !== null,
+			fetching: false,
+			checkoutId,
+			refetch: refreshCheckout,
 		}),
-		[data?.checkout, fetching, refetch, stale, id],
+		[checkout, checkoutId, refreshCheckout, setCheckout],
 	);
 };

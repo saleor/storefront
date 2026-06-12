@@ -22,7 +22,7 @@ Route "/[channel]/account/addresses"
 
 ## Out of scope
 
-- Checkout auth (`/checkout` keeps its own `AuthProvider`)
+- Checkout auth (now uses shared BFF `/api/auth/login` — no per-surface SDK provider)
 - Cart drawer / header user menu (separate Suspense in main layout)
 - Account visual styling (presentation-default)
 
@@ -35,14 +35,14 @@ In `src/app/[channel]/(main)/account/layout.tsx`:
 - Sync default export wrapping `<Suspense fallback={<AccountSkeleton />}>`
 - Async `AccountShell`: `hasAuthSession()` → `getCurrentUser()` → `AccountProvider` or `AccountLogin`
 - Do **not** call `connection()` here (breaks PPR with cart in parent tree)
-- Do **not** use bare `<LoginForm />` (missing `AuthProvider`)
+- Do **not** use bare `<LoginForm />` without Suspense on account (see current `account-login.tsx`)
 
 Port or create:
 
 - `src/lib/auth/has-auth-session.ts`
 - `src/app/[channel]/(main)/account/get-current-user.ts` (`React.cache()`)
 - `src/ui/components/account/account-context.tsx`
-- `src/ui/components/account/account-login.tsx` (`AuthProvider` + `LoginForm`)
+- `src/ui/components/account/account-login.tsx` (`LoginForm` in Suspense; BFF sign-in)
 - `src/ui/components/account/account-skeleton.tsx`
 
 ### 2. Remove `getCurrentUser()` from account pages `[architecture]`

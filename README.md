@@ -33,16 +33,27 @@
 
 **Ship faster, customize everything.** Paper is a new release—expect some rough edges—but every component is built with real-world e-commerce in mind. This is a foundation you can actually build on.
 
-### 🛒 Open Checkout
+### 🛒 Open Checkout (v2)
 
-The checkout is where most storefronts fall apart or fall short. Paper's doesn't. We aim to provide open UI components and full wiring around the whole process.
+The checkout is where most storefronts fall apart or fall short. Paper's doesn't — and **checkout v2** aligns it with the rest of the stack: App Router, Server Components, server actions, and the same BFF session as the storefront (no client-side urql or browser Saleor tokens).
 
-- **Multi-step, mobile-first** — Each step is a focused form. No infinite scrolling on phones.
-- **Guest & authenticated** — Seamless flow for everyone. Logged-in users get address book and saved preferences.
-- **International address forms** — Country-aware fields that adapt (US states, UK postcodes, German formats).
-- **Connection resilience** — Automatic retries with exponential backoff. Flaky networks? Handled.
-- **Componentized architecture** — Swap steps, add steps, remove steps. It's your checkout.
-- **Multi-channel ready** — Different currencies and shipping zones per channel.
+```
+Storefront cart                    Checkout surface
+─────────────                      ────────────────
+src/lib/checkout.ts                src/app/(checkout)/checkout/
+  cookie + mutations        →        CheckoutSessionLoader (RSC)
+@paper/session-bridge                  CheckoutApp → steps + payment
+buildCheckoutPath()                  /checkout/complete?order= (confirmation)
+```
+
+- **Server-first cart** — RSC loads checkout + `me` on entry; client context is a cache of server truth (`CheckoutDataProvider`).
+- **URL-driven steps** — `?step=contact|shipping|payment` updates shallowly (no full page refetch per click); browser Back walks the funnel.
+- **Dedicated confirmation** — `/checkout/complete?order=` is separate from the active cart route.
+- **Extensible payments** — Registry (`INTEGRATED_GATEWAYS`) with Stripe + Dummy; add gateways via `checkout-payment-gateways` skill.
+- **Shared BFF auth** — Sign-in via `/api/auth/login`; session resolved server-side (`resolveSessionUser` — guest / authenticated / unavailable).
+- **Multi-step, mobile-first** — Focused forms, international address fields, composable step components.
+
+**Developer docs:** start at [`skills/saleor-paper-storefront/rules/paper-surfaces.md`](skills/saleor-paper-storefront/rules/paper-surfaces.md), then [`checkout-management.md`](skills/saleor-paper-storefront/rules/checkout-management.md). Forks on the old urql checkout: [`migrations/atomic/2026-06-checkout-v2/`](skills/saleor-paper-storefront/migrations/atomic/2026-06-checkout-v2/MIGRATION.md).
 
 ### 🌍 Multi-Channel, Multi-Currency
 
@@ -68,7 +79,7 @@ Not an afterthought. Focus management on step transitions, keyboard navigation e
 Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
-- **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 13 task-specific rules covering GraphQL, caching, variant selection, checkout, and more
+- **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 14 task-specific rules covering GraphQL, caching, variant selection, checkout v2, and more
 - **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor API patterns; install additional skills (React best practices, composition patterns) via `npx skills add`
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
@@ -88,7 +99,7 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 | Feature                    | Description                                                                                         |
 | -------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Checkout**               | Multi-step flow with guest/auth support, address selector, international forms                      |
+| **Checkout (v2)**          | RSC + server actions, shallow step URLs, payment registry (Stripe/Dummy), `/checkout/complete`      |
 | **Cart**                   | Slide-over drawer with real-time updates, quantity editing                                          |
 | **Product Pages**          | Multi-attribute variants, image gallery, sticky add-to-cart                                         |
 | **Product Listings**       | Category & collection pages with PPR (cached hero + dynamic filters), pagination                    |
@@ -128,14 +139,14 @@ The **display-cached, checkout-live** model ensures fast browsing with accurate 
 
 ### How It Works
 
-| Component               | Freshness          | Why                                                               |
-| ----------------------- | ------------------ | ----------------------------------------------------------------- |
-| **Product pages**       | Cached (`catalog`) | Static shell + dynamic variant islands (PPR)                      |
-| **Category/Collection** | Cached (`catalog`) | Cached hero from params; filters/pagination stream in Suspense    |
-| **Homepage featured**   | Cached (`catalog`) | Sync page shell; product grid streams in nested Suspense          |
-| **Navigation / footer** | Cached (`menus`)   | Per-channel tags: `navigation:{channel}`, `footer-menu:{channel}` |
-| **Cart drawer**         | Always live        | Saleor API with `cache: "no-cache"`                               |
-| **Checkout**            | Always live        | Direct API calls, real-time totals                                |
+| Component               | Freshness          | Why                                                                |
+| ----------------------- | ------------------ | ------------------------------------------------------------------ |
+| **Product pages**       | Cached (`catalog`) | Static shell + dynamic variant islands (PPR)                       |
+| **Category/Collection** | Cached (`catalog`) | Cached hero from params; filters/pagination stream in Suspense     |
+| **Homepage featured**   | Cached (`catalog`) | Sync page shell; product grid streams in nested Suspense           |
+| **Navigation / footer** | Cached (`menus`)   | Per-channel tags: `navigation:{channel}`, `footer-menu:{channel}`  |
+| **Cart drawer**         | Always live        | Saleor API with `cache: "no-cache"`                                |
+| **Checkout**            | Always live        | RSC entry + server actions (`cache: "no-cache"`), real-time totals |
 
 **cacheLife tiers** (see `src/lib/cache-life-profiles.ts`):
 
@@ -297,8 +308,10 @@ pnpm run generate:checkout  # Regenerate GraphQL types (checkout)
 src/
 ├── app/                    # Next.js App Router
 │   ├── [channel]/          # Channel-scoped routes
-│   └── checkout/           # Checkout pages
-├── checkout/               # Checkout components & logic
+│   ├── (storefront)/[channel]/  # Browse, cart, account
+│   └── (checkout)/checkout/     # Checkout route (/checkout)
+├── session-bridge/         # @paper/session-bridge — storefront ↔ checkout handoff
+├── checkout/               # Checkout UI, providers, payment registry (GraphQL via server actions)
 ├── graphql/                # GraphQL queries
 ├── gql/                    # Generated types (don't edit)
 ├── lib/                    # Server utilities & cached data layer

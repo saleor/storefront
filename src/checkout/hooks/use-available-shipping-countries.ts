@@ -1,22 +1,12 @@
-import { useMemo } from "react";
-import { type CountryCode, useChannelQuery } from "@/checkout/graphql";
-import { useCheckout } from "@/checkout/hooks/use-checkout";
+import { type CountryCode } from "@/checkout/graphql";
+import { useCheckoutData } from "@/checkout/providers/checkout-data";
 
 interface UseAvailableShippingCountries {
 	availableShippingCountries: CountryCode[];
 }
 
+/** Channel countries — server-hydrated on the checkout page. */
 export const useAvailableShippingCountries = (): UseAvailableShippingCountries => {
-	const { checkout } = useCheckout();
-	const [{ data }] = useChannelQuery({
-		variables: { slug: checkout?.channel?.slug || "" },
-		pause: !checkout?.channel?.slug,
-	});
-
-	const availableShippingCountries: CountryCode[] = useMemo(
-		() => (data?.channel?.countries?.map(({ code }) => code) as CountryCode[]) || [],
-		[data?.channel?.countries],
-	);
-
-	return { availableShippingCountries };
+	const { shippingCountries } = useCheckoutData();
+	return { availableShippingCountries: shippingCountries };
 };

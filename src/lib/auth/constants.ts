@@ -15,3 +15,12 @@ export const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60; // 7 days
 export const encodeCookieName = (key: string): string => {
 	return key.replace(/[^a-zA-Z0-9_-]/g, "_");
 };
+
+/** Decode cookie values set via `encodeURIComponent` on the client. */
+export function decodeCookieValue(value: string): string {
+	try {
+		return decodeURIComponent(value);
+	} catch {
+		return value;
+	}
+}

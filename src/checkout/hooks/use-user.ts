@@ -1,11 +1,4 @@
-import { useUserQuery } from "@/checkout/graphql";
+import { useCheckoutUser } from "@/checkout/providers/checkout-user";
 
-export const useUser = () => {
-	const [{ data, fetching: loading, stale }] = useUserQuery();
-
-	const user = data?.user;
-
-	const authenticated = !!user?.id;
-
-	return { user, loading: loading || stale, authenticated };
-};
+/** Customer session — server-hydrated, refreshed via `useRefreshCheckoutRsc()` after sign-in. */
+export const useUser = () => useCheckoutUser();

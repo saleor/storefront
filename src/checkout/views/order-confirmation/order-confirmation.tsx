@@ -1,11 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect } from "react";
+import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
+import { navigateToStorefrontHome } from "@/lib/auth";
 import { CheckCircle, Mail, MapPin, Package, CreditCard } from "lucide-react";
+import { Button } from "@/ui/components/ui/button";
 import { useOrder } from "@/checkout/hooks/use-order";
 import { OrderSummary } from "@/checkout/views/saleor-checkout/order-summary";
-import { CheckoutHeader } from "@/checkout/views/saleor-checkout/checkout-header";
-import { DefaultChannelSlug } from "@/app/config";
+import { OrderConfirmationPageShell } from "./order-confirmation-page-shell";
+import { PageNotFound } from "@/checkout/views/page-not-found";
 import { localeConfig } from "@/config/locale";
 
 /** Format address for display */
@@ -21,15 +24,30 @@ function formatAddress(address: {
 }
 
 /**
- * Order confirmation page - uses the same layout as SaleorCheckout
- * Renders after successful order creation with real order data.
+ * Order confirmation — rendered at `/checkout/complete?order=…` after successful payment.
  */
 export const OrderConfirmation = () => {
 	const { order } = useOrder();
-	const channel = DefaultChannelSlug;
 
-	// Calculate estimated delivery (7 days from now)
-	// Using a static calculation - this component only renders once after order creation
+	useEffect(() => {
+		if (!order?.id) {
+			return;
+		}
+
+		clearPaymentCompleting();
+	}, [order?.id]);
+
+	if (!order) {
+		return (
+			<PageNotFound
+				title="Order not found"
+				message="We couldn't find this order. It may have been removed or the link is invalid."
+			/>
+		);
+	}
+
+	const channel = order.channel?.slug ?? "";
+
 	const estimatedDelivery = new Date();
 	estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
 	const formattedDelivery = estimatedDelivery.toLocaleDateString(localeConfig.default, {
@@ -43,20 +61,12 @@ export const OrderConfirmation = () => {
 	const email = order.userEmail || "";
 
 	return (
-		<div className="min-h-screen bg-secondary">
-			{/* Header - same as checkout */}
-			<CheckoutHeader step={4} onStepClick={() => {}} />
-
-			{/* Main content - same layout as checkout */}
+		<OrderConfirmationPageShell storefrontChannel={channel}>
 			<main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-				{/* Two column layout: ~70% Content + ~30% Summary */}
 				<div className="flex flex-col gap-8 md:flex-row">
-					{/* Left column: Confirmation content (~70%) */}
 					<div className="order-2 min-w-0 flex-1 md:order-1">
 						<div className="rounded-lg border border-border bg-card p-6 md:p-8">
-							{/* Same content as ConfirmationStep */}
 							<div className="space-y-8">
-								{/* Success Header */}
 								<div className="space-y-4 text-center">
 									<div className="flex justify-center">
 										<div className="relative">
@@ -70,7 +80,6 @@ export const OrderConfirmation = () => {
 									</div>
 								</div>
 
-								{/* Order Confirmation Card */}
 								<div className="overflow-hidden rounded-lg border border-border">
 									<div className="bg-secondary/50 border-b border-border p-4">
 										<h2 className="font-semibold">Your order is confirmed</h2>
@@ -79,7 +88,6 @@ export const OrderConfirmation = () => {
 										</p>
 									</div>
 
-									{/* Order Details */}
 									<div className="space-y-4 p-4">
 										<div className="flex items-start gap-3">
 											<Mail className="mt-0.5 h-5 w-5 text-muted-foreground" />
@@ -116,20 +124,19 @@ export const OrderConfirmation = () => {
 									</div>
 								</div>
 
-								{/* Actions */}
-								<div className="flex flex-col gap-4 sm:flex-row">
-									<Link
-										href={`/${channel}`}
-										className="inline-flex h-12 flex-1 items-center justify-center rounded-md border border-input bg-transparent px-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+								<div className="flex justify-center">
+									<Button
+										type="button"
+										className="min-w-[200px] px-8"
+										onClick={() => navigateToStorefrontHome(channel)}
 									>
 										Continue shopping
-									</Link>
+									</Button>
 								</div>
 							</div>
 						</div>
 					</div>
 
-					{/* Right column: Summary (~30%, max 380px) */}
 					<div className="order-1 md:order-2 md:shrink-0 md:basis-[30%]">
 						<div className="overflow-hidden rounded-lg border border-border bg-card md:sticky md:top-8">
 							<OrderSummary order={order} editable={false} />
@@ -137,6 +144,6 @@ export const OrderConfirmation = () => {
 					</div>
 				</div>
 			</main>
-		</div>
+		</OrderConfirmationPageShell>
 	);
 };

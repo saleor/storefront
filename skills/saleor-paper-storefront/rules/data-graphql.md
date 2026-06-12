@@ -16,7 +16,7 @@ Modifying GraphQL queries and regenerating types correctly ensures type safety, 
 | Storefront (products, cart, etc.) | `src/graphql/*.graphql`          | `src/gql/`                        | `pnpm generate`          |
 | Checkout flow                     | `src/checkout/graphql/*.graphql` | `src/checkout/graphql/generated/` | `pnpm generate:checkout` |
 
-> **Note**: Checkout uses urql (client-side), storefront uses Next.js fetch (server-side). That's why they have separate codegen setups.
+> **Note**: Storefront and checkout have **separate codegen setups** (`src/gql/` vs `src/checkout/graphql/generated/`). Both surfaces fetch at runtime via server helpers (`executePublicGraphQL` / `executeAuthenticatedGraphQL`) and checkout server actions — not browser GraphQL. Auth mutations use BFF routes (`/api/auth/*`), not the GraphQL documents directly from the client.
 
 ---
 

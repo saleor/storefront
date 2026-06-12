@@ -1,10 +1,12 @@
 import { cookies } from "next/headers";
-import { CheckoutCreateDocument, CheckoutFindDocument } from "@/gql/graphql";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { checkoutIdCookieName } from "@paper/session-bridge";
+import { CheckoutCreateDocument, CheckoutCustomerDetachDocument, CheckoutFindDocument } from "@/gql/graphql";
+import { executeAuthenticatedGraphQL, executePublicGraphQL } from "@/lib/graphql";
 
+/** Checkout id from this channel's cart cookie (`checkoutId-{channel}`). */
 export async function getIdFromCookies(channel: string) {
 	try {
-		const cookieName = `checkoutId-${channel}`;
+		const cookieName = checkoutIdCookieName(channel);
 		const checkoutId = (await cookies()).get(cookieName)?.value || "";
 		return checkoutId;
 	} catch {
@@ -13,10 +15,41 @@ export async function getIdFromCookies(channel: string) {
 	}
 }
 
+/**
+ * Cart checkout id when `/checkout` has no `?checkout=` param.
+ *
+ * Checkout lives at `/checkout` (no `[channel]` segment), but cart cookies are
+ * per channel. With carts in multiple channels the default channel wins;
+ * otherwise channels are compared alphabetically so the pick is deterministic.
+ */
+export async function getFirstCheckoutIdFromCartCookies(): Promise<string | null> {
+	try {
+		const cartCookies = (await cookies())
+			.getAll()
+			.filter((cookie) => cookie.name.startsWith("checkoutId-") && cookie.value);
+
+		if (cartCookies.length === 0) {
+			return null;
+		}
+
+		const defaultChannel = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL;
+		if (defaultChannel) {
+			const preferred = cartCookies.find((cookie) => cookie.name === checkoutIdCookieName(defaultChannel));
+			if (preferred) {
+				return preferred.value;
+			}
+		}
+
+		return [...cartCookies].sort((a, b) => a.name.localeCompare(b.name))[0].value;
+	} catch {
+		return null;
+	}
+}
+
 export async function saveIdToCookie(channel: string, checkoutId: string) {
 	const shouldUseHttps =
 		process.env.NEXT_PUBLIC_STOREFRONT_URL?.startsWith("https") || !!process.env.NEXT_PUBLIC_VERCEL_URL;
-	const cookieName = `checkoutId-${channel}`;
+	const cookieName = checkoutIdCookieName(channel);
 	(await cookies()).set(cookieName, checkoutId, {
 		sameSite: "lax",
 		secure: shouldUseHttps,
@@ -24,8 +57,26 @@ export async function saveIdToCookie(channel: string, checkoutId: string) {
 }
 
 export async function clearCheckoutCookie(channel: string) {
-	const cookieName = `checkoutId-${channel}`;
+	const cookieName = checkoutIdCookieName(channel);
 	(await cookies()).delete(cookieName);
+}
+
+/** Remove any channel cookie that points at a stale checkout ID. */
+export async function clearCheckoutCookieByValue(checkoutId: string) {
+	if (!checkoutId) {
+		return;
+	}
+
+	try {
+		const cookieStore = await cookies();
+		for (const cookie of cookieStore.getAll()) {
+			if (cookie.name.startsWith("checkoutId-") && cookie.value === checkoutId) {
+				cookieStore.delete(cookie.name);
+			}
+		}
+	} catch {
+		// Ignore in static contexts
+	}
 }
 
 export async function find(checkoutId: string) {
@@ -33,12 +84,11 @@ export async function find(checkoutId: string) {
 		return null;
 	}
 
-	const result = await executeAuthenticatedGraphQL(CheckoutFindDocument, {
+	const result = await executePublicGraphQL(CheckoutFindDocument, {
 		variables: { id: checkoutId },
 		cache: "no-cache",
 	});
 
-	// Return null on error or if checkout not found
 	return result.ok ? result.data.checkout : null;
 }
 
@@ -59,3 +109,15 @@ export async function findOrCreate({ channel, checkoutId }: { checkoutId?: strin
 
 export const create = ({ channel }: { channel: string }) =>
 	executeAuthenticatedGraphQL(CheckoutCreateDocument, { cache: "no-cache", variables: { channel } });
+
+/** Detach the logged-in customer from a checkout (call before sign-out). */
+export async function detachCustomer(checkoutId: string) {
+	if (!checkoutId) {
+		return;
+	}
+
+	await executeAuthenticatedGraphQL(CheckoutCustomerDetachDocument, {
+		variables: { id: checkoutId },
+		cache: "no-cache",
+	});
+}

@@ -6,7 +6,12 @@ import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
 import { cn } from "@/lib/utils";
 import { type AddressField } from "@/checkout/components/address-form/types";
-import { autocompleteTags, typeTags } from "@/checkout/lib/consts/input-attributes";
+import {
+	formatAddressAutocomplete,
+	inputModeTags,
+	type AddressAutocompleteSection,
+	typeTags,
+} from "@/checkout/lib/consts/input-attributes";
 
 // =============================================================================
 // Constants
@@ -42,6 +47,7 @@ interface FormSelectProps {
 	placeholder?: string;
 	options: Array<{ value: string; label: string }>;
 	autoComplete?: string;
+	name?: string;
 }
 
 export const FormSelect: FC<FormSelectProps> = ({
@@ -52,9 +58,11 @@ export const FormSelect: FC<FormSelectProps> = ({
 	placeholder,
 	options,
 	autoComplete,
+	name,
 }) => (
 	<select
 		id={id}
+		name={name}
 		value={value}
 		onChange={(e) => onChange(e.target.value)}
 		autoComplete={autoComplete}
@@ -89,6 +97,8 @@ interface FormInputProps {
 	maxLength?: number;
 	className?: string;
 	autoComplete?: string;
+	name?: string;
+	inputMode?: "text" | "tel" | "numeric" | "email";
 }
 
 export const FormInput: FC<FormInputProps> = ({
@@ -102,12 +112,16 @@ export const FormInput: FC<FormInputProps> = ({
 	maxLength,
 	className,
 	autoComplete,
+	name,
+	inputMode,
 }) => (
 	<div className="relative">
 		{Icon && <Icon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />}
 		<Input
 			id={id}
+			name={name}
 			type={type}
+			inputMode={inputMode}
 			placeholder={placeholder}
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
@@ -139,6 +153,8 @@ interface AddressFieldsProps {
 	countryAreaChoices?: Array<{ raw?: unknown; verbose?: unknown }>;
 	/** ID prefix for form fields (e.g., "billing-") */
 	idPrefix?: string;
+	/** Scopes autofill tokens for shipping vs billing address sections */
+	autocompleteSection?: AddressAutocompleteSection;
 }
 
 export const AddressFields: FC<AddressFieldsProps> = ({
@@ -150,6 +166,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 	onFieldChange,
 	countryAreaChoices,
 	idPrefix = "",
+	autocompleteSection = "shipping",
 }) => {
 	const renderField = (field: AddressField): ReactNode => {
 		if (field === "countryCode") return null;
@@ -159,8 +176,9 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 		const error = errors[field];
 		const Icon = addressFieldIcons[field];
 		const fieldId = `${idPrefix}${field}`;
-		const autoComplete = autocompleteTags[field];
+		const autoComplete = formatAddressAutocomplete(field, autocompleteSection);
 		const inputType = typeTags[field] || "text";
+		const inputMode = inputModeTags[field];
 
 		// Label with optional indicator
 		const fieldLabel = (
@@ -177,6 +195,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 					{fieldLabel}
 					<FormSelect
 						id={fieldId}
+						name={field}
 						value={formData[field] || ""}
 						onChange={(value) => onFieldChange(field, value)}
 						error={error}
@@ -198,7 +217,9 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 				{fieldLabel}
 				<FormInput
 					id={fieldId}
+					name={field}
 					type={inputType}
+					inputMode={inputMode}
 					placeholder={label}
 					value={formData[field] || ""}
 					onChange={(value) => onFieldChange(field, value)}

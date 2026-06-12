@@ -1,206 +1,105 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef, type FC } from "react";
+import { useState, useCallback, type FC } from "react";
 import { Truck, Clock, Leaf, ChevronLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-	type CheckoutFragment,
-	type DeliveryOptionsCalculateMutation,
-	useCheckoutDeliveryMethodUpdateMutation,
-	useDeliveryOptionsCalculateMutation,
-} from "@/checkout/graphql";
+import { updateCheckoutDeliveryMethod } from "@/app/(checkout)/actions";
+import { type CheckoutFragment } from "@/checkout/graphql";
+import type { DeliveryOption, ServerCheckout } from "@/checkout/lib/checkout-types";
+import { hasDeliveryProblem } from "@/checkout/lib/delivery-problems";
+import { resolveSelectedDeliveryId } from "@/checkout/lib/shipping-deliveries";
 import { CheckoutSummaryContext, buildShippingSummaryRows } from "./checkout-summary-context";
-import { useCheckout } from "@/checkout/hooks/use-checkout";
 import { formatShippingPrice } from "@/checkout/lib/utils/money";
-import { localeConfig } from "@/config/locale";
 import { MobileStickyAction } from "./mobile-sticky-action";
 import { getStepNumber } from "./flow";
 
-type DeliveryOption = DeliveryOptionsCalculateMutation["deliveryOptionsCalculate"] extends
-	| { deliveries: infer D }
-	| null
-	| undefined
-	? D extends Array<infer Item>
-		? Item
-		: never
-	: never;
-
 interface ShippingStepProps {
 	checkout: CheckoutFragment;
+	deliveries: DeliveryOption[];
+	isLoadingDeliveries: boolean;
 	onBack: () => void;
-	onNext: () => void;
+	onComplete: (checkout: ServerCheckout) => void;
 }
 
-function hasDeliveryProblem(
-	checkout: CheckoutFragment,
-	type: "CheckoutProblemDeliveryMethodStale" | "CheckoutProblemDeliveryMethodInvalid",
-): boolean {
-	return checkout.problems?.some((p) => p.__typename === type) ?? false;
-}
-
-export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout, onBack, onNext }) => {
-	// Use live checkout data that updates after mutations
-	const { checkout: liveCheckout, fetching, refetch } = useCheckout();
-	const checkout = liveCheckout || initialCheckout;
-
+export const ShippingStep: FC<ShippingStepProps> = ({
+	checkout,
+	deliveries,
+	isLoadingDeliveries,
+	onBack,
+	onComplete,
+}) => {
 	const hasShippingAddress = !!checkout.shippingAddress;
-	const currentDeliveryId = checkout.delivery?.id;
+	const savedDeliveryId = checkout.delivery?.id;
 
-	// Delivery options from deliveryOptionsCalculate mutation
-	const [deliveries, setDeliveries] = useState<DeliveryOption[]>([]);
-	const [isLoadingDeliveries, setIsLoadingDeliveries] = useState(false);
-
-	// Local state - only saves on Continue
-	const [selectedMethod, setSelectedMethod] = useState<string | undefined>(currentDeliveryId);
-	const [isSubmittingLocal, setIsSubmittingLocal] = useState(false);
+	const [userSelectedMethod, setUserSelectedMethod] = useState<string | undefined>();
+	const selectedMethod = resolveSelectedDeliveryId(userSelectedMethod, deliveries, savedDeliveryId);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	// Problems
-	const isStale = hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodStale");
-	const isInvalid = hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid");
+	const showInvalidWarning =
+		hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid") &&
+		selectedMethod === savedDeliveryId;
 
-	// Mutations
-	const [, updateDeliveryMethod] = useCheckoutDeliveryMethodUpdateMutation();
-	const [, calculateDeliveryOptions] = useDeliveryOptionsCalculateMutation();
-
-	// Fetch delivery options
-	const fetchDeliveryOptions = useCallback(async () => {
-		setIsLoadingDeliveries(true);
-		setError(null);
-		try {
-			const result = await calculateDeliveryOptions({ id: checkout.id });
-			if (result.error) {
-				setError("Failed to load shipping methods");
-				return;
-			}
-			const data = result.data?.deliveryOptionsCalculate;
-			if (data?.errors?.length) {
-				setError(data.errors[0].message ?? "Failed to load shipping methods");
-				return;
-			}
-			const newDeliveries = data?.deliveries ?? [];
-			setDeliveries(newDeliveries);
-
-			setSelectedMethod((current) => {
-				if (current && newDeliveries.some((d) => d.id === current)) {
-					return current;
-				}
-				return newDeliveries[0]?.id;
-			});
-
-			// Sync checkout.problems after server re-validates delivery (clears stale flag)
-			await refetch({ requestPolicy: "network-only" });
-		} finally {
-			setIsLoadingDeliveries(false);
-		}
-	}, [calculateDeliveryOptions, checkout.id, refetch]);
-
-	const prevIsStale = useRef(isStale);
-
-	// Fetch when address is available or changes
-	useEffect(() => {
-		if (hasShippingAddress) {
-			void fetchDeliveryOptions();
-		}
-	}, [hasShippingAddress, checkout.shippingAddress?.id, fetchDeliveryOptions]);
-
-	// Re-fetch when delivery becomes stale (e.g. after promo or cart change)
-	useEffect(() => {
-		if (hasShippingAddress && isStale && !prevIsStale.current) {
-			void fetchDeliveryOptions();
-		}
-		prevIsStale.current = isStale;
-	}, [isStale, hasShippingAddress, fetchDeliveryOptions]);
-
-	// Summary rows for context display
 	const summaryRows = buildShippingSummaryRows(checkout);
-
-	const getMethodIcon = (name: string) => {
-		const lowerName = name.toLowerCase();
-		if (lowerName.includes("express") || lowerName.includes("fast")) return Clock;
-		if (lowerName.includes("eco") || lowerName.includes("green")) return Leaf;
-		return Truck;
-	};
-
-	const isEcoMethod = (name: string) => {
-		const lowerName = name.toLowerCase();
-		return lowerName.includes("eco") || lowerName.includes("green");
-	};
 
 	const handleSubmit = useCallback(
 		async (event?: React.FormEvent) => {
-			if (event) {
-				event.preventDefault();
-			}
+			event?.preventDefault();
+			if (isSubmitting) return;
 
 			if (!selectedMethod) {
 				setError("Please select a shipping method");
-				const firstRadio = document.querySelector('input[name="shipping"]') as HTMLElement;
-				firstRadio?.focus();
+				(document.querySelector('input[name="shipping"]') as HTMLElement | null)?.focus();
 				return;
 			}
 
-			// Skip API call if method hasn't changed
-			if (selectedMethod === currentDeliveryId) {
-				onNext();
-				return;
-			}
-
-			setIsSubmittingLocal(true);
+			setIsSubmitting(true);
 			setError(null);
 
 			try {
-				const result = await updateDeliveryMethod({
-					checkoutId: checkout.id,
-					deliveryMethodId: selectedMethod,
-					languageCode: localeConfig.graphqlLanguageCode,
-				});
-
-				if (result.error) {
-					setError("Failed to update shipping method");
+				if (selectedMethod !== savedDeliveryId) {
+					const result = await updateCheckoutDeliveryMethod(checkout.id, selectedMethod);
+					if (!result.ok) {
+						setError(result.error ?? result.fieldErrors?.[0]?.message ?? "Failed to update shipping method");
+						setIsSubmitting(false);
+						return;
+					}
+					onComplete(result.checkout);
 					return;
 				}
 
-				const mutationErrors = result.data?.checkoutDeliveryMethodUpdate?.errors;
-				if (mutationErrors?.length) {
-					setError(mutationErrors[0].message ?? "Failed to update shipping method");
-					return;
-				}
-
-				onNext();
-			} finally {
-				setIsSubmittingLocal(false);
+				onComplete(checkout);
+			} catch {
+				setIsSubmitting(false);
 			}
 		},
-		[selectedMethod, currentDeliveryId, onNext, updateDeliveryMethod, checkout.id],
+		[selectedMethod, savedDeliveryId, onComplete, checkout, isSubmitting],
 	);
 
-	const isLoading = fetching || isLoadingDeliveries;
-	const buttonText = isSubmittingLocal ? "Saving..." : "Continue to payment";
+	const showSpinner = isLoadingDeliveries && !isSubmitting && deliveries.length === 0;
+	const canContinue = !isSubmitting && deliveries.length > 0 && !!selectedMethod && !showSpinner;
+	const buttonText = isSubmitting ? "Saving..." : showSpinner ? "Loading..." : "Continue to payment";
 
 	return (
 		<form className="space-y-8" onSubmit={handleSubmit}>
-			{/* Summary Context */}
-			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={() => onBack()} />
+			<CheckoutSummaryContext checkout={checkout} rows={summaryRows} onGoToStep={onBack} />
 
-			{/* Invalid delivery warning */}
-			{isInvalid && (
+			{showInvalidWarning ? (
 				<div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
 					<AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
 					<p className="text-sm text-amber-800">
 						Your previously selected shipping method is no longer available. Please select a new one.
 					</p>
 				</div>
-			)}
+			) : null}
 
-			{/* Shipping Methods */}
 			<section className="space-y-4">
 				<h2 className="text-lg font-semibold">Shipping method</h2>
 
-				{error && <p className="text-sm text-destructive">{error}</p>}
+				{error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-				{isLoading ? (
+				{showSpinner ? (
 					<div className="flex items-center gap-3 rounded-lg border border-border p-4">
 						<div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
 						<p className="text-sm text-muted-foreground">Loading shipping methods...</p>
@@ -216,16 +115,21 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 						</p>
 					</div>
 				) : (
-					<div className="space-y-3">
+					<div className={cn("space-y-3", isSubmitting && "pointer-events-none opacity-60")}>
 						{deliveries.map((delivery) => {
 							const method = delivery.shippingMethod;
 							if (!method) return null;
 
-							const Icon = getMethodIcon(method.name);
 							const isSelected = selectedMethod === delivery.id;
-							const isEco = isEcoMethod(method.name);
+							const name = method.name.toLowerCase();
+							const Icon =
+								name.includes("express") || name.includes("fast")
+									? Clock
+									: name.includes("eco") || name.includes("green")
+										? Leaf
+										: Truck;
+							const isEco = name.includes("eco") || name.includes("green");
 							const isFree = method.price?.amount === 0;
-							const priceDisplay = formatShippingPrice(method.price);
 
 							return (
 								<label
@@ -244,7 +148,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 										value={delivery.id}
 										checked={isSelected}
 										onChange={() => {
-											setSelectedMethod(delivery.id);
+											setUserSelectedMethod(delivery.id);
 											setError(null);
 										}}
 										className="sr-only"
@@ -255,25 +159,27 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 											isSelected ? "border-foreground" : "border-muted-foreground/50",
 										)}
 									>
-										{isSelected && <div className="h-2.5 w-2.5 rounded-full bg-foreground" />}
+										{isSelected ? <div className="h-2.5 w-2.5 rounded-full bg-foreground" /> : null}
 									</div>
 									<Icon className={cn("h-5 w-5", isEco ? "text-green-600" : "text-muted-foreground")} />
 									<div className="flex-1">
 										<div className="flex items-center gap-2">
 											<span className="font-medium">{method.name}</span>
-											{isEco && (
+											{isEco ? (
 												<span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">
 													Eco
 												</span>
-											)}
+											) : null}
 										</div>
-										{method.minimumDeliveryDays && method.maximumDeliveryDays && (
+										{method.minimumDeliveryDays && method.maximumDeliveryDays ? (
 											<p className="text-sm text-muted-foreground">
 												{method.minimumDeliveryDays}-{method.maximumDeliveryDays} business days
 											</p>
-										)}
+										) : null}
 									</div>
-									<span className={cn("font-medium", isFree && "text-green-600")}>{priceDisplay}</span>
+									<span className={cn("font-medium", isFree && "text-green-600")}>
+										{formatShippingPrice(method.price)}
+									</span>
 								</label>
 							);
 						})}
@@ -281,7 +187,6 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 				)}
 			</section>
 
-			{/* Navigation */}
 			<div className="flex items-center justify-between">
 				<button
 					type="button"
@@ -291,11 +196,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 					<ChevronLeft className="h-4 w-4" />
 					Return to information
 				</button>
-				<Button
-					type="submit"
-					disabled={!selectedMethod || isSubmittingLocal}
-					className="hidden h-12 px-8 md:flex"
-				>
+				<Button type="submit" disabled={!canContinue} className="hidden h-12 px-8 md:flex">
 					{buttonText}
 				</Button>
 			</div>
@@ -304,10 +205,9 @@ export const ShippingStep: FC<ShippingStepProps> = ({ checkout: initialCheckout,
 				step={getStepNumber("SHIPPING", true)}
 				isShippingRequired={true}
 				type="submit"
-				onAction={handleSubmit}
-				isLoading={isSubmittingLocal}
-				disabled={!selectedMethod}
-				loadingText="Saving..."
+				isLoading={showSpinner || isSubmitting}
+				disabled={!canContinue}
+				loadingText={isSubmitting ? "Saving..." : "Loading..."}
 			/>
 		</form>
 	);

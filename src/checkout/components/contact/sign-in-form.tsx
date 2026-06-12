@@ -2,30 +2,25 @@
 
 import { type FC, useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import { loginWithBff } from "@/lib/auth/bff-client";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
-import { useRequestPasswordResetMutation } from "@/checkout/graphql";
+import { requestCheckoutPasswordReset } from "@/app/(checkout)/actions";
+import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
 
 export interface SignInFormProps {
 	/** Pre-filled email address */
 	initialEmail?: string;
 	/** Saleor channel slug for password reset */
 	channelSlug: string;
-	/** Called when sign-in is successful */
-	onSuccess: () => void;
+	/** Called when sign-in is successful (may be async — form waits before clearing loading state) */
+	onSuccess: () => void | Promise<void>;
 	/** Called when user wants to checkout as guest */
 	onGuestCheckout: () => void;
 }
 
 /**
  * Sign-in form with email, password, and forgot password functionality.
- *
- * Features:
- * - Email/password authentication via Saleor
- * - Password visibility toggle
- * - Forgot password flow with rate limit messaging
- * - "Guest checkout" option
  */
 export const SignInForm: FC<SignInFormProps> = ({
 	initialEmail = "",
@@ -33,8 +28,6 @@ export const SignInForm: FC<SignInFormProps> = ({
 	onSuccess,
 	onGuestCheckout,
 }) => {
-	const { signIn } = useSaleorAuthContext();
-	const [, requestPasswordReset] = useRequestPasswordResetMutation();
 	const [email, setEmail] = useState(initialEmail);
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
@@ -52,12 +45,12 @@ export const SignInForm: FC<SignInFormProps> = ({
 		setIsSubmitting(true);
 
 		try {
-			const result = await signIn({ email, password });
-			if (result.data?.tokenCreate?.errors?.length) {
-				const err = result.data.tokenCreate.errors[0];
+			const result = await loginWithBff(email, password);
+			if (result.errors?.length) {
+				const err = result.errors[0];
 				setError(err.message || "Invalid email or password");
-			} else if (result.data?.tokenCreate?.token) {
-				onSuccess();
+			} else if (result.ok) {
+				await onSuccess();
 			} else {
 				setError("Sign in failed. Please try again.");
 			}
@@ -84,27 +77,22 @@ export const SignInForm: FC<SignInFormProps> = ({
 
 		setIsSubmitting(true);
 		try {
-			const result = await requestPasswordReset({
+			const result = await requestCheckoutPasswordReset({
 				email,
 				channel: channelSlug,
 				redirectUrl: window.location.href,
 			});
 
-			if (result.error) {
-				setError(result.error.message || "Failed to send reset link");
+			if (!result.ok) {
+				setError(result.error || "Failed to send reset link");
 				return;
 			}
 
-			if (result.data?.requestPasswordReset?.errors?.length) {
-				const err = result.data.requestPasswordReset.errors[0];
-				setError(err.message || "Failed to send reset link");
-			} else {
-				setPasswordResetSent(true);
-				setSuccessMessage(
-					`If an account exists for ${email}, a password reset link has been sent. ` +
-						`Note: You can only request one reset link every 15 minutes.`,
-				);
-			}
+			setPasswordResetSent(true);
+			setSuccessMessage(
+				`If an account exists for ${email}, a password reset link has been sent. ` +
+					`Note: You can only request one reset link every 15 minutes.`,
+			);
 		} catch {
 			setError("An error occurred. Please try again.");
 		} finally {
@@ -139,13 +127,15 @@ export const SignInForm: FC<SignInFormProps> = ({
 					<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 					<Input
 						type="email"
+						name={contactFieldAttributes.email.name}
+						inputMode={contactFieldAttributes.email.inputMode}
 						placeholder="Email address"
 						value={email}
 						onChange={(e) => {
 							setEmail(e.target.value);
 							setPasswordResetSent(false);
 						}}
-						autoComplete="email"
+						autoComplete={contactFieldAttributes.email.autoComplete}
 						className="h-12 pl-10"
 						required
 					/>
@@ -157,10 +147,11 @@ export const SignInForm: FC<SignInFormProps> = ({
 					<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 					<Input
 						type={showPassword ? "text" : "password"}
+						name={contactFieldAttributes.currentPassword.name}
 						placeholder="Password"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						autoComplete="current-password"
+						autoComplete={contactFieldAttributes.currentPassword.autoComplete}
 						className="h-12 pl-10 pr-10"
 						required
 					/>

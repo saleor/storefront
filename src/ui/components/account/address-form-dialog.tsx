@@ -15,7 +15,7 @@ import {
 	SheetDescription,
 	SheetCloseButton,
 } from "@/ui/components/ui/sheet";
-import { createAddress, updateAddress } from "@/app/[channel]/(main)/account/actions";
+import { createAddress, updateAddress } from "@/app/(storefront)/[channel]/(main)/account/actions";
 
 type Props = {
 	address?: AddressDetailsFragment;

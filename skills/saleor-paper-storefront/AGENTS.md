@@ -1,6 +1,6 @@
 # Saleor Paper Storefront
 
-**Version 1.0.0**  
+**Version 1.5.0**  
 Saleor Paper  
 February 2026
 
@@ -9,35 +9,48 @@ February 2026
 > may also find it useful, but guidance here is optimized for automation
 > and consistency by AI-assisted workflows.
 >
-> **Source of truth:** Individual rule files in `rules/` are updated first. This compiled
-> document may lag — for caching architecture details, prefer `rules/data-caching.md`,
-> `rules/product-pdp.md`, and `rules/ui-channels.md`.
+> **Source of truth:** Individual rule files in `rules/` are updated first. Regenerate this file with:
+> `node skills/saleor-paper-storefront/scripts/compile-agents.mjs`
 
 ---
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 13 rules across 6 categories: data layer (caching, GraphQL), product pages (PDP, variants, filtering), checkout flow, UI components, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 15 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
 ## Table of Contents
 
 1. [Data Layer](#1-data-layer) — **CRITICAL**
+
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
+   - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
+
 2. [Product Pages](#2-product-pages) — **HIGH**
+
    - 2.1 [Product Detail Page](#21-product-detail-page)
    - 2.2 [Variant Selection](#22-variant-selection)
    - 2.3 [Product Filtering](#23-product-filtering)
+
 3. [Checkout Flow](#3-checkout-flow) — **HIGH**
-   - 3.1 [Checkout Management](#31-checkout-management)
-   - 3.2 [Checkout Components](#32-checkout-components)
-4. [UI & Channels](#4-ui--channels) — **MEDIUM**
+
+   - 3.1 [Paper Surfaces](#31-paper-surfaces)
+   - 3.2 [Checkout Design Principles](#32-checkout-design-principles)
+   - 3.3 [Checkout Management](#33-checkout-management)
+   - 3.4 [Payment Gateways](#34-payment-gateways)
+   - 3.5 [Checkout Components](#35-checkout-components)
+
+4. [UI & Channels](#4-ui-channels) — **MEDIUM**
+
    - 4.1 [UI Components](#41-ui-components)
-   - 4.2 [Channels & Multi-Currency](#42-channels--multi-currency)
+   - 4.2 [Channels & Multi-Currency](#42-channels-multi-currency)
+
 5. [SEO](#5-seo) — **MEDIUM**
-   - 5.1 [SEO & Metadata](#51-seo--metadata)
+
+   - 5.1 [SEO & Metadata](#51-seo-metadata)
+
 6. [Development](#6-development) — **MEDIUM**
    - 6.1 [Saleor API Investigation](#61-saleor-api-investigation)
 
@@ -55,6 +68,8 @@ Understanding the caching architecture, Cache Components (PPR), and revalidation
 
 > **Reference**: [Next.js Cache Components](https://nextjs.org/docs/app/getting-started/cache-components) — the official documentation for `use cache`, `cacheLife`, `cacheTag`, and Partial Prerendering.
 
+---
+
 ## Data Freshness Model
 
 ### The Key Principle
@@ -68,7 +83,7 @@ Understanding the caching architecture, Cache Components (PPR), and revalidation
 | **Homepage**                  | `getFeaturedProducts()`                     | ⚠️ Cached (5 min TTL)  | Performance                 |
 | **Navigation**                | `NavLinks`                                  | ⚠️ Cached (1 hour TTL) | Rarely changes              |
 | **Cart Drawer**               | `Checkout.find()`                           | ✅ Always fresh        | Uses `cache: "no-cache"`    |
-| **Checkout Page**             | `useCheckoutQuery()`                        | ✅ Always fresh        | Direct API call via urql    |
+| **Checkout Page**             | `syncCheckoutFromServer()` + server actions | ✅ Always fresh        | Server actions + RSC        |
 | **Add to Cart action**        | Saleor mutation                             | ✅ Always fresh        | Saleor calculates price     |
 
 ### Price Flow Diagram
@@ -101,6 +116,8 @@ Understanding the caching architecture, Cache Components (PPR), and revalidation
 2. **Cart always fetches fresh**: `Checkout.find()` uses `cache: "no-cache"`
 3. **Checkout validates**: `checkoutComplete` will fail if something is wrong
 4. **Webhooks enable instant updates**: When configured, price changes trigger immediate cache invalidation
+
+---
 
 ## Cache Components Architecture
 
@@ -141,22 +158,59 @@ const config = {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Cached Functions with Tags
+### Reference Architecture
 
-Each cached function has a **tag** for targeted invalidation:
+Target layout for catalog routes with Cache Components enabled:
+
+```
+ProductPage (sync export)
+└── Suspense (page skeleton or route loading.tsx)
+    └── ProductShell (await params + cached data ONLY — never searchParams)
+        ├── breadcrumbs, h1, attributes, JSON-LD, LCP preload
+        ├── Suspense → VariantGalleryDynamic (searchParams)
+        └── Suspense → VariantSectionDynamic (searchParams)
+
+Layout shell
+├── Suspense → Header (cached menu data + dynamic cart/user)
+├── <main>{children}</main>          ← no Suspense wrapper on main
+├── Suspense → Footer (cached menus + channels)
+└── Suspense → CartDrawer (cookies, no-cache)
+
+Invalidation: Saleor webhook → revalidateTag(tag, profile) + revalidatePath per channel
+```
+
+**Key files**
+
+| Purpose             | Location                                |
+| ------------------- | --------------------------------------- |
+| Cache manifest      | `src/lib/cache-manifest.ts`             |
+| Catalog fetches     | `src/lib/catalog/*.ts`                  |
+| Menu fetches        | `src/lib/menus/get-menu-data.ts`        |
+| Channel fetches     | `src/lib/channels/get-channels-data.ts` |
+| Revalidation API    | `src/app/api/revalidate/route.ts`       |
+| Cache introspection | `src/app/api/cache-info/route.ts`       |
+
+### Cache Manifest — Single Source of Truth
+
+All cache profiles are defined in `src/lib/cache-manifest.ts`. This module is imported by:
+
+- **Cached functions** — for `cacheLife()` / `cacheTag()` calls
+- **`/api/cache-info`** — to serve the manifest to the saleor-paper-app (Dashboard)
 
 ```typescript
-// src/app/[channel]/(main)/products/[slug]/page.tsx
+import { PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+
 async function getProductData(slug: string, channel: string) {
 	"use cache";
-	cacheLife("minutes"); // 5 min default TTL
-	cacheTag(`product:${slug}`); // Tag for webhook invalidation
+	applyCacheProfile(PROFILES.products, slug);
 
 	return executePublicGraphQL(ProductDetailsDocument, {
 		variables: { slug, channel },
 	});
 }
 ```
+
+To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actual caching behavior and the dashboard app's view of the cache update automatically.
 
 ### Tag Registry
 
@@ -170,11 +224,99 @@ async function getProductData(slug: string, channel: string) {
 | `footer-menu:{channel}` | `footerMenu`  | `getFooterMenuItems()`                         | Footer menu changed       |
 | `channels`              | `channels`    | `getCachedChannelsList()`                      | Channel list changed      |
 
-Use `applyCacheProfile(CACHE_PROFILES.*)` — see `rules/data-caching.md` for the full three-layer page model, data layer paths, and webhook events.
+**Named `cacheLife` tiers** (via `applyCacheProfile`, configured in `next.config.js`):
+
+| Profile ID                  | Tier name  | Typical TTL | Used for                          |
+| --------------------------- | ---------- | ----------- | --------------------------------- |
+| `products`                  | `catalog`  | ~5 min      | Products, categories, collections |
+| `pages`                     | `catalog`  | ~5 min      | CMS pages                         |
+| `navigation` / `footerMenu` | `menus`    | ~1 hour     | Nav + footer menus                |
+| `channels`                  | `channels` | longer      | Channel metadata list             |
+
+Do **not** add fetch-level `revalidate` on GraphQL calls inside `"use cache"` functions — `cacheLife` + webhooks handle freshness.
+
+### Cache Introspection Endpoint
+
+`GET /api/cache-info` returns a machine-readable manifest of all profiles. Protected by `REVALIDATE_SECRET` via `Authorization: Bearer` header (timing-safe comparison). Used by the saleor-paper-app to discover what the storefront caches and build its invalidation UI dynamically.
+
+```bash
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" "https://store.com/api/cache-info"
+# Returns: { version: 1, profiles: [{ id, label, ttlSeconds, cacheProfile, tagPattern, pathPattern }, ...] }
+```
+
+---
 
 ## Key Patterns
 
-### 1. Suspense Around Dynamic Content
+### 1. Three-Layer Page Model (CRITICAL)
+
+Every catalog route should follow this boundary stack:
+
+1. **Sync page export** — passes `params` / `searchParams` promises through, no awaits at top level.
+2. **Page-level Suspense** — isolates cached data fetch from the layout; use route `loading.tsx` for outer skeletons.
+3. **Shell** — awaits `params` + `"use cache"` data only. Static UI (h1, breadcrumbs, JSON-LD) lives here.
+4. **Dynamic islands** — nested Suspense per runtime concern (`searchParams`, cookies, client routing hooks).
+
+```tsx
+// ✅ CORRECT
+export default function Page(props: PageProps) {
+	return (
+		<Suspense fallback={<PageSkeleton />}>
+			<PageShell params={props.params} searchParams={props.searchParams} />
+		</Suspense>
+	);
+}
+
+async function PageShell({ params, searchParams }) {
+	const { slug, channel } = await params;
+	const product = await getProductData(slug, channel); // "use cache"
+	return (
+		<>
+			<h1>{product.name}</h1>
+			<Suspense fallback={<GallerySkeleton />}>
+				<VariantGalleryDynamic product={product} searchParams={searchParams} />
+			</Suspense>
+		</>
+	);
+}
+```
+
+```tsx
+// ❌ BAD — awaiting searchParams in shell collapses the whole page into a dynamic hole
+async function ProductShell({ searchParams, ... }) {
+	const { variant } = await searchParams; // Dynamic!
+	const product = await getProductData(...);
+}
+```
+
+### 2. Data Layer Conventions
+
+Place `"use cache"` GraphQL fetches in dedicated modules — not inline in page files long-term:
+
+| Layer    | Location                         | Examples                                                      |
+| -------- | -------------------------------- | ------------------------------------------------------------- |
+| Catalog  | `src/lib/catalog/`               | `get-featured-products`, `get-category-data`, `get-page-data` |
+| Menus    | `src/lib/menus/get-menu-data.ts` | `getNavbarMenuItems`, `getFooterMenuItems`                    |
+| Channels | `src/lib/channels/`              | `getCachedChannelsList`                                       |
+
+Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — never raw `cacheLife("minutes")` or manual `cacheTag` strings that drift from the manifest.
+
+**Do not** re-export server cached helpers from barrels that also export client components (e.g. import `ProductGalleryLcp` directly, not via a mixed `pdp/index.ts` barrel).
+
+### 3. Page Patterns by Route Type
+
+| Route                                  | Shell (cached)                                          | Dynamic islands                                                               |
+| -------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Homepage**                           | Sync `<section>` wrapper                                | `FeaturedProducts` in Suspense → `getFeaturedProducts()`                      |
+| **PLP** (category/collection/products) | Hero/title from `getCategoryData` / `getCollectionData` | Product grid in nested Suspense (filters/sort via `searchParams`)             |
+| **PDP**                                | `ProductShell`: name, attributes, JSON-LD, preload      | `VariantGalleryDynamic` + `VariantSectionDynamic` (separate Suspense)         |
+| **CMS page**                           | Sync page export                                        | `PageContent` in Suspense → `getPageData()`                                   |
+| **Account** (`/account/*`)             | Layout `AccountShell` + `AccountProvider`               | Per-page Suspense for orders; profile via context (see `data-auth-routes.md`) |
+
+See `product-pdp.md` for PDP specifics. PLP routes use `loading.tsx` at the route segment.  
+See `data-auth-routes.md` for migrating other logged-in route trees.
+
+### 4. Suspense Around Dynamic Content
 
 Any component accessing runtime data must be wrapped in Suspense.
 
@@ -192,10 +334,11 @@ Any component accessing runtime data must be wrapped in Suspense.
 | `cache: "no-cache"` fetches | Always fresh        |
 
 ```tsx
-// Layout wraps children in Suspense
-<main className="flex-1">
-  <Suspense>{props.children}</Suspense>
-</main>
+// Layout: Header/Footer/Cart each in their own Suspense — NOT a wrapper on <main>
+<main className="flex-1">{props.children}</main>
+
+// Route-level loading UI (preferred for page transitions)
+// src/app/[channel]/(main)/categories/[slug]/loading.tsx
 
 // Header wraps NavLinks in Suspense (uses usePathname for active state)
 <Suspense fallback={<NavLinksSkeleton />}>
@@ -203,9 +346,13 @@ Any component accessing runtime data must be wrapped in Suspense.
 </Suspense>
 ```
 
-### 2. Sync Page Shell Pattern (CRITICAL)
+**Do not** use `Suspense fallback={null}` on `<main>` — it prevents route `loading.tsx` from participating and hides useful skeletons.
 
-Page components that use `"use cache"` data must be **synchronous** and wrap their async content in a **dedicated Suspense boundary**. This prevents the cached async work from flowing through the layout's main Suspense, which can cause hydration/reconciliation issues.
+### 5. Sync Page Shell Pattern (CRITICAL)
+
+Page components that use `"use cache"` data must be **synchronous** and wrap async content in a **dedicated Suspense boundary**. This prevents cached async work from flowing through the layout boundary, which can cause hydration/reconciliation issues.
+
+(See [Three-Layer Page Model](#1-three-layer-page-model-critical) above — this is the same rule, repeated here because it is the most common PPR mistake.)
 
 ```tsx
 // ✅ CORRECT - Page is sync, async content has its own Suspense
@@ -220,20 +367,9 @@ export default function Page(props: PageProps) {
 async function PageContent({ params: paramsPromise }) {
 	const params = await paramsPromise;
 	const data = await getCachedData(params.slug, params.channel);
-	return <ProductList products={data} />;
+	return <ProductList products={data} channel={params.channel} />;
 }
 ```
-
-```tsx
-// ❌ BAD - async Page relies on layout's Suspense for streaming
-export default async function Page(props: PageProps) {
-	const params = await props.params;
-	const data = await getCachedData(params.slug, params.channel);
-	return <ProductList products={data} />;
-}
-```
-
-**Why**: When Cache Components are enabled, the boundary between the static shell and streamed content is determined by Suspense boundaries. If the page itself is async and relies on the layout's `<Suspense>{children}</Suspense>`, the reconciliation between the static shell and the streamed RSC payload happens at the layout level, which can cause DOM structure mismatches and memory issues. A dedicated page-level Suspense isolates this boundary.
 
 All page routes in this project follow this pattern:
 
@@ -243,7 +379,7 @@ All page routes in this project follow this pattern:
 - `src/app/[channel]/(main)/collections/[slug]/page.tsx`
 - `src/app/[channel]/(main)/products/[slug]/page.tsx`
 
-### 3. Public vs Authenticated Queries
+### 6. Public vs Authenticated Queries
 
 Two explicit GraphQL helpers:
 
@@ -267,7 +403,7 @@ const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, {
 });
 ```
 
-### 4. Don't Use `searchParams` Inside `"use cache"`
+### 7. Don't Use `searchParams` Inside `"use cache"`
 
 ```typescript
 // ❌ BAD - searchParams is runtime data
@@ -288,7 +424,7 @@ export async function generateMetadata(props) {
 }
 ```
 
-### 5. CSS Order Pattern for Mixed Static/Dynamic Layouts
+### 8. CSS Order Pattern for Mixed Static/Dynamic Layouts
 
 When you need dynamic content to appear **above** static content visually, use CSS `order`:
 
@@ -321,51 +457,7 @@ When you need dynamic content to appear **above** static content visually, use C
 
 This keeps `<h1>` in the static shell for SEO while allowing dynamic content to appear above it.
 
-### 6. GraphQL Auth Defaults
-
-Two explicit GraphQL helpers ensure you always know what data access level you're using:
-
-- `executePublicGraphQL` - Public queries only (products, menus, categories)
-- `executeAuthenticatedGraphQL` - Requires user session cookies (checkout, user data)
-
-This ensures:
-
-- Only publicly visible products are fetched
-- No user cookies in cache scope (safe for `"use cache"`)
-- No "Signature has expired" errors on public pages
-
-```typescript
-import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
-
-// ✅ Public data (menus, products) - no auth, only public data
-const menu = await executePublicGraphQL(MenuDocument, {
-	variables: { slug: "footer" },
-});
-
-// ✅ User data - requires session cookies
-let user = null;
-try {
-	const result = await executeAuthenticatedGraphQL(CurrentUserDocument, {
-		cache: "no-cache",
-	});
-	user = result.me;
-} catch {
-	// Expired token = treat as not logged in
-}
-
-// ✅ Checkout/cart - requires session cookies
-await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
-	variables: { id: checkoutId, productVariantId: variantId },
-	cache: "no-cache",
-});
-
-// ✅ App token (server-side only) - explicit header
-const channels = await executePublicGraphQL(ChannelsListDocument, {
-	headers: {
-		Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-	},
-});
-```
+---
 
 ## Cache Invalidation
 
@@ -382,27 +474,46 @@ When configured, Saleor sends webhooks on data changes, triggering instant inval
    - `CATEGORY_CREATED`, `CATEGORY_UPDATED`, `CATEGORY_DELETED`
    - `COLLECTION_CREATED`, `COLLECTION_UPDATED`, `COLLECTION_DELETED`
    - `PAGE_CREATED`, `PAGE_UPDATED`, `PAGE_DELETED`
+   - `MENU_CREATED`, `MENU_UPDATED`, `MENU_DELETED`
+   - `MENU_ITEM_CREATED`, `MENU_ITEM_UPDATED`, `MENU_ITEM_DELETED`
 4. Copy the **secret key** to `SALEOR_WEBHOOK_SECRET` env var
 
-**What happens on webhook:**
+**What happens on webhook** (via `src/app/api/revalidate/route.ts`):
 
 ```typescript
-// Product update webhook triggers:
-revalidateTag(`product:${slug}`, "minutes"); // Invalidates "use cache" data
-revalidatePath(`/channel/products/${slug}`); // Invalidates ISR page
+// Product update — tag + path per storefront channel
+revalidateTag(`product:${slug}`, resolveRevalidateCacheLifeProfile("products"));
+for (const channel of await getStorefrontChannelSlugs()) {
+	revalidatePath(`/${channel}/products/${slug}`);
+}
+
+// Menu update — channel-scoped tags (navbar vs footer mapped by menu slug)
+revalidateTag(`navigation:${channel}`, resolveRevalidateCacheLifeProfile("navigation"));
+revalidateTag(`footer-menu:${channel}`, resolveRevalidateCacheLifeProfile("footerMenu"));
 ```
+
+Path revalidation uses `getStorefrontChannelSlugs()` so multi-channel deployments invalidate every allowed channel. See `ui-channels.md` for allowlist configuration.
 
 ### Manual Invalidation
 
+All manual invalidation requests use the `Authorization: Bearer` header (timing-safe comparison):
+
 ```bash
 # Invalidate a specific product (both tag and path)
-curl "https://store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie&path=/default-channel/products/blue-hoodie"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/default-channel/products/blue-hoodie"
 
 # Invalidate just the cached function data
-curl "https://store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:blue-hoodie"
 
-# Invalidate navigation (uses "hours" profile)
-curl "https://store.com/api/revalidate?secret=xxx&tag=navigation&profile=hours"
+# Invalidate navigation for a channel (uses "menus" profile)
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=navigation:default-channel"
+
+# Invalidate footer menu for a channel
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=footer-menu:default-channel"
 ```
 
 ### No Webhooks? TTL Takes Over
@@ -412,15 +523,22 @@ curl "https://store.com/api/revalidate?secret=xxx&tag=navigation&profile=hours"
 | Products    | 5 minutes   |
 | Categories  | 5 minutes   |
 | Collections | 5 minutes   |
+| CMS pages   | 5 minutes   |
 | Navigation  | 1 hour      |
+
+---
 
 ## Environment Variables
 
 ```env
-# Cache invalidation
-REVALIDATE_SECRET=your-secret       # Manual revalidation (GET requests)
+# Cache invalidation — use ≥32 character random strings in production
+REVALIDATE_SECRET=your-secret       # Bearer token for manual revalidation & cache-info
 SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ```
+
+**Security**: Both endpoints use timing-safe comparison and `Authorization: Bearer` header authentication. Query-string `?secret=` still works but logs a deprecation warning — migrate callers to the header.
+
+---
 
 ## Debugging Stale Content
 
@@ -441,20 +559,30 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 4. **Force manual revalidation:**
 
    ```bash
-   curl "https://store.com/api/revalidate?secret=xxx&tag=product:my-product"
+   curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+     "https://store.com/api/revalidate?tag=product:my-product"
    ```
 
 5. **Check browser cache:**
    - Hard refresh: Cmd+Shift+R / Ctrl+Shift+R
 
+---
+
 ## Anti-patterns
 
-❌ **Don't use `cache: "no-cache"` for display pages** - Destroys performance
-❌ **Don't skip webhook setup in production** - Users see stale prices
-❌ **Don't access cookies/searchParams inside `"use cache"`** - Will error
-❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** - Requires cookies
-❌ **Don't expose `REVALIDATE_SECRET`** - Keep it server-side only
-❌ **Don't make page components async when using `"use cache"` data** - Use the sync page shell pattern (see Key Pattern #2) to avoid reconciliation issues with the layout's main Suspense boundary
+❌ **Don't use `cache: "no-cache"` for display pages** — Destroys performance  
+❌ **Don't skip webhook setup in production** — Users see stale prices  
+❌ **Don't access cookies/searchParams inside `"use cache"`** — Will error  
+❌ **Don't await `searchParams` in shell components** — Collapses the whole page into a dynamic hole  
+❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** — Requires cookies  
+❌ **Don't add fetch-level `revalidate` inside `"use cache"` functions** — `cacheLife` + webhooks handle freshness  
+❌ **Don't use raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings** — Use `applyCacheProfile(CACHE_PROFILES.*)` from the manifest  
+❌ **Don't wrap `<main>` in Suspense with `fallback={null}`** — Blocks route `loading.tsx` skeletons  
+❌ **Don't make page components async when using `"use cache"` data** — Use the sync page shell pattern  
+❌ **Don't pass `REVALIDATE_SECRET` in query strings** — Use the `Authorization: Bearer` header  
+❌ **Don't re-export server cached helpers from client-mixed barrels** — Import catalog/menu modules directly
+
+---
 
 ## Disabling Cache Components
 
@@ -498,19 +626,32 @@ revalidateTag(`product:${slug}`); // Remove second argument
 - **`executeAuthenticatedGraphQL`** - Good separation regardless
 - **ISR via `revalidate` option** - Works as fallback
 
+---
+
 ## Files Reference
 
-| File                                                   | Purpose                                  |
-| ------------------------------------------------------ | ---------------------------------------- |
-| `src/app/api/revalidate/route.ts`                      | Webhook endpoint and manual revalidation |
-| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | PDP with "use cache"                     |
-| `src/app/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                |
-| `src/app/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"              |
-| `src/app/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                |
-| `src/ui/components/pdp/variant-section-dynamic.tsx`    | Dynamic variant section                  |
-| `src/ui/components/header.tsx`                         | Header with Suspense boundaries          |
-| `src/lib/checkout.ts`                                  | Cart operations (always fresh)           |
-| `next.config.js`                                       | `cacheComponents: true`                  |
+| File                                                   | Purpose                                                               |
+| ------------------------------------------------------ | --------------------------------------------------------------------- |
+| `src/lib/api-auth.ts`                                  | Shared auth: timing-safe secret verification, Bearer token extraction |
+| `src/lib/cache-manifest.ts`                            | Cache profile definitions (single source of truth)                    |
+| `src/app/api/cache-info/route.ts`                      | Cache introspection endpoint for dashboard app                        |
+| `src/app/api/revalidate/route.ts`                      | Webhook endpoint and manual revalidation                              |
+| `src/lib/catalog/*.ts`                                 | Catalog `"use cache"` fetches (featured, category, collection, page)  |
+| `src/lib/menus/get-menu-data.ts`                       | Navbar + footer menu cached fetches                                   |
+| `src/lib/channels/get-channels-data.ts`                | Channel list cache                                                    |
+| `src/lib/channel-slugs.ts`                             | Storefront channel allowlist resolution                               |
+| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | PDP with ProductShell + dynamic islands                               |
+| `src/app/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                                             |
+| `src/app/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"                                           |
+| `src/app/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                                             |
+| `src/ui/components/nav/components/nav-links.tsx`       | Navigation with "use cache"                                           |
+| `src/ui/components/footer.tsx`                         | Footer menu + channels with "use cache"                               |
+| `src/ui/components/pdp/variant-section-dynamic.tsx`    | Dynamic variant section                                               |
+| `src/ui/components/header.tsx`                         | Header with Suspense boundaries                                       |
+| `src/lib/checkout.ts`                                  | Cart operations (always fresh)                                        |
+| `next.config.js`                                       | `cacheComponents: true`                                               |
+
+---
 
 ### 1.2 GraphQL Workflow
 
@@ -521,6 +662,8 @@ Modifying GraphQL queries and regenerating types correctly ensures type safety, 
 > - [Saleor API Reference](https://docs.saleor.io/api-reference) - GraphQL schema and field permissions
 > - [graphql-codegen](https://the-guild.dev/graphql/codegen) - Type generation
 
+---
+
 ## File Locations
 
 | Purpose                           | Location                         | Generated Types                   | Regenerate With          |
@@ -528,7 +671,9 @@ Modifying GraphQL queries and regenerating types correctly ensures type safety, 
 | Storefront (products, cart, etc.) | `src/graphql/*.graphql`          | `src/gql/`                        | `pnpm generate`          |
 | Checkout flow                     | `src/checkout/graphql/*.graphql` | `src/checkout/graphql/generated/` | `pnpm generate:checkout` |
 
-> **Note**: Checkout uses urql (client-side), storefront uses Next.js fetch (server-side). That's why they have separate codegen setups.
+> **Note**: Storefront and checkout have **separate codegen setups** (`src/gql/` vs `src/checkout/graphql/generated/`). Both surfaces fetch at runtime via server helpers (`executePublicGraphQL` / `executeAuthenticatedGraphQL`) and checkout server actions — not browser GraphQL. Auth mutations use BFF routes (`/api/auth/*`), not the GraphQL documents directly from the client.
+
+---
 
 ## Making Changes
 
@@ -543,6 +688,8 @@ query ProductDetails($slug: String!, $channel: String!) {
 	}
 }
 ```
+
+---
 
 ## Regenerating Types (CRITICAL)
 
@@ -559,6 +706,8 @@ This regenerates TypeScript types. **Always run the appropriate command after an
 - `src/gql/` - Storefront types (DO NOT EDIT)
 - `src/checkout/graphql/generated/` - Checkout types (DO NOT EDIT)
 
+---
+
 ## Using the Types
 
 ```typescript
@@ -571,6 +720,8 @@ const { product } = await executePublicGraphQL(ProductDetailsDocument, {
 });
 // TypeScript now recognizes product.newField
 ```
+
+---
 
 ## Checking the Saleor Schema
 
@@ -615,12 +766,196 @@ if (!product.defaultVariant) {
 }
 ```
 
+---
+
 ## Anti-patterns
 
 ❌ **Don't edit generated files** (`src/gql/` or `src/checkout/graphql/generated/`)  
 ❌ **Don't forget to regenerate types** - Run the appropriate `generate` command  
 ❌ **Don't assume fields are non-null** - Check generated types and handle nulls explicitly  
 ❌ **Don't mix up the two codegen setups** - Storefront ≠ Checkout
+
+---
+
+### 1.3 Auth Routes (BFF)
+
+**Impact: CRITICAL** when `cacheComponents: true` and routes read session cookies.
+
+Reference implementation: `src/app/[channel]/(main)/account/`.
+
+> **Fork upgrades:** Apply atomic migration `2026-06-account-ppr-auth` in [`../migrations/manifest.json`](../migrations/manifest.json) when catching up from pre–June 2026 Paper (especially after #1201-style layout changes).
+
+## Problem
+
+With Cache Components enabled, any server component that calls `cookies()`, `headers()`, or authenticated GraphQL (`cache: "no-cache"` with session) is **dynamic**. If that runs in an async **page** without a Suspense boundary, production builds fail:
+
+```
+Uncached data was accessed outside of <Suspense>
+```
+
+Do **not** fix this by wrapping `<main>{children}</main>` in Suspense — that hides the issue and blocks route `loading.tsx`. Fix at the **route segment** that owns the dynamic work.
+
+## BFF auth (session lifecycle)
+
+Login, logout, and password reset go through **Next.js API routes** — not the browser Saleor SDK. Tokens are stored as **HttpOnly** cookies via `getServerAuthClient()` on the server.
+
+| Route                           | Purpose                         |
+| ------------------------------- | ------------------------------- |
+| `POST /api/auth/login`          | `tokenCreate` → Set-Cookie      |
+| `POST /api/auth/register`       | Account registration            |
+| `POST /api/auth/reset-password` | Request reset email             |
+| `POST /api/auth/set-password`   | Reset token → session           |
+| `logout()` server action        | Clear cookies + detach checkout |
+
+Client forms call `loginWithBff()` / `setPasswordWithBff()` from `src/lib/auth/bff-client.ts`. Commerce (cart, checkout lines) stays on **server actions** — do not proxy all GraphQL.
+
+**Header user menu:** `UserMenuServer` calls `getHeaderUser()` inside Suspense — same server session as account pages. No client `me` fetch.
+
+## Keeping header chrome fresh (Router Cache)
+
+HttpOnly cookies are the source of truth, but the **client Router Cache** can reuse a stale RSC payload for the header after session changes. Paper uses three explicit triggers — no client-side retry loops:
+
+| Trigger                           | When                                           | Mechanism                                                                                         |
+| --------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Initial load / hard refresh**   | Land on storefront with existing session       | `HeaderAuthRefresh` → `revalidateStorefrontChrome` + `router.refresh()` once on mount             |
+| **In-store soft nav**             | User follows a `<Link>` within `/${channel}`   | `HeaderAuthRefresh` → `router.refresh()` on pathname change                                       |
+| **Cross-tab**                     | User returns after login/logout in another tab | `visibilitychange` → `revalidateStorefrontChromeAction` + `router.refresh()`                      |
+| **Cross-surface / auth boundary** | Login, logout, checkout → storefront           | `revalidateStorefrontChrome` + **hard navigation** (`window.location.assign` or plain `<a href>`) |
+
+**Hard navigation** is required when leaving `/checkout` or after login/logout — soft `router.push` / `<Link>` can restore a cached anonymous `UserMenuServer`. Use `syncAuthSurfacesAfterSignIn({ redirectTo })`, `useLogout({ channel })`, `navigateToStorefrontHome()`, or `StorefrontHomeLink` (plain anchor).
+
+**`revalidateStorefrontChrome(channel)`** invalidates `/${channel}` layout (user menu + cart badge) and `/checkout`. Call from server actions after cart mutations, checkout complete, or before client refresh — not during RSC render.
+
+## Migration Checklist
+
+Use this when moving a logged-in area (account, wishlist, etc.) to PPR-safe patterns:
+
+1. **Layout owns auth gate** — one `Suspense` + async shell; call `hasAuthSession()` / `getCurrentUser()` only inside the shell.
+2. **Sync page exports** — `export default function Page()` returns `<Suspense><AsyncContent /></Suspense>` for pages that fetch orders, etc.
+3. **Profile data from layout** — fetch user once; expose via client `AccountProvider` + `useAccountUser()` for settings/addresses (avoids `cookies()` in every page).
+4. **Nested Suspense for secondary fetches** — e.g. recent orders, order list, order detail (authenticated GraphQL in child async components).
+5. **Login fallback** — use `AccountLogin` (`LoginForm` in Suspense); sign-in posts to `/api/auth/login`.
+6. **Mutations + client context** — if UI reads user from layout context, use `revalidatePath("/account", "layout")` and `router.refresh()` on success (page-only revalidation leaves stale context).
+7. **Verify build** — `STOREFRONT_CHANNELS=aud,default-channel pnpm run build` (CI may not run full build).
+
+## Architecture
+
+```
+account/layout.tsx
+└── Suspense fallback={<AccountSkeleton />}
+    └── AccountShell (async)
+        ├── no session / invalid user → <AccountLogin />  (LoginForm → BFF)
+        └── user → AccountProvider
+            ├── AccountNav (static client)
+            └── {children}  (sync pages + nested Suspense islands)
+
+header.tsx
+└── Suspense
+    └── HeaderAuthRefresh (client) → router.refresh() on pathname change
+        └── UserMenuServer (async) → cookies() + getHeaderUser() or sign-in link
+```
+
+| Concern            | Location                                  | Notes                                                           |
+| ------------------ | ----------------------------------------- | --------------------------------------------------------------- |
+| Auth cookies check | `has-auth-session.ts`                     | Same lookup as auth SDK (`readAuthCookieValue`)                 |
+| User profile       | `get-current-user.ts`                     | `React.cache()` — deduped per request                           |
+| Header user        | `get-header-user.ts`                      | `getHeaderAuthState()` — guest / authenticated / unavailable    |
+| Session resolution | `resolve-session-user.ts`                 | Classifies `me` fetch; one server retry on transient errors     |
+| Auth failure codes | `session-auth-state.ts`                   | `isDefinitiveAuthFailure` — Saleor JWT codes + message fallback |
+| BFF sign-in        | `bff-server.ts`, `/api/auth/login`        | HttpOnly cookies, rate limited                                  |
+| Client forms       | `bff-client.ts`                           | `loginWithBff`, `setPasswordWithBff`                            |
+| Client profile     | `account-context.tsx`                     | `useAccountUser()` for settings/addresses/overview              |
+| Sign-in UI         | `account-login.tsx`                       | `LoginForm` in Suspense (no SDK provider)                       |
+| Order fetches      | `recent-orders-section.tsx`, orders pages | Inside page-level Suspense                                      |
+
+## Code Patterns
+
+### Layout shell
+
+```tsx
+export default function AccountLayout({ children }: { children: ReactNode }) {
+	return (
+		<Suspense fallback={<AccountSkeleton />}>
+			<AccountShell>{children}</AccountShell>
+		</Suspense>
+	);
+}
+
+async function AccountShell({ children }: { children: ReactNode }) {
+	if (!(await hasAuthSession())) return <AccountLogin />;
+	const user = await getCurrentUser();
+	if (!user) return <AccountLogin />;
+	return <AccountProvider user={user}>{/* nav + children */}</AccountProvider>;
+}
+```
+
+### Sync page + dynamic island
+
+```tsx
+export default function AccountOverviewPage() {
+	return (
+		<div>
+			<AccountOverviewWelcome /> {/* useAccountUser() */}
+			<Suspense fallback={<RecentOrdersSectionSkeleton />}>
+				<RecentOrdersSection />
+			</Suspense>
+		</div>
+	);
+}
+```
+
+### Server actions with layout context
+
+```typescript
+function revalidateAccountLayout() {
+	revalidatePath("/account", "layout");
+}
+```
+
+```tsx
+// Client form after successful BFF login — prefer hard nav over soft push + refresh
+await syncAuthSurfacesAfterSignIn(channel, router, {
+	redirectTo: `/${channel}`,
+});
+```
+
+## Anti-patterns
+
+❌ **`cookies()` or `getCurrentUser()` in async page components** without a page/layout Suspense boundary  
+❌ **Browser → Saleor for login or `me`** — use BFF routes and server `getHeaderUser()`  
+❌ **`connection()` in account layout** — can break PPR with `CartProvider` in parent tree  
+❌ **Blanket `<Suspense>{children}</Suspense>` on main layout** — workaround, not architecture  
+❌ **`revalidatePath("/account/addresses", "page")` only** when addresses read `useAccountUser()` from layout  
+❌ **`fallback={null}`** on account order Suspense — use section skeletons  
+❌ **`key={pathname}` without `router.refresh()`** on header auth — remounting RSC children does not bust the Router Cache; stale anonymous menus persist until `revalidateStorefrontChrome`  
+❌ **Client-side sessionStorage retry / recover gates** on header auth — fix cache boundaries server-side; never loop `router.refresh()` from effects  
+❌ **Treating all `me === null` as signed out** — use `resolveSessionUser` (`guest` / `authenticated` / `unavailable`); only show login link on `guest`  
+❌ **`<Link>` from checkout → storefront** when session may have changed — use plain `<a href>` or `navigateToStorefrontHome()`
+
+## Related Rules
+
+- `data-caching.md` — three-layer page model, no main Suspense, sync page shell
+- `checkout-management.md` — checkout session via RSC + BFF sign-in + `router.refresh()`
+
+## Files
+
+| File                                                                 | Purpose                                  |
+| -------------------------------------------------------------------- | ---------------------------------------- |
+| `src/app/[channel]/(main)/account/layout.tsx`                        | Suspense + auth gate                     |
+| `src/app/[channel]/(main)/account/get-current-user.ts`               | Cached profile fetch                     |
+| `src/lib/auth/has-auth-session.ts`                                   | Cookie presence check                    |
+| `src/lib/auth/session-auth-state.ts`                                 | JWT failure classification + retry logic |
+| `src/lib/auth/resolve-session-user.ts`                               | `resolveSessionUser()` wrapper           |
+| `src/lib/auth/bff-server.ts`                                         | Server sign-in / sign-out                |
+| `src/lib/auth/get-header-user.ts`                                    | Header `me` fetch                        |
+| `src/app/api/auth/login/route.ts`                                    | BFF login endpoint                       |
+| `src/ui/components/account/account-login.tsx`                        | Signed-out account login                 |
+| `src/ui/components/account/account-context.tsx`                      | Client profile context                   |
+| `src/ui/components/nav/components/user-menu/user-menu-server.tsx`    | Header auth chrome                       |
+| `src/ui/components/nav/components/user-menu/header-auth-refresh.tsx` | Router Cache sync (soft nav + cross-tab) |
+| `src/lib/auth/revalidate-storefront-chrome.ts`                       | Layout + checkout cache bust             |
+| `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                   | Post-login cache bust + hard nav         |
+| `src/app/[channel]/(main)/account/actions.ts`                        | Layout revalidation helper               |
 
 ---
 
@@ -636,45 +971,30 @@ Product Detail Page architecture, image gallery/carousel, caching, and add-to-ca
 
 > **Sources**: [Next.js Caching](https://nextjs.org/docs/app/building-your-application/caching) · [Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations) · [Suspense](https://react.dev/reference/react/Suspense)
 
-For variant selection logic specifically, see [2.2 Variant Selection](#22-variant-selection).
+For variant selection logic specifically, see `product-variants.md`.
 
 > **Start here:** Read the [Data Flow](#data-flow) section first - it explains how everything connects.
 
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ page.tsx (Server Component)                                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────────┐    ┌────────────────────────────────────┐ │
-│  │ ProductGallery   │    │ Product Info Column                │ │
-│  │ (Client)         │    │                                    │ │
-│  │                  │    │  <h1>Product Name</h1>  ← Static   │ │
-│  │ • Swipe/arrows   │    │                                    │ │
-│  │ • Thumbnails     │    │  ┌────────────────────────────┐   │ │
-│  │ • LCP optimized  │    │  │ ErrorBoundary              │   │ │
-│  │                  │    │  │  ┌──────────────────────┐  │   │ │
-│  │                  │    │  │  │ Suspense             │  │   │ │
-│  │                  │    │  │  │  VariantSection ←────│──│── Dynamic
-│  │                  │    │  │  │  (Server Action)     │  │   │ │
-│  │                  │    │  │  └──────────────────────┘  │   │ │
-│  │                  │    │  └────────────────────────────┘   │ │
-│  │                  │    │                                    │ │
-│  │                  │    │  ProductAttributes  ← Static       │ │
-│  └──────────────────┘    └────────────────────────────────────┘ │
-│                                                                 │
-│  Data: getProductData() with "use cache"  ← Cached 5 min       │
-└─────────────────────────────────────────────────────────────────┘
+ProductPage (sync export)
+└── Suspense → ProductShell (params + getProductData only — never await searchParams)
+    ├── breadcrumbs, h1, attributes, JSON-LD
+    ├── <link rel="preload"> for default gallery LCP image
+    ├── Suspense → VariantGalleryDynamic (searchParams → variant images)
+    └── ErrorBoundary + Suspense → VariantSectionDynamic (searchParams → price, selectors, add-to-cart)
+
+Data: getProductData() with applyCacheProfile(CACHE_PROFILES.products)  ← catalog tier (~5 min)
 ```
 
 ### Key Principles
 
-1. **Page is a sync shell** - Returns immediately with a `<Suspense>` boundary (see Key Pattern #2 in Caching)
-2. **Product data is cached** - `getProductData()` uses `"use cache"` (5 min)
-3. **Variant section is dynamic** - Reads `searchParams`, streams via Suspense
-4. **Gallery shows variant images** - Changes based on `?variant=` URL param
-5. **Errors are contained** - ErrorBoundary prevents full page crash
+1. **Product data is cached** — `getProductData()` uses `"use cache"` + cache manifest profile
+2. **Shell stays static** — `ProductShell` awaits `params` only; passes `searchParams` promise through
+3. **Gallery and variant section are separate dynamic islands** — each in its own Suspense boundary
+4. **Gallery shows variant images** — `VariantGalleryDynamic` reads `?variant=` from URL
+5. **Errors are contained** — ErrorBoundary around variant section prevents full page crash
 
 ### Data Flow
 
@@ -685,19 +1005,16 @@ URL: /us/products/blue-shirt?variant=abc123
                 │
                 ▼
 ┌───────────────────────────────────────────────────────────────────┐
-│ page.tsx                                                          │
+│ ProductPage (sync) → Suspense → ProductShell                      │
 │                                                                   │
-│   1. getProductData("blue-shirt", "us")                           │
-│      └──► "use cache" ──► GraphQL ──► Returns product + variants  │
+│   1. await params → getProductData("blue-shirt", "us")            │
+│      └──► "use cache" + CACHE_PROFILES.products ──► product data  │
 │                                                                   │
-│   2. searchParams.variant = "abc123"                              │
-│      └──► Find variant ──► Get variant.media ──► Gallery images   │
+│   2. Static shell: h1, breadcrumbs, attributes, JSON-LD, preload  │
 │                                                                   │
-│   3. Render page with:                                            │
-│      • Gallery ──────────────────► Shows variant images           │
-│      • <Suspense> ──► VariantSection streams in                   │
-│                       └──► Reads searchParams (makes it dynamic)  │
-│                       └──► Server Action: addToCart()             │
+│   3. Nested Suspense islands (each awaits searchParams):          │
+│      • VariantGalleryDynamic ──► variant.media for gallery        │
+│      • VariantSectionDynamic ──► price, selectors, add-to-cart      │
 └───────────────────────────────────────────────────────────────────┘
                 │
                 ▼
@@ -737,8 +1054,9 @@ src/app/[channel]/(main)/products/[slug]/
 └── page.tsx                          # Main PDP page
 
 src/ui/components/pdp/
-├── index.ts                          # Public exports
-├── product-gallery.tsx               # Gallery wrapper
+├── index.ts                          # Public exports (client-safe only)
+├── variant-gallery-dynamic.tsx       # Server: reads searchParams, renders ProductGallery
+├── product-gallery.tsx               # Client: Embla carousel wrapper
 ├── variant-section-dynamic.tsx       # Variant selection + add to cart
 ├── variant-section-error.tsx         # Error fallback (Client Component)
 ├── add-to-cart.tsx                   # Add to cart button
@@ -758,20 +1076,29 @@ src/ui/components/ui/
 
 - **Mobile**: Horizontal swipe (Embla Carousel) + dot indicators
 - **Desktop**: Arrow navigation (hover) + thumbnail strip
-- **LCP optimized**: First image server-rendered via `ProductGalleryImage`
-- **Variant-aware**: Shows variant-specific images when selected
+- **LCP**: `<link rel="preload">` in `ProductShell` for default gallery image + `priority` on first carousel image
+- **Variant-aware**: `VariantGalleryDynamic` resolves images from `searchParams.variant`
 
 ### How Variant Images Work
 
 ```tsx
-// In page.tsx
-const selectedVariant = searchParams.variant
-	? product.variants?.find((v) => v.id === searchParams.variant)
-	: null;
-
-const images = getGalleryImages(product, selectedVariant);
+// variant-gallery-dynamic.tsx — searchParams read here, NOT in ProductShell
+export async function VariantGalleryDynamic({ product, searchParams }) {
+	const { variant: variantId } = await searchParams;
+	const selectedVariant = variantId ? product.variants?.find((v) => v.id === variantId) : null;
+	const images = getGalleryImages(product, selectedVariant);
+	return <ProductGallery images={images} productName={product.name} />;
+}
 // Priority: variant.media → product.media → thumbnail
 ```
+
+### LCP Strategy
+
+Keep LCP simple — no hero-in-fallback pattern:
+
+1. **`ProductShell`** emits `<link rel="preload" as="image" fetchPriority="high">` for the default (non-variant) hero URL
+2. **`ProductGallery`** / `ImageCarousel` sets `priority` on the first visible image
+3. Variant-specific images load when the user selects a variant (acceptable trade-off)
 
 ### Customizing Gallery
 
@@ -800,34 +1127,35 @@ Use the `onImageClick` callback:
 ### Data Fetching
 
 ```tsx
+import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+
 async function getProductData(slug: string, channel: string) {
 	"use cache";
-	cacheLife("minutes"); // 5 minute cache
-	cacheTag(`product:${slug}`); // For on-demand revalidation
+	applyCacheProfile(CACHE_PROFILES.products, slug);
 
 	return await executePublicGraphQL(ProductDetailsDocument, {
-		variables: { slug, channel },
+		variables: { slug: decodeURIComponent(slug), channel },
 	});
 }
 ```
 
-**Note:** `executePublicGraphQL` fetches only publicly visible data, which is safe inside `"use cache"` functions. For user-specific queries, use `executeAuthenticatedGraphQL` (but NOT inside `"use cache"`).
+**Note:** Do not add fetch-level `revalidate` here — the cache manifest profile + webhooks handle freshness. See `data-caching.md`.
 
 ### What's Cached vs Dynamic
 
-| Part                     | Cached? | Why                            |
-| ------------------------ | ------- | ------------------------------ |
-| Product data             | ✅ Yes  | `"use cache"` directive        |
-| Gallery images           | ✅ Yes  | Derived from cached data       |
-| Product name/description | ✅ Yes  | Static content                 |
-| Variant section          | ❌ No   | Reads `searchParams` (dynamic) |
-| Prices                   | ❌ No   | Part of variant section        |
+| Part                     | Cached? | Why                                         |
+| ------------------------ | ------- | ------------------------------------------- |
+| Product data             | ✅ Yes  | `"use cache"` in `getProductData()`         |
+| h1, breadcrumbs, JSON-LD | ✅ Yes  | Rendered in `ProductShell` from cached data |
+| Default LCP preload URL  | ✅ Yes  | Derived from cached product media           |
+| Gallery (variant images) | ❌ No   | `VariantGalleryDynamic` reads searchParams  |
+| Variant section (price)  | ❌ No   | `VariantSectionDynamic` reads searchParams  |
 
 ### On-Demand Revalidation
 
 ```bash
-# Revalidate specific product
-curl "/api/revalidate?tag=product:my-product-slug"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:my-product-slug"
 ```
 
 ## Error Handling
@@ -969,18 +1297,27 @@ pnpm test src/ui/components/pdp  # Run PDP tests
 // See variant-section-error.tsx
 ```
 
-❌ **Don't read searchParams in cached functions**
+❌ **Don't read searchParams in ProductShell or cached functions**
 
 ```tsx
-// ❌ Bad - breaks caching
-async function getProductData(slug: string, searchParams: SearchParams) {
-  "use cache";
-  const variant = searchParams.variant; // Dynamic data in cache!
+// ❌ Bad — collapses entire PDP into dynamic hole
+async function ProductShell({ searchParams, ... }) {
+	const { variant } = await searchParams;
+	const product = await getProductData(...);
 }
 
-// ✅ Good - read searchParams in page, pass result to cached function
-const product = await getProductData(slug, channel);
-const variant = searchParams.variant ? product.variants.find(...) : null;
+// ✅ Good — pass searchParams promise to dynamic islands only
+<Suspense fallback={<GallerySkeleton />}>
+  <VariantGalleryDynamic product={product} searchParams={searchParams} />
+</Suspense>
+```
+
+```tsx
+// ❌ Bad — breaks caching
+async function getProductData(slug: string, searchParams: SearchParams) {
+	"use cache";
+	const variant = searchParams.variant;
+}
 ```
 
 ❌ **Don't use useState for variant selection**
@@ -1020,11 +1357,16 @@ router.push(`?variant=${variantId}`);
 {images.map((img) => <Image key={img.url} ... />)}
 ```
 
+---
+
 ### 2.2 Variant Selection
 
 Variant and attribute selection on product detail pages. Ensures correct "Add to Cart" button state, option availability, discount badges, and URL-driven selection.
 
 > **Source**: [Saleor Docs - Attributes](https://docs.saleor.io/developer/attributes/overview) - How product/variant attributes work
+
+> **UI & renderers:** For border states, swatch pills, sizing, and renderer routing, see
+> [../references/variant-selector-ui.md](../references/variant-selector-ui.md).
 
 ## Core Concept: Variants, Not Products
 
@@ -1057,89 +1399,117 @@ nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) { ..
 
 Non-selection attributes are **display-only** - shown as informational badges, not interactive selectors.
 
+## Saleor Swatch Attributes
+
+Saleor `inputType: SWATCH` attributes may provide a **hex color** (`value`), an **image** (`file.url`), or both. Common on demo catalog for Color and Audio quality.
+
+Required GraphQL on `VariantDetailsFragment.graphql`:
+
+```graphql
+values {
+  name
+  value
+  file { url }
+}
+attribute {
+  slug
+  name
+  inputType
+}
+```
+
+After changes: `pnpm run generate`.
+
+| Swatch data    | Renderer                | UI                                |
+| -------------- | ----------------------- | --------------------------------- |
+| `file.url`     | `ImageSwatchPillOption` | `h-12` labeled pill (icon + name) |
+| hex in `value` | `ColorSwatchOption`     | `h-12` circle                     |
+
+See [variant-selector-ui.md](../references/variant-selector-ui.md) for border/state classes.
+
 ## File Structure
 
 ```
 src/ui/components/pdp/variant-selection/
-├── index.ts                      # Public exports
-├── types.ts                      # TypeScript interfaces
-├── utils.ts                      # Data transformation & logic
-├── variant-selector.tsx          # Single attribute selector
-├── variant-selection-section.tsx # Main container
-├── optional-attributes.tsx       # Non-selection attribute badges
+├── index.ts
+├── types.ts
+├── utils.ts
+├── variant-selector.tsx
+├── variant-selection-section.tsx
+├── optional-attributes.tsx
 └── renderers/
-    ├── color-swatch-option.tsx   # Color swatch (circular)
-    └── button-option.tsx         # Button for size/text (unified)
+    ├── color-swatch-option.tsx      # Hex swatch circles
+    ├── image-swatch-pill-option.tsx # Image swatch pills
+    ├── button-option.tsx            # Size/text buttons
+    └── index.ts                     # defaultRenderers registry
 ```
 
 ## Key Functions in `utils.ts`
 
-| Function                        | Purpose                                          |
-| ------------------------------- | ------------------------------------------------ |
-| `groupVariantsByAttributes()`   | Extract unique attribute values from variants    |
-| `findMatchingVariant()`         | Find variant matching ALL selected attributes    |
-| `getOptionsForAttribute()`      | Get options with availability/compatibility info |
-| `getAdjustedSelections()`       | Clear conflicting selections when needed         |
-| `getUnavailableAttributeInfo()` | Detect dead-end selections                       |
+| Function                        | Purpose                                        |
+| ------------------------------- | ---------------------------------------------- |
+| `groupVariantsByAttributes()`   | Extract unique attribute values from variants  |
+| `findMatchingVariant()`         | Find variant matching ALL selected attributes  |
+| `hasCompatibleVariant()`        | Any variant matches partial selections         |
+| `getOptionsForAttribute()`      | Options with availability + compatibility info |
+| `getAdjustedSelections()`       | Partial accumulation + conflict auto-clear     |
+| `getUnavailableAttributeInfo()` | Detect dead-end selections                     |
+| `normalizeAttributeValueId()`   | Value name → URL option id                     |
+
+For detailed function signatures, see [../references/variant-utils-reference.md](../references/variant-utils-reference.md).
 
 ## Option States
 
-| State            | Meaning                                   | Visual        | Clickable?        |
-| ---------------- | ----------------------------------------- | ------------- | ----------------- |
-| **Available**    | In stock                                  | Normal        | ✓                 |
-| **Incompatible** | No variant with this + current selections | Dimmed        | ✓ (clears others) |
-| **Out of stock** | Variant exists but quantity = 0           | Strikethrough | ✗                 |
+| State            | Meaning                                 | Visual (buttons/pills)      | Clickable?        |
+| ---------------- | --------------------------------------- | --------------------------- | ----------------- |
+| **Compatible**   | Works with current other selections     | `border-gray-400`           | ✓                 |
+| **Selected**     | Currently chosen                        | `border-foreground`, fill   | ✓                 |
+| **Incompatible** | No variant with this + other selections | `border-gray-200`, muted    | ✓ (clears others) |
+| **Out of stock** | Variant exists but quantity = 0         | strikethrough, `opacity-60` | ✗                 |
+
+Compatibility flag: `existsWithCurrentSelection` from `getOptionsForAttribute()`.
+
+**Do not** use `border-border` for default compatible buttons — too light (see variant-selector-ui.md).
+
+## Partial vs Complete Selection
+
+| Phase                                   | `findMatchingVariant` | `getAdjustedSelections` behavior                            |
+| --------------------------------------- | --------------------- | ----------------------------------------------------------- |
+| **Partial** (some groups empty)         | `undefined`           | **Keep** new + prior selections if `hasCompatibleVariant()` |
+| **Complete** (all groups filled, match) | variant id            | Keep all; set `?variant=`                                   |
+| **Complete** (all filled, no match)     | `undefined`           | AUTO_ADJUST: clear to `{ [clickedAttr]: value }` only       |
+
+**Bug to avoid:** Calling `findMatchingVariant()` alone to decide whether to keep partial selections — it always returns `undefined` until every attribute group is filled.
+
+Multi-attribute example (demo audiobooks): Medium + Audio quality + Instant Delivery — user must select all three before add to cart enables.
 
 ## URL Parameter Pattern
 
-Selections are stored in URL params:
-
 ```
-?color=black&size=m&variant=abc123
-  ↑           ↑       ↑
-Color sel  Size sel  Matching variant (set automatically)
+?medium=mp3&audio-quality=standard&instant-delivery=instant-delivery:-yes&variant=abc123
 ```
 
-The `variant` param is only set when ALL attributes are selected.
+The `variant` param is only set when ALL attributes are selected and a match exists.
 
 ## Discount Badges
 
-Options can show discount percentages:
-
-```typescript
-// In utils.ts
-interface VariantOption {
-	id: string;
-	name: string;
-	available: boolean;
-	hasDiscount?: boolean; // Any variant with this option is discounted
-	discountPercent?: number; // Max discount percentage
-	// ...
-}
-```
-
-The renderers display a small badge when `discountPercent` is set.
+Options can show discount percentages on any renderer (`discountPercent` on `VariantOption`). Badge: small red pill at bottom-right of the option control.
 
 ## Examples
 
-### Smart Selection Adjustment
-
-When user selects an incompatible option:
+### Smart Selection Adjustment (complete selection only)
 
 ```
-State: ?color=red (Red only exists in Size S)
-User clicks: Size L
-Result: ?size=l (Red is cleared, not blocked)
+State: ?color=red&size=s (all attrs filled, but user clicks Size L)
+Red/L doesn't exist → AUTO_ADJUST → ?size=l (color cleared)
 ```
 
-Users are never "stuck" - they can always explore all options.
+### Building partial selection (multi-attribute)
 
-### Dead End Detection
-
-```typescript
-const deadEnd = getUnavailableAttributeInfo(variants, groups, selections);
-// Returns: { slug: "size", name: "Size", blockedBy: "Red" }
-// UI shows: "No size available in Red"
+```
+1. Click Medium → MP3     → ?medium=mp3
+2. Click Standard         → ?medium=mp3&audio-quality=standard  (medium kept!)
+3. Click Instant Delivery → complete → ?variant=... added
 ```
 
 ### Custom Renderers
@@ -1156,253 +1526,35 @@ const deadEnd = getUnavailableAttributeInfo(variants, groups, selections);
 
 ## State Machine
 
-The selection system has 5 states with automatic conflict resolution. See the full state diagram below.
+For the full state diagram and transition rules, see [../references/variant-state-machine.md](../references/variant-state-machine.md).
 
-**Quick reference:**
+| State        | Add to Cart | Description                    |
+| ------------ | ----------- | ------------------------------ |
+| **Empty**    | ❌          | No selections                  |
+| **Partial**  | ❌          | Some attributes selected       |
+| **Complete** | ✅          | All selected, variant found    |
+| **Conflict** | —           | All filled, impossible → clear |
+| **DeadEnd**  | ❌          | Selection blocks other groups  |
 
-| State        | Add to Cart | Description                   |
-| ------------ | ----------- | ----------------------------- |
-| **Empty**    | ❌          | No selections                 |
-| **Partial**  | ❌          | Some attributes selected      |
-| **Complete** | ✅          | All selected, variant found   |
-| **Conflict** | —           | Auto-clears to Partial        |
-| **DeadEnd**  | ❌          | Selection blocks other groups |
+## Testing
 
-**Key behavior:** When user selects an incompatible option, other selections are cleared automatically (not blocked). Users can always explore all options.
+```bash
+pnpm test src/ui/components/pdp/variant-selection/utils.test.ts
+```
+
+Fixture `audiobookVariants` in `__fixtures__/variants.ts` covers 3-attribute partial selection.
 
 ## Anti-patterns
 
 ❌ **Don't enable "Add to Cart" without full selection** - Needs variant ID  
-❌ **Don't block incompatible options** - Let users click, clear others  
-❌ **Don't assume single attribute** - Products can have multiple  
+❌ **Don't block incompatible options** - Let users click, clear others when complete  
+❌ **Don't clear partial selections** when `findMatchingVariant` is undefined — use `hasCompatibleVariant`  
+❌ **Don't assume single attribute** - Products can have multiple (incl. BOOLEAN selection attrs)  
 ❌ **Don't use `0` in boolean checks for prices** - Use `typeof === "number"`  
-❌ **Don't make non-selection attributes interactive** - They're display-only (badges, not toggles)
+❌ **Don't make non-selection attributes interactive** - They're display-only (badges, not toggles)  
+❌ **Don't use `border-border` on compatible button/pill options** - Use `border-gray-400`
 
-#### Appendix: Variant Selection State Machine
-
-> State machines clarify complex interactive features. For multi-state UI with non-obvious transitions (like auto-adjustment here), a diagram prevents edge case bugs and helps AI agents reason about the system correctly.
-
-## State Diagram
-
-```mermaid
-stateDiagram-v2
-    [*] --> Empty: Page Load
-
-    Empty --> Partial: SELECT(attr, value)
-    Empty --> Complete: Single variant product
-
-    Partial --> Partial: SELECT [not all attrs filled]
-    Partial --> Complete: SELECT [all filled, variant exists]
-    Partial --> Conflict: SELECT [all filled, no variant]
-    Partial --> DeadEnd: SELECT blocks other groups
-
-    Complete --> Complete: SELECT [compatible]
-    Complete --> Partial: SELECT [incompatible → adjust]
-
-    Conflict --> Partial: AUTO_ADJUST [clear conflicts]
-
-    DeadEnd --> Partial: SELECT different option
-```
-
-## States
-
-| State        | URL Params                        | Add to Cart | Description                         |
-| ------------ | --------------------------------- | ----------- | ----------------------------------- |
-| **Empty**    | `?`                               | No          | No selections                       |
-| **Partial**  | `?color=black`                    | No          | Some attributes selected            |
-| **Complete** | `?color=black&size=m&variant=abc` | Yes         | All selected, variant found         |
-| **Conflict** | (transient)                       | --          | Impossible combination, auto-clears |
-| **DeadEnd**  | `?color=black`                    | No          | Selection blocks other groups       |
-
-## Example User Flow
-
-```
-1. User lands on product page
-   State: Empty -> URL: /products/t-shirt
-
-2. User clicks "Black" color
-   State: Partial -> URL: ?color=black
-
-3. User clicks "Medium" size
-   State: Complete -> URL: ?color=black&size=medium&variant=abc123
-   -> Add to Cart enabled
-
-4. User clicks "XL" (but Black/XL doesn't exist)
-   State: Conflict -> AUTO_ADJUST -> Partial
-   -> URL: ?size=xl (color cleared)
-   -> User can now pick a color that has XL
-```
-
-This "smart adjustment" pattern ensures users are never stuck. They can always explore all options.
-
-## Transition Rules
-
-### SELECT Action
-
-When user clicks an option:
-
-1. **If variant exists with new selection** -- Update selection, keep others
-2. **If no variant exists** -- Clear conflicting selections (AUTO_ADJUST)
-3. **If all attributes now filled and variant exists** -- Set `variant` param
-
-### AUTO_ADJUST Logic
-
-Implemented in `getAdjustedSelections()`:
-
-```typescript
-function getAdjustedSelections(variants, currentSelections, newAttr, newValue) {
-	const newSelections = { ...currentSelections, [newAttr]: newValue };
-
-	if (findMatchingVariant(variants, newSelections)) {
-		return newSelections;
-	}
-
-	return { [newAttr]: newValue };
-}
-```
-
-## Dead End Detection
-
-A "dead end" occurs when a selection makes ALL options in another attribute group unavailable.
-
-Example: Red only exists in Size S. User selects Red -- Size dropdown shows only S (or shows "No sizes available in Red").
-
-Detected via `getUnavailableAttributeInfo()`:
-
-```typescript
-const deadEnd = getUnavailableAttributeInfo(variants, groups, selections);
-// Returns: { slug: "size", name: "Size", blockedBy: "Red" }
-```
-
-#### Appendix: Variant Selection Utilities Reference
-
-Detailed reference for functions in `src/ui/components/pdp/variant-selection/utils.ts`.
-
-## Core Functions
-
-### `groupVariantsByAttributes(variants)`
-
-Extracts unique attribute values from all variants.
-
-**Input**: Array of Saleor variants with attributes
-**Output**: Map of attribute slugs to value arrays
-
-```typescript
-const groups = groupVariantsByAttributes(variants);
-// {
-//   color: [{ id: "1", name: "Black", slug: "black" }, ...],
-//   size: [{ id: "2", name: "Medium", slug: "m" }, ...]
-// }
-```
-
-### `findMatchingVariant(variants, selections)`
-
-Finds a variant that matches ALL selected attribute values.
-
-**Input**:
-
-- `variants`: All product variants
-- `selections`: `Record<attributeSlug, valueSlug>` (e.g., `{ color: "black", size: "m" }`)
-
-**Output**: Matching variant or `undefined`
-
-```typescript
-const variant = findMatchingVariant(variants, { color: "black", size: "m" });
-if (variant) {
-	// Can add to cart with variant.id
-}
-```
-
-### `getOptionsForAttribute(variants, attributeSlug, selections)`
-
-Gets options for a single attribute with availability/compatibility info.
-
-**Output**: Array of `VariantOption`:
-
-```typescript
-interface VariantOption {
-	id: string;
-	name: string;
-	slug: string;
-	available: boolean; // At least one variant in stock
-	compatible: boolean; // Works with current selections
-	hasDiscount?: boolean; // Any variant with this option is discounted
-	discountPercent?: number; // Max discount percentage
-}
-```
-
-### `getAdjustedSelections(variants, currentSelections, attributeSlug, value)`
-
-Returns new selections after user picks an option, auto-clearing conflicts.
-
-**Logic**:
-
-1. Add new selection to current selections
-2. If valid variant exists -- return updated selections
-3. If no valid variant -- return only the new selection (clear others)
-
-### `getUnavailableAttributeInfo(variants, groups, selections)`
-
-Detects "dead end" selections where an attribute group has no valid options.
-
-**Output**: `{ slug, name, blockedBy }` or `null`
-
-```typescript
-const deadEnd = getUnavailableAttributeInfo(variants, groups, { color: "red" });
-if (deadEnd) {
-	// Show: "No {deadEnd.name} available in {deadEnd.blockedBy}"
-}
-```
-
-## Discount Detection
-
-### How Discounts Are Detected
-
-A variant has a discount when `undiscountedPrice > price`:
-
-```typescript
-const hasDiscount = variant.pricing?.priceUndiscounted?.gross?.amount > variant.pricing?.price?.gross?.amount;
-```
-
-### Discount Percentage Calculation
-
-```typescript
-const discountPercent = Math.round(((undiscounted - price) / undiscounted) * 100);
-```
-
-### Option-Level Discount Aggregation
-
-When building options, we aggregate discounts across all variants with that option:
-
-```typescript
-// For color "Black", check all Black variants
-// hasDiscount = true if ANY Black variant is discounted
-// discountPercent = MAX discount among Black variants
-```
-
-## Type Definitions
-
-See `src/ui/components/pdp/variant-selection/types.ts`:
-
-```typescript
-export interface VariantOption {
-	id: string;
-	name: string;
-	slug: string;
-	available: boolean;
-	compatible: boolean;
-	hasDiscount?: boolean;
-	discountPercent?: number;
-}
-
-export interface AttributeGroup {
-	slug: string;
-	name: string;
-	values: VariantOption[];
-}
-
-export type Selections = Record<string, string>;
-```
+---
 
 ### 2.3 Product Filtering
 
@@ -1553,9 +1705,312 @@ export function buildFilterVariables(params: {
 
 Checkout handles payment and order completion. Bugs here directly cause lost revenue and poor user experience.
 
-### 3.1 Checkout Management
+### 3.1 Paper Surfaces
+
+One Next.js project, two product surfaces, one shared handoff package.
+
+## Documentation map (checkout v2)
+
+| Read first                                                                                        | When                                                        |
+| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **This file**                                                                                     | Where code lives, import boundaries, routes                 |
+| [`checkout-design-principles.md`](checkout-design-principles.md)                                  | UX principles for checkout UI and flow decisions            |
+| [`checkout-management.md`](checkout-management.md)                                                | Cart sync, step URLs, payment → order transition, debugging |
+| [`checkout-payment-gateways.md`](checkout-payment-gateways.md)                                    | Adding or changing payment apps                             |
+| [`checkout-components.md`](checkout-components.md)                                                | Reusable step UI (contact, address, billing)                |
+| [`data-auth-routes.md`](data-auth-routes.md)                                                      | BFF login, `resolveSessionUser`, header chrome refresh      |
+| [`migrations/atomic/2026-06-checkout-v2/`](../migrations/atomic/2026-06-checkout-v2/MIGRATION.md) | Fork upgrade from urql checkout                             |
+
+## Layout
+
+```text
+src/app/
+  (storefront)/[channel]/...   # Browse, cart, account — URL: /{channel}/...
+  (checkout)/checkout/...      # Checkout — /checkout?checkout=…, confirmation — /checkout/complete?order=…
+
+src/session-bridge/            # @paper/session-bridge — only cross-surface import
+src/checkout/                  # Checkout UI + GraphQL (not imported by storefront)
+src/lib/auth/                  # BFF session (shared); server actions for commerce
+```
+
+Route groups `(storefront)` and `(checkout)` do not appear in URLs; they separate root layouts and ownership.
+
+## Checkout v2 data flow
+
+```
+/checkout?checkout=Q2hlY2…
+        │
+        ▼
+CheckoutSessionLoader (RSC)     ← reads ?checkout= only (not ?step=)
+        │  fetch checkout, me, countries
+        ▼
+CheckoutApp (client)
+        │  CheckoutDataProvider ← initialCheckout hydrate
+        │  CheckoutUserProvider ← initialUser
+        ▼
+SaleorCheckout (steps)          ← ?step= via shallow updateCheckoutQuery()
+        │
+        ▼
+actions.ts (server)             ← mutations, payment transactions, checkoutComplete
+        │
+        ▼
+/checkout/complete?order=       ← hard navigation after payment (separate route)
+```
+
+## Data and caching
+
+| Surface    | GraphQL                                                         | Freshness                          |
+| ---------- | --------------------------------------------------------------- | ---------------------------------- |
+| Storefront | `executePublicGraphQL` / `executeAuthenticatedGraphQL`          | Display cached (`"use cache"`)     |
+| Checkout   | RSC page + server actions (`execute*GraphQL`)                   | Always fresh (`cache: "no-cache"`) |
+| Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                       |
+
+`CheckoutSessionLoader` passes `initialCheckout` when `loadState === "ready"`. Order confirmation is a separate route (`checkout/complete/page.tsx` + `OrderConfirmationApp` — no cart context). Client `syncCheckoutFromServer` is a narrow fallback; normal path is RSC hydrate + `adoptCheckoutSnapshot` on refresh.
+
+## Session (shared BFF)
+
+Login, logout, and password reset use **Next.js API routes** — not browser Saleor SDK. Checkout and storefront share the same HttpOnly cookies.
+
+| Concern                    | Location                                                                          |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| Sign-in                    | `POST /api/auth/login` via `loginWithBff()`                                       |
+| Classify `me` fetch        | `resolveSessionUser()` → `guest` / `authenticated` / `unavailable`                |
+| JWT expiry detection       | `session-auth-state.ts` — structured Saleor codes (`ExpiredSignatureError`, etc.) |
+| After sign-in in checkout  | `router.refresh()` or `useRefreshCheckoutRsc()`                                   |
+| After sign-in → storefront | `syncAuthSurfacesAfterSignIn()` — hard nav + `revalidateStorefrontChrome`         |
+| Cart/checkout cache bust   | `revalidateAuthSurfaces` after cart mutations                                     |
+
+See `data-auth-routes.md` for Router Cache pitfalls (stale header menu) and when hard navigation is required.
+
+## Handoff
+
+1. Storefront creates/updates cart via `src/lib/checkout.ts` (cookie via `checkoutIdCookieName`).
+2. Cart links use `buildCheckoutPath` / `buildCheckoutUrl`; post-payment navigation uses `buildOrderConfirmationPath` from `@paper/session-bridge`.
+3. Checkout reads session from URL (`?checkout=`) via `getQueryParams` / `extractCheckoutIdFromParams`.
+
+## Checkout entry
+
+- Route: `src/app/(checkout)/checkout/page.tsx` → `CheckoutSessionLoader`
+- Client root: `CheckoutApp` in `src/checkout/checkout-app.tsx` (providers only — no urql/SDK)
+- Mutations: `src/app/(checkout)/actions.ts`
+- Do not wrap the whole checkout tree in `dynamic(..., { ssr: false })`
+
+## Hosted checkout-only deploy (optional)
+
+- **Middleware + env**: block non-`/checkout` routes on the same build.
+- **Fork**: omit `app/(storefront)/` for a smaller artifact.
+- Set `NEXT_PUBLIC_CHECKOUT_URL` so `buildCheckoutUrl` returns absolute links from storefront.
+
+## Anti-patterns
+
+❌ Storefront importing `@/checkout/views` or checkout hooks  
+❌ Duplicated `/checkout?checkout=` string literals — use `@paper/session-bridge`  
+❌ Browser → Saleor for login or header `me` — use BFF + `getHeaderUser()`  
+❌ `searchParams` inside `"use cache"` functions on the storefront  
+❌ `router.replace` for checkout step-only changes — use `updateCheckoutQuery()`  
+❌ Treating all `me === null` as signed out — use `resolveSessionUser` states
+
+---
+
+### 3.2 Checkout Design Principles
+
+Evidence-based UX principles for Paper Checkout. Grounded in Baymard, Stripe, and conversion research; mapped to Paper's checkout v2 architecture.
+
+> **Related:** `paper-surfaces`, `checkout-management`, `checkout-components`, `checkout-payment-gateways`
+
+---
+
+## Why these exist
+
+Checkout is the last-mile commitment ritual — not a form. ~70% of carts are abandoned (Baymard). The top drivers are **surprise costs**, **forced accounts**, **complexity**, and **mobile friction** — all design-elastic (small changes move conversion measurably).
+
+Paper Checkout defaults should optimize **first-time buyers, mobile, and international shipping**. Forks with mostly returning customers may adopt one-page or accordion variants — but only after measuring step drop-off.
+
+---
+
+## Principles
+
+### 1. Minimize commitment before value
+
+Show total cost, delivery expectation, and return policy **before** pay. Never introduce mandatory new costs at payment.
+
+- Order summary on every step: subtotal → shipping → tax → discount → total.
+- Shipping method and cost on the shipping step, not first revealed at payment.
+- Prefer shipping estimates on cart/PDP (storefront) to reduce checkout shock.
+
+**Elasticity:** Extra costs are the #1 cited abandonment reason (39–48% of US shoppers).
+
+### 2. Guest is the default path
+
+First-time buyers complete as guests. Account creation is an **upgrade**, not a gate.
+
+- `GuestContact` and "Continue as guest" must be visually primary over sign-in.
+- Optional "create account" on the information step — de-emphasized, never required.
+- Prefer post-order account invite on `/checkout/complete` (3–5× higher capture than pre-checkout gates).
+
+**Elasticity:** Forced account creation drives ~19–26% of abandonments.
+
+### 3. Optimize for mobile thumbs
+
+Mobile abandonment is ~12pp worse than desktop. Design mobile-first; desktop inherits.
+
+- Sticky primary CTA (`MobileStickyAction`) with specific labels: "Continue to shipping", `Pay {total}`.
+- Collapsed order summary with **visible total** at top of mobile checkout.
+- 44×44px minimum tap targets; correct `inputmode` and `autocomplete` on every field.
+- **Address entry:** Paper uses **browser autofill** (`input-attributes.ts`) — not paid address APIs (Google Places, Loqate, etc.). Returning shoppers and mobile OS profiles get one-tap fill; that is the default tradeoff vs per-session API cost.
+- Trust copy **above** the pay CTA on mobile, not buried in footer. Accepted methods come from the payment UI (Stripe Element, express wallets) — do not hardcode card-brand lists.
+
+**Elasticity:** Sticky mobile CTA alone often yields +5–12% checkout completion.
+
+### 4. Steps serve cognition, not ceremony
+
+Multi-step is correct for first-time, mobile, and high-AOV flows. Each step must be short, validatable, and skippable for returning users.
+
+- Paper flow: Contact → Shipping (if required) → Payment.
+- Shallow `?step=` URLs via `updateCheckoutQuery()` — not full RSC navigations.
+- Completed steps should collapse to **summaries** (address, method), not bare headers.
+- Returning users with saved addresses: prefer review/skip over re-entry.
+
+**Note:** One-page checkout wins for returning/low-AOV segments — document fork patterns, don't assume universal one-page.
+
+### 5. The order summary is a confidence instrument
+
+Users must always see **what they're buying** and **what they're paying** without memory or detours.
+
+- Desktop: sticky right-hand summary with line items, thumbnails, running totals.
+- Mobile: collapsed bar (item count + total), tap to expand — never fully hidden.
+- Inline edit/remove where possible; explain total changes when shipping or promo updates.
+
+### 6. Express pay is a first-class path
+
+Wallets (Apple Pay, Google Pay, Link) skip the highest-friction fields. Treat them as primary, not decorative.
+
+- Surface express checkout on the payment step (Stripe Express Checkout Element).
+- Extend upstream (cart/PDP) when cart is complete enough to charge.
+- Never show wallet buttons in a disabled state — prompt for missing selections instead (Stripe Apple Pay guidance).
+- Collect mandatory order details (variant, qty, address) before wallet confirmation.
+
+### 7. Validate late, recover gracefully
+
+Use reward-early-punish-late validation: clear errors on `input`, validate on `blur`, batch on submit.
+
+- Preserve entered data on errors — never wipe the form.
+- Specific, plain-language error copy next to the field; error summary on submit for multiple failures.
+- `aria-live` for dynamic errors (accessibility = conversion).
+
+### 8. Trust is contextual
+
+Security reassurance matters **at payment**, not on step 1.
+
+- Lock icon and "Secure checkout" adjacent to the pay CTA; processor attribution when relevant (e.g. Stripe).
+- Focused checkout surface: no full storefront nav, no distracting pop-ups.
+- Merchant branding in header (`CheckoutHeader`) — user knows who they're paying.
+
+### 9. Never lie about price
+
+Display pages may cache prices for performance; checkout must always charge the live total.
+
+- RSC + server actions use `cache: "no-cache"` for checkout data.
+- Refresh checkout before `transactionInitialize`; block pay on `hasMaterialCheckoutTotalChange`.
+- Saleor validates at `checkoutComplete` — but blocking early avoids wrong authorization and trust loss.
+
+### 10. Checkout ends cleanly
+
+A broken ending erodes repeat purchase more than a slow form.
+
+- `PaymentCompletingScreen` while `checkoutComplete` runs — no flash of "session expired".
+- Hard navigation to `/checkout/complete?order=` via `navigateToOrderConfirmation()`.
+- Clear cookie in `after()` — not before leaving `?checkout=`.
+- Confirmation page: receipt, next steps, soft account invite.
+
+### 11. Design for merchant mix, not one platform's median
+
+Paper is a **reference implementation** for Saleor headless. Defaults favor broad DTC; forks customize.
+
+- Multi-step default is research-aligned for Paper's likely audience.
+- Payment registry (`INTEGRATED_GATEWAYS`) lets merchants add Stripe, Adyen, etc. without forking step UI.
+- Document layout variants (one-page, accordion) as fork decisions — not Paper core unless measured.
+
+### 12. Measure step elasticity
+
+Layout debates are resolved with data, not opinions.
+
+- Instrument drop-off per `?step=`, device, new vs returning, AOV.
+- Shallow step URLs keep analytics clean.
+- If checkout CVR is within ~3pp of category median, fix upstream (PDP, cart, traffic) first.
+
+---
+
+## Paper alignment checklist
+
+When reviewing checkout UI changes, verify:
+
+| Principle          | Paper mechanism                                                    |
+| ------------------ | ------------------------------------------------------------------ |
+| Fresh totals       | `CheckoutDataProvider`, `refreshCheckout()`, `checkout-pay-amount` |
+| Guest-first        | `GuestContact`, orphaned-cart recovery                             |
+| Mobile CTA         | `MobileStickyAction`                                               |
+| Address autofill   | `input-attributes.ts`, `AddressFields` `autocompleteSection`       |
+| Step URLs          | `updateCheckoutQuery()`, `useLiveCheckoutSearchParams()`           |
+| Express pay        | `StripeExpressCheckout`, `executeStripeCheckoutPayment`            |
+| Trust at pay       | `PaymentTrustSignals`                                              |
+| Payment transition | `PaymentCompletingScreen`, `finalizeCheckoutOrder`                 |
+| Focused surface    | `(checkout)` layout, `CheckoutPageShell`                           |
+
+---
+
+## Known gaps (prioritized)
+
+| Priority  | Gap                                                                                     | Principle |
+| --------- | --------------------------------------------------------------------------------------- | --------- |
+| Done (P0) | Autofill/`inputmode` on checkout fields — `src/checkout/lib/consts/input-attributes.ts` | #3        |
+| Done (P0) | Trust signals above pay CTA — `PaymentTrustSignals`                                     | #8        |
+| P1        | Post-order account invite on confirmation                                               | #2        |
+| P1        | Auto-apply promo (avoid "Apply" button)                                                 | #1, #5    |
+| P2        | Express checkout on cart                                                                | #6        |
+| P2        | Returning-user fast path                                                                | #4        |
+| P2        | Storefront shipping estimate before checkout                                            | #1        |
+
+### Deferred / fork-only (not Paper core)
+
+| Item                                                   | When to consider                                                                                                                                                                | Principle |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Address API autocomplete (Google Places, Loqate, etc.) | High guest first-order share, measurable address-step drop-off, or weak browser autofill in target markets — not for returning-shopper-heavy stores where P0 autofill is enough | #3        |
+
+Do **not** add Places/Loqate to Paper by default: per-session cost, vendor keys, and intl edge cases. Forks own the integration.
+
+---
+
+## Anti-patterns
+
+❌ Forced account creation before pay  
+❌ Hidden totals or shipping revealed only at payment  
+❌ Full RSC navigation for step-only changes (`router.replace` for `?step=`)  
+❌ Caching checkout totals at payment time  
+❌ Clearing checkout cookie before order confirmation navigation  
+❌ Accordion checkout without collapsed step summaries or correct back-button behavior  
+❌ Premature inline validation while user is still typing  
+❌ One-page checkout as dogma without segment data  
+❌ Upsells or cross-sell that compete with the primary pay CTA  
+❌ Shipping Google Places / Loqate into Paper core without fork-specific ROI data
+
+---
+
+## References
+
+- [Baymard Checkout Usability](https://baymard.com/research/checkout-usability)
+- [Baymard 2024 Checkout Findings](https://baymard.com/blog/checkout-2024-launch)
+- [Stripe Mobile Checkout UI](https://stripe.com/resources/more/mobile-checkout-ui)
+- [Stripe Express Checkout Element](https://docs.stripe.com/elements/express-checkout-element)
+- [Statista: US checkout abandonment reasons 2025](https://www.statista.com/statistics/1228452/reasons-for-abandonments-during-checkout-united-states/)
+
+---
+
+### 3.3 Checkout Management
 
 Understanding checkout session lifecycle, storage, and debugging prevents payment failures, hydration mismatches, and "CHECKOUT_NOT_FULLY_PAID" errors. Use live checkout data for payment amounts and handle stale checkouts gracefully.
+
+---
 
 ## Overview
 
@@ -1629,23 +2084,133 @@ When `checkoutComplete` mutation succeeds:
 - The checkout ID becomes invalid
 - A new checkout should be created for future purchases
 
-## Common Issues
+## Checkout auth (BFF)
 
-### Hydration Mismatch with Checkout ID
+Sign-in during checkout uses the same BFF as storefront (`POST /api/auth/login` via `loginWithBff()`). `CheckoutUserProvider` hydrates `me` from the RSC page; after sign-in, call `refetchUser()` → `router.refresh()` so the server re-fetches the session. Sign-out uses the `logout()` server action + `detachCheckoutCustomer` when needed.
 
-**Problem**: `extractCheckoutIdFromUrl()` called during SSR reads an empty URL, causing React hydration mismatch and "PageNotFound" flash.
+See `data-auth-routes.md` for HttpOnly cookies, header `getHeaderUser()`, and rate limits.
 
-**Symptom**: Checkout page briefly shows error then loads correctly on refresh.
+## Data loading (RSC + client sync)
 
-**Fix**: Delay extraction until after client-side mount:
+1. **RSC page** (`checkout/page.tsx`) — full checkout (`fetchCheckoutOnServer`), `me`, order, channel countries. Passes `initialCheckout` when `loadState === "ready"`.
+2. **Client** — `CheckoutDataProvider` hydrates from `initialCheckout` (`CheckoutSessionLoader` always pairs `ready` with a snapshot). RSC updates merge via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` replaces state. Cart mutations revalidate `/checkout` via `revalidateStorefrontChrome`. Use `useRefreshCheckoutRsc()` after auth or address-book changes.
+3. **Mutations** — `src/app/(checkout)/actions.ts` server actions; `refreshCheckout` / `adoptCheckoutSnapshot` in `checkout-sync.ts`.
 
-```tsx
-const [mounted, setMounted] = useState(false);
-useEffect(() => setMounted(true), []);
-const id = useMemo(() => (mounted ? extractCheckoutIdFromUrl() : null), [mounted]);
+`useCheckout()` reads from `CheckoutDataProvider` context (not urql).
+
+## Payment completion and transition UX
+
+Gateway-agnostic infrastructure shared by Dummy, Stripe, and future payment apps. Provider-specific SDK steps live in `checkout-payment-gateways.md`; this section covers what happens **after** the PSP authorizes payment through Saleor.
+
+### Flow
+
+```
+User clicks Pay (or returns from 3DS redirect)
+        │
+        ▼
+markPaymentCompleting(checkoutId)     ← sessionStorage: checkout:payment-completing
+        │
+        ▼
+transactionInitialize / process       ← provider-specific (may already be done)
+        │
+        ▼
+finalizeCheckoutOrder()               ← runCheckoutComplete mutation
+        │
+        ├── failure → clearPaymentCompleting(), show error
+        │
+        └── success → navigateToOrderConfirmation(orderId)
+                      window.location.replace(/checkout/complete?order=…)
+        │
+        ▼
+Order confirmation page (`/checkout/complete`) ← clearPaymentCompleting()
+                                               checkout cookie cleared in runCheckoutComplete
 ```
 
-See `src/checkout/hooks/use-checkout.ts` for the full implementation.
+### Routes and transition storage
+
+| Mechanism                          | Purpose                                                                                                                                              |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                           |
+| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                                                      |
+| `checkout:payment-completing`      | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                           |
+| `?processingPayment=true`          | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                                    |
+| `window.location.replace`          | Navigates to `/checkout/complete` — hard navigation required; `router.replace` from async post-mutation callbacks does not reliably unmount checkout |
+| `?step=contact\|shipping\|payment` | Checkout step deep link; URL is the source of truth via `useLiveCheckoutSearchParams()`                                                              |
+| `updateCheckoutQuery()`            | Shallow step URL updates (`pushState` on Continue, `replaceState` on stepper) — avoids re-running checkout RSC; merges into the live URL bar         |
+
+**Do not** clear the checkout cookie synchronously on `/checkout?checkout=…` after payment succeeds — Next.js re-renders the checkout RSC tree when the cookie changes, which briefly shows `not_found` ("session expired") before navigation lands. `runCheckoutComplete` clears the cookie in `after()`; the client calls `navigateToOrderConfirmation()`. `RootViews` keeps `PaymentCompletingScreen` up while `checkout:payment-completing` is set. Do **not** call `redirect()` from `runCheckoutComplete` — it throws `NEXT_REDIRECT`, which Stripe payment catch blocks surface as a false "Payment failed" banner.
+
+### Checkout step URL (shallow navigation)
+
+Step changes inside `/checkout` use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout-search-params.ts`), not `router.replace`. App Router treats `searchParams` as dynamic page input — a router navigation would re-fetch checkout on every step click. Shallow history updates the URL for back/refresh/deep links without a server round-trip.
+
+- **Continue (step complete)** — `history: "push"` so browser Back walks Contact → Shipping → Payment.
+- **Header stepper / inline Back** — default `replace` so jumping steps does not stack fake history entries.
+- **Stripe URL cleanup** — default `replace` when clearing `processingPayment` params.
+
+`useLiveCheckoutSearchParams()` (`useSyncExternalStore`) keeps step UI, payment transition guards, and Stripe return detection in sync with shallow updates and `popstate`. Ephemeral Stripe return params are preserved by merging from `window.location.search`, never from stale React `searchParams` alone.
+
+**RSC session boundary:** `CheckoutSessionLoader` (`checkout-session-loader.tsx`) reads only `?checkout=` / `?order=` — never `?step=`. Fetches use `get-checkout-session-data.ts` (`React.cache` per checkout id) so an accidental page re-run dedupes within the request.
+
+Use `router.replace` for **in-checkout** navigations (orphaned checkout recovery changing `?checkout=`). Order confirmation uses `window.location.replace` via `navigateToOrderConfirmation()`.
+
+### Transition guard
+
+`useCheckoutTransition()` (used in `saleor-checkout.tsx`) returns:
+
+| Value          | When                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| `"completing"` | `isCheckoutPaymentActive()` — storage key matches checkout id or `processingPayment` param |
+| `null`         | Normal checkout UI                                                                         |
+
+When `transition === "completing"`, render `PaymentCompletingScreen` instead of the step flow.
+
+### Stripe 3DS / redirect return
+
+`StripeCheckoutReturnHandler` mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step. After redirect, the payment step may be unmounted — shell-level completion avoids losing the return handler. Real failures clear Stripe return URL params, exit the processing screen, and show `PaymentError` **inline on the payment step** (not as a banner above the processing overlay).
+
+Return URL includes `processingPayment`, `paymentIntent`, and `paymentIntentClientSecret` query params (see `build-stripe-return-url.ts`).
+
+### Live total before charge
+
+Before any `transactionInitialize`, payment flows:
+
+1. Call `updateCheckoutBilling()`
+2. `refreshCheckout()` for a live gross total
+3. If `hasMaterialCheckoutTotalChange(displayed, live)` → show price-change notice and **block** pay
+
+Saleor validates amounts at `checkoutComplete`, but blocking early avoids authorizing the wrong amount. See `checkout-pay-amount.ts`.
+
+### Key files
+
+| File                                                                        | Purpose                                            |
+| --------------------------------------------------------------------------- | -------------------------------------------------- |
+| `src/app/(checkout)/checkout/checkout-session-loader.tsx`                   | Active checkout RSC entry (`?checkout=` only)      |
+| `src/checkout/lib/server/get-checkout-session-data.ts`                      | Per-request cached session fetches                 |
+| `src/app/(checkout)/checkout/complete/page.tsx`                             | Order confirmation RSC entry                       |
+| `src/checkout/order-confirmation-app.tsx`                                   | Confirmation client shell                          |
+| `src/checkout/lib/payment/checkout-payment-completion.ts`                   | `markPaymentCompleting`, `isCheckoutPaymentActive` |
+| `src/checkout/lib/payment/finalize-checkout-order.ts`                       | Deduped `checkoutComplete` + navigation            |
+| `src/checkout/lib/payment/navigate-to-order.ts`                             | Nav to `/checkout/complete?order=`                 |
+| `src/checkout/hooks/use-checkout-transition.ts`                             | `completing` guard                                 |
+| `src/checkout/views/saleor-checkout/payment-completing-screen.tsx`          | Full-page "Processing your order" UI               |
+| `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx` | Post-redirect completion                           |
+| `src/checkout/views/order-confirmation/order-confirmation.tsx`              | Clears completion storage on mount                 |
+
+### Anti-patterns
+
+❌ **Don't call `router.push`/`replace` directly for order confirmation** — use `navigateToOrderConfirmation()`  
+❌ **Don't clear checkout cookie before leaving `?checkout=`** — wait for order confirmation  
+❌ **Don't mount redirect completion only inside payment step** — shell survives step unmount  
+❌ **Don't skip `clearPaymentCompleting()` on payment failure** — user must be able to retry
+
+## Common Issues
+
+### Stale cart after editing from storefront
+
+**Problem**: User changes cart on `/{channel}/cart`, returns to checkout — old lines or totals.
+
+**Fix**: Cart server actions call `revalidateStorefrontChrome`, which includes `revalidatePath("/checkout")`, so the next checkout navigation gets a fresh RSC `initialCheckout`. In-flow updates use `refreshCheckout` (full replace).
 
 ### Stale Checkout with Failed Transactions
 
@@ -1665,22 +2230,21 @@ CHECKOUT_NOT_FULLY_PAID: The authorized amount doesn't cover the checkout's tota
 
 **Problem**: Checkout total changes after transactions are initialized (e.g., shipping added).
 
-**Solution**: Always use live checkout data via `useCheckout()` hook before payment:
-
-```typescript
-const { checkout: liveCheckout } = useCheckout();
-const checkout = liveCheckout || initialCheckout;
-const totalAmount = checkout.totalPrice.gross.amount;
-```
+**Solution**: Always use live checkout from `useCheckout()` / `CheckoutDataProvider` before payment — never cached PDP prices.
 
 ## Key Files
 
-| File                                 | Purpose                              |
-| ------------------------------------ | ------------------------------------ |
-| `src/lib/checkout.ts`                | Checkout creation, cookie management |
-| `src/checkout/hooks/use-checkout.ts` | React hook for checkout data         |
-| `src/checkout/lib/utils/url.ts`      | URL query param extraction           |
-| `src/graphql/CheckoutCreate.graphql` | Checkout creation mutation           |
+| File                                                  | Purpose                              |
+| ----------------------------------------------------- | ------------------------------------ |
+| `src/lib/checkout.ts`                                 | Checkout creation, cookie management |
+| `src/app/(checkout)/checkout/page.tsx`                | RSC entry, routing + `me`            |
+| `src/app/(checkout)/actions.ts`                       | Checkout server actions              |
+| `src/checkout/providers/checkout-data.tsx`            | Client cart state + sync             |
+| `src/checkout/lib/checkout-sync.ts`                   | adopt vs refresh semantics           |
+| `src/checkout/hooks/use-checkout.ts`                  | Context hook for steps               |
+| `src/checkout/hooks/use-checkout-transition.ts`       | Payment → order transition guard     |
+| `src/checkout/lib/payment/finalize-checkout-order.ts` | `checkoutComplete` + navigation      |
+| `src/checkout/lib/utils/url.ts`                       | URL query param extraction           |
 
 ## Debugging Checkout Issues
 
@@ -1779,9 +2343,354 @@ The authorized amount doesn't cover the checkout's total amount.
 4. **Test with fresh checkouts** when debugging payment issues
 5. **Check payment app health** when transactions fail with `AUTHORIZATION_FAILURE`
 
-### 3.2 Checkout Components
+---
+
+## Appendix: Checkout v2 cheat sheet
+
+Quick reference for common tasks. Full surface layout: [`paper-surfaces.md`](paper-surfaces.md).
+
+### When to use which refresh
+
+| Goal                                                   | Mechanism                                                                                            |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Re-fetch cart after promo / line change in checkout    | `refreshCheckout()` — always replaces client state                                                   |
+| Pick up RSC snapshot after cart edit on storefront     | Automatic via `revalidateAuthSurfaces` + next navigation; or `useRefreshCheckoutRsc()`               |
+| Merge server snapshot without clobbering in-flow edits | `adoptCheckoutSnapshot` (on `initialCheckout` change only)                                           |
+| Update `me` after BFF sign-in                          | `router.refresh()` in checkout; hard nav + `revalidateStorefrontChrome` when returning to storefront |
+| Change checkout step                                   | `updateCheckoutQuery({ step })` — shallow, not `router.replace`                                      |
+| Change `?checkout=` id (orphaned recovery)             | `router.replace` with new checkout id                                                                |
+| After successful payment                               | `navigateToOrderConfirmation()` — `window.location.replace` to `/checkout/complete`                  |
+
+### URL params
+
+| Param                                     | RSC reads?       | Purpose                                                        |
+| ----------------------------------------- | ---------------- | -------------------------------------------------------------- |
+| `checkout`                                | Yes              | Saleor checkout global id (required for active flow)           |
+| `order` on `/checkout`                    | Yes → redirect   | Legacy; canonical confirmation is `/checkout/complete?order=`  |
+| `step`                                    | No (client only) | `contact`, `shipping`, `payment` — shallow history             |
+| `processingPayment`, Stripe return params | Client           | 3DS return; preserved by merging live `window.location.search` |
+
+### Hooks (v2)
+
+| Hook                            | Reads from                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| `useCheckout()`                 | `CheckoutDataProvider` + session id (compat API; `refetch` → `refreshCheckout`) |
+| `useCheckoutData()`             | Full context including `loadState`, `setCheckout`                               |
+| `useLiveCheckoutSearchParams()` | Live URL including shallow step updates                                         |
+| `useCheckoutTransition()`       | `"completing"` during payment → order navigation                                |
+| `useRefreshCheckoutRsc()`       | Triggers `router.refresh()` for RSC `initialCheckout` / `me`                    |
+
+### Session states (`resolveSessionUser`)
+
+| Status          | UI meaning                                                         |
+| --------------- | ------------------------------------------------------------------ |
+| `guest`         | No valid session — show sign-in                                    |
+| `authenticated` | `me` present                                                       |
+| `unavailable`   | Transient failure — do not flash login; optional retry server-side |
+
+Expired JWT maps to **`guest`** via `isDefinitiveAuthFailure` (structured Saleor error codes first, message fallback).
+
+---
+
+### 3.4 Payment Gateways
+
+How to integrate Saleor payment apps in the Paper checkout. Covers the registry architecture, the two payment submit patterns, shared Saleor transaction primitives, and a checklist for wiring a new gateway (e.g. Adyen).
+
+> **Related**: `checkout-management` (checkout lifecycle, **payment completion / transition UX**, debugging failed transactions) · Saleor transaction API in `saleor-storefront` skill
+
+---
+
+## Architecture
+
+Saleor exposes payment apps on `checkout.availablePaymentGateways`. The storefront picks **one** integrated app via `INTEGRATED_GATEWAYS` (priority order), renders its UI, and drives Saleor's transaction mutations.
+
+```
+checkout.availablePaymentGateways
+        │
+        ▼
+resolvePaymentProvider()          ← INTEGRATED_GATEWAYS registry (priority)
+        │
+        ├── submitMode: "server"  → useCheckoutPayment().submit → executePayment()
+        └── submitMode: "client"  → provider UI owns Pay button (Stripe pattern)
+        │
+        ▼
+Shared server actions (src/app/(checkout)/actions.ts)
+  • paymentGatewayInitialize
+  • transactionInitialize
+  • transactionProcess
+  • checkoutComplete
+        │
+        ▼
+finalizeCheckoutOrder() / navigateToOrderConfirmation()
+```
+
+### Key files
+
+| File                                                        | Purpose                                                                 |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `src/checkout/lib/payment/integrated-gateways.ts`           | **Registry** — priority, env flags, supported-gateway detection         |
+| `src/checkout/lib/payment/resolve-provider.ts`              | Picks provider + `submitMode`                                           |
+| `src/checkout/lib/payment/execute-payment.ts`               | Server-submit flow only (`submitMode: "server"`)                        |
+| `src/checkout/lib/payment/providers/*.ts`                   | Per-app helpers (gateway ID, config parsing, errors)                    |
+| `src/checkout/components/payment/integrated-payment-ui.tsx` | **UI registry** — maps provider type → component                        |
+| `src/checkout/views/saleor-checkout/payment-step.tsx`       | Layout; uses `usesClientPaymentSubmit()` not provider-specific branches |
+| `src/app/(checkout)/actions.ts`                             | Saleor mutations + optional server guards                               |
+| `src/checkout/graphql/payment.graphql`                      | Transaction mutations                                                   |
+
+---
+
+## Two submit patterns
+
+Pick the pattern that matches how the Saleor payment app expects to be driven.
+
+| Pattern           | `submitMode` | Current example | Who clicks Pay?                | Typical flow                                                                                               |
+| ----------------- | ------------ | --------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **Server-submit** | `"server"`   | Dummy Payment   | Payment step form / sticky bar | `transactionInitialize` → `checkoutComplete`                                                               |
+| **Client-submit** | `"client"`   | Stripe          | Provider component's button    | `paymentGatewayInitialize` → `transactionInitialize` → PSP SDK → `transactionProcess` → `checkoutComplete` |
+
+**Shared by both patterns** (reuse — do not reimplement):
+
+- `updateCheckoutBilling()` before charging
+- Live total validation (`getCheckoutPayAmount`, `hasMaterialCheckoutTotalChange`)
+- `initializeCheckoutTransaction` / `processCheckoutTransaction` server actions
+- `finalizeCheckoutOrder()` + `markPaymentCompleting()` session storage
+- Zero-amount orders: `completeCheckoutOrder()` without a transaction
+
+### Server-submit template
+
+See `src/checkout/lib/payment/providers/dummy-pay.ts` + `executePayment()` switch case.
+
+### Client-submit template
+
+See `src/checkout/components/payment/stripe/` — especially `stripe-payment-form.tsx` for the full initialize → confirm → process → complete sequence.
+
+`payment-step.tsx` automatically uses client-submit layout when `usesClientPaymentSubmit(provider)` is true (no outer `<form>`, billing above payment UI, no shared Pay button).
+
+---
+
+## Stripe Express Checkout (wallets)
+
+The payment step mounts **two Stripe Elements** inside one shared `<Elements>` provider. Both paths call the same pipeline (`executeStripeCheckoutPayment`) and the same Saleor mutations afterward.
+
+```
+Payment step (Stripe enabled)
+│
+├── ExpressCheckoutElement          ← wallet shortcuts (top)
+│     Apple Pay · Google Pay · Link
+│     onConfirm → expressPaymentType → transactionInitialize
+│
+├── "Or pay with card" divider      ← hidden when no wallets available
+│
+└── PaymentElement + Pay button     ← card / saved Link in form
+      onChange (value.type) + elements.submit() → transactionInitialize
+```
+
+### What Express Checkout does here
+
+- **Payment shortcut only** — faster pay with saved wallet / card credentials.
+- **No Saleor address flow** — Express options set `billingAddressRequired: false`, `shippingAddressRequired: false`, `emailRequired: false`. Shipping, contact, and billing still come from checkout steps; `updateCheckoutBilling()` runs before charge; `confirmPayment` passes **Saleor checkout** billing into Stripe.
+- **Link in two places** — green Express Link button (wallet) vs saved Link inside Payment Element (Pay button). Different Stripe surfaces; only the path the shopper uses drives `paymentIntent.paymentMethod`.
+
+Wallets are enabled when Stripe is on. Opt out with `NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT=false` (see `.env.example`).
+
+### Payment method → `transactionInitialize`
+
+Saleor's Stripe app expects `paymentGateway.data.paymentIntent.paymentMethod`. Stripe exposes the type differently per surface — encode that in `StripeInitializePaymentMethodContext` (`src/checkout/lib/payment/providers/stripe.ts`):
+
+| Surface           | Stripe signal                                                                              | When                |
+| ----------------- | ------------------------------------------------------------------------------------------ | ------------------- |
+| `expressCheckout` | `onConfirm.expressPaymentType` (`apple_pay`, `google_pay`, `link`, …)                      | Wallet button click |
+| `paymentElement`  | `PaymentElement` `onChange` → `value.type`, then `elements.submit().selectedPaymentMethod` | Pay button          |
+
+`resolveStripePaymentMethodForInitialize()` prefers Payment Element `onChange` over submit, and **never sends `"unknown"`** (saved Link in Payment Element reports `"unknown"` on submit but `"link"` on change).
+
+### Shared pay pipeline
+
+All Stripe pay paths:
+
+1. `updateCheckoutBilling()` — persist billing from checkout form
+2. Refresh checkout — live total before `transactionInitialize`
+3. `transactionInitialize` — with resolved `paymentMethod`
+4. `stripe.confirmPayment()` — Elements stay mounted until confirm succeeds
+5. `transactionProcess` → `finalizeCheckoutOrder()`
+
+Processing UX: local overlay during confirm → `PaymentCompletingScreen` after success. Payment step hides pay UI when `authorizeStatus === FULL` (recovery banner). See `checkout-management` for transition guards, 3DS return, and session storage.
+
+### Stripe file map
+
+| File                                    | Purpose                                                       |
+| --------------------------------------- | ------------------------------------------------------------- |
+| `stripe-payment.tsx`                    | Loads publishable key, wraps `<Elements>`                     |
+| `stripe-payment-form.tsx`               | Express + Payment Element + Pay button                        |
+| `stripe-express-checkout.tsx`           | `ExpressCheckoutElement`, wallet availability                 |
+| `execute-stripe-checkout-payment.ts`    | Shared initialize → confirm → process → complete              |
+| `providers/stripe.ts`                   | Gateway ID, env flags, payment-method resolver, error parsing |
+| `stripe-checkout-completion-host.tsx`   | Shell-level 3DS return handler                                |
+| `stripe-payment-processing-overlay.tsx` | In-form processing state                                      |
+
+### Stripe environment variables
+
+| Variable                                     | Purpose                                                                |
+| -------------------------------------------- | ---------------------------------------------------------------------- |
+| `NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS`         | Master Stripe toggle (required in production)                          |
+| `ENABLE_STRIPE_PAYMENTS`                     | Server-side mirror for `transactionInitialize` guard                   |
+| `NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT` | Wallet buttons; default on when Stripe enabled; set `false` to disable |
+
+Publishable keys come from Saleor `paymentGatewayInitialize`, not env.
+
+### Stripe manual QA (add to gateway checklist)
+
+- [ ] Express wallets appear when device/browser supports them; section hidden when none available
+- [ ] Apple Pay / Google Pay / Express Link complete an order
+- [ ] Payment Element card pay works
+- [ ] Saved Link in Payment Element + **Pay** (not Express button) sends `link`, not `unknown`
+- [ ] Billing from checkout steps is used — Express does not replace shipping/contact
+- [ ] Price change notice when total shifts after billing refresh
+- [ ] 3DS redirect return completes via shell return handler
+- [ ] Browser Back during payment aborts in-flight flow without stuck processing UI
+
+---
+
+## Adding a new gateway
+
+Example: wiring **Adyen** after Stripe and Dummy are already integrated.
+
+### 1. Provider module
+
+Create `src/checkout/lib/payment/providers/adyen.ts`:
+
+- Export gateway ID constant (match Saleor app manifest ID exactly)
+- `isAdyenGateway(gatewayId)` / `findAdyenGateway(gateways)`
+- `isAdyenPaymentEnabled()` — env flag (mirror Stripe: `NEXT_PUBLIC_ENABLE_ADYEN_PAYMENTS`)
+- `getAdyenPaymentGuardError(gatewayId)` — block `transactionInitialize` when flag is off
+- Parse `paymentGatewayInitialize` / `transactionInitialize` / `transactionProcess` `data` payloads
+- User-facing error helpers for failed transaction events
+
+### 2. Registry entry
+
+Add to `INTEGRATED_GATEWAYS` in `integrated-gateways.ts` **at the desired priority** (first match wins):
+
+```typescript
+{
+  type: "adyen",
+  submitMode: "client", // or "server" for simple apps
+  findGateway: (gateways) => findAdyenGateway(gateways),
+  isEnabled: isAdyenPaymentEnabled,
+  matchesGateway: (gateway) => isAdyenGateway(gateway.id),
+},
+```
+
+### 3. Types
+
+Extend in `src/checkout/lib/payment/types.ts`:
+
+- Add `"adyen"` to the integrated provider union (alongside `"stripe"` | `"dummy"`)
+- Update `isIntegratedPaymentProvider()` if needed
+
+Extend `IntegratedGatewayType` in `integrated-gateways.ts`.
+
+### 4. Server-submit only: `execute-payment.ts`
+
+If `submitMode: "server"`, add a case that calls `executeAdyenPayment()` (same shape as `dummy-pay.ts`).
+
+If `submitMode: "client"`, add a case that returns a clear error — same as Stripe today — so nobody accidentally routes client flows through the form submit handler.
+
+### 5. UI component
+
+Create `src/checkout/components/payment/adyen/` (Drop-in, redirect handler, return URL builder, etc.).
+
+Register in `integrated-payment-ui.tsx`:
+
+```typescript
+case "adyen":
+  return <AdyenPayment checkout={checkout} gatewayName={provider.gateway.name} ... />;
+```
+
+### 6. Server action guard (recommended)
+
+In `initializeCheckoutTransaction()` inside `src/app/(checkout)/actions.ts`:
+
+```typescript
+const adyenGuardError = getAdyenPaymentGuardError(variables.paymentGateway?.id);
+if (adyenGuardError) return { ok: false, error: adyenGuardError };
+```
+
+Prevents bypassing disabled gateways via direct server action calls.
+
+### 7. Tests
+
+| File                                                 | What to test                                                   |
+| ---------------------------------------------------- | -------------------------------------------------------------- |
+| `providers/adyen.test.ts`                            | ID matching, env flag, config/error parsing                    |
+| `resolve-provider.test.ts`                           | Priority vs other gateways, `submitMode` on resolved provider  |
+| `integrated-gateways` via `payment-gateways.test.ts` | `hasUnsupportedPaymentGateway` when Adyen present but disabled |
+| `execute-payment.test.ts`                            | Server-submit path only (if applicable)                        |
+
+Run: `pnpm exec vitest run src/checkout/lib/payment`
+
+### 8. Environment variables
+
+Document in `.env.example` / deployment config:
+
+```env
+NEXT_PUBLIC_ENABLE_ADYEN_PAYMENTS=true
+# Server-only mirror if needed:
+ENABLE_ADYEN_PAYMENTS=true
+```
+
+Publishable keys and PSP config come from Saleor's `paymentGatewayInitialize` response — not from env (see Stripe).
+
+### 9. Manual QA checklist
+
+- [ ] Gateway appears on checkout when app is active in Saleor Dashboard
+- [ ] `PaymentGatewayAlerts` hidden when integrated + enabled
+- [ ] Billing address saved before charge
+- [ ] Price change notice when total shifts after billing refresh
+- [ ] Successful payment → order confirmation + checkout cookie cleared
+- [ ] Failed payment → user sees error, can retry (fresh transaction)
+- [ ] Zero-total checkout completes without PSP
+- [ ] Redirect-return flows (if any) recover authorized transactions
+
+---
+
+## What you usually do **not** need to change
+
+- `payment-step.tsx` layout — works for any `submitMode: "client"` gateway via `usesClientPaymentSubmit()`
+- GraphQL mutations in `payment.graphql` — same for all Saleor payment apps
+- `updateCheckoutBilling`, `checkout-pay-amount`, `finalizeCheckoutOrder`
+- Cart / checkout cookie logic (`src/lib/checkout.ts`)
+
+Only touch `payment-step.tsx` for **provider-specific** extras (e.g. Stripe's `AuthorizedPaymentRecovery`).
+
+---
+
+## Current integrated gateways
+
+| App           | Gateway ID                                     | Env flag                             | Submit mode |
+| ------------- | ---------------------------------------------- | ------------------------------------ | ----------- |
+| Stripe        | `saleor.app.payment.stripe`                    | `NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS` | `client`    |
+| Dummy Payment | `saleor.io.dummy-payment-app` (and legacy IDs) | `ALLOW_DUMMY_PAYMENT` / dev only     | `server`    |
+
+Gift card gateway (`saleor.io.gift-card-payment-gateway`) is **ignorable** — it does not block resolution.
+
+---
+
+## Anti-patterns
+
+❌ **Don't add a mock card form fallback** for unsupported gateways — `PaymentGatewayAlerts` explains the problem  
+❌ **Don't route client-submit PSPs through `useCheckoutPayment().submit`** — they need their own Pay button and SDK lifecycle  
+❌ **Don't hardcode `provider.type === "stripe"` in payment-step** — use `usesClientPaymentSubmit()`  
+❌ **Don't skip server guards** for env-gated test gateways (Dummy pattern)  
+❌ **Don't cache checkout totals at payment time** — always refresh before `transactionInitialize`  
+❌ **Don't build a generic PSP abstraction interface** — each app has different SDK steps; reuse Saleor actions + per-provider modules instead
+
+---
+
+### 3.5 Checkout Components
 
 Reusable checkout UI components for contact, address, and payment flows. Composing these components in checkout steps keeps the flow consistent and maintainable.
+
+---
 
 ## Component Locations
 
@@ -1804,12 +2713,12 @@ import {
 } from "@/checkout/components/contact";
 ```
 
-| Component           | Props                                                          | Use Case                 |
-| ------------------- | -------------------------------------------------------------- | ------------------------ |
-| `SignInForm`        | `initialEmail?`, `channelSlug`, `onSuccess`, `onGuestCheckout` | Sign-in form             |
-| `SignedInUser`      | `user`, `onSignOut`                                            | Show logged-in user info |
-| `ResetPasswordForm` | `onSuccess`, `onBackToSignIn`                                  | Password reset callback  |
-| `GuestContact`      | `email`, `onEmailChange`, `emailError?`, `onSignInClick`       | Guest email entry        |
+| Component           | Props                                                          | Use Case                     |
+| ------------------- | -------------------------------------------------------------- | ---------------------------- |
+| `SignInForm`        | `initialEmail?`, `channelSlug`, `onSuccess`, `onGuestCheckout` | BFF sign-in (`loginWithBff`) |
+| `SignedInUser`      | `user`, `onSignOut`                                            | Show logged-in user info     |
+| `ResetPasswordForm` | `onSuccess`, `onBackToSignIn`                                  | Password reset callback      |
+| `GuestContact`      | `email`, `onEmailChange`, `emailError?`, `onSignInClick`       | Guest email entry            |
 
 ## Address Components
 
@@ -1823,29 +2732,53 @@ import {
 import { AddressFields, FormInput, FormSelect, FieldError } from "@/checkout/components/shipping-address";
 ```
 
-| Component         | Props                                                                             | Use Case                     |
-| ----------------- | --------------------------------------------------------------------------------- | ---------------------------- |
-| `AddressSelector` | `addresses`, `selectedAddressId`, `onSelectAddress`, `defaultAddressId?`, `name?` | Pick from saved addresses    |
-| `AddressDisplay`  | `address`, `title?`, `onEdit?`                                                    | Show address read-only       |
-| `AddressFields`   | `orderedFields`, `formData`, `errors`, `onFieldChange`, etc.                      | Dynamic country-aware fields |
+| Component         | Props                                                                                | Use Case                     |
+| ----------------- | ------------------------------------------------------------------------------------ | ---------------------------- |
+| `AddressSelector` | `addresses`, `selectedAddressId`, `onSelectAddress`, `defaultAddressId?`, `name?`    | Pick from saved addresses    |
+| `AddressDisplay`  | `address`, `title?`, `onEdit?`                                                       | Show address read-only       |
+| `AddressFields`   | `orderedFields`, `formData`, `errors`, `onFieldChange`, `autocompleteSection?`, etc. | Dynamic country-aware fields |
+
+## Form field autofill (`input-attributes`)
+
+Checkout text inputs must expose `name`, `autoComplete`, and `inputMode` so mobile keyboards and browser autofill work, and validation can focus the first error (`querySelector('[name="…"]')`).
+
+**Source of truth:** `src/checkout/lib/consts/input-attributes.ts`
+
+| Export                                      | Use                                                  |
+| ------------------------------------------- | ---------------------------------------------------- |
+| `formatAddressAutocomplete(field, section)` | `shipping given-name`, `billing address-line1`, etc. |
+| `inputModeTags`                             | `tel` for phone, `text` for postal code              |
+| `contactFieldAttributes`                    | Email, password, promo code metadata                 |
+
+`AddressFields` accepts `autocompleteSection="shipping" | "billing"` (default `shipping`). Billing passes `"billing"`. Country `<select>` elements use `shipping country` / `billing country` and `name="countryCode"`.
+
+When adding a new checkout input:
+
+1. Add metadata to `input-attributes.ts` (or reuse `contactFieldAttributes`).
+2. Set `name` to match validation error keys.
+3. Pair `autoComplete` with the correct section token for address fields.
+4. See `checkout-design-principles.md` §3 (mobile thumbs).
 
 ## Payment Components
 
+Integrated Saleor payment apps render via `IntegratedPaymentUi` (see `checkout-payment-gateways` rule). Steps compose billing + provider UI — there is no generic card-form fallback.
+
 ```tsx
 import {
-	PaymentMethodSelector, // Card/PayPal/iDEAL tabs
-	BillingAddressSection, // Same-as-shipping toggle + form
-	isCardDataValid, // Helper function
-	type PaymentMethodType, // "card" | "paypal" | "ideal"
-	type CardData, // { cardNumber, expiry, cvc, nameOnCard }
-	type BillingAddressData, // { countryCode, formData, selectedAddressId? }
+	PaymentMethodArea, // Resolves provider → IntegratedPaymentUi
+	IntegratedPaymentUi,
+	PaymentGatewayAlerts,
+	BillingAddressSection,
+	type BillingAddressData,
 } from "@/checkout/components/payment";
 ```
 
-| Component               | Props                                                                                                 | Use Case                      |
-| ----------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `PaymentMethodSelector` | `value`, `onChange`, `cardData?`, `onCardDataChange?`                                                 | Payment method picker         |
-| `BillingAddressSection` | `billingAddress?`, `shippingAddress?`, `userAddresses?`, `isShippingRequired?`, `errors?`, `onChange` | Billing with same-as-shipping |
+| Component               | Props                                                                                                 | Use Case                                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `PaymentMethodArea`     | `provider`, `checkout`, `billing`, error/notice callbacks                                             | Payment step wrapper                           |
+| `IntegratedPaymentUi`   | Same — maps `provider.type` to Stripe, Dummy, or future gateway components                            | Add new gateway UI in one switch               |
+| `PaymentGatewayAlerts`  | `gateways`                                                                                            | Warn when no / unsupported gateway on checkout |
+| `BillingAddressSection` | `billingAddress?`, `shippingAddress?`, `userAddresses?`, `isShippingRequired?`, `errors?`, `onChange` | Billing with same-as-shipping                  |
 
 ## Usage Pattern
 
@@ -1908,16 +2841,18 @@ Create and style UI components with design tokens and shadcn/ui primitives.
 
 ## Design Tokens
 
-Use semantic Tailwind classes that reference CSS variables from `src/styles/brand.css`:
+**Single source of truth:** `src/styles/brand.css`. See `src/styles/README.md` for the full workflow.
+
+Use semantic Tailwind classes (mapped in `tailwind.config.cjs`):
 
 ```tsx
-// ✅ Good - uses design tokens
+// Resolves to brand.css via tailwind.config.cjs
 <div className="bg-background text-foreground border-border">
 <button className="bg-primary text-primary-foreground">
 <span className="text-muted-foreground">
 
-// ❌ Bad - hardcoded colors
-<div className="bg-white text-black border-gray-200">
+// Inverse footer (bg-foreground)
+<p className="text-inverse-subtle">
 ```
 
 Available tokens:
@@ -1926,7 +2861,8 @@ Available tokens:
 - `primary`, `primary-foreground` - Primary actions
 - `secondary`, `secondary-foreground` - Secondary elements
 - `muted`, `muted-foreground` - Subdued elements
-- `border` - Border color
+- `inverse`, `inverse-subtle`, `inverse-muted` - Text on inverse surfaces (`bg-foreground`)
+- `border`, `border-inverse` - Borders
 - `destructive` - Error/danger states
 
 ## Using shadcn/ui Primitives
@@ -1974,10 +2910,12 @@ export function Card({ title, children, className }: CardProps) {
 
 ## Anti-patterns
 
-❌ **Don't use hardcoded colors** - Use design tokens  
+❌ **Don't hardcode brand colors** (hex/rgb in components) when a token exists — edit `brand.css` instead  
 ❌ **Don't add `"use client"` unless needed** - Prefer Server Components  
 ❌ **Don't create new primitives** - Use existing shadcn/ui components  
-❌ **Don't use inline styles** - Use Tailwind classes
+❌ **Don't use inline styles** for brand colors - Use Tailwind classes backed by tokens
+
+---
 
 ### 4.2 Channels & Multi-Currency
 
@@ -2063,6 +3001,38 @@ The `channels` query requires an authenticated app token. No specific permission
 4. Save and copy the generated token
 5. Add to `.env.local` as `SALEOR_APP_TOKEN`
 
+## Storefront Channel Allowlist
+
+Not every Saleor channel should become a storefront route. Use an explicit allowlist in production:
+
+```env
+# Recommended — only these channels get /{channel}/... routes
+STOREFRONT_CHANNELS=us,uk
+
+# Default channel (must be in allowlist when allowlist is set)
+NEXT_PUBLIC_DEFAULT_CHANNEL=us
+
+# Optional — discover additional channels from Saleor API at build time
+# Requires SALEOR_APP_TOKEN; merged with allowlist, not a replacement
+STOREFRONT_DISCOVER_CHANNELS=true
+```
+
+**Resolution order** (`src/lib/channel-slugs.ts` → `getStorefrontChannelSlugs()`):
+
+1. `STOREFRONT_CHANNELS` — comma-separated allowlist (recommended)
+2. If `STOREFRONT_DISCOVER_CHANNELS=true` — slugs from `getCachedChannelsList()` (`"use cache"`; required for PPR builds)
+3. Fallback — `NEXT_PUBLIC_DEFAULT_CHANNEL` only
+
+### Where the allowlist is enforced
+
+| Location                          | Behavior                                                |
+| --------------------------------- | ------------------------------------------------------- |
+| `src/app/[channel]/layout.tsx`    | `generateStaticParams` + `notFound()` for unknown slugs |
+| `src/app/api/revalidate/route.ts` | Path revalidation loops over allowed channels only      |
+| `src/ui/components/footer.tsx`    | Channel selector lists allowed channels                 |
+
+See `data-caching.md` for how webhooks use `getStorefrontChannelSlugs()` during invalidation.
+
 ## Architecture
 
 ### Storefront (channel in URL)
@@ -2093,13 +3063,15 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 
 ## Key Files
 
-| File                                   | Purpose                              |
-| -------------------------------------- | ------------------------------------ |
-| `src/app/[channel]/layout.tsx`         | Generates static params for channels |
-| `src/ui/components/channel-select.tsx` | Channel switcher dropdown            |
-| `src/ui/components/footer.tsx`         | Renders channel selector             |
-| `src/graphql/ChannelsList.graphql`     | Query for fetching channels          |
-| `src/app/config.ts`                    | `DefaultChannelSlug` fallback        |
+| File                                   | Purpose                                     |
+| -------------------------------------- | ------------------------------------------- |
+| `src/config/channels.ts`               | Allowlist env parsing + validation          |
+| `src/lib/channel-slugs.ts`             | `getStorefrontChannelSlugs()` (React.cache) |
+| `src/app/[channel]/layout.tsx`         | Route guard + `generateStaticParams`        |
+| `src/ui/components/channel-select.tsx` | Channel switcher dropdown                   |
+| `src/ui/components/footer.tsx`         | Renders channel selector                    |
+| `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
+| `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
 
 ## Locale Considerations
 
@@ -2118,7 +3090,8 @@ This is NOT implemented - formatting is currently `en-US` for all channels.
 
 ## Anti-patterns
 
-❌ **Don't assume stock means purchasable** - Warehouse must be in both the channel AND a shipping zone for that channel
+❌ **Don't expose every Saleor channel as a route** — Use `STOREFRONT_CHANNELS` allowlist in production  
+❌ **Don't assume stock means purchasable** — Warehouse must be in both the channel AND a shipping zone for that channel
 ❌ **Don't debug availability client-side only** - Check the 7-point purchasability checklist in Saleor Dashboard first
 ❌ **Don't hardcode channel slugs without fallback** - Use `DefaultChannelSlug` from config
 
@@ -2322,6 +3295,8 @@ If the Saleor core repo is available locally (e.g. `../saleor/`), or clone it:
 cd /tmp && git clone --depth 1 https://github.com/saleor/saleor.git saleor-core
 ```
 
+For directory structure and grep patterns, see [saleor-key-directories.md](../references/saleor-key-directories.md).
+
 | Path                       | Purpose                     |
 | -------------------------- | --------------------------- |
 | `saleor/graphql/product/`  | Resolvers, permission logic |
@@ -2380,103 +3355,7 @@ If an attribute doesn't appear in `variant.attributes`, check the ProductType co
 ❌ **Don't filter `visibleInStorefront` client-side** - API does it  
 ❌ **Don't assume attribute presence** - Check ProductType config
 
-#### Appendix: Saleor Core Key Directories
-
-Reference for navigating the Saleor source code when investigating API **behavior** (permission checks, filtering logic, side effects).
-
-> **For schema types**, use `src/gql/graphql.ts` in this repo first -- it contains the full Saleor schema as TypeScript types, generated from your running instance via `pnpm generate`. Only use the Saleor core source when you need to understand how resolvers work.
-
-## Clone Command
-
-```bash
-cd /tmp && git clone --depth 1 https://github.com/saleor/saleor.git saleor-core
-```
-
-## Directory Structure
-
-| Path                        | Purpose                                |
-| --------------------------- | -------------------------------------- |
-| `saleor/graphql/`           | Resolvers, type definitions, mutations |
-| `saleor/graphql/product/`   | Product queries/mutations              |
-| `saleor/graphql/attribute/` | Attribute handling                     |
-| `saleor/graphql/checkout/`  | Checkout operations                    |
-| `saleor/graphql/order/`     | Order processing                       |
-| `saleor/graphql/account/`   | User/authentication                    |
-| `saleor/product/models.py`  | Product Django models                  |
-| `saleor/attribute/models/`  | Attribute Django models                |
-| `saleor/checkout/models.py` | Checkout Django models                 |
-| `saleor/order/models.py`    | Order Django models                    |
-
-## Common Investigation Patterns
-
-### Finding a Resolver
-
-```bash
-# Find where a field is resolved
-grep -r "def resolve_" saleor/graphql/product/
-```
-
-### Understanding Permission Logic
-
-```bash
-# Find permission checks
-grep -r "has_perm" saleor/graphql/product/resolvers.py
-
-# Find permission decorators
-grep -r "@permission_required" saleor/graphql/
-```
-
-### Finding Mutation Logic
-
-```bash
-# Find mutation perform methods
-grep -r "def perform_mutation" saleor/graphql/checkout/
-```
-
-### Tracing Data Loaders
-
-```bash
-# Find data loader definitions
-grep -r "class.*Loader" saleor/graphql/product/dataloaders/
-```
-
-## Key Files by Feature
-
-### Products
-
-- `saleor/graphql/product/types/products.py` - Product type definition
-- `saleor/graphql/product/resolvers.py` - Product query resolvers
-- `saleor/graphql/product/mutations/` - Product mutations (channels.py, attributes.py, digital_contents.py)
-
-### Attributes
-
-- `saleor/graphql/attribute/types.py` - Attribute types
-- `saleor/graphql/attribute/resolvers.py` - Attribute resolvers
-- `saleor/attribute/models/base.py` - Core attribute model
-
-### Checkout
-
-- `saleor/graphql/checkout/types.py` - Checkout type
-- `saleor/graphql/checkout/mutations/` - Checkout mutations
-- `saleor/checkout/calculations.py` - Price calculations
-
-### Permissions
-
-- `saleor/graphql/core/enums.py` - Permission enum definitions
-- `saleor/permission/enums.py` - Backend permission enums
-
-## Token-Based Data Filtering
-
-Saleor filters data based on authentication:
-
-| Token Type              | What's Returned                          |
-| ----------------------- | ---------------------------------------- |
-| None (anonymous)        | Only public, `visibleInStorefront` items |
-| Customer JWT            | Same as anonymous + user's own data      |
-| App with specific perms | Based on granted permissions             |
-| App with `MANAGE_*`     | ALL data for that domain                 |
-
-This applies to many "visible in storefront" flags across Saleor.
+---
 
 ---
 

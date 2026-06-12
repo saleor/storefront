@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useParams } from "next/navigation";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
-import { requestAccountDeletion } from "@/app/[channel]/(main)/account/actions";
+import { requestAccountDeletion } from "@/app/(storefront)/[channel]/(main)/account/actions";
 
 export function DeleteAccountSection() {
 	const params = useParams<{ channel: string }>();

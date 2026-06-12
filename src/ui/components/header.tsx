@@ -50,9 +50,7 @@ export async function Header({ channel }: { channel: string }) {
 
 					{/* Actions */}
 					<div className="flex items-center gap-1">
-						<Suspense fallback={<div className="h-10 w-10" />}>
-							<UserMenuContainer />
-						</Suspense>
+						<UserMenuContainer channel={channel} />
 						<Suspense fallback={<div className="h-10 w-10" />}>
 							<CartNavItem channel={channel} />
 						</Suspense>

@@ -1,8 +1,7 @@
 /**
  * Checkout Module Styles
  *
- * This file is imported by src/checkout/Root.tsx which is dynamically
- * loaded via next/dynamic with ssr: false.
+ * Imported by `CheckoutApp` (`src/checkout/checkout-app.tsx`).
  *
  * Tailwind utilities are NOT duplicated here - checkout inherits all
  * Tailwind styles from globals.css (loaded in root layout).

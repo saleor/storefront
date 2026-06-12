@@ -26,7 +26,8 @@
 		],
 		"paths": {
 			"@/*": ["./src/*"],
-			"@ui/*": ["./src/components/*"]
+			"@ui/*": ["./src/components/*"],
+			"@paper/session-bridge": ["./src/session-bridge/index.ts"]
 		},
 		"types": ["react-dom/canary"]
 	},
@@ -39,5 +40,5 @@
 		"__tests__/**/*",
 		".next/dev/types/**/*.ts"
 	],
-	"exclude": ["node_modules", "src/_reference"]
+	"exclude": ["node_modules"]
 }

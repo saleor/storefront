@@ -4,6 +4,7 @@ import { type FC } from "react";
 import { Label } from "@/ui/components/ui/label";
 import { Checkbox } from "@/ui/components/ui/checkbox";
 import { SignedInUser, GuestContact } from "@/checkout/components/contact";
+import { isCheckoutMarketingConsentEnabled } from "@/checkout/lib/marketing-consent";
 
 // User type matching what useUser() returns
 type User = {
@@ -21,6 +22,9 @@ interface ContactSectionProps {
 	// Auth state
 	isSignedIn: boolean;
 	user: User | null | undefined;
+	checkoutId?: string;
+	/** True while resolving session (avoids guest UI flash when auth cookies exist) */
+	isLoading?: boolean;
 	onSignOut: () => void;
 	onSignInClick: () => void;
 
@@ -49,6 +53,8 @@ interface ContactSectionProps {
 export const ContactSection: FC<ContactSectionProps> = ({
 	isSignedIn,
 	user,
+	checkoutId,
+	isLoading = false,
 	onSignOut,
 	onSignInClick,
 	email,
@@ -63,12 +69,21 @@ export const ContactSection: FC<ContactSectionProps> = ({
 	subscribeNews,
 	onSubscribeChange,
 }) => {
+	if (isLoading) {
+		return (
+			<section className="space-y-4">
+				<div className="h-7 w-24 animate-pulse rounded bg-muted" />
+				<div className="h-16 animate-pulse rounded-lg bg-muted" />
+			</section>
+		);
+	}
+
 	return (
 		<section className="space-y-4">
 			{isSignedIn && user ? (
 				<>
 					<h2 className="text-xl font-semibold">Contact</h2>
-					<SignedInUser user={user} onSignOut={onSignOut} />
+					<SignedInUser user={user} checkoutId={checkoutId} onSignOut={onSignOut} />
 				</>
 			) : (
 				<>
@@ -85,8 +100,7 @@ export const ContactSection: FC<ContactSectionProps> = ({
 						passwordError={passwordError}
 					/>
 
-					{/* Subscribe checkbox (only for guests not creating account) */}
-					{!createAccount && (
+					{isCheckoutMarketingConsentEnabled() && (
 						<div className="flex items-center gap-3">
 							<Checkbox
 								id="subscribe"

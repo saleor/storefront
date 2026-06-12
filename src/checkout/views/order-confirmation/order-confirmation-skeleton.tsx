@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { CheckoutHeader } from "@/checkout/views/saleor-checkout/checkout-header";
+import { OrderConfirmationPageShell } from "./order-confirmation-page-shell";
 
 /**
  * Skeleton primitive - matches design system tokens.
@@ -9,22 +9,10 @@ const Bone = ({ className }: { className?: string }) => (
 );
 
 /**
- * Order confirmation skeleton.
- *
- * Uses delayed visibility (300ms) to prevent flash on fast loads.
- *
- * Structure mirrors OrderConfirmation:
- * - min-h-screen bg-secondary
- * - CheckoutHeader step={4}
- * - main: mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8
- * - two-column layout same as checkout
+ * Order confirmation loading state — dedicated shell without checkout step chrome.
  */
 export const OrderConfirmationSkeleton = () => (
-	<div className="min-h-screen animate-skeleton-delayed bg-secondary opacity-0">
-		{/* Real header at step 4 */}
-		<CheckoutHeader step={4} onStepClick={() => {}} />
-
-		{/* Main content */}
+	<OrderConfirmationPageShell>
 		<main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 			<div className="flex flex-col gap-8 md:flex-row">
 				{/* Left column - Confirmation content */}
@@ -75,7 +63,7 @@ export const OrderConfirmationSkeleton = () => (
 				</div>
 			</div>
 		</main>
-	</div>
+	</OrderConfirmationPageShell>
 );
 
 /**

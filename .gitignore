@@ -37,6 +37,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare / open-next (legacy local deploy — not used)
+/.open-next/
+/.wrangler/
+/vendor/
+/patches/
+cloudflare-env.d.ts
+.cf.env
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

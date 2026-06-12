@@ -6,14 +6,11 @@ import { Tag, ShieldCheck, RotateCcw, Truck, ChevronDown, ShoppingBag, X } from 
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { cn } from "@/lib/utils";
-import {
-	type CheckoutErrorFragment,
-	type CheckoutFragment,
-	type OrderFragment,
-	useCheckoutAddPromoCodeMutation,
-	useCheckoutRemovePromoCodeMutation,
-} from "@/checkout/graphql";
+import { applyCheckoutPromoCode, removeCheckoutPromoCode } from "@/app/(checkout)/actions";
+import { type CheckoutErrorFragment, type CheckoutFragment, type OrderFragment } from "@/checkout/graphql";
+import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { localeConfig } from "@/config/locale";
+import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
 
 // ============================================================================
 // Types
@@ -129,12 +126,8 @@ function getCheckoutErrorMessage(errors: readonly CheckoutErrorFragment[] | unde
 // ============================================================================
 
 export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable, onCheckoutChange }) => {
-	const [promoCode, setPromoCode] = useState("");
-	const [promoError, setPromoError] = useState<string | null>(null);
 	// Collapsed by default on mobile
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [{ fetching: isApplyingPromo }, applyPromoCode] = useCheckoutAddPromoCodeMutation();
-	const [{ fetching: isRemovingPromo }, removePromoCode] = useCheckoutRemovePromoCodeMutation();
 
 	// Extract data from either checkout or order
 	const data = checkout ? extractCheckoutData(checkout) : order ? extractOrderData(order) : null;
@@ -146,71 +139,12 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 	const { lines, currency, subtotal, shipping, tax, discount, total } = data;
 	const isEditable = editable ?? data.editable;
 	const itemCount = lines.reduce((acc, line) => acc + line.quantity, 0);
-	const appliedPromoCode = checkout?.voucherCode;
-	const appliedDiscountName = checkout?.translatedDiscountName || checkout?.discountName;
-	const isPromoBusy = isApplyingPromo || isRemovingPromo;
 
 	const formatMoney = (amount: number) => {
 		return new Intl.NumberFormat(localeConfig.default, {
 			style: "currency",
 			currency,
 		}).format(amount);
-	};
-
-	const handleApplyPromo = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
-		if (!checkout || isPromoBusy) return;
-
-		const trimmedCode = promoCode.trim();
-		if (!trimmedCode) return;
-
-		setPromoError(null);
-
-		const result = await applyPromoCode({
-			checkoutId: checkout.id,
-			promoCode: trimmedCode,
-			languageCode: localeConfig.graphqlLanguageCode,
-		});
-
-		if (result.error) {
-			setPromoError(result.error.message);
-			return;
-		}
-
-		const errorMessage = getCheckoutErrorMessage(result.data?.checkoutAddPromoCode?.errors);
-		if (errorMessage) {
-			setPromoError(errorMessage);
-			return;
-		}
-
-		setPromoCode("");
-		onCheckoutChange?.();
-	};
-
-	const handleRemovePromo = async () => {
-		if (!checkout || !appliedPromoCode || isPromoBusy) return;
-
-		setPromoError(null);
-
-		const result = await removePromoCode({
-			checkoutId: checkout.id,
-			promoCode: appliedPromoCode,
-			languageCode: localeConfig.graphqlLanguageCode,
-		});
-
-		if (result.error) {
-			setPromoError(result.error.message);
-			return;
-		}
-
-		const errorMessage = getCheckoutErrorMessage(result.data?.checkoutRemovePromoCode?.errors);
-		if (errorMessage) {
-			setPromoError(errorMessage);
-			return;
-		}
-
-		onCheckoutChange?.();
 	};
 
 	// Product thumbnails for collapsed state (show max 2 for cleaner look)
@@ -344,63 +278,10 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 						</ul>
 					</section>
 
-					{/* Discounts - only for editable checkout */}
-					{isEditable && (
-						<section className="border-t border-border px-5 py-4">
-							{appliedPromoCode ? (
-								<div className="flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-3">
-									<Tag className="h-4 w-4 shrink-0 text-green-700" />
-									<div className="min-w-0 flex-1">
-										<p className="truncate text-sm font-medium text-green-800">{appliedPromoCode}</p>
-										{appliedDiscountName && (
-											<p className="truncate text-xs text-green-700">{appliedDiscountName}</p>
-										)}
-									</div>
-									<Button
-										type="button"
-										variant="ghost"
-										size="icon"
-										disabled={isPromoBusy}
-										onClick={handleRemovePromo}
-										aria-label="Remove discount code"
-										className="h-8 w-8 shrink-0 text-green-700 hover:bg-green-100 hover:text-green-800"
-									>
-										<X className="h-4 w-4" />
-									</Button>
-								</div>
-							) : (
-								<form className="flex gap-2" onSubmit={handleApplyPromo}>
-									<div className="relative flex-1">
-										<Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-										<Input
-											placeholder="Discount code"
-											value={promoCode}
-											onChange={(e) => {
-												setPromoCode(e.target.value);
-												setPromoError(null);
-											}}
-											aria-invalid={Boolean(promoError)}
-											className="h-10 pl-10 text-sm"
-											disabled={isPromoBusy}
-										/>
-									</div>
-									<Button
-										type="submit"
-										variant="outline-solid"
-										disabled={!promoCode.trim() || isPromoBusy}
-										className="h-10 px-4 text-sm"
-									>
-										{isApplyingPromo ? "Applying..." : "Apply"}
-									</Button>
-								</form>
-							)}
-							{promoError && (
-								<p className="mt-2 text-sm text-destructive" role="alert">
-									{promoError}
-								</p>
-							)}
-						</section>
-					)}
+					{/* Discounts - only for editable checkout (requires CheckoutDataProvider) */}
+					{isEditable && checkout ? (
+						<CheckoutPromoSection checkout={checkout} onCheckoutChange={onCheckoutChange} />
+					) : null}
 
 					{/* Amounts */}
 					<section className="border-t border-border px-5 py-4">
@@ -473,3 +354,133 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 		</article>
 	);
 };
+
+type CheckoutPromoSectionProps = {
+	checkout: CheckoutFragment;
+	onCheckoutChange?: () => void;
+};
+
+/** Promo editor — isolated so read-only order summaries skip CheckoutDataProvider. */
+function CheckoutPromoSection({ checkout, onCheckoutChange }: CheckoutPromoSectionProps) {
+	const [promoCode, setPromoCode] = useState("");
+	const [promoError, setPromoError] = useState<string | null>(null);
+	const [isPromoBusy, setIsPromoBusy] = useState(false);
+	const { setCheckout } = useCheckoutData();
+
+	const appliedPromoCode = checkout.voucherCode;
+	const appliedDiscountName = checkout.translatedDiscountName || checkout.discountName;
+
+	const handleApplyPromo = async (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+
+		if (isPromoBusy) return;
+
+		const trimmedCode = promoCode.trim();
+		if (!trimmedCode) return;
+
+		setPromoError(null);
+		setIsPromoBusy(true);
+
+		try {
+			const result = await applyCheckoutPromoCode(checkout.id, trimmedCode);
+
+			if (!result.ok) {
+				const errorMessage =
+					result.error ??
+					getCheckoutErrorMessage(result.fieldErrors) ??
+					"This discount code could not be applied.";
+				setPromoError(errorMessage);
+				return;
+			}
+
+			setCheckout(result.checkout);
+			setPromoCode("");
+			onCheckoutChange?.();
+		} finally {
+			setIsPromoBusy(false);
+		}
+	};
+
+	const handleRemovePromo = async () => {
+		if (!appliedPromoCode || isPromoBusy) return;
+
+		setPromoError(null);
+		setIsPromoBusy(true);
+
+		try {
+			const result = await removeCheckoutPromoCode(checkout.id, appliedPromoCode);
+
+			if (!result.ok) {
+				const errorMessage =
+					result.error ?? getCheckoutErrorMessage(result.fieldErrors) ?? "Failed to remove discount code.";
+				setPromoError(errorMessage);
+				return;
+			}
+
+			setCheckout(result.checkout);
+			onCheckoutChange?.();
+		} finally {
+			setIsPromoBusy(false);
+		}
+	};
+
+	return (
+		<section className="border-t border-border px-5 py-4">
+			{appliedPromoCode ? (
+				<div className="flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-3">
+					<Tag className="h-4 w-4 shrink-0 text-green-700" />
+					<div className="min-w-0 flex-1">
+						<p className="truncate text-sm font-medium text-green-800">{appliedPromoCode}</p>
+						{appliedDiscountName ? (
+							<p className="truncate text-xs text-green-700">{appliedDiscountName}</p>
+						) : null}
+					</div>
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon"
+						disabled={isPromoBusy}
+						onClick={() => void handleRemovePromo()}
+						aria-label="Remove discount code"
+						className="h-8 w-8 shrink-0 text-green-700 hover:bg-green-100 hover:text-green-800"
+					>
+						<X className="h-4 w-4" />
+					</Button>
+				</div>
+			) : (
+				<form className="flex gap-2" onSubmit={handleApplyPromo}>
+					<div className="relative flex-1">
+						<Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+						<Input
+							name={contactFieldAttributes.promoCode.name}
+							inputMode={contactFieldAttributes.promoCode.inputMode}
+							autoComplete={contactFieldAttributes.promoCode.autoComplete}
+							placeholder="Discount code"
+							value={promoCode}
+							onChange={(e) => {
+								setPromoCode(e.target.value);
+								setPromoError(null);
+							}}
+							aria-invalid={Boolean(promoError)}
+							className="h-10 bg-white pl-10 text-sm"
+							disabled={isPromoBusy}
+						/>
+					</div>
+					<Button
+						type="submit"
+						variant="outline-solid"
+						disabled={!promoCode.trim() || isPromoBusy}
+						className="h-10 bg-white px-4 text-sm"
+					>
+						{isPromoBusy ? "Applying..." : "Apply"}
+					</Button>
+				</form>
+			)}
+			{promoError ? (
+				<p className="mt-2 text-sm text-destructive" role="alert">
+					{promoError}
+				</p>
+			) : null}
+		</section>
+	);
+}

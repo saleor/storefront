@@ -51,6 +51,9 @@ fragment CheckoutFragment on Checkout {
 		id
 		slug
 	}
+	user {
+		id
+	}
 	shippingAddress {
 		...AddressFragment
 	}
@@ -226,8 +229,56 @@ mutation checkoutEmailUpdate($email: String!, $checkoutId: ID!, $languageCode: L
 	}
 }
 
+mutation checkoutMetadataUpdate($id: ID!, $input: [MetadataInput!]!) {
+	updateMetadata(id: $id, input: $input) {
+		errors {
+			field
+			code
+			message
+		}
+		item {
+			... on Checkout {
+				id
+			}
+		}
+	}
+}
+
 mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
 	checkoutCustomerAttach(id: $checkoutId) {
+		errors {
+			...CheckoutErrorFragment
+		}
+		checkout {
+			...CheckoutFragment
+		}
+	}
+}
+
+mutation checkoutCustomerDetach($checkoutId: ID!, $languageCode: LanguageCodeEnum!) {
+	checkoutCustomerDetach(id: $checkoutId) {
+		errors {
+			...CheckoutErrorFragment
+		}
+		checkout {
+			...CheckoutFragment
+		}
+	}
+}
+
+mutation checkoutCreate($channel: String!, $languageCode: LanguageCodeEnum!) {
+	checkoutCreate(input: { channel: $channel, lines: [] }) {
+		errors {
+			...CheckoutErrorFragment
+		}
+		checkout {
+			...CheckoutFragment
+		}
+	}
+}
+
+mutation checkoutLinesAdd($checkoutId: ID!, $lines: [CheckoutLineInput!]!, $languageCode: LanguageCodeEnum!) {
+	checkoutLinesAdd(id: $checkoutId, lines: $lines) {
 		errors {
 			...CheckoutErrorFragment
 		}
@@ -240,12 +291,14 @@ mutation checkoutCustomerAttach($checkoutId: ID!, $languageCode: LanguageCodeEnu
 mutation checkoutShippingAddressUpdate(
 	$checkoutId: ID!
 	$shippingAddress: AddressInput!
+	$saveAddress: Boolean
 	$validationRules: CheckoutAddressValidationRules
 	$languageCode: LanguageCodeEnum!
 ) {
 	checkoutShippingAddressUpdate(
 		id: $checkoutId
 		shippingAddress: $shippingAddress
+		saveAddress: $saveAddress
 		validationRules: $validationRules
 	) {
 		errors {
@@ -260,12 +313,14 @@ mutation checkoutShippingAddressUpdate(
 mutation checkoutBillingAddressUpdate(
 	$checkoutId: ID!
 	$billingAddress: AddressInput!
+	$saveAddress: Boolean
 	$validationRules: CheckoutAddressValidationRules
 	$languageCode: LanguageCodeEnum!
 ) {
 	checkoutBillingAddressUpdate(
 		id: $checkoutId
 		billingAddress: $billingAddress
+		saveAddress: $saveAddress
 		validationRules: $validationRules
 	) {
 		errors {
@@ -332,6 +387,9 @@ mutation checkoutComplete($checkoutId: ID!) {
 		}
 		order {
 			id
+			channel {
+				slug
+			}
 		}
 	}
 }

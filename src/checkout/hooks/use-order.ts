@@ -1,16 +1,22 @@
-import { type OrderFragment, useOrderQuery } from "@/checkout/graphql";
-import { getQueryParams } from "@/checkout/lib/utils/url";
-import { localeConfig } from "@/config/locale";
+import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
+import { getQueryParams } from "@/checkout/lib/utils/url";
+import { useOrderData } from "@/checkout/providers/order-data";
+
+/** Order confirmation data — server-hydrated from the RSC page. */
 export const useOrder = () => {
+	const { order, orderId: sessionOrderId } = useOrderData();
 	const searchParams = useSearchParams();
-	const { orderId } = getQueryParams(searchParams);
+	const orderIdFromUrl = getQueryParams(searchParams).orderId;
+	const orderId = orderIdFromUrl ?? sessionOrderId;
 
-	const [{ data, fetching: loading }] = useOrderQuery({
-		pause: !orderId,
-		variables: { languageCode: localeConfig.graphqlLanguageCode, id: orderId as string },
-	});
-
-	return { order: data?.order as OrderFragment, loading };
+	return useMemo(
+		() => ({
+			order,
+			loading: false,
+			orderId,
+		}),
+		[order, orderId],
+	);
 };

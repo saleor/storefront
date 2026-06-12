@@ -16,8 +16,6 @@ const config: KnipConfig = {
 		// Generated files
 		"src/gql/**",
 		"src/checkout/graphql/generated/**",
-		// Reference code (kept for documentation, excluded from build)
-		"src/_reference/**",
 		// Codegen configs (run via CLI, not imported)
 		"src/checkout/graphql/codegen.ts",
 	],
