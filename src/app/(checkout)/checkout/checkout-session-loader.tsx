@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { invariant } from "ts-invariant";
 import { buildCheckoutPath, buildOrderConfirmationPath } from "@paper/session-bridge";
+import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
+import { getStorefrontContent } from "@/lib/content/server";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import {
 	getCheckoutSessionCheckout,
@@ -83,6 +85,10 @@ export async function CheckoutSessionLoader({
 		shippingCountries = await getCheckoutSessionCountries(channelSlug);
 	}
 
+	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
+	const contentChannel = browseChannel ?? DefaultChannelSlug ?? "default-channel";
+	const checkoutContent = (await getStorefrontContent(contentChannel)).surfaces.checkout;
+
 	return (
 		<CheckoutApp
 			checkoutId={checkoutIdFromUrl}
@@ -90,6 +96,7 @@ export async function CheckoutSessionLoader({
 			initialCheckout={initialCheckout}
 			initialUser={initialUser}
 			shippingCountries={shippingCountries}
+			checkoutContent={checkoutContent}
 		/>
 	);
 }

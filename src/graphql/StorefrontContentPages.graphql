@@ -1,0 +1,28 @@
+query StorefrontContentPages($channel: String!, $slugs: [String!]!) {
+	pages(channel: $channel, where: { slug: { oneOf: $slugs } }, first: 20) {
+		edges {
+			node {
+				...StorefrontContentPage
+			}
+		}
+	}
+}
+
+fragment StorefrontContentPage on Page {
+	slug
+	isPublished
+	pageType {
+		slug
+	}
+	assignedAttributes {
+		attribute {
+			slug
+		}
+		... on AssignedPlainTextAttribute {
+			plainText: value
+		}
+		... on AssignedBooleanAttribute {
+			boolean: value
+		}
+	}
+}

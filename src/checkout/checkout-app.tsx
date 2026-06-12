@@ -6,6 +6,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { nextCheckoutTransport } from "@/app/(checkout)/checkout-transport";
 import type { CheckoutUser, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import { setCheckoutTransport } from "@/checkout/lib/checkout-transport";
+import { CheckoutContentProvider, type CheckoutContent } from "@/lib/content";
 import { CheckoutDataProvider, type CheckoutLoadState } from "@/checkout/providers/checkout-data";
 import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
@@ -29,6 +30,7 @@ type CheckoutAppProps = {
 	initialCheckout: ServerCheckout | null;
 	initialUser: CheckoutUser | null;
 	shippingCountries: ShippingCountries;
+	checkoutContent: CheckoutContent;
 };
 
 /**
@@ -41,6 +43,7 @@ export function CheckoutApp({
 	initialCheckout,
 	initialUser,
 	shippingCountries,
+	checkoutContent,
 }: CheckoutAppProps) {
 	return (
 		<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
@@ -54,16 +57,18 @@ export function CheckoutApp({
 					initialCheckout={initialCheckout}
 					shippingCountries={shippingCountries}
 				>
-					<CheckoutPaymentReturnErrorProvider>
-						<Suspense fallback={null}>
-							<StripeCheckoutCompletionHost />
-						</Suspense>
-						<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
-							<Suspense fallback={<CheckoutLoadingFallback />}>
-								<RootViews />
+					<CheckoutContentProvider content={checkoutContent}>
+						<CheckoutPaymentReturnErrorProvider>
+							<Suspense fallback={null}>
+								<StripeCheckoutCompletionHost />
 							</Suspense>
-						</ErrorBoundary>
-					</CheckoutPaymentReturnErrorProvider>
+							<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
+								<Suspense fallback={<CheckoutLoadingFallback />}>
+									<RootViews />
+								</Suspense>
+							</ErrorBoundary>
+						</CheckoutPaymentReturnErrorProvider>
+					</CheckoutContentProvider>
 				</CheckoutDataProvider>
 			</CheckoutUserProvider>
 		</CheckoutSessionProvider>

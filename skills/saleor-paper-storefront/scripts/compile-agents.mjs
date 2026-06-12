@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 15;
+const RULE_COUNT = 17;
 
 const catalog = [
 	{
@@ -25,6 +25,8 @@ const catalog = [
 			{ num: "1.1", file: "data-caching.md", title: "Caching Strategy" },
 			{ num: "1.2", file: "data-graphql.md", title: "GraphQL Workflow" },
 			{ num: "1.3", file: "data-auth-routes.md", title: "Auth Routes (BFF)" },
+			{ num: "1.4", file: "data-storefront-content.md", title: "Storefront Content Layer" },
+			{ num: "1.5", file: "data-storefront-content-saleor.md", title: "Storefront Content (Saleor Models)" },
 		],
 	},
 	{

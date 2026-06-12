@@ -12,6 +12,7 @@ import {
 	getChannelScopedTagProfiles,
 	planMenuRevalidation,
 	planPageRevalidation,
+	planStorefrontContentRevalidation,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
 	type CacheProfile,
@@ -205,6 +206,21 @@ export async function POST(request: NextRequest) {
 			for (const path of plan.paths) {
 				revalidatePath(path);
 				revalidatedPaths.push(path);
+			}
+
+			const storefrontPlan = planStorefrontContentRevalidation(
+				plan.slug,
+				storefrontChannels,
+				DefaultChannelSlug,
+			);
+			if (storefrontPlan.action === "revalidate") {
+				tagEntries.push(...storefrontPlan.tags);
+				for (const path of storefrontPlan.paths) {
+					if (!revalidatedPaths.includes(path)) {
+						revalidatePath(path);
+						revalidatedPaths.push(path);
+					}
+				}
 			}
 
 			const revalidatedTags = await revalidateTags(tagEntries);

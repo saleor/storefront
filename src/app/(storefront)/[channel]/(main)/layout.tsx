@@ -1,4 +1,5 @@
 import { type ReactNode, Suspense } from "react";
+import { getStorefrontContent } from "@/lib/content/server";
 import { CartDrawerWrapper } from "@/ui/components/cart/cart-drawer-wrapper";
 import { StorefrontProviders } from "@/ui/components/storefront-providers";
 import { brandConfig } from "@/config/brand";
@@ -14,12 +15,15 @@ export default async function RootLayout(props: {
 	params: Promise<{ channel: string }>;
 }) {
 	const channel = (await props.params).channel;
+	const content = await getStorefrontContent(channel);
 
 	return (
 		<StorefrontProviders>
-			<MainChrome channel={channel}>{props.children}</MainChrome>
+			<MainChrome channel={channel} chrome={content.chrome}>
+				{props.children}
+			</MainChrome>
 			<Suspense fallback={null}>
-				<CartDrawerWrapper channel={channel} />
+				<CartDrawerWrapper channel={channel} cart={content.surfaces.cart} />
 			</Suspense>
 		</StorefrontProviders>
 	);

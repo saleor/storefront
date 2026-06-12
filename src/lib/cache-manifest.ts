@@ -1,4 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { localeConfig } from "@/config/locale";
+import {
+	isStorefrontContentPageSlug,
+	resolveStorefrontContentChannelsForPageSlug,
+} from "@/lib/content/constants";
 import {
 	DEFAULT_PAPER_CACHE_LIFE_PROFILE,
 	type PaperCacheLifeProfile,
@@ -18,7 +23,7 @@ import {
 //   - /api/cache-info (manifest for dashboard)
 // ============================================================================
 
-const UNRESOLVED_PLACEHOLDER = /\{(slug|channel)\}/;
+const UNRESOLVED_PLACEHOLDER = /\{(slug|channel|locale)\}/;
 
 export type CacheLifeProfile = PaperCacheLifeProfile;
 
@@ -36,6 +41,8 @@ export interface CacheProfile {
 export type CacheTagParams = {
 	slug?: string;
 	channel?: string;
+	/** BCP 47 locale — storefront content cache key (Saleor translations not wired yet). */
+	locale?: string;
 };
 
 const profiles = {
@@ -87,6 +94,13 @@ const profiles = {
 		cacheProfile: "channels",
 		tagPattern: "channels",
 		pathPattern: null,
+	},
+	storefrontContent: {
+		id: "storefront-content",
+		label: "Storefront Content",
+		cacheProfile: "menus",
+		tagPattern: "storefront-content:{channel}:{locale}",
+		pathPattern: "/{channel}",
 	},
 } as const satisfies Record<string, CacheProfile>;
 
@@ -213,6 +227,58 @@ export function planPageRevalidation(
 	};
 }
 
+export type StorefrontContentRevalidationPlan =
+	| {
+			action: "revalidate";
+			tags: Array<{ tag: string; profile: CacheLifeProfile }>;
+			paths: string[];
+	  }
+	| { action: "skip"; reason: "not_storefront_singleton" | "no_channels" };
+
+/**
+ * Plan invalidation for Saleor `storefront-*` singleton pages (`default`, `default-{channel}`).
+ * Merges with editorial CMS page revalidation in the webhook handler.
+ */
+export function planStorefrontContentRevalidation(
+	pageSlug: string | undefined,
+	channels: readonly string[],
+	fallbackChannel?: string | null,
+): StorefrontContentRevalidationPlan {
+	if (!pageSlug || !isStorefrontContentPageSlug(pageSlug)) {
+		return { action: "skip", reason: "not_storefront_singleton" };
+	}
+
+	const channelList = channels.length > 0 ? channels : fallbackChannel ? [fallbackChannel] : [];
+	if (channelList.length === 0) return { action: "skip", reason: "no_channels" };
+
+	const targetChannels = resolveStorefrontContentChannelsForPageSlug(pageSlug, channelList);
+	if (targetChannels.length === 0) {
+		return { action: "skip", reason: "not_storefront_singleton" };
+	}
+
+	const profile = CACHE_PROFILES.storefrontContent;
+
+	return {
+		action: "revalidate",
+		tags: targetChannels.flatMap((channel) =>
+			buildStorefrontContentCacheTags(channel).map((tag) => ({
+				tag,
+				profile: profile.cacheProfile,
+			})),
+		),
+		paths: targetChannels
+			.map((channel) => buildPath(profile, channel))
+			.filter((path): path is string => path !== null),
+	};
+}
+
+/** All locale cache tags for storefront marketing copy on a channel. */
+export function buildStorefrontContentCacheTags(channel: string): string[] {
+	return localeConfig.available.map((locale) =>
+		buildTag(CACHE_PROFILES.storefrontContent, { channel, locale }),
+	);
+}
+
 function normalizeTagParams(params?: string | CacheTagParams): CacheTagParams {
 	if (typeof params === "string") {
 		return { slug: params };
@@ -221,7 +287,7 @@ function normalizeTagParams(params?: string | CacheTagParams): CacheTagParams {
 }
 
 export function tagPatternHasPlaceholders(pattern: string): boolean {
-	return pattern.includes("{slug}") || pattern.includes("{channel}");
+	return pattern.includes("{slug}") || pattern.includes("{channel}") || pattern.includes("{locale}");
 }
 
 export function isGlobalTagProfile(profile: CacheProfile): boolean {
@@ -239,7 +305,12 @@ export function getChannelScopedTagProfiles(): CacheProfile[] {
 
 function tagPatternToRegExp(pattern: string): RegExp {
 	const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	return new RegExp(`^${escaped.replace("\\{slug\\}", "[^:]+").replace("\\{channel\\}", "[^:]+")}$`);
+	return new RegExp(
+		`^${escaped
+			.replace("\\{slug\\}", "[^:]+")
+			.replace("\\{channel\\}", "[^:]+")
+			.replace("\\{locale\\}", "[^:]+")}$`,
+	);
 }
 
 /**
@@ -313,13 +384,16 @@ export function applyCacheProfile(profile: CacheProfile, params?: string | Cache
 // ============================================================================
 
 export function buildTag(profile: CacheProfile, params?: string | CacheTagParams): string {
-	const { slug, channel } = normalizeTagParams(params);
+	const { slug, channel, locale } = normalizeTagParams(params);
 	let tag = profile.tagPattern;
 	if (slug) tag = tag.replaceAll("{slug}", slug);
 	if (channel) tag = tag.replaceAll("{channel}", channel);
+	if (locale) tag = tag.replaceAll("{locale}", locale);
 
 	if (UNRESOLVED_PLACEHOLDER.test(tag)) {
-		const missing = (["{slug}", "{channel}"] as const).filter((placeholder) => tag.includes(placeholder));
+		const missing = (["{slug}", "{channel}", "{locale}"] as const).filter((placeholder) =>
+			tag.includes(placeholder),
+		);
 		throw new Error(
 			`[cache-manifest] Unresolved tag "${tag}" for profile "${profile.id}". ` +
 				`Provide: ${missing.join(", ")}`,

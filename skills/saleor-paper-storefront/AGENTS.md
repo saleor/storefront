@@ -16,7 +16,7 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 15 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 17 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -27,6 +27,8 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
    - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
+   - 1.4 [Storefront Content Layer](#14-storefront-content-layer)
+   - 1.5 [Storefront Content (Saleor Models)](#15-storefront-content-saleor-models)
 
 2. [Product Pages](#2-product-pages) — **HIGH**
 
@@ -956,6 +958,307 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 | `src/lib/auth/revalidate-storefront-chrome.ts`                       | Layout + checkout cache bust             |
 | `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                   | Post-login cache bust + hard nav         |
 | `src/app/[channel]/(main)/account/actions.ts`                        | Layout revalidation helper               |
+
+---
+
+### 1.4 Storefront Content Layer
+
+Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
+
+> **Companion rule**: Saleor Models setup, Configurator, and slug resolution → `data-storefront-content-saleor.md`  
+> **Operational docs**: `config/saleor/README.md`
+
+---
+
+## Mental Model
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  UI (layout, homepage, cart drawer, checkout)                   │
+│       ↓ reads StorefrontContent                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  getStorefrontContent(channel, locale)   ← "use cache" (server) │
+│       ↓                                                         │
+│  loadStorefrontContent → ContentProvider (code | saleor)        │
+│       ↓                                                         │
+│  code: defaults.ts          saleor: fetch Pages → mappers       │
+│       ↓                              ↓                          │
+│       └──────── mergeStorefrontContent(defaults, partial) ─────┘
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Code defaults always win as the base.** Saleor (or a future CMS provider) supplies **partials** that overlay defaults. The app never ships with blank copy when Saleor is down or a field is unset.
+
+---
+
+## Key Files
+
+| Purpose                     | Location                                                              |
+| --------------------------- | --------------------------------------------------------------------- |
+| Typed contract              | `src/lib/content/types.ts`                                            |
+| Code fallback copy          | `src/lib/content/defaults.ts`                                         |
+| Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
+| Deep merge                  | `src/lib/content/merge.ts`                                            |
+| Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |
+| Client-safe exports         | `src/lib/content/index.ts`                                            |
+| Server-only export          | `src/lib/content/server.ts`                                           |
+| Saleor fetch + mappers      | `src/lib/content/saleor/`                                             |
+| Cache profile + tags        | `src/lib/cache-manifest.ts` (`storefront-content:{channel}:{locale}`) |
+
+**Do not** import `getStorefrontContent` from the client barrel — `"use cache"` must stay server-only.
+
+---
+
+## Providers
+
+| `CONTENT_PROVIDER` | Behavior                                                                  |
+| ------------------ | ------------------------------------------------------------------------- |
+| `code` (default)   | Returns `defaults.ts` only — no Saleor call                               |
+| `saleor`           | Fetches storefront Pages, maps attributes → partial, merges over defaults |
+| `url`              | Reserved; falls back to `code`                                            |
+
+Restart `next dev` after changing `CONTENT_PROVIDER`.
+
+---
+
+## Merge Semantics (important)
+
+When extending mappers or adding fields:
+
+1. **`omitEmpty`** — skip empty strings so Saleor does not overwrite a default with `""`.
+2. **`coalesceArray`** — empty arrays from Saleor do not wipe default list content (e.g. homepage paragraphs).
+3. **Saleor provider** folds surface mappers with `reduce(mergeStorefrontContent, defaults)`.
+4. On GraphQL failure, Saleor provider returns **full defaults** (warn in dev, error log in prod).
+
+Exact field list lives in `types.ts` / `defaults.ts` — those evolve; merge rules stay stable.
+
+---
+
+## Where Content Is Consumed
+
+| Surface                                        | Loader                                                         |
+| ---------------------------------------------- | -------------------------------------------------------------- |
+| Announcement bar, shared chrome                | `(main)/layout.tsx` → `MainChrome`                             |
+| Homepage sections                              | `(main)/page.tsx`                                              |
+| Cart trust / empty copy                        | Cart drawer (client reads props or context from server parent) |
+| Checkout empty states, trust, marketing opt-in | `checkout-session-loader.tsx` → `CheckoutContentProvider`      |
+
+Checkout resolves **channel from cart cookies** when loading content so copy can match the cart's channel.
+
+---
+
+## Caching & Freshness
+
+- Profile: `storefront-content` (~menus tier, ~5 min stale).
+- Tag: `storefront-content:{channel}:{locale}`.
+- **Locale** keys the cache (`storefront-content:{channel}:{locale}`). Saleor Models already hold per-language translations; Paper does not fetch them yet — when implemented, the same Models and Dashboard workflow apply.
+- Invalidation: `PAGE_UPDATED` webhook for `storefront-*` page slugs → `planStorefrontContentRevalidation` in cache manifest.
+- Manual: `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+
+Marketing copy is cached like navigation — cart/checkout **transactional** data stays fresh via `cache: "no-cache"`.
+
+---
+
+## Changing Copy (agent checklist)
+
+**Code-only (no Saleor):**
+
+1. Edit `defaults.ts` and/or `types.ts` if shape changes.
+2. Wire new fields through the relevant page/component.
+
+**Saleor-backed — copy only (no schema change):**
+
+1. Edit values in Dashboard → Models.
+2. Revalidate cache or wait for TTL.
+
+**Saleor-backed — new field or PageType (commerce-as-code):**
+
+1. Add attribute + model field in Configurator YAML (see `data-storefront-content-saleor.md`).
+2. Extend `StorefrontContentPages.graphql` if new attribute types are needed → `pnpm run generate`.
+3. Add slug to `attribute-slugs.ts` and a mapper in `src/lib/content/saleor/mappers/`.
+4. Run `pnpm content:verify-attribute-slugs`.
+5. Configurator deploy to sync schema/seed to Saleor; then set copy in Dashboard for ongoing editorial work.
+6. Revalidate cache or wait for TTL.
+
+---
+
+## Anti-Patterns
+
+- Importing `@/lib/content/server` from `"use client"` components.
+- Putting merchandising copy in `src/config/*.ts` — use the content layer.
+- Hardcoding announcement/homepage strings in UI components when `getStorefrontContent` is available upstream.
+- Assuming empty Saleor attribute means "clear this field" — empty means **keep default** unless you intentionally change merge rules.
+- Listing every attribute slug in this rule — read `attribute-slugs.ts` and mappers for the current contract.
+
+---
+
+### 1.5 Storefront Content (Saleor Models)
+
+Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-type attributes). The storefront maps those Pages into the normalized `StorefrontContent` shape defined in code.
+
+> **Runtime behavior** (providers, merge, cache): `data-storefront-content.md`  
+> **Deploy & tokens**: `config/saleor/README.md`  
+> **Exact attributes** change over time — treat `src/lib/content/attribute-slugs.ts` and `config/saleor/storefront-content.config.yml` as the live contract, not this doc.
+
+---
+
+## Models as the content surface
+
+**Saleor Models** (PageTypes + Pages) are the dedicated place for merchandising and editorial copy in Paper. Each **PageType** defines a purpose — chrome, homepage, cart, checkout — and the **attributes** on that type give structure to otherwise unstructured text (headings, labels, paragraphs, flags).
+
+| Model (PageType)      | Purpose                                  |
+| --------------------- | ---------------------------------------- |
+| `storefront-chrome`   | Site-wide chrome (e.g. announcement bar) |
+| `storefront-homepage` | Homepage sections                        |
+| `storefront-cart`     | Cart drawer copy                         |
+| `storefront-checkout` | Checkout surface copy                    |
+
+That is what modeling is for: keep flexible marketing content **structured and editable** through typed attributes, and mappable into a stable `StorefrontContent` contract in code. **Day-to-day copy changes** happen in Dashboard → Models; Configurator is for **commerce-as-code** when the Saleor schema itself needs updating (see below).
+
+**Models are translatable in Saleor** — attribute values on a Page can be translated per language in Dashboard today. Merchandisers can enter translations now; Paper will serve them once the storefront fetch is wired (no Saleor schema change required).
+
+Pages are **not** channel-scoped in Saleor. Per-channel copy is a **convention** — separate Page instances distinguished by slug (see below), resolved in the storefront provider.
+
+---
+
+## Conceptual Schema
+
+```
+PageType (e.g. storefront-homepage)
+  └── assigned PAGE_TYPE attributes  (hero heading, CTA label, …)
+  └── Page instances (Models in Dashboard)
+        └── attribute values per page
+```
+
+**One PageType per storefront surface** (chrome, homepage, cart, checkout). Constants in `src/lib/content/constants.ts` (`STOREFRONT_PAGE_TYPES`).
+
+Dashboard tabs are typically named **Storefront — Chrome**, **Storefront — Homepage**, etc. PageType slugs use the `storefront-` prefix.
+
+---
+
+## Slug Stack (global vs per-channel copy)
+
+Saleor enforces **globally unique page slugs** — there is no native “this page belongs to channel X”. Paper simulates per-channel copy with slug naming:
+
+| Tier                 | Page slug pattern                                                       | Purpose                       |
+| -------------------- | ----------------------------------------------------------------------- | ----------------------------- |
+| **Global**           | Same as PageType slug (e.g. `storefront-homepage`)                      | Default copy for all channels |
+| **Channel override** | `{pageTypeSlug}-{channelSlug}` (e.g. `storefront-homepage-channel-pln`) | Per-channel copy              |
+
+**Resolution order** (in `resolve-page.ts`):
+
+```
+1. storefront-{surface}-{channel}   ← channel override wins
+2. storefront-{surface}           ← global fallback
+3. defaults.ts                    ← code fallback (always present)
+```
+
+Fetch collects **both** candidate slugs per surface, then picks the best match.
+
+**Revalidation scope:** editing the global page invalidates all channels; editing a channel-specific page invalidates that channel only (`resolveStorefrontContentChannelsForPageSlug`).
+
+---
+
+## Attributes: Names vs Slugs
+
+| Layer                  | Uses                                                                       |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Configurator YAML**  | Human **display names** on `contentAttributes` and model `attributes` keys |
+| **Saleor**             | Assigns **slugs** from names (slugify)                                     |
+| **Storefront mappers** | Read by **slug** via `attribute-slugs.ts`                                  |
+
+Configurator resolves attributes by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — run `pnpm content:verify-attribute-slugs`.
+
+**Supported GraphQL types today:** `PLAIN_TEXT`, `BOOLEAN`. Other Saleor input types require extending `StorefrontContentPages.graphql` and mappers first.
+
+---
+
+## Configurator (commerce-as-code, not editorial)
+
+**Saleor Configurator** syncs YAML to Saleor when the **structure** of storefront content changes — new PageTypes, new attributes, seed models, baseline values for new environments. It is **not** the day-to-day editor for merchandisers.
+
+| Who / when                                                        | Tool                                                        |
+| ----------------------------------------------------------------- | ----------------------------------------------------------- |
+| Merchandiser updating hero text, trust labels, translations       | **Dashboard → Models**                                      |
+| Developer adding a new content field or bootstrapping dev/staging | **Configurator** (`storefront-content.config.yml` + deploy) |
+
+Seed file: `config/saleor/storefront-content.config.yml`
+
+```bash
+pnpm configurator:storefront-content:validate   # offline schema check
+pnpm configurator:storefront-content:plan       # dry-run remote diff
+pnpm configurator:storefront-content:deploy     # apply (additive for omitted sections)
+```
+
+**Token split (dev safety):**
+
+| Variable                    | File                      | Used by                           |
+| --------------------------- | ------------------------- | --------------------------------- |
+| `SALEOR_APP_TOKEN`          | `.env.local`              | Next.js runtime (narrow)          |
+| `SALEOR_CONFIGURATOR_TOKEN` | `.env.configurator.local` | Configurator scripts only (broad) |
+
+Never expose configurator token as `NEXT_PUBLIC_*` or import it in app code.
+
+**Plan vs deploy:** `plan` may show spurious DELETE drift for entities not in the partial YAML. `deploy` only creates/updates what's listed — it does not wipe the catalog when sections are omitted. See `config/saleor/README.md` for details.
+
+**After deploy:** set `CONTENT_PROVIDER=saleor`, restart dev server. Ongoing copy work stays in Dashboard — only return to Configurator when the attribute schema or seed models need to change in code.
+
+---
+
+## Mapper Pipeline (saleor provider)
+
+```
+collectStorefrontContentPageSlugs(channel)
+  → GraphQL StorefrontContentPages (by slug list)
+  → indexStorefrontPagesBySlug (skip unpublished)
+  → resolveStorefrontPageForType per surface
+  → mapChromePage | mapHomepagePage | mapCartPage | mapCheckoutPage
+  → reduce(mergeStorefrontContent, defaults)
+```
+
+Each mapper returns a **partial** `StorefrontContent`. Mappers live under `src/lib/content/saleor/mappers/`.
+
+When adding a new editable field:
+
+1. Add `contentAttribute` + model default in YAML.
+2. Add slug constant in `attribute-slugs.ts`.
+3. Map in the appropriate surface mapper using `buildAttributeMap` / `attrText`.
+4. Add to `types.ts`, `defaults.ts`, and the UI consumer.
+
+---
+
+## Channel Override Recipe
+
+To override homepage copy for channel `channel-pln`:
+
+1. Create (or deploy) a Page with slug `storefront-homepage-channel-pln` under PageType `storefront-homepage`.
+2. Set attribute values on that page.
+3. Request `getStorefrontContent("channel-pln", locale)` — provider resolves the channel page first.
+
+Global page `storefront-homepage` remains the fallback for other channels.
+
+---
+
+## i18n
+
+**Saleor (ready now):** Models support translations — editors can translate attribute values per language on each Page in Dashboard. The content is there when Paper asks for it.
+
+**Paper (fetch not wired yet):**
+
+- `getStorefrontContent(channel, locale)` and cache tags (`storefront-content:{channel}:{locale}`) already key by locale — the plumbing anticipates per-locale copy.
+- GraphQL and the Saleor provider do **not** pass `languageCode` / read translation fields yet, so every locale still gets default-language values from Saleor.
+- **To implement:** extend `StorefrontContentPages.graphql` and the provider fetch to request translations for the requested `locale`. Mappers and `StorefrontContent` shape stay the same; no new PageTypes or Configurator changes.
+
+---
+
+## Anti-Patterns
+
+- Mixing surfaces on one PageType — keep chrome, homepage, cart, and checkout as separate types with their own attribute sets.
+- Reusing slug `default` for pages — Saleor needs unique slugs; use the PageType slug for global singletons.
+- Putting **slugs** in Configurator model `attributes` keys — use **display names** (Configurator resolves to attributes).
+- Duplicating attribute lists in skills/docs — grep `attribute-slugs.ts` instead.
+- Expecting `plan` delete noise to match `deploy` behavior — trust the README, not the scary diff.
+- Running Configurator deploy to change live copy — edit Models in Dashboard instead; Configurator is for schema and environment bootstrap.
 
 ---
 
@@ -2830,14 +3133,15 @@ Create and style UI components with design tokens and shadcn/ui primitives.
 
 ## Component Location
 
-| Type                       | Location                  |
-| -------------------------- | ------------------------- |
-| Shared components          | `src/ui/components/`      |
-| Product page components    | `src/ui/components/pdp/`  |
-| Product listing components | `src/ui/components/plp/`  |
-| Base primitives            | `src/ui/components/ui/`   |
-| Navigation                 | `src/ui/components/nav/`  |
-| Cart                       | `src/ui/components/cart/` |
+| Type                          | Location                  |
+| ----------------------------- | ------------------------- |
+| Shared components             | `src/ui/components/`      |
+| Homepage & marketing sections | `src/ui/sections/`        |
+| Product page components       | `src/ui/components/pdp/`  |
+| Product listing components    | `src/ui/components/plp/`  |
+| Base primitives               | `src/ui/components/ui/`   |
+| Navigation                    | `src/ui/components/nav/`  |
+| Cart                          | `src/ui/components/cart/` |
 
 ## Design Tokens
 

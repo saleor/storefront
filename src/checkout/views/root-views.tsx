@@ -19,6 +19,7 @@ import {
 	PaymentCompletingScreen,
 } from "@/checkout/views/saleor-checkout";
 import { EmptyCartPage } from "@/checkout/views/empty-cart-page";
+import { useCheckoutContent } from "@/lib/content";
 
 function shouldPrioritizeAccountConfirmation(
 	searchParams: URLSearchParams,
@@ -37,6 +38,7 @@ function shouldPrioritizeAccountConfirmation(
 }
 
 export const RootViews = () => {
+	const { emptySession } = useCheckoutContent();
 	const searchParams = useSearchParams();
 	const { loadState, checkout } = useCheckoutData();
 	const transition = useCheckoutTransition();
@@ -72,12 +74,7 @@ export const RootViews = () => {
 	}
 
 	if (loadState === "none") {
-		return (
-			<PageNotFound
-				title="Your cart is empty"
-				message="Add items from the store, then return here to complete your purchase."
-			/>
-		);
+		return <PageNotFound title={emptySession.title} message={emptySession.message} />;
 	}
 
 	if (loadState === "not_found") {

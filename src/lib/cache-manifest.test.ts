@@ -12,6 +12,7 @@ import {
 	buildMenuRevalidationTags,
 	planMenuRevalidation,
 	planPageRevalidation,
+	planStorefrontContentRevalidation,
 } from "./cache-manifest";
 import { PAPER_CACHE_LIFE_PROFILE_NAMES, paperCacheLifeProfiles } from "./cache-life-profiles";
 
@@ -41,6 +42,7 @@ describe("resolveCacheLifeProfileForTag", () => {
 		expect(resolveCacheLifeProfileForTag("footer-menu:us")).toBe("menus");
 		expect(resolveCacheLifeProfileForTag("product:blue-shirt")).toBe("catalog");
 		expect(resolveCacheLifeProfileForTag("page:about-us")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("storefront-content:default-channel:en-US")).toBe("menus");
 		expect(resolveCacheLifeProfileForTag("channels")).toBe("channels");
 	});
 
@@ -162,6 +164,34 @@ describe("page revalidation helpers", () => {
 		expect(planPageRevalidation("about-us", [], null)).toEqual({
 			action: "error",
 			reason: "no_channels",
+		});
+	});
+});
+
+describe("storefront content revalidation helpers", () => {
+	it("skips non-storefront editorial page slugs", () => {
+		expect(planStorefrontContentRevalidation("about-us", ["us"])).toEqual({
+			action: "skip",
+			reason: "not_storefront_singleton",
+		});
+	});
+
+	it("revalidates all channels for global PageType slug", () => {
+		expect(planStorefrontContentRevalidation("storefront-homepage", ["us", "uk"], null)).toEqual({
+			action: "revalidate",
+			tags: [
+				{ tag: "storefront-content:us:en-US", profile: "menus" },
+				{ tag: "storefront-content:uk:en-US", profile: "menus" },
+			],
+			paths: ["/us", "/uk"],
+		});
+	});
+
+	it("revalidates a single channel for {pageType}-{channel} slug", () => {
+		expect(planStorefrontContentRevalidation("storefront-homepage-us", ["us", "uk"], null)).toEqual({
+			action: "revalidate",
+			tags: [{ tag: "storefront-content:us:en-US", profile: "menus" }],
+			paths: ["/us"],
 		});
 	});
 });

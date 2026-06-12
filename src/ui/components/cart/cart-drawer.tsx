@@ -13,6 +13,7 @@ import { formatMoney } from "@/lib/utils";
 import { localeConfig } from "@/config/locale";
 import { hasDiscount } from "@/lib/pricing";
 import { buildCheckoutPath } from "@paper/session-bridge";
+import type { CartContent } from "@/lib/content";
 
 interface CartLine {
 	id: string;
@@ -110,6 +111,7 @@ interface CartDrawerProps {
 		};
 	} | null;
 	channel: string;
+	cart: CartContent;
 	deleteCartLine: DeleteCartLine;
 	updateCartLineQuantity: UpdateCartLineQuantity;
 }
@@ -119,6 +121,7 @@ export function CartDrawer({
 	lines,
 	totalPrice,
 	channel,
+	cart,
 	deleteCartLine,
 	updateCartLineQuantity,
 }: CartDrawerProps) {
@@ -197,16 +200,14 @@ export function CartDrawer({
 							<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
 								<ShoppingBag className="h-8 w-8 text-muted-foreground" />
 							</div>
-							<h3 className="mb-2 text-lg font-medium">Your bag is empty</h3>
-							<p className="mb-6 text-sm text-muted-foreground">
-								Looks like you haven&apos;t added anything to your bag yet.
-							</p>
+							<h3 className="mb-2 text-lg font-medium">{cart.empty.title}</h3>
+							<p className="mb-6 text-sm text-muted-foreground">{cart.empty.body}</p>
 							<Link
 								href={`/${channel}/products`}
 								onClick={closeCart}
 								className={buttonClassName({ asLink: true })}
 							>
-								Start Shopping
+								{cart.empty.ctaLabel}
 							</Link>
 						</div>
 					) : (
@@ -389,11 +390,11 @@ export function CartDrawer({
 						<div className="flex items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
 							<span className="flex items-center gap-1.5">
 								<Truck className="h-4 w-4" />
-								Free delivery over {formatMoney(freeShippingThreshold, currency)}
+								{cart.trust.freeShippingPrefix} {formatMoney(freeShippingThreshold, currency)}
 							</span>
 							<span className="flex items-center gap-1.5">
 								<RotateCcw className="h-4 w-4" />
-								30-day returns
+								{cart.trust.returnsLabel}
 							</span>
 						</div>
 					</div>

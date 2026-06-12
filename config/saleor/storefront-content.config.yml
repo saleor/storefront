@@ -1,0 +1,194 @@
+# Paper storefront marketing copy — Saleor Configurator 3.23+
+#
+# Deploy:
+#   pnpm configurator:storefront-content:plan
+#   pnpm configurator:storefront-content:deploy
+#
+# Requires SALEOR_APP_TOKEN with MANAGE_PAGES + MANAGE_PAGE_TYPES_AND_ATTRIBUTES (or admin).
+# After deploy: CONTENT_PROVIDER=saleor in storefront .env.local
+#
+# Page slug convention (globally unique in Saleor):
+#   storefront-chrome, storefront-homepage, storefront-cart, storefront-checkout
+#   Channel override: storefront-chrome-{channelSlug}
+#
+# Attribute slugs must match src/lib/content/attribute-slugs.ts
+
+contentAttributes:
+  # Storefront — Chrome
+  - name: Announcement ID
+    inputType: PLAIN_TEXT
+  - name: Announcement message
+    inputType: PLAIN_TEXT
+  - name: Announcement href
+    inputType: PLAIN_TEXT
+  - name: Announcement link label
+    inputType: PLAIN_TEXT
+  - name: Announcement dismissible
+    inputType: BOOLEAN
+  # Storefront — Homepage
+  - name: Hero heading
+    inputType: PLAIN_TEXT
+  - name: Hero subheading
+    inputType: PLAIN_TEXT
+  - name: Hero CTA label
+    inputType: PLAIN_TEXT
+  - name: Featured heading
+    inputType: PLAIN_TEXT
+  - name: Featured limit
+    inputType: PLAIN_TEXT
+  - name: Brand story heading
+    inputType: PLAIN_TEXT
+  - name: Brand story paragraph 1
+    inputType: PLAIN_TEXT
+  - name: Brand story paragraph 2
+    inputType: PLAIN_TEXT
+  - name: Values heading
+    inputType: PLAIN_TEXT
+  - name: Values columns desktop
+    inputType: PLAIN_TEXT
+  - name: Values column 1 title
+    inputType: PLAIN_TEXT
+  - name: Values column 1 text
+    inputType: PLAIN_TEXT
+  - name: Values column 2 title
+    inputType: PLAIN_TEXT
+  - name: Values column 2 text
+    inputType: PLAIN_TEXT
+  - name: Values column 3 title
+    inputType: PLAIN_TEXT
+  - name: Values column 3 text
+    inputType: PLAIN_TEXT
+  - name: Editorial heading
+    inputType: PLAIN_TEXT
+  - name: Editorial paragraph 1
+    inputType: PLAIN_TEXT
+  - name: Editorial image position
+    inputType: PLAIN_TEXT
+  - name: Editorial CTA label
+    inputType: PLAIN_TEXT
+  # Storefront — Cart
+  - name: Empty title
+    inputType: PLAIN_TEXT
+  - name: Empty body
+    inputType: PLAIN_TEXT
+  - name: Empty CTA label
+    inputType: PLAIN_TEXT
+  - name: Trust free shipping prefix
+    inputType: PLAIN_TEXT
+  - name: Trust returns label
+    inputType: PLAIN_TEXT
+  # Storefront — Checkout
+  - name: Empty cart title
+    inputType: PLAIN_TEXT
+  - name: Empty cart body
+    inputType: PLAIN_TEXT
+  - name: Empty cart start label
+    inputType: PLAIN_TEXT
+  - name: Empty cart go back label
+    inputType: PLAIN_TEXT
+  - name: Empty session title
+    inputType: PLAIN_TEXT
+  - name: Empty session message
+    inputType: PLAIN_TEXT
+  - name: Marketing opt-in label
+    inputType: PLAIN_TEXT
+  - name: Trust secure checkout
+    inputType: PLAIN_TEXT
+  - name: Trust Stripe processor
+    inputType: PLAIN_TEXT
+
+modelTypes:
+  - name: "Storefront — Chrome"
+    slug: storefront-chrome
+    attributes:
+      - attribute: Announcement ID
+      - attribute: Announcement message
+      - attribute: Announcement href
+      - attribute: Announcement link label
+      - attribute: Announcement dismissible
+
+  - name: "Storefront — Homepage"
+    slug: storefront-homepage
+    attributes:
+      - attribute: Hero heading
+      - attribute: Hero subheading
+      - attribute: Hero CTA label
+      - attribute: Featured heading
+      - attribute: Featured limit
+      - attribute: Brand story heading
+      - attribute: Brand story paragraph 1
+      - attribute: Brand story paragraph 2
+      - attribute: Values heading
+      - attribute: Values columns desktop
+      - attribute: Values column 1 title
+      - attribute: Values column 1 text
+      - attribute: Values column 2 title
+      - attribute: Values column 2 text
+      - attribute: Values column 3 title
+      - attribute: Values column 3 text
+      - attribute: Editorial heading
+      - attribute: Editorial paragraph 1
+      - attribute: Editorial image position
+      - attribute: Editorial CTA label
+
+  - name: "Storefront — Cart"
+    slug: storefront-cart
+    attributes:
+      - attribute: Empty title
+      - attribute: Empty body
+      - attribute: Empty CTA label
+      - attribute: Trust free shipping prefix
+      - attribute: Trust returns label
+
+  - name: "Storefront — Checkout"
+    slug: storefront-checkout
+    attributes:
+      - attribute: Empty cart title
+      - attribute: Empty cart body
+      - attribute: Empty cart start label
+      - attribute: Empty cart go back label
+      - attribute: Empty session title
+      - attribute: Empty session message
+      - attribute: Marketing opt-in label
+      - attribute: Trust secure checkout
+      - attribute: Trust Stripe processor
+
+# Model attribute keys use contentAttribute *names* (Configurator). Saleor assigns slugs
+# (see src/lib/content/attribute-slugs.ts) which Paper mappers read at runtime.
+models:
+  - title: Storefront Chrome
+    slug: storefront-chrome
+    modelType: "Storefront — Chrome"
+    isPublished: true
+    attributes:
+      Announcement ID: welcome-promo
+      Announcement message: "Free shipping on orders over $75"
+      Announcement dismissible: true
+
+  - title: Storefront Homepage
+    slug: storefront-homepage
+    modelType: "Storefront — Homepage"
+    isPublished: true
+    attributes:
+      Hero heading: "Discover our collection"
+      Hero CTA label: "Shop all"
+      Featured heading: "Featured products"
+      Featured limit: "8"
+
+  - title: Storefront Cart
+    slug: storefront-cart
+    modelType: "Storefront — Cart"
+    isPublished: true
+    attributes:
+      Empty title: "Your bag is empty"
+      Trust free shipping prefix: "Free delivery over"
+      Trust returns label: "30-day returns"
+
+  - title: Storefront Checkout
+    slug: storefront-checkout
+    modelType: "Storefront — Checkout"
+    isPublished: true
+    attributes:
+      Marketing opt-in label: "Email me with news and offers"
+      Trust secure checkout: "Secure checkout"
+      Trust Stripe processor: "Payments processed by Stripe"

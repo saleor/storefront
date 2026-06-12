@@ -21,7 +21,11 @@
 		"test:run": "vitest run",
 		"typecheck": "tsc --noEmit",
 		"knip": "knip",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"configurator:storefront-content:validate": "pnpm dlx @saleor/configurator validate --config config/saleor/storefront-content.config.yml",
+		"configurator:storefront-content:plan": "sh scripts/configurator-storefront-content.sh plan",
+		"configurator:storefront-content:deploy": "sh scripts/configurator-storefront-content.sh deploy",
+		"content:verify-attribute-slugs": "node scripts/verify-storefront-attribute-slugs.mjs"
 	},
 	"dependencies": {
 		"@graphql-typed-document-node/core": "3.2.0",

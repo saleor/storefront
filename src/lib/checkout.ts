@@ -22,6 +22,33 @@ export async function getIdFromCookies(channel: string) {
  * per channel. With carts in multiple channels the default channel wins;
  * otherwise channels are compared alphabetically so the pick is deterministic.
  */
+/** Channel slug from cart cookies when checkout channel is not yet known (e.g. empty checkout). */
+export async function getChannelSlugFromCartCookies(): Promise<string | null> {
+	try {
+		const cartCookies = (await cookies())
+			.getAll()
+			.filter((cookie) => cookie.name.startsWith("checkoutId-") && cookie.value);
+
+		if (cartCookies.length === 0) {
+			return null;
+		}
+
+		const channelFromCookie = (name: string) => name.slice(checkoutIdCookieName("").length);
+
+		const defaultChannel = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL;
+		if (defaultChannel) {
+			const preferred = cartCookies.find((cookie) => cookie.name === checkoutIdCookieName(defaultChannel));
+			if (preferred) {
+				return channelFromCookie(preferred.name);
+			}
+		}
+
+		return channelFromCookie([...cartCookies].sort((a, b) => a.name.localeCompare(b.name))[0].name);
+	} catch {
+		return null;
+	}
+}
+
 export async function getFirstCheckoutIdFromCartCookies(): Promise<string | null> {
 	try {
 		const cartCookies = (await cookies())

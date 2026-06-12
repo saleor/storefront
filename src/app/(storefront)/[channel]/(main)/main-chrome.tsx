@@ -1,5 +1,5 @@
 import { type ReactNode, Suspense } from "react";
-import { siteChrome } from "@/config/site-chrome";
+import type { StorefrontChromeContent } from "@/lib/content";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
 import { Logo } from "@/ui/components/shared/logo";
@@ -63,8 +63,16 @@ function FooterSkeleton() {
 }
 
 /** Header + page + footer shell. User menu auth syncs via `HeaderAuthRefresh` (refresh on nav, revalidate when tab refocuses). */
-export function MainChrome({ channel, children }: { channel: string; children: ReactNode }) {
-	const { announcementBar } = siteChrome;
+export function MainChrome({
+	channel,
+	chrome,
+	children,
+}: {
+	channel: string;
+	chrome: StorefrontChromeContent;
+	children: ReactNode;
+}) {
+	const { announcementBar } = chrome;
 
 	return (
 		<>

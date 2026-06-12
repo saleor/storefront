@@ -5,6 +5,7 @@ import { Label } from "@/ui/components/ui/label";
 import { Checkbox } from "@/ui/components/ui/checkbox";
 import { SignedInUser, GuestContact } from "@/checkout/components/contact";
 import { isCheckoutMarketingConsentEnabled } from "@/checkout/lib/marketing-consent";
+import { useCheckoutContent } from "@/lib/content";
 
 // User type matching what useUser() returns
 type User = {
@@ -69,6 +70,8 @@ export const ContactSection: FC<ContactSectionProps> = ({
 	subscribeNews,
 	onSubscribeChange,
 }) => {
+	const { marketingOptInLabel } = useCheckoutContent();
+
 	if (isLoading) {
 		return (
 			<section className="space-y-4">
@@ -108,7 +111,7 @@ export const ContactSection: FC<ContactSectionProps> = ({
 								onCheckedChange={(checked) => onSubscribeChange(checked === true)}
 							/>
 							<Label htmlFor="subscribe" className="cursor-pointer text-sm text-muted-foreground">
-								Email me with news and offers
+								{marketingOptInLabel}
 							</Label>
 						</div>
 					)}

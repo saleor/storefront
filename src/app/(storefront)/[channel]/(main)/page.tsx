@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { brandConfig } from "@/config/brand";
-import { homepageContent } from "@/config/homepage-content";
+import { getStorefrontContent } from "@/lib/content/server";
 import { FeaturedCollectionSection } from "@/ui/sections/featured-collection-section/featured-collection-section";
 import { FeaturedCollectionSkeleton } from "@/ui/sections/featured-collection-section/featured-collection-skeleton";
 import { HeroBanner } from "@/ui/sections/hero-banner/hero-banner";
@@ -17,8 +17,12 @@ export const metadata = {
  * Homepage — sync shell; only the featured collection streams in Suspense.
  * Static sections use channel-relative hrefs (LinkWithChannel in section CTAs).
  */
-export default function Page(props: { params: Promise<{ channel: string }> }) {
-	const { hero, featuredCollection, brandStory, values, editorial } = homepageContent;
+export default async function Page(props: { params: Promise<{ channel: string }> }) {
+	const { channel } = await props.params;
+	const {
+		surfaces: { homepage },
+	} = await getStorefrontContent(channel);
+	const { hero, featuredCollection, brandStory, values, editorial } = homepage;
 
 	return (
 		<>
