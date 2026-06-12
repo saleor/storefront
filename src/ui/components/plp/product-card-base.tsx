@@ -69,7 +69,10 @@ export function ProductCardBase({
 			<Link href={product.href} prefetch={false} className="block">
 				<div className="space-y-1.5">
 					{product.brand && <p className="text-xs tracking-wide text-muted-foreground">{product.brand}</p>}
-					<h3 className="line-clamp-2 font-medium leading-snug underline-offset-2 md:group-hover:underline">
+					<h3
+						className="truncate font-medium leading-snug underline-offset-2 md:group-hover:underline"
+						title={product.name}
+					>
 						{product.name}
 					</h3>
 
