@@ -17,6 +17,8 @@ export type HomepageHeroContent = {
 
 export type HomepageFeaturedCollectionContent = {
 	heading: string;
+	/** Saleor collection slug for the product grid (Dashboard: Featured collection reference). */
+	collectionSlug: string;
 	limit: number;
 };
 

@@ -2,7 +2,7 @@ import { STOREFRONT_PAGE_TYPES } from "@/lib/content/constants";
 import { STOREFRONT_HOMEPAGE_ATTRIBUTES as A } from "@/lib/content/attribute-slugs";
 import type { StorefrontContentPageFragment } from "@/gql/graphql";
 import type { PartialStorefrontContent } from "@/lib/content/saleor/types";
-import { attrInt, attrText, buildAttributeMap } from "@/lib/content/saleor/attributes";
+import { attrCollectionSlug, attrInt, attrText, buildAttributeMap } from "@/lib/content/saleor/attributes";
 import { omitEmpty } from "@/lib/content/saleor/omit-empty";
 
 const VALUE_COLUMNS = [
@@ -29,6 +29,7 @@ export function mapHomepagePage(page: StorefrontContentPageFragment | null): Par
 
 	const featuredCollection = omitEmpty({
 		heading: attrText(attrs, A.featuredHeading),
+		collectionSlug: attrCollectionSlug(page, A.featuredCollection),
 		limit: attrInt(attrs, A.featuredLimit),
 	});
 	if (Object.keys(featuredCollection).length > 0) {

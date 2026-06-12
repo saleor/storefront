@@ -39,3 +39,20 @@ export function attrOptionalUrl(map: AttributeMap, slug: string): string | null 
 	const text = attrText(map, slug);
 	return text ?? null;
 }
+
+/** Single collection reference attribute (AssignedSingleCollectionReferenceAttribute). */
+export function attrCollectionSlug(
+	page: StorefrontContentPageFragment | null | undefined,
+	attributeSlug: string,
+): string | undefined {
+	if (!page?.isPublished) return undefined;
+
+	for (const assigned of page.assignedAttributes) {
+		if (assigned.attribute.slug !== attributeSlug) continue;
+		if ("collection" in assigned && assigned.collection?.slug) {
+			return assigned.collection.slug;
+		}
+	}
+
+	return undefined;
+}

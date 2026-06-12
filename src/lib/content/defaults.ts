@@ -25,6 +25,7 @@ export const defaultStorefrontContent = {
 			},
 			featuredCollection: {
 				heading: "Featured products",
+				collectionSlug: "featured-products",
 				limit: 8,
 			},
 			brandStory: {

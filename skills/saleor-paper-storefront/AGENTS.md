@@ -16,7 +16,7 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 17 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 18 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -29,6 +29,7 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
    - 1.4 [Storefront Content Layer](#14-storefront-content-layer)
    - 1.5 [Storefront Content (Saleor Models)](#15-storefront-content-saleor-models)
+   - 1.6 [Storefront Content Attributes](#16-storefront-content-attributes)
 
 2. [Product Pages](#2-product-pages) — **HIGH**
 
@@ -178,7 +179,7 @@ Layout shell
 ├── Suspense → Footer (cached menus + channels)
 └── Suspense → CartDrawer (cookies, no-cache)
 
-Invalidation: Saleor webhook → revalidateTag(tag, profile) + revalidatePath per channel
+Invalidation: Saleor webhook → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
 ```
 
 **Key files**
@@ -216,15 +217,16 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 
 ### Tag Registry
 
-| Tag Pattern             | Profile ID    | Used By                                        | Invalidated When          |
-| ----------------------- | ------------- | ---------------------------------------------- | ------------------------- |
-| `product:{slug}`        | `products`    | PDP `getProductData()`                         | Product updated in Saleor |
-| `category:{slug}`       | `categories`  | `getCategoryData()`                            | Category updated          |
-| `collection:{slug}`     | `collections` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
-| `page:{slug}`           | `pages`       | `getPageData()` (CMS)                          | Page updated              |
-| `navigation:{channel}`  | `navigation`  | `getNavbarMenuItems()`                         | Navbar menu changed       |
-| `footer-menu:{channel}` | `footerMenu`  | `getFooterMenuItems()`                         | Footer menu changed       |
-| `channels`              | `channels`    | `getCachedChannelsList()`                      | Channel list changed      |
+| Tag Pattern                             | Profile ID           | Used By                                        | Invalidated When            |
+| --------------------------------------- | -------------------- | ---------------------------------------------- | --------------------------- |
+| `product:{slug}`                        | `products`           | PDP `getProductData()`                         | Product updated in Saleor   |
+| `category:{slug}`                       | `categories`         | `getCategoryData()`                            | Category updated            |
+| `collection:{slug}`                     | `collections`        | `getCollectionData()`, `getFeaturedProducts()` | Collection updated          |
+| `page:{slug}`                           | `pages`              | `getPageData()` (CMS)                          | Page updated                |
+| `navigation:{channel}`                  | `navigation`         | `getNavbarMenuItems()`                         | Navbar menu changed         |
+| `footer-menu:{channel}`                 | `footerMenu`         | `getFooterMenuItems()`                         | Footer menu changed         |
+| `storefront-content:{channel}:{locale}` | `storefront-content` | `getStorefrontContent()`                       | `storefront-*` Page updated |
+| `channels`                              | `channels`           | `getCachedChannelsList()`                      | Channel list changed        |
 
 **Named `cacheLife` tiers** (via `applyCacheProfile`, configured in `next.config.js`):
 
@@ -233,6 +235,7 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 | `products`                  | `catalog`  | ~5 min      | Products, categories, collections |
 | `pages`                     | `catalog`  | ~5 min      | CMS pages                         |
 | `navigation` / `footerMenu` | `menus`    | ~1 hour     | Nav + footer menus                |
+| `storefront-content`        | `menus`    | ~5 min      | Merchandising copy (Models)       |
 | `channels`                  | `channels` | longer      | Channel metadata list             |
 
 Do **not** add fetch-level `revalidate` on GraphQL calls inside `"use cache"` functions — `cacheLife` + webhooks handle freshness.
@@ -465,20 +468,23 @@ This keeps `<h1>` in the static shell for SEO while allowing dynamic content to 
 
 ### Automatic via Webhooks (Recommended)
 
-When configured, Saleor sends webhooks on data changes, triggering instant invalidation.
+**Production path: [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** (`../saleor-paper-app/` when developing both repos locally).
 
-**Setup in Saleor Dashboard:**
+```
+Saleor event → paper-app webhook handler → POST /api/revalidate → storefront cache purge
+```
 
-1. Go to **Configuration → Webhooks**
-2. Create webhook pointing to: `https://your-site.com/api/revalidate`
-3. Subscribe to events:
-   - `PRODUCT_CREATED`, `PRODUCT_UPDATED`, `PRODUCT_DELETED`
-   - `CATEGORY_CREATED`, `CATEGORY_UPDATED`, `CATEGORY_DELETED`
-   - `COLLECTION_CREATED`, `COLLECTION_UPDATED`, `COLLECTION_DELETED`
-   - `PAGE_CREATED`, `PAGE_UPDATED`, `PAGE_DELETED`
-   - `MENU_CREATED`, `MENU_UPDATED`, `MENU_DELETED`
-   - `MENU_ITEM_CREATED`, `MENU_ITEM_UPDATED`, `MENU_ITEM_DELETED`
-4. Copy the **secret key** to `SALEOR_WEBHOOK_SECRET` env var
+On install, the app registers managed webhooks (product, category, collection, promotion, page, menu) and proxies payloads to the storefront URL configured in app settings. Merchants get revalidation logs and manual purge in Dashboard; `REVALIDATE_SECRET` is shared between app and storefront.
+
+| Event family                              | paper-app handler       | Storefront effect                                                                             |
+| ----------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------- |
+| `PRODUCT_*`, `CATEGORY_*`, `COLLECTION_*` | `product-changed`, etc. | Catalog tags + paths                                                                          |
+| `PAGE_*`                                  | `page-changed`          | CMS `page:{slug}` **and** `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
+| `MENU_*`, `MENU_ITEM_*`                   | `menu-changed`          | `navigation:{channel}`, `footer-menu:{channel}`                                               |
+
+**Do not** create parallel Saleor webhooks pointing directly at `/api/revalidate` when the Paper app is installed — duplicate deliveries cause redundant work and bypass app logging.
+
+**Direct storefront webhooks** (Saleor Dashboard → `https://your-site.com/api/revalidate`) remain valid for self-hosted setups without the app. Subscribe to the same events and set `SALEOR_WEBHOOK_SECRET` on the storefront.
 
 **What happens on webhook** (via `src/app/api/revalidate/route.ts`):
 
@@ -965,7 +971,7 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 
 Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
 
-> **Companion rule**: Saleor Models setup, Configurator, and slug resolution → `data-storefront-content-saleor.md`  
+> **Companion rules**: Saleor Models → `data-storefront-content-saleor.md` · Attribute types & catalog refs → `data-storefront-content-attributes.md`  
 > **Operational docs**: `config/saleor/README.md`
 
 ---
@@ -1052,8 +1058,18 @@ Checkout resolves **channel from cart cookies** when loading content so copy can
 - Profile: `storefront-content` (~menus tier, ~5 min stale).
 - Tag: `storefront-content:{channel}:{locale}`.
 - **Locale** keys the cache (`storefront-content:{channel}:{locale}`). Saleor Models already hold per-language translations; Paper does not fetch them yet — when implemented, the same Models and Dashboard workflow apply.
-- Invalidation: `PAGE_UPDATED` webhook for `storefront-*` page slugs → `planStorefrontContentRevalidation` in cache manifest.
-- Manual: `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — do not point Saleor webhooks directly at the storefront for production. The app subscribes to Saleor events, then `POST`s to Paper's `/api/revalidate` with the same payload shape the storefront handler expects.
+- **Storefront content:** `PAGE_*` on Pages whose slug matches `storefront-*` (e.g. `storefront-homepage`, `storefront-homepage-{channel}`) → `planStorefrontContentRevalidation()` in `cache-manifest.ts` → `revalidateTag(storefront-content:{channel}:{locale})` + homepage paths per channel.
+- **Menus** (nav/footer): `MENU_*` / `MENU_ITEM_*` → separate profiles (`navigation`, `footerMenu`) — same paper-app → storefront path.
+- The `storefront-content` profile is listed in `GET /api/cache-info` so the Dashboard app can offer manual purge alongside catalog entities.
+- Manual (dev / emergency): `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+
+```
+Saleor (PAGE_UPDATED on storefront-homepage)
+    → saleor-paper-app (page-changed webhook)
+    → POST /api/revalidate { page: { slug } }
+    → planStorefrontContentRevalidation → revalidateTag + revalidatePath
+```
 
 Marketing copy is cached like navigation — cart/checkout **transactional** data stays fresh via `cache: "no-cache"`.
 
@@ -1169,7 +1185,7 @@ Fetch collects **both** candidate slugs per surface, then picks the best match.
 
 Configurator resolves attributes by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — run `pnpm content:verify-attribute-slugs`.
 
-**Supported GraphQL types today:** `PLAIN_TEXT`, `BOOLEAN`. Other Saleor input types require extending `StorefrontContentPages.graphql` and mappers first.
+**Attribute types:** see `data-storefront-content-attributes.md` — scalar types, catalog **references** (`SINGLE_REFERENCE` / `REFERENCE`), and what Paper wires today.
 
 ---
 
@@ -1251,6 +1267,28 @@ Global page `storefront-homepage` remains the fallback for other channels.
 
 ---
 
+## Cache & Revalidation (saleor-paper-app)
+
+Storefront content is cached (`storefront-content:{channel}:{locale}`). **Freshness is owned by the Paper Saleor app**, not ad-hoc Saleor → storefront webhooks.
+
+| Layer                | Responsibility                                                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Storefront**       | Define profile + tags in `cache-manifest.ts`; implement `planStorefrontContentRevalidation()`; expose `/api/revalidate` + `/api/cache-info`. |
+| **saleor-paper-app** | Register Saleor webhooks on install; forward `PAGE_*` (and `MENU_*` for nav) to the configured storefront URL with `REVALIDATE_SECRET`.      |
+| **Merchant**         | Edit Models in Dashboard; app receives `PAGE_UPDATED` and triggers revalidation automatically.                                               |
+
+When a merchant saves a `storefront-*` Page, Saleor emits `PAGE_UPDATED` → paper-app `page-changed` handler → `POST /api/revalidate` with `{ page: { slug } }` → storefront resolves slug to channel(s) and purges `storefront-content` tags.
+
+**Agent checklist when adding content fields:**
+
+1. Storefront only — no paper-app change if slug conventions and cache profile stay the same.
+2. New cache profile or tag shape — update `cache-manifest.ts` **and** ensure paper-app still forwards the right events (or add a webhook definition in `../saleor-paper-app/src/modules/revalidation/webhook-events.ts`).
+3. After paper-app webhook changes — reinstall or sync webhooks from the app configuration UI.
+
+See `data-caching.md` for the full invalidation architecture and `migrations/atomic/2026-06-menu-webhooks/` for the menu analogue.
+
+---
+
 ## Anti-Patterns
 
 - Mixing surfaces on one PageType — keep chrome, homepage, cart, and checkout as separate types with their own attribute sets.
@@ -1259,6 +1297,81 @@ Global page `storefront-homepage` remains the fallback for other channels.
 - Duplicating attribute lists in skills/docs — grep `attribute-slugs.ts` instead.
 - Expecting `plan` delete noise to match `deploy` behavior — trust the README, not the scary diff.
 - Running Configurator deploy to change live copy — edit Models in Dashboard instead; Configurator is for schema and environment bootstrap.
+- Pointing Saleor webhooks straight at `/api/revalidate` while the Paper app is installed — use the app's managed webhooks so merchants get logs, manual purge, and a single revalidation path.
+
+---
+
+### 1.6 Storefront Content Attributes
+
+How to choose Saleor attribute `inputType`s on storefront Models, and what Paper reads today.
+
+> **Models setup**: `data-storefront-content-saleor.md`  
+> **Runtime layer**: `data-storefront-content.md`  
+> **Slug contract**: `src/lib/content/attribute-slugs.ts`
+
+---
+
+## Catalog vs copy (don't duplicate entities)
+
+Collections and categories already have **name**, **description** (rich text), and **image** in Saleor.
+
+| Store in Models                                                 | Store in catalog API                           |
+| --------------------------------------------------------------- | ---------------------------------------------- |
+| Section heading when editorial (e.g. "Staff picks")             | Collection/category **name**                   |
+| **Reference** to which collection/category (slug via attribute) | **Description**, **image**, product membership |
+| Hero copy, trust labels, booleans                               | Product fields                                 |
+
+Use **reference attributes** for pointers; fetch display fields from `src/lib/catalog/` when rendering.
+
+---
+
+## Reference attributes (Saleor 3.22+)
+
+| Configurator `inputType` | Cardinality | `entityType` examples                       | Paper use                                  |
+| ------------------------ | ----------- | ------------------------------------------- | ------------------------------------------ |
+| `SINGLE_REFERENCE`       | One         | `COLLECTION`, `CATEGORY`, `PRODUCT`, `PAGE` | Featured collection slug on homepage       |
+| `REFERENCE`              | Many        | Same                                        | Future: collection list (multi-collection) |
+
+Configurator seed values use the **target entity slug** (e.g. `featured-products`).
+
+GraphQL: `AssignedSingleCollectionReferenceAttribute`, `AssignedMultiCollectionReferenceAttribute`, and siblings for category/product/page — extend `StorefrontContentPages.graphql` per type.
+
+---
+
+## Scalar & media types (roadmap)
+
+| `inputType`                       | Typical storefront use                        | Wired in Paper                                         |
+| --------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| `PLAIN_TEXT`                      | Headings, labels, short copy                  | Yes                                                    |
+| `BOOLEAN`                         | Dismissible flags, toggles                    | Yes                                                    |
+| `SINGLE_REFERENCE` + `COLLECTION` | Featured collection override                  | Yes (`featured-collection`)                            |
+| `SINGLE_REFERENCE` + `CATEGORY`   | Category spotlight                            | No                                                     |
+| `REFERENCE` + `COLLECTION`        | Collection list ordering                      | No                                                     |
+| `RICH_TEXT`                       | Long copy, collection description on homepage | No — prefer catalog `description` for entities         |
+| `FILE`                            | Hero / editorial images                       | No                                                     |
+| `DROPDOWN` / `SWATCH`             | Layout variants (e.g. image left/right)       | No — code enum today for editorial position            |
+| `NUMERIC`                         | Limits, counts                                | Partial — `featured-limit` is plain text parsed as int |
+
+Add types in this order when a section needs them: extend GraphQL fragment → mapper helper in `attributes.ts` → `attribute-slugs.ts` → Configurator (commerce-as-code) → Dashboard for merchandisers.
+
+---
+
+## Adding a reference attribute (checklist)
+
+1. `contentAttributes` in `storefront-content.config.yml` with `inputType` + `entityType`.
+2. Assign on the relevant `modelTypes` entry.
+3. Slug constant in `attribute-slugs.ts` (verify script matches display name).
+4. Fragment inline on `AssignedSingle*ReferenceAttribute` / `AssignedMulti*ReferenceAttribute`.
+5. `pnpm run generate` → mapper reads slug(s) → `types.ts` + `defaults.ts` fallback.
+6. Section/catalog code consumes slug; **metadata** from catalog queries.
+
+---
+
+## Anti-patterns
+
+- Storing collection **title** or **description** on `storefront-homepage` when the section showcases that collection.
+- Using `PLAIN_TEXT` for a collection slug — no Dashboard picker, no validation.
+- Extending GraphQL for a type before you have a section that needs it (YAGNI) — except document roadmap here.
 
 ---
 

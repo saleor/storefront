@@ -112,7 +112,7 @@ Layout shell
 ├── Suspense → Footer (cached menus + channels)
 └── Suspense → CartDrawer (cookies, no-cache)
 
-Invalidation: Saleor webhook → revalidateTag(tag, profile) + revalidatePath per channel
+Invalidation: Saleor webhook → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
 ```
 
 **Key files**
@@ -150,15 +150,16 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 
 ### Tag Registry
 
-| Tag Pattern             | Profile ID    | Used By                                        | Invalidated When          |
-| ----------------------- | ------------- | ---------------------------------------------- | ------------------------- |
-| `product:{slug}`        | `products`    | PDP `getProductData()`                         | Product updated in Saleor |
-| `category:{slug}`       | `categories`  | `getCategoryData()`                            | Category updated          |
-| `collection:{slug}`     | `collections` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
-| `page:{slug}`           | `pages`       | `getPageData()` (CMS)                          | Page updated              |
-| `navigation:{channel}`  | `navigation`  | `getNavbarMenuItems()`                         | Navbar menu changed       |
-| `footer-menu:{channel}` | `footerMenu`  | `getFooterMenuItems()`                         | Footer menu changed       |
-| `channels`              | `channels`    | `getCachedChannelsList()`                      | Channel list changed      |
+| Tag Pattern                             | Profile ID           | Used By                                        | Invalidated When            |
+| --------------------------------------- | -------------------- | ---------------------------------------------- | --------------------------- |
+| `product:{slug}`                        | `products`           | PDP `getProductData()`                         | Product updated in Saleor   |
+| `category:{slug}`                       | `categories`         | `getCategoryData()`                            | Category updated            |
+| `collection:{slug}`                     | `collections`        | `getCollectionData()`, `getFeaturedProducts()` | Collection updated          |
+| `page:{slug}`                           | `pages`              | `getPageData()` (CMS)                          | Page updated                |
+| `navigation:{channel}`                  | `navigation`         | `getNavbarMenuItems()`                         | Navbar menu changed         |
+| `footer-menu:{channel}`                 | `footerMenu`         | `getFooterMenuItems()`                         | Footer menu changed         |
+| `storefront-content:{channel}:{locale}` | `storefront-content` | `getStorefrontContent()`                       | `storefront-*` Page updated |
+| `channels`                              | `channels`           | `getCachedChannelsList()`                      | Channel list changed        |
 
 **Named `cacheLife` tiers** (via `applyCacheProfile`, configured in `next.config.js`):
 
@@ -167,6 +168,7 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 | `products`                  | `catalog`  | ~5 min      | Products, categories, collections |
 | `pages`                     | `catalog`  | ~5 min      | CMS pages                         |
 | `navigation` / `footerMenu` | `menus`    | ~1 hour     | Nav + footer menus                |
+| `storefront-content`        | `menus`    | ~5 min      | Merchandising copy (Models)       |
 | `channels`                  | `channels` | longer      | Channel metadata list             |
 
 Do **not** add fetch-level `revalidate` on GraphQL calls inside `"use cache"` functions — `cacheLife` + webhooks handle freshness.
@@ -399,20 +401,23 @@ This keeps `<h1>` in the static shell for SEO while allowing dynamic content to 
 
 ### Automatic via Webhooks (Recommended)
 
-When configured, Saleor sends webhooks on data changes, triggering instant invalidation.
+**Production path: [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** (`../saleor-paper-app/` when developing both repos locally).
 
-**Setup in Saleor Dashboard:**
+```
+Saleor event → paper-app webhook handler → POST /api/revalidate → storefront cache purge
+```
 
-1. Go to **Configuration → Webhooks**
-2. Create webhook pointing to: `https://your-site.com/api/revalidate`
-3. Subscribe to events:
-   - `PRODUCT_CREATED`, `PRODUCT_UPDATED`, `PRODUCT_DELETED`
-   - `CATEGORY_CREATED`, `CATEGORY_UPDATED`, `CATEGORY_DELETED`
-   - `COLLECTION_CREATED`, `COLLECTION_UPDATED`, `COLLECTION_DELETED`
-   - `PAGE_CREATED`, `PAGE_UPDATED`, `PAGE_DELETED`
-   - `MENU_CREATED`, `MENU_UPDATED`, `MENU_DELETED`
-   - `MENU_ITEM_CREATED`, `MENU_ITEM_UPDATED`, `MENU_ITEM_DELETED`
-4. Copy the **secret key** to `SALEOR_WEBHOOK_SECRET` env var
+On install, the app registers managed webhooks (product, category, collection, promotion, page, menu) and proxies payloads to the storefront URL configured in app settings. Merchants get revalidation logs and manual purge in Dashboard; `REVALIDATE_SECRET` is shared between app and storefront.
+
+| Event family                              | paper-app handler       | Storefront effect                                                                             |
+| ----------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------- |
+| `PRODUCT_*`, `CATEGORY_*`, `COLLECTION_*` | `product-changed`, etc. | Catalog tags + paths                                                                          |
+| `PAGE_*`                                  | `page-changed`          | CMS `page:{slug}` **and** `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
+| `MENU_*`, `MENU_ITEM_*`                   | `menu-changed`          | `navigation:{channel}`, `footer-menu:{channel}`                                               |
+
+**Do not** create parallel Saleor webhooks pointing directly at `/api/revalidate` when the Paper app is installed — duplicate deliveries cause redundant work and bypass app logging.
+
+**Direct storefront webhooks** (Saleor Dashboard → `https://your-site.com/api/revalidate`) remain valid for self-hosted setups without the app. Subscribe to the same events and set `SALEOR_WEBHOOK_SECRET` on the storefront.
 
 **What happens on webhook** (via `src/app/api/revalidate/route.ts`):
 

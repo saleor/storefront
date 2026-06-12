@@ -145,11 +145,12 @@ pnpm content:verify-attribute-slugs
 
 The storefront fragment currently reads:
 
-| `inputType`                           | Supported                                                    |
-| ------------------------------------- | ------------------------------------------------------------ |
-| `PLAIN_TEXT`                          | Yes                                                          |
-| `BOOLEAN`                             | Yes                                                          |
-| `RICH_TEXT`, `DROPDOWN`, `NUMERIC`, … | No — extend `StorefrontContentPages.graphql` + mappers first |
+| `inputType`                       | Supported                                              |
+| --------------------------------- | ------------------------------------------------------ |
+| `PLAIN_TEXT`                      | Yes                                                    |
+| `BOOLEAN`                         | Yes                                                    |
+| `SINGLE_REFERENCE` + `COLLECTION` | Yes (`Featured collection` on homepage)                |
+| Other types                       | See `skills/.../data-storefront-content-attributes.md` |
 
 ### Cache after Dashboard edits
 

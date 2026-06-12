@@ -14,6 +14,7 @@ Two skill sources are available:
 | Caching, ISR, webhooks | `data-caching` |
 | Storefront marketing copy layer | `data-storefront-content` |
 | Saleor Models for storefront copy | `data-storefront-content-saleor` |
+| Storefront content attribute types | `data-storefront-content-attributes` |
 | Product detail page (PDP) | `product-pdp` |
 | Variant selection on PDP | `product-variants` |
 | Product filtering/sorting | `product-filtering` |

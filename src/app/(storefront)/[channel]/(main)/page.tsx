@@ -40,6 +40,7 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 				<FeaturedCollectionLoader
 					params={props.params}
 					heading={featuredCollection.heading}
+					collectionSlug={featuredCollection.collectionSlug}
 					limit={featuredCollection.limit}
 				/>
 			</Suspense>
@@ -73,13 +74,22 @@ export default async function Page(props: { params: Promise<{ channel: string }>
 async function FeaturedCollectionLoader({
 	params,
 	heading,
+	collectionSlug,
 	limit,
 }: {
 	params: Promise<{ channel: string }>;
 	heading: string;
+	collectionSlug: string;
 	limit: number;
 }) {
 	const { channel } = await params;
 
-	return <FeaturedCollectionSection channel={channel} heading={heading} limit={limit} />;
+	return (
+		<FeaturedCollectionSection
+			channel={channel}
+			heading={heading}
+			collectionSlug={collectionSlug}
+			limit={limit}
+		/>
+	);
 }

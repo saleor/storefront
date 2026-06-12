@@ -5,16 +5,29 @@ import { mapHomepagePage } from "@/lib/content/saleor/mappers/homepage";
 import type { StorefrontContentPageFragment } from "@/gql/graphql";
 
 function homepagePage(
-	attributes: Array<{ slug: string; plainText?: string | null }>,
+	attributes: Array<{
+		slug: string;
+		plainText?: string | null;
+		collectionSlug?: string | null;
+	}>,
 ): StorefrontContentPageFragment {
 	return {
 		slug: "storefront-homepage",
 		isPublished: true,
 		pageType: { slug: "storefront-homepage" },
-		assignedAttributes: attributes.map(({ slug, plainText }) => ({
-			attribute: { slug },
-			plainText,
-		})),
+		assignedAttributes: attributes.map(({ slug, plainText, collectionSlug }) => {
+			if (collectionSlug) {
+				return {
+					attribute: { slug },
+					collection: { slug: collectionSlug },
+				};
+			}
+
+			return {
+				attribute: { slug },
+				plainText,
+			};
+		}),
 	};
 }
 
@@ -33,6 +46,18 @@ describe("mapHomepagePage", () => {
 		expect(merged.surfaces.homepage.hero.primaryCtaLabel).toBe("Shop all");
 		expect(merged.surfaces.homepage.hero.subheading).toBe(
 			defaultStorefrontContent.surfaces.homepage.hero.subheading,
+		);
+	});
+
+	it("maps featured collection reference slug from Saleor", () => {
+		const partial = mapHomepagePage(
+			homepagePage([{ slug: "featured-collection", collectionSlug: "summer-sale" }]),
+		);
+		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
+
+		expect(merged.surfaces.homepage.featuredCollection.collectionSlug).toBe("summer-sale");
+		expect(merged.surfaces.homepage.featuredCollection.heading).toBe(
+			defaultStorefrontContent.surfaces.homepage.featuredCollection.heading,
 		);
 	});
 

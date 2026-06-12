@@ -75,7 +75,7 @@ Fetch collects **both** candidate slugs per surface, then picks the best match.
 
 Configurator resolves attributes by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — run `pnpm content:verify-attribute-slugs`.
 
-**Supported GraphQL types today:** `PLAIN_TEXT`, `BOOLEAN`. Other Saleor input types require extending `StorefrontContentPages.graphql` and mappers first.
+**Attribute types:** see `data-storefront-content-attributes.md` — scalar types, catalog **references** (`SINGLE_REFERENCE` / `REFERENCE`), and what Paper wires today.
 
 ---
 
@@ -157,6 +157,28 @@ Global page `storefront-homepage` remains the fallback for other channels.
 
 ---
 
+## Cache & Revalidation (saleor-paper-app)
+
+Storefront content is cached (`storefront-content:{channel}:{locale}`). **Freshness is owned by the Paper Saleor app**, not ad-hoc Saleor → storefront webhooks.
+
+| Layer                | Responsibility                                                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Storefront**       | Define profile + tags in `cache-manifest.ts`; implement `planStorefrontContentRevalidation()`; expose `/api/revalidate` + `/api/cache-info`. |
+| **saleor-paper-app** | Register Saleor webhooks on install; forward `PAGE_*` (and `MENU_*` for nav) to the configured storefront URL with `REVALIDATE_SECRET`.      |
+| **Merchant**         | Edit Models in Dashboard; app receives `PAGE_UPDATED` and triggers revalidation automatically.                                               |
+
+When a merchant saves a `storefront-*` Page, Saleor emits `PAGE_UPDATED` → paper-app `page-changed` handler → `POST /api/revalidate` with `{ page: { slug } }` → storefront resolves slug to channel(s) and purges `storefront-content` tags.
+
+**Agent checklist when adding content fields:**
+
+1. Storefront only — no paper-app change if slug conventions and cache profile stay the same.
+2. New cache profile or tag shape — update `cache-manifest.ts` **and** ensure paper-app still forwards the right events (or add a webhook definition in `../saleor-paper-app/src/modules/revalidation/webhook-events.ts`).
+3. After paper-app webhook changes — reinstall or sync webhooks from the app configuration UI.
+
+See `data-caching.md` for the full invalidation architecture and `migrations/atomic/2026-06-menu-webhooks/` for the menu analogue.
+
+---
+
 ## Anti-Patterns
 
 - Mixing surfaces on one PageType — keep chrome, homepage, cart, and checkout as separate types with their own attribute sets.
@@ -165,3 +187,4 @@ Global page `storefront-homepage` remains the fallback for other channels.
 - Duplicating attribute lists in skills/docs — grep `attribute-slugs.ts` instead.
 - Expecting `plan` delete noise to match `deploy` behavior — trust the README, not the scary diff.
 - Running Configurator deploy to change live copy — edit Models in Dashboard instead; Configurator is for schema and environment bootstrap.
+- Pointing Saleor webhooks straight at `/api/revalidate` while the Paper app is installed — use the app's managed webhooks so merchants get logs, manual purge, and a single revalidation path.

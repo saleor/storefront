@@ -2,7 +2,7 @@
 
 Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
 
-> **Companion rule**: Saleor Models setup, Configurator, and slug resolution → `data-storefront-content-saleor.md`  
+> **Companion rules**: Saleor Models → `data-storefront-content-saleor.md` · Attribute types & catalog refs → `data-storefront-content-attributes.md`  
 > **Operational docs**: `config/saleor/README.md`
 
 ---
@@ -89,8 +89,18 @@ Checkout resolves **channel from cart cookies** when loading content so copy can
 - Profile: `storefront-content` (~menus tier, ~5 min stale).
 - Tag: `storefront-content:{channel}:{locale}`.
 - **Locale** keys the cache (`storefront-content:{channel}:{locale}`). Saleor Models already hold per-language translations; Paper does not fetch them yet — when implemented, the same Models and Dashboard workflow apply.
-- Invalidation: `PAGE_UPDATED` webhook for `storefront-*` page slugs → `planStorefrontContentRevalidation` in cache manifest.
-- Manual: `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — do not point Saleor webhooks directly at the storefront for production. The app subscribes to Saleor events, then `POST`s to Paper's `/api/revalidate` with the same payload shape the storefront handler expects.
+- **Storefront content:** `PAGE_*` on Pages whose slug matches `storefront-*` (e.g. `storefront-homepage`, `storefront-homepage-{channel}`) → `planStorefrontContentRevalidation()` in `cache-manifest.ts` → `revalidateTag(storefront-content:{channel}:{locale})` + homepage paths per channel.
+- **Menus** (nav/footer): `MENU_*` / `MENU_ITEM_*` → separate profiles (`navigation`, `footerMenu`) — same paper-app → storefront path.
+- The `storefront-content` profile is listed in `GET /api/cache-info` so the Dashboard app can offer manual purge alongside catalog entities.
+- Manual (dev / emergency): `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+
+```
+Saleor (PAGE_UPDATED on storefront-homepage)
+    → saleor-paper-app (page-changed webhook)
+    → POST /api/revalidate { page: { slug } }
+    → planStorefrontContentRevalidation → revalidateTag + revalidatePath
+```
 
 Marketing copy is cached like navigation — cart/checkout **transactional** data stays fresh via `cache: "no-cache"`.
 

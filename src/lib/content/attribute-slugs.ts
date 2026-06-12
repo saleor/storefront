@@ -15,6 +15,7 @@ export const STOREFRONT_HOMEPAGE_ATTRIBUTES = {
 	heroSubheading: "hero-subheading",
 	heroCtaLabel: "hero-cta-label",
 	featuredHeading: "featured-heading",
+	featuredCollection: "featured-collection",
 	featuredLimit: "featured-limit",
 	brandStoryHeading: "brand-story-heading",
 	brandStoryParagraph1: "brand-story-paragraph-1",

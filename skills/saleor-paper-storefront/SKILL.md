@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-17 rules across 6 categories covering caching, storefront content, PDP architecture, checkout v2,
+18 rules across 6 categories covering caching, storefront content, PDP architecture, checkout v2,
 components, UI patterns, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
@@ -60,6 +60,7 @@ Reference these guidelines when:
 - `data-graphql` - Two codegen setups (checkout types via server actions, not urql runtime)
 - `data-storefront-content` - Provider-agnostic copy layer, merge semantics, cache tags, wiring
 - `data-storefront-content-saleor` - Saleor Models, slug stack, channel overrides, Configurator
+- `data-storefront-content-attributes` - Attribute inputTypes, catalog references, scalar roadmap
 
 ### 2. Product Pages (HIGH)
 
