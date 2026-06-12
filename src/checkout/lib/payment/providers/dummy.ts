@@ -7,14 +7,7 @@ export const DUMMY_GATEWAY_IDS = ["saleor.io.dummy-payment-app", "mirumee.paymen
 export const DUMMY_PAYMENT_NOT_ALLOWED_MESSAGE = "Test payment is not available in this environment.";
 
 export function isDummyGateway(gateway: PaymentGatewayLike): boolean {
-	if ((DUMMY_GATEWAY_IDS as readonly string[]).includes(gateway.id)) {
-		return true;
-	}
-
-	const id = String(gateway.id).toLowerCase();
-	const name = String(gateway.name ?? "").toLowerCase();
-
-	return id.includes("dummy") || name.includes("dummy");
+	return (DUMMY_GATEWAY_IDS as readonly string[]).includes(gateway.id);
 }
 
 export function findDummyGateway(

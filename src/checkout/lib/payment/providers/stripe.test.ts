@@ -18,8 +18,9 @@ describe("isStripeGateway", () => {
 		expect(isStripeGateway(STRIPE_GATEWAY_ID)).toBe(true);
 	});
 
-	it("matches legacy ids containing stripe", () => {
-		expect(isStripeGateway("custom.stripe.gateway")).toBe(true);
+	it("does not match other gateway ids", () => {
+		expect(isStripeGateway("custom.stripe.gateway")).toBe(false);
+		expect(isStripeGateway("stripe")).toBe(false);
 	});
 });
 

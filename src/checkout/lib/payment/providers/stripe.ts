@@ -21,7 +21,7 @@ export type StripeGatewayConfig = {
 };
 
 export function isStripeGateway(gatewayId: string): boolean {
-	return gatewayId === STRIPE_GATEWAY_ID || gatewayId.includes("stripe");
+	return gatewayId === STRIPE_GATEWAY_ID;
 }
 
 export function findStripeGateway(

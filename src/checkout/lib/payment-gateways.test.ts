@@ -18,8 +18,9 @@ describe("isDummyGateway", () => {
 		expect(isDummyGateway({ id: "mirumee.payments.dummy", name: "Dummy" })).toBe(true);
 	});
 
-	it("matches dummy by name when id differs", () => {
-		expect(isDummyGateway({ id: "custom.app.id", name: "Dummy Payment Gateway" })).toBe(true);
+	it("does not match other gateway ids", () => {
+		expect(isDummyGateway({ id: "custom.app.id", name: "Dummy Payment Gateway" })).toBe(false);
+		expect(isDummyGateway({ id: "custom.dummy.gateway", name: "Dummy" })).toBe(false);
 	});
 });
 
