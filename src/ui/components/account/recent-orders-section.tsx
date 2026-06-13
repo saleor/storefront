@@ -1,11 +1,19 @@
 import { ChevronRight } from "lucide-react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { accountRoutes } from "@/ui/components/account/routes";
 
 export async function RecentOrdersSection() {
+	// Gate the authenticated query on a session cookie (like the account layout does).
+	// Without it, prerender runs this with no cookies, hammering Saleor with retries that
+	// saturate the request queue and time out the sibling `getStorefrontContent` cache fill.
+	if (!(await hasAuthSession())) {
+		return null;
+	}
+
 	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
 		variables: { first: 3, after: null },
 		cache: "no-cache",

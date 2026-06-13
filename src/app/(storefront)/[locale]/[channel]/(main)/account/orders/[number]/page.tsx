@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MapPin, CreditCard } from "lucide-react";
 import { OrderByNumberDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { OrderTimeline } from "@/ui/components/account/order-timeline";
@@ -25,6 +26,13 @@ export default function OrderDetailPage({ params }: Props) {
 
 async function OrderDetailContent({ params }: Props) {
 	const { number } = await params;
+
+	// Gate on a session cookie before the authenticated fetch (mirrors the account layout):
+	// during prerender there are no cookies, so this skips the network call that would
+	// otherwise hang/retry and time out the sibling `getStorefrontContent` cache fill.
+	if (!(await hasAuthSession())) {
+		return <p className="text-sm text-muted-foreground">Sign in to view this order.</p>;
+	}
 
 	// Saleor's `me.orders` doesn't support filtering by number (UserOrdersArgs
 	// only has pagination args). We fetch a page and find client-side. This covers

@@ -179,9 +179,16 @@ export async function requestAccountDeletion(formData: FormData): Promise<Action
 	return { success: true };
 }
 
-/** Account UI reads profile data from layout-level AccountProvider (client context). */
+/**
+ * Account UI reads profile data from the layout-level AccountProvider (client context).
+ *
+ * The account layout lives at `/[locale]/[channel]/account` (route groups like `(main)` are
+ * not URL segments). Passing the dynamic route pattern + `"layout"` busts the layout — and all
+ * nested account pages — across every locale/channel pair in a single call; a literal `/account`
+ * matches no route and silently no-ops.
+ */
 function revalidateAccountLayout() {
-	revalidatePath("/account", "layout");
+	revalidatePath("/[locale]/[channel]/account", "layout");
 }
 
 function extractAddressInput(formData: FormData): AddressInput {

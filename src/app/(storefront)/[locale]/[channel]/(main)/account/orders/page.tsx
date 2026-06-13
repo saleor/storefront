@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Button } from "@/ui/components/ui/button";
@@ -23,6 +24,13 @@ export default function AccountOrdersPage({ searchParams }: Props) {
 
 async function AccountOrdersContent({ searchParams }: Props) {
 	const { after } = await searchParams;
+
+	// Gate on a session cookie before the authenticated fetch (mirrors the account layout):
+	// during prerender there are no cookies, so this skips the network call that would
+	// otherwise hang/retry and time out the sibling `getStorefrontContent` cache fill.
+	if (!(await hasAuthSession())) {
+		return <AccountOrdersError message="Sign in to view your orders." />;
+	}
 
 	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
 		variables: {
