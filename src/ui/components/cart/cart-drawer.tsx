@@ -14,7 +14,7 @@ import { formatMoney } from "@/lib/utils";
 import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { hasDiscount } from "@/lib/pricing";
 import { buildCheckoutPath } from "@paper/session-bridge";
-import type { CartContent } from "@/lib/content";
+import type { CartContent, StorefrontPolicies } from "@/lib/content";
 import { formatContentLabel } from "@/lib/content/format-label";
 
 interface CartLine {
@@ -115,6 +115,7 @@ interface CartDrawerProps {
 	channel: string;
 	localeSlug: string;
 	cart: CartContent;
+	policies: StorefrontPolicies;
 	deleteCartLine: DeleteCartLine;
 	updateCartLineQuantity: UpdateCartLineQuantity;
 }
@@ -126,6 +127,7 @@ export function CartDrawer({
 	channel,
 	localeSlug,
 	cart,
+	policies,
 	deleteCartLine,
 	updateCartLineQuantity,
 }: CartDrawerProps) {
@@ -159,9 +161,19 @@ export function CartDrawer({
 		: "/checkout";
 	const { drawer } = cart;
 
-	const freeShippingThreshold = 100;
-	const progressToFreeShipping = Math.min((subtotal / freeShippingThreshold) * 100, 100);
-	const amountToFreeShipping = Math.max(freeShippingThreshold - subtotal, 0);
+	// Single source of truth: the same threshold drives the progress bar, the summary
+	// shipping row, and the trust signal — and matches the announcement bar copy.
+	const freeShippingThreshold = policies.shipping.freeShippingThreshold;
+	const freeShippingEnabled = freeShippingThreshold != null;
+	const qualifiesForFreeShipping = freeShippingEnabled && subtotal >= freeShippingThreshold;
+	const progressToFreeShipping =
+		freeShippingEnabled && freeShippingThreshold > 0
+			? Math.min((subtotal / freeShippingThreshold) * 100, 100)
+			: 100;
+	const amountToFreeShipping = freeShippingEnabled ? Math.max(freeShippingThreshold - subtotal, 0) : 0;
+	const returnsLabel = formatContentLabel(cart.trust.returnsLabel, {
+		returnsWindowDays: policies.returns.windowDays,
+	});
 
 	return (
 		<Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
@@ -179,7 +191,7 @@ export function CartDrawer({
 				</SheetHeader>
 
 				{/* Free Shipping Progress */}
-				{lines.length > 0 && (
+				{lines.length > 0 && freeShippingEnabled && (
 					<div className="bg-secondary/50 border-b border-border px-6 py-4">
 						<div className="mb-2 flex items-center gap-2 text-sm">
 							<Truck className={cn("h-4 w-4", amountToFreeShipping <= 0 && "text-success")} />
@@ -363,9 +375,7 @@ export function CartDrawer({
 							</div>
 							<div className="flex items-center justify-between text-sm">
 								<span className="text-muted-foreground">{drawer.shipping}</span>
-								<span>
-									{subtotal >= freeShippingThreshold ? drawer.shippingFree : drawer.shippingCalculated}
-								</span>
+								<span>{qualifiesForFreeShipping ? drawer.shippingFree : drawer.shippingCalculated}</span>
 							</div>
 							<div className="flex items-center justify-between border-t border-border pt-2 text-base font-semibold">
 								<span>{drawer.total}</span>
@@ -411,13 +421,15 @@ export function CartDrawer({
 
 						{/* Trust Signals */}
 						<div className="flex items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
-							<span className="flex items-center gap-1.5">
-								<Truck className="h-4 w-4" />
-								{cart.trust.freeShippingPrefix} {formatMoney(freeShippingThreshold, currency, intlLocale)}
-							</span>
+							{freeShippingEnabled && (
+								<span className="flex items-center gap-1.5">
+									<Truck className="h-4 w-4" />
+									{cart.trust.freeShippingPrefix} {formatMoney(freeShippingThreshold, currency, intlLocale)}
+								</span>
+							)}
 							<span className="flex items-center gap-1.5">
 								<RotateCcw className="h-4 w-4" />
-								{cart.trust.returnsLabel}
+								{returnsLabel}
 							</span>
 						</div>
 					</div>

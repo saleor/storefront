@@ -14,6 +14,12 @@
 # Attribute slugs must match src/lib/content/attribute-slugs.ts
 
 contentAttributes:
+  # Storefront — Policies (channel-wide facts; NUMERIC so the Dashboard validates them
+  # and the storefront can reuse the same value in cart math and in copy placeholders)
+  - name: Free shipping threshold
+    inputType: NUMERIC
+  - name: Returns window days
+    inputType: NUMERIC
   # Storefront — Chrome
   - name: Announcement ID
     inputType: PLAIN_TEXT
@@ -51,7 +57,7 @@ contentAttributes:
     inputType: SINGLE_REFERENCE
     entityType: COLLECTION
   - name: Featured limit
-    inputType: PLAIN_TEXT
+    inputType: NUMERIC
   - name: Brand story heading
     inputType: PLAIN_TEXT
   - name: Brand story paragraph 1
@@ -154,6 +160,12 @@ contentAttributes:
     inputType: PLAIN_TEXT
 
 modelTypes:
+  - name: "Storefront — Policies"
+    slug: storefront-policies
+    attributes:
+      - attribute: Free shipping threshold
+      - attribute: Returns window days
+
   - name: "Storefront — Chrome"
     slug: storefront-chrome
     attributes:
@@ -243,13 +255,23 @@ modelTypes:
 # Model attribute keys use contentAttribute *names* (Configurator). Saleor assigns slugs
 # (see src/lib/content/attribute-slugs.ts) which Paper mappers read at runtime.
 models:
+  # Channel-wide policy values. Override per channel with slug storefront-policy-{channelSlug}
+  # (e.g. a PLN channel: Free shipping threshold 300). Numbers are in the channel currency.
+  - title: Storefront Policies
+    slug: storefront-policy
+    modelType: "Storefront — Policies"
+    isPublished: true
+    attributes:
+      Free shipping threshold: 75
+      Returns window days: 30
+
   - title: Storefront Chrome
     slug: storefront-chrome
     modelType: "Storefront — Chrome"
     isPublished: true
     attributes:
       Announcement ID: welcome-promo
-      Announcement message: "Free shipping on orders over $75"
+      Announcement message: "Free shipping on orders over {freeShippingThreshold}"
       Announcement dismissible: true
       Nav all products label: "All"
       Nav view all label: "View all {label}"
@@ -273,7 +295,7 @@ models:
       Hero CTA label: "Shop all"
       Featured heading: "Featured products"
       Featured collection: featured-products
-      Featured limit: "8"
+      Featured limit: 8
 
   - title: Storefront Cart
     slug: storefront-cart
@@ -284,7 +306,7 @@ models:
       Empty body: "Looks like you haven't added anything to your bag yet."
       Empty CTA label: "Start Shopping"
       Trust free shipping prefix: "Free delivery over"
-      Trust returns label: "30-day returns"
+      Trust returns label: "{returnsWindowDays}-day returns"
       Drawer title: "Your Bag"
       Drawer item count: "{count} items"
       Drawer add for free shipping: "Add {amount} more for free shipping"

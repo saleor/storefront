@@ -25,6 +25,9 @@ fragment StorefrontContentPage on Page {
 		... on AssignedBooleanAttribute {
 			boolean: value
 		}
+		... on AssignedNumericAttribute {
+			numeric: value
+		}
 		... on AssignedSingleCollectionReferenceAttribute {
 			collection: value {
 				slug

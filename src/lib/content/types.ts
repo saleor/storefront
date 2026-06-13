@@ -1,6 +1,31 @@
 /** Normalized storefront marketing copy — provider-agnostic contract (v1). */
 export const STOREFRONT_CONTENT_VERSION = 1 as const;
 
+/**
+ * Channel-wide commerce policies — the single source of truth for facts that copy
+ * only *describes* (free-shipping threshold, returns window). These are structured
+ * values (not strings): channel-scoped, locale-independent, and consumed by logic
+ * (cart progress math) as well as interpolated into copy via `{placeholder}` tokens.
+ */
+export type ShippingPolicy = {
+	/**
+	 * Order subtotal in the channel currency required to unlock free shipping.
+	 * `null` means the channel runs no free-shipping program (hide the progress bar,
+	 * the "free delivery over" trust signal, and the announcement threshold).
+	 */
+	freeShippingThreshold: number | null;
+};
+
+export type ReturnsPolicy = {
+	/** Number of days a customer has to return an order. */
+	windowDays: number;
+};
+
+export type StorefrontPolicies = {
+	shipping: ShippingPolicy;
+	returns: ReturnsPolicy;
+};
+
 export type AnnouncementBarContent = {
 	id: string;
 	message: string;
@@ -155,6 +180,7 @@ export type StorefrontSurfacesContent = {
 
 export type StorefrontContent = {
 	version: typeof STOREFRONT_CONTENT_VERSION;
+	policies: StorefrontPolicies;
 	chrome: StorefrontChromeContent;
 	surfaces: StorefrontSurfacesContent;
 };

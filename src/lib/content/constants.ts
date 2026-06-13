@@ -3,6 +3,7 @@ export const STOREFRONT_PAGE_TYPE_PREFIX = "storefront-" as const;
 
 /** Saleor PageType slugs — align with Saleor Configurator / Dashboard setup. */
 export const STOREFRONT_PAGE_TYPES = {
+	policy: "storefront-policies",
 	chrome: "storefront-chrome",
 	homepage: "storefront-homepage",
 	products: "storefront-products",
@@ -15,22 +16,37 @@ export type StorefrontPageTypeSlug = (typeof STOREFRONT_PAGE_TYPES)[keyof typeof
 const STOREFRONT_PAGE_TYPE_SLUGS = new Set<string>(Object.values(STOREFRONT_PAGE_TYPES));
 
 /**
+ * Global policy Page slug in Saleor (differs from PageType slug `storefront-policies` on deployed
+ * instances where the model was seeded as `storefront-policy`).
+ */
+export const STOREFRONT_POLICY_PAGE_SLUG = "storefront-policy" as const;
+
+/** Page slug used in GraphQL fetch — usually matches PageType slug, except policy. */
+const CONTENT_PAGE_SLUG_BY_PAGE_TYPE: Partial<Record<StorefrontPageTypeSlug, string>> = {
+	[STOREFRONT_PAGE_TYPES.policy]: STOREFRONT_POLICY_PAGE_SLUG,
+};
+
+function contentPageSlugForPageType(pageTypeSlug: StorefrontPageTypeSlug): string {
+	return CONTENT_PAGE_SLUG_BY_PAGE_TYPE[pageTypeSlug] ?? pageTypeSlug;
+}
+
+/**
  * Global singleton page slug for a PageType.
  * Saleor enforces globally unique page slugs — one slug per PageType, not shared `default`.
  */
 export function storefrontContentPageSlug(pageTypeSlug: StorefrontPageTypeSlug): string {
-	return pageTypeSlug;
+	return contentPageSlugForPageType(pageTypeSlug);
 }
 
 /**
- * Channel-specific override slug: `{pageTypeSlug}-{channel}`.
+ * Channel-specific override slug: `{contentPageSlug}-{channel}`.
  * Resolution order in Saleor provider: channel slug → global PageType slug.
  */
 export function storefrontContentPageSlugForChannel(
 	pageTypeSlug: StorefrontPageTypeSlug,
 	channel: string,
 ): string {
-	return `${pageTypeSlug}-${channel}`;
+	return `${contentPageSlugForPageType(pageTypeSlug)}-${channel}`;
 }
 
 /** All candidate slugs to fetch for one PageType (channel override + global). */
@@ -52,6 +68,10 @@ export function isStorefrontPageTypeSlug(slug: string): slug is StorefrontPageTy
 export function isStorefrontContentPageSlug(slug: string): boolean {
 	if (isStorefrontPageTypeSlug(slug)) return true;
 
+	if (slug === STOREFRONT_POLICY_PAGE_SLUG || slug.startsWith(`${STOREFRONT_POLICY_PAGE_SLUG}-`)) {
+		return true;
+	}
+
 	for (const pageTypeSlug of STOREFRONT_PAGE_TYPE_SLUGS) {
 		if (slug.startsWith(`${pageTypeSlug}-`)) return true;
 	}
@@ -70,6 +90,13 @@ export function resolveStorefrontContentChannelsForPageSlug(
 	if (!isStorefrontContentPageSlug(pageSlug)) return [];
 
 	if (isStorefrontPageTypeSlug(pageSlug)) return channels;
+
+	if (pageSlug === STOREFRONT_POLICY_PAGE_SLUG) return channels;
+
+	if (pageSlug.startsWith(`${STOREFRONT_POLICY_PAGE_SLUG}-`)) {
+		const channel = pageSlug.slice(STOREFRONT_POLICY_PAGE_SLUG.length + 1);
+		return channels.includes(channel) ? [channel] : [];
+	}
 
 	for (const pageTypeSlug of STOREFRONT_PAGE_TYPE_SLUGS) {
 		const prefix = `${pageTypeSlug}-`;

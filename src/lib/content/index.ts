@@ -13,12 +13,20 @@ export {
 	storefrontContentPageSlugForChannel,
 } from "@/lib/content/constants";
 export { CheckoutContentProvider, useCheckoutContent } from "@/lib/content/checkout-content-context";
+export {
+	buildPolicyLabelValues,
+	formatPolicyAwareLabel,
+	type PolicyLabelValues,
+} from "@/lib/content/policy-format";
 export type {
 	AnnouncementBarContent,
 	CartContent,
 	CheckoutContent,
 	HomepageContent,
+	ReturnsPolicy,
+	ShippingPolicy,
 	StorefrontChromeContent,
 	StorefrontContent,
+	StorefrontPolicies,
 	StorefrontSurfacesContent,
 } from "@/lib/content/types";

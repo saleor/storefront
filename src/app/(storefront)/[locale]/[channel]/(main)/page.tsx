@@ -1,5 +1,9 @@
 import { Suspense } from "react";
 import { brandConfig } from "@/config/brand";
+import { resolveLocaleFromSlug } from "@/config/locale";
+import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
+import { buildPolicyLabelValues } from "@/lib/content";
+import { formatContentLabel } from "@/lib/content/format-label";
 import { getStorefrontContent } from "@/lib/content/server";
 import { FeaturedCollectionSection } from "@/ui/sections/featured-collection-section/featured-collection-section";
 import { FeaturedCollectionSkeleton } from "@/ui/sections/featured-collection-section/featured-collection-skeleton";
@@ -19,10 +23,20 @@ export const metadata = {
  */
 export default async function Page(props: { params: Promise<{ locale: string; channel: string }> }) {
 	const { locale, channel } = await props.params;
-	const {
-		surfaces: { homepage },
-	} = await getStorefrontContent(channel, locale);
-	const { hero, featuredCollection, brandStory, values, editorial } = homepage;
+	const content = await getStorefrontContent(channel, locale);
+	const { hero, featuredCollection, brandStory, values, editorial } = content.surfaces.homepage;
+
+	// Resolve policy tokens (e.g. "{returnsWindowDays}") in editorial value columns so the
+	// returns window stays consistent with the cart and announcement.
+	const currency = await resolveChannelCurrency(channel);
+	const policyValues = buildPolicyLabelValues(content.policies, {
+		currency,
+		locale: resolveLocaleFromSlug(locale).bcp47,
+	});
+	const valueColumns = values.columns.map((column) => ({
+		...column,
+		text: formatContentLabel(column.text, policyValues),
+	}));
 
 	return (
 		<>
@@ -57,7 +71,7 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 
 			<MulticolumnSection
 				heading={values.heading}
-				columns={values.columns}
+				columns={valueColumns}
 				columnsDesktop={values.columnsDesktop}
 			/>
 

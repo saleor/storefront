@@ -12,12 +12,15 @@ Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-t
 
 **Saleor Models** (PageTypes + Pages) are the dedicated place for merchandising and editorial copy in Paper. Each **PageType** defines a purpose — chrome, homepage, cart, checkout — and the **attributes** on that type give structure to otherwise unstructured text (headings, labels, paragraphs, flags).
 
-| Model (PageType)      | Purpose                                  |
-| --------------------- | ---------------------------------------- |
-| `storefront-chrome`   | Site-wide chrome (e.g. announcement bar) |
-| `storefront-homepage` | Homepage sections                        |
-| `storefront-cart`     | Cart drawer copy                         |
-| `storefront-checkout` | Checkout surface copy                    |
+| Model (PageType)                                                          | Purpose                                                                                                  |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `storefront-policies` (PageType) / `storefront-policy` (global Page slug) | Channel-wide **policy values** (free-shipping threshold, returns window) — `NUMERIC`/`BOOLEAN`, not copy |
+| `storefront-chrome`                                                       | Site-wide chrome (e.g. announcement bar)                                                                 |
+| `storefront-homepage`                                                     | Homepage sections                                                                                        |
+| `storefront-cart`                                                         | Cart drawer copy                                                                                         |
+| `storefront-checkout`                                                     | Checkout surface copy                                                                                    |
+
+**Policy vs copy:** `storefront-policy` holds the _facts_ (a number/boolean); the other models hold _copy_ that only describes those facts via `{freeShippingThreshold}` / `{returnsWindowDays}` placeholders. One threshold feeds the cart progress math, the announcement bar, and the cart trust signal — change it in one place, everything stays consistent. Override per channel with `storefront-policy-{channelSlug}` (numbers are in the channel currency).
 
 That is what modeling is for: keep flexible marketing content **structured and editable** through typed attributes, and mappable into a stable `StorefrontContent` contract in code. **Day-to-day copy changes** happen in Dashboard → Models; Configurator is for **commerce-as-code** when the Saleor schema itself needs updating (see below).
 
@@ -153,6 +156,8 @@ Global page `storefront-homepage` remains the fallback for other channels.
 
 - `getStorefrontContent(channel, localeSlug)` and cache tags (`storefront-content:{channel}:{locale}`) key by locale.
 - `StorefrontContentPages.graphql` passes `languageCode`; plain-text attributes use `translation(languageCode: …)` in `buildAttributeMap`.
+
+**Policy placeholders in translations:** localized strings must keep the same `{freeShippingThreshold}` / `{returnsWindowDays}` tokens as the default language — never bake channel-specific amounts or currencies into Dashboard translations (e.g. avoid `"$75"` or `"30 dni"` literals). Paper formats money from `policies` + channel currency at render time. Missing placeholders are warned in development via `formatPolicyAwareLabel`.
 
 ---
 

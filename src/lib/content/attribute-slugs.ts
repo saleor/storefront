@@ -12,6 +12,11 @@ export const STOREFRONT_CHROME_ATTRIBUTES = {
 	navViewAllLabel: "nav-view-all-label",
 } as const;
 
+export const STOREFRONT_POLICY_ATTRIBUTES = {
+	freeShippingThreshold: "free-shipping-threshold",
+	returnsWindowDays: "returns-window-days",
+} as const;
+
 export const STOREFRONT_PRODUCTS_ATTRIBUTES = {
 	title: "listing-title",
 	description: "listing-description",

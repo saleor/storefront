@@ -13,9 +13,18 @@ describe("storefront content slug helpers", () => {
 		]);
 	});
 
+	it("uses policy page slug (not pageType slug) for fetch candidates", () => {
+		expect(storefrontContentPageSlugCandidates("storefront-policies", "channel-pln")).toEqual([
+			"storefront-policy-channel-pln",
+			"storefront-policy",
+		]);
+	});
+
 	it("detects storefront page slugs", () => {
 		expect(isStorefrontContentPageSlug("storefront-homepage")).toBe(true);
 		expect(isStorefrontContentPageSlug("storefront-homepage-us")).toBe(true);
+		expect(isStorefrontContentPageSlug("storefront-policy")).toBe(true);
+		expect(isStorefrontContentPageSlug("storefront-policy-channel-pln")).toBe(true);
 		expect(isStorefrontContentPageSlug("about-us")).toBe(false);
 	});
 
@@ -25,5 +34,8 @@ describe("storefront content slug helpers", () => {
 			"uk",
 		]);
 		expect(resolveStorefrontContentChannelsForPageSlug("storefront-cart-us", ["us", "uk"])).toEqual(["us"]);
+		expect(
+			resolveStorefrontContentChannelsForPageSlug("storefront-policy-channel-pln", ["channel-pln", "us"]),
+		).toEqual(["channel-pln"]);
 	});
 });

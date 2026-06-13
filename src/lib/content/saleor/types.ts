@@ -10,6 +10,7 @@ type DeepPartial<T> = {
 
 /** Partial overrides merged onto code defaults — Saleor provider returns this shape only. */
 export type PartialStorefrontContent = {
+	policies?: DeepPartial<StorefrontContent["policies"]>;
 	chrome?: DeepPartial<StorefrontContent["chrome"]>;
 	surfaces?: DeepPartial<StorefrontContent["surfaces"]>;
 };

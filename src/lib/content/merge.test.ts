@@ -8,6 +8,18 @@ describe("mergeStorefrontContent", () => {
 		expect(mergeStorefrontContent(defaultStorefrontContent, {})).toEqual(defaultStorefrontContent);
 	});
 
+	it("merges policy fields without dropping sibling defaults", () => {
+		const merged = mergeStorefrontContent(defaultStorefrontContent, {
+			policies: {
+				shipping: { freeShippingThreshold: 300 },
+				returns: { windowDays: 45 },
+			},
+		});
+
+		expect(merged.policies.shipping.freeShippingThreshold).toBe(300);
+		expect(merged.policies.returns.windowDays).toBe(45);
+	});
+
 	it("merges chrome announcement fields without dropping defaults", () => {
 		const override: PartialStorefrontContent = {
 			chrome: {

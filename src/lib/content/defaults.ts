@@ -7,10 +7,21 @@ import { STOREFRONT_CONTENT_VERSION, type StorefrontContent } from "@/lib/conten
  */
 export const defaultStorefrontContent = {
 	version: STOREFRONT_CONTENT_VERSION,
+	// Single source of truth for channel-wide facts. Copy references these via
+	// `{freeShippingThreshold}` / `{returnsWindowDays}` tokens instead of baking the
+	// numbers into strings, so the cart math, announcement, and trust labels never drift.
+	policies: {
+		shipping: {
+			freeShippingThreshold: 75,
+		},
+		returns: {
+			windowDays: 30,
+		},
+	},
 	chrome: {
 		announcementBar: {
 			id: "welcome-promo",
-			message: "Free shipping on orders over $75",
+			message: "Free shipping on orders over {freeShippingThreshold}",
 			href: null,
 			linkLabel: null,
 			dismissible: true,
@@ -52,7 +63,7 @@ export const defaultStorefrontContent = {
 					},
 					{
 						title: "Easy returns",
-						text: "Hassle-free returns within 30 days. We stand behind what we sell.",
+						text: "Hassle-free returns within {returnsWindowDays} days. We stand behind what we sell.",
 					},
 				],
 				columnsDesktop: 3,
@@ -80,7 +91,7 @@ export const defaultStorefrontContent = {
 			},
 			trust: {
 				freeShippingPrefix: "Free delivery over",
-				returnsLabel: "30-day returns",
+				returnsLabel: "{returnsWindowDays}-day returns",
 			},
 			drawer: {
 				title: "Your Bag",

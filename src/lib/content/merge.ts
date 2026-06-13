@@ -18,6 +18,16 @@ export function mergeStorefrontContent(
 
 	return {
 		version: base.version,
+		policies: {
+			shipping: {
+				...base.policies.shipping,
+				...override.policies?.shipping,
+			},
+			returns: {
+				...base.policies.returns,
+				...override.policies?.returns,
+			},
+		},
 		chrome: {
 			...base.chrome,
 			...override.chrome,

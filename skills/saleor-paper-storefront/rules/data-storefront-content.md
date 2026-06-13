@@ -26,14 +26,20 @@ Marketing and merchandising copy (announcement bar, homepage sections, cart trus
 
 **Code defaults always win as the base.** Saleor (or a future CMS provider) supplies **partials** that overlay defaults. The app never ships with blank copy when Saleor is down or a field is unset.
 
+### Policy vs copy
+
+`StorefrontContent` has a top-level **`policies`** branch (sibling to `chrome` / `surfaces`) for channel-wide _facts_ — `shipping.freeShippingThreshold`, `returns.windowDays`, etc. These are structured values (not strings): channel-scoped, locale-independent, and consumed by **logic** (cart progress math) as well as **copy**. Copy never hardcodes the number — it references it with `{freeShippingThreshold}` / `{returnsWindowDays}` tokens resolved via `buildPolicyLabelValues()` + `formatContentLabel()`. This is the single source of truth: the cart math, announcement bar, and cart trust signal can never disagree. Modeled in Saleor as the `storefront-policies` PageType (`NUMERIC`/`BOOLEAN`) — see `data-storefront-content-saleor.md`.
+
 ---
 
 ## Key Files
 
 | Purpose                     | Location                                                              |
 | --------------------------- | --------------------------------------------------------------------- |
-| Typed contract              | `src/lib/content/types.ts`                                            |
+| Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)               |
 | Code fallback copy          | `src/lib/content/defaults.ts`                                         |
+| Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
+| Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
 | Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
 | Deep merge                  | `src/lib/content/merge.ts`                                            |
 | Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |

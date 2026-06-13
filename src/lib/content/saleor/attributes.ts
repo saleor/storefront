@@ -1,6 +1,6 @@
 import type { StorefrontContentPageFragment } from "@/gql/graphql";
 
-export type AttributeMap = Map<string, string | boolean>;
+export type AttributeMap = Map<string, string | number | boolean>;
 
 export function buildAttributeMap(page: StorefrontContentPageFragment | null | undefined): AttributeMap {
 	const map: AttributeMap = new Map();
@@ -16,6 +16,8 @@ export function buildAttributeMap(page: StorefrontContentPageFragment | null | u
 			map.set(slug, translated.length > 0 ? translated : assigned.plainText);
 		} else if ("boolean" in assigned && assigned.boolean != null) {
 			map.set(slug, assigned.boolean);
+		} else if ("numeric" in assigned && assigned.numeric != null) {
+			map.set(slug, assigned.numeric);
 		}
 	}
 
@@ -32,11 +34,23 @@ export function attrBool(map: AttributeMap, slug: string): boolean | undefined {
 	return typeof value === "boolean" ? value : undefined;
 }
 
+/**
+ * Read a `NUMERIC` attribute (preferred) or a numeric `PLAIN_TEXT` fallback.
+ * Returns `undefined` when unset or non-numeric so merge keeps the code default.
+ */
+export function attrNumber(map: AttributeMap, slug: string): number | undefined {
+	const value = map.get(slug);
+	if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
+	if (typeof value === "string" && value.length > 0) {
+		const parsed = Number(value);
+		return Number.isFinite(parsed) ? parsed : undefined;
+	}
+	return undefined;
+}
+
 export function attrInt(map: AttributeMap, slug: string): number | undefined {
-	const text = attrText(map, slug);
-	if (!text) return undefined;
-	const parsed = Number.parseInt(text, 10);
-	return Number.isFinite(parsed) ? parsed : undefined;
+	const value = attrNumber(map, slug);
+	return value === undefined ? undefined : Math.trunc(value);
 }
 
 export function attrOptionalUrl(map: AttributeMap, slug: string): string | null {
