@@ -5,6 +5,7 @@ import type { ContentProvider } from "@/lib/content/provider";
 import type { StorefrontContent } from "@/lib/content/types";
 import { mergeStorefrontContent } from "@/lib/content/merge";
 import { executePublicGraphQL } from "@/lib/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { mapCartPage } from "@/lib/content/saleor/mappers/cart";
 import { mapCheckoutPage } from "@/lib/content/saleor/mappers/checkout";
 import { mapChromePage } from "@/lib/content/saleor/mappers/chrome";
@@ -15,10 +16,10 @@ import {
 	resolveStorefrontPageForType,
 } from "@/lib/content/saleor/resolve-page";
 
-async function fetchStorefrontPages(channel: string) {
+async function fetchStorefrontPages(channel: string, localeSlug: string) {
 	const slugs = collectStorefrontContentPageSlugs(channel);
 	const result = await executePublicGraphQL(StorefrontContentPagesDocument, {
-		variables: { channel, slugs },
+		variables: { channel, slugs, ...graphqlLanguageCodeVariables(localeSlug) },
 	});
 
 	if (!result.ok) {
@@ -36,8 +37,8 @@ async function fetchStorefrontPages(channel: string) {
 
 export const saleorContentProvider: ContentProvider = {
 	id: "saleor",
-	async load({ channel }) {
-		const pages = await fetchStorefrontPages(channel);
+	async load({ channel, locale }) {
+		const pages = await fetchStorefrontPages(channel, locale ?? "en");
 		const bySlug = indexStorefrontPagesBySlug(pages);
 
 		const mapperPartials = [

@@ -472,3 +472,28 @@ describe("edge cases", () => {
 		expect(redOption?.available).toBe(true);
 	});
 });
+
+describe("attribute value translations", () => {
+	it("uses translated labels while keeping stable selection ids", () => {
+		const groups = groupVariantsByAttributes([
+			{
+				id: "v1",
+				name: "Black S",
+				quantityAvailable: 1,
+				selectionAttributes: [
+					{
+						attribute: {
+							slug: "color",
+							name: "Color",
+							translation: { name: "Kolor" },
+						},
+						values: [{ name: "black", value: "black", translation: { name: "czarny" } }],
+					},
+				],
+			},
+		]);
+
+		expect(groups[0]?.name).toBe("Kolor");
+		expect(groups[0]?.options[0]).toMatchObject({ id: "black", name: "czarny" });
+	});
+});

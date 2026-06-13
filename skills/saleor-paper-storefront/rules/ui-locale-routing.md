@@ -57,9 +57,10 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 2. **Locale slugs** — lowercase BCP 47; map to Saleor in `src/config/locale.ts` (`graphqlLanguageCode`, `htmlLang`, `Intl` locale).
 3. **Root `/`** → `/{defaultLocale}/{defaultChannel}/`.
 4. **Allowlist** — valid `(locale, channel)` pairs from config; invalid → `notFound()` or redirect.
-5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes.
+5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes (market switch warns when cart cookie exists).
 6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
 7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
+8. **Locale×channel pairs** — optional `STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid (`src/config/locale-channel.ts`).
 
 ---
 
@@ -82,18 +83,18 @@ Full detail: `data-caching.md` § Locale & Caching.
 
 ## Implementation map (when migration starts)
 
-| Concern         | Location (planned)                                                       |
-| --------------- | ------------------------------------------------------------------------ |
-| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                              |
-| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`  |
-| Channel guard   | move/extend current `[channel]/layout.tsx`                               |
-| Links           | replace `LinkWithChannel` → locale-aware helper                          |
-| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                      |
-| Middleware      | root redirect, optional `Accept-Language`, preference cookie             |
-| GraphQL         | pass `languageCode` on public queries                                    |
-| Content         | `getStorefrontContent(channel, locale)` — Saleor Models translations TBD |
-| Picker          | header market + language UI (footer channel select retired or secondary) |
-| SEO             | `hreflang`, canonical, sitemap per locale×channel                        |
+| Concern         | Location (planned)                                                                        |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                               |
+| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                   |
+| Channel guard   | move/extend current `[channel]/layout.tsx`                                                |
+| Links           | replace `LinkWithChannel` → locale-aware helper                                           |
+| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                       |
+| Middleware      | root redirect, optional `Accept-Language`, preference cookie                              |
+| GraphQL         | pass `languageCode` on public queries                                                     |
+| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired |
+| Picker          | header market + language UI (footer channel select retired or secondary)                  |
+| SEO             | `hreflang`, canonical, sitemap per locale×channel                                         |
 
 ---
 

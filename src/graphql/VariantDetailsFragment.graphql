@@ -10,6 +10,9 @@ fragment VariantDetails on ProductVariant {
 		values {
 			name
 			value
+			translation(languageCode: $languageCode) {
+				name
+			}
 			file {
 				url
 			}
@@ -18,12 +21,18 @@ fragment VariantDetails on ProductVariant {
 			name
 			slug
 			inputType
+			translation(languageCode: $languageCode) {
+				name
+			}
 		}
 	}
 	nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {
 		values {
 			name
 			value
+			translation(languageCode: $languageCode) {
+				name
+			}
 			file {
 				url
 			}
@@ -32,6 +41,9 @@ fragment VariantDetails on ProductVariant {
 			name
 			slug
 			inputType
+			translation(languageCode: $languageCode) {
+				name
+			}
 		}
 	}
 	media {

@@ -7,11 +7,12 @@ import xss from "xss";
 
 import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
-import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
+import { buildBrowsePageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
-import { withTranslatedProductFields } from "@/lib/saleor-translations";
+import { withTranslatedProductFields, pickTranslatedName } from "@/lib/saleor-translations";
+import { getAttributeValueDisplayName } from "@/ui/components/pdp/variant-selection/utils";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductAttributes,
@@ -67,11 +68,13 @@ export async function generateMetadata(props: {
 	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
 	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
 
-	return buildPageMetadata({
+	return buildBrowsePageMetadata({
 		title: product.seoTitle || product.name,
 		description,
 		image: ogImage,
-		url: buildStorefrontPath(params.locale, params.channel, `/products/${encodeURIComponent(params.slug)}`),
+		locale: params.locale,
+		channel: params.channel,
+		pathSuffix: `/products/${encodeURIComponent(params.slug)}`,
 		openGraph:
 			priceAmount && priceCurrency
 				? {
@@ -271,11 +274,14 @@ function extractProductAttributes(product: NonNullable<ProductDetailsQuery["prod
 		.filter((attr) => !variantAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
 		.filter((attr) => !internalAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
 		.map((attr) => ({
-			name: attr.attribute.name!,
+			name: pickTranslatedName({
+				name: attr.attribute.name!,
+				translation: attr.attribute.translation,
+			}),
 			value:
 				attr.values.length === 1
-					? attr.values[0]?.name ?? ""
-					: attr.values.map((v) => v.name ?? "").filter(Boolean),
+					? getAttributeValueDisplayName(attr.values[0] ?? { name: "" })
+					: attr.values.map((v) => getAttributeValueDisplayName(v)).filter(Boolean),
 		}))
 		.filter((attr) => {
 			if (Array.isArray(attr.value)) return attr.value.length > 0;
@@ -293,7 +299,7 @@ function extractCareInstructions(product: NonNullable<ProductDetailsQuery["produ
 
 	return (
 		careAttr?.values
-			.map((v) => v.name)
+			.map((v) => getAttributeValueDisplayName(v))
 			.filter(Boolean)
 			.join(". ") || null
 	);

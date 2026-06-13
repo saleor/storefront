@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { hasCartCookieForChannel } from "@/lib/cart-channel-cookie";
 import {
 	buildStorefrontPath,
 	replaceStorefrontChannel,
@@ -24,7 +25,14 @@ export function useStorefrontRegionNavigation() {
 	}
 
 	function navigateToChannel(newChannel: string) {
-		if (!locale) return;
+		if (!locale || newChannel === channel) return;
+
+		if (hasCartCookieForChannel(channel)) {
+			const proceed = window.confirm(
+				"Your cart is tied to this market. Switching markets starts a new cart — continue?",
+			);
+			if (!proceed) return;
+		}
 
 		const href = replaceStorefrontChannel(pathname, newChannel) ?? buildStorefrontPath(locale, newChannel);
 		router.push(href);

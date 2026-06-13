@@ -9,7 +9,11 @@ export function buildAttributeMap(page: StorefrontContentPageFragment | null | u
 	for (const assigned of page.assignedAttributes) {
 		const slug = assigned.attribute.slug;
 		if ("plainText" in assigned && assigned.plainText != null) {
-			map.set(slug, assigned.plainText);
+			const translated =
+				"plainTextTranslation" in assigned && typeof assigned.plainTextTranslation === "string"
+					? assigned.plainTextTranslation.trim()
+					: "";
+			map.set(slug, translated.length > 0 ? translated : assigned.plainText);
 		} else if ("boolean" in assigned && assigned.boolean != null) {
 			map.set(slug, assigned.boolean);
 		}

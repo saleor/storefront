@@ -114,6 +114,6 @@ export type ContentProviderId = "code" | "saleor" | "url";
 
 export type StorefrontContentRequest = {
 	channel: string;
-	/** BCP 47 locale — included for future i18n; defaults to localeConfig.default. */
+	/** URL locale slug (`en`, `pl`) — passed to Saleor `languageCode` when provider is `saleor`. */
 	locale?: string;
 };

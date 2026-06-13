@@ -20,7 +20,7 @@ describe("saleorContentProvider", () => {
 
 		const content = await saleorContentProvider.load({
 			channel: "default-channel",
-			locale: "en-US",
+			locale: "en",
 		});
 
 		expect(content).toEqual(defaultStorefrontContent);

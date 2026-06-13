@@ -32,10 +32,16 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 		attributes {
 			values {
 				name
+				translation(languageCode: $languageCode) {
+					name
+				}
 			}
 			attribute {
 				name
 				slug
+				translation(languageCode: $languageCode) {
+					name
+				}
 			}
 		}
 		variants {

@@ -15,6 +15,7 @@ import {
 	COLOR_NAME_TO_HEX,
 } from "@/lib/colors";
 import { getMaxDiscountInfo as getMaxDiscountInfoBase } from "@/lib/pricing";
+import { pickTranslatedName } from "@/lib/saleor-translations";
 import { sortBySizeProperty } from "@/lib/sizes";
 
 // Re-export for backwards compatibility
@@ -23,26 +24,29 @@ export { COLOR_NAME_TO_HEX };
 /**
  * Raw variant type from Saleor GraphQL
  */
+export type SaleorAttributeValue = {
+	name?: string | null;
+	value?: string | null;
+	translation?: { name?: string | null } | null;
+	file?: { url?: string | null } | null;
+};
+
+export type SaleorVariantAttribute = {
+	attribute: {
+		slug?: string | null;
+		name?: string | null;
+		inputType?: string | null;
+		translation?: { name?: string | null } | null;
+	};
+	values: SaleorAttributeValue[];
+};
+
 export type SaleorVariant = {
 	id: string;
 	name: string;
 	quantityAvailable?: number | null;
-	selectionAttributes: Array<{
-		attribute: { slug?: string | null; name?: string | null; inputType?: string | null };
-		values: Array<{
-			name?: string | null;
-			value?: string | null;
-			file?: { url?: string | null } | null;
-		}>;
-	}>;
-	nonSelectionAttributes?: Array<{
-		attribute: { slug?: string | null; name?: string | null; inputType?: string | null };
-		values: Array<{
-			name?: string | null;
-			value?: string | null;
-			file?: { url?: string | null } | null;
-		}>;
-	}>;
+	selectionAttributes: SaleorVariantAttribute[];
+	nonSelectionAttributes?: SaleorVariantAttribute[];
 	pricing?: {
 		price?: { gross: { amount: number; currency: string } } | null;
 		priceUndiscounted?: { gross: { amount: number; currency: string } } | null;
@@ -76,6 +80,26 @@ export function normalizeAttributeValueId(name: string): string {
 	return name.toLowerCase().replace(/\s+/g, "-");
 }
 
+/** Stable selection id for URL params — prefers Saleor `value` slug over display name. */
+export function getAttributeValueSelectionId(value: SaleorAttributeValue): string {
+	const slug = value.value?.trim();
+	if (slug) return slug.toLowerCase();
+	const name = value.name?.trim();
+	return name ? normalizeAttributeValueId(name) : "";
+}
+
+/** Localized label for an attribute value (e.g. black → czarny). */
+export function getAttributeValueDisplayName(value: SaleorAttributeValue): string {
+	const fallback = value.name?.trim() ?? "";
+	if (!fallback) return "";
+	return pickTranslatedName({ name: fallback, translation: value.translation });
+}
+
+function getAttributeDisplayName(attribute: SaleorVariantAttribute["attribute"]): string {
+	const fallback = attribute.name?.trim() ?? attribute.slug ?? "";
+	return pickTranslatedName({ name: fallback, translation: attribute.translation });
+}
+
 /** True when a variant matches every entry in partial or complete selections. */
 export function variantMatchesSelections(
 	variant: SaleorVariant,
@@ -90,7 +114,7 @@ export function variantMatchesSelections(
 		if (!attr) return false;
 
 		const hasMatchingValue = attr.values.some(
-			(v) => normalizeAttributeValueId(v.name ?? "") === normalizeAttributeValueId(selectedValue),
+			(v) => getAttributeValueSelectionId(v) === normalizeAttributeValueId(selectedValue),
 		);
 		if (!hasMatchingValue) return false;
 	}
@@ -169,7 +193,10 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 		{
 			name: string;
 			inputType?: string | null;
-			values: Map<string, { variantIds: Set<string>; colorHex?: string; swatchImageUrl?: string }>;
+			values: Map<
+				string,
+				{ variantIds: Set<string>; displayName: string; colorHex?: string; swatchImageUrl?: string }
+			>;
 		}
 	>();
 
@@ -177,7 +204,7 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 	for (const variant of variants) {
 		for (const attr of variant.selectionAttributes) {
 			const slug = attr.attribute.slug ?? "";
-			const name = attr.attribute.name ?? slug;
+			const name = getAttributeDisplayName(attr.attribute);
 
 			if (!attributeMap.has(slug)) {
 				attributeMap.set(slug, {
@@ -190,21 +217,23 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 			const attrData = attributeMap.get(slug)!;
 
 			for (const val of attr.values) {
-				const valueName = val.name ?? "";
-				if (!valueName) continue;
+				const valueId = getAttributeValueSelectionId(val);
+				const displayName = getAttributeValueDisplayName(val);
+				if (!valueId || !displayName) continue;
 
-				if (!attrData.values.has(valueName)) {
+				if (!attrData.values.has(valueId)) {
 					const swatch = getSwatchData(val);
 					const useSwatch = shouldRenderAsSwatch(attr.attribute.inputType, slug, swatch);
 
-					attrData.values.set(valueName, {
+					attrData.values.set(valueId, {
 						variantIds: new Set(),
+						displayName,
 						colorHex: useSwatch ? swatch.colorHex : undefined,
 						swatchImageUrl: useSwatch ? swatch.imageUrl : undefined,
 					});
 				}
 
-				attrData.values.get(valueName)!.variantIds.add(variant.id);
+				attrData.values.get(valueId)!.variantIds.add(variant.id);
 			}
 		}
 	}
@@ -215,7 +244,7 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 	for (const [slug, data] of attributeMap) {
 		const options: VariantOption[] = [];
 
-		for (const [valueName, valueData] of data.values) {
+		for (const [valueId, valueData] of data.values) {
 			// Get all variants with this value
 			const variantsWithValue = [...valueData.variantIds]
 				.map((id) => variants.find((v) => v.id === id)!)
@@ -228,8 +257,8 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 			const { hasDiscount, maxPercent } = getMaxDiscountInfo(variantsWithValue);
 
 			options.push({
-				id: normalizeAttributeValueId(valueName),
-				name: valueName,
+				id: valueId,
+				name: valueData.displayName,
 				available,
 				hasDiscount,
 				discountPercent: maxPercent > 0 ? maxPercent : undefined,
@@ -315,9 +344,9 @@ export function getSelectionsFromVariant(
 	const selections: Record<string, string> = {};
 	for (const attr of variant.selectionAttributes) {
 		const slug = attr.attribute.slug ?? "";
-		const value = attr.values[0]?.name ?? "";
+		const value = attr.values[0] ? getAttributeValueSelectionId(attr.values[0]) : "";
 		if (slug && value) {
-			selections[slug] = normalizeAttributeValueId(value);
+			selections[slug] = value;
 		}
 	}
 
@@ -352,7 +381,7 @@ export function getOptionsForAttribute(
 			const attr = variant.selectionAttributes.find(
 				(a) => (a.attribute.slug ?? "").toLowerCase() === targetAttributeSlug.toLowerCase(),
 			);
-			return attr?.values.some((v) => normalizeAttributeValueId(v.name ?? "") === option.id);
+			return attr?.values.some((v) => getAttributeValueSelectionId(v) === option.id);
 		});
 
 		// Check availability and discount

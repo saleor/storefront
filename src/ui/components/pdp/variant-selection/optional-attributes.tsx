@@ -1,3 +1,6 @@
+import { pickTranslatedName } from "@/lib/saleor-translations";
+import { getAttributeValueDisplayName, type SaleorVariantAttribute } from "./utils";
+
 interface VariantAttribute {
 	name: string;
 	slug: string;
@@ -38,10 +41,7 @@ export const OptionalAttributes = VariantAttributeBadges;
 
 type VariantWithAttributes = {
 	id: string;
-	nonSelectionAttributes?: Array<{
-		attribute: { name?: string | null; slug?: string | null };
-		values: Array<{ name?: string | null }>;
-	}>;
+	nonSelectionAttributes?: SaleorVariantAttribute[];
 };
 
 /**
@@ -62,9 +62,12 @@ export function extractOptionalAttributes(
 	return variant.nonSelectionAttributes
 		.filter((attr) => attr.attribute.name && attr.attribute.slug)
 		.map((attr) => ({
-			name: attr.attribute.name!,
+			name: pickTranslatedName({
+				name: attr.attribute.name!,
+				translation: attr.attribute.translation,
+			}),
 			slug: attr.attribute.slug!,
-			values: attr.values.map((v) => v.name).filter((n): n is string => !!n),
+			values: attr.values.map((v) => getAttributeValueDisplayName(v)).filter((n) => n.length > 0),
 		}))
 		.filter((attr) => attr.values.length > 0);
 }

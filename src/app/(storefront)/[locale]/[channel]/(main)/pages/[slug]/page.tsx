@@ -4,20 +4,24 @@ import { type Metadata } from "next";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 import { getPageData } from "@/lib/catalog/get-page-data";
+import { buildBrowsePageMetadata } from "@/lib/seo";
 import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
 
 const parser = edjsHTML();
 
 export const generateMetadata = async (props: {
-	params: Promise<{ slug: string; locale: string }>;
+	params: Promise<{ slug: string; locale: string; channel: string }>;
 }): Promise<Metadata> => {
 	const params = await props.params;
 	const page = await getPageData(params.slug, params.locale);
 
-	return {
-		title: `${page?.seoTitle || page?.title || "Page"} · Saleor Storefront example`,
-		description: page?.seoDescription || page?.seoTitle || page?.title,
-	};
+	return buildBrowsePageMetadata({
+		title: page?.seoTitle || page?.title || "Page",
+		description: page?.seoDescription || page?.title,
+		locale: params.locale,
+		channel: params.channel,
+		pathSuffix: `/pages/${encodeURIComponent(params.slug)}`,
+	});
 };
 
 /**

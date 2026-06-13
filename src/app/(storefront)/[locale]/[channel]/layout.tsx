@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { isAllowedStorefrontChannel } from "@/config/channels";
+import { getConfiguredLocaleChannelPairs, isAllowedLocaleChannelPair } from "@/config/locale-channel";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 
 /**
@@ -10,6 +11,12 @@ import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
  * Prefer STOREFRONT_CHANNELS allowlist; API discovery is opt-in via STOREFRONT_DISCOVER_CHANNELS.
  */
 export const generateStaticParams = async () => {
+	const configuredPairs = getConfiguredLocaleChannelPairs();
+	if (configuredPairs) {
+		const channels = [...new Set(configuredPairs.map((pair) => pair.channel))];
+		return channels.map((channel) => ({ channel }));
+	}
+
 	const channels = await getStorefrontChannelSlugs();
 
 	if (channels.length === 0) {
@@ -27,12 +34,12 @@ export default async function ChannelLayout({
 	params,
 }: {
 	children: ReactNode;
-	params: Promise<{ channel: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 }) {
-	const { channel } = await params;
+	const { locale, channel } = await params;
 	const allowedSlugs = await getStorefrontChannelSlugs();
 
-	if (!isAllowedStorefrontChannel(channel, allowedSlugs)) {
+	if (!isAllowedStorefrontChannel(channel, allowedSlugs) || !isAllowedLocaleChannelPair(locale, channel)) {
 		notFound();
 	}
 

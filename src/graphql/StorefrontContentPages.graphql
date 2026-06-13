@@ -1,4 +1,4 @@
-query StorefrontContentPages($channel: String!, $slugs: [String!]!) {
+query StorefrontContentPages($channel: String!, $slugs: [String!]!, $languageCode: LanguageCodeEnum!) {
 	pages(channel: $channel, where: { slug: { oneOf: $slugs } }, first: 20) {
 		edges {
 			node {
@@ -20,6 +20,7 @@ fragment StorefrontContentPage on Page {
 		}
 		... on AssignedPlainTextAttribute {
 			plainText: value
+			plainTextTranslation: translation(languageCode: $languageCode)
 		}
 		... on AssignedBooleanAttribute {
 			boolean: value

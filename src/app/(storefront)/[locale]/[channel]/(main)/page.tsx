@@ -18,10 +18,10 @@ export const metadata = {
  * Static sections use channel-relative hrefs (LinkWithChannel in section CTAs).
  */
 export default async function Page(props: { params: Promise<{ locale: string; channel: string }> }) {
-	const { channel } = await props.params;
+	const { locale, channel } = await props.params;
 	const {
 		surfaces: { homepage },
-	} = await getStorefrontContent(channel);
+	} = await getStorefrontContent(channel, locale);
 	const { hero, featuredCollection, brandStory, values, editorial } = homepage;
 
 	return (

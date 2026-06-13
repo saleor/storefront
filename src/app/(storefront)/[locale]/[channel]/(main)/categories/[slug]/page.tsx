@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { type ResolvingMetadata, type Metadata } from "next";
+import { type Metadata } from "next";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
+import { buildBrowsePageMetadata } from "@/lib/seo";
 import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
@@ -24,15 +25,18 @@ type PageProps = {
 	}>;
 };
 
-export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
+export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 	const params = await props.params;
 	const category = await getCategoryData(params.slug, params.channel, params.locale);
 	const plainDescription = parseEditorJSToText(category?.description);
 
-	return {
-		title: `${category?.name || "Category"} | ${category?.seoTitle || (await parent).title?.absolute}`,
-		description: category?.seoDescription || plainDescription || category?.seoTitle || category?.name,
-	};
+	return buildBrowsePageMetadata({
+		title: category?.seoTitle || category?.name || "Category",
+		description: category?.seoDescription || plainDescription || category?.name,
+		locale: params.locale,
+		channel: params.channel,
+		pathSuffix: `/categories/${encodeURIComponent(params.slug)}`,
+	});
 };
 
 /**

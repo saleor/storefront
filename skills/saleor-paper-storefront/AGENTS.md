@@ -1439,11 +1439,10 @@ Global page `storefront-homepage` remains the fallback for other channels.
 
 **Saleor (ready now):** Models support translations — editors can translate attribute values per language on each Page in Dashboard. The content is there when Paper asks for it.
 
-**Paper (fetch not wired yet):**
+**Paper (fetch wired):**
 
-- `getStorefrontContent(channel, locale)` and cache tags (`storefront-content:{channel}:{locale}`) already key by locale — the plumbing anticipates per-locale copy.
-- GraphQL and the Saleor provider do **not** pass `languageCode` / read translation fields yet, so every locale still gets default-language values from Saleor.
-- **To implement:** extend `StorefrontContentPages.graphql` and the provider fetch to request translations for the requested `locale`. Mappers and `StorefrontContent` shape stay the same; no new PageTypes or Configurator changes.
+- `getStorefrontContent(channel, localeSlug)` and cache tags (`storefront-content:{channel}:{locale}`) key by locale.
+- `StorefrontContentPages.graphql` passes `languageCode`; plain-text attributes use `translation(languageCode: …)` in `buildAttributeMap`.
 
 ---
 
@@ -3778,18 +3777,18 @@ Full detail: `data-caching.md` § Locale & Caching.
 
 ## Implementation map (when migration starts)
 
-| Concern         | Location (planned)                                                       |
-| --------------- | ------------------------------------------------------------------------ |
-| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                              |
-| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`  |
-| Channel guard   | move/extend current `[channel]/layout.tsx`                               |
-| Links           | replace `LinkWithChannel` → locale-aware helper                          |
-| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                      |
-| Middleware      | root redirect, optional `Accept-Language`, preference cookie             |
-| GraphQL         | pass `languageCode` on public queries                                    |
-| Content         | `getStorefrontContent(channel, locale)` — Saleor Models translations TBD |
-| Picker          | header market + language UI (footer channel select retired or secondary) |
-| SEO             | `hreflang`, canonical, sitemap per locale×channel                        |
+| Concern         | Location (planned)                                                                        |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                               |
+| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                   |
+| Channel guard   | move/extend current `[channel]/layout.tsx`                                                |
+| Links           | replace `LinkWithChannel` → locale-aware helper                                           |
+| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                       |
+| Middleware      | root redirect, optional `Accept-Language`, preference cookie                              |
+| GraphQL         | pass `languageCode` on public queries                                                     |
+| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired |
+| Picker          | header market + language UI (footer channel select retired or secondary)                  |
+| SEO             | `hreflang`, canonical, sitemap per locale×channel                                         |
 
 ---
 
@@ -3969,15 +3968,27 @@ export default async function ProductPage({ params }) {
 }
 ```
 
-## International URLs (planned)
+## International URLs
 
-Browse canonical URLs will include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`). When implemented:
+Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`).
 
-- `generateMetadata` `url` must include both segments
-- Add `hreflang` alternates per available `(locale, channel)` pairs
-- `<html lang>` comes from the locale segment, not a global constant
+- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates (same channel, each configured locale).
+- `generateMetadata` `pathSuffix` is the path after locale/channel, e.g. `/products/${slug}`.
+- `<html lang>` comes from `DocumentLang` in `[locale]/layout.tsx`.
 
-Not implemented yet — metadata still uses `/{channel}/…` only.
+```typescript
+import { buildBrowsePageMetadata } from "@/lib/seo";
+
+return buildBrowsePageMetadata({
+	title: category.name,
+	description: category.seoDescription,
+	locale: params.locale,
+	channel: params.channel,
+	pathSuffix: `/categories/${params.slug}`,
+});
+```
+
+Optional `STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
 
 ## Disabling SEO
 

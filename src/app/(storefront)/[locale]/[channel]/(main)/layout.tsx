@@ -1,5 +1,4 @@
 import { type ReactNode, Suspense } from "react";
-import { resolveLocaleFromSlug } from "@/config/locale";
 import { getStorefrontContent } from "@/lib/content/server";
 import { CartDrawerWrapper } from "@/ui/components/cart/cart-drawer-wrapper";
 import { StorefrontProviders } from "@/ui/components/storefront-providers";
@@ -16,8 +15,7 @@ export default async function RootLayout(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }) {
 	const { locale: localeSlug, channel } = await props.params;
-	const locale = resolveLocaleFromSlug(localeSlug).bcp47;
-	const content = await getStorefrontContent(channel, locale);
+	const content = await getStorefrontContent(channel, localeSlug);
 
 	return (
 		<StorefrontProviders>

@@ -149,11 +149,10 @@ Global page `storefront-homepage` remains the fallback for other channels.
 
 **Saleor (ready now):** Models support translations — editors can translate attribute values per language on each Page in Dashboard. The content is there when Paper asks for it.
 
-**Paper (fetch not wired yet):**
+**Paper (fetch wired):**
 
-- `getStorefrontContent(channel, locale)` and cache tags (`storefront-content:{channel}:{locale}`) already key by locale — the plumbing anticipates per-locale copy.
-- GraphQL and the Saleor provider do **not** pass `languageCode` / read translation fields yet, so every locale still gets default-language values from Saleor.
-- **To implement:** extend `StorefrontContentPages.graphql` and the provider fetch to request translations for the requested `locale`. Mappers and `StorefrontContent` shape stay the same; no new PageTypes or Configurator changes.
+- `getStorefrontContent(channel, localeSlug)` and cache tags (`storefront-content:{channel}:{locale}`) key by locale.
+- `StorefrontContentPages.graphql` passes `languageCode`; plain-text attributes use `translation(languageCode: …)` in `buildAttributeMap`.
 
 ---
 

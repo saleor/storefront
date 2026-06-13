@@ -55,10 +55,16 @@ fragment ProductListItem on Product {
 				slug
 				name
 				inputType
+				translation(languageCode: $languageCode) {
+					name
+				}
 			}
 			values {
 				name
 				value
+				translation(languageCode: $languageCode) {
+					name
+				}
 				file {
 					url
 				}

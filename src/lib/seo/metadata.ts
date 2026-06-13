@@ -1,5 +1,7 @@
 import { type Metadata } from "next";
 import { seoConfig, getMetadataBase } from "./config";
+import { buildLocaleHreflangAlternates } from "./hreflang";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 /**
  * Root Metadata
@@ -131,10 +133,12 @@ export function buildPageMetadata(options: {
 	description?: string;
 	image?: string | null;
 	url?: string;
+	/** hreflang map — keys are BCP 47 / `x-default` */
+	languages?: Record<string, string>;
 	/** Additional OpenGraph properties */
 	openGraph?: Record<string, string>;
 }): Metadata {
-	const { title, description, image, url, openGraph: extraOg } = options;
+	const { title, description, image, url, languages, openGraph: extraOg } = options;
 
 	// Truncate for optimal display
 	const truncatedTitle = truncateText(title, 60);
@@ -144,10 +148,11 @@ export function buildPageMetadata(options: {
 		title: truncatedTitle,
 		description: truncatedDescription,
 
-		// Canonical URL
+		// Canonical URL + hreflang
 		...(url && {
 			alternates: {
 				canonical: url,
+				...(languages && Object.keys(languages).length > 0 ? { languages } : {}),
 			},
 		}),
 
@@ -182,4 +187,28 @@ export function buildPageMetadata(options: {
 			},
 		}),
 	};
+}
+
+/** Browse metadata with canonical `/{locale}/{channel}/…` URL and locale hreflang alternates. */
+export function buildBrowsePageMetadata(options: {
+	title: string;
+	description?: string;
+	image?: string | null;
+	locale: string;
+	channel: string;
+	/** Path after locale/channel, e.g. `/products/hoodie` */
+	pathSuffix: string;
+	openGraph?: Record<string, string>;
+}): Metadata {
+	const url = buildStorefrontPath(options.locale, options.channel, options.pathSuffix);
+	const languages = buildLocaleHreflangAlternates(options.channel, options.pathSuffix);
+
+	return buildPageMetadata({
+		title: options.title,
+		description: options.description,
+		image: options.image,
+		url,
+		languages,
+		openGraph: options.openGraph,
+	});
 }
