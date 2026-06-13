@@ -2,7 +2,7 @@ import type { ProductListItemFragment } from "@/gql/graphql";
 import type { ProductCardData } from "./product-card-data";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
-import { localeConfig } from "@/config/locale";
+import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedName } from "@/lib/saleor-translations";
@@ -97,6 +97,7 @@ export function toProductCardData(
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? productName,
 		hoverImage: null, // Would need additional media in fragment
+		localeBcp47: resolveLocaleFromSlug(locale).bcp47,
 		href: buildStorefrontPath(locale, channel, `/products/${product.slug}`),
 		badge: isSale ? "Sale" : null,
 		colors,
@@ -113,10 +114,11 @@ export function toProductCardData(
 export const transformToProductCard = toProductCardData;
 
 /**
- * Format price with currency
+ * Format price with currency. Pass a BCP 47 `locale` to localize grouping/symbol placement;
+ * defaults to the base locale for backward compatibility.
  */
-export function formatPrice(amount: number, currency: string): string {
-	return new Intl.NumberFormat(localeConfig.default, {
+export function formatPrice(amount: number, currency: string, locale: string = localeConfig.default): string {
+	return new Intl.NumberFormat(locale, {
 		style: "currency",
 		currency: currency,
 	}).format(amount);

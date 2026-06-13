@@ -1,6 +1,7 @@
 "use client";
 
 import { cn, formatMoney } from "@/lib/utils";
+import { useIntlLocale } from "@/hooks/use-storefront-href";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
 
 /**
@@ -49,6 +50,8 @@ export function VariantNameSelector({
 	label = "Variant",
 	isPending,
 }: VariantNameSelectorProps) {
+	const intlLocale = useIntlLocale();
+
 	// Check if prices differ between variants (show price if so)
 	const prices = variants
 		.map((v) => v.pricing?.price?.gross?.amount)
@@ -88,7 +91,7 @@ export function VariantNameSelector({
 					const accessibleParts = [
 						variant.name,
 						isOutOfStock && "out of stock",
-						showPrices && price && formatMoney(price.amount, price.currency),
+						showPrices && price && formatMoney(price.amount, price.currency, intlLocale),
 						discountPercent && `${discountPercent}% off`,
 					].filter(Boolean);
 
@@ -115,7 +118,7 @@ export function VariantNameSelector({
 									{variant.name}
 									{showPrices && price && (
 										<span className={cn("text-xs", isSelected ? "opacity-80" : "text-muted-foreground")}>
-											{formatMoney(price.amount, price.currency)}
+											{formatMoney(price.amount, price.currency, intlLocale)}
 										</span>
 									)}
 								</span>

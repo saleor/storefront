@@ -11,6 +11,8 @@ export interface ProductCardData {
 	/** Max discount on the displayed (start) price, when on sale. */
 	discountPercent?: number | null;
 	currency: string;
+	/** BCP 47 locale for price formatting (from the route locale at build/render time). */
+	localeBcp47?: string;
 	image: string;
 	imageAlt?: string;
 	hoverImage?: string | null;

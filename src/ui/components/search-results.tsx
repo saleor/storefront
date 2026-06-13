@@ -6,13 +6,15 @@ import { localeConfig } from "@/config/locale";
 
 interface SearchResultsProps {
 	products: SearchProduct[];
+	/** BCP 47 locale for price formatting; defaults to the base locale. */
+	locale?: string;
 }
 
 /**
  * Renders search results from any search provider.
  * Uses the common SearchProduct type for provider independence.
  */
-export function SearchResults({ products }: SearchResultsProps) {
+export function SearchResults({ products, locale }: SearchResultsProps) {
 	if (products.length === 0) {
 		return null;
 	}
@@ -21,15 +23,23 @@ export function SearchResults({ products }: SearchResultsProps) {
 		<ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 			{products.map((product, index) => (
 				<li key={product.id}>
-					<SearchResultCard product={product} priority={index < LCP_IMAGE_PRIORITY_COUNT} />
+					<SearchResultCard product={product} priority={index < LCP_IMAGE_PRIORITY_COUNT} locale={locale} />
 				</li>
 			))}
 		</ul>
 	);
 }
 
-function SearchResultCard({ product, priority }: { product: SearchProduct; priority?: boolean }) {
-	const formattedPrice = new Intl.NumberFormat(localeConfig.default, {
+function SearchResultCard({
+	product,
+	priority,
+	locale = localeConfig.default,
+}: {
+	product: SearchProduct;
+	priority?: boolean;
+	locale?: string;
+}) {
+	const formattedPrice = new Intl.NumberFormat(locale, {
 		style: "currency",
 		currency: product.currency,
 	}).format(product.price);

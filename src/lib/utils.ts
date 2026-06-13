@@ -19,10 +19,11 @@ export const formatMoneyRange = (
 		start?: { amount: number; currency: string } | null;
 		stop?: { amount: number; currency: string } | null;
 	} | null,
+	locale?: string,
 ) => {
 	const { start, stop } = range || {};
-	const startMoney = start && formatMoney(start.amount, start.currency);
-	const stopMoney = stop && formatMoney(stop.amount, stop.currency);
+	const startMoney = start && formatMoney(start.amount, start.currency, locale);
+	const stopMoney = stop && formatMoney(stop.amount, stop.currency, locale);
 
 	if (startMoney === stopMoney) {
 		return startMoney;

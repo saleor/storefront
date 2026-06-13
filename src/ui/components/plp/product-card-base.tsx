@@ -96,7 +96,7 @@ export function ProductCardBase({
 						<span className="font-semibold">{formatProductPrice(product)}</span>
 						{product.compareAtPrice != null && (
 							<span className="text-sm text-muted-foreground line-through">
-								{formatPrice(product.compareAtPrice, product.currency)}
+								{formatPrice(product.compareAtPrice, product.currency, product.localeBcp47)}
 							</span>
 						)}
 						{product.discountPercent != null && product.discountPercent > 0 && (

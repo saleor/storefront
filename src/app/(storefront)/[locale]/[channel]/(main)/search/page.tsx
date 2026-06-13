@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
+import { type Metadata } from "next";
 import { searchProducts } from "@/lib/search";
+import { resolveLocaleFromSlug } from "@/config/locale";
 import { SearchResults } from "@/ui/components/search-results";
 import { Pagination } from "@/ui/components/pagination";
 import { SearchSort } from "./search-sort";
@@ -9,9 +11,14 @@ import { buttonClassName } from "@/ui/components/ui/button";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
-export const metadata = {
-	title: "Search products · Saleor Storefront example",
-	description: "Search products in Saleor Storefront example",
+/**
+ * Search results are query-dependent and thin — keep them out of the index.
+ * Title falls back to the brand template (`%s | Saleor Store`).
+ */
+export const metadata: Metadata = {
+	title: "Search",
+	description: "Search our full collection of products.",
+	robots: { index: false, follow: true },
 };
 
 type SearchParams = {
@@ -110,7 +117,7 @@ async function SearchContent({
 			</div>
 
 			{/* Results grid */}
-			<SearchResults products={products} />
+			<SearchResults products={products} locale={resolveLocaleFromSlug(params.locale).bcp47} />
 
 			{/* Pagination */}
 			{(pagination.hasNextPage || pagination.hasPreviousPage) && (

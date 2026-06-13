@@ -1,19 +1,30 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { type Metadata } from "next";
 import { ProductListPaginatedDocument } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
+import { buildBrowsePageMetadata } from "@/lib/seo";
 import { CategoryHero, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { ProductsPageClient } from "./products-client";
 
-export const metadata = {
-	title: "Products · Saleor Storefront example",
-	description: "All products in Saleor Storefront example",
-};
+export async function generateMetadata(props: {
+	params: Promise<{ locale: string; channel: string }>;
+}): Promise<Metadata> {
+	const params = await props.params;
+
+	return buildBrowsePageMetadata({
+		title: "All Products",
+		description: "Discover our full collection of premium products.",
+		locale: params.locale,
+		channel: params.channel,
+		pathSuffix: "/products",
+	});
+}
 
 type PageProps = {
 	params: Promise<{ locale: string; channel: string }>;

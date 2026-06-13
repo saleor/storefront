@@ -11,7 +11,7 @@ import { useCart } from "./cart-context";
 import type { DeleteCartLine, UpdateCartLineQuantity } from "./cart-mutations";
 import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
-import { localeConfig } from "@/config/locale";
+import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { hasDiscount } from "@/lib/pricing";
 import { buildCheckoutPath } from "@paper/session-bridge";
 import type { CartContent } from "@/lib/content";
@@ -135,6 +135,7 @@ export function CartDrawer({
 	const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
 	const subtotal = totalPrice?.gross.amount ?? 0;
 	const currency = totalPrice?.gross.currency ?? localeConfig.fallbackCurrency;
+	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
 
 	const runCartMutation = (mutation: () => Promise<void>) => {
 		setIsCartBusy(true);
@@ -185,7 +186,7 @@ export function CartDrawer({
 							{amountToFreeShipping > 0 ? (
 								<span>
 									{formatContentLabel(drawer.addForFreeShipping, {
-										amount: formatMoney(amountToFreeShipping, currency),
+										amount: formatMoney(amountToFreeShipping, currency, intlLocale),
 									})}
 								</span>
 							) : (
@@ -325,13 +326,18 @@ export function CartDrawer({
 													{/* Price */}
 													<div className="text-right">
 														<span className="text-sm font-medium">
-															{formatMoney(line.totalPrice.gross.amount, line.totalPrice.gross.currency)}
+															{formatMoney(
+																line.totalPrice.gross.amount,
+																line.totalPrice.gross.currency,
+																intlLocale,
+															)}
 														</span>
 														{isDiscounted && line.variant.pricing?.priceUndiscounted && (
 															<span className="block text-xs text-muted-foreground line-through">
 																{formatMoney(
 																	line.variant.pricing.priceUndiscounted.gross.amount * line.quantity,
 																	line.variant.pricing.priceUndiscounted.gross.currency,
+																	intlLocale,
 																)}
 															</span>
 														)}
@@ -353,7 +359,7 @@ export function CartDrawer({
 						<div className="space-y-2 px-6 py-4">
 							<div className="flex items-center justify-between text-sm">
 								<span className="text-muted-foreground">{drawer.subtotal}</span>
-								<span>{formatMoney(subtotal, currency)}</span>
+								<span>{formatMoney(subtotal, currency, intlLocale)}</span>
 							</div>
 							<div className="flex items-center justify-between text-sm">
 								<span className="text-muted-foreground">{drawer.shipping}</span>
@@ -363,7 +369,7 @@ export function CartDrawer({
 							</div>
 							<div className="flex items-center justify-between border-t border-border pt-2 text-base font-semibold">
 								<span>{drawer.total}</span>
-								<span>{formatMoney(subtotal, currency)}</span>
+								<span>{formatMoney(subtotal, currency, intlLocale)}</span>
 							</div>
 						</div>
 
@@ -407,7 +413,7 @@ export function CartDrawer({
 						<div className="flex items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
 							<span className="flex items-center gap-1.5">
 								<Truck className="h-4 w-4" />
-								{cart.trust.freeShippingPrefix} {formatMoney(freeShippingThreshold, currency)}
+								{cart.trust.freeShippingPrefix} {formatMoney(freeShippingThreshold, currency, intlLocale)}
 							</span>
 							<span className="flex items-center gap-1.5">
 								<RotateCcw className="h-4 w-4" />

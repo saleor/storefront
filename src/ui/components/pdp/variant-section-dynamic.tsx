@@ -1,4 +1,5 @@
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
+import { resolveLocaleFromSlug } from "@/config/locale";
 import { getDiscountInfo } from "@/lib/pricing";
 import {
 	revalidateStorefrontBrowsePath,
@@ -36,6 +37,7 @@ export async function VariantSectionDynamic({
 	searchParams,
 }: VariantSectionDynamicProps) {
 	const { variant: variantParam } = await searchParams;
+	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
 	const variants = product.variants || [];
 	const selectedVariantID = resolveSelectedVariantId(product, variantParam);
 	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
@@ -55,11 +57,18 @@ export async function VariantSectionDynamic({
 	const price = selectedVariant?.pricing?.price?.gross
 		? selectedVariant.pricing.price.gross.amount === 0
 			? "FREE"
-			: formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-		: formatMoneyRange({
-				start: product.pricing?.priceRange?.start?.gross,
-				stop: product.pricing?.priceRange?.stop?.gross,
-			}) || "";
+			: formatMoney(
+					selectedVariant.pricing.price.gross.amount,
+					selectedVariant.pricing.price.gross.currency,
+					intlLocale,
+				)
+		: formatMoneyRange(
+				{
+					start: product.pricing?.priceRange?.start?.gross,
+					stop: product.pricing?.priceRange?.stop?.gross,
+				},
+				intlLocale,
+			) || "";
 
 	// Calculate discount/sale information
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
@@ -71,6 +80,7 @@ export async function VariantSectionDynamic({
 			? formatMoney(
 					selectedVariant.pricing.priceUndiscounted.gross.amount,
 					selectedVariant.pricing.priceUndiscounted.gross.currency,
+					intlLocale,
 				)
 			: null;
 
