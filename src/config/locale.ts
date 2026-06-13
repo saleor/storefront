@@ -115,7 +115,7 @@ export function getGraphqlLanguageCode(slug: string): string {
 /**
  * Format a price with the configured locale.
  */
-export function formatPrice(amount: number, currency: string, locale = localeConfig.default): string {
+export function formatPrice(amount: number, currency: string, locale: string = localeConfig.default): string {
 	return new Intl.NumberFormat(locale, {
 		style: "currency",
 		currency: currency,

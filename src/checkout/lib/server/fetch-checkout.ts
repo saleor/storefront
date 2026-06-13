@@ -8,7 +8,7 @@ import {
 import type { CheckoutFetchResult } from "@/checkout/lib/checkout-types";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { executePublicGraphQL } from "@/lib/graphql";
-import { localeConfig } from "@/config/locale";
+import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
 
 const checkoutQueryDocument = toTypedDocument<CheckoutQuery, CheckoutQueryVariables>(CheckoutDocument);
 
@@ -19,7 +19,7 @@ const checkoutQueryDocument = toTypedDocument<CheckoutQuery, CheckoutQueryVariab
  */
 export async function fetchCheckoutOnServer(checkoutId: string): Promise<CheckoutFetchResult> {
 	const result = await executePublicGraphQL(checkoutQueryDocument, {
-		variables: { id: checkoutId, languageCode: localeConfig.graphqlLanguageCode },
+		variables: { id: checkoutId, ...(await checkoutGraphqlLocaleVariables()) },
 		cache: "no-cache",
 	});
 

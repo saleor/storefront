@@ -29,7 +29,7 @@ export async function Header({ locale, channel }: { locale: string; channel: str
 					<div className="flex items-center gap-1">
 						<UserMenuContainer locale={locale} channel={channel} />
 						<Suspense fallback={<div className="h-10 w-10" />}>
-							<CartNavItem channel={channel} />
+							<CartNavItem channel={channel} localeSlug={locale} />
 						</Suspense>
 						<Suspense>
 							<MobileMenu>

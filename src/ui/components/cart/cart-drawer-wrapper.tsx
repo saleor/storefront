@@ -5,12 +5,13 @@ import { CartDrawer } from "./cart-drawer";
 
 interface CartDrawerWrapperProps {
 	channel: string;
+	localeSlug: string;
 	cart: CartContent;
 }
 
-export async function CartDrawerWrapper({ channel, cart }: CartDrawerWrapperProps) {
+export async function CartDrawerWrapper({ channel, localeSlug, cart }: CartDrawerWrapperProps) {
 	const checkoutId = await Checkout.getIdFromCookies(channel);
-	const checkout = checkoutId ? await Checkout.find(checkoutId) : null;
+	const checkout = checkoutId ? await Checkout.find(checkoutId, localeSlug) : null;
 
 	return (
 		<CartDrawer

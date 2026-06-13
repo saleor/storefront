@@ -3,6 +3,7 @@ import { invariant } from "ts-invariant";
 import { buildCheckoutPath, buildOrderConfirmationPath } from "@paper/session-bridge";
 import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
+import { getBrowseLocaleSlug } from "@/lib/browse-locale-server";
 import { getStorefrontContent } from "@/lib/content/server";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import {
@@ -87,7 +88,8 @@ export async function CheckoutSessionLoader({
 
 	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
 	const contentChannel = browseChannel ?? DefaultChannelSlug ?? "default-channel";
-	const checkoutContent = (await getStorefrontContent(contentChannel)).surfaces.checkout;
+	const browseLocale = await getBrowseLocaleSlug();
+	const checkoutContent = (await getStorefrontContent(contentChannel, browseLocale)).surfaces.checkout;
 
 	return (
 		<CheckoutApp

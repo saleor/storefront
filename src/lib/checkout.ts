@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { checkoutIdCookieName } from "@paper/session-bridge";
 import { CheckoutCreateDocument, CheckoutCustomerDetachDocument, CheckoutFindDocument } from "@/gql/graphql";
+import { type CartCheckout, withTranslatedCartCheckout } from "@/lib/cart-checkout";
+import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
 import { executeAuthenticatedGraphQL, executePublicGraphQL } from "@/lib/graphql";
 
 /** Checkout id from this channel's cart cookie (`checkoutId-{channel}`). */
@@ -106,36 +108,52 @@ export async function clearCheckoutCookieByValue(checkoutId: string) {
 	}
 }
 
-export async function find(checkoutId: string) {
+export async function find(checkoutId: string, localeSlug?: string): Promise<CartCheckout | null> {
 	if (!checkoutId) {
 		return null;
 	}
 
 	const result = await executePublicGraphQL(CheckoutFindDocument, {
-		variables: { id: checkoutId },
+		variables: { id: checkoutId, ...(await checkoutGraphqlLocaleVariables(localeSlug)) },
 		cache: "no-cache",
 	});
 
-	return result.ok ? result.data.checkout : null;
+	if (!result.ok || !result.data.checkout) {
+		return null;
+	}
+
+	return withTranslatedCartCheckout(result.data.checkout);
 }
 
-export async function findOrCreate({ channel, checkoutId }: { checkoutId?: string; channel: string }) {
+export async function findOrCreate({
+	channel,
+	checkoutId,
+	localeSlug,
+}: {
+	checkoutId?: string;
+	channel: string;
+	localeSlug?: string;
+}) {
 	if (!checkoutId) {
-		const result = await create({ channel });
+		const result = await create({ channel, localeSlug });
 		return result.ok ? result.data.checkoutCreate?.checkout : null;
 	}
 
-	const checkout = await find(checkoutId);
+	const checkout = await find(checkoutId, localeSlug);
 	if (checkout) {
 		return checkout;
 	}
 
-	const result = await create({ channel });
+	const result = await create({ channel, localeSlug });
 	return result.ok ? result.data.checkoutCreate?.checkout : null;
 }
 
-export const create = ({ channel }: { channel: string }) =>
-	executeAuthenticatedGraphQL(CheckoutCreateDocument, { cache: "no-cache", variables: { channel } });
+export async function create({ channel, localeSlug }: { channel: string; localeSlug?: string }) {
+	return executeAuthenticatedGraphQL(CheckoutCreateDocument, {
+		cache: "no-cache",
+		variables: { channel, ...(await checkoutGraphqlLocaleVariables(localeSlug)) },
+	});
+}
 
 /** Detach the logged-in customer from a checkout (call before sign-out). */
 export async function detachCustomer(checkoutId: string) {

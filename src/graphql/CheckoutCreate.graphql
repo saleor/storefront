@@ -1,4 +1,4 @@
-mutation CheckoutCreate($channel: String!) {
+mutation CheckoutCreate($channel: String!, $languageCode: LanguageCodeEnum!) {
 	checkoutCreate(input: { channel: $channel, lines: [] }) {
 		checkout {
 			id

@@ -205,6 +205,7 @@ async function ProductShell({
 								<VariantSectionDynamic
 									product={product}
 									channel={params.channel}
+									localeSlug={params.locale}
 									searchParams={searchParams}
 								/>
 							</Suspense>

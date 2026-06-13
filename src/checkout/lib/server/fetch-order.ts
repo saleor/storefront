@@ -7,7 +7,7 @@ import {
 } from "@/checkout/graphql/generated/operations";
 import type { ServerOrder } from "@/checkout/lib/checkout-types";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
-import { localeConfig } from "@/config/locale";
+import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 
 const orderQueryDocument = toTypedDocument<OrderQuery, OrderQueryVariables>(OrderDocument);
@@ -19,7 +19,7 @@ export async function fetchOrderOnServer(orderId: string): Promise<ServerOrder |
 	const result = await executePublicGraphQL(orderQueryDocument, {
 		variables: {
 			id: orderId,
-			languageCode: localeConfig.graphqlLanguageCode,
+			...(await checkoutGraphqlLocaleVariables()),
 		},
 		cache: "no-cache",
 	});

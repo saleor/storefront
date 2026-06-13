@@ -18,6 +18,7 @@ import { resolveSelectedVariantId, type Product } from "./gallery-utils";
 interface VariantSectionDynamicProps {
 	product: Product;
 	channel: string;
+	localeSlug: string;
 	searchParams: Promise<{ variant?: string }>;
 }
 
@@ -28,7 +29,12 @@ interface VariantSectionDynamicProps {
  * (name, attributes, JSON-LD) stays in the static prerender cache.
  * Product data is passed from the shell and backed by getProductData() "use cache".
  */
-export async function VariantSectionDynamic({ product, channel, searchParams }: VariantSectionDynamicProps) {
+export async function VariantSectionDynamic({
+	product,
+	channel,
+	localeSlug,
+	searchParams,
+}: VariantSectionDynamicProps) {
 	const { variant: variantParam } = await searchParams;
 	const variants = product.variants || [];
 	const selectedVariantID = resolveSelectedVariantId(product, variantParam);
@@ -81,6 +87,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 			const checkout = await Checkout.findOrCreate({
 				checkoutId: await Checkout.getIdFromCookies(channel),
 				channel: channel,
+				localeSlug,
 			});
 
 			if (!checkout) {

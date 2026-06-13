@@ -86,7 +86,7 @@ import { buildMarketingConsentMetadata } from "@/checkout/lib/marketing-consent"
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
-import { localeConfig } from "@/config/locale";
+import { checkoutGraphqlLanguageCode } from "@/lib/checkout-locale";
 import { getRequestOrigin, isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { executeAuthenticatedGraphQL, executePublicGraphQL, executeRawGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
@@ -189,7 +189,7 @@ export async function updateCheckoutEmail(checkoutId: string, email: string): Pr
 		variables: {
 			checkoutId,
 			email,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});
@@ -239,7 +239,7 @@ export async function updateCheckoutShippingAddress(
 			checkoutId,
 			shippingAddress,
 			saveAddress,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});
@@ -255,7 +255,7 @@ export async function attachCustomerToCheckout(checkoutId: string): Promise<Chec
 	const result = await executeAuthenticatedGraphQL(checkoutCustomerAttachDocument, {
 		variables: {
 			checkoutId,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});
@@ -326,7 +326,7 @@ export async function recoverOrphanedCheckout(
 	const createResult = await executeAuthenticatedGraphQL(checkoutCreateDocument, {
 		variables: {
 			channel,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});
@@ -347,7 +347,7 @@ export async function recoverOrphanedCheckout(
 			variables: {
 				checkoutId: checkout.id,
 				lines,
-				languageCode: localeConfig.graphqlLanguageCode,
+				languageCode: await checkoutGraphqlLanguageCode(),
 			},
 			cache: "no-cache",
 		});
@@ -403,7 +403,7 @@ export async function updateCheckoutDeliveryMethod(
 		variables: {
 			checkoutId,
 			deliveryMethodId,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});
@@ -425,7 +425,7 @@ export async function updateCheckoutBillingAddress(input: {
 			checkoutId: input.checkoutId,
 			billingAddress: input.billingAddress,
 			saveAddress: input.saveAddress,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});
@@ -620,7 +620,7 @@ export async function applyCheckoutPromoCode(
 		variables: {
 			checkoutId,
 			promoCode,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});
@@ -640,7 +640,7 @@ export async function removeCheckoutPromoCode(
 		variables: {
 			checkoutId,
 			promoCode,
-			languageCode: localeConfig.graphqlLanguageCode,
+			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 		cache: "no-cache",
 	});

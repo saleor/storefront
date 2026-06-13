@@ -23,7 +23,7 @@ export default async function RootLayout(props: {
 				{props.children}
 			</MainChrome>
 			<Suspense fallback={null}>
-				<CartDrawerWrapper channel={channel} cart={content.surfaces.cart} />
+				<CartDrawerWrapper channel={channel} localeSlug={localeSlug} cart={content.surfaces.cart} />
 			</Suspense>
 		</StorefrontProviders>
 	);
