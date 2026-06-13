@@ -69,6 +69,17 @@ Patterns we **do not** use — regressions to avoid:
 
 ---
 
+## Known divergences (accepted, deferred)
+
+Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
+
+| Divergence                                                                                                                                                                                                         | Why it's safe today                                                                                                                                                                                                                                                                                                                                     | Deferred fix                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Homepage** (`(main)/page.tsx`) and **category** (`categories/[slug]/page.tsx`) use an **async page shell** that awaits cached data at the page top, instead of the canonical sync page → Suspense → async shell. | Both await only `params` + `"use cache"` data (`getStorefrontContent` / `getCategoryData`) — never `searchParams`/`cookies` — so the static shell still prerenders and PPR is intact. Dynamic islands (featured collection, product grid) stay in nested `Suspense`. Build passes.                                                                      | Convert to sync page + inner `<Suspense fallback>` shell when touched.                     |
+| **Homepage has no `loading.tsx`.**                                                                                                                                                                                 | Content is `"use cache"` and reused from the layout's own `getStorefrontContent` fetch (warm per request); stale-while-revalidate avoids blocking on TTL expiry. Only a truly cold cache renders `<main>` empty briefly — per-key, not traffic-amplified. The layout also awaits the same cached content, so the page is not the main cold-start lever. | Add a homepage `loading.tsx` (or sync-shell skeleton) alongside the sync-shell conversion. |
+
+---
+
 ## Where to read next
 
 | If you are…                       | Start with                                                                                                       |
