@@ -133,7 +133,7 @@ export function formatPrice(amount: number, currency: string, locale: string = l
 export function formatDate(
 	date: Date | number,
 	options?: Intl.DateTimeFormatOptions,
-	locale = localeConfig.default,
+	locale: string = localeConfig.default,
 ): string {
 	return new Intl.DateTimeFormat(locale, {
 		dateStyle: "medium",

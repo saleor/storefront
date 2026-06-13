@@ -1,4 +1,4 @@
-query CurrentUserOrdersPaginated($first: Int, $after: String) {
+query CurrentUserOrdersPaginated($first: Int, $after: String, $languageCode: LanguageCodeEnum!) {
 	me {
 		...UserDetails
 		orders(first: $first, after: $after) {

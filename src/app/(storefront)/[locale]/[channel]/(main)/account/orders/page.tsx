@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
+import { resolveLocaleFromSlug } from "@/config/locale";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Button } from "@/ui/components/ui/button";
@@ -11,19 +13,21 @@ import { AccountOrdersListSkeleton } from "@/ui/components/account/account-skele
 const ORDERS_PER_PAGE = 10;
 
 type Props = {
+	params: Promise<{ locale: string }>;
 	searchParams: Promise<{ after?: string }>;
 };
 
-export default function AccountOrdersPage({ searchParams }: Props) {
+export default function AccountOrdersPage({ params, searchParams }: Props) {
 	return (
 		<Suspense fallback={<AccountOrdersListSkeleton />}>
-			<AccountOrdersContent searchParams={searchParams} />
+			<AccountOrdersContent params={params} searchParams={searchParams} />
 		</Suspense>
 	);
 }
 
-async function AccountOrdersContent({ searchParams }: Props) {
-	const { after } = await searchParams;
+async function AccountOrdersContent({ params, searchParams }: Props) {
+	const [{ locale }, { after }] = await Promise.all([params, searchParams]);
+	const intlLocale = resolveLocaleFromSlug(locale).bcp47;
 
 	// Gate on a session cookie before the authenticated fetch (mirrors the account layout):
 	// during prerender there are no cookies, so this skips the network call that would
@@ -36,6 +40,7 @@ async function AccountOrdersContent({ searchParams }: Props) {
 		variables: {
 			first: ORDERS_PER_PAGE,
 			after: after || null,
+			...graphqlLanguageCodeVariables(locale),
 		},
 		cache: "no-cache",
 	});
@@ -70,7 +75,7 @@ async function AccountOrdersContent({ searchParams }: Props) {
 				<>
 					<div className="space-y-2">
 						{orders.map(({ node: order }) => (
-							<OrderRow key={order.id} order={order} />
+							<OrderRow key={order.id} order={order} intlLocale={intlLocale} />
 						))}
 					</div>
 

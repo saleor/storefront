@@ -12,11 +12,17 @@ fragment OrderDetails on Order {
 		variant {
 			id
 			name
+			translation(languageCode: $languageCode) {
+				name
+			}
 			product {
 				id
 				name
 				description
 				slug
+				translation(languageCode: $languageCode) {
+					name
+				}
 				thumbnail {
 					url
 					alt

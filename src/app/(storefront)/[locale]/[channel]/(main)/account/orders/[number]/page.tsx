@@ -5,6 +5,9 @@ import { MapPin, CreditCard } from "lucide-react";
 import { OrderByNumberDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
+import { resolveLocaleFromSlug } from "@/config/locale";
+import { pickTranslatedName } from "@/lib/saleor-translations";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { OrderTimeline } from "@/ui/components/account/order-timeline";
@@ -13,7 +16,7 @@ import { AccountOrderDetailSkeleton } from "@/ui/components/account/account-skel
 import { type AddressDetailsFragment } from "@/gql/graphql";
 
 type Props = {
-	params: Promise<{ number: string }>;
+	params: Promise<{ locale: string; number: string }>;
 };
 
 export default function OrderDetailPage({ params }: Props) {
@@ -25,7 +28,8 @@ export default function OrderDetailPage({ params }: Props) {
 }
 
 async function OrderDetailContent({ params }: Props) {
-	const { number } = await params;
+	const { number, locale } = await params;
+	const intlLocale = resolveLocaleFromSlug(locale).bcp47;
 
 	// Gate on a session cookie before the authenticated fetch (mirrors the account layout):
 	// during prerender there are no cookies, so this skips the network call that would
@@ -39,7 +43,7 @@ async function OrderDetailContent({ params }: Props) {
 	// the vast majority of customers; a dedicated `orderByToken` query would be
 	// more efficient if order counts grow large.
 	const result = await executeAuthenticatedGraphQL(OrderByNumberDocument, {
-		variables: { first: 100 },
+		variables: { first: 100, ...graphqlLanguageCodeVariables(locale) },
 		cache: "no-cache",
 	});
 
@@ -68,7 +72,7 @@ async function OrderDetailContent({ params }: Props) {
 				<div>
 					<h1 className="text-2xl font-semibold tracking-tight">ORD-{order.number}</h1>
 					<p className="mt-1 text-sm text-muted-foreground">
-						Placed on {formatDate(new Date(order.created))}
+						Placed on {formatDate(new Date(order.created), undefined, intlLocale)}
 					</p>
 				</div>
 				<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} />
@@ -83,18 +87,21 @@ async function OrderDetailContent({ params }: Props) {
 						<div className="divide-y">
 							{order.lines.map((line) => {
 								if (!line.variant) return null;
-								const product = line.variant.product;
-								const lineTotal = line.variant.pricing?.price?.gross
-									? line.variant.pricing.price.gross.amount * line.quantity
+								const variant = line.variant;
+								const product = variant.product;
+								const productName = pickTranslatedName(product);
+								const variantName = pickTranslatedName(variant);
+								const lineTotal = variant.pricing?.price?.gross
+									? variant.pricing.price.gross.amount * line.quantity
 									: null;
-								const currency = line.variant.pricing?.price?.gross.currency;
+								const currency = variant.pricing?.price?.gross.currency;
 								return (
 									<div key={line.id} className="flex items-center gap-4 px-5 py-4">
 										{product.thumbnail && (
 											<div className="bg-secondary/30 h-16 w-16 shrink-0 overflow-hidden rounded-lg border">
 												<Image
 													src={product.thumbnail.url}
-													alt={product.thumbnail.alt ?? ""}
+													alt={product.thumbnail.alt ?? productName}
 													width={128}
 													height={128}
 													className="h-full w-full object-contain"
@@ -106,16 +113,16 @@ async function OrderDetailContent({ params }: Props) {
 												href={`/products/${product.slug}`}
 												className="text-sm font-medium hover:underline"
 											>
-												{product.name}
+												{productName}
 											</LinkWithChannel>
-											{line.variant.name !== line.variant.id && Boolean(line.variant.name) && (
-												<p className="text-[13px] text-muted-foreground">{line.variant.name}</p>
+											{variantName !== variant.id && Boolean(variantName) && (
+												<p className="text-[13px] text-muted-foreground">{variantName}</p>
 											)}
 											<p className="text-[13px] text-muted-foreground">Qty: {line.quantity}</p>
 										</div>
 										{lineTotal != null && currency && (
 											<span className="text-sm font-medium tabular-nums">
-												{formatMoney(lineTotal, currency)}
+												{formatMoney(lineTotal, currency, intlLocale)}
 											</span>
 										)}
 									</div>
@@ -128,7 +135,7 @@ async function OrderDetailContent({ params }: Props) {
 								<div className="flex justify-between">
 									<dt className="text-muted-foreground">Subtotal</dt>
 									<dd className="tabular-nums">
-										{formatMoney(order.subtotal.gross.amount, order.subtotal.gross.currency)}
+										{formatMoney(order.subtotal.gross.amount, order.subtotal.gross.currency, intlLocale)}
 									</dd>
 								</div>
 								<div className="flex justify-between">
@@ -136,28 +143,32 @@ async function OrderDetailContent({ params }: Props) {
 									<dd className="tabular-nums">
 										{order.shippingPrice.gross.amount === 0
 											? "Free"
-											: formatMoney(order.shippingPrice.gross.amount, order.shippingPrice.gross.currency)}
+											: formatMoney(
+													order.shippingPrice.gross.amount,
+													order.shippingPrice.gross.currency,
+													intlLocale,
+												)}
 									</dd>
 								</div>
 								{order.total.tax.amount > 0 && (
 									<div className="flex justify-between">
 										<dt className="text-muted-foreground">Tax</dt>
 										<dd className="tabular-nums">
-											{formatMoney(order.total.tax.amount, order.total.tax.currency)}
+											{formatMoney(order.total.tax.amount, order.total.tax.currency, intlLocale)}
 										</dd>
 									</div>
 								)}
 								<div className="flex justify-between border-t pt-2 font-semibold">
 									<dt>Total</dt>
 									<dd className="tabular-nums">
-										{formatMoney(order.total.gross.amount, order.total.gross.currency)}
+										{formatMoney(order.total.gross.amount, order.total.gross.currency, intlLocale)}
 									</dd>
 								</div>
 							</dl>
 						</div>
 					</div>
 
-					<OrderTimeline order={order} />
+					<OrderTimeline order={order} intlLocale={intlLocale} />
 				</div>
 
 				<div className="space-y-4">

@@ -3,14 +3,17 @@ import { ArrowRight } from "lucide-react";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
+import { localeConfig } from "@/config/locale";
 import { orderStatusStyle, defaultStatusStyle, customerStatusLabel } from "./order-status-config";
 import { accountRoutes } from "./routes";
 
 type Props = {
 	order: OrderDetailsFragment;
+	/** BCP 47 locale for money and date formatting. */
+	intlLocale?: string;
 };
 
-export function OrderRow({ order }: Props) {
+export function OrderRow({ order, intlLocale = localeConfig.default }: Props) {
 	const thumbnails = order.lines
 		.filter((l) => l.variant?.product.thumbnail)
 		.map((l) => l.variant!.product.thumbnail!)
@@ -51,7 +54,7 @@ export function OrderRow({ order }: Props) {
 			<div className="min-w-0 flex-1">
 				<p className="text-sm font-semibold">ORD-{order.number}</p>
 				<p className="text-[13px] text-muted-foreground">
-					<time dateTime={order.created}>{formatDate(new Date(order.created))}</time>
+					<time dateTime={order.created}>{formatDate(new Date(order.created), undefined, intlLocale)}</time>
 					{" · "}
 					{itemCount} {itemCount === 1 ? "item" : "items"}
 				</p>
@@ -63,7 +66,7 @@ export function OrderRow({ order }: Props) {
 					<span className="hidden sm:inline">{customerStatusLabel[order.status] ?? order.statusDisplay}</span>
 				</span>
 				<span className="text-sm font-semibold tabular-nums">
-					{formatMoney(order.total.gross.amount, order.total.gross.currency)}
+					{formatMoney(order.total.gross.amount, order.total.gross.currency, intlLocale)}
 				</span>
 				<ArrowRight className="h-4 w-4 text-muted-foreground" />
 			</div>

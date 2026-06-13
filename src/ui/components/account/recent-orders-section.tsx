@@ -2,11 +2,13 @@ import { ChevronRight } from "lucide-react";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { accountRoutes } from "@/ui/components/account/routes";
+import { resolveLocaleFromSlug } from "@/config/locale";
 
-export async function RecentOrdersSection() {
+export async function RecentOrdersSection({ localeSlug }: { localeSlug: string }) {
 	// Gate the authenticated query on a session cookie (like the account layout does).
 	// Without it, prerender runs this with no cookies, hammering Saleor with retries that
 	// saturate the request queue and time out the sibling `getStorefrontContent` cache fill.
@@ -15,7 +17,7 @@ export async function RecentOrdersSection() {
 	}
 
 	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
-		variables: { first: 3, after: null },
+		variables: { first: 3, after: null, ...graphqlLanguageCodeVariables(localeSlug) },
 		cache: "no-cache",
 	});
 
@@ -31,6 +33,7 @@ export async function RecentOrdersSection() {
 	}
 
 	const orders = result.data.me?.orders?.edges ?? [];
+	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
 
 	return (
 		<section>
@@ -54,7 +57,7 @@ export async function RecentOrdersSection() {
 			) : (
 				<div className="space-y-2">
 					{orders.map(({ node: order }) => (
-						<OrderRow key={order.id} order={order} />
+						<OrderRow key={order.id} order={order} intlLocale={intlLocale} />
 					))}
 				</div>
 			)}

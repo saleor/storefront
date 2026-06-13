@@ -1,8 +1,11 @@
 import { FulfillmentStatus, type OrderFullDetailsFragment } from "@/gql/graphql";
+import { localeConfig } from "@/config/locale";
 import { formatDate } from "@/lib/utils";
 
 type Props = {
 	order: OrderFullDetailsFragment;
+	/** BCP 47 locale for date formatting. */
+	intlLocale?: string;
 };
 
 type TimelineEvent = {
@@ -81,7 +84,7 @@ function buildTimeline(order: OrderFullDetailsFragment): TimelineEvent[] {
 	return events;
 }
 
-export function OrderTimeline({ order }: Props) {
+export function OrderTimeline({ order, intlLocale = localeConfig.default }: Props) {
 	const events = buildTimeline(order);
 
 	if (events.length === 0) return null;
@@ -111,7 +114,9 @@ export function OrderTimeline({ order }: Props) {
 								<p className="mt-0.5 text-[13px] text-muted-foreground">{event.description}</p>
 							)}
 							<p className="mt-0.5 text-[13px] text-muted-foreground">
-								<time dateTime={event.date.toISOString()}>{formatDate(event.date)}</time>
+								<time dateTime={event.date.toISOString()}>
+									{formatDate(event.date, undefined, intlLocale)}
+								</time>
 							</p>
 						</li>
 					))}
