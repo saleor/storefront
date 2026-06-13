@@ -239,17 +239,20 @@ useEffect(() => {
 
 ## Caching Strategy
 
-| Layer            | TTL          | Purpose                |
-| ---------------- | ------------ | ---------------------- |
-| ISR              | 5 min        | Product/category pages |
-| GraphQL          | 5 min - 1 hr | API responses          |
-| Static Assets    | 1 year       | JS/CSS bundles         |
-| Category Lookups | 1 hour       | Slug → ID resolution   |
+| Layer               | TTL                | Purpose                                                                    |
+| ------------------- | ------------------ | -------------------------------------------------------------------------- |
+| ISR / `"use cache"` | ~5 min (`catalog`) | Product/category pages — **per locale** via `localeSlug` in cached fetches |
+| GraphQL (cached)    | 5 min - 1 hr       | Translated catalog payloads in `"use cache"` functions                     |
+| Static Assets       | 1 year             | JS/CSS bundles                                                             |
+| Category Lookups    | 1 hour             | Slug → ID resolution                                                       |
+
+Catalog cache **keys** include locale (function arguments); **tags** stay slug-scoped (`product:{slug}`) with path fan-out across locales on webhook. Storefront content uses `storefront-content:{channel}:{locale}`. Details: `skills/saleor-paper-storefront/rules/data-caching.md`.
 
 ### On-Demand Revalidation
 
 ```bash
-curl "/api/revalidate?secret=xxx&path=/channel/products/slug"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:slug&path=/pl/default-channel/products/slug"
 ```
 
 Or configure Saleor webhooks pointing to `/api/revalidate`.

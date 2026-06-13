@@ -144,7 +144,8 @@ The **display-cached, checkout-live** model ensures fast browsing with accurate 
 | **Product pages**       | Cached (`catalog`) | Static shell + dynamic variant islands (PPR)                       |
 | **Category/Collection** | Cached (`catalog`) | Cached hero from params; filters/pagination stream in Suspense     |
 | **Homepage featured**   | Cached (`catalog`) | Sync page shell; product grid streams in nested Suspense           |
-| **Navigation / footer** | Cached (`menus`)   | Per-channel tags: `navigation:{channel}`, `footer-menu:{channel}`  |
+| **Navigation / footer** | Cached (`menus`)   | Per-channel tags; per-locale menu payloads in cache keys           |
+| **Storefront content**  | Cached (`menus`)   | Tag `storefront-content:{channel}:{locale}`                        |
 | **Cart drawer**         | Always live        | Saleor API with `cache: "no-cache"`                                |
 | **Checkout**            | Always live        | RSC entry + server actions (`cache: "no-cache"`), real-time totals |
 
@@ -158,6 +159,10 @@ The **display-cached, checkout-live** model ensures fast browsing with accurate 
 
 Webhook `revalidateTag(tag, profile)` clears data immediately; TTL is the safety net when webhooks are missing.
 
+### Locale
+
+Browse URLs are `/{locale}/{channel}/…`. Cached catalog fetches pass `localeSlug` — **separate cache entry per language**, same warm-path speed. Invalidation uses slug-scoped tags (`product:{slug}`) and revalidates every locale path via `buildPathsForAllLocales()`. GraphQL uses Saleor base language codes (`PL`, not `PL_PL`). See [`data-caching.md`](skills/saleor-paper-storefront/rules/data-caching.md) § Locale & Caching.
+
 ### PPR page patterns
 
 Cached GraphQL lives in **`src/lib/catalog/`**, **`src/lib/menus/`**, and **`src/lib/channels/`** — not in layout or page components. Pages are thin orchestrators with nested `<Suspense>` for dynamic islands.
@@ -166,7 +171,7 @@ Cached GraphQL lives in **`src/lib/catalog/`**, **`src/lib/menus/`**, and **`src
 
 ```
 ProductPage (sync)
-└── ProductShell → getProductData "use cache"
+└── ProductShell → getProductData(slug, channel, locale) "use cache"
     ├── h1, attributes, JSON-LD, LCP preload
     ├── Suspense → VariantGalleryDynamic (searchParams)
     └── Suspense → VariantSectionDynamic (searchParams)
@@ -186,14 +191,16 @@ Page
 
 **Cache tags** (see `src/lib/cache-manifest.ts`):
 
-| Tag pattern             | Invalidated when                |
-| ----------------------- | ------------------------------- |
-| `product:{slug}`        | Product updated                 |
-| `category:{slug}`       | Category updated                |
-| `collection:{slug}`     | Collection updated              |
-| `navigation:{channel}`  | Main menu changed for channel   |
-| `footer-menu:{channel}` | Footer menu changed for channel |
-| `channels`              | Channel list metadata           |
+| Tag pattern                             | Invalidated when                 |
+| --------------------------------------- | -------------------------------- |
+| `product:{slug}`                        | Product updated (all locales)    |
+| `category:{slug}`                       | Category updated (all locales)   |
+| `collection:{slug}`                     | Collection updated (all locales) |
+| `page:{slug}`                           | CMS page updated (all locales)   |
+| `navigation:{channel}`                  | Main menu changed for channel    |
+| `footer-menu:{channel}`                 | Footer menu changed for channel  |
+| `storefront-content:{channel}:{locale}` | Storefront Models page updated   |
+| `channels`                              | Channel list metadata            |
 
 Featured homepage products use tag `collection:featured-products` (same `catalog` profile as collections).
 
@@ -211,8 +218,11 @@ Featured homepage products use tag `collection:featured-products` (same `catalog
 **Manual revalidation** (requires `REVALIDATE_SECRET`):
 
 ```bash
-# Single product
+# Single product (all locale cache entries for slug)
 curl "https://your-store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie"
+
+# Single product path (one locale; tag still clears all locales)
+curl "https://your-store.com/api/revalidate?secret=xxx&tag=product:blue-hoodie&path=/pl/default-channel/products/blue-hoodie"
 
 # CMS page (tag only — invalidates getPageData across channels)
 curl "https://your-store.com/api/revalidate?secret=xxx&tag=page:about-us"

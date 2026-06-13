@@ -4,4 +4,4 @@ Informal north-star for day-to-day conventions: [`skills/saleor-paper-storefront
 
 | ADR                                          | Title                                                   | Status                 |
 | -------------------------------------------- | ------------------------------------------------------- | ---------------------- |
-| [0001](./0001-locale-channel-url-routing.md) | Locale and channel URL routing (`/{locale}/{channel}/`) | Accepted (in progress) |
+| [0001](./0001-locale-channel-url-routing.md) | Locale and channel URL routing (`/{locale}/{channel}/`) | Accepted (implemented) |

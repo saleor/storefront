@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getStorefrontLocaleSlugs, isLocaleSlug, isStorefrontLocaleSlug } from "./locale";
+import {
+	getGraphqlLanguageCode,
+	getStorefrontLocaleSlugs,
+	isLocaleSlug,
+	isStorefrontLocaleSlug,
+} from "./locale";
 
 describe("isStorefrontLocaleSlug", () => {
 	afterEach(() => {
@@ -22,5 +27,13 @@ describe("isStorefrontLocaleSlug", () => {
 		expect(getStorefrontLocaleSlugs()).toEqual(["en"]);
 		expect(isStorefrontLocaleSlug("en")).toBe(true);
 		expect(isStorefrontLocaleSlug("pl")).toBe(false);
+	});
+});
+
+describe("getGraphqlLanguageCode", () => {
+	it("maps URL slugs to Saleor base language codes (not regional variants)", () => {
+		expect(getGraphqlLanguageCode("en")).toBe("EN");
+		expect(getGraphqlLanguageCode("pl")).toBe("PL");
+		expect(getGraphqlLanguageCode("de")).toBe("DE");
 	});
 });

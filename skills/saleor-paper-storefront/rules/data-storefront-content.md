@@ -87,8 +87,9 @@ Checkout resolves **channel from cart cookies** when loading content so copy can
 ## Caching & Freshness
 
 - Profile: `storefront-content` (~menus tier, ~5 min stale).
-- Tag: `storefront-content:{channel}:{locale}`.
-- **Locale** keys the cache (`storefront-content:{channel}:{locale}`). Saleor Models already hold per-language translations; Paper does not fetch them yet — when implemented, the same Models and Dashboard workflow apply.
+- Tag: `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`).
+- **Locale** keys both the cache tag and the `"use cache"` function args. Catalog/menus/CMS use `localeSlug` in function args with slug-scoped tags — see `data-caching.md` § Locale & Caching.
+- **Catalog translations** (products, categories, menus, CMS pages) are wired: GraphQL `languageCode` + `withTranslated*Fields`. **Storefront Models content** still fetches default-language Saleor Pages — provider `translation` wiring is TBD.
 - **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — do not point Saleor webhooks directly at the storefront for production. The app subscribes to Saleor events, then `POST`s to Paper's `/api/revalidate` with the same payload shape the storefront handler expects.
 - **Storefront content:** `PAGE_*` on Pages whose slug matches `storefront-*` (e.g. `storefront-homepage`, `storefront-homepage-{channel}`) → `planStorefrontContentRevalidation()` in `cache-manifest.ts` → `revalidateTag(storefront-content:{channel}:{locale})` + homepage paths per channel.
 - **Menus** (nav/footer): `MENU_*` / `MENU_ITEM_*` → separate profiles (`navigation`, `footerMenu`) — same paper-app → storefront path.

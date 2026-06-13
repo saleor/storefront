@@ -34,14 +34,14 @@ Data: getProductData() with applyCacheProfile(CACHE_PROFILES.products)  ← cata
 **Read this first** - understanding how data flows makes everything else click:
 
 ```
-URL: /us/products/blue-shirt?variant=abc123
+URL: /pl/default-channel/products/blue-shirt?variant=abc123
                 │
                 ▼
 ┌───────────────────────────────────────────────────────────────────┐
 │ ProductPage (sync) → Suspense → ProductShell                      │
 │                                                                   │
-│   1. await params → getProductData("blue-shirt", "us")            │
-│      └──► "use cache" + CACHE_PROFILES.products ──► product data  │
+│   1. await params → getProductData("blue-shirt", "default-channel", "pl") │
+│      └──► "use cache" + CACHE_PROFILES.products ──► translated product    │
 │                                                                   │
 │   2. Static shell: h1, breadcrumbs, attributes, JSON-LD, preload  │
 │                                                                   │
@@ -83,7 +83,7 @@ URL: /us/products/blue-shirt?variant=abc123
 ## File Structure
 
 ```
-src/app/[channel]/(main)/products/[slug]/
+src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/
 └── page.tsx                          # Main PDP page
 
 src/ui/components/pdp/
@@ -161,18 +161,25 @@ Use the `onImageClick` callback:
 
 ```tsx
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
+import { withTranslatedProductFields } from "@/lib/saleor-translations";
 
-async function getProductData(slug: string, channel: string) {
+async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
 	applyCacheProfile(CACHE_PROFILES.products, slug);
 
-	return await executePublicGraphQL(ProductDetailsDocument, {
-		variables: { slug: decodeURIComponent(slug), channel },
+	const result = await executePublicGraphQL(ProductDetailsDocument, {
+		variables: {
+			slug: decodeURIComponent(slug),
+			channel,
+			...graphqlLanguageCodeVariables(localeSlug),
+		},
 	});
+	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
 }
 ```
 
-**Note:** Do not add fetch-level `revalidate` here — the cache manifest profile + webhooks handle freshness. See `data-caching.md`.
+**Note:** `localeSlug` is part of the Next.js cache key (separate entry per language). Tag stays `product:{slug}` — webhooks invalidate all locales. Do not add fetch-level `revalidate` here. See `data-caching.md`.
 
 ### What's Cached vs Dynamic
 

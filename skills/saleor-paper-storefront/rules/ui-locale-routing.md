@@ -3,8 +3,8 @@
 Browse routes use **two URL prefixes**: locale (language) then channel (market). Checkout is unchanged.
 
 > **ADR:** `docs/adr/0001-locale-channel-url-routing.md`  
-> **Status:** Implemented for browse routes (`/[locale]/[channel]/…`). Middleware 308-redirects legacy `/{channel}/…`. Language picker and GraphQL `languageCode` wiring are follow-ups.  
-> **Channels (markets):** `ui-channels.md` · **SEO:** `seo-metadata.md`
+> **Status:** Implemented — browse routes (`/[locale]/[channel]/…`), middleware 308 from legacy `/{channel}/…`, GraphQL `languageCode` on catalog/menus/search/CMS, region picker, per-locale cache keys. Checkout locale from cookie is a follow-up.  
+> **Channels (markets):** `ui-channels.md` · **Caching:** `data-caching.md` · **SEO:** `seo-metadata.md`
 
 ---
 
@@ -58,9 +58,27 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 3. **Root `/`** → `/{defaultLocale}/{defaultChannel}/`.
 4. **Allowlist** — valid `(locale, channel)` pairs from config; invalid → `notFound()` or redirect.
 5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes.
-6. **Cache** — content tag `storefront-content:{channel}:{locale}`; catalog tags stay channel/slug-scoped until translation-aware tags are added.
+6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
+7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
 
 ---
+
+## Caching with locale
+
+Browse performance is unchanged after locale routing — locale is part of the **cache key** (function arguments), not an extra runtime cost on warm pages.
+
+| Layer              | Locale in key?      | Notes                                                       |
+| ------------------ | ------------------- | ----------------------------------------------------------- |
+| PDP / PLP / CMS    | ✅ `localeSlug` arg | Separate cached GraphQL payload per language                |
+| Nav / footer menus | ✅ `localeSlug` arg | Tag `navigation:{channel}` clears all languages for channel |
+| Storefront content | ✅ tag + arg        | `storefront-content:{channel}:{locale}`                     |
+| Cart / checkout    | N/A                 | Always `cache: "no-cache"`                                  |
+
+**GraphQL:** Map URL slugs to Saleor **base** language codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge `translation { … }` fields after fetch (`src/lib/saleor-translations.ts`).
+
+**Invalidation:** Product update → `revalidateTag("product:{slug}")` → busts EN/PL/DE cached entries → `revalidatePath` for every `/{locale}/{channel}/products/{slug}`.
+
+Full detail: `data-caching.md` § Locale & Caching.
 
 ## Implementation map (when migration starts)
 
@@ -73,7 +91,7 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 | Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                      |
 | Middleware      | root redirect, optional `Accept-Language`, preference cookie             |
 | GraphQL         | pass `languageCode` on public queries                                    |
-| Content         | `getStorefrontContent(channel, locale)` — wire Saleor translations       |
+| Content         | `getStorefrontContent(channel, locale)` — Saleor Models translations TBD |
 | Picker          | header market + language UI (footer channel select retired or secondary) |
 | SEO             | `hreflang`, canonical, sitemap per locale×channel                        |
 
@@ -99,7 +117,8 @@ Run **301** from old URLs for at least one release.
 ❌ **Dropping channel** when multiple markets share a language  
 ❌ **Putting locale after channel** (`/uk/en/…`) — conflicts with this ADR  
 ❌ **Implementing `[locale]` routes** before ADR helpers and redirect plan exist  
-❌ **Hardcoding `EN_US`** in new GraphQL after locale routing ships
+❌ **Hardcoding `EN_US` / `PL_PL` in `graphqlLanguageCode`** — Dashboard translations use base codes (`EN`, `PL`); see `src/config/locale.ts`  
+❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language
 
 ---
 
@@ -107,4 +126,4 @@ Run **301** from old URLs for at least one release.
 
 - `ui-channels.md` — channel allowlist, fulfillment, channel selector (today)
 - `data-storefront-content.md` — locale-keyed content cache
-- `data-caching.md` — revalidation across channels
+- `data-caching.md` — locale cache keys, tags, invalidation fan-out

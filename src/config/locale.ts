@@ -16,23 +16,29 @@ export type LocaleDefinition = {
 	ogLocale: string;
 };
 
-/** URL slug → runtime locale settings. Extend when adding languages. */
+/**
+ * URL slug → runtime locale settings. Extend when adding languages.
+ *
+ * `graphqlLanguageCode` uses Saleor's base language enum (e.g. `PL`), not regional
+ * variants (`PL_PL`). Dashboard translations are stored under the base code — see
+ * `/translations/PL/…` in Saleor admin.
+ */
 export const LOCALE_DEFINITIONS = {
 	en: {
 		bcp47: "en-US",
-		graphqlLanguageCode: "EN_US",
+		graphqlLanguageCode: "EN",
 		htmlLang: "en",
 		ogLocale: "en_US",
 	},
 	pl: {
 		bcp47: "pl-PL",
-		graphqlLanguageCode: "PL_PL",
+		graphqlLanguageCode: "PL",
 		htmlLang: "pl",
 		ogLocale: "pl_PL",
 	},
 	de: {
 		bcp47: "de-DE",
-		graphqlLanguageCode: "DE_DE",
+		graphqlLanguageCode: "DE",
 		htmlLang: "de",
 		ogLocale: "de_DE",
 	},

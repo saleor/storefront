@@ -3,7 +3,7 @@
 **Status:** Accepted  
 **Date:** 2026-06-12  
 **Deciders:** Paper storefront team  
-**Implementation:** In progress (`src/app/(storefront)/[locale]/[channel]/…`, middleware 308 from legacy `/{channel}/…`)
+**Implementation:** Shipped — `src/app/(storefront)/[locale]/[channel]/…`, middleware 308 from legacy `/{channel}/…`, GraphQL `languageCode` on catalog/menus/search/CMS.
 
 ## Context
 
@@ -65,29 +65,36 @@ Adopt **orthogonal locale + channel prefixes** for all browse (storefront) route
 - Matches Saleor’s channel ≠ language model
 - Incremental migration from `/{channel}/` (insert `[locale]` segment)
 - Aligns with existing content cache tag shape
+- **Catalog cache:** `localeSlug` in `"use cache"` function args → separate entry per language; slug-scoped tags + `buildPathsForAllLocales()` on webhook invalidation (see `data-caching.md`)
 - Market switch: `/en/uk/p/…` → `/en/us/p/…`; language switch: `/en/uk/p/…` → `/pl/uk/p/…`
 
 ### Negative / costs
 
 - Every `LinkWithChannel` call site and `generateStaticParams` gains a locale dimension
-- `generateStaticParams` cardinality: locales × channels (product pages remain on-demand ISR)
+- `generateStaticParams` cardinality: locales × channels (product pages remain on-demand ISR); catalog cache entries also scale with configured locales (one warm entry per locale × page)
 - Middleware for root redirect and optional `Accept-Language` negotiation
 - 301 redirects required from old `/{channel}/…` URLs
 
-### Follow-up work (implementation)
+### Follow-up work
+
+1. Checkout — `languageCode` from browse-locale cookie
+2. Storefront content — Saleor Models `translation` fields in provider
+3. SEO — `hreflang`, canonical, sitemap per locale×channel
+4. Migration entry in `skills/…/migrations/` when routing stabilizes
+
+### Completed (reference)
 
 1. App Router: `src/app/(storefront)/[locale]/[channel]/…`
-2. `src/config/locale.ts` — available locales, Saleor `languageCode` map, defaults
-3. `LinkWithLocaleChannel` (or extend `LinkWithChannel`) + `useSelectedPathname` strip both prefixes
-4. Middleware — root redirect, locale cookie
-5. Wire `languageCode` through public GraphQL + `getStorefrontContent(channel, locale)`
-6. Market/language picker UI (header); path preservation; cart channel warning
-7. SEO — canonical URLs, `hreflang`, sitemap per locale×channel
-8. Migration entry in `skills/…/migrations/` when routing lands
+2. `src/config/locale.ts` — locale slugs, Saleor base `languageCode` map, defaults
+3. Locale-aware links + `useSelectedPathname` / `buildStorefrontPath`
+4. Middleware — root redirect, legacy channel URLs, `browse-locale` cookie
+5. `languageCode` on public GraphQL + `withTranslated*Fields` for catalog/menus/CMS
+6. Region picker; cache invalidation fan-out across locales
 
 ## References
 
 - Skill rule: `skills/saleor-paper-storefront/rules/ui-locale-routing.md`
 - Channels (today): `skills/saleor-paper-storefront/rules/ui-channels.md`
 - Content cache: `skills/saleor-paper-storefront/rules/data-storefront-content.md`
+- Locale + catalog cache: `skills/saleor-paper-storefront/rules/data-caching.md`
 - Saleor translations: [Multilingual](https://docs.saleor.io/developer/translations)
