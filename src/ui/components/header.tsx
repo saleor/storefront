@@ -10,7 +10,7 @@ import { MobileMenu } from "./nav/components/mobile-menu";
 import { SearchBar } from "./nav/components/search-bar";
 
 export async function Header({ locale, channel }: { locale: string; channel: string }) {
-	const navItems = serializeMenuForNav((await getNavbarMenuItems(channel)) ?? []);
+	const navItems = serializeMenuForNav((await getNavbarMenuItems(channel, locale)) ?? []);
 
 	return (
 		<header className="sticky top-0 z-40 border-b border-border bg-background">

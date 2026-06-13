@@ -8,9 +8,11 @@ import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
 
 const parser = edjsHTML();
 
-export const generateMetadata = async (props: { params: Promise<{ slug: string }> }): Promise<Metadata> => {
+export const generateMetadata = async (props: {
+	params: Promise<{ slug: string; locale: string }>;
+}): Promise<Metadata> => {
 	const params = await props.params;
-	const page = await getPageData(params.slug);
+	const page = await getPageData(params.slug, params.locale);
 
 	return {
 		title: `${page?.seoTitle || page?.title || "Page"} · Saleor Storefront example`,
@@ -21,7 +23,7 @@ export const generateMetadata = async (props: { params: Promise<{ slug: string }
 /**
  * Sync page shell — CMS content streams inside a Suspense island (Cache Components / PPR).
  */
-export default function Page(props: { params: Promise<{ slug: string }> }) {
+export default function Page(props: { params: Promise<{ slug: string; locale: string }> }) {
 	return (
 		<Suspense fallback={<PageContentSkeleton />}>
 			<PageContent params={props.params} />
@@ -29,9 +31,9 @@ export default function Page(props: { params: Promise<{ slug: string }> }) {
 	);
 }
 
-async function PageContent({ params: paramsPromise }: { params: Promise<{ slug: string }> }) {
+async function PageContent({ params: paramsPromise }: { params: Promise<{ slug: string; locale: string }> }) {
 	const params = await paramsPromise;
-	const page = await getPageData(params.slug);
+	const page = await getPageData(params.slug, params.locale);
 
 	if (!page) {
 		notFound();

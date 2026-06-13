@@ -3,6 +3,9 @@ fragment VariantDetails on ProductVariant {
 	name
 	sku
 	quantityAvailable
+	translation(languageCode: $languageCode) {
+		name
+	}
 	selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
 		values {
 			name

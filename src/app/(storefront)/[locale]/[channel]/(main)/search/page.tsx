@@ -83,6 +83,7 @@ async function SearchContent({
 	const result = await searchProducts({
 		query,
 		channel: params.channel,
+		locale: params.locale,
 		limit: 20,
 		cursor,
 		direction,

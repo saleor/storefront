@@ -5,6 +5,7 @@ import { sortSizes } from "@/lib/sizes";
 import { localeConfig } from "@/config/locale";
 import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
 import { buildStorefrontPath } from "@/lib/storefront-path";
+import { pickTranslatedName } from "@/lib/saleor-translations";
 
 /**
  * Extract colors from product variants
@@ -80,25 +81,28 @@ export function toProductCardData(
 	const colors = extractColorsFromVariants(product.variants);
 	const sizes = extractSizesFromVariants(product.variants);
 
+	const productName = pickTranslatedName(product);
+	const categoryName = product.category ? pickTranslatedName(product.category) : null;
+
 	return {
 		id: product.id,
-		name: product.name,
+		name: productName,
 		slug: product.slug,
-		brand: product.category?.name ?? null,
+		brand: categoryName,
 		price: startAmount,
 		priceStop: stopAmount != null && stopAmount !== startAmount ? stopAmount : null,
 		compareAtPrice: isSale ? undiscountedStartAmount : null,
 		discountPercent,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
-		imageAlt: product.thumbnail?.alt ?? product.name,
+		imageAlt: product.thumbnail?.alt ?? productName,
 		hoverImage: null, // Would need additional media in fragment
 		href: buildStorefrontPath(locale, channel, `/products/${product.slug}`),
 		badge: isSale ? "Sale" : null,
 		colors,
 		sizes,
 		category: product.category
-			? { id: product.category.id, name: product.category.name, slug: product.category.slug }
+			? { id: product.category.id, name: categoryName ?? product.category.name, slug: product.category.slug }
 			: null,
 		createdAt: product.created,
 		hasVariants: (product.variants?.length ?? 0) > 1,

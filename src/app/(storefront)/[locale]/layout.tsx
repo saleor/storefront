@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { getStorefrontLocaleSlugs, isStorefrontLocaleSlug } from "@/config/locale";
+import { getStorefrontLocaleSlugs, isStorefrontLocaleSlug, resolveLocaleFromSlug } from "@/config/locale";
+import { DocumentLang } from "@/ui/components/document-lang";
 
 export function generateStaticParams() {
 	return getStorefrontLocaleSlugs().map((locale) => ({ locale }));
@@ -19,5 +20,12 @@ export default async function LocaleLayout({
 		notFound();
 	}
 
-	return children;
+	const htmlLang = resolveLocaleFromSlug(locale).htmlLang;
+
+	return (
+		<>
+			<DocumentLang lang={htmlLang} />
+			{children}
+		</>
+	);
 }

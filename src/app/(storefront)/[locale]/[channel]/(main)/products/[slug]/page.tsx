@@ -9,7 +9,9 @@ import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
+import { withTranslatedProductFields } from "@/lib/saleor-translations";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import {
 	ProductAttributes,
@@ -26,7 +28,7 @@ import {
 // Cached Data Fetching
 // ============================================================================
 
-async function getProductData(slug: string, channel: string) {
+async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
 	applyCacheProfile(CACHE_PROFILES.products, slug);
 
@@ -34,6 +36,7 @@ async function getProductData(slug: string, channel: string) {
 		variables: {
 			slug: decodeURIComponent(slug),
 			channel,
+			...graphqlLanguageCodeVariables(localeSlug),
 		},
 	});
 
@@ -42,7 +45,7 @@ async function getProductData(slug: string, channel: string) {
 		return null;
 	}
 
-	return result.data.product;
+	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
 }
 
 // ============================================================================
@@ -53,7 +56,7 @@ export async function generateMetadata(props: {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
 }): Promise<Metadata> {
 	const params = await props.params;
-	const product = await getProductData(params.slug, params.channel);
+	const product = await getProductData(params.slug, params.channel, params.locale);
 
 	if (!product) {
 		return { title: "Product Not Found" };
@@ -116,7 +119,7 @@ async function ProductShell({
 }) {
 	const params = await paramsPromise;
 	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);
-	const product = await getProductData(params.slug, params.channel);
+	const product = await getProductData(params.slug, params.channel, params.locale);
 
 	if (!product) {
 		notFound();

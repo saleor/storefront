@@ -6,13 +6,16 @@
  */
 
 import { executePublicGraphQL } from "@/lib/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { SearchProductsDocument, OrderDirection, ProductOrderField } from "@/gql/graphql";
+import { pickTranslatedName } from "@/lib/saleor-translations";
 import type { SearchProduct, SearchResult, SearchPagination } from "./types";
 import { localeConfig } from "@/config/locale";
 
 interface SearchOptions {
 	query: string;
 	channel: string;
+	locale: string;
 	limit?: number;
 	cursor?: string;
 	direction?: "forward" | "backward";
@@ -26,7 +29,7 @@ interface SearchOptions {
  * See the examples in ./index.ts for Typesense, Algolia, Meilisearch.
  */
 export async function searchProducts(options: SearchOptions): Promise<SearchResult> {
-	const { query, channel, limit = 20, cursor, direction = "forward", sortBy = "relevance" } = options;
+	const { query, channel, locale, limit = 20, cursor, direction = "forward", sortBy = "relevance" } = options;
 
 	const { field, order } = mapSortToSaleor(sortBy);
 
@@ -43,6 +46,7 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 			after: isBackward ? undefined : cursor,
 			last: isBackward ? limit : undefined,
 			before: isBackward ? cursor : undefined,
+			...graphqlLanguageCodeVariables(locale),
 		},
 		revalidate: 60,
 	});
@@ -59,13 +63,13 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 	// Transform to common SearchProduct format
 	const searchProducts: SearchProduct[] = products.edges.map(({ node }) => ({
 		id: node.id,
-		name: node.name,
+		name: pickTranslatedName(node),
 		slug: node.slug,
 		thumbnailUrl: node.thumbnail?.url,
 		thumbnailAlt: node.thumbnail?.alt,
 		price: node.pricing?.priceRange?.start?.gross.amount ?? 0,
 		currency: node.pricing?.priceRange?.start?.gross.currency ?? localeConfig.fallbackCurrency,
-		categoryName: node.category?.name,
+		categoryName: node.category ? pickTranslatedName(node.category) : undefined,
 	}));
 
 	const pagination: SearchPagination = {

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getPaginatedListVariables } from "@/lib/utils";
@@ -25,7 +26,7 @@ type PageProps = {
 
 export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
 	const params = await props.params;
-	const category = await getCategoryData(params.slug, params.channel);
+	const category = await getCategoryData(params.slug, params.channel, params.locale);
 	const plainDescription = parseEditorJSToText(category?.description);
 
 	return {
@@ -40,7 +41,7 @@ export const generateMetadata = async (props: PageProps, parent: ResolvingMetada
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
-	const category = await getCategoryData(params.slug, params.channel);
+	const category = await getCategoryData(params.slug, params.channel, params.locale);
 
 	if (!category) {
 		notFound();
@@ -91,6 +92,7 @@ async function CategoryProducts({
 			...paginationVariables,
 			sortBy,
 			filter,
+			...graphqlLanguageCodeVariables(params.locale),
 		},
 	});
 

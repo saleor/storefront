@@ -20,7 +20,7 @@ export async function FeaturedCollectionSection({
 	limit,
 	className,
 }: FeaturedCollectionSectionProps) {
-	const products = await getFeaturedProducts(channel, limit, collectionSlug);
+	const products = await getFeaturedProducts(channel, locale, limit, collectionSlug);
 
 	return (
 		<section

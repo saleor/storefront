@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
 import { getPaginatedListVariables } from "@/lib/utils";
@@ -25,7 +26,7 @@ type PageProps = {
 
 export const generateMetadata = async (props: PageProps, parent: ResolvingMetadata): Promise<Metadata> => {
 	const params = await props.params;
-	const collection = await getCollectionData(params.slug, params.channel);
+	const collection = await getCollectionData(params.slug, params.channel, params.locale);
 	const plainDescription = parseEditorJSToText(collection?.description);
 
 	return {
@@ -40,7 +41,7 @@ export const generateMetadata = async (props: PageProps, parent: ResolvingMetada
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
-	const collection = await getCollectionData(params.slug, params.channel);
+	const collection = await getCollectionData(params.slug, params.channel, params.locale);
 
 	if (!collection) {
 		notFound();
@@ -94,6 +95,7 @@ async function CollectionProducts({
 			...paginationVariables,
 			sortBy,
 			filter,
+			...graphqlLanguageCodeVariables(params.locale),
 		},
 	});
 

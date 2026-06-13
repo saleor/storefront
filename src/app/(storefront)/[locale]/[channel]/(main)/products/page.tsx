@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ProductListPaginatedDocument } from "@/gql/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { CategoryHero, toProductCardData } from "@/ui/components/plp";
@@ -86,6 +87,7 @@ async function ProductsContent({
 			channel: params.channel,
 			sortBy,
 			filter,
+			...graphqlLanguageCodeVariables(params.locale),
 		},
 	});
 

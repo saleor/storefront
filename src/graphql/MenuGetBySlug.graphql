@@ -2,25 +2,37 @@ fragment MenuItem on MenuItem {
 	id
 	name
 	level
+	translation(languageCode: $languageCode) {
+		name
+	}
 	category {
 		id
 		slug
 		name
+		translation(languageCode: $languageCode) {
+			name
+		}
 	}
 	collection {
 		id
 		name
 		slug
+		translation(languageCode: $languageCode) {
+			name
+		}
 	}
 	page {
 		id
 		title
 		slug
+		translation(languageCode: $languageCode) {
+			title
+		}
 	}
 	url
 }
 
-query MenuGetBySlug($slug: String!, $channel: String!) {
+query MenuGetBySlug($slug: String!, $channel: String!, $languageCode: LanguageCodeEnum!) {
 	menu(slug: $slug, channel: $channel) {
 		items {
 			...MenuItem

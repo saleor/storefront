@@ -101,6 +101,11 @@ export function resolveLocaleFromSlug(slug: string): LocaleDefinition {
 	return getLocaleDefinition(slug) ?? LOCALE_DEFINITIONS[getDefaultLocaleSlug()];
 }
 
+/** Saleor `LanguageCodeEnum` for GraphQL variables from a URL locale slug. */
+export function getGraphqlLanguageCode(slug: string): string {
+	return resolveLocaleFromSlug(slug).graphqlLanguageCode;
+}
+
 /**
  * Format a price with the configured locale.
  */

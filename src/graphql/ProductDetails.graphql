@@ -1,4 +1,4 @@
-query ProductDetails($slug: String!, $channel: String!) {
+query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageCodeEnum!) {
 	product(slug: $slug, channel: $channel) {
 		id
 		name
@@ -6,6 +6,12 @@ query ProductDetails($slug: String!, $channel: String!) {
 		description
 		seoTitle
 		seoDescription
+		translation(languageCode: $languageCode) {
+			name
+			description
+			seoTitle
+			seoDescription
+		}
 		thumbnail(size: 1024, format: WEBP) {
 			url
 			alt
@@ -19,6 +25,9 @@ query ProductDetails($slug: String!, $channel: String!) {
 			id
 			name
 			slug
+			translation(languageCode: $languageCode) {
+				name
+			}
 		}
 		attributes {
 			values {

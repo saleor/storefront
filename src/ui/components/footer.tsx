@@ -23,7 +23,7 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 		: getStaticStorefrontChannelSlugs();
 
 	const [menuItems, channels] = await Promise.all([
-		getFooterMenuItems(channel),
+		getFooterMenuItems(channel, locale),
 		shouldFetchChannelMetadata(resolvedSlugs) ? getCachedChannelsList() : Promise.resolve(null),
 	]);
 
