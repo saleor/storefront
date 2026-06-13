@@ -9,6 +9,7 @@ import { getStorefrontContent } from "@/lib/content/server";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney, getHrefForVariant } from "@/lib/utils";
 import { buildBrowsePageMetadata } from "@/lib/seo";
+import { formatContentLabel } from "@/lib/content/format-label";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buttonClassName } from "@/ui/components/ui/button";
@@ -20,7 +21,7 @@ export async function generateMetadata(props: {
 	const { surfaces } = await getStorefrontContent(params.channel, params.locale);
 
 	return buildBrowsePageMetadata({
-		title: "Shopping Cart",
+		title: surfaces.cart.page.title,
 		description: surfaces.cart.empty.body ?? defaultStorefrontContent.surfaces.cart.empty.body,
 		locale: params.locale,
 		channel: params.channel,
@@ -55,7 +56,7 @@ async function CartContent({
 	if (!checkout || checkout.lines.length < 1) {
 		return (
 			<div className="mt-12">
-				<h1 className="text-3xl font-bold text-foreground">Shopping Cart</h1>
+				<h1 className="text-3xl font-bold text-foreground">{cart.page.title}</h1>
 				<p className="my-12 text-sm text-muted-foreground">{cart.empty.body}</p>
 				<LinkWithChannel href="/products" className={buttonClassName({ className: "max-w-full sm:px-16" })}>
 					{cart.empty.ctaLabel}
@@ -66,7 +67,7 @@ async function CartContent({
 
 	return (
 		<>
-			<h1 className="mt-8 text-3xl font-bold text-foreground">Shopping Cart</h1>
+			<h1 className="mt-8 text-3xl font-bold text-foreground">{cart.page.title}</h1>
 			<form className="mt-12">
 				<ul
 					data-testid="CartProductList"
@@ -101,7 +102,9 @@ async function CartContent({
 											{item.variant?.product?.category?.name}
 										</p>
 										{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
-											<p className="mt-1 text-sm text-muted-foreground">Variant: {item.variant.name}</p>
+											<p className="mt-1 text-sm text-muted-foreground">
+												{formatContentLabel(cart.page.variant, { name: item.variant.name })}
+											</p>
 										)}
 									</div>
 									<p className="text-right font-semibold text-foreground">
@@ -109,7 +112,9 @@ async function CartContent({
 									</p>
 								</div>
 								<div className="flex justify-between">
-									<div className="text-sm font-bold">Qty: {item.quantity}</div>
+									<div className="text-sm font-bold">
+										{formatContentLabel(cart.page.quantity, { count: item.quantity })}
+									</div>
 									<DeleteLineButton
 										deleteLine={deleteCartLine.bind(null, checkoutId, item.id, params.channel)}
 									/>
@@ -123,10 +128,8 @@ async function CartContent({
 					<div className="rounded-md border bg-muted px-4 py-2">
 						<div className="flex items-center justify-between gap-2 py-2">
 							<div>
-								<p className="font-semibold text-foreground">Your Total</p>
-								<p className="mt-1 text-sm text-muted-foreground">
-									Shipping will be calculated in the next step
-								</p>
+								<p className="font-semibold text-foreground">{cart.page.yourTotal}</p>
+								<p className="mt-1 text-sm text-muted-foreground">{cart.page.shippingNote}</p>
 							</div>
 							<div className="font-medium text-foreground">
 								{formatMoney(
@@ -142,6 +145,7 @@ async function CartContent({
 							checkoutId={checkoutId}
 							disabled={!checkout.lines.length}
 							className="w-full sm:w-1/3"
+							label={cart.page.checkout}
 						/>
 					</div>
 				</div>

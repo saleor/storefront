@@ -65,9 +65,42 @@ export type CartTrustContent = {
 	returnsLabel: string;
 };
 
+export type CartDrawerContent = {
+	title: string;
+	/** e.g. `{count} items` */
+	itemCount: string;
+	/** e.g. `Add {amount} more for free shipping` — `{amount}` is pre-formatted money */
+	addForFreeShipping: string;
+	freeShippingQualified: string;
+	subtotal: string;
+	shipping: string;
+	shippingFree: string;
+	shippingCalculated: string;
+	total: string;
+	checkout: string;
+	continueShopping: string;
+	/** e.g. `Remove {product}` */
+	removeItem: string;
+	decreaseQuantity: string;
+	increaseQuantity: string;
+};
+
+export type CartPageContent = {
+	title: string;
+	/** e.g. `Qty: {count}` */
+	quantity: string;
+	/** e.g. `Variant: {name}` */
+	variant: string;
+	yourTotal: string;
+	shippingNote: string;
+	checkout: string;
+};
+
 export type CartContent = {
 	empty: CartEmptyContent;
 	trust: CartTrustContent;
+	drawer: CartDrawerContent;
+	page: CartPageContent;
 };
 
 export type CheckoutEmptyCartContent = {

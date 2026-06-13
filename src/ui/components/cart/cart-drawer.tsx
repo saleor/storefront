@@ -15,6 +15,7 @@ import { localeConfig } from "@/config/locale";
 import { hasDiscount } from "@/lib/pricing";
 import { buildCheckoutPath } from "@paper/session-bridge";
 import type { CartContent } from "@/lib/content";
+import { formatContentLabel } from "@/lib/content/format-label";
 
 interface CartLine {
 	id: string;
@@ -151,6 +152,7 @@ export function CartDrawer({
 	};
 
 	const checkoutHref = checkoutId ? buildCheckoutPath({ checkoutId, step: "contact" }) : "/checkout";
+	const { drawer } = cart;
 
 	const freeShippingThreshold = 100;
 	const progressToFreeShipping = Math.min((subtotal / freeShippingThreshold) * 100, 100);
@@ -163,8 +165,10 @@ export function CartDrawer({
 				<SheetHeader className="justify-between border-b border-border px-6 py-4">
 					<div className="flex items-center gap-3">
 						<ShoppingBag className="h-5 w-5" />
-						<SheetTitle>Your Bag</SheetTitle>
-						<span className="text-sm text-muted-foreground">({itemCount} items)</span>
+						<SheetTitle>{drawer.title}</SheetTitle>
+						<span className="text-sm text-muted-foreground">
+							({formatContentLabel(drawer.itemCount, { count: itemCount })})
+						</span>
 					</div>
 					<SheetCloseButton className="static" />
 				</SheetHeader>
@@ -176,10 +180,12 @@ export function CartDrawer({
 							<Truck className={cn("h-4 w-4", amountToFreeShipping <= 0 && "text-success")} />
 							{amountToFreeShipping > 0 ? (
 								<span>
-									Add <strong>{formatMoney(amountToFreeShipping, currency)}</strong> more for free shipping
+									{formatContentLabel(drawer.addForFreeShipping, {
+										amount: formatMoney(amountToFreeShipping, currency),
+									})}
 								</span>
 							) : (
-								<span className="font-medium text-success">You qualify for free shipping!</span>
+								<span className="font-medium text-success">{drawer.freeShippingQualified}</span>
 							)}
 						</div>
 						<div className="h-1.5 overflow-hidden rounded-full bg-border">
@@ -279,7 +285,11 @@ export function CartDrawer({
 														disabled={isCartBusy}
 													>
 														<Trash2 className="h-4 w-4" />
-														<span className="sr-only">Remove {line.variant.product.name}</span>
+														<span className="sr-only">
+															{formatContentLabel(drawer.removeItem, {
+																product: line.variant.product.name,
+															})}
+														</span>
 													</Button>
 												</div>
 
@@ -294,7 +304,7 @@ export function CartDrawer({
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Minus className="h-3 w-3" />
-															<span className="sr-only">Decrease quantity</span>
+															<span className="sr-only">{drawer.decreaseQuantity}</span>
 														</button>
 														<span className="w-8 text-center text-sm font-medium">{line.quantity}</span>
 														<button
@@ -304,7 +314,7 @@ export function CartDrawer({
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Plus className="h-3 w-3" />
-															<span className="sr-only">Increase quantity</span>
+															<span className="sr-only">{drawer.increaseQuantity}</span>
 														</button>
 													</div>
 
@@ -338,15 +348,17 @@ export function CartDrawer({
 						{/* Order Summary */}
 						<div className="space-y-2 px-6 py-4">
 							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Subtotal</span>
+								<span className="text-muted-foreground">{drawer.subtotal}</span>
 								<span>{formatMoney(subtotal, currency)}</span>
 							</div>
 							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">Shipping</span>
-								<span>{subtotal >= freeShippingThreshold ? "Free" : "Calculated at checkout"}</span>
+								<span className="text-muted-foreground">{drawer.shipping}</span>
+								<span>
+									{subtotal >= freeShippingThreshold ? drawer.shippingFree : drawer.shippingCalculated}
+								</span>
 							</div>
 							<div className="flex items-center justify-between border-t border-border pt-2 text-base font-semibold">
-								<span>Total</span>
+								<span>{drawer.total}</span>
 								<span>{formatMoney(subtotal, currency)}</span>
 							</div>
 						</div>
@@ -370,7 +382,7 @@ export function CartDrawer({
 									className: "group h-12 w-full",
 								})}
 							>
-								<span>Checkout</span>
+								<span>{drawer.checkout}</span>
 								<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
 							</Link>
 							<LinkWithChannel
@@ -383,7 +395,7 @@ export function CartDrawer({
 									className: "h-12 w-full",
 								})}
 							>
-								Continue Shopping
+								{drawer.continueShopping}
 							</LinkWithChannel>
 						</div>
 

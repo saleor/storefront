@@ -28,4 +28,20 @@ describe("mapCartPage", () => {
 			defaultStorefrontContent.surfaces.cart.trust.freeShippingPrefix,
 		);
 	});
+
+	it("maps drawer and page chrome labels from Saleor attributes", () => {
+		const partial = mapCartPage(
+			cartPage([
+				{ slug: "drawer-title", plainText: "Twój koszyk" },
+				{ slug: "page-title", plainText: "Koszyk" },
+				{ slug: "page-checkout", plainText: "Do kasy" },
+			]),
+		);
+		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
+
+		expect(merged.surfaces.cart.drawer.title).toBe("Twój koszyk");
+		expect(merged.surfaces.cart.page.title).toBe("Koszyk");
+		expect(merged.surfaces.cart.page.checkout).toBe("Do kasy");
+		expect(merged.surfaces.cart.drawer.subtotal).toBe(defaultStorefrontContent.surfaces.cart.drawer.subtotal);
+	});
 });

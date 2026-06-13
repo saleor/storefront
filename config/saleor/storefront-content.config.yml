@@ -80,6 +80,46 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Trust returns label
     inputType: PLAIN_TEXT
+  - name: Drawer title
+    inputType: PLAIN_TEXT
+  - name: Drawer item count
+    inputType: PLAIN_TEXT
+  - name: Drawer add for free shipping
+    inputType: PLAIN_TEXT
+  - name: Drawer free shipping qualified
+    inputType: PLAIN_TEXT
+  - name: Drawer subtotal
+    inputType: PLAIN_TEXT
+  - name: Drawer shipping
+    inputType: PLAIN_TEXT
+  - name: Drawer shipping free
+    inputType: PLAIN_TEXT
+  - name: Drawer shipping calculated
+    inputType: PLAIN_TEXT
+  - name: Drawer total
+    inputType: PLAIN_TEXT
+  - name: Drawer checkout
+    inputType: PLAIN_TEXT
+  - name: Drawer continue shopping
+    inputType: PLAIN_TEXT
+  - name: Drawer remove item
+    inputType: PLAIN_TEXT
+  - name: Drawer decrease quantity
+    inputType: PLAIN_TEXT
+  - name: Drawer increase quantity
+    inputType: PLAIN_TEXT
+  - name: Page title
+    inputType: PLAIN_TEXT
+  - name: Page quantity
+    inputType: PLAIN_TEXT
+  - name: Page variant
+    inputType: PLAIN_TEXT
+  - name: Page your total
+    inputType: PLAIN_TEXT
+  - name: Page shipping note
+    inputType: PLAIN_TEXT
+  - name: Page checkout
+    inputType: PLAIN_TEXT
   # Storefront — Checkout
   - name: Empty cart title
     inputType: PLAIN_TEXT
@@ -143,6 +183,26 @@ modelTypes:
       - attribute: Empty CTA label
       - attribute: Trust free shipping prefix
       - attribute: Trust returns label
+      - attribute: Drawer title
+      - attribute: Drawer item count
+      - attribute: Drawer add for free shipping
+      - attribute: Drawer free shipping qualified
+      - attribute: Drawer subtotal
+      - attribute: Drawer shipping
+      - attribute: Drawer shipping free
+      - attribute: Drawer shipping calculated
+      - attribute: Drawer total
+      - attribute: Drawer checkout
+      - attribute: Drawer continue shopping
+      - attribute: Drawer remove item
+      - attribute: Drawer decrease quantity
+      - attribute: Drawer increase quantity
+      - attribute: Page title
+      - attribute: Page quantity
+      - attribute: Page variant
+      - attribute: Page your total
+      - attribute: Page shipping note
+      - attribute: Page checkout
 
   - name: "Storefront — Checkout"
     slug: storefront-checkout
@@ -186,8 +246,30 @@ models:
     isPublished: true
     attributes:
       Empty title: "Your bag is empty"
+      Empty body: "Looks like you haven't added anything to your bag yet."
+      Empty CTA label: "Start Shopping"
       Trust free shipping prefix: "Free delivery over"
       Trust returns label: "30-day returns"
+      Drawer title: "Your Bag"
+      Drawer item count: "{count} items"
+      Drawer add for free shipping: "Add {amount} more for free shipping"
+      Drawer free shipping qualified: "You qualify for free shipping!"
+      Drawer subtotal: "Subtotal"
+      Drawer shipping: "Shipping"
+      Drawer shipping free: "Free"
+      Drawer shipping calculated: "Calculated at checkout"
+      Drawer total: "Total"
+      Drawer checkout: "Checkout"
+      Drawer continue shopping: "Continue Shopping"
+      Drawer remove item: "Remove {product}"
+      Drawer decrease quantity: "Decrease quantity"
+      Drawer increase quantity: "Increase quantity"
+      Page title: "Shopping Cart"
+      Page quantity: "Qty: {count}"
+      Page variant: "Variant: {name}"
+      Page your total: "Your Total"
+      Page shipping note: "Shipping will be calculated in the next step"
+      Page checkout: "Checkout"
 
   - title: Storefront Checkout
     slug: storefront-checkout

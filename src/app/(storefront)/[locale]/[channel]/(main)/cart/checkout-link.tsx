@@ -8,9 +8,10 @@ type Props = {
 	disabled?: boolean;
 	checkoutId?: string;
 	className?: string;
+	label?: string;
 };
 
-export const CheckoutLink = ({ disabled, checkoutId, className }: Props) => {
+export const CheckoutLink = ({ disabled, checkoutId, className, label = "Checkout" }: Props) => {
 	return (
 		<a
 			data-testid="CheckoutLink"
@@ -22,7 +23,7 @@ export const CheckoutLink = ({ disabled, checkoutId, className }: Props) => {
 				className: cn("max-w-full sm:px-16", className),
 			})}
 		>
-			Checkout
+			{label}
 		</a>
 	);
 };
