@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.5.0"
+  version: "1.6.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-19 rules across 6 categories covering caching, storefront content, PDP architecture, checkout v2,
+20 rules across 7 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
 components, UI patterns, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
@@ -25,6 +25,8 @@ components, UI patterns, and SEO.
 > channels). Install it alongside this skill.
 
 ## When to Apply
+
+**Unfamiliar with the codebase?** Read [`paper-architecture`](rules/paper-architecture.md) first.
 
 Reference these guidelines when:
 
@@ -45,6 +47,7 @@ Reference these guidelines when:
 
 | Priority | Category      | Impact   | Prefix      |
 | -------- | ------------- | -------- | ----------- |
+| 0        | Architecture  | CRITICAL | `paper-`    |
 | 1        | Data Layer    | CRITICAL | `data-`     |
 | 2        | Product Pages | HIGH     | `product-`  |
 | 3        | Checkout Flow | HIGH     | `checkout-` |
@@ -53,6 +56,10 @@ Reference these guidelines when:
 | 6        | Development   | MEDIUM   | `dev-`      |
 
 ## Quick Reference
+
+### 0. Architecture (CRITICAL)
+
+- `paper-architecture` - **Start here** — canonical Next.js stance, pillars, non-goals, where to read next
 
 ### 1. Data Layer (CRITICAL)
 
@@ -72,7 +79,7 @@ Reference these guidelines when:
 
 ### 3. Checkout Flow (HIGH)
 
-- `paper-surfaces` - **Start here for checkout** — surfaces, routes, v2 data flow, session handoff
+- `paper-surfaces` - Two surfaces, routes, v2 data flow, session handoff (read `paper-architecture` first)
 - `checkout-design-principles` - Evidence-based UX principles (guest-first, mobile, pricing, express pay)
 - `checkout-management` - Lifecycle, RSC sync, shallow steps, payment transition UX (+ cheat sheet)
 - `checkout-payment-gateways` - Payment app registry, submit modes, Stripe Express Checkout wallets, adding a new gateway

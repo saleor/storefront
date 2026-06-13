@@ -23,7 +23,7 @@ Skills are organized as follows:
 
 | Location                                                      | Purpose                           | Contents                                                                                             |
 | ------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 19 rules + fork migrations under `migrations/`                                                       |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 20 rules + fork migrations under `migrations/`                                                       |
 | [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Saleor API patterns, React best practices, composition patterns, etc. (install via `npx skills add`) |
 
 ### When to Use Which Skill
@@ -32,6 +32,7 @@ Skills are organized as follows:
 
 | Task                               | Rule                                 |
 | ---------------------------------- | ------------------------------------ |
+| Architecture / canonical Next.js   | `paper-architecture`                 |
 | Modifying `.graphql` files         | `data-graphql`                       |
 | Caching, ISR, webhooks             | `data-caching`                       |
 | Storefront marketing copy layer    | `data-storefront-content`            |
@@ -259,10 +260,11 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ### Project Skill
 
-**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 19 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 20 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
 Rules by category:
 
+0. **Architecture** (CRITICAL): `paper-architecture`
 1. **Data Layer** (CRITICAL): `data-caching`, `data-auth-routes`, `data-graphql`
 2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
 3. **Checkout Flow** (HIGH): `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`

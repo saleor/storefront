@@ -18,10 +18,11 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 ## What's Included
 
-19 rules across 6 categories covering the full storefront:
+20 rules across 7 categories covering the full storefront:
 
 | Category      | Rules                                                                                                                                                 | Topics                                                            |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Architecture  | `paper-architecture`                                                                                                                                  | Canonical Next.js stance, pillar index, deliberate non-goals      |
 | Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes` | Cache, auth, GraphQL, merchandising copy, Models, attribute types |
 | Product Pages | `product-pdp`, `product-variants`, `product-filtering`                                                                                                | PDP architecture, variant selection, server/client filtering      |
 | Checkout      | `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`                             | Checkout v2, UX principles, lifecycle, payments, UI               |
@@ -39,6 +40,7 @@ saleor-paper-storefront/
 │   └── compile-agents.mjs
 ├── README.md             # This file (for humans)
 ├── rules/                # Individual rule files
+│   ├── paper-architecture.md
 │   ├── data-caching.md
 │   ├── data-auth-routes.md
 │   ├── data-graphql.md
