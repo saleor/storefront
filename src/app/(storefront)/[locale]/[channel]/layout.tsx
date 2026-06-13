@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { notFound } from "next/navigation";
+import { isStorefrontLocaleSlug } from "@/config/locale";
 import { isAllowedStorefrontChannel } from "@/config/channels";
 import { getConfiguredLocaleChannelPairs, isAllowedLocaleChannelPair } from "@/config/locale-channel";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
@@ -39,7 +40,11 @@ export default async function ChannelLayout({
 	const { locale, channel } = await params;
 	const allowedSlugs = await getStorefrontChannelSlugs();
 
-	if (!isAllowedStorefrontChannel(channel, allowedSlugs) || !isAllowedLocaleChannelPair(locale, channel)) {
+	if (
+		!isStorefrontLocaleSlug(locale) ||
+		!isAllowedStorefrontChannel(channel, allowedSlugs) ||
+		!isAllowedLocaleChannelPair(locale, channel)
+	) {
 		notFound();
 	}
 

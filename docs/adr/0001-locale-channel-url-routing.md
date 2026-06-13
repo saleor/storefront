@@ -90,6 +90,24 @@ Adopt **orthogonal locale + channel prefixes** for all browse (storefront) route
 4. Middleware — root redirect, legacy channel URLs, `browse-locale` cookie
 5. `languageCode` on public GraphQL + `withTranslated*Fields` for catalog/menus/CMS
 6. Region picker; cache invalidation fan-out across locales
+7. Server-rendered `<html lang>` per locale via **multiple root layouts** (see below)
+
+### `<html lang>` rendering — multiple root layouts
+
+`<html lang>` must reflect the URL locale in the **initial server-rendered HTML** (the crawlable/no-JS premise of this ADR). The blocker: a single `app/layout.tsx` renders `<html>` _above_ `[locale]`, so it never sees the locale param. Earlier this was patched client-side in a `useEffect` (`DocumentLang`), which left the SSR/no-JS HTML at the default `lang`.
+
+Decision: drop the shared root layout and use **one root layout per surface** (canonical Next.js i18n, adapted to the two-surface split):
+
+| Root layout                                | `<html lang>`                 |
+| ------------------------------------------ | ----------------------------- |
+| `(storefront)/[locale]/layout.tsx`         | from URL locale segment (SSR) |
+| `(checkout)/layout.tsx`                    | default (locale-less surface) |
+| `(root)/layout.tsx` (`/` + global 404/500) | default                       |
+
+- Locale validation moved to `[channel]/layout.tsx` so the storefront root always renders an HTML shell (so the `not-found`/`error` boundaries have one). Invalid locales fall back to the default `htmlLang` and 404 at the channel layer.
+- Per-group `error.tsx` / `not-found.tsx` re-export shared UI (`@/ui/components/{error,not-found}-content`); `app/global-error.tsx` covers root-layout crashes.
+- File-based metadata (`app/icon.png`, `opengraph-image.png`, …) stays global; **keeps PPR** (no `headers()`/dynamic root).
+- Follow-up: checkout `<html lang>` could read the `browse-locale` cookie to localize, at the cost of making the checkout shell dynamic.
 
 ## References
 

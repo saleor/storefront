@@ -4,7 +4,7 @@ import { getDefaultLocaleSlug } from "@/config/locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 /**
- * Root page redirects to the default channel.
+ * Root page redirects to the default locale + channel.
  *
  * Requires NEXT_PUBLIC_DEFAULT_CHANNEL to be set.
  * In development, shows setup instructions if not configured.
@@ -14,7 +14,6 @@ export default function RootPage() {
 		redirect(buildStorefrontPath(getDefaultLocaleSlug(), DefaultChannelSlug));
 	}
 
-	// No channel configured - show setup instructions
 	return (
 		<div className="flex min-h-screen items-center justify-center bg-background p-8">
 			<div className="max-w-md text-center">

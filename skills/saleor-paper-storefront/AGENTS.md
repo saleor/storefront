@@ -3974,7 +3974,7 @@ Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see
 
 - Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates (same channel, each configured locale).
 - `generateMetadata` `pathSuffix` is the path after locale/channel, e.g. `/products/${slug}`.
-- `<html lang>` comes from `DocumentLang` in `[locale]/layout.tsx`.
+- `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment — no client patching.
 
 ```typescript
 import { buildBrowsePageMetadata } from "@/lib/seo";
