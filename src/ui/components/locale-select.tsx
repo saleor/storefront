@@ -1,24 +1,24 @@
 "use client";
 
 import { useStorefrontRegionNavigation } from "@/hooks/use-storefront-region-navigation";
-import type { ChannelSelectOption } from "@/config/channels";
+import type { LocaleSelectOption } from "@/lib/locale-display";
 import { cn } from "@/lib/utils";
 
-export const ChannelSelect = ({
-	channels,
+export const LocaleSelect = ({
+	locales,
 	variant = "default",
 	className,
 }: {
-	channels: ChannelSelectOption[];
+	locales: LocaleSelectOption[];
 	variant?: "default" | "inverted";
 	className?: string;
 }) => {
-	const { channel, navigateToChannel } = useStorefrontRegionNavigation();
+	const { locale, navigateToLocale } = useStorefrontRegionNavigation();
 
 	return (
 		<select
-			id="storefront-channel-select"
-			aria-label="Market"
+			id="storefront-locale-select"
+			aria-label="Language"
 			className={cn(
 				"h-10 w-fit rounded-md border px-4 py-2 pr-10 text-sm",
 				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -28,12 +28,12 @@ export const ChannelSelect = ({
 					: "border-input bg-background text-foreground focus-visible:ring-offset-background",
 				className,
 			)}
-			onChange={(e) => navigateToChannel(e.currentTarget.value)}
-			value={channel}
+			onChange={(e) => navigateToLocale(e.currentTarget.value)}
+			value={locale}
 		>
-			{channels.map((item) => (
-				<option key={item.id} value={item.slug}>
-					{item.currencyCode}
+			{locales.map((item) => (
+				<option key={item.slug} value={item.slug} lang={item.slug}>
+					{item.label}
 				</option>
 			))}
 		</select>

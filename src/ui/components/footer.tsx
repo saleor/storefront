@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChannelSelect } from "./channel-select";
+import { StorefrontRegionPicker } from "./storefront-region-picker";
 import {
 	getStaticStorefrontChannelSlugs,
 	needsAsyncChannelDiscovery,
@@ -9,6 +9,7 @@ import {
 import { getCachedChannelsList } from "@/lib/channels/get-channels-data";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import { getFooterMenuItems } from "@/lib/menus/get-menu-data";
+import { getStorefrontLocaleOptions } from "@/lib/locale-display";
 import { FooterMenuColumns } from "./footer-menu-columns";
 import { CopyrightText } from "./copyright-text";
 import { brandConfig } from "@/config/brand";
@@ -27,6 +28,7 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 	]);
 
 	const footerMenuItems = menuItems ?? [];
+	const localeOptions = getStorefrontLocaleOptions();
 	const selectorChannels =
 		channels?.channels && resolvedSlugs.length > 0
 			? toChannelSelectOptions(channels.channels, resolvedSlugs)
@@ -48,13 +50,10 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 					<FooterMenuColumns items={footerMenuItems} />
 				</div>
 
-				{/* Channel selector — only storefront channels, hidden when single-channel */}
-				{selectorChannels.length > 1 && (
-					<div className="mt-8 text-inverse-subtle">
-						<label className="flex items-center gap-2 text-sm">
-							<span>Change currency:</span>
-							<ChannelSelect channels={selectorChannels} variant="inverted" />
-						</label>
+				{/* Language + market — hidden when only one option on each axis */}
+				{(localeOptions.length > 1 || selectorChannels.length > 1) && (
+					<div className="mt-10">
+						<StorefrontRegionPicker locales={localeOptions} channels={selectorChannels} variant="inverted" />
 					</div>
 				)}
 
