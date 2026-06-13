@@ -3,7 +3,7 @@ import { invariant } from "ts-invariant";
 import { buildCheckoutPath, buildOrderConfirmationPath } from "@paper/session-bridge";
 import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
-import { getBrowseLocaleSlug } from "@/lib/browse-locale-server";
+import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
 import { getStorefrontContent } from "@/lib/content/server";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import {
@@ -17,6 +17,7 @@ import * as Checkout from "@/lib/checkout";
 export type CheckoutPageSearchParams = {
 	checkout?: string;
 	order?: string;
+	locale?: string;
 };
 
 type CheckoutSessionLoaderProps = {
@@ -35,6 +36,7 @@ export async function CheckoutSessionLoader({
 
 	const orderId = searchParams.order ?? null;
 	const checkoutIdFromUrl = searchParams.checkout ?? null;
+	const browseLocale = await resolveBrowseLocaleForCheckout(searchParams.locale);
 
 	if (orderId) {
 		redirect(buildOrderConfirmationPath({ orderId }));
@@ -43,7 +45,7 @@ export async function CheckoutSessionLoader({
 	if (!checkoutIdFromUrl) {
 		const checkoutIdFromCartCookie = await Checkout.getFirstCheckoutIdFromCartCookies();
 		if (checkoutIdFromCartCookie) {
-			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromCartCookie }));
+			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromCartCookie, browseLocale }));
 		}
 	}
 
@@ -71,7 +73,7 @@ export async function CheckoutSessionLoader({
 		const checkoutIdFromChannelCookie = await Checkout.getIdFromCookies(channelSlug);
 
 		if (checkoutIdFromChannelCookie && checkoutIdFromChannelCookie !== checkoutIdFromUrl) {
-			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromChannelCookie }));
+			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromChannelCookie, browseLocale }));
 		}
 
 		if (!checkoutResult.checkout.lines.length) {
@@ -88,7 +90,6 @@ export async function CheckoutSessionLoader({
 
 	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
 	const contentChannel = browseChannel ?? DefaultChannelSlug ?? "default-channel";
-	const browseLocale = await getBrowseLocaleSlug();
 	const checkoutContent = (await getStorefrontContent(contentChannel, browseLocale)).surfaces.checkout;
 
 	return (
@@ -99,6 +100,7 @@ export async function CheckoutSessionLoader({
 			initialUser={initialUser}
 			shippingCountries={shippingCountries}
 			checkoutContent={checkoutContent}
+			storefrontLocale={browseLocale}
 		/>
 	);
 }

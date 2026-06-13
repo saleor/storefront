@@ -27,7 +27,7 @@ Fork is on pre-locale `/{channel}/…` routes, or missing:
 ## Env
 
 ```env
-STOREFRONT_LOCALES=en,pl,de
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de
 NEXT_PUBLIC_DEFAULT_LOCALE=en
 # Optional pair matrix (default: any allowed locale × any allowed channel)
 STOREFRONT_LOCALE_CHANNELS=en:default-channel,pl:channel-pln

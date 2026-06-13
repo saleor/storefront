@@ -65,9 +65,14 @@ export function getDefaultLocaleSlug(): LocaleSlug {
 	return "en";
 }
 
-/** Configured storefront locale slugs — `STOREFRONT_LOCALES` or default locale only. */
+/**
+ * Configured storefront locale slugs (`NEXT_PUBLIC_STOREFRONT_LOCALES`).
+ *
+ * Must be a `NEXT_PUBLIC_*` var so the allowlist is identical on the server and in the
+ * browser — client components (locale links, checkout) validate slugs too.
+ */
 export function getStorefrontLocaleSlugs(): readonly LocaleSlug[] {
-	const configured = parseEnvLocaleList(process.env.STOREFRONT_LOCALES);
+	const configured = parseEnvLocaleList(process.env.NEXT_PUBLIC_STOREFRONT_LOCALES);
 	if (configured) {
 		return configured.filter(isLocaleSlug);
 	}
@@ -78,7 +83,7 @@ export function isLocaleSlug(value: string): value is LocaleSlug {
 	return value in LOCALE_DEFINITIONS;
 }
 
-/** Locale slug enabled for this deployment (`STOREFRONT_LOCALES` allowlist). */
+/** Locale slug enabled for this deployment (`NEXT_PUBLIC_STOREFRONT_LOCALES` allowlist). */
 export function isStorefrontLocaleSlug(value: string): value is LocaleSlug {
 	return isLocaleSlug(value) && (getStorefrontLocaleSlugs() as readonly string[]).includes(value);
 }

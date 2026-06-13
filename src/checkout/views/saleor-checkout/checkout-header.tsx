@@ -2,6 +2,7 @@
 
 import { Lock, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
 import { Logo } from "@/ui/components/shared/logo";
 import { StorefrontHomeLink } from "@/ui/components/shared/storefront-home-link";
 import { getCheckoutSteps } from "./flow";
@@ -19,6 +20,7 @@ export function CheckoutHeader({
 	isShippingRequired = true,
 	storefrontChannel,
 }: CheckoutHeaderProps) {
+	const storefrontLocale = useCheckoutBrowseLocale();
 	const steps = getCheckoutSteps(isShippingRequired).map((s) => ({
 		number: s.index,
 		label: s.label,
@@ -34,7 +36,11 @@ export function CheckoutHeader({
 			<div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 md:pb-4 md:pt-4 lg:px-8">
 				<div className="flex items-center justify-between">
 					{/* Logo */}
-					<StorefrontHomeLink channel={storefrontChannel} className="flex items-center">
+					<StorefrontHomeLink
+						locale={storefrontLocale}
+						channel={storefrontChannel}
+						className="flex items-center"
+					>
 						<Logo className="h-7 w-auto" />
 					</StorefrontHomeLink>
 

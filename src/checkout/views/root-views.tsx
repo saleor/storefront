@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { DefaultChannelSlug } from "@/app/config";
-import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
+import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import {
 	getEmailAndTokenFromSearchParams,
@@ -41,6 +41,7 @@ function shouldPrioritizeAccountConfirmation(
 
 export const RootViews = () => {
 	const { emptySession } = useCheckoutContent();
+	const storefrontLocale = useCheckoutBrowseLocale();
 	const searchParams = useSearchParams();
 	const { loadState, checkout } = useCheckoutData();
 	const transition = useCheckoutTransition();
@@ -54,17 +55,16 @@ export const RootViews = () => {
 
 	if (accountCredentials && shouldPrioritizeAccountConfirmation(searchParams, loadState)) {
 		const channel = checkout?.channel.slug ?? DefaultChannelSlug ?? "default-channel";
-		const locale = resolveBrowseLocaleSlugWithFallback();
-		const signInHref = buildStorefrontPath(locale, channel, "/login");
+		const signInHref = buildStorefrontPath(storefrontLocale, channel, "/login");
 
 		return (
 			<ConfirmAccountMode
 				email={accountCredentials.email}
 				token={accountCredentials.token}
-				locale={locale}
+				locale={storefrontLocale}
 				channel={channel}
 				signInHref={signInHref}
-				continueShoppingHref={buildStorefrontPath(locale, channel)}
+				continueShoppingHref={buildStorefrontPath(storefrontLocale, channel)}
 				onConfirmed={() => {
 					const cleaned = createQueryString(searchParams, {
 						accountConfirm: null,

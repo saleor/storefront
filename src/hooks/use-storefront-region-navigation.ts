@@ -1,7 +1,9 @@
 "use client";
 
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { isStorefrontLocaleSlug } from "@/config/locale";
 import { hasCartCookieForChannel } from "@/lib/cart-channel-cookie";
+import { writeBrowseLocaleCookieClient } from "@/lib/browse-locale";
 import {
 	buildStorefrontPath,
 	replaceStorefrontChannel,
@@ -19,6 +21,10 @@ export function useStorefrontRegionNavigation() {
 
 	function navigateToLocale(newLocale: string) {
 		if (!channel) return;
+
+		if (isStorefrontLocaleSlug(newLocale)) {
+			writeBrowseLocaleCookieClient(newLocale);
+		}
 
 		const href = replaceStorefrontLocale(pathname, newLocale) ?? buildStorefrontPath(newLocale, channel);
 		router.push(href);

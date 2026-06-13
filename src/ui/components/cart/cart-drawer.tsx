@@ -113,6 +113,7 @@ interface CartDrawerProps {
 		};
 	} | null;
 	channel: string;
+	localeSlug: string;
 	cart: CartContent;
 	deleteCartLine: DeleteCartLine;
 	updateCartLineQuantity: UpdateCartLineQuantity;
@@ -123,6 +124,7 @@ export function CartDrawer({
 	lines,
 	totalPrice,
 	channel,
+	localeSlug,
 	cart,
 	deleteCartLine,
 	updateCartLineQuantity,
@@ -151,7 +153,9 @@ export function CartDrawer({
 		runCartMutation(() => updateCartLineQuantity(checkoutId, lineId, newQuantity, channel));
 	};
 
-	const checkoutHref = checkoutId ? buildCheckoutPath({ checkoutId, step: "contact" }) : "/checkout";
+	const checkoutHref = checkoutId
+		? buildCheckoutPath({ checkoutId, step: "contact", browseLocale: localeSlug })
+		: "/checkout";
 	const { drawer } = cart;
 
 	const freeShippingThreshold = 100;

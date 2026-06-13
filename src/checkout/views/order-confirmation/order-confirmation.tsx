@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { navigateToStorefrontHome } from "@/lib/auth";
+import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
 import { CheckCircle, Mail, MapPin, Package, CreditCard } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { useOrder } from "@/checkout/hooks/use-order";
@@ -28,6 +29,7 @@ function formatAddress(address: {
  */
 export const OrderConfirmation = () => {
 	const { order } = useOrder();
+	const storefrontLocale = useCheckoutBrowseLocale();
 
 	useEffect(() => {
 		if (!order?.id) {
@@ -128,7 +130,7 @@ export const OrderConfirmation = () => {
 									<Button
 										type="button"
 										className="min-w-[200px] px-8"
-										onClick={() => navigateToStorefrontHome(channel)}
+										onClick={() => navigateToStorefrontHome(channel, storefrontLocale)}
 									>
 										Continue shopping
 									</Button>

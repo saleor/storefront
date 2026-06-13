@@ -9,15 +9,22 @@ type Props = {
 	checkoutId?: string;
 	className?: string;
 	label?: string;
+	browseLocale?: string;
 };
 
-export const CheckoutLink = ({ disabled, checkoutId, className, label = "Checkout" }: Props) => {
+export const CheckoutLink = ({
+	disabled,
+	checkoutId,
+	className,
+	label = "Checkout",
+	browseLocale,
+}: Props) => {
 	return (
 		<a
 			data-testid="CheckoutLink"
 			aria-disabled={disabled}
 			onClick={(e) => disabled && e.preventDefault()}
-			href={checkoutId ? buildCheckoutPath({ checkoutId, step: "contact" }) : "/checkout"}
+			href={checkoutId ? buildCheckoutPath({ checkoutId, step: "contact", browseLocale }) : "/checkout"}
 			className={buttonClassName({
 				asLink: true,
 				className: cn("max-w-full sm:px-16", className),

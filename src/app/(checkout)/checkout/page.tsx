@@ -14,7 +14,7 @@ export const metadata = {
  * Order confirmation lives at `/checkout/complete?order=`.
  */
 export default function CheckoutPage(props: {
-	searchParams: Promise<{ checkout?: string; order?: string }>;
+	searchParams: Promise<{ checkout?: string; order?: string; locale?: string }>;
 }) {
 	return (
 		<Suspense fallback={<CheckoutLoadingFallback />}>

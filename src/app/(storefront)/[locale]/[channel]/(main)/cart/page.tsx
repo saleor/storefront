@@ -146,6 +146,7 @@ async function CartContent({
 							disabled={!checkout.lines.length}
 							className="w-full sm:w-1/3"
 							label={cart.page.checkout}
+							browseLocale={params.locale}
 						/>
 					</div>
 				</div>

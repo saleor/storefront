@@ -25,7 +25,10 @@ export function readBrowseLocaleSlug(): LocaleSlug | null {
 	}
 
 	const prefix = `${BROWSE_LOCALE_COOKIE}=`;
-	const entry = document.cookie.split("; ").find((part) => part.startsWith(prefix));
+	const entry = document.cookie
+		.split(";")
+		.map((part) => part.trim())
+		.find((part) => part.startsWith(prefix));
 	if (!entry) {
 		return null;
 	}
@@ -36,4 +39,16 @@ export function readBrowseLocaleSlug(): LocaleSlug | null {
 
 export function resolveBrowseLocaleSlugWithFallback(candidate?: string | null): LocaleSlug {
 	return resolveBrowseLocaleSlug(candidate ?? readBrowseLocaleSlug());
+}
+
+/** Keep browse locale in sync after client-side locale switches (middleware may not run). */
+export function writeBrowseLocaleCookieClient(slug: LocaleSlug): void {
+	if (typeof document === "undefined" || !isStorefrontLocaleSlug(slug)) {
+		return;
+	}
+
+	const { path, maxAge, sameSite } = getBrowseLocaleCookieOptions();
+	document.cookie = `${BROWSE_LOCALE_COOKIE}=${encodeURIComponent(
+		slug,
+	)}; path=${path}; max-age=${maxAge}; samesite=${sameSite}`;
 }

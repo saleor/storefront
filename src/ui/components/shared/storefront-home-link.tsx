@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { type ReactNode } from "react";
+import { isLocaleSlug, type LocaleSlug } from "@/config/locale";
 import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
@@ -18,7 +19,11 @@ type StorefrontHomeLinkProps = {
  */
 export function StorefrontHomeLink({ locale, channel, className, children }: StorefrontHomeLinkProps) {
 	if (channel) {
-		const resolvedLocale = resolveBrowseLocaleSlugWithFallback(locale);
+		// Trust explicit locale from RSC (validated server-side) — use isLocaleSlug, not the
+		// deployment allowlist, so client href matches SSR on checkout and other surfaces.
+		const resolvedLocale: LocaleSlug =
+			locale && isLocaleSlug(locale) ? locale : resolveBrowseLocaleSlugWithFallback(locale);
+
 		return (
 			<a href={buildStorefrontPath(resolvedLocale, channel)} className={className}>
 				{children}

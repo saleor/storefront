@@ -57,7 +57,7 @@ export function middleware(request: NextRequest) {
 		return NextResponse.next();
 	}
 
-	// Disabled locale slug (defined but not in STOREFRONT_LOCALES) → canonical default locale
+	// Disabled locale slug (defined but not in NEXT_PUBLIC_STOREFRONT_LOCALES) → canonical default locale
 	if (isLocaleSlug(first) && !isStorefrontLocaleSlug(first)) {
 		if (second && isChannelSlug(second)) {
 			const url = request.nextUrl.clone();

@@ -4,6 +4,7 @@ import { invariant } from "ts-invariant";
 import { OrderConfirmationApp } from "@/checkout/order-confirmation-app";
 import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-user";
 import { fetchOrderOnServer } from "@/checkout/lib/server/fetch-order";
+import { getBrowseLocaleSlug } from "@/lib/browse-locale-server";
 import { OrderConfirmationSkeleton } from "@/checkout/views/order-confirmation";
 import { formatPageTitle } from "@/config/brand";
 
@@ -34,10 +35,18 @@ async function OrderCompleteContent({
 
 	const orderId = searchParams.order ?? null;
 
-	const [initialUser, initialOrder] = await Promise.all([
+	const [initialUser, initialOrder, storefrontLocale] = await Promise.all([
 		fetchCheckoutUserOnServer(),
 		orderId ? fetchOrderOnServer(orderId) : Promise.resolve(null),
+		getBrowseLocaleSlug(),
 	]);
 
-	return <OrderConfirmationApp orderId={orderId} initialOrder={initialOrder} initialUser={initialUser} />;
+	return (
+		<OrderConfirmationApp
+			orderId={orderId}
+			initialOrder={initialOrder}
+			initialUser={initialUser}
+			storefrontLocale={storefrontLocale}
+		/>
+	);
 }

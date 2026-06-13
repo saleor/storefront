@@ -7,7 +7,7 @@ describe("buildLocaleHreflangAlternates", () => {
 	});
 
 	it("builds per-locale URLs for a fixed channel", () => {
-		vi.stubEnv("STOREFRONT_LOCALES", "en,pl");
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,pl");
 		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");
 		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel");
 
@@ -19,7 +19,7 @@ describe("buildLocaleHreflangAlternates", () => {
 	});
 
 	it("uses paired channels when STOREFRONT_LOCALE_CHANNELS is configured", () => {
-		vi.stubEnv("STOREFRONT_LOCALES", "en,pl");
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,pl");
 		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");
 		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel,channel-pln");
 		vi.stubEnv("STOREFRONT_LOCALE_CHANNELS", "en:default-channel,pl:channel-pln");

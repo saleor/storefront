@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getConfiguredLocaleChannelPairs } from "@/config/locale-channel";
 import { getStorefrontLocaleSlugs, isStorefrontLocaleSlug, resolveLocaleFromSlug } from "@/config/locale";
 import { DocumentLang } from "@/ui/components/document-lang";
+import { PersistBrowseLocaleCookie } from "@/ui/components/persist-browse-locale-cookie";
 
 export function generateStaticParams() {
 	const pairs = getConfiguredLocaleChannelPairs();
@@ -31,6 +32,7 @@ export default async function LocaleLayout({
 
 	return (
 		<>
+			<PersistBrowseLocaleCookie locale={locale} />
 			<DocumentLang lang={htmlLang} />
 			{children}
 		</>

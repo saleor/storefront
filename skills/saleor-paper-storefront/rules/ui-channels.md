@@ -158,7 +158,7 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 
 **Browse URLs:** `/{locale}/{channel}/…` — see `docs/adr/0001-locale-channel-url-routing.md` and `ui-locale-routing.md`. Legacy `/{channel}/…` redirects via middleware.
 
-Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `STOREFRONT_LOCALES=en,pl,de` for additional languages.
+Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de` for additional languages.
 
 ## Anti-patterns
 
