@@ -129,10 +129,26 @@ export type CheckoutContent = {
 
 export type StorefrontChromeContent = {
 	announcementBar: AnnouncementBarContent;
+	nav: NavChromeContent;
+};
+
+export type NavChromeContent = {
+	/** Top-level “All products” link in the mega menu. */
+	allProductsLabel: string;
+	/** Footer link in mega menu panels — e.g. `View all {label}`. */
+	viewAllLabel: string;
+};
+
+export type ProductsListingContent = {
+	title: string;
+	description: string;
+	breadcrumbHome: string;
+	breadcrumbProducts: string;
 };
 
 export type StorefrontSurfacesContent = {
 	homepage: HomepageContent;
+	products: ProductsListingContent;
 	cart: CartContent;
 	checkout: CheckoutContent;
 };

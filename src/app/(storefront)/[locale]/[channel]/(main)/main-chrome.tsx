@@ -86,7 +86,7 @@ export function MainChrome({
 				dismissible={announcementBar.dismissible}
 			/>
 			<Suspense fallback={<HeaderSkeleton />}>
-				<Header locale={locale} channel={channel} />
+				<Header locale={locale} channel={channel} nav={chrome.nav} />
 			</Suspense>
 			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
 				<main className="flex-1">{children}</main>

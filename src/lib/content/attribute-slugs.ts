@@ -8,6 +8,15 @@ export const STOREFRONT_CHROME_ATTRIBUTES = {
 	announcementHref: "announcement-href",
 	announcementLinkLabel: "announcement-link-label",
 	announcementDismissible: "announcement-dismissible",
+	navAllProductsLabel: "nav-all-products-label",
+	navViewAllLabel: "nav-view-all-label",
+} as const;
+
+export const STOREFRONT_PRODUCTS_ATTRIBUTES = {
+	title: "listing-title",
+	description: "listing-description",
+	breadcrumbHome: "breadcrumb-home",
+	breadcrumbProducts: "breadcrumb-products",
 } as const;
 
 export const STOREFRONT_HOMEPAGE_ATTRIBUTES = {

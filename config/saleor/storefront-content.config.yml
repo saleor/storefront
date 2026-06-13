@@ -25,6 +25,19 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Announcement dismissible
     inputType: BOOLEAN
+  - name: Nav all products label
+    inputType: PLAIN_TEXT
+  - name: Nav view all label
+    inputType: PLAIN_TEXT
+  # Storefront — Products listing
+  - name: Listing title
+    inputType: PLAIN_TEXT
+  - name: Listing description
+    inputType: PLAIN_TEXT
+  - name: Breadcrumb home
+    inputType: PLAIN_TEXT
+  - name: Breadcrumb products
+    inputType: PLAIN_TEXT
   # Storefront — Homepage
   - name: Hero heading
     inputType: PLAIN_TEXT
@@ -149,6 +162,16 @@ modelTypes:
       - attribute: Announcement href
       - attribute: Announcement link label
       - attribute: Announcement dismissible
+      - attribute: Nav all products label
+      - attribute: Nav view all label
+
+  - name: "Storefront — Products"
+    slug: storefront-products
+    attributes:
+      - attribute: Listing title
+      - attribute: Listing description
+      - attribute: Breadcrumb home
+      - attribute: Breadcrumb products
 
   - name: "Storefront — Homepage"
     slug: storefront-homepage
@@ -228,6 +251,18 @@ models:
       Announcement ID: welcome-promo
       Announcement message: "Free shipping on orders over $75"
       Announcement dismissible: true
+      Nav all products label: "All"
+      Nav view all label: "View all {label}"
+
+  - title: Storefront Products
+    slug: storefront-products
+    modelType: "Storefront — Products"
+    isPublished: true
+    attributes:
+      Listing title: "All Products"
+      Listing description: "Discover our full collection of premium products."
+      Breadcrumb home: "Home"
+      Breadcrumb products: "Products"
 
   - title: Storefront Homepage
     slug: storefront-homepage

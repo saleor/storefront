@@ -25,6 +25,10 @@ export function mergeStorefrontContent(
 				...base.chrome.announcementBar,
 				...override.chrome?.announcementBar,
 			},
+			nav: {
+				...base.chrome.nav,
+				...override.chrome?.nav,
+			},
 		},
 		surfaces: {
 			homepage: {
@@ -59,6 +63,10 @@ export function mergeStorefrontContent(
 						base.surfaces.homepage.editorial.paragraphs,
 					),
 				},
+			},
+			products: {
+				...base.surfaces.products,
+				...override.surfaces?.products,
 			},
 			cart: {
 				...base.surfaces.cart,

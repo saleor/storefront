@@ -13,18 +13,29 @@ export function mapChromePage(page: StorefrontContentPageFragment | null): Parti
 	if (!page || page.pageType.slug !== STOREFRONT_PAGE_TYPES.chrome) return {};
 
 	const attrs = buildAttributeMap(page);
+	const partial: PartialStorefrontContent = { chrome: {} };
+
+	const allProductsLabel = attrText(attrs, A.navAllProductsLabel);
+	const viewAllLabel = attrText(attrs, A.navViewAllLabel);
+	if (allProductsLabel || viewAllLabel) {
+		partial.chrome!.nav = omitEmpty({
+			allProductsLabel,
+			viewAllLabel,
+		});
+	}
+
 	const message = attrText(attrs, A.announcementMessage);
-	if (!message) return {};
+	if (message) {
+		partial.chrome!.announcementBar = {
+			...omitEmpty({ id: attrText(attrs, A.announcementId) }),
+			message,
+			href: attrOptionalUrl(attrs, A.announcementHref),
+			linkLabel: attrOptionalText(attrs, A.announcementLinkLabel),
+			...(attrBool(attrs, A.announcementDismissible) !== undefined
+				? { dismissible: attrBool(attrs, A.announcementDismissible) }
+				: {}),
+		};
+	}
 
-	const announcementBar = {
-		...omitEmpty({ id: attrText(attrs, A.announcementId) }),
-		message,
-		href: attrOptionalUrl(attrs, A.announcementHref),
-		linkLabel: attrOptionalText(attrs, A.announcementLinkLabel),
-		...(attrBool(attrs, A.announcementDismissible) !== undefined
-			? { dismissible: attrBool(attrs, A.announcementDismissible) }
-			: {}),
-	};
-
-	return { chrome: { announcementBar } };
+	return partial.chrome!.announcementBar || partial.chrome!.nav ? partial : {};
 }

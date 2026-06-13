@@ -5,6 +5,7 @@ export const STOREFRONT_PAGE_TYPE_PREFIX = "storefront-" as const;
 export const STOREFRONT_PAGE_TYPES = {
 	chrome: "storefront-chrome",
 	homepage: "storefront-homepage",
+	products: "storefront-products",
 	cart: "storefront-cart",
 	checkout: "storefront-checkout",
 } as const;

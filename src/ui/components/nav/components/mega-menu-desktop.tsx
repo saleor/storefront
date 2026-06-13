@@ -1,6 +1,8 @@
 "use client";
 
 import { type NavMenuItem, hasNavMenuChildren, isExternalNavHref } from "@/lib/menus/serialize-menu-for-nav";
+import { formatContentLabel } from "@/lib/content/format-label";
+import type { NavChromeContent } from "@/lib/content/types";
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -55,7 +57,7 @@ function megaMenuLayout(columnCount: number): { panel: string; grid: string } {
 	return { panel: "w-[14rem]", grid: "grid-cols-1" };
 }
 
-function MegaMenuPanel({ item }: { item: NavMenuItem }) {
+function MegaMenuPanel({ item, nav }: { item: NavMenuItem; nav: NavChromeContent }) {
 	const children = item.children ?? [];
 	const { panel, grid } = megaMenuLayout(children.length);
 
@@ -73,7 +75,7 @@ function MegaMenuPanel({ item }: { item: NavMenuItem }) {
 						prefetch={false}
 						className="text-sm font-medium text-primary hover:underline"
 					>
-						View all {item.label}
+						{formatContentLabel(nav.viewAllLabel, { label: item.label })}
 					</LinkWithChannel>
 				</div>
 			) : null}
@@ -81,7 +83,7 @@ function MegaMenuPanel({ item }: { item: NavMenuItem }) {
 	);
 }
 
-function MegaMenuTopItem({ item }: { item: NavMenuItem }) {
+function MegaMenuTopItem({ item, nav }: { item: NavMenuItem; nav: NavChromeContent }) {
 	const pathname = useSelectedPathname();
 
 	if (hasNavMenuChildren(item)) {
@@ -91,7 +93,7 @@ function MegaMenuTopItem({ item }: { item: NavMenuItem }) {
 					{item.label}
 				</NavigationMenuTrigger>
 				<NavigationMenuContent className="w-max">
-					<MegaMenuPanel item={item} />
+					<MegaMenuPanel item={item} nav={nav} />
 				</NavigationMenuContent>
 			</NavigationMenuItem>
 		);
@@ -131,7 +133,7 @@ function MegaMenuTopItem({ item }: { item: NavMenuItem }) {
 	);
 }
 
-export function MegaMenuDesktop({ items }: { items: NavMenuItem[] }) {
+export function MegaMenuDesktop({ items, nav }: { items: NavMenuItem[]; nav: NavChromeContent }) {
 	const pathname = useSelectedPathname();
 	const allProductsClassName = cn(
 		navigationMenuTriggerClassName,
@@ -145,12 +147,12 @@ export function MegaMenuDesktop({ items }: { items: NavMenuItem[] }) {
 				<NavigationMenuItem>
 					<NavigationMenuLink asChild>
 						<LinkWithChannel href="/products" prefetch={false} className={allProductsClassName}>
-							All
+							{nav.allProductsLabel}
 						</LinkWithChannel>
 					</NavigationMenuLink>
 				</NavigationMenuItem>
 				{items.map((item) => (
-					<MegaMenuTopItem key={item.id} item={item} />
+					<MegaMenuTopItem key={item.id} item={item} nav={nav} />
 				))}
 			</NavigationMenuList>
 		</NavigationMenu>

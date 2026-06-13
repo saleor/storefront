@@ -10,6 +10,7 @@ import { mapCartPage } from "@/lib/content/saleor/mappers/cart";
 import { mapCheckoutPage } from "@/lib/content/saleor/mappers/checkout";
 import { mapChromePage } from "@/lib/content/saleor/mappers/chrome";
 import { mapHomepagePage } from "@/lib/content/saleor/mappers/homepage";
+import { mapProductsPage } from "@/lib/content/saleor/mappers/products";
 import {
 	collectStorefrontContentPageSlugs,
 	indexStorefrontPagesBySlug,
@@ -44,6 +45,7 @@ export const saleorContentProvider: ContentProvider = {
 		const mapperPartials = [
 			mapChromePage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.chrome, channel)),
 			mapHomepagePage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.homepage, channel)),
+			mapProductsPage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.products, channel)),
 			mapCartPage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.cart, channel)),
 			mapCheckoutPage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.checkout, channel)),
 		];

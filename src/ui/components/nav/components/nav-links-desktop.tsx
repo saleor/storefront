@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import type { NavMenuItem } from "@/lib/menus/serialize-menu-for-nav";
+import type { NavChromeContent } from "@/lib/content/types";
 
 function NavLinksDesktopSkeleton() {
 	return (
@@ -15,6 +16,6 @@ const MegaMenuDesktop = dynamic(() => import("./mega-menu-desktop").then((mod) =
 	loading: () => <NavLinksDesktopSkeleton />,
 });
 
-export function NavLinksDesktop({ items }: { items: NavMenuItem[] }) {
-	return <MegaMenuDesktop items={items} />;
+export function NavLinksDesktop({ items, nav }: { items: NavMenuItem[]; nav: NavChromeContent }) {
+	return <MegaMenuDesktop items={items} nav={nav} />;
 }

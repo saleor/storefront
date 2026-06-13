@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { getNavbarMenuItems } from "@/lib/menus/get-menu-data";
 import { serializeMenuForNav } from "@/lib/menus/serialize-menu-for-nav";
+import type { NavChromeContent } from "@/lib/content/types";
 import { Logo } from "./logo";
 import { NavLinksDesktop } from "./nav/components/nav-links-desktop";
 import { MobileNavLinks } from "./nav/components/mobile-nav-links";
@@ -9,7 +10,15 @@ import { UserMenuContainer } from "./nav/components/user-menu/user-menu-containe
 import { MobileMenu } from "./nav/components/mobile-menu";
 import { SearchBar } from "./nav/components/search-bar";
 
-export async function Header({ locale, channel }: { locale: string; channel: string }) {
+export async function Header({
+	locale,
+	channel,
+	nav,
+}: {
+	locale: string;
+	channel: string;
+	nav: NavChromeContent;
+}) {
 	const navItems = serializeMenuForNav((await getNavbarMenuItems(channel, locale)) ?? []);
 
 	return (
@@ -23,7 +32,7 @@ export async function Header({ locale, channel }: { locale: string; channel: str
 					</div>
 
 					<nav className="hidden lg:flex" aria-label="Main">
-						<NavLinksDesktop items={navItems} />
+						<NavLinksDesktop items={navItems} nav={nav} />
 					</nav>
 
 					<div className="flex items-center gap-1">
@@ -36,7 +45,7 @@ export async function Header({ locale, channel }: { locale: string; channel: str
 								<li className="py-3">
 									<SearchBar locale={locale} channel={channel} />
 								</li>
-								<MobileNavLinks items={navItems} />
+								<MobileNavLinks items={navItems} nav={nav} />
 							</MobileMenu>
 						</Suspense>
 					</div>

@@ -2,6 +2,8 @@
 
 import clsx from "clsx";
 import { type NavMenuItem, hasNavMenuChildren, isExternalNavHref } from "@/lib/menus/serialize-menu-for-nav";
+import { formatContentLabel } from "@/lib/content/format-label";
+import type { NavChromeContent } from "@/lib/content/types";
 import {
 	Accordion,
 	AccordionContent,
@@ -89,7 +91,7 @@ function MobileNavSection({ item }: { item: NavMenuItem }) {
 	);
 }
 
-function MobileNavGroup({ item }: { item: NavMenuItem }) {
+function MobileNavGroup({ item, nav }: { item: NavMenuItem; nav: NavChromeContent }) {
 	const children = item.children ?? [];
 
 	return (
@@ -111,7 +113,7 @@ function MobileNavGroup({ item }: { item: NavMenuItem }) {
 								prefetch={false}
 								className="text-sm font-medium text-primary hover:underline"
 							>
-								View all {item.label}
+								{formatContentLabel(nav.viewAllLabel, { label: item.label })}
 							</LinkWithChannel>
 						</div>
 					) : null}
@@ -150,17 +152,17 @@ function MobileNavTopLink({ item }: { item: NavMenuItem }) {
 	);
 }
 
-export function MobileNavLinks({ items }: { items: NavMenuItem[] }) {
+export function MobileNavLinks({ items, nav }: { items: NavMenuItem[]; nav: NavChromeContent }) {
 	return (
 		<>
 			<li>
-				<MobileNavTopLink item={{ id: "all-products", label: "All", href: "/products" }} />
+				<MobileNavTopLink item={{ id: "all-products", label: nav.allProductsLabel, href: "/products" }} />
 			</li>
 			{items.map((item) => {
 				if (hasNavMenuChildren(item)) {
 					return (
 						<li key={item.id} className="py-0">
-							<MobileNavGroup item={item} />
+							<MobileNavGroup item={item} nav={nav} />
 						</li>
 					);
 				}

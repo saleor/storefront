@@ -15,6 +15,10 @@ export const defaultStorefrontContent = {
 			linkLabel: null,
 			dismissible: true,
 		},
+		nav: {
+			allProductsLabel: "All",
+			viewAllLabel: "View all {label}",
+		},
 	},
 	surfaces: {
 		homepage: {
@@ -61,6 +65,12 @@ export const defaultStorefrontContent = {
 				imagePosition: "right",
 				ctaLabel: "Explore collections",
 			},
+		},
+		products: {
+			title: "All Products",
+			description: "Discover our full collection of premium products.",
+			breadcrumbHome: "Home",
+			breadcrumbProducts: "Products",
 		},
 		cart: {
 			empty: {

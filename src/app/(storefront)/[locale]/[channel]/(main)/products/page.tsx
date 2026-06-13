@@ -6,6 +6,7 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { buildBrowsePageMetadata } from "@/lib/seo";
+import { getStorefrontContent } from "@/lib/content/server";
 import { CategoryHero, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
@@ -16,10 +17,11 @@ export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }): Promise<Metadata> {
 	const params = await props.params;
+	const { surfaces } = await getStorefrontContent(params.channel, params.locale);
 
 	return buildBrowsePageMetadata({
-		title: "All Products",
-		description: "Discover our full collection of premium products.",
+		title: surfaces.products.title,
+		description: surfaces.products.description,
 		locale: params.locale,
 		channel: params.channel,
 		pathSuffix: "/products",
@@ -45,18 +47,23 @@ type PageProps = {
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
+	const { surfaces } = await getStorefrontContent(params.channel, params.locale);
+	const productsCopy = surfaces.products;
 
 	const breadcrumbs = [
-		{ label: "Home", href: buildStorefrontPath(params.locale, params.channel) },
-		{ label: "Products", href: buildStorefrontPath(params.locale, params.channel, "/products") },
+		{ label: productsCopy.breadcrumbHome, href: buildStorefrontPath(params.locale, params.channel) },
+		{
+			label: productsCopy.breadcrumbProducts,
+			href: buildStorefrontPath(params.locale, params.channel, "/products"),
+		},
 	];
 
 	return (
 		<>
 			{/* Static shell - renders immediately */}
 			<CategoryHero
-				title="All Products"
-				description="Discover our full collection of premium products."
+				title={productsCopy.title}
+				description={productsCopy.description}
 				breadcrumbs={breadcrumbs}
 			/>
 			{/* Dynamic content - streams in via Suspense */}
