@@ -23,15 +23,16 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 
 ## Architectural pillars
 
-| Pillar              | Decision                                                  | Detail                                                                                                                                         |
-| ------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                    |
-| **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                              |
-| **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                             |
-| **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                  |
-| **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                    |
-| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md) |
-| **Channels**        | Explicit storefront allowlist                             | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                       |
+| Pillar              | Decision                                                  | Detail                                                                                                                                                                                                                          |
+| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
+| **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
+| **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
+| **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
+| **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
+| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
+| **Copy & i18n**     | Three string systems                                      | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
+| **Channels**        | Explicit storefront allowlist                             | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
 
 ---
 
@@ -82,15 +83,16 @@ Real exceptions to the rules above — documented so the code and the convention
 
 ## Where to read next
 
-| If you are…                       | Start with                                                                                                       |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| New to the codebase               | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
-| Touching PDP / variants           | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
-| Touching caching / PPR / webhooks | [`data-caching.md`](data-caching.md)                                                                             |
-| Touching checkout or payments     | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
-| Touching auth / account           | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
-| Touching locale or market URLs    | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
-| Upgrading a fork                  | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
+| If you are…                        | Start with                                                                                                       |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
+| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
+| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
+| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
+| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
+| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
+| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)      |
+| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
 
 Formal architecture decisions beyond day-to-day conventions: [`docs/adr/`](../../../docs/adr/).
 

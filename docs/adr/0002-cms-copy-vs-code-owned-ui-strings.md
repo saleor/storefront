@@ -35,10 +35,10 @@ ADR 0001) and middleware mirrors it into a `browse-locale` cookie.
 
 Split storefront strings by **ownership**, with two mechanisms:
 
-| Bucket                     | Owner        | Mechanism                     | Source of truth                          |
-| -------------------------- | ------------ | ----------------------------- | ---------------------------------------- |
-| Editorial / marketing copy | Merchandiser | Saleor Models (content layer) | `defaults.ts` → Saleor PageType override |
-| Functional / UI strings    | Developer    | **next-intl** message catalog | `messages/{en,pl,de}.json`               |
+| Bucket                     | Owner        | Mechanism                     | Source of truth                                                               |
+| -------------------------- | ------------ | ----------------------------- | ----------------------------------------------------------------------------- |
+| Editorial / marketing copy | Merchandiser | Saleor Models (content layer) | `defaults.ts` → Saleor PageType override                                      |
+| Functional / UI strings    | Developer    | **next-intl** message catalog | `messages/{locale}.json` (see `LOCALE_DEFINITIONS` in `src/config/locale.ts`) |
 
 **next-intl owns messages, not routing.** ADR 0001 already defines `[locale]` routing; we do
 **not** adopt next-intl middleware or navigation. The URL locale segment stays authoritative and
@@ -51,12 +51,16 @@ is passed to next-intl explicitly:
 **The boundary line (conservative).** Only obviously-functional chrome moved to code; anything a
 merchant might reword for brand voice stayed in the CMS:
 
-| Moved to `messages/*.json` (code)                                                                                                    | Stayed in CMS (editorial)                                                        |
-| ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `cart.drawer`: item count, subtotal, shipping, free, calculated, total, checkout, continue shopping, remove/decrease/increase (a11y) | `cart.drawer`: title (“Your Bag”), “Add {amount} more…”, “You qualify…”          |
-| `cart.page`: title, qty, variant, your total, shipping note, checkout                                                                | `cart.empty.*`, `cart.trust.*`                                                   |
-| `productsListing`: breadcrumb Home / Products                                                                                        | `products`: listing title & description                                          |
-|                                                                                                                                      | `chrome.announcementBar`, `chrome.nav`, all of `homepage.*`, all of `checkout.*` |
+| Moved to `messages/*.json` (code)                                                                                                    | Stayed in CMS (editorial)                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `cart.drawer`: item count, subtotal, shipping, free, calculated, total, checkout, continue shopping, remove/decrease/increase (a11y) | `cart.drawer`: title (“Your Bag”), “Add {amount} more…”, “You qualify…”                                                                 |
+| `cart.page`: title, qty, variant, your total, shipping note, checkout                                                                | `cart.empty.*`, `cart.trust.*`                                                                                                          |
+| `productsListing`: breadcrumb Home / Products                                                                                        | `products`: listing title & description                                                                                                 |
+| `pdp`: add to bag, variant a11y, badges                                                                                              | `homepage.*` (all sections)                                                                                                             |
+| `plp`: filters, sort, quick add                                                                                                      | `chrome.announcementBar`, `chrome.nav` fallback labels (`allProductsLabel`, `viewAllLabel`) — menu item names stay in Saleor (bucket 1) |
+| `search`: page, bar, sort, empty state                                                                                               | `checkout.*` (all checkout functional copy — follow-up)                                                                                 |
+| `nav`: header chrome, cart button, user menu, region picker, breadcrumbs                                                             |                                                                                                                                         |
+| `account`: auth, account shell, orders, settings, addresses                                                                          |                                                                                                                                         |
 
 Because all migrated strings live on storefront-only surfaces, **next-intl is wired into the
 storefront surface only** — the checkout surface is untouched.
@@ -102,7 +106,7 @@ unaffected by this split.
 
 1. Extend the catalog opportunistically as new functional strings appear (default to code for chrome).
 2. Consider migrating checkout-surface functional strings (currently still CMS) in a later pass if the same smells appear there.
-3. A migration entry in `skills/saleor-paper-storefront/migrations/` once the pattern stabilizes.
+3. **Done** — documented in `ui-i18n` skill rule and `docs/international-storefront.md`; fork routing upgrade remains `migrations/atomic/2026-06-locale-channel-routing/`.
 
 ## References
 
@@ -110,3 +114,5 @@ unaffected by this split.
 - next-intl (without i18n routing): https://next-intl.dev/docs/getting-started/app-router/without-i18n-routing
 - Content layer rules: `skills/saleor-paper-storefront/rules/data-storefront-content.md`
 - Saleor Models for copy: `skills/saleor-paper-storefront/rules/data-storefront-content-saleor.md`
+- next-intl patterns: `skills/saleor-paper-storefront/rules/ui-i18n.md`
+- Overview: `docs/international-storefront.md`

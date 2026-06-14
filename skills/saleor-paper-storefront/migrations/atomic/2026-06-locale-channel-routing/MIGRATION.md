@@ -27,7 +27,7 @@ Fork is on pre-locale `/{channel}/…` routes, or missing:
 ## Env
 
 ```env
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb
 NEXT_PUBLIC_DEFAULT_LOCALE=en
 # Optional pair matrix (default: any allowed locale × any allowed channel)
 # Must be NEXT_PUBLIC_ — read by both the server (404 guard, hreflang) and the client picker/nav.

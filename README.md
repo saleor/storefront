@@ -1,4 +1,4 @@
-[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL,NEXT_PUBLIC_DEFAULT_CHANNEL&envDescription=Your%20Saleor%20API%20URL%20is%20the%20GraphQL%20endpoint%20of%20your%20instance%20(e.g.%20https%3A%2F%2Fyour-instance.saleor.cloud%2Fgraphql%2F).%20The%20channel%20slug%20can%20be%20found%20in%20Saleor%20Dashboard%20under%20Configuration%20%3E%20Channels%20(e.g.%20default-channel).%20For%20multi-channel%2C%20set%20STOREFRONT_CHANNELS%20(e.g.%20us%2Cuk)%20and%20optionally%20SALEOR_APP_TOKEN%20for%20the%20footer%20selector.&envLink=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront%23environment-variables&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af>)
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront&env=NEXT_PUBLIC_SALEOR_API_URL%2CNEXT_PUBLIC_DEFAULT_CHANNEL%2CNEXT_PUBLIC_DEFAULT_LOCALE%2CNEXT_PUBLIC_STOREFRONT_LOCALES&envDescription=Your%20Saleor%20API%20URL%20is%20the%20GraphQL%20endpoint%20of%20your%20instance%20(e.g.%20https%3A%2F%2Fyour-instance.saleor.cloud%2Fgraphql%2F).%20The%20channel%20slug%20can%20be%20found%20in%20Saleor%20Dashboard%20under%20Configuration%20%3E%20Channels%20(e.g.%20default-channel).%20For%20multi-channel%2C%20set%20STOREFRONT_CHANNELS%20(e.g.%20us%2Cuk)%20and%20optionally%20SALEOR_APP_TOKEN%20for%20the%20footer%20selector.%20For%20locales%2C%20set%20NEXT_PUBLIC_DEFAULT_LOCALE%20(e.g.%20en)%20and%20NEXT_PUBLIC_STOREFRONT_LOCALES%20(e.g.%20en%2Cpl%2Cde%2Cfr%2Cfi%2Cnb).&envLink=https%3A%2F%2Fgithub.com%2Fsaleor%2Fstorefront%23environment-variables&project-name=my-saleor-storefront&repository-name=my-saleor-storefront&demo-title=Saleor%20Next.js%20Storefront&demo-description=Starter%20pack%20for%20building%20performant%20e-commerce%20experiences%20with%20Saleor.&demo-url=https%3A%2F%2Fstorefront.saleor.io%2F&demo-image=https%3A%2F%2Fstorefront-d5h86wzey-saleorcommerce.vercel.app%2Fopengraph-image.png%3F4db0ee8cf66e90af>)
 
 <img width="1920" height="1080" alt="saleor-storefront-paper-fin" src="https://github.com/user-attachments/assets/a8e37c20-35c8-42e0-a9c5-5c0b6097b921" />
 
@@ -55,11 +55,17 @@ buildCheckoutPath()                  /checkout/complete?order= (confirmation)
 
 **Developer docs:** start at [`skills/saleor-paper-storefront/rules/paper-surfaces.md`](skills/saleor-paper-storefront/rules/paper-surfaces.md), then [`checkout-management.md`](skills/saleor-paper-storefront/rules/checkout-management.md). Forks on the old urql checkout: [`migrations/atomic/2026-06-checkout-v2/`](skills/saleor-paper-storefront/migrations/atomic/2026-06-checkout-v2/MIGRATION.md).
 
-### 🌍 Multi-Channel, Multi-Currency
+### 🌍 International by Default
 
-One codebase, many storefronts. Channel-scoped routing means `/us/products` and `/eu/products` can serve different catalogs, prices, and shipping options—all from the same deployment.
+One codebase, many markets. Browse URLs are **`/{locale}/{channel}/…`** — e.g. `/en/us/products/hoodie` (English, US market, USD) and `/fr/fr/products/hoodie` (French, France, EUR) — with legacy `/{channel}/…` paths redirecting automatically. Each locale gets its own cached catalog payload, translated product copy from Saleor, per-channel pricing and currency, and hreflang/canonical metadata.
+
+- **Region picker** — header control switches locale and channel together (language + market + currency)
+- **Three string systems** — Saleor catalog translations, merchant-editable storefront content (CMS), and code-owned UI via **next-intl** (`messages/{locale}.json`)
+- **Six built-in locales** — `en`, `pl`, `de`, `fr`, `fi`, `nb` (extend via `LOCALE_DEFINITIONS` in `src/config/locale.ts`)
 
 **Storefront channels are explicit.** Saleor may have many channels (B2B, wholesale, internal regions); Paper only exposes the slugs you configure via `STOREFRONT_CHANNELS`. Disallowed channel URLs return 404. For a single-channel store, set `NEXT_PUBLIC_DEFAULT_CHANNEL` only—the footer channel selector is hidden automatically.
+
+**Developer docs:** [`docs/international-storefront.md`](docs/international-storefront.md) · ADRs [0001](docs/adr/0001-locale-channel-url-routing.md) / [0002](docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md) · skills [`ui-locale-routing`](skills/saleor-paper-storefront/rules/ui-locale-routing.md) / [`ui-i18n`](skills/saleor-paper-storefront/rules/ui-i18n.md)
 
 ### 📱 Product Pages Done Right
 
@@ -79,7 +85,7 @@ Not an afterthought. Focus management on step transitions, keyboard navigation e
 Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
-- **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 14 task-specific rules covering GraphQL, caching, variant selection, checkout v2, and more
+- **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 21 task-specific rules covering GraphQL, caching, i18n, variant selection, checkout v2, and more
 - **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor API patterns; install additional skills (React best practices, composition patterns) via `npx skills add`
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
@@ -103,9 +109,11 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 | **Cart**                   | Slide-over drawer with real-time updates, quantity editing                                          |
 | **Product Pages**          | Multi-attribute variants, image gallery, sticky add-to-cart                                         |
 | **Product Listings**       | Category & collection pages with PPR (cached hero + dynamic filters), pagination                    |
-| **Navigation**             | Dynamic menus from Saleor, mobile hamburger                                                         |
-| **SEO**                    | Metadata, JSON-LD, Open Graph images                                                                |
-| **Caching**                | Cache Components (PPR), named cacheLife tiers, channel-scoped tags, webhooks                        |
+| **International**          | `/{locale}/{channel}/` routing, region picker, Saleor translations, next-intl UI, hreflang SEO      |
+| **Storefront content**     | Merchant-editable copy layer (code or Saleor Models) — homepage, cart trust, checkout editorial     |
+| **Navigation**             | Dynamic menus from Saleor, mobile hamburger, breadcrumbs                                            |
+| **SEO**                    | Per-locale metadata, JSON-LD, Open Graph images, hreflang alternates                                |
+| **Caching**                | Cache Components (PPR), named cacheLife tiers, per-locale catalog cache, webhooks                   |
 | **Saleor Cloud Paper app** | Saleor Cloud only — Dashboard extension for cache invalidation webhooks and _Preview in storefront_ |
 | **Customer Profile**       | Account dashboard, address book, order history, password change, account deletion                   |
 | **Authentication**         | Login, register, password reset, guest checkout                                                     |
@@ -284,6 +292,7 @@ NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel  # Your Saleor channel slug
 ```bash
 STOREFRONT_CHANNELS=us,uk,eu
 NEXT_PUBLIC_DEFAULT_CHANNEL=us
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb  # URL locale slugs
 SALEOR_APP_TOKEN=...  # Server-side only — footer currency selector metadata
 ```
 
@@ -317,9 +326,9 @@ pnpm run generate:checkout  # Regenerate GraphQL types (checkout)
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── [channel]/          # Channel-scoped routes
-│   ├── (storefront)/[channel]/  # Browse, cart, account
-│   └── (checkout)/checkout/     # Checkout route (/checkout)
+│   ├── (storefront)/[locale]/[channel]/  # Browse, cart, account
+│   └── (checkout)/checkout/              # Checkout route (/checkout)
+├── messages/               # next-intl UI strings (per locale)
 ├── session-bridge/         # @paper/session-bridge — storefront ↔ checkout handoff
 ├── checkout/               # Checkout UI, providers, payment registry (GraphQL via server actions)
 ├── graphql/                # GraphQL queries
@@ -344,7 +353,7 @@ src/
 If you're working with AI coding assistants, point them to:
 
 - **`AGENTS.md`** — Architecture, commands, gotchas
-- **`skills/saleor-paper-storefront/`** — 13 project-specific rules (GraphQL, caching, checkout, etc.)
+- **`skills/saleor-paper-storefront/`** — 21 project-specific rules (GraphQL, caching, i18n, checkout, etc.)
 - **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor patterns and optional community skills (React best practices, composition patterns, etc.)
 
 To install skills for agent auto-discovery:
@@ -369,6 +378,8 @@ STOREFRONT_CHANNELS=us,uk,eu               # Comma-separated allowlist — route
 
 # Optional
 NEXT_PUBLIC_STOREFRONT_URL=                  # Canonical URLs and OG images
+NEXT_PUBLIC_DEFAULT_LOCALE=en                # Default URL locale slug
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb  # Enabled locale slugs
 REVALIDATE_SECRET=                           # Manual cache invalidation (GET /api/revalidate)
 SALEOR_WEBHOOK_SECRET=                       # Webhook HMAC verification
 SALEOR_APP_TOKEN=                            # Server-side: footer channel metadata (never exposed to client)
@@ -396,7 +407,7 @@ Paper works as a reference implementation and as a starting point for your own s
 
 - **Colors & typography** → `src/styles/brand.css`
 - **Components** → `src/ui/components/`
-- **Checkout flow** → `src/checkout/views/SaleorCheckout/`
+- **Checkout flow** → `src/checkout/views/saleor-checkout/`
 
 The design token system uses CSS custom properties—swap the entire color palette by editing a few lines.
 
@@ -404,10 +415,11 @@ The design token system uses CSS custom properties—swap the entire color palet
 
 ## Next Steps
 
-Features planned for future development:
+Known gaps and planned improvements:
 
-- **Filtering logic iteration.** Fetching attributes from API for dynamic product filters.
-- **Opinionated model for standard content.** Moving currently hardcoded stuff like Credibility or Free checkout information to API models.
+- **Checkout functional i18n** — checkout step labels still live in storefront content (ADR 0002); migrate to next-intl
+- **Filtering logic iteration** — fetching attributes from API for dynamic product filters
+- **Error / not-found pages** — localized shells for global error boundaries
 
 ---
 

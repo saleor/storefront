@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.6.0"
+  version: "1.7.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -17,8 +17,8 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-20 rules across 7 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
-components, UI patterns, and SEO.
+21 rules across 7 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
+components, UI patterns, locale routing, i18n, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
 > for universal Saleor API knowledge (data model, permissions, checkout lifecycle,
@@ -39,7 +39,7 @@ Reference these guidelines when:
 - Migrating authenticated routes (account, session cookies) under Cache Components / PPR
 - Upgrading a forked shop — see **Migrations** below
 - Creating UI components with design tokens
-- Adding locale/channel routing, market picker, or i18n URL structure
+- Adding locale/channel routing, market picker, next-intl messages, or i18n URL structure
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
 
@@ -90,6 +90,7 @@ Reference these guidelines when:
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
 - `ui-channels` - Channel allowlist, fulfillment triangle, multi-currency, channel selector
 - `ui-locale-routing` - `/{locale}/{channel}/` routing, middleware redirects, path helpers
+- `ui-i18n` - next-intl namespaces, server/client patterns, ADR 0002 boundary
 
 ### 5. SEO (MEDIUM)
 

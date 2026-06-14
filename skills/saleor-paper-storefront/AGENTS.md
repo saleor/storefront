@@ -1,6 +1,6 @@
 # Saleor Paper Storefront
 
-**Version 1.6.0**  
+**Version 1.7.0**  
 Saleor Paper  
 February 2026
 
@@ -16,7 +16,7 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 20 rules across 7 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 21 rules across 7 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -54,6 +54,7 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 4.1 [UI Components](#41-ui-components)
    - 4.2 [Channels & Multi-Currency](#42-channels-multi-currency)
    - 4.3 [Locale & Channel URL Routing](#43-locale-channel-url-routing)
+   - 4.4 [next-intl (Code-Owned UI Strings)](#44-next-intl-code-owned-ui-strings)
 
 5. [SEO](#5-seo) — **MEDIUM**
 
@@ -95,15 +96,16 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 
 ## Architectural pillars
 
-| Pillar              | Decision                                                  | Detail                                                                                                                                         |
-| ------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                    |
-| **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                              |
-| **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                             |
-| **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                  |
-| **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                    |
-| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md) |
-| **Channels**        | Explicit storefront allowlist                             | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                       |
+| Pillar              | Decision                                                  | Detail                                                                                                                                                                                                                          |
+| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
+| **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
+| **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
+| **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
+| **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
+| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
+| **Copy & i18n**     | Three string systems                                      | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
+| **Channels**        | Explicit storefront allowlist                             | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
 
 ---
 
@@ -154,15 +156,16 @@ Real exceptions to the rules above — documented so the code and the convention
 
 ## Where to read next
 
-| If you are…                       | Start with                                                                                                       |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| New to the codebase               | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
-| Touching PDP / variants           | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
-| Touching caching / PPR / webhooks | [`data-caching.md`](data-caching.md)                                                                             |
-| Touching checkout or payments     | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
-| Touching auth / account           | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
-| Touching locale or market URLs    | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
-| Upgrading a fork                  | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
+| If you are…                        | Start with                                                                                                       |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
+| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
+| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
+| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
+| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
+| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
+| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)      |
+| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
 
 Formal architecture decisions beyond day-to-day conventions: [`docs/adr/`](../../../docs/adr/).
 
@@ -1187,7 +1190,7 @@ Marketing and merchandising copy (announcement bar, homepage sections, cart trus
 
 ### Scope: editorial copy vs functional UI strings (ADR 0002)
 
-This layer holds **editorial / merchant-editable copy only** — text a merchandiser would reword per shop (announcement bar, homepage sections, listing title/description, cart empty-state & trust signals, checkout). **Functional UI strings** (cart totals/buttons, the `{count} items` counter, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels) are **code-owned via next-intl** in `messages/{en,pl,de}.json` — type-safe, reviewed in code, with ICU plurals.
+This layer holds **editorial / merchant-editable copy only** — text a merchandiser would reword per shop (announcement bar, homepage sections, listing title/description, cart empty-state & trust signals, checkout). **Functional UI strings** (cart totals/buttons, the `{count} items` counter, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels, PDP/PLP/search/nav/account chrome) are **code-owned via next-intl** in `messages/{locale}.json` — type-safe, reviewed in code, with ICU plurals. See `ui-i18n.md` for namespaces.
 
 Rule of thumb: _"Would a merchant reword this per shop?"_ → content layer (CMS); otherwise → `messages/*.json`.
 
@@ -1336,7 +1339,7 @@ Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-t
 | `storefront-cart`                                                         | Cart drawer **editorial** copy (title, free-shipping nudges, empty state, trust)                         |
 | `storefront-checkout`                                                     | Checkout surface copy                                                                                    |
 
-**Editorial only (ADR 0002):** these models hold merchant-editable copy. **Functional UI strings** — cart totals/buttons, item count, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels — are **not** modeled here; they are code-owned via next-intl (`messages/{en,pl,de}.json`). When adding an attribute, ask _"would a merchant reword this per shop?"_ — if not, it belongs in `messages/*.json`, not a PageType. See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`.
+**Editorial only (ADR 0002):** these models hold merchant-editable copy. **Functional UI strings** — cart totals/buttons, item count, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels, PDP/PLP/search/nav/account chrome — are **not** modeled here; they are code-owned via next-intl (`messages/{locale}.json`). When adding an attribute, ask _"would a merchant reword this per shop?"_ — if not, it belongs in `messages/*.json`, not a PageType. See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md` and `ui-i18n.md`.
 
 **Policy vs copy:** `storefront-policy` holds the _facts_ (a number/boolean); the other models hold _copy_ that only describes those facts via `{freeShippingThreshold}` / `{returnsWindowDays}` placeholders. One threshold feeds the cart progress math, the announcement bar, and the cart trust signal — change it in one place, everything stays consistent. Override per channel with `storefront-policy-{channelSlug}` (numbers are in the channel currency).
 
@@ -3715,11 +3718,11 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 | `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
 | `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
 
-## Locale & routing (planned)
+## Locale & routing
 
-**Browse URLs:** `/{locale}/{channel}/…` — see `docs/adr/0001-locale-channel-url-routing.md` and `ui-locale-routing.md`. Legacy `/{channel}/…` redirects via middleware.
+**Browse URLs:** `/{locale}/{channel}/…` — see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`, and `docs/international-storefront.md`. Legacy `/{channel}/…` redirects via middleware.
 
-Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de` for additional languages.
+Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC_STOREFRONT_LOCALES` for additional languages (built-in slugs: `en`, `pl`, `de`, `fr`, `fi`, `nb` — see `src/config/locale.ts`).
 
 ## Anti-patterns
 
@@ -3858,8 +3861,146 @@ Run **301** from old URLs for at least one release.
 ## Related
 
 - `ui-channels.md` — channel allowlist, fulfillment, channel selector (today)
-- `data-storefront-content.md` — locale-keyed content cache
+- `data-storefront-content` — locale-keyed content cache
 - `data-caching.md` — locale cache keys, tags, invalidation fan-out
+- `ui-i18n` — next-intl namespaces and patterns
+- `docs/international-storefront.md` — human overview (three string systems)
+
+---
+
+### 4.4 next-intl (Code-Owned UI Strings)
+
+Functional storefront strings — buttons, labels, validation, a11y, order status — live in **`messages/{locale}.json`**, not Saleor Models.
+
+> **ADR:** `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`  
+> **Overview:** `docs/international-storefront.md`  
+> **Routing / locale segment:** `ui-locale-routing.md` (next-intl does **not** own routing)
+
+---
+
+## Boundary (ADR 0002)
+
+| Bucket                       | Mechanism              | Examples                                                                     |
+| ---------------------------- | ---------------------- | ---------------------------------------------------------------------------- |
+| **Code** (`messages/*.json`) | next-intl              | `Add to bag`, `Subtotal`, `Sign in`, filter labels, `sr-only` remove buttons |
+| **CMS** (content layer)      | `getStorefrontContent` | Homepage hero, announcement message, cart empty state, checkout steps        |
+| **Saleor catalog**           | GraphQL `languageCode` | Product names, menu labels from API                                          |
+
+Rule of thumb: _Would a merchant reword this per shop?_ → CMS. Otherwise → messages.
+
+---
+
+## Locales
+
+- **Definitions:** `src/config/locale.ts` (`LOCALE_DEFINITIONS`) — slug, BCP 47, Saleor `graphqlLanguageCode`, `htmlLang`.
+- **Allowlist:** `NEXT_PUBLIC_STOREFRONT_LOCALES` (must be `NEXT_PUBLIC_*` — server and client read it).
+- **Files:** one JSON per slug: `messages/en.json`, `messages/pl.json`, …
+- **Types:** `src/i18n/types.d.ts` augments next-intl from `en.json` (source of truth).
+- **Loader:** `src/i18n/request.ts` — dynamic import by locale filename; keep aligned with `LOCALE_DEFINITIONS`.
+
+Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`.
+
+---
+
+## Namespaces
+
+| Namespace         | Used for                                                       |
+| ----------------- | -------------------------------------------------------------- |
+| `cart`            | Drawer + page functional chrome                                |
+| `productsListing` | PLP breadcrumbs (`breadcrumbHome`, `breadcrumbProducts`)       |
+| `common`          | Shared (`pagination`)                                          |
+| `pdp`             | PDP actions, variant a11y, badges                              |
+| `plp`             | Filters, sort, quick add                                       |
+| `search`          | Search page, bar (`search.bar`), sort, empty state             |
+| `nav`             | Header, cart button, user menu, region picker, breadcrumb aria |
+| `account`         | Auth, account nav, orders, settings, addresses                 |
+
+Prefer **sub-namespaces** in JSON (`nav.userMenu`, `account.orderDetail`) and narrow `useTranslations("nav.userMenu")` calls.
+
+---
+
+## Server Components
+
+Pass URL locale explicitly — never rely on cookies for browse UI:
+
+```typescript
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "search" });
+	return { title: t("title"), description: t("description") };
+}
+```
+
+List pages: call `getTranslations` **once** per page, pass pre-built label objects into child components (see `buildOrderRowLabels` in `order-row-labels.ts`) — avoid per-row `getTranslations` in a loop.
+
+---
+
+## Client Components
+
+`"use client"` + `useTranslations`:
+
+```typescript
+import { useTranslations } from "next-intl";
+
+export function AddToCart() {
+	const t = useTranslations("pdp");
+	return <button>{t("addToBag")}</button>;
+}
+```
+
+Provider: `(storefront)/[locale]/layout.tsx` wraps browse with `<NextIntlClientProvider locale={localeSlug} messages={…}>`.
+
+---
+
+## ICU & rich text
+
+- Plurals: `{count, plural, one {# item} other {# items}}` — use `few`/`many` for Polish.
+- Interpolation: `{name}`, `{email}` — same token style as CMS `{freeShippingThreshold}`.
+- Rich legal copy: `t.rich("signup.terms", { terms: (chunks) => <Link>…</Link> })`.
+
+---
+
+## Server actions + errors
+
+Account mutations return `AccountActionResult` (`account-action-result.ts`):
+
+- `{ success: false; errorKey: "passwordMinLength" }` → client translates via `resolveAccountActionError(t, result)`
+- `{ success: false; error: string }` → pass-through Saleor/API message when present
+
+Client-side validation should use the same `account.errors.*` keys before calling the action.
+
+---
+
+## Import boundaries
+
+❌ Client components must **not** import barrels that pull `server-only` modules (e.g. search sort importing `@/lib/search` instead of `@/lib/search/sort-options`).
+
+❌ Do not use next-intl middleware or `next-intl` navigation — ADR 0001 URL segment is authoritative.
+
+---
+
+## Adding strings
+
+1. Add key to `messages/en.json` (correct namespace).
+2. Mirror in all locale files (`pl`, `de`, `fr`, `fi`, `nb`, …).
+3. Wire component with `getTranslations` / `useTranslations`.
+4. Run `pnpm exec tsc --noEmit` — missing keys fail typecheck.
+
+---
+
+## Checkout
+
+Checkout surface is **not** on next-intl yet — functional checkout copy remains in storefront content (`checkout.*`). Browse handoff sets `languageCode` on GraphQL; UI migration is ADR 0002 follow-up.
+
+---
+
+## Related
+
+- `data-storefront-content.md` — CMS copy, policies, `{token}` formatting
+- `ui-locale-routing.md` — `/{locale}/{channel}/`, region picker, cache keys
+- `docs/international-storefront.md` — end-to-end guide
 
 ---
 

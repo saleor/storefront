@@ -154,11 +154,11 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 | `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
 | `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
 
-## Locale & routing (planned)
+## Locale & routing
 
-**Browse URLs:** `/{locale}/{channel}/…` — see `docs/adr/0001-locale-channel-url-routing.md` and `ui-locale-routing.md`. Legacy `/{channel}/…` redirects via middleware.
+**Browse URLs:** `/{locale}/{channel}/…` — see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`, and `docs/international-storefront.md`. Legacy `/{channel}/…` redirects via middleware.
 
-Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de` for additional languages.
+Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC_STOREFRONT_LOCALES` for additional languages (built-in slugs: `en`, `pl`, `de`, `fr`, `fi`, `nb` — see `src/config/locale.ts`).
 
 ## Anti-patterns
 

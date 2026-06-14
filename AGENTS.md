@@ -23,7 +23,7 @@ Skills are organized as follows:
 
 | Location                                                      | Purpose                           | Contents                                                                                             |
 | ------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 20 rules + fork migrations under `migrations/`                                                       |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 21 rules + fork migrations under `migrations/`                                                       |
 | [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Saleor API patterns, React best practices, composition patterns, etc. (install via `npx skills add`) |
 
 ### When to Use Which Skill
@@ -50,6 +50,7 @@ Skills are organized as follows:
 | Creating/styling components        | `ui-components`                      |
 | Channels, fulfillment & stock      | `ui-channels`                        |
 | Locale + channel URL routing       | `ui-locale-routing`                  |
+| Code-owned UI strings (next-intl)  | `ui-i18n`                            |
 | SEO, metadata, OG images           | `seo-metadata`                       |
 | Investigating Saleor API           | `dev-investigation`                  |
 | Upgrading a forked Paper shop      | `migrations/SKILL.md`                |
@@ -81,10 +82,8 @@ Skills are organized as follows:
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── [channel]/          # Channel-scoped routes
-│   │   └── (main)/         # Main layout (header/footer)
 │   ├── api/                # API routes (og/, revalidate/)
-│   ├── (storefront)/[channel]/  # Browse, cart, account
+│   ├── (storefront)/[locale]/[channel]/  # Browse, cart, account
 │   └── (checkout)/checkout/     # Checkout surface
 ├── session-bridge/         # @paper/session-bridge (cross-surface only)
 ├── checkout/               # Checkout flow (do not import from storefront)
@@ -139,6 +138,10 @@ NEXT_BUILD_RETRIES=1               # GraphQL retries during build (default: 3, u
 
 # Channel Configuration (required)
 NEXT_PUBLIC_DEFAULT_CHANNEL=       # Your Saleor channel slug (e.g., "default-channel")
+
+# Locale configuration (optional)
+NEXT_PUBLIC_DEFAULT_LOCALE=en      # Default URL locale slug
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb  # Enabled locale slugs
 
 # Multi-channel builds (optional) - discovers additional channels at build time
 # SALEOR_APP_TOKEN=                # If set, fetches all active channels from API
@@ -263,7 +266,7 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ### Project Skill
 
-**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 20 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 21 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
 Rules by category:
 
@@ -271,7 +274,7 @@ Rules by category:
 1. **Data Layer** (CRITICAL): `data-caching`, `data-auth-routes`, `data-graphql`
 2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
 3. **Checkout Flow** (HIGH): `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
-4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`, `ui-locale-routing`
+4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
 5. **SEO** (MEDIUM): `seo-metadata`
 6. **Development** (MEDIUM): `dev-investigation`
 

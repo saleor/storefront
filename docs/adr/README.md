@@ -2,6 +2,9 @@
 
 Informal north-star for day-to-day conventions: [`skills/saleor-paper-storefront/rules/paper-architecture.md`](../skills/saleor-paper-storefront/rules/paper-architecture.md).
 
-| ADR                                          | Title                                                   | Status                 |
-| -------------------------------------------- | ------------------------------------------------------- | ---------------------- |
-| [0001](./0001-locale-channel-url-routing.md) | Locale and channel URL routing (`/{locale}/{channel}/`) | Accepted (implemented) |
+| ADR                                                 | Title                                                   | Status                 |
+| --------------------------------------------------- | ------------------------------------------------------- | ---------------------- |
+| [0001](./0001-locale-channel-url-routing.md)        | Locale and channel URL routing (`/{locale}/{channel}/`) | Accepted (implemented) |
+| [0002](./0002-cms-copy-vs-code-owned-ui-strings.md) | CMS editorial copy vs code-owned UI strings (next-intl) | Accepted (implemented) |
+
+**Human overview:** [`docs/international-storefront.md`](../international-storefront.md) — how routing, Saleor translations, CMS copy, and `messages/*.json` fit together.

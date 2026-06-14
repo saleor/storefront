@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 20;
+const RULE_COUNT = 21;
 
 const catalog = [
 	{
@@ -73,6 +73,7 @@ const catalog = [
 			{ num: "4.1", file: "ui-components.md", title: "UI Components" },
 			{ num: "4.2", file: "ui-channels.md", title: "Channels & Multi-Currency" },
 			{ num: "4.3", file: "ui-locale-routing.md", title: "Locale & Channel URL Routing" },
+			{ num: "4.4", file: "ui-i18n.md", title: "next-intl (Code-Owned UI Strings)" },
 		],
 	},
 	{
@@ -192,7 +193,7 @@ These patterns cause extra renders and make data flow hard to trace.
 
 const header = `# Saleor Paper Storefront
 
-**Version 1.6.0**  
+**Version 1.7.0**  
 Saleor Paper  
 February 2026
 
@@ -208,7 +209,7 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 7 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 7 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 

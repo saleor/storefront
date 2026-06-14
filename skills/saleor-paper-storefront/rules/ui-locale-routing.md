@@ -126,5 +126,7 @@ Run **301** from old URLs for at least one release.
 ## Related
 
 - `ui-channels.md` — channel allowlist, fulfillment, channel selector (today)
-- `data-storefront-content.md` — locale-keyed content cache
+- `data-storefront-content` — locale-keyed content cache
 - `data-caching.md` — locale cache keys, tags, invalidation fan-out
+- `ui-i18n` — next-intl namespaces and patterns
+- `docs/international-storefront.md` — human overview (three string systems)
