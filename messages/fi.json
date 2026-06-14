@@ -74,5 +74,28 @@
 		"clearAllFilters": "Tyhjennä suodattimet ({count})",
 		"clearAll": "Tyhjennä kaikki",
 		"removeFilter": "Poista suodatin {value}"
+	},
+	"search": {
+		"title": "Haku",
+		"description": "Etsi koko tuotevalikoimastamme.",
+		"bar": {
+			"placeholder": "Etsi tuotteita...",
+			"srOnlyLabel": "Etsi tuotteita"
+		},
+		"resultsFor": "Tulokset haulle \"{query}\"",
+		"resultCount": "{count, plural, one {# tuote löytyi} other {# tuotetta löytyi}}",
+		"noResultsTitle": "Ei tuloksia haulle \"{query}\"",
+		"noResultsBody": "Hakuun ei löytynyt tuotteita. Kokeile toista hakusanaa tai selaa kategorioita.",
+		"browseAllProducts": "Selaa tuotteita",
+		"goToHomepage": "Etusivu",
+		"noImage": "Ei kuvaa",
+		"sort": "Järjestä",
+		"sortOptions": {
+			"relevance": "Osuvuus",
+			"price-asc": "Hinta: halvin ensin",
+			"price-desc": "Hinta: kallein ensin",
+			"name": "Nimi",
+			"newest": "Uusimmat"
+		}
 	}
 }

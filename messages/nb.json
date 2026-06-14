@@ -74,5 +74,28 @@
 		"clearAllFilters": "Fjern alle filtre ({count})",
 		"clearAll": "Fjern alle",
 		"removeFilter": "Fjern filter {value}"
+	},
+	"search": {
+		"title": "Søk",
+		"description": "Søk i hele produktkatalogen vår.",
+		"bar": {
+			"placeholder": "Søk etter produkter...",
+			"srOnlyLabel": "Søk etter produkter"
+		},
+		"resultsFor": "Resultater for \"{query}\"",
+		"resultCount": "{count, plural, one {# produkt funnet} other {# produkter funnet}}",
+		"noResultsTitle": "Ingen resultater for \"{query}\"",
+		"noResultsBody": "Vi fant ingen produkter som matcher søket. Prøv et annet ord eller bla gjennom kategoriene våre.",
+		"browseAllProducts": "Se alle produkter",
+		"goToHomepage": "Forside",
+		"noImage": "Ingen bilde",
+		"sort": "Sorter",
+		"sortOptions": {
+			"relevance": "Relevans",
+			"price-asc": "Pris: lav til høy",
+			"price-desc": "Pris: høy til lav",
+			"name": "Navn",
+			"newest": "Nyeste"
+		}
 	}
 }

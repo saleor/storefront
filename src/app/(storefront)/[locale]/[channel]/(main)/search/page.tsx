@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { type Metadata } from "next";
-import { searchProducts } from "@/lib/search";
+import { getTranslations } from "next-intl/server";
+import { searchProducts, parseSearchSortParam } from "@/lib/search";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { SearchResults } from "@/ui/components/search-results";
 import { Pagination } from "@/ui/components/pagination";
@@ -15,11 +16,18 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
  * Search results are query-dependent and thin — keep them out of the index.
  * Title falls back to the brand template (`%s | Saleor Store`).
  */
-export const metadata: Metadata = {
-	title: "Search",
-	description: "Search our full collection of products.",
-	robots: { index: false, follow: true },
-};
+export async function generateMetadata(props: {
+	params: Promise<{ locale: string; channel: string }>;
+}): Promise<Metadata> {
+	const params = await props.params;
+	const t = await getTranslations({ locale: params.locale, namespace: "search" });
+
+	return {
+		title: t("title"),
+		description: t("description"),
+		robots: { index: false, follow: true },
+	};
+}
 
 type SearchParams = {
 	query?: string | string[];
@@ -56,6 +64,7 @@ async function SearchContent({
 	params: Promise<{ locale: string; channel: string }>;
 }) {
 	const [searchParams, params] = await Promise.all([searchParamsPromise, paramsPromise]);
+	const t = await getTranslations({ locale: params.locale, namespace: "search" });
 
 	// Extract and validate query
 	const queryParam = searchParams.query;
@@ -82,9 +91,7 @@ async function SearchContent({
 
 	// Parse sort
 	const sortParam = Array.isArray(searchParams.sort) ? searchParams.sort[0] : searchParams.sort;
-	const sortBy = ["relevance", "price-asc", "price-desc", "name", "newest"].includes(sortParam || "")
-		? (sortParam as "relevance" | "price-asc" | "price-desc" | "name" | "newest")
-		: "relevance";
+	const sortBy = parseSearchSortParam(sortParam);
 
 	// Search using Saleor
 	const result = await searchProducts({
@@ -100,7 +107,14 @@ async function SearchContent({
 	const { products, pagination } = result;
 
 	if (pagination.totalCount === 0) {
-		return <EmptyState query={query} />;
+		return (
+			<EmptyState
+				title={t("noResultsTitle", { query })}
+				body={t("noResultsBody")}
+				browseAllProducts={t("browseAllProducts")}
+				goToHomepage={t("goToHomepage")}
+			/>
+		);
 	}
 
 	return (
@@ -108,16 +122,20 @@ async function SearchContent({
 			{/* Header with count and sort */}
 			<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
-					<h1 className="text-2xl font-semibold">Results for &quot;{query}&quot;</h1>
+					<h1 className="text-2xl font-semibold">{t("resultsFor", { query })}</h1>
 					<p className="mt-1 text-sm text-muted-foreground">
-						{pagination.totalCount} {pagination.totalCount === 1 ? "product" : "products"} found
+						{t("resultCount", { count: pagination.totalCount })}
 					</p>
 				</div>
 				<SearchSort />
 			</div>
 
 			{/* Results grid */}
-			<SearchResults products={products} locale={resolveLocaleFromSlug(params.locale).bcp47} />
+			<SearchResults
+				products={products}
+				locale={resolveLocaleFromSlug(params.locale).bcp47}
+				noImageLabel={t("noImage")}
+			/>
 
 			{/* Pagination */}
 			{(pagination.hasNextPage || pagination.hasPreviousPage) && (
@@ -163,23 +181,30 @@ function SearchSkeleton() {
 	);
 }
 
-function EmptyState({ query }: { query: string }) {
+function EmptyState({
+	title,
+	body,
+	browseAllProducts,
+	goToHomepage,
+}: {
+	title: string;
+	body: string;
+	browseAllProducts: string;
+	goToHomepage: string;
+}) {
 	return (
 		<div className="flex flex-col items-center justify-center py-16 text-center">
 			<div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
 				<SearchIcon className="h-8 w-8 text-muted-foreground" />
 			</div>
-			<h1 className="text-2xl font-semibold">No results for &quot;{query}&quot;</h1>
-			<p className="mt-2 max-w-md text-muted-foreground">
-				We couldn&apos;t find any products matching your search. Try a different term or browse our
-				categories.
-			</p>
+			<h1 className="text-2xl font-semibold">{title}</h1>
+			<p className="mt-2 max-w-md text-muted-foreground">{body}</p>
 			<div className="mt-8 flex flex-col gap-3 sm:flex-row">
 				<LinkWithChannel
 					href="/products"
 					className={buttonClassName({ asLink: true, className: "rounded-lg px-6 py-3" })}
 				>
-					Browse All Products
+					{browseAllProducts}
 				</LinkWithChannel>
 				<LinkWithChannel
 					href="/"
@@ -189,7 +214,7 @@ function EmptyState({ query }: { query: string }) {
 						className: "rounded-lg px-6 py-3 hover:bg-muted",
 					})}
 				>
-					Go to Homepage
+					{goToHomepage}
 				</LinkWithChannel>
 			</div>
 		</div>

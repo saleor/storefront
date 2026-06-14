@@ -74,5 +74,28 @@
 		"clearAllFilters": "Effacer les filtres ({count})",
 		"clearAll": "Tout effacer",
 		"removeFilter": "Retirer le filtre {value}"
+	},
+	"search": {
+		"title": "Recherche",
+		"description": "Parcourez toute notre collection de produits.",
+		"bar": {
+			"placeholder": "Rechercher des produits...",
+			"srOnlyLabel": "Rechercher des produits"
+		},
+		"resultsFor": "Résultats pour \"{query}\"",
+		"resultCount": "{count, plural, one {# produit trouvé} other {# produits trouvés}}",
+		"noResultsTitle": "Aucun résultat pour \"{query}\"",
+		"noResultsBody": "Aucun produit ne correspond à votre recherche. Essayez un autre terme ou parcourez nos catégories.",
+		"browseAllProducts": "Voir tous les produits",
+		"goToHomepage": "Page d'accueil",
+		"noImage": "Pas d'image",
+		"sort": "Trier",
+		"sortOptions": {
+			"relevance": "Pertinence",
+			"price-asc": "Prix : croissant",
+			"price-desc": "Prix : décroissant",
+			"name": "Nom",
+			"newest": "Plus récents"
+		}
 	}
 }

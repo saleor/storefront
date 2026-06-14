@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { getNavbarMenuItems } from "@/lib/menus/get-menu-data";
 import { serializeMenuForNav } from "@/lib/menus/serialize-menu-for-nav";
 import type { NavChromeContent } from "@/lib/content/types";
@@ -19,7 +20,10 @@ export async function Header({
 	channel: string;
 	nav: NavChromeContent;
 }) {
-	const navItems = serializeMenuForNav((await getNavbarMenuItems(channel, locale)) ?? []);
+	const [navItems, tSearchBar] = await Promise.all([
+		getNavbarMenuItems(channel, locale).then((items) => serializeMenuForNav(items ?? [])),
+		getTranslations({ locale, namespace: "search.bar" }),
+	]);
 
 	return (
 		<header className="sticky top-0 z-40 border-b border-border bg-background">
@@ -28,7 +32,12 @@ export async function Header({
 					<Logo />
 
 					<div className="hidden flex-1 justify-center md:flex">
-						<SearchBar locale={locale} channel={channel} />
+						<SearchBar
+							locale={locale}
+							channel={channel}
+							placeholder={tSearchBar("placeholder")}
+							srOnlyLabel={tSearchBar("srOnlyLabel")}
+						/>
 					</div>
 
 					<nav className="hidden lg:flex" aria-label="Main">
@@ -43,7 +52,12 @@ export async function Header({
 						<Suspense>
 							<MobileMenu>
 								<li className="py-3">
-									<SearchBar locale={locale} channel={channel} />
+									<SearchBar
+										locale={locale}
+										channel={channel}
+										placeholder={tSearchBar("placeholder")}
+										srOnlyLabel={tSearchBar("srOnlyLabel")}
+									/>
 								</li>
 								<MobileNavLinks items={navItems} nav={nav} />
 							</MobileMenu>

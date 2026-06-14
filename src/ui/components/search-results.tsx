@@ -8,13 +8,14 @@ interface SearchResultsProps {
 	products: SearchProduct[];
 	/** BCP 47 locale for price formatting; defaults to the base locale. */
 	locale?: string;
+	noImageLabel: string;
 }
 
 /**
  * Renders search results from any search provider.
  * Uses the common SearchProduct type for provider independence.
  */
-export function SearchResults({ products, locale }: SearchResultsProps) {
+export function SearchResults({ products, locale, noImageLabel }: SearchResultsProps) {
 	if (products.length === 0) {
 		return null;
 	}
@@ -23,7 +24,12 @@ export function SearchResults({ products, locale }: SearchResultsProps) {
 		<ul role="list" className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 			{products.map((product, index) => (
 				<li key={product.id}>
-					<SearchResultCard product={product} priority={index < LCP_IMAGE_PRIORITY_COUNT} locale={locale} />
+					<SearchResultCard
+						product={product}
+						priority={index < LCP_IMAGE_PRIORITY_COUNT}
+						locale={locale}
+						noImageLabel={noImageLabel}
+					/>
 				</li>
 			))}
 		</ul>
@@ -34,10 +40,12 @@ function SearchResultCard({
 	product,
 	priority,
 	locale = localeConfig.default,
+	noImageLabel,
 }: {
 	product: SearchProduct;
 	priority?: boolean;
 	locale?: string;
+	noImageLabel: string;
 }) {
 	const formattedPrice = new Intl.NumberFormat(locale, {
 		style: "currency",
@@ -63,7 +71,7 @@ function SearchResultCard({
 						loading={priority ? undefined : "lazy"}
 					/>
 				) : (
-					<div className="flex h-full items-center justify-center text-muted-foreground">No image</div>
+					<div className="flex h-full items-center justify-center text-muted-foreground">{noImageLabel}</div>
 				)}
 			</div>
 

@@ -10,6 +10,7 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { SearchProductsDocument, OrderDirection, ProductOrderField } from "@/gql/graphql";
 import { pickTranslatedName } from "@/lib/saleor-translations";
 import type { SearchProduct, SearchResult, SearchPagination } from "./types";
+import type { SearchSortBy } from "./sort-options";
 import { localeConfig } from "@/config/locale";
 
 interface SearchOptions {
@@ -19,7 +20,7 @@ interface SearchOptions {
 	limit?: number;
 	cursor?: string;
 	direction?: "forward" | "backward";
-	sortBy?: "relevance" | "price-asc" | "price-desc" | "name" | "newest";
+	sortBy?: SearchSortBy;
 }
 
 /**
