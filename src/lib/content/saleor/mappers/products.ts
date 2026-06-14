@@ -9,11 +9,10 @@ export function mapProductsPage(page: StorefrontContentPageFragment | null): Par
 	if (!page || page.pageType.slug !== STOREFRONT_PAGE_TYPES.products) return {};
 
 	const attrs = buildAttributeMap(page);
+	// Breadcrumb labels are functional chrome (code-owned, next-intl) — see ADR 0002.
 	const products = omitEmpty({
 		title: attrText(attrs, A.title),
 		description: attrText(attrs, A.description),
-		breadcrumbHome: attrText(attrs, A.breadcrumbHome),
-		breadcrumbProducts: attrText(attrs, A.breadcrumbProducts),
 	});
 
 	if (!products || Object.keys(products).length === 0) {

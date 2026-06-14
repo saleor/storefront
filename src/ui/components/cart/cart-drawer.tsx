@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
@@ -133,6 +134,8 @@ export function CartDrawer({
 }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isCartBusy, setIsCartBusy] = useState(false);
+	// Functional drawer chrome (totals, buttons, a11y labels) — code-owned i18n (ADR 0002).
+	const t = useTranslations("cart.drawer");
 
 	const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
 	const subtotal = totalPrice?.gross.amount ?? 0;
@@ -183,9 +186,7 @@ export function CartDrawer({
 					<div className="flex items-center gap-3">
 						<ShoppingBag className="h-5 w-5" />
 						<SheetTitle>{drawer.title}</SheetTitle>
-						<span className="text-sm text-muted-foreground">
-							({formatContentLabel(drawer.itemCount, { count: itemCount })})
-						</span>
+						<span className="text-sm text-muted-foreground">({t("itemCount", { count: itemCount })})</span>
 					</div>
 					<SheetCloseButton className="static" />
 				</SheetHeader>
@@ -303,9 +304,7 @@ export function CartDrawer({
 													>
 														<Trash2 className="h-4 w-4" />
 														<span className="sr-only">
-															{formatContentLabel(drawer.removeItem, {
-																product: line.variant.product.name,
-															})}
+															{t("removeItem", { product: line.variant.product.name })}
 														</span>
 													</Button>
 												</div>
@@ -321,7 +320,7 @@ export function CartDrawer({
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Minus className="h-3 w-3" />
-															<span className="sr-only">{drawer.decreaseQuantity}</span>
+															<span className="sr-only">{t("decreaseQuantity")}</span>
 														</button>
 														<span className="w-8 text-center text-sm font-medium">{line.quantity}</span>
 														<button
@@ -331,7 +330,7 @@ export function CartDrawer({
 															className="p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
 														>
 															<Plus className="h-3 w-3" />
-															<span className="sr-only">{drawer.increaseQuantity}</span>
+															<span className="sr-only">{t("increaseQuantity")}</span>
 														</button>
 													</div>
 
@@ -370,15 +369,15 @@ export function CartDrawer({
 						{/* Order Summary */}
 						<div className="space-y-2 px-6 py-4">
 							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">{drawer.subtotal}</span>
+								<span className="text-muted-foreground">{t("subtotal")}</span>
 								<span>{formatMoney(subtotal, currency, intlLocale)}</span>
 							</div>
 							<div className="flex items-center justify-between text-sm">
-								<span className="text-muted-foreground">{drawer.shipping}</span>
-								<span>{qualifiesForFreeShipping ? drawer.shippingFree : drawer.shippingCalculated}</span>
+								<span className="text-muted-foreground">{t("shipping")}</span>
+								<span>{qualifiesForFreeShipping ? t("shippingFree") : t("shippingCalculated")}</span>
 							</div>
 							<div className="flex items-center justify-between border-t border-border pt-2 text-base font-semibold">
-								<span>{drawer.total}</span>
+								<span>{t("total")}</span>
 								<span>{formatMoney(subtotal, currency, intlLocale)}</span>
 							</div>
 						</div>
@@ -402,7 +401,7 @@ export function CartDrawer({
 									className: "group h-12 w-full",
 								})}
 							>
-								<span>{drawer.checkout}</span>
+								<span>{t("checkout")}</span>
 								<ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
 							</Link>
 							<LinkWithChannel
@@ -415,7 +414,7 @@ export function CartDrawer({
 									className: "h-12 w-full",
 								})}
 							>
-								{drawer.continueShopping}
+								{t("continueShopping")}
 							</LinkWithChannel>
 						</div>
 

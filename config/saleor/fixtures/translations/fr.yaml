@@ -1,0 +1,52 @@
+# French storefront model translations (Saleor LanguageCodeEnum: FR)
+languageCode: FR
+
+pages:
+  storefront-chrome:
+    announcement-message: "Livraison gratuite dès {freeShippingThreshold}"
+    nav-all-products-label: "Tout"
+    nav-view-all-label: "Voir tout {label}"
+
+  storefront-products:
+    listing-title: "Tous les produits"
+    listing-description: "Découvrez notre collection complète de produits premium."
+
+  storefront-homepage:
+    hero-heading: "Découvrez notre collection"
+    hero-subheading: "Des produits premium d'une qualité exceptionnelle. Découvrez notre sélection soignée."
+    hero-cta-label: "Tout voir"
+    featured-heading: "Produits en vedette"
+    brand-story-heading: "Conçu pour le commerce réel"
+    brand-story-paragraph-1: "Paper est une vitrine minimaliste et prête pour la production pour Saleor — propre comme une page blanche, prête à être déployée."
+    brand-story-paragraph-2: "Personnalisez les sections dans le code, connectez votre catalogue et conservez des pages panier, paiement et produit éprouvées."
+    values-heading: "Pourquoi acheter chez nous"
+    values-column-1-title: "Qualité sélectionnée"
+    values-column-1-text: "Chaque produit est choisi pour son savoir-faire et sa durabilité — pas pour suivre les tendances."
+    values-column-2-title: "Expédition rapide"
+    values-column-2-text: "Les commandes partent d'entrepôts régionaux avec suivi du paiement à la livraison."
+    values-column-3-title: "Retours faciles"
+    values-column-3-text: "Retours sans tracas sous {returnsWindowDays} jours. Nous garantissons ce que nous vendons."
+    editorial-heading: "Conçu pour durer"
+    editorial-paragraph-1: "Des matériaux réfléchis et des silhouettes intemporelles — des pièces que vous porterez saison après saison."
+    editorial-cta-label: "Explorer les collections"
+
+  storefront-cart:
+    empty-title: "Votre panier est vide"
+    empty-body: "Vous n'avez encore rien ajouté."
+    empty-cta-label: "Commencer vos achats"
+    trust-free-shipping-prefix: "Livraison gratuite à partir de"
+    trust-returns-label: "Retours sous {returnsWindowDays} jours"
+    drawer-title: "Votre panier"
+    drawer-add-for-free-shipping: "Plus que {amount} pour la livraison gratuite"
+    drawer-free-shipping-qualified: "Livraison gratuite !"
+
+  storefront-checkout:
+    empty-cart-title: "Votre panier est vide"
+    empty-cart-body: "Vous n'avez encore rien ajouté."
+    empty-cart-start-label: "Commencer vos achats"
+    empty-cart-go-back-label: "Retour"
+    empty-session-title: "Votre panier est vide"
+    empty-session-message: "Ajoutez des articles, puis revenez pour payer."
+    marketing-opt-in-label: "Recevoir les offres par e-mail"
+    trust-secure-checkout: "Paiement sécurisé"
+    trust-stripe-processor: "Paiements traités par Stripe"

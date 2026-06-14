@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import { ProductListPaginatedDocument } from "@/gql/graphql";
@@ -47,13 +48,17 @@ type PageProps = {
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
-	const { surfaces } = await getStorefrontContent(params.channel, params.locale);
+	const [{ surfaces }, tNav] = await Promise.all([
+		getStorefrontContent(params.channel, params.locale),
+		getTranslations({ locale: params.locale, namespace: "productsListing" }),
+	]);
 	const productsCopy = surfaces.products;
 
+	// Breadcrumb labels are functional chrome — code-owned i18n (ADR 0002).
 	const breadcrumbs = [
-		{ label: productsCopy.breadcrumbHome, href: buildStorefrontPath(params.locale, params.channel) },
+		{ label: tNav("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
 		{
-			label: productsCopy.breadcrumbProducts,
+			label: tNav("breadcrumbProducts"),
 			href: buildStorefrontPath(params.locale, params.channel, "/products"),
 		},
 	];

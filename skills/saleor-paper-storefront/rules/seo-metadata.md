@@ -155,7 +155,7 @@ return buildBrowsePageMetadata({
 });
 ```
 
-Optional `STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
+Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
 
 ## Disabling SEO
 

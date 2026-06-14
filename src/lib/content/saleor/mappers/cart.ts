@@ -29,36 +29,15 @@ export function mapCartPage(page: StorefrontContentPageFragment | null): Partial
 		cart.trust = trust;
 	}
 
+	// Functional drawer/page chrome (totals, buttons, a11y labels) is code-owned (next-intl,
+	// `messages/*.json`); only editorial drawer copy is merchant-editable here — see ADR 0002.
 	const drawer = omitEmpty({
 		title: attrText(attrs, A.drawerTitle),
-		itemCount: attrText(attrs, A.drawerItemCount),
 		addForFreeShipping: attrText(attrs, A.drawerAddForFreeShipping),
 		freeShippingQualified: attrText(attrs, A.drawerFreeShippingQualified),
-		subtotal: attrText(attrs, A.drawerSubtotal),
-		shipping: attrText(attrs, A.drawerShipping),
-		shippingFree: attrText(attrs, A.drawerShippingFree),
-		shippingCalculated: attrText(attrs, A.drawerShippingCalculated),
-		total: attrText(attrs, A.drawerTotal),
-		checkout: attrText(attrs, A.drawerCheckout),
-		continueShopping: attrText(attrs, A.drawerContinueShopping),
-		removeItem: attrText(attrs, A.drawerRemoveItem),
-		decreaseQuantity: attrText(attrs, A.drawerDecreaseQuantity),
-		increaseQuantity: attrText(attrs, A.drawerIncreaseQuantity),
 	});
 	if (Object.keys(drawer).length > 0) {
 		cart.drawer = drawer;
-	}
-
-	const pageContent = omitEmpty({
-		title: attrText(attrs, A.pageTitle),
-		quantity: attrText(attrs, A.pageQuantity),
-		variant: attrText(attrs, A.pageVariant),
-		yourTotal: attrText(attrs, A.pageYourTotal),
-		shippingNote: attrText(attrs, A.pageShippingNote),
-		checkout: attrText(attrs, A.pageCheckout),
-	});
-	if (Object.keys(pageContent).length > 0) {
-		cart.page = pageContent;
 	}
 
 	if (Object.keys(cart).length === 0) return {};

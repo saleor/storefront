@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Check, ChevronDown, Globe, Languages, Store } from "lucide-react";
 import type { ChannelSelectOption } from "@/config/channels";
 import { getLocaleDefinition } from "@/config/locale";
+import { getLocalesForChannel } from "@/config/locale-channel";
 import { useStorefrontRegionNavigation } from "@/hooks/use-storefront-region-navigation";
 import type { LocaleSelectOption } from "@/lib/locale-display";
 import { enrichMarketOptions, getCurrencySymbol, type MarketSelectOption } from "@/lib/market-display";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
@@ -95,7 +97,12 @@ export function StorefrontRegionPicker({
 	const showMarket = channels.length > 1;
 	const marketOptions = enrichMarketOptions(channels);
 
-	const currentLocale = locales.find((item) => item.slug === locale);
+	const allowedLocales = getLocalesForChannel(channel);
+	const visibleLocales =
+		allowedLocales === null ? locales : locales.filter((item) => allowedLocales.includes(item.slug));
+
+	const currentLocale =
+		visibleLocales.find((item) => item.slug === locale) ?? locales.find((item) => item.slug === locale);
 	const currentMarket = marketOptions.find((item) => item.slug === channel);
 	const localeBcp47 = getLocaleDefinition(locale)?.bcp47 ?? "en-US";
 	const summary = buildTriggerSummary(currentLocale, currentMarket, showLanguage, showMarket, localeBcp47);
@@ -149,38 +156,42 @@ export function StorefrontRegionPicker({
 				<div className={cn("grid gap-4", showLanguage && showMarket && "sm:grid-cols-2")}>
 					{showLanguage ? (
 						<PickerSection icon={Languages} title="Language" description="Site copy & formatting">
-							<DropdownMenuRadioGroup value={locale} onValueChange={navigateToLocale}>
-								{locales.map((item) => (
-									<DropdownMenuRadioItem
-										key={item.slug}
-										value={item.slug}
-										lang={item.slug}
-										className="data-[state=checked]:bg-accent/60 my-0.5 rounded-lg py-2.5 pl-3 pr-3 [&>span:first-child]:hidden"
-									>
-										<OptionRow label={item.label} selected={item.slug === locale} />
-									</DropdownMenuRadioItem>
-								))}
-							</DropdownMenuRadioGroup>
+							<DropdownMenuGroup>
+								<DropdownMenuRadioGroup value={locale} onValueChange={navigateToLocale}>
+									{visibleLocales.map((item) => (
+										<DropdownMenuRadioItem
+											key={item.slug}
+											value={item.slug}
+											lang={item.slug}
+											className="data-[state=checked]:bg-accent/60 my-0.5 rounded-lg py-2.5 pl-3 pr-3 [&>span:first-child]:hidden"
+										>
+											<OptionRow label={item.label} selected={item.slug === locale} />
+										</DropdownMenuRadioItem>
+									))}
+								</DropdownMenuRadioGroup>
+							</DropdownMenuGroup>
 						</PickerSection>
 					) : null}
 
 					{showMarket ? (
 						<PickerSection icon={Store} title="Market" description="Currency, tax & shipping">
-							<DropdownMenuRadioGroup value={channel} onValueChange={navigateToChannel}>
-								{marketOptions.map((item) => (
-									<DropdownMenuRadioItem
-										key={item.id}
-										value={item.slug}
-										className="data-[state=checked]:bg-accent/60 my-0.5 rounded-lg py-2.5 pl-3 pr-3 [&>span:first-child]:hidden"
-									>
-										<OptionRow
-											label={item.regionLabel}
-											hint={item.currencyCode}
-											selected={item.slug === channel}
-										/>
-									</DropdownMenuRadioItem>
-								))}
-							</DropdownMenuRadioGroup>
+							<DropdownMenuGroup>
+								<DropdownMenuRadioGroup value={channel} onValueChange={navigateToChannel}>
+									{marketOptions.map((item) => (
+										<DropdownMenuRadioItem
+											key={item.id}
+											value={item.slug}
+											className="data-[state=checked]:bg-accent/60 my-0.5 rounded-lg py-2.5 pl-3 pr-3 [&>span:first-child]:hidden"
+										>
+											<OptionRow
+												label={item.regionLabel}
+												hint={item.currencyCode}
+												selected={item.slug === channel}
+											/>
+										</DropdownMenuRadioItem>
+									))}
+								</DropdownMenuRadioGroup>
+							</DropdownMenuGroup>
 						</PickerSection>
 					) : null}
 				</div>

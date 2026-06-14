@@ -6,5 +6,5 @@
 - [ ] Homepage hero (Saleor Models) respects locale when `CONTENT_PROVIDER=saleor`
 - [ ] PDP/category/collection/CMS `generateMetadata` includes canonical + hreflang
 - [ ] Market switch with cart cookie shows confirmation
-- [ ] Invalid `STOREFRONT_LOCALE_CHANNELS` pair returns 404
+- [ ] Invalid `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS` pair returns 404
 - [ ] `pnpm exec tsc --noEmit` and content/seo tests pass

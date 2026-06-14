@@ -33,6 +33,9 @@ describe("storefront-path", () => {
 
 	it("swaps locale while preserving channel and suffix", () => {
 		expect(replaceStorefrontLocale("/en/uk/products/hoodie", "pl")).toBe("/pl/uk/products/hoodie");
+		expect(replaceStorefrontLocale("/en/default-channel/products", "nb")).toBe(
+			"/nb/default-channel/products",
+		);
 	});
 
 	it("strips locale/channel prefix", () => {

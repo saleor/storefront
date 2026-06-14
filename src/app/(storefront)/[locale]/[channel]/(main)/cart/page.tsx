@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { type Metadata } from "next";
 import { deleteCartLine } from "@/app/actions";
@@ -9,7 +10,6 @@ import { getStorefrontContent } from "@/lib/content/server";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney, getHrefForVariant } from "@/lib/utils";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { formatContentLabel } from "@/lib/content/format-label";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buttonClassName } from "@/ui/components/ui/button";
@@ -18,10 +18,13 @@ export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }): Promise<Metadata> {
 	const params = await props.params;
-	const { surfaces } = await getStorefrontContent(params.channel, params.locale);
+	const [{ surfaces }, t] = await Promise.all([
+		getStorefrontContent(params.channel, params.locale),
+		getTranslations({ locale: params.locale, namespace: "cart.page" }),
+	]);
 
 	return buildBrowsePageMetadata({
-		title: surfaces.cart.page.title,
+		title: t("title"),
 		description: surfaces.cart.empty.body ?? defaultStorefrontContent.surfaces.cart.empty.body,
 		locale: params.locale,
 		channel: params.channel,
@@ -45,9 +48,10 @@ async function CartContent({
 	params: Promise<{ locale: string; channel: string }>;
 }) {
 	const params = await paramsPromise;
-	const [{ surfaces }, checkoutId] = await Promise.all([
+	const [{ surfaces }, checkoutId, t] = await Promise.all([
 		getStorefrontContent(params.channel, params.locale),
 		Checkout.getIdFromCookies(params.channel),
+		getTranslations({ locale: params.locale, namespace: "cart.page" }),
 	]);
 	const cart = surfaces.cart;
 	const intlLocale = resolveLocaleFromSlug(params.locale).bcp47;
@@ -56,7 +60,7 @@ async function CartContent({
 	if (!checkout || checkout.lines.length < 1) {
 		return (
 			<div className="mt-12">
-				<h1 className="text-3xl font-bold text-foreground">{cart.page.title}</h1>
+				<h1 className="text-3xl font-bold text-foreground">{t("title")}</h1>
 				<p className="my-12 text-sm text-muted-foreground">{cart.empty.body}</p>
 				<LinkWithChannel href="/products" className={buttonClassName({ className: "max-w-full sm:px-16" })}>
 					{cart.empty.ctaLabel}
@@ -67,7 +71,7 @@ async function CartContent({
 
 	return (
 		<>
-			<h1 className="mt-8 text-3xl font-bold text-foreground">{cart.page.title}</h1>
+			<h1 className="mt-8 text-3xl font-bold text-foreground">{t("title")}</h1>
 			<form className="mt-12">
 				<ul
 					data-testid="CartProductList"
@@ -103,7 +107,7 @@ async function CartContent({
 										</p>
 										{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
 											<p className="mt-1 text-sm text-muted-foreground">
-												{formatContentLabel(cart.page.variant, { name: item.variant.name })}
+												{t("variant", { name: item.variant.name })}
 											</p>
 										)}
 									</div>
@@ -112,9 +116,7 @@ async function CartContent({
 									</p>
 								</div>
 								<div className="flex justify-between">
-									<div className="text-sm font-bold">
-										{formatContentLabel(cart.page.quantity, { count: item.quantity })}
-									</div>
+									<div className="text-sm font-bold">{t("quantity", { count: item.quantity })}</div>
 									<DeleteLineButton
 										deleteLine={deleteCartLine.bind(null, checkoutId, item.id, params.channel)}
 									/>
@@ -128,8 +130,8 @@ async function CartContent({
 					<div className="rounded-md border bg-muted px-4 py-2">
 						<div className="flex items-center justify-between gap-2 py-2">
 							<div>
-								<p className="font-semibold text-foreground">{cart.page.yourTotal}</p>
-								<p className="mt-1 text-sm text-muted-foreground">{cart.page.shippingNote}</p>
+								<p className="font-semibold text-foreground">{t("yourTotal")}</p>
+								<p className="mt-1 text-sm text-muted-foreground">{t("shippingNote")}</p>
 							</div>
 							<div className="font-medium text-foreground">
 								{formatMoney(
@@ -145,7 +147,7 @@ async function CartContent({
 							checkoutId={checkoutId}
 							disabled={!checkout.lines.length}
 							className="w-full sm:w-1/3"
-							label={cart.page.checkout}
+							label={t("checkout")}
 							browseLocale={params.locale}
 						/>
 					</div>

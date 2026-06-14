@@ -29,7 +29,7 @@ function getXDefaultTarget(fallbackChannel: string): LocaleChannelTarget {
 
 /**
  * hreflang alternates for the same path suffix.
- * When `STOREFRONT_LOCALE_CHANNELS` is set, each locale uses its paired channel.
+ * When `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS` is set, each locale uses its paired channel.
  * Includes `x-default` pointing at default locale + its channel.
  */
 export function buildLocaleHreflangAlternates(channel: string, pathSuffix: string): Record<string, string> {

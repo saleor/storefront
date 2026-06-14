@@ -1185,14 +1185,28 @@ Marketing and merchandising copy (announcement bar, homepage sections, cart trus
 
 **Code defaults always win as the base.** Saleor (or a future CMS provider) supplies **partials** that overlay defaults. The app never ships with blank copy when Saleor is down or a field is unset.
 
+### Scope: editorial copy vs functional UI strings (ADR 0002)
+
+This layer holds **editorial / merchant-editable copy only** — text a merchandiser would reword per shop (announcement bar, homepage sections, listing title/description, cart empty-state & trust signals, checkout). **Functional UI strings** (cart totals/buttons, the `{count} items` counter, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels) are **code-owned via next-intl** in `messages/{en,pl,de}.json` — type-safe, reviewed in code, with ICU plurals.
+
+Rule of thumb: _"Would a merchant reword this per shop?"_ → content layer (CMS); otherwise → `messages/*.json`.
+
+next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 0001) stays authoritative and is passed explicitly (`getTranslations({ locale })` in RSC; `<NextIntlClientProvider locale={…}>` in `(storefront)/[locale]/layout.tsx`). See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`.
+
+### Policy vs copy
+
+`StorefrontContent` has a top-level **`policies`** branch (sibling to `chrome` / `surfaces`) for channel-wide _facts_ — `shipping.freeShippingThreshold`, `returns.windowDays`, etc. These are structured values (not strings): channel-scoped, locale-independent, and consumed by **logic** (cart progress math) as well as **copy**. Copy never hardcodes the number — it references it with `{freeShippingThreshold}` / `{returnsWindowDays}` tokens resolved via `buildPolicyLabelValues()` + `formatContentLabel()`. This is the single source of truth: the cart math, announcement bar, and cart trust signal can never disagree. Modeled in Saleor as the `storefront-policies` PageType (`NUMERIC`/`BOOLEAN`) — see `data-storefront-content-saleor.md`.
+
 ---
 
 ## Key Files
 
 | Purpose                     | Location                                                              |
 | --------------------------- | --------------------------------------------------------------------- |
-| Typed contract              | `src/lib/content/types.ts`                                            |
+| Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)               |
 | Code fallback copy          | `src/lib/content/defaults.ts`                                         |
+| Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
+| Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
 | Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
 | Deep merge                  | `src/lib/content/merge.ts`                                            |
 | Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |
@@ -1314,12 +1328,17 @@ Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-t
 
 **Saleor Models** (PageTypes + Pages) are the dedicated place for merchandising and editorial copy in Paper. Each **PageType** defines a purpose — chrome, homepage, cart, checkout — and the **attributes** on that type give structure to otherwise unstructured text (headings, labels, paragraphs, flags).
 
-| Model (PageType)      | Purpose                                  |
-| --------------------- | ---------------------------------------- |
-| `storefront-chrome`   | Site-wide chrome (e.g. announcement bar) |
-| `storefront-homepage` | Homepage sections                        |
-| `storefront-cart`     | Cart drawer copy                         |
-| `storefront-checkout` | Checkout surface copy                    |
+| Model (PageType)                                                          | Purpose                                                                                                  |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `storefront-policies` (PageType) / `storefront-policy` (global Page slug) | Channel-wide **policy values** (free-shipping threshold, returns window) — `NUMERIC`/`BOOLEAN`, not copy |
+| `storefront-chrome`                                                       | Site-wide chrome (e.g. announcement bar)                                                                 |
+| `storefront-homepage`                                                     | Homepage sections                                                                                        |
+| `storefront-cart`                                                         | Cart drawer **editorial** copy (title, free-shipping nudges, empty state, trust)                         |
+| `storefront-checkout`                                                     | Checkout surface copy                                                                                    |
+
+**Editorial only (ADR 0002):** these models hold merchant-editable copy. **Functional UI strings** — cart totals/buttons, item count, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels — are **not** modeled here; they are code-owned via next-intl (`messages/{en,pl,de}.json`). When adding an attribute, ask _"would a merchant reword this per shop?"_ — if not, it belongs in `messages/*.json`, not a PageType. See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`.
+
+**Policy vs copy:** `storefront-policy` holds the _facts_ (a number/boolean); the other models hold _copy_ that only describes those facts via `{freeShippingThreshold}` / `{returnsWindowDays}` placeholders. One threshold feeds the cart progress math, the announcement bar, and the cart trust signal — change it in one place, everything stays consistent. Override per channel with `storefront-policy-{channelSlug}` (numbers are in the channel currency).
 
 That is what modeling is for: keep flexible marketing content **structured and editable** through typed attributes, and mappable into a stable `StorefrontContent` contract in code. **Day-to-day copy changes** happen in Dashboard → Models; Configurator is for **commerce-as-code** when the Saleor schema itself needs updating (see below).
 
@@ -1376,6 +1395,8 @@ Fetch collects **both** candidate slugs per surface, then picks the best match.
 | **Storefront mappers** | Read by **slug** via `attribute-slugs.ts`                                  |
 
 Configurator resolves attributes by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — run `pnpm content:verify-attribute-slugs`.
+
+**Greenfield bootstrap:** with no storefront models yet, `pnpm configurator:storefront-content:deploy` creates PageTypes, attributes, and seed models from `storefront-content.config.yml`. Copy fields that reference channel policies use `{freeShippingThreshold}` / `{returnsWindowDays}` in seed values — keep those tokens in Dashboard translations too (see YAML comments on those attributes).
 
 **Attribute types:** see `data-storefront-content-attributes.md` — scalar types, catalog **references** (`SINGLE_REFERENCE` / `REFERENCE`), and what Paper wires today.
 
@@ -1456,6 +1477,8 @@ Global page `storefront-homepage` remains the fallback for other channels.
 - `getStorefrontContent(channel, localeSlug)` and cache tags (`storefront-content:{channel}:{locale}`) key by locale.
 - `StorefrontContentPages.graphql` passes `languageCode`; plain-text attributes use `translation(languageCode: …)` in `buildAttributeMap`.
 
+**Policy placeholders in translations:** localized strings must keep the same `{freeShippingThreshold}` / `{returnsWindowDays}` tokens as the default language — never bake channel-specific amounts or currencies into Dashboard translations (e.g. avoid `"$75"` or `"30 dni"` literals). Paper formats money from `policies` + channel currency at render time. Missing placeholders are warned in development via `formatPolicyAwareLabel`.
+
 ---
 
 ## Cache & Revalidation (saleor-paper-app)
@@ -1531,17 +1554,19 @@ GraphQL: `AssignedSingleCollectionReferenceAttribute`, `AssignedMultiCollectionR
 
 ## Scalar & media types (roadmap)
 
-| `inputType`                       | Typical storefront use                        | Wired in Paper                                         |
-| --------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
-| `PLAIN_TEXT`                      | Headings, labels, short copy                  | Yes                                                    |
-| `BOOLEAN`                         | Dismissible flags, toggles                    | Yes                                                    |
-| `SINGLE_REFERENCE` + `COLLECTION` | Featured collection override                  | Yes (`featured-collection`)                            |
-| `SINGLE_REFERENCE` + `CATEGORY`   | Category spotlight                            | No                                                     |
-| `REFERENCE` + `COLLECTION`        | Collection list ordering                      | No                                                     |
-| `RICH_TEXT`                       | Long copy, collection description on homepage | No — prefer catalog `description` for entities         |
-| `FILE`                            | Hero / editorial images                       | No                                                     |
-| `DROPDOWN` / `SWATCH`             | Layout variants (e.g. image left/right)       | No — code enum today for editorial position            |
-| `NUMERIC`                         | Limits, counts                                | Partial — `featured-limit` is plain text parsed as int |
+| `inputType`                       | Typical storefront use                        | Wired in Paper                                                           |
+| --------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------ |
+| `PLAIN_TEXT`                      | Headings, labels, short copy                  | Yes                                                                      |
+| `BOOLEAN`                         | Dismissible flags, toggles                    | Yes                                                                      |
+| `SINGLE_REFERENCE` + `COLLECTION` | Featured collection override                  | Yes (`featured-collection`)                                              |
+| `SINGLE_REFERENCE` + `CATEGORY`   | Category spotlight                            | No                                                                       |
+| `REFERENCE` + `COLLECTION`        | Collection list ordering                      | No                                                                       |
+| `RICH_TEXT`                       | Long copy, collection description on homepage | No — prefer catalog `description` for entities                           |
+| `FILE`                            | Hero / editorial images                       | No                                                                       |
+| `DROPDOWN` / `SWATCH`             | Layout variants (e.g. image left/right)       | No — code enum today for editorial position                              |
+| `NUMERIC`                         | Policy values, limits, counts                 | Yes — `free-shipping-threshold`, `returns-window-days`, `featured-limit` |
+
+`NUMERIC` is read via `attrNumber()` (`buildAttributeMap` stores the `Float` directly); `attrInt()` truncates it. Use `NUMERIC` for any value consumed by logic or formatted as money/count — not `PLAIN_TEXT`. Policy money values are stored in the channel currency; format with the live cart currency (cart drawer) or `resolveChannelCurrency()` (chrome/homepage), then interpolate via `buildPolicyLabelValues()` + `formatContentLabel()`.
 
 Add types in this order when a section needs them: extend GraphQL fragment → mapper helper in `attributes.ts` → `attribute-slugs.ts` → Configurator (commerce-as-code) → Dashboard for merchandisers.
 
@@ -3767,7 +3792,7 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes (market switch warns when cart cookie exists).
 6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
 7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
-8. **Locale×channel pairs** — optional `STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid (`src/config/locale-channel.ts`).
+8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid. Must be `NEXT_PUBLIC_` — both the server (404 guard, hreflang) and the client picker/nav read it. See `src/config/locale-channel.ts`.
 
 ---
 
@@ -4001,7 +4026,7 @@ return buildBrowsePageMetadata({
 });
 ```
 
-Optional `STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
+Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
 
 ## Disabling SEO
 

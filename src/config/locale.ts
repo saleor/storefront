@@ -42,6 +42,26 @@ export const LOCALE_DEFINITIONS = {
 		htmlLang: "de",
 		ogLocale: "de_DE",
 	},
+	fr: {
+		bcp47: "fr-FR",
+		graphqlLanguageCode: "FR",
+		htmlLang: "fr",
+		ogLocale: "fr_FR",
+	},
+	fi: {
+		bcp47: "fi-FI",
+		graphqlLanguageCode: "FI",
+		htmlLang: "fi",
+		ogLocale: "fi_FI",
+	},
+	/** Norwegian Bokmål — slug `nb`, not `no` (avoids collision with channel navigation / ISO ambiguity). */
+	nb: {
+		bcp47: "nb-NO",
+		/** Saleor `LanguageCodeEnum` is `NB` (Bokmål), not `NO`. */
+		graphqlLanguageCode: "NB",
+		htmlLang: "nb",
+		ogLocale: "nb_NO",
+	},
 } as const satisfies Record<string, LocaleDefinition>;
 
 function parseEnvLocaleList(raw: string | undefined): LocaleSlug[] | null {

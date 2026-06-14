@@ -18,11 +18,11 @@ describe("buildLocaleHreflangAlternates", () => {
 		});
 	});
 
-	it("uses paired channels when STOREFRONT_LOCALE_CHANNELS is configured", () => {
+	it("uses paired channels when NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS is configured", () => {
 		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,pl");
 		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");
 		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel,channel-pln");
-		vi.stubEnv("STOREFRONT_LOCALE_CHANNELS", "en:default-channel,pl:channel-pln");
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS", "en:default-channel,pl:channel-pln");
 
 		expect(buildLocaleHreflangAlternates("default-channel", "/products/hoodie")).toEqual({
 			en: "/en/default-channel/products/hoodie",

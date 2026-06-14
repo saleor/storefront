@@ -1,0 +1,29 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+			"subtotal": "Suma częściowa",
+			"shipping": "Dostawa",
+			"shippingFree": "Za darmo",
+			"shippingCalculated": "Obliczana przy kasie",
+			"total": "Razem",
+			"checkout": "Przejdź do kasy",
+			"continueShopping": "Kontynuuj zakupy",
+			"removeItem": "Usuń {product}",
+			"decreaseQuantity": "Zmniejsz ilość",
+			"increaseQuantity": "Zwiększ ilość"
+		},
+		"page": {
+			"title": "Koszyk",
+			"quantity": "Ilość: {count}",
+			"variant": "Wariant: {name}",
+			"yourTotal": "Twoja suma",
+			"shippingNote": "Dostawa obliczana w następnym kroku",
+			"checkout": "Przejdź do kasy"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Strona główna",
+		"breadcrumbProducts": "Produkty"
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# vare} other {# varer}}",
+			"subtotal": "Delsum",
+			"shipping": "Frakt",
+			"shippingFree": "Gratis",
+			"shippingCalculated": "Beregnes i kassen",
+			"total": "Totalt",
+			"checkout": "Til kassen",
+			"continueShopping": "Fortsett å handle",
+			"removeItem": "Fjern {product}",
+			"decreaseQuantity": "Reduser antall",
+			"increaseQuantity": "Øk antall"
+		},
+		"page": {
+			"title": "Handlekurv",
+			"quantity": "Ant.: {count}",
+			"variant": "Variant: {name}",
+			"yourTotal": "Din totalsum",
+			"shippingNote": "Frakt beregnes i neste steg",
+			"checkout": "Til kassen"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Hjem",
+		"breadcrumbProducts": "Produkter"
+	}
+}

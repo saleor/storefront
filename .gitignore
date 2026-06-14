@@ -26,6 +26,9 @@ src/checkout/graphql/generated/
 *.pem
 .agents/
 
+# Saleor Configurator deploy reports (generated per deploy, env-specific)
+.configurator/reports/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

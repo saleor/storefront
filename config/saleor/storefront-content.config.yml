@@ -13,6 +13,10 @@
 #
 # Attribute slugs must match src/lib/content/attribute-slugs.ts
 # Greenfield: pnpm configurator:storefront-content:deploy — creates PageTypes, attributes, and seed models below.
+#
+# Scope (ADR 0002): this layer holds *editorial / merchant-editable* copy only. Functional
+# UI strings (cart totals/buttons/a11y labels, item count, cart-page chrome, breadcrumbs)
+# are code-owned via next-intl (messages/*.json) and intentionally NOT modeled here.
 
 contentAttributes:
   # Storefront — Policies (channel-wide facts; NUMERIC so the Dashboard validates them
@@ -41,10 +45,6 @@ contentAttributes:
   - name: Listing title
     inputType: PLAIN_TEXT
   - name: Listing description
-    inputType: PLAIN_TEXT
-  - name: Breadcrumb home
-    inputType: PLAIN_TEXT
-  - name: Breadcrumb products
     inputType: PLAIN_TEXT
   # Storefront — Homepage
   - name: Hero heading
@@ -105,43 +105,9 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Drawer title
     inputType: PLAIN_TEXT
-  - name: Drawer item count
-    inputType: PLAIN_TEXT
   - name: Drawer add for free shipping
     inputType: PLAIN_TEXT
   - name: Drawer free shipping qualified
-    inputType: PLAIN_TEXT
-  - name: Drawer subtotal
-    inputType: PLAIN_TEXT
-  - name: Drawer shipping
-    inputType: PLAIN_TEXT
-  - name: Drawer shipping free
-    inputType: PLAIN_TEXT
-  - name: Drawer shipping calculated
-    inputType: PLAIN_TEXT
-  - name: Drawer total
-    inputType: PLAIN_TEXT
-  - name: Drawer checkout
-    inputType: PLAIN_TEXT
-  - name: Drawer continue shopping
-    inputType: PLAIN_TEXT
-  - name: Drawer remove item
-    inputType: PLAIN_TEXT
-  - name: Drawer decrease quantity
-    inputType: PLAIN_TEXT
-  - name: Drawer increase quantity
-    inputType: PLAIN_TEXT
-  - name: Page title
-    inputType: PLAIN_TEXT
-  - name: Page quantity
-    inputType: PLAIN_TEXT
-  - name: Page variant
-    inputType: PLAIN_TEXT
-  - name: Page your total
-    inputType: PLAIN_TEXT
-  - name: Page shipping note
-    inputType: PLAIN_TEXT
-  - name: Page checkout
     inputType: PLAIN_TEXT
   # Storefront — Checkout
   - name: Empty cart title
@@ -186,8 +152,6 @@ modelTypes:
     attributes:
       - attribute: Listing title
       - attribute: Listing description
-      - attribute: Breadcrumb home
-      - attribute: Breadcrumb products
 
   - name: "Storefront — Homepage"
     slug: storefront-homepage
@@ -223,25 +187,8 @@ modelTypes:
       - attribute: Trust free shipping prefix
       - attribute: Trust returns label
       - attribute: Drawer title
-      - attribute: Drawer item count
       - attribute: Drawer add for free shipping
       - attribute: Drawer free shipping qualified
-      - attribute: Drawer subtotal
-      - attribute: Drawer shipping
-      - attribute: Drawer shipping free
-      - attribute: Drawer shipping calculated
-      - attribute: Drawer total
-      - attribute: Drawer checkout
-      - attribute: Drawer continue shopping
-      - attribute: Drawer remove item
-      - attribute: Drawer decrease quantity
-      - attribute: Drawer increase quantity
-      - attribute: Page title
-      - attribute: Page quantity
-      - attribute: Page variant
-      - attribute: Page your total
-      - attribute: Page shipping note
-      - attribute: Page checkout
 
   - name: "Storefront — Checkout"
     slug: storefront-checkout
@@ -287,8 +234,6 @@ models:
     attributes:
       Listing title: "All Products"
       Listing description: "Discover our full collection of premium products."
-      Breadcrumb home: "Home"
-      Breadcrumb products: "Products"
 
   - title: Storefront Homepage
     slug: storefront-homepage
@@ -296,10 +241,28 @@ models:
     isPublished: true
     attributes:
       Hero heading: "Discover our collection"
+      # Keep in sync with brandConfig.tagline (src/config/brand.ts) — the code default derives
+      # the subheading from it; this seed bootstraps the same value into Saleor.
+      Hero subheading: "Premium products with exceptional quality. Discover our curated collection."
       Hero CTA label: "Shop all"
       Featured heading: "Featured products"
       Featured collection: featured-products
       Featured limit: 8
+      Brand story heading: "Built for real commerce"
+      Brand story paragraph 1: "Paper is a minimal, production-ready storefront for Saleor — clean as a blank page, built to ship."
+      Brand story paragraph 2: "Customize sections in code, connect your catalog, and keep checkout, cart, and product pages battle-tested out of the box."
+      Values heading: "Why shop with us"
+      Values columns desktop: 3
+      Values column 1 title: "Curated quality"
+      Values column 1 text: "Every product is selected for craftsmanship and longevity — not trend-chasing."
+      Values column 2 title: "Fast fulfillment"
+      Values column 2 text: "Orders ship from regional warehouses with tracking from checkout to delivery."
+      Values column 3 title: "Easy returns"
+      Values column 3 text: "Hassle-free returns within {returnsWindowDays} days. We stand behind what we sell."
+      Editorial heading: "Designed to last"
+      Editorial paragraph 1: "Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season."
+      Editorial image position: right
+      Editorial CTA label: "Explore collections"
 
   - title: Storefront Cart
     slug: storefront-cart
@@ -312,31 +275,20 @@ models:
       Trust free shipping prefix: "Free delivery over"
       Trust returns label: "{returnsWindowDays}-day returns"
       Drawer title: "Your Bag"
-      Drawer item count: "{count} items"
       Drawer add for free shipping: "Add {amount} more for free shipping"
       Drawer free shipping qualified: "You qualify for free shipping!"
-      Drawer subtotal: "Subtotal"
-      Drawer shipping: "Shipping"
-      Drawer shipping free: "Free"
-      Drawer shipping calculated: "Calculated at checkout"
-      Drawer total: "Total"
-      Drawer checkout: "Checkout"
-      Drawer continue shopping: "Continue Shopping"
-      Drawer remove item: "Remove {product}"
-      Drawer decrease quantity: "Decrease quantity"
-      Drawer increase quantity: "Increase quantity"
-      Page title: "Shopping Cart"
-      Page quantity: "Qty: {count}"
-      Page variant: "Variant: {name}"
-      Page your total: "Your Total"
-      Page shipping note: "Shipping will be calculated in the next step"
-      Page checkout: "Checkout"
 
   - title: Storefront Checkout
     slug: storefront-checkout
     modelType: "Storefront — Checkout"
     isPublished: true
     attributes:
+      Empty cart title: "Your cart is empty"
+      Empty cart body: "Looks like you haven't added anything to your cart yet."
+      Empty cart start label: "Start Shopping"
+      Empty cart go back label: "Go back"
+      Empty session title: "Your cart is empty"
+      Empty session message: "Add items from the store, then return here to complete your purchase."
       Marketing opt-in label: "Email me with news and offers"
       Trust secure checkout: "Secure checkout"
       Trust Stripe processor: "Payments processed by Stripe"

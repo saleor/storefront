@@ -29,19 +29,19 @@ describe("mapCartPage", () => {
 		);
 	});
 
-	it("maps drawer and page chrome labels from Saleor attributes", () => {
+	it("maps editorial drawer copy from Saleor attributes, keeping defaults for unset fields", () => {
 		const partial = mapCartPage(
 			cartPage([
 				{ slug: "drawer-title", plainText: "Twój koszyk" },
-				{ slug: "page-title", plainText: "Koszyk" },
-				{ slug: "page-checkout", plainText: "Do kasy" },
+				{ slug: "drawer-free-shipping-qualified", plainText: "Masz darmową dostawę!" },
 			]),
 		);
 		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
 
 		expect(merged.surfaces.cart.drawer.title).toBe("Twój koszyk");
-		expect(merged.surfaces.cart.page.title).toBe("Koszyk");
-		expect(merged.surfaces.cart.page.checkout).toBe("Do kasy");
-		expect(merged.surfaces.cart.drawer.subtotal).toBe(defaultStorefrontContent.surfaces.cart.drawer.subtotal);
+		expect(merged.surfaces.cart.drawer.freeShippingQualified).toBe("Masz darmową dostawę!");
+		expect(merged.surfaces.cart.drawer.addForFreeShipping).toBe(
+			defaultStorefrontContent.surfaces.cart.drawer.addForFreeShipping,
+		);
 	});
 });

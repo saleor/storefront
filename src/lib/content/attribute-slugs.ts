@@ -20,8 +20,6 @@ export const STOREFRONT_POLICY_ATTRIBUTES = {
 export const STOREFRONT_PRODUCTS_ATTRIBUTES = {
 	title: "listing-title",
 	description: "listing-description",
-	breadcrumbHome: "breadcrumb-home",
-	breadcrumbProducts: "breadcrumb-products",
 } as const;
 
 export const STOREFRONT_HOMEPAGE_ATTRIBUTES = {
@@ -55,25 +53,8 @@ export const STOREFRONT_CART_ATTRIBUTES = {
 	trustFreeShippingPrefix: "trust-free-shipping-prefix",
 	trustReturnsLabel: "trust-returns-label",
 	drawerTitle: "drawer-title",
-	drawerItemCount: "drawer-item-count",
 	drawerAddForFreeShipping: "drawer-add-for-free-shipping",
 	drawerFreeShippingQualified: "drawer-free-shipping-qualified",
-	drawerSubtotal: "drawer-subtotal",
-	drawerShipping: "drawer-shipping",
-	drawerShippingFree: "drawer-shipping-free",
-	drawerShippingCalculated: "drawer-shipping-calculated",
-	drawerTotal: "drawer-total",
-	drawerCheckout: "drawer-checkout",
-	drawerContinueShopping: "drawer-continue-shopping",
-	drawerRemoveItem: "drawer-remove-item",
-	drawerDecreaseQuantity: "drawer-decrease-quantity",
-	drawerIncreaseQuantity: "drawer-increase-quantity",
-	pageTitle: "page-title",
-	pageQuantity: "page-quantity",
-	pageVariant: "page-variant",
-	pageYourTotal: "page-your-total",
-	pageShippingNote: "page-shipping-note",
-	pageCheckout: "page-checkout",
 } as const;
 
 export const STOREFRONT_CHECKOUT_ATTRIBUTES = {

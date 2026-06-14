@@ -1,0 +1,29 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# item} other {# items}}",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"shippingFree": "Free",
+			"shippingCalculated": "Calculated at checkout",
+			"total": "Total",
+			"checkout": "Checkout",
+			"continueShopping": "Continue Shopping",
+			"removeItem": "Remove {product}",
+			"decreaseQuantity": "Decrease quantity",
+			"increaseQuantity": "Increase quantity"
+		},
+		"page": {
+			"title": "Shopping Cart",
+			"quantity": "Qty: {count}",
+			"variant": "Variant: {name}",
+			"yourTotal": "Your Total",
+			"shippingNote": "Shipping will be calculated in the next step",
+			"checkout": "Checkout"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Home",
+		"breadcrumbProducts": "Products"
+	}
+}

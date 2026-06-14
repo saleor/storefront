@@ -17,8 +17,10 @@ Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-t
 | `storefront-policies` (PageType) / `storefront-policy` (global Page slug) | Channel-wide **policy values** (free-shipping threshold, returns window) — `NUMERIC`/`BOOLEAN`, not copy |
 | `storefront-chrome`                                                       | Site-wide chrome (e.g. announcement bar)                                                                 |
 | `storefront-homepage`                                                     | Homepage sections                                                                                        |
-| `storefront-cart`                                                         | Cart drawer copy                                                                                         |
+| `storefront-cart`                                                         | Cart drawer **editorial** copy (title, free-shipping nudges, empty state, trust)                         |
 | `storefront-checkout`                                                     | Checkout surface copy                                                                                    |
+
+**Editorial only (ADR 0002):** these models hold merchant-editable copy. **Functional UI strings** — cart totals/buttons, item count, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels — are **not** modeled here; they are code-owned via next-intl (`messages/{en,pl,de}.json`). When adding an attribute, ask _"would a merchant reword this per shop?"_ — if not, it belongs in `messages/*.json`, not a PageType. See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`.
 
 **Policy vs copy:** `storefront-policy` holds the _facts_ (a number/boolean); the other models hold _copy_ that only describes those facts via `{freeShippingThreshold}` / `{returnsWindowDays}` placeholders. One threshold feeds the cart progress math, the announcement bar, and the cart trust signal — change it in one place, everything stays consistent. Override per channel with `storefront-policy-{channelSlug}` (numbers are in the channel currency).
 

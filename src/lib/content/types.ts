@@ -90,42 +90,22 @@ export type CartTrustContent = {
 	returnsLabel: string;
 };
 
+/**
+ * Editorial cart-drawer copy only. Functional drawer chrome (totals, buttons, a11y
+ * labels, item count) lives in the code-owned i18n catalog (`messages/*.json`,
+ * namespace `cart.drawer`) — see ADR 0002.
+ */
 export type CartDrawerContent = {
 	title: string;
-	/** e.g. `{count} items` */
-	itemCount: string;
 	/** e.g. `Add {amount} more for free shipping` — `{amount}` is pre-formatted money */
 	addForFreeShipping: string;
 	freeShippingQualified: string;
-	subtotal: string;
-	shipping: string;
-	shippingFree: string;
-	shippingCalculated: string;
-	total: string;
-	checkout: string;
-	continueShopping: string;
-	/** e.g. `Remove {product}` */
-	removeItem: string;
-	decreaseQuantity: string;
-	increaseQuantity: string;
-};
-
-export type CartPageContent = {
-	title: string;
-	/** e.g. `Qty: {count}` */
-	quantity: string;
-	/** e.g. `Variant: {name}` */
-	variant: string;
-	yourTotal: string;
-	shippingNote: string;
-	checkout: string;
 };
 
 export type CartContent = {
 	empty: CartEmptyContent;
 	trust: CartTrustContent;
 	drawer: CartDrawerContent;
-	page: CartPageContent;
 };
 
 export type CheckoutEmptyCartContent = {
@@ -164,11 +144,13 @@ export type NavChromeContent = {
 	viewAllLabel: string;
 };
 
+/**
+ * Editorial listing copy. Breadcrumb labels (Home / Products) are functional chrome and
+ * live in the code-owned i18n catalog (`messages/*.json`, namespace `productsListing`).
+ */
 export type ProductsListingContent = {
 	title: string;
 	description: string;
-	breadcrumbHome: string;
-	breadcrumbProducts: string;
 };
 
 export type StorefrontSurfacesContent = {

@@ -84,7 +84,6 @@ export function mergeStorefrontContent(
 				empty: { ...base.surfaces.cart.empty, ...override.surfaces?.cart?.empty },
 				trust: { ...base.surfaces.cart.trust, ...override.surfaces?.cart?.trust },
 				drawer: { ...base.surfaces.cart.drawer, ...override.surfaces?.cart?.drawer },
-				page: { ...base.surfaces.cart.page, ...override.surfaces?.cart?.page },
 			},
 			checkout: {
 				...base.surfaces.checkout,

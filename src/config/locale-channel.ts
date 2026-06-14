@@ -28,9 +28,33 @@ function parseEnvLocaleChannelPairs(raw: string | undefined): LocaleChannelPair[
 	return unique.length > 0 ? unique : null;
 }
 
-/** Optional allowlist — `STOREFRONT_LOCALE_CHANNELS` as `en:default-channel,pl:channel-pln`. */
+/**
+ * Optional locale×channel allowlist as `en:default-channel,pl:channel-pln`.
+ *
+ * Must be public (`NEXT_PUBLIC_`): client consumers (region picker, nav hook) read the matrix
+ * at build time, and server consumers (404 guard, hreflang) read the same value. The slugs are
+ * already visible in URLs and the picker, so there is nothing sensitive to keep server-side.
+ */
 export function getConfiguredLocaleChannelPairs(): readonly LocaleChannelPair[] | null {
-	return parseEnvLocaleChannelPairs(process.env.STOREFRONT_LOCALE_CHANNELS);
+	return parseEnvLocaleChannelPairs(process.env.NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS);
+}
+
+/** When a pair matrix is configured, return the channel bound to a locale; otherwise keep the current channel. */
+export function getPairedChannelForLocale(locale: string, currentChannel: string): string {
+	const pairs = getConfiguredLocaleChannelPairs();
+	if (!pairs) return currentChannel;
+
+	const match = pairs.find((pair) => pair.locale === locale);
+	return match?.channel ?? currentChannel;
+}
+
+/** Locales valid for a channel when a pair matrix is configured; `null` means all locales are allowed. */
+export function getLocalesForChannel(channel: string): readonly LocaleSlug[] | null {
+	const pairs = getConfiguredLocaleChannelPairs();
+	if (!pairs) return null;
+
+	const locales = pairs.filter((pair) => pair.channel === channel).map((pair) => pair.locale);
+	return locales.length > 0 ? locales : null;
 }
 
 /** When pairs are configured, reject locale×channel combinations outside the matrix. */

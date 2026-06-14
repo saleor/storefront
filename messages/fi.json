@@ -1,0 +1,29 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# tuote} other {# tuotetta}}",
+			"subtotal": "Välisumma",
+			"shipping": "Toimitus",
+			"shippingFree": "Ilmainen",
+			"shippingCalculated": "Lasketaan kassalla",
+			"total": "Yhteensä",
+			"checkout": "Kassalle",
+			"continueShopping": "Jatka ostoksia",
+			"removeItem": "Poista {product}",
+			"decreaseQuantity": "Vähennä määrää",
+			"increaseQuantity": "Lisää määrää"
+		},
+		"page": {
+			"title": "Ostoskori",
+			"quantity": "Määrä: {count}",
+			"variant": "Variantti: {name}",
+			"yourTotal": "Kokonaissumma",
+			"shippingNote": "Toimitus lasketaan seuraavassa vaiheessa",
+			"checkout": "Kassalle"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Etusivu",
+		"breadcrumbProducts": "Tuotteet"
+	}
+}

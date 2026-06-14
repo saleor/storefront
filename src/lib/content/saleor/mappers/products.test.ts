@@ -28,8 +28,5 @@ describe("mapProductsPage", () => {
 
 		expect(merged.surfaces.products.title).toBe("Alle Produkte");
 		expect(merged.surfaces.products.description).toBe("Entdecken Sie unsere Kollektion.");
-		expect(merged.surfaces.products.breadcrumbHome).toBe(
-			defaultStorefrontContent.surfaces.products.breadcrumbHome,
-		);
 	});
 });

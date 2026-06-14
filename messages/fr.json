@@ -1,0 +1,29 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# article} other {# articles}}",
+			"subtotal": "Sous-total",
+			"shipping": "Livraison",
+			"shippingFree": "Gratuit",
+			"shippingCalculated": "Calculé à la caisse",
+			"total": "Total",
+			"checkout": "Commander",
+			"continueShopping": "Continuer mes achats",
+			"removeItem": "Retirer {product}",
+			"decreaseQuantity": "Diminuer la quantité",
+			"increaseQuantity": "Augmenter la quantité"
+		},
+		"page": {
+			"title": "Panier",
+			"quantity": "Qté : {count}",
+			"variant": "Variante : {name}",
+			"yourTotal": "Votre total",
+			"shippingNote": "Livraison calculée à l'étape suivante",
+			"checkout": "Commander"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Accueil",
+		"breadcrumbProducts": "Produits"
+	}
+}

@@ -80,8 +80,6 @@ export const defaultStorefrontContent = {
 		products: {
 			title: "All Products",
 			description: "Discover our full collection of premium products.",
-			breadcrumbHome: "Home",
-			breadcrumbProducts: "Products",
 		},
 		cart: {
 			empty: {
@@ -95,27 +93,8 @@ export const defaultStorefrontContent = {
 			},
 			drawer: {
 				title: "Your Bag",
-				itemCount: "{count} items",
 				addForFreeShipping: "Add {amount} more for free shipping",
 				freeShippingQualified: "You qualify for free shipping!",
-				subtotal: "Subtotal",
-				shipping: "Shipping",
-				shippingFree: "Free",
-				shippingCalculated: "Calculated at checkout",
-				total: "Total",
-				checkout: "Checkout",
-				continueShopping: "Continue Shopping",
-				removeItem: "Remove {product}",
-				decreaseQuantity: "Decrease quantity",
-				increaseQuantity: "Increase quantity",
-			},
-			page: {
-				title: "Shopping Cart",
-				quantity: "Qty: {count}",
-				variant: "Variant: {name}",
-				yourTotal: "Your Total",
-				shippingNote: "Shipping will be calculated in the next step",
-				checkout: "Checkout",
 			},
 		},
 		checkout: {

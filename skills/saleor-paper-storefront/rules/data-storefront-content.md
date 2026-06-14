@@ -26,6 +26,14 @@ Marketing and merchandising copy (announcement bar, homepage sections, cart trus
 
 **Code defaults always win as the base.** Saleor (or a future CMS provider) supplies **partials** that overlay defaults. The app never ships with blank copy when Saleor is down or a field is unset.
 
+### Scope: editorial copy vs functional UI strings (ADR 0002)
+
+This layer holds **editorial / merchant-editable copy only** — text a merchandiser would reword per shop (announcement bar, homepage sections, listing title/description, cart empty-state & trust signals, checkout). **Functional UI strings** (cart totals/buttons, the `{count} items` counter, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels) are **code-owned via next-intl** in `messages/{en,pl,de}.json` — type-safe, reviewed in code, with ICU plurals.
+
+Rule of thumb: _"Would a merchant reword this per shop?"_ → content layer (CMS); otherwise → `messages/*.json`.
+
+next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 0001) stays authoritative and is passed explicitly (`getTranslations({ locale })` in RSC; `<NextIntlClientProvider locale={…}>` in `(storefront)/[locale]/layout.tsx`). See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`.
+
 ### Policy vs copy
 
 `StorefrontContent` has a top-level **`policies`** branch (sibling to `chrome` / `surfaces`) for channel-wide _facts_ — `shipping.freeShippingThreshold`, `returns.windowDays`, etc. These are structured values (not strings): channel-scoped, locale-independent, and consumed by **logic** (cart progress math) as well as **copy**. Copy never hardcodes the number — it references it with `{freeShippingThreshold}` / `{returnsWindowDays}` tokens resolved via `buildPolicyLabelValues()` + `formatContentLabel()`. This is the single source of truth: the cart math, announcement bar, and cart trust signal can never disagree. Modeled in Saleor as the `storefront-policies` PageType (`NUMERIC`/`BOOLEAN`) — see `data-storefront-content-saleor.md`.

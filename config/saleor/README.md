@@ -53,7 +53,29 @@ pnpm configurator:storefront-content:plan
 
 # Apply to Saleor (blocked if remote entities would be deleted)
 pnpm configurator:storefront-content:deploy
+
+# Drop all storefront-* Pages + PageTypes, redeploy schema/seed, push locale translations
+pnpm configurator:storefront-content:reset
+# Note: reset runs deploy twice — Configurator needs page types committed before models on greenfield.
+
+# Push translation fixtures only (after deploy)
+pnpm configurator:storefront-content:translations
 ```
+
+### Translation fixtures
+
+Configurator seeds **English** defaults in `storefront-content.config.yml`. Non-default locales live in separate YAML files:
+
+```
+config/saleor/fixtures/translations/
+  pl.yaml   # languageCode: PL
+  de.yaml
+  fr.yaml
+  fi.yaml
+  nb.yaml   # Norwegian Bokmål — Saleor enum NB
+```
+
+Each file maps `page slug → attribute slug → translated plain text`. Policy placeholders (`{freeShippingThreshold}`, `{returnsWindowDays}`, `{amount}`, `{label}`) must be preserved. Apply with `pnpm configurator:storefront-content:translations` (GraphQL `attributeValueTranslate` — not supported by Configurator itself).
 
 ## How Configurator actually behaves (from `../configurator` source)
 

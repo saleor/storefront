@@ -30,7 +30,8 @@ Fork is on pre-locale `/{channel}/…` routes, or missing:
 NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de
 NEXT_PUBLIC_DEFAULT_LOCALE=en
 # Optional pair matrix (default: any allowed locale × any allowed channel)
-STOREFRONT_LOCALE_CHANNELS=en:default-channel,pl:channel-pln
+# Must be NEXT_PUBLIC_ — read by both the server (404 guard, hreflang) and the client picker/nav.
+NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:default-channel,pl:channel-pln
 ```
 
 ## Saleor language codes
