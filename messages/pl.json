@@ -97,5 +97,32 @@
 			"name": "Nazwa",
 			"newest": "Najnowsze"
 		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Główne"
+		},
+		"breadcrumbAriaLabel": "Nawigacja okruszkowa",
+		"cartButton": "{count, plural, one {# produkt w koszyku, zobacz koszyk} few {# produkty w koszyku, zobacz koszyk} many {# produktów w koszyku, zobacz koszyk} other {# produktu w koszyku, zobacz koszyk}}",
+		"mobileMenu": {
+			"open": "Otwórz menu",
+			"title": "Menu nawigacji"
+		},
+		"userMenu": {
+			"open": "Otwórz menu użytkownika",
+			"login": "Zaloguj się",
+			"myAccount": "Moje konto",
+			"myOrders": "Moje zamówienia",
+			"logOut": "Wyloguj się",
+			"unavailableAriaLabel": "Konto niedostępne",
+			"unavailableTitle": "Nie udało się załadować konta"
+		},
+		"regionPicker": {
+			"ariaLabel": "Język i rynek",
+			"languageTitle": "Język",
+			"languageDescription": "Treść i formatowanie",
+			"marketTitle": "Rynek",
+			"marketDescription": "Waluta, podatki i dostawa"
+		}
 	}
 }

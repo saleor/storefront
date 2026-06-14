@@ -123,9 +123,10 @@ async function ProductShell({
 }) {
 	const params = await paramsPromise;
 	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);
-	const [product, tPdp] = await Promise.all([
+	const [product, tPdp, tNav] = await Promise.all([
 		getProductData(params.slug, params.channel, params.locale),
 		getTranslations({ locale: params.locale, namespace: "pdp" }),
+		getTranslations({ locale: params.locale, namespace: "nav" }),
 	]);
 
 	if (!product) {
@@ -178,7 +179,7 @@ async function ProductShell({
 
 			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
 				<div className="mb-6 hidden sm:block">
-					<Breadcrumbs items={breadcrumbs} />
+					<Breadcrumbs items={breadcrumbs} ariaLabel={tNav("breadcrumbAriaLabel")} />
 				</div>
 
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">

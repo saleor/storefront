@@ -97,5 +97,32 @@
 			"name": "Nom",
 			"newest": "Plus récents"
 		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Principal"
+		},
+		"breadcrumbAriaLabel": "Fil d'Ariane",
+		"cartButton": "{count, plural, one {# article dans le panier, voir le panier} other {# articles dans le panier, voir le panier}}",
+		"mobileMenu": {
+			"open": "Ouvrir le menu",
+			"title": "Menu de navigation"
+		},
+		"userMenu": {
+			"open": "Ouvrir le menu utilisateur",
+			"login": "Se connecter",
+			"myAccount": "Mon compte",
+			"myOrders": "Mes commandes",
+			"logOut": "Se déconnecter",
+			"unavailableAriaLabel": "Compte indisponible",
+			"unavailableTitle": "Impossible de charger le compte"
+		},
+		"regionPicker": {
+			"ariaLabel": "Langue et marché",
+			"languageTitle": "Langue",
+			"languageDescription": "Textes et formatage",
+			"marketTitle": "Marché",
+			"marketDescription": "Devise, taxes et livraison"
+		}
 	}
 }

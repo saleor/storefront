@@ -8,11 +8,12 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
 	items: BreadcrumbItem[];
+	ariaLabel: string;
 }
 
-export function Breadcrumbs({ items }: BreadcrumbsProps) {
+export function Breadcrumbs({ items, ariaLabel }: BreadcrumbsProps) {
 	return (
-		<nav aria-label="Breadcrumb" className="text-sm">
+		<nav aria-label={ariaLabel} className="text-sm">
 			<ol className="flex items-center gap-1.5 text-muted-foreground">
 				{items.map((item, index) => (
 					<li key={index} className="flex items-center gap-1.5">

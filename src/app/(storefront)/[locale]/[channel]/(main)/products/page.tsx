@@ -48,17 +48,18 @@ type PageProps = {
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
-	const [{ surfaces }, tNav] = await Promise.all([
+	const [{ surfaces }, tListing, tNav] = await Promise.all([
 		getStorefrontContent(params.channel, params.locale),
 		getTranslations({ locale: params.locale, namespace: "productsListing" }),
+		getTranslations({ locale: params.locale, namespace: "nav" }),
 	]);
 	const productsCopy = surfaces.products;
 
 	// Breadcrumb labels are functional chrome — code-owned i18n (ADR 0002).
 	const breadcrumbs = [
-		{ label: tNav("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
+		{ label: tListing("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
 		{
-			label: tNav("breadcrumbProducts"),
+			label: tListing("breadcrumbProducts"),
 			href: buildStorefrontPath(params.locale, params.channel, "/products"),
 		},
 	];
@@ -70,6 +71,7 @@ export default async function Page(props: PageProps) {
 				title={productsCopy.title}
 				description={productsCopy.description}
 				breadcrumbs={breadcrumbs}
+				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
 			{/* Dynamic content - streams in via Suspense */}
 			<Suspense fallback={<ProductsGridSkeleton />}>

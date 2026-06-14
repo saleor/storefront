@@ -10,18 +10,22 @@ interface PageHeaderProps {
 	title: string;
 	description?: string | null;
 	breadcrumbs: BreadcrumbItem[];
+	breadcrumbAriaLabel: string;
 }
 
 /**
  * Simple page header with breadcrumbs for pages without hero images.
  * Use CategoryHero for pages with background images.
  */
-export function PageHeader({ title, description, breadcrumbs }: PageHeaderProps) {
+export function PageHeader({ title, description, breadcrumbs, breadcrumbAriaLabel }: PageHeaderProps) {
 	return (
 		<div className="w-full border-b border-border bg-background">
 			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 				{/* Breadcrumbs */}
-				<nav className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground">
+				<nav
+					aria-label={breadcrumbAriaLabel}
+					className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground"
+				>
 					{breadcrumbs.map((crumb, index) => (
 						<span key={crumb.href} className="flex items-center gap-1.5">
 							{index > 0 && <ChevronRight className="h-3.5 w-3.5" />}

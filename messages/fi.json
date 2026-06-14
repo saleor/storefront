@@ -97,5 +97,32 @@
 			"name": "Nimi",
 			"newest": "Uusimmat"
 		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Päänavigaatio"
+		},
+		"breadcrumbAriaLabel": "Murupolku",
+		"cartButton": "{count, plural, one {# tuote ostoskorissa, avaa kassi} other {# tuotetta ostoskorissa, avaa kassi}}",
+		"mobileMenu": {
+			"open": "Avaa valikko",
+			"title": "Navigointivalikko"
+		},
+		"userMenu": {
+			"open": "Avaa käyttäjävalikko",
+			"login": "Kirjaudu sisään",
+			"myAccount": "Oma tili",
+			"myOrders": "Omat tilaukset",
+			"logOut": "Kirjaudu ulos",
+			"unavailableAriaLabel": "Tili ei saatavilla",
+			"unavailableTitle": "Tilin lataaminen epäonnistui"
+		},
+		"regionPicker": {
+			"ariaLabel": "Kieli ja markkina",
+			"languageTitle": "Kieli",
+			"languageDescription": "Sisältö ja muotoilu",
+			"marketTitle": "Markkina",
+			"marketDescription": "Valuutta, verot ja toimitus"
+		}
 	}
 }

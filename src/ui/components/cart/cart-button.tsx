@@ -1,6 +1,7 @@
 "use client";
 
 import { ShoppingBagIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCart } from "./cart-context";
 
 interface CartButtonProps {
@@ -9,6 +10,7 @@ interface CartButtonProps {
 
 export function CartButton({ itemCount }: CartButtonProps) {
 	const { openCart } = useCart();
+	const t = useTranslations("nav");
 
 	return (
 		<button
@@ -27,9 +29,7 @@ export function CartButton({ itemCount }: CartButtonProps) {
 					{itemCount > 9 ? "9+" : itemCount}
 				</span>
 			)}
-			<span className="sr-only">
-				{itemCount} item{itemCount !== 1 ? "s" : ""} in cart, view bag
-			</span>
+			<span className="sr-only">{t("cartButton", { count: itemCount })}</span>
 		</button>
 	);
 }

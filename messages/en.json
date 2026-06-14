@@ -97,5 +97,32 @@
 			"name": "Name",
 			"newest": "Newest"
 		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Main"
+		},
+		"breadcrumbAriaLabel": "Breadcrumb",
+		"cartButton": "{count, plural, one {# item in cart, view bag} other {# items in cart, view bag}}",
+		"mobileMenu": {
+			"open": "Open menu",
+			"title": "Navigation menu"
+		},
+		"userMenu": {
+			"open": "Open user menu",
+			"login": "Log in",
+			"myAccount": "My account",
+			"myOrders": "My orders",
+			"logOut": "Log Out",
+			"unavailableAriaLabel": "Account unavailable",
+			"unavailableTitle": "Couldn't load account"
+		},
+		"regionPicker": {
+			"ariaLabel": "Language and market",
+			"languageTitle": "Language",
+			"languageDescription": "Site copy & formatting",
+			"marketTitle": "Market",
+			"marketDescription": "Currency, tax & shipping"
+		}
 	}
 }

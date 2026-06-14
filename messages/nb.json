@@ -97,5 +97,32 @@
 			"name": "Navn",
 			"newest": "Nyeste"
 		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Hoved"
+		},
+		"breadcrumbAriaLabel": "Navigasjonssti",
+		"cartButton": "{count, plural, one {# vare i handlekurven, vis veske} other {# varer i handlekurven, vis veske}}",
+		"mobileMenu": {
+			"open": "Åpne meny",
+			"title": "Navigasjonsmeny"
+		},
+		"userMenu": {
+			"open": "Åpne brukermeny",
+			"login": "Logg inn",
+			"myAccount": "Min konto",
+			"myOrders": "Mine bestillinger",
+			"logOut": "Logg ut",
+			"unavailableAriaLabel": "Konto utilgjengelig",
+			"unavailableTitle": "Kunne ikke laste konto"
+		},
+		"regionPicker": {
+			"ariaLabel": "Språk og marked",
+			"languageTitle": "Språk",
+			"languageDescription": "Tekst og formatering",
+			"marketTitle": "Marked",
+			"marketDescription": "Valuta, avgifter og frakt"
+		}
 	}
 }

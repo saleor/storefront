@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { Check, ChevronDown, Globe, Languages, Store } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { ChannelSelectOption } from "@/config/channels";
 import { getLocaleDefinition } from "@/config/locale";
 import { getLocalesForChannel } from "@/config/locale-channel";
@@ -92,6 +93,7 @@ export function StorefrontRegionPicker({
 	className,
 }: StorefrontRegionPickerProps) {
 	const { locale, channel, navigateToLocale, navigateToChannel } = useStorefrontRegionNavigation();
+	const t = useTranslations("nav.regionPicker");
 
 	const showLanguage = locales.length > 1;
 	const showMarket = channels.length > 1;
@@ -124,7 +126,7 @@ export function StorefrontRegionPicker({
 						: "hover:border-border/80 hover:bg-secondary/60 border-border bg-background text-foreground shadow-sm focus-visible:ring-ring focus-visible:ring-offset-background",
 					className,
 				)}
-				aria-label="Language and market"
+				aria-label={t("ariaLabel")}
 			>
 				<Globe
 					className={cn(
@@ -155,7 +157,7 @@ export function StorefrontRegionPicker({
 			>
 				<div className={cn("grid gap-4", showLanguage && showMarket && "sm:grid-cols-2")}>
 					{showLanguage ? (
-						<PickerSection icon={Languages} title="Language" description="Site copy & formatting">
+						<PickerSection icon={Languages} title={t("languageTitle")} description={t("languageDescription")}>
 							<DropdownMenuGroup>
 								<DropdownMenuRadioGroup value={locale} onValueChange={navigateToLocale}>
 									{visibleLocales.map((item) => (
@@ -174,7 +176,7 @@ export function StorefrontRegionPicker({
 					) : null}
 
 					{showMarket ? (
-						<PickerSection icon={Store} title="Market" description="Currency, tax & shipping">
+						<PickerSection icon={Store} title={t("marketTitle")} description={t("marketDescription")}>
 							<DropdownMenuGroup>
 								<DropdownMenuRadioGroup value={channel} onValueChange={navigateToChannel}>
 									{marketOptions.map((item) => (

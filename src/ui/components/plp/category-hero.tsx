@@ -14,9 +14,16 @@ interface CategoryHeroProps {
 	description?: string | null;
 	backgroundImage?: string | null;
 	breadcrumbs: BreadcrumbItem[];
+	breadcrumbAriaLabel: string;
 }
 
-export function CategoryHero({ title, description, backgroundImage, breadcrumbs }: CategoryHeroProps) {
+export function CategoryHero({
+	title,
+	description,
+	backgroundImage,
+	breadcrumbs,
+	breadcrumbAriaLabel,
+}: CategoryHeroProps) {
 	const hasImage = !!backgroundImage;
 
 	return (
@@ -45,6 +52,7 @@ export function CategoryHero({ title, description, backgroundImage, breadcrumbs 
 			<div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-10 sm:px-6 lg:px-8">
 				{/* Breadcrumbs */}
 				<nav
+					aria-label={breadcrumbAriaLabel}
 					className={`mb-4 flex items-center gap-1.5 text-sm ${
 						hasImage ? "text-background/70" : "text-muted-foreground"
 					}`}

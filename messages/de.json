@@ -97,5 +97,32 @@
 			"name": "Name",
 			"newest": "Neueste"
 		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Hauptnavigation"
+		},
+		"breadcrumbAriaLabel": "Brotkrümelnavigation",
+		"cartButton": "{count, plural, one {# Artikel im Warenkorb, Tasche ansehen} other {# Artikel im Warenkorb, Tasche ansehen}}",
+		"mobileMenu": {
+			"open": "Menü öffnen",
+			"title": "Navigationsmenü"
+		},
+		"userMenu": {
+			"open": "Benutzermenü öffnen",
+			"login": "Anmelden",
+			"myAccount": "Mein Konto",
+			"myOrders": "Meine Bestellungen",
+			"logOut": "Abmelden",
+			"unavailableAriaLabel": "Konto nicht verfügbar",
+			"unavailableTitle": "Konto konnte nicht geladen werden"
+		},
+		"regionPicker": {
+			"ariaLabel": "Sprache und Markt",
+			"languageTitle": "Sprache",
+			"languageDescription": "Texte & Formatierung",
+			"marketTitle": "Markt",
+			"marketDescription": "Währung, Steuern & Versand"
+		}
 	}
 }

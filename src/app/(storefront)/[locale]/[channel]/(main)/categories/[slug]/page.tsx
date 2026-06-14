@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
@@ -45,7 +46,11 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
-	const category = await getCategoryData(params.slug, params.channel, params.locale);
+	const [category, tListing, tNav] = await Promise.all([
+		getCategoryData(params.slug, params.channel, params.locale),
+		getTranslations({ locale: params.locale, namespace: "productsListing" }),
+		getTranslations({ locale: params.locale, namespace: "nav" }),
+	]);
 
 	if (!category) {
 		notFound();
@@ -54,7 +59,7 @@ export default async function Page(props: PageProps) {
 	const plainDescription = parseEditorJSToText(category.description);
 
 	const breadcrumbs = [
-		{ label: "Home", href: buildStorefrontPath(params.locale, params.channel) },
+		{ label: tListing("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
 		{
 			label: category.name,
 			href: buildStorefrontPath(params.locale, params.channel, `/categories/${params.slug}`),
@@ -68,6 +73,7 @@ export default async function Page(props: PageProps) {
 				description={plainDescription}
 				backgroundImage={category.backgroundImage?.url}
 				breadcrumbs={breadcrumbs}
+				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
 			<Suspense fallback={<ProductsGridSkeleton />}>
 				<CategoryProducts params={props.params} searchParams={props.searchParams} />

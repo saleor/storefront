@@ -20,9 +20,10 @@ export async function Header({
 	channel: string;
 	nav: NavChromeContent;
 }) {
-	const [navItems, tSearchBar] = await Promise.all([
+	const [navItems, tSearchBar, tNavHeader] = await Promise.all([
 		getNavbarMenuItems(channel, locale).then((items) => serializeMenuForNav(items ?? [])),
 		getTranslations({ locale, namespace: "search.bar" }),
+		getTranslations({ locale, namespace: "nav.header" }),
 	]);
 
 	return (
@@ -40,7 +41,7 @@ export async function Header({
 						/>
 					</div>
 
-					<nav className="hidden lg:flex" aria-label="Main">
+					<nav className="hidden lg:flex" aria-label={tNavHeader("mainAriaLabel")}>
 						<NavLinksDesktop items={navItems} nav={nav} />
 					</nav>
 
