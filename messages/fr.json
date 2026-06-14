@@ -26,6 +26,12 @@
 		"breadcrumbHome": "Accueil",
 		"breadcrumbProducts": "Produits"
 	},
+	"common": {
+		"pagination": {
+			"previous": "Précédent",
+			"next": "Suivant"
+		}
+	},
 	"pdp": {
 		"addToBag": "Ajouter au panier",
 		"adding": "Ajout…",
@@ -45,5 +51,28 @@
 			"percentOffA11y": "{percent}% de réduction",
 			"selectedA11y": "sélectionné"
 		}
+	},
+	"plp": {
+		"quickAdd": "Ajout rapide",
+		"filtersButton": "Filtres",
+		"filterLabels": {
+			"category": "Catégorie",
+			"color": "Couleur",
+			"size": "Taille",
+			"price": "Prix",
+			"priceRange": "Fourchette de prix"
+		},
+		"sort": "Trier",
+		"sortOptions": {
+			"featured": "En vedette",
+			"newest": "Plus récents",
+			"price_asc": "Prix : croissant",
+			"price_desc": "Prix : décroissant",
+			"bestselling": "Meilleures ventes"
+		},
+		"resultCount": "{count, plural, one {# produit} other {# produits}}",
+		"clearAllFilters": "Effacer les filtres ({count})",
+		"clearAll": "Tout effacer",
+		"removeFilter": "Retirer le filtre {value}"
 	}
 }

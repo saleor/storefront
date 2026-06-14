@@ -26,6 +26,12 @@
 		"breadcrumbHome": "Etusivu",
 		"breadcrumbProducts": "Tuotteet"
 	},
+	"common": {
+		"pagination": {
+			"previous": "Edellinen",
+			"next": "Seuraava"
+		}
+	},
 	"pdp": {
 		"addToBag": "Lisää koriin",
 		"adding": "Lisätään…",
@@ -45,5 +51,28 @@
 			"percentOffA11y": "{percent}% alennus",
 			"selectedA11y": "valittu"
 		}
+	},
+	"plp": {
+		"quickAdd": "Pikalisäys",
+		"filtersButton": "Suodattimet",
+		"filterLabels": {
+			"category": "Kategoria",
+			"color": "Väri",
+			"size": "Koko",
+			"price": "Hinta",
+			"priceRange": "Hintaväli"
+		},
+		"sort": "Järjestä",
+		"sortOptions": {
+			"featured": "Suositellut",
+			"newest": "Uusimmat",
+			"price_asc": "Hinta: halvin ensin",
+			"price_desc": "Hinta: kallein ensin",
+			"bestselling": "Myydyimmät"
+		},
+		"resultCount": "{count, plural, one {# tuote} other {# tuotetta}}",
+		"clearAllFilters": "Tyhjennä suodattimet ({count})",
+		"clearAll": "Tyhjennä kaikki",
+		"removeFilter": "Poista suodatin {value}"
 	}
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ariaDisabledClassName, buttonClassName } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,7 @@ export function Pagination({
 }) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
+	const t = useTranslations("common.pagination");
 
 	const nextSearchParams = new URLSearchParams(searchParams);
 	nextSearchParams.set("cursor", pageInfo.endCursor ?? "");
@@ -47,7 +49,7 @@ export function Pagination({
 				}
 				aria-disabled={isPrevDisabled}
 			>
-				Previous
+				{t("previous")}
 			</Link>
 
 			<Link
@@ -59,7 +61,7 @@ export function Pagination({
 				}
 				aria-disabled={isNextDisabled}
 			>
-				Next
+				{t("next")}
 			</Link>
 		</nav>
 	);

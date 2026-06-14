@@ -26,6 +26,12 @@
 		"breadcrumbHome": "Home",
 		"breadcrumbProducts": "Products"
 	},
+	"common": {
+		"pagination": {
+			"previous": "Previous",
+			"next": "Next"
+		}
+	},
 	"pdp": {
 		"addToBag": "Add to bag",
 		"adding": "Adding...",
@@ -45,5 +51,28 @@
 			"percentOffA11y": "{percent}% off",
 			"selectedA11y": "selected"
 		}
+	},
+	"plp": {
+		"quickAdd": "Quick Add",
+		"filtersButton": "Filters",
+		"filterLabels": {
+			"category": "Category",
+			"color": "Color",
+			"size": "Size",
+			"price": "Price",
+			"priceRange": "Price Range"
+		},
+		"sort": "Sort",
+		"sortOptions": {
+			"featured": "Featured",
+			"newest": "Newest",
+			"price_asc": "Price: Low to High",
+			"price_desc": "Price: High to Low",
+			"bestselling": "Best Selling"
+		},
+		"resultCount": "{count, plural, one {# product} other {# products}}",
+		"clearAllFilters": "Clear all filters ({count})",
+		"clearAll": "Clear all",
+		"removeFilter": "Remove {value} filter"
 	}
 }

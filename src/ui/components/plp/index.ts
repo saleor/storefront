@@ -11,6 +11,7 @@ export {
 	type FilterOption,
 	type CategoryFilterOption,
 	type ActiveFilter,
+	type FilterLabelKey,
 } from "./filter-bar";
 export { WavePattern } from "./wave-pattern";
 export { toProductCardData, transformToProductCard, formatPrice } from "./utils";

@@ -26,6 +26,12 @@
 		"breadcrumbHome": "Hjem",
 		"breadcrumbProducts": "Produkter"
 	},
+	"common": {
+		"pagination": {
+			"previous": "Forrige",
+			"next": "Neste"
+		}
+	},
 	"pdp": {
 		"addToBag": "Legg i handlekurv",
 		"adding": "Legger til…",
@@ -45,5 +51,28 @@
 			"percentOffA11y": "{percent}% rabatt",
 			"selectedA11y": "valgt"
 		}
+	},
+	"plp": {
+		"quickAdd": "Hurtigkjøp",
+		"filtersButton": "Filtre",
+		"filterLabels": {
+			"category": "Kategori",
+			"color": "Farge",
+			"size": "Størrelse",
+			"price": "Pris",
+			"priceRange": "Prisintervall"
+		},
+		"sort": "Sorter",
+		"sortOptions": {
+			"featured": "Utvalgte",
+			"newest": "Nyeste",
+			"price_asc": "Pris: lav til høy",
+			"price_desc": "Pris: høy til lav",
+			"bestselling": "Bestselgere"
+		},
+		"resultCount": "{count, plural, one {# produkt} other {# produkter}}",
+		"clearAllFilters": "Fjern alle filtre ({count})",
+		"clearAll": "Fjern alle",
+		"removeFilter": "Fjern filter {value}"
 	}
 }

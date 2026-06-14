@@ -26,6 +26,12 @@
 		"breadcrumbHome": "Strona główna",
 		"breadcrumbProducts": "Produkty"
 	},
+	"common": {
+		"pagination": {
+			"previous": "Poprzednia",
+			"next": "Następna"
+		}
+	},
 	"pdp": {
 		"addToBag": "Dodaj do koszyka",
 		"adding": "Dodawanie…",
@@ -45,5 +51,28 @@
 			"percentOffA11y": "{percent}% taniej",
 			"selectedA11y": "wybrane"
 		}
+	},
+	"plp": {
+		"quickAdd": "Szybkie dodanie",
+		"filtersButton": "Filtry",
+		"filterLabels": {
+			"category": "Kategoria",
+			"color": "Kolor",
+			"size": "Rozmiar",
+			"price": "Cena",
+			"priceRange": "Zakres cen"
+		},
+		"sort": "Sortuj",
+		"sortOptions": {
+			"featured": "Polecane",
+			"newest": "Najnowsze",
+			"price_asc": "Cena: rosnąco",
+			"price_desc": "Cena: malejąco",
+			"bestselling": "Bestsellery"
+		},
+		"resultCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+		"clearAllFilters": "Wyczyść filtry ({count})",
+		"clearAll": "Wyczyść wszystko",
+		"removeFilter": "Usuń filtr {value}"
 	}
 }
