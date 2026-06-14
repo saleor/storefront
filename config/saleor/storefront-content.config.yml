@@ -12,6 +12,7 @@
 #   Channel override: storefront-chrome-{channelSlug}
 #
 # Attribute slugs must match src/lib/content/attribute-slugs.ts
+# Greenfield: pnpm configurator:storefront-content:deploy — creates PageTypes, attributes, and seed models below.
 
 contentAttributes:
   # Storefront — Policies (channel-wide facts; NUMERIC so the Dashboard validates them
@@ -23,6 +24,7 @@ contentAttributes:
   # Storefront — Chrome
   - name: Announcement ID
     inputType: PLAIN_TEXT
+  # Seed + translations: keep {freeShippingThreshold} (value from storefront-policy model)
   - name: Announcement message
     inputType: PLAIN_TEXT
   - name: Announcement href
@@ -74,6 +76,7 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Values column 2 title
     inputType: PLAIN_TEXT
+  # Seed + translations: keep {returnsWindowDays} (value from storefront-policy model)
   - name: Values column 2 text
     inputType: PLAIN_TEXT
   - name: Values column 3 title
@@ -97,6 +100,7 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Trust free shipping prefix
     inputType: PLAIN_TEXT
+  # Seed + translations: keep {returnsWindowDays}
   - name: Trust returns label
     inputType: PLAIN_TEXT
   - name: Drawer title
