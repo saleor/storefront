@@ -124,5 +124,236 @@
 			"marketTitle": "Rynek",
 			"marketDescription": "Waluta, podatki i dostawa"
 		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Zaloguj się",
+			"loginDescription": "Zaloguj się na swoje konto, aby uzyskać dostęp do zamówień i zapisanych adresów.",
+			"signupTitle": "Utwórz konto",
+			"signupDescription": "Utwórz konto, aby zapisywać adresy i historię zamówień.",
+			"accountTitle": "Moje konto"
+		},
+		"fields": {
+			"email": "E-mail",
+			"emailAddress": "Adres e-mail",
+			"password": "Hasło",
+			"firstName": "Imię",
+			"lastName": "Nazwisko",
+			"confirmPassword": "Potwierdź hasło",
+			"currentPassword": "Aktualne hasło",
+			"newPassword": "Nowe hasło",
+			"confirmNewPassword": "Potwierdź nowe hasło",
+			"name": "Imię i nazwisko",
+			"companyOptional": "Firma (opcjonalnie)",
+			"streetAddress": "Ulica i numer",
+			"streetAddress2Optional": "Mieszkanie, lokal itp. (opcjonalnie)",
+			"city": "Miasto",
+			"postalCode": "Kod pocztowy",
+			"stateProvince": "Województwo / region",
+			"countryCode": "Kod kraju",
+			"phoneOptional": "Telefon (opcjonalnie)"
+		},
+		"placeholders": {
+			"email": "ty@example.com",
+			"password": "Wprowadź hasło",
+			"firstName": "Imię",
+			"lastName": "Nazwisko",
+			"newPasswordMin": "Co najmniej 8 znaków…",
+			"confirmPassword": "Potwierdź hasło",
+			"reenterPassword": "Wprowadź hasło ponownie",
+			"countryCode": "PL"
+		},
+		"common": {
+			"cancel": "Anuluj",
+			"save": "Zapisz",
+			"saving": "Zapisywanie…",
+			"edit": "Edytuj",
+			"delete": "Usuń",
+			"updated": "Zaktualizowano",
+			"showPassword": "Pokaż hasło",
+			"hidePassword": "Ukryj hasło",
+			"free": "Bezpłatnie",
+			"qty": "Ilość: {count}",
+			"itemCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+			"notSet": "Nie ustawiono",
+			"change": "Zmień",
+			"changing": "Zmienianie…",
+			"sending": "Wysyłanie…"
+		},
+		"errors": {
+			"invalidEmail": "Wprowadź prawidłowy adres e-mail",
+			"invalidEmailFirst": "Najpierw wprowadź prawidłowy adres e-mail",
+			"passwordRequired": "Wprowadź hasło",
+			"passwordMinLength": "Hasło musi mieć co najmniej 8 znaków",
+			"passwordsMismatch": "Hasła nie są zgodne",
+			"newPasswordRequired": "Wprowadź nowe hasło",
+			"generic": "Wystąpił błąd. Spróbuj ponownie.",
+			"signInFailed": "Logowanie nie powiodło się. Spróbuj ponownie.",
+			"invalidCredentials": "Nieprawidłowy e-mail lub hasło. Spróbuj ponownie.",
+			"rateLimited": "Zbyt wiele prób logowania. Poczekaj i spróbuj ponownie.",
+			"resetLinkFailed": "Nie udało się wysłać linku do resetowania",
+			"accountExists": "Konto z tym adresem e-mail już istnieje. Zaloguj się zamiast tego.",
+			"createAccountFailed": "Nie udało się utworzyć konta",
+			"invalidResetToken": "Ten link do resetowania hasła wygasł. Poproś o nowy.",
+			"setPasswordFailed": "Nie udało się ustawić hasła",
+			"invalidConfirmToken": "Ten link potwierdzający wygasł lub został już użyty. Spróbuj się zalogować lub zarejestruj ponownie.",
+			"confirmFailed": "Nie udało się potwierdzić konta",
+			"loadOrdersFailed": "Nie udało się załadować zamówień. Spróbuj ponownie za chwilę.",
+			"loadOrderFailed": "Nie udało się załadować tego zamówienia. Spróbuj ponownie.",
+			"loadRecentOrdersFailed": "Nie udało się załadować ostatnich zamówień.",
+			"updateProfileFailed": "Nie udało się zaktualizować profilu",
+			"changePasswordFailed": "Nie udało się zmienić hasła",
+			"createAddressFailed": "Nie udało się dodać adresu",
+			"updateAddressFailed": "Nie udało się zaktualizować adresu",
+			"deleteAddressFailed": "Nie udało się usunąć adresu",
+			"setDefaultAddressFailed": "Nie udało się ustawić domyślnego adresu",
+			"deleteAccountFailed": "Nie udało się złożyć wniosku o usunięcie konta"
+		},
+		"login": {
+			"title": "Witaj ponownie",
+			"noAccount": "Nie masz konta?",
+			"signUp": "Zarejestruj się",
+			"forgotPassword": "Zapomniałeś hasła?",
+			"submit": "Zaloguj się",
+			"submitting": "Logowanie…",
+			"resetSent": "Jeśli konto dla {email} istnieje, wysłaliśmy link do resetowania hasła. Uwaga: możesz poprosić o link tylko raz na 15 minut."
+		},
+		"signup": {
+			"title": "Utwórz konto",
+			"hasAccount": "Masz już konto?",
+			"signIn": "Zaloguj się",
+			"submit": "Utwórz konto",
+			"submitting": "Tworzenie konta…",
+			"successTitle": "Konto utworzone!",
+			"successBody": "Sprawdź e-mail, aby zweryfikować konto.",
+			"goToSignIn": "Przejdź do logowania",
+			"terms": "Tworząc konto, akceptujesz nasze <terms>Warunki korzystania</terms> i <privacy>Politykę prywatności</privacy>.",
+			"termsLink": "Warunki korzystania",
+			"privacyLink": "Polityka prywatności"
+		},
+		"setPassword": {
+			"title": "Ustaw nowe hasło",
+			"subtitle": "Wprowadź nowe hasło dla {email}",
+			"submit": "Zaktualizuj hasło",
+			"submitting": "Aktualizowanie…",
+			"backToSignIn": "Wróć do logowania",
+			"successTitle": "Hasło zaktualizowane!",
+			"successBody": "Hasło zostało pomyślnie zresetowane. Jesteś teraz zalogowany.",
+			"redirecting": "Przekierowujemy do sklepu…"
+		},
+		"confirm": {
+			"confirmingTitle": "Potwierdzanie konta",
+			"confirmingBody": "Weryfikacja {email}…",
+			"successTitle": "Konto potwierdzone",
+			"successBody": "Twoje konto dla {email} jest aktywne. Zaloguj się hasłem, które utworzyłeś.",
+			"signIn": "Zaloguj się",
+			"continueShopping": "Kontynuuj zakupy",
+			"errorTitle": "Nie udało się potwierdzić konta",
+			"goToSignIn": "Przejdź do logowania"
+		},
+		"nav": {
+			"ariaLabel": "Konto",
+			"backToStore": "Wróć do sklepu",
+			"signOut": "Wyloguj się",
+			"overview": "Przegląd",
+			"orders": "Zamówienia",
+			"addresses": "Adresy",
+			"settings": "Ustawienia"
+		},
+		"overview": {
+			"welcome": "Witaj ponownie, {name}",
+			"subtitle": "Oto przegląd aktywności na Twoim koncie.",
+			"recentOrders": "Ostatnie zamówienia",
+			"viewAll": "Zobacz wszystkie",
+			"noOrdersYet": "Nie złożyłeś jeszcze żadnych zamówień."
+		},
+		"orders": {
+			"title": "Zamówienia",
+			"count": "{count, plural, =0 {Brak zamówień} one {# zamówienie} few {# zamówienia} many {# zamówień} other {# zamówienia}}",
+			"empty": "Nie złożyłeś jeszcze żadnych zamówień.",
+			"loadMore": "Załaduj więcej zamówień",
+			"signInRequired": "Zaloguj się, aby zobaczyć zamówienia.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Złożono {date}",
+			"items": "Produkty ({count})",
+			"subtotal": "Suma częściowa",
+			"shipping": "Dostawa",
+			"tax": "Podatek",
+			"total": "Razem",
+			"shippingAddress": "Adres dostawy",
+			"billingAddress": "Adres rozliczeniowy",
+			"paymentMethod": "Metoda płatności",
+			"paid": "Opłacone",
+			"needHelp": "Potrzebujesz pomocy?",
+			"signInRequired": "Zaloguj się, aby zobaczyć to zamówienie.",
+			"loadFailed": "Nie udało się załadować tego zamówienia. Spróbuj ponownie.",
+			"timeline": "Historia zamówienia"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "W realizacji",
+			"UNCONFIRMED": "Oczekuje na potwierdzenie",
+			"PARTIALLY_FULFILLED": "Częściowo wysłane",
+			"FULFILLED": "Wysłane"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Zamówienie potwierdzone",
+			"orderConfirmedDescription": "Płatność potwierdzona i zamówienie złożone",
+			"FULFILLED": "Wysłane",
+			"FULFILLEDDescription": "Twoje zamówienie zostało wysłane",
+			"CANCELED": "Realizacja anulowana",
+			"CANCELEDDescription": "Wysyłka została anulowana",
+			"REFUNDED": "Zwrócone",
+			"REFUNDEDDescription": "Płatność została zwrócona",
+			"REFUNDED_AND_RETURNED": "Zwrócone i odebrane",
+			"REFUNDED_AND_RETURNEDDescription": "Produkty zwrócone i płatność zwrócona",
+			"REPLACED": "Wymienione",
+			"REPLACEDDescription": "Produkty zostały wymienione",
+			"RETURNED": "Odebrane",
+			"RETURNEDDescription": "Produkty zostały odebrane",
+			"WAITING_FOR_APPROVAL": "Oczekuje na zatwierdzenie",
+			"WAITING_FOR_APPROVALDescription": "Realizacja oczekuje na zatwierdzenie",
+			"trackingUpdated": "Zaktualizowano śledzenie",
+			"trackingNumber": "Numer śledzenia: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}})"
+		},
+		"settings": {
+			"title": "Ustawienia",
+			"subtitle": "Zarządzaj ustawieniami konta",
+			"memberSince": "Członek od {date}"
+		},
+		"addresses": {
+			"title": "Adresy",
+			"subtitle": "Zarządzaj zapisanymi adresami",
+			"empty": "Brak zapisanych adresów.",
+			"addAddress": "Dodaj adres",
+			"editAddress": "Edytuj adres",
+			"addNewAddress": "Dodaj nowy adres",
+			"editAddressDescription": "Zaktualizuj dane adresu",
+			"addAddressDescription": "Dodaj nowy adres do konta",
+			"editAddressAria": "Edytuj adres",
+			"updateAddress": "Zaktualizuj adres",
+			"deleteAddressAria": "Usuń adres",
+			"defaultShipping": "Domyślny do wysyłki",
+			"defaultBilling": "Domyślny do rozliczeń",
+			"makeDefaultShipping": "Ustaw jako domyślny do wysyłki",
+			"makeDefaultBilling": "Ustaw jako domyślny do rozliczeń"
+		},
+		"deleteAccount": {
+			"title": "Usuń konto",
+			"description": "Trwale usuń konto i wszystkie powiązane dane.",
+			"submit": "Usuń konto",
+			"confirm": "Tak, usuń moje konto",
+			"confirmBody": "Tej operacji nie można cofnąć. Otrzymasz e-mail potwierdzający przed usunięciem konta.",
+			"emailSent": "Wysłano e-mail potwierdzający. Sprawdź skrzynkę odbiorczą, aby dokończyć usuwanie konta."
+		},
+		"changePassword": {
+			"submit": "Zmień hasło"
+		},
+		"unavailable": {
+			"title": "Nie udało się załadować konta",
+			"body": "Sklep jest tymczasowo niedostępny. Odśwież stronę lub spróbuj ponownie za chwilę."
+		}
 	}
 }

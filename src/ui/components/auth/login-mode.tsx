@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { loginWithBff, syncAuthSurfacesAfterSignIn } from "@/lib/auth";
 import { buildStorefrontPath } from "@/lib/storefront-path";
@@ -13,6 +14,7 @@ import { Label } from "@/ui/components/ui/label";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginMode() {
+	const t = useTranslations("account");
 	const params = useParams<{ locale: string; channel: string }>();
 	const router = useRouter();
 
@@ -29,12 +31,12 @@ export function LoginMode() {
 		setError("");
 
 		if (!email || !EMAIL_RE.test(email)) {
-			setError("Please enter a valid email address");
+			setError(t("errors.invalidEmail"));
 			return;
 		}
 
 		if (!password) {
-			setError("Please enter your password");
+			setError(t("errors.passwordRequired"));
 			return;
 		}
 
@@ -53,10 +55,10 @@ export function LoginMode() {
 				const isRateLimited = err.code === "RATE_LIMITED";
 				setError(
 					isRateLimited
-						? "Too many sign-in attempts. Please wait and try again."
+						? t("errors.rateLimited")
 						: isInvalidCredentials
-							? "Invalid email or password. Please try again."
-							: err.message || "Sign in failed",
+							? t("errors.invalidCredentials")
+							: t("errors.signInFailed"),
 				);
 				return;
 			}
@@ -68,9 +70,9 @@ export function LoginMode() {
 				return;
 			}
 
-			setError("Sign in failed. Please try again.");
+			setError(t("errors.signInFailed"));
 		} catch {
-			setError("An error occurred. Please try again.");
+			setError(t("errors.generic"));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -81,7 +83,7 @@ export function LoginMode() {
 		setResetMessage("");
 
 		if (!email || !EMAIL_RE.test(email)) {
-			setError("Please enter a valid email address first");
+			setError(t("errors.invalidEmailFirst"));
 			return;
 		}
 
@@ -105,16 +107,14 @@ export function LoginMode() {
 			};
 
 			if (data.errors?.length) {
-				setError(data.errors[0].message || "Failed to send reset link");
+				setError(t("errors.resetLinkFailed"));
 				return;
 			}
 
 			setResetEmailSent(true);
-			setResetMessage(
-				`If an account exists for ${email}, a password reset link has been sent. Note: You can only request one reset link every 15 minutes.`,
-			);
+			setResetMessage(t("login.resetSent", { email }));
 		} catch {
-			setError("An error occurred. Please try again.");
+			setError(t("errors.generic"));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -124,14 +124,14 @@ export function LoginMode() {
 		<div className="mx-auto my-16 w-full max-w-md">
 			<div className="rounded-lg border border-border bg-card p-8 shadow-sm">
 				<div className="mb-6 text-center">
-					<h1 className="text-2xl font-semibold">Welcome Back</h1>
+					<h1 className="text-2xl font-semibold">{t("login.title")}</h1>
 					<p className="mt-2 text-sm text-muted-foreground">
-						Don&apos;t have an account?{" "}
+						{t("login.noAccount")}{" "}
 						<Link
 							href={buildStorefrontPath(params.locale, params.channel, "/signup")}
 							className="font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
-							Sign up
+							{t("login.signUp")}
 						</Link>
 					</p>
 				</div>
@@ -151,14 +151,14 @@ export function LoginMode() {
 
 					<div className="space-y-1.5">
 						<Label htmlFor="email" className="text-sm font-medium">
-							Email
+							{t("fields.email")}
 						</Label>
 						<div className="relative">
 							<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								id="email"
 								type="email"
-								placeholder="you@example.com"
+								placeholder={t("placeholders.email")}
 								autoComplete="email"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
@@ -170,14 +170,14 @@ export function LoginMode() {
 
 					<div className="space-y-1.5">
 						<Label htmlFor="password" className="text-sm font-medium">
-							Password
+							{t("fields.password")}
 						</Label>
 						<div className="relative">
 							<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								id="password"
 								type={showPassword ? "text" : "password"}
-								placeholder="Enter your password"
+								placeholder={t("placeholders.password")}
 								autoComplete="current-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
@@ -187,7 +187,7 @@ export function LoginMode() {
 							<button
 								type="button"
 								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? "Hide password" : "Show password"}
+								aria-label={showPassword ? t("common.hidePassword") : t("common.showPassword")}
 								className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
 							>
 								{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -202,12 +202,12 @@ export function LoginMode() {
 							disabled={isSubmitting || resetEmailSent}
 							className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground hover:no-underline disabled:opacity-50"
 						>
-							Forgot password?
+							{t("login.forgotPassword")}
 						</button>
 					</div>
 
 					<Button type="submit" disabled={isSubmitting} className="h-12 w-full text-base font-semibold">
-						{isSubmitting ? "Signing in…" : "Sign In"}
+						{isSubmitting ? t("login.submitting") : t("login.submit")}
 					</Button>
 				</form>
 			</div>

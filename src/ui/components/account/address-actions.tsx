@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import {
@@ -14,6 +15,7 @@ type DeleteProps = {
 };
 
 export function DeleteAddressButton({ addressId }: DeleteProps) {
+	const t = useTranslations("account");
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -34,10 +36,10 @@ export function DeleteAddressButton({ addressId }: DeleteProps) {
 		return (
 			<div className="flex items-center gap-1">
 				<Button variant="destructive" size="sm" onClick={handleDelete} disabled={isPending}>
-					{isPending ? "…" : "Delete"}
+					{isPending ? "…" : t("common.delete")}
 				</Button>
 				<Button variant="ghost" size="sm" onClick={() => setShowConfirm(false)}>
-					Cancel
+					{t("common.cancel")}
 				</Button>
 			</div>
 		);
@@ -49,7 +51,7 @@ export function DeleteAddressButton({ addressId }: DeleteProps) {
 			size="sm"
 			onClick={() => setShowConfirm(true)}
 			disabled={isPending}
-			aria-label="Delete address"
+			aria-label={t("addresses.deleteAddressAria")}
 		>
 			<Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
 		</Button>
@@ -62,6 +64,8 @@ type SetDefaultProps = {
 };
 
 export function SetDefaultAddressButton({ addressId, type }: SetDefaultProps) {
+	const t = useTranslations("account.addresses");
+	const tCommon = useTranslations("account.common");
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 
@@ -77,7 +81,7 @@ export function SetDefaultAddressButton({ addressId, type }: SetDefaultProps) {
 		});
 	}
 
-	const label = type === "SHIPPING" ? "Make default shipping" : "Make default billing";
+	const label = type === "SHIPPING" ? t("makeDefaultShipping") : t("makeDefaultBilling");
 
 	return (
 		<button
@@ -86,7 +90,7 @@ export function SetDefaultAddressButton({ addressId, type }: SetDefaultProps) {
 			disabled={isPending}
 			className="text-xs text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline disabled:cursor-not-allowed disabled:opacity-50"
 		>
-			{isPending ? "Saving…" : label}
+			{isPending ? tCommon("saving") : label}
 		</button>
 	);
 }

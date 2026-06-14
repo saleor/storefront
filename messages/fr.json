@@ -124,5 +124,236 @@
 			"marketTitle": "Marché",
 			"marketDescription": "Devise, taxes et livraison"
 		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Connexion",
+			"loginDescription": "Connectez-vous à votre compte pour accéder à vos commandes et adresses enregistrées.",
+			"signupTitle": "Créer un compte",
+			"signupDescription": "Créez un compte pour enregistrer vos adresses et votre historique de commandes.",
+			"accountTitle": "Mon compte"
+		},
+		"fields": {
+			"email": "E-mail",
+			"emailAddress": "Adresse e-mail",
+			"password": "Mot de passe",
+			"firstName": "Prénom",
+			"lastName": "Nom",
+			"confirmPassword": "Confirmer le mot de passe",
+			"currentPassword": "Mot de passe actuel",
+			"newPassword": "Nouveau mot de passe",
+			"confirmNewPassword": "Confirmer le nouveau mot de passe",
+			"name": "Nom",
+			"companyOptional": "Société (facultatif)",
+			"streetAddress": "Adresse",
+			"streetAddress2Optional": "Appartement, suite, etc. (facultatif)",
+			"city": "Ville",
+			"postalCode": "Code postal",
+			"stateProvince": "Région / Province",
+			"countryCode": "Code pays",
+			"phoneOptional": "Téléphone (facultatif)"
+		},
+		"placeholders": {
+			"email": "vous@exemple.com",
+			"password": "Saisissez votre mot de passe",
+			"firstName": "Prénom",
+			"lastName": "Nom",
+			"newPasswordMin": "Au moins 8 caractères…",
+			"confirmPassword": "Confirmez votre mot de passe",
+			"reenterPassword": "Saisissez à nouveau votre mot de passe",
+			"countryCode": "FR"
+		},
+		"common": {
+			"cancel": "Annuler",
+			"save": "Enregistrer",
+			"saving": "Enregistrement…",
+			"edit": "Modifier",
+			"delete": "Supprimer",
+			"updated": "Mis à jour",
+			"showPassword": "Afficher le mot de passe",
+			"hidePassword": "Masquer le mot de passe",
+			"free": "Gratuit",
+			"qty": "Qté : {count}",
+			"itemCount": "{count, plural, one {# article} other {# articles}}",
+			"notSet": "Non défini",
+			"change": "Modifier",
+			"changing": "Modification…",
+			"sending": "Envoi…"
+		},
+		"errors": {
+			"invalidEmail": "Veuillez saisir une adresse e-mail valide",
+			"invalidEmailFirst": "Veuillez d'abord saisir une adresse e-mail valide",
+			"passwordRequired": "Veuillez saisir votre mot de passe",
+			"passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+			"passwordsMismatch": "Les mots de passe ne correspondent pas",
+			"newPasswordRequired": "Veuillez saisir un nouveau mot de passe",
+			"generic": "Une erreur s'est produite. Veuillez réessayer.",
+			"signInFailed": "Échec de la connexion. Veuillez réessayer.",
+			"invalidCredentials": "E-mail ou mot de passe incorrect. Veuillez réessayer.",
+			"rateLimited": "Trop de tentatives de connexion. Veuillez patienter et réessayer.",
+			"resetLinkFailed": "Échec de l'envoi du lien de réinitialisation",
+			"accountExists": "Un compte avec cette adresse e-mail existe déjà. Veuillez vous connecter.",
+			"createAccountFailed": "Échec de la création du compte",
+			"invalidResetToken": "Ce lien de réinitialisation du mot de passe a expiré. Veuillez en demander un nouveau.",
+			"setPasswordFailed": "Échec de la définition du mot de passe",
+			"invalidConfirmToken": "Ce lien de confirmation a expiré ou a déjà été utilisé. Essayez de vous connecter ou inscrivez-vous à nouveau.",
+			"confirmFailed": "Échec de la confirmation du compte",
+			"loadOrdersFailed": "Impossible de charger vos commandes. Veuillez réessayer dans un instant.",
+			"loadOrderFailed": "Impossible de charger cette commande. Veuillez réessayer.",
+			"loadRecentOrdersFailed": "Impossible de charger vos commandes récentes.",
+			"updateProfileFailed": "Échec de la mise à jour du profil",
+			"changePasswordFailed": "Échec du changement de mot de passe",
+			"createAddressFailed": "Échec de la création de l'adresse",
+			"updateAddressFailed": "Échec de la mise à jour de l'adresse",
+			"deleteAddressFailed": "Échec de la suppression de l'adresse",
+			"setDefaultAddressFailed": "Échec de la définition de l'adresse par défaut",
+			"deleteAccountFailed": "Échec de la demande de suppression du compte"
+		},
+		"login": {
+			"title": "Bon retour",
+			"noAccount": "Vous n'avez pas de compte ?",
+			"signUp": "S'inscrire",
+			"forgotPassword": "Mot de passe oublié ?",
+			"submit": "Se connecter",
+			"submitting": "Connexion…",
+			"resetSent": "Si un compte existe pour {email}, un lien de réinitialisation du mot de passe a été envoyé. Remarque : vous ne pouvez demander qu'un lien toutes les 15 minutes."
+		},
+		"signup": {
+			"title": "Créer un compte",
+			"hasAccount": "Vous avez déjà un compte ?",
+			"signIn": "Se connecter",
+			"submit": "Créer un compte",
+			"submitting": "Création du compte…",
+			"successTitle": "Compte créé !",
+			"successBody": "Veuillez vérifier votre e-mail pour confirmer votre compte.",
+			"goToSignIn": "Aller à la connexion",
+			"terms": "En créant un compte, vous acceptez nos <terms>Conditions d'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.",
+			"termsLink": "Conditions d'utilisation",
+			"privacyLink": "Politique de confidentialité"
+		},
+		"setPassword": {
+			"title": "Définir un nouveau mot de passe",
+			"subtitle": "Saisissez un nouveau mot de passe pour {email}",
+			"submit": "Mettre à jour le mot de passe",
+			"submitting": "Mise à jour…",
+			"backToSignIn": "Retour à la connexion",
+			"successTitle": "Mot de passe mis à jour !",
+			"successBody": "Votre mot de passe a été réinitialisé avec succès. Vous êtes maintenant connecté.",
+			"redirecting": "Redirection vers la boutique…"
+		},
+		"confirm": {
+			"confirmingTitle": "Confirmation de votre compte",
+			"confirmingBody": "Vérification de {email}…",
+			"successTitle": "Compte confirmé",
+			"successBody": "Votre compte pour {email} est actif. Connectez-vous avec le mot de passe que vous avez créé.",
+			"signIn": "Se connecter",
+			"continueShopping": "Continuer mes achats",
+			"errorTitle": "Impossible de confirmer le compte",
+			"goToSignIn": "Aller à la connexion"
+		},
+		"nav": {
+			"ariaLabel": "Compte",
+			"backToStore": "Retour à la boutique",
+			"signOut": "Se déconnecter",
+			"overview": "Aperçu",
+			"orders": "Commandes",
+			"addresses": "Adresses",
+			"settings": "Paramètres"
+		},
+		"overview": {
+			"welcome": "Bon retour, {name}",
+			"subtitle": "Voici un aperçu de l'activité de votre compte.",
+			"recentOrders": "Commandes récentes",
+			"viewAll": "Tout voir",
+			"noOrdersYet": "Vous n'avez pas encore passé de commande."
+		},
+		"orders": {
+			"title": "Commandes",
+			"count": "{count, plural, =0 {Aucune commande} one {# commande} other {# commandes}}",
+			"empty": "Vous n'avez pas encore passé de commande.",
+			"loadMore": "Charger plus de commandes",
+			"signInRequired": "Connectez-vous pour voir vos commandes.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Passée le {date}",
+			"items": "Articles ({count})",
+			"subtotal": "Sous-total",
+			"shipping": "Livraison",
+			"tax": "Taxe",
+			"total": "Total",
+			"shippingAddress": "Adresse de livraison",
+			"billingAddress": "Adresse de facturation",
+			"paymentMethod": "Mode de paiement",
+			"paid": "Payé",
+			"needHelp": "Besoin d'aide ?",
+			"signInRequired": "Connectez-vous pour voir cette commande.",
+			"loadFailed": "Impossible de charger cette commande. Veuillez réessayer.",
+			"timeline": "Suivi de commande"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "En cours de traitement",
+			"UNCONFIRMED": "En attente de confirmation",
+			"PARTIALLY_FULFILLED": "Partiellement expédiée",
+			"FULFILLED": "Expédiée"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Commande confirmée",
+			"orderConfirmedDescription": "Paiement confirmé et commande passée",
+			"FULFILLED": "Expédiée",
+			"FULFILLEDDescription": "Votre commande a été expédiée",
+			"CANCELED": "Expédition annulée",
+			"CANCELEDDescription": "L'expédition a été annulée",
+			"REFUNDED": "Remboursée",
+			"REFUNDEDDescription": "Le paiement a été remboursé",
+			"REFUNDED_AND_RETURNED": "Remboursée et retournée",
+			"REFUNDED_AND_RETURNEDDescription": "Articles retournés et remboursés",
+			"REPLACED": "Remplacée",
+			"REPLACEDDescription": "Les articles ont été remplacés",
+			"RETURNED": "Retournée",
+			"RETURNEDDescription": "Les articles ont été retournés",
+			"WAITING_FOR_APPROVAL": "En attente d'approbation",
+			"WAITING_FOR_APPROVALDescription": "L'expédition est en attente d'approbation",
+			"trackingUpdated": "Suivi mis à jour",
+			"trackingNumber": "Numéro de suivi : {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# article} other {# articles}})"
+		},
+		"settings": {
+			"title": "Paramètres",
+			"subtitle": "Gérez les paramètres de votre compte",
+			"memberSince": "Membre depuis {date}"
+		},
+		"addresses": {
+			"title": "Adresses",
+			"subtitle": "Gérez vos adresses enregistrées",
+			"empty": "Aucune adresse enregistrée.",
+			"addAddress": "Ajouter une adresse",
+			"editAddress": "Modifier l'adresse",
+			"addNewAddress": "Ajouter une nouvelle adresse",
+			"editAddressDescription": "Mettre à jour les détails de l'adresse",
+			"addAddressDescription": "Ajouter une nouvelle adresse à votre compte",
+			"editAddressAria": "Modifier l'adresse",
+			"updateAddress": "Mettre à jour l'adresse",
+			"deleteAddressAria": "Supprimer l'adresse",
+			"defaultShipping": "Livraison par défaut",
+			"defaultBilling": "Facturation par défaut",
+			"makeDefaultShipping": "Définir comme adresse de livraison par défaut",
+			"makeDefaultBilling": "Définir comme adresse de facturation par défaut"
+		},
+		"deleteAccount": {
+			"title": "Supprimer le compte",
+			"description": "Supprimer définitivement votre compte et toutes les données associées.",
+			"submit": "Supprimer le compte",
+			"confirm": "Oui, supprimer mon compte",
+			"confirmBody": "Cette action est irréversible. Vous recevrez un e-mail de confirmation avant la suppression de votre compte.",
+			"emailSent": "Un e-mail de confirmation a été envoyé. Veuillez vérifier votre boîte de réception pour finaliser la suppression du compte."
+		},
+		"changePassword": {
+			"submit": "Changer le mot de passe"
+		},
+		"unavailable": {
+			"title": "Impossible de charger votre compte",
+			"body": "La boutique est temporairement indisponible. Actualisez la page ou réessayez dans un instant."
+		}
 	}
 }

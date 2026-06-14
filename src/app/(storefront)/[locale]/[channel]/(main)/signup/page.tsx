@@ -1,11 +1,16 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { AuthFormSection } from "@/ui/components/auth/auth-form-section";
 import { SignUpForm } from "@/ui/components/sign-up-form";
 
-export const metadata = {
-	title: "Create Account",
-	description: "Create a new account to save your addresses and order history.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "account.metadata" });
+	return {
+		title: t("signupTitle"),
+		description: t("signupDescription"),
+	};
+}
 
 export default function SignUpPage() {
 	return (

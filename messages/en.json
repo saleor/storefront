@@ -124,5 +124,236 @@
 			"marketTitle": "Market",
 			"marketDescription": "Currency, tax & shipping"
 		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Sign In",
+			"loginDescription": "Sign in to your account to access your orders and saved addresses.",
+			"signupTitle": "Create Account",
+			"signupDescription": "Create a new account to save your addresses and order history.",
+			"accountTitle": "My Account"
+		},
+		"fields": {
+			"email": "Email",
+			"emailAddress": "Email address",
+			"password": "Password",
+			"firstName": "First name",
+			"lastName": "Last name",
+			"confirmPassword": "Confirm password",
+			"currentPassword": "Current password",
+			"newPassword": "New password",
+			"confirmNewPassword": "Confirm new password",
+			"name": "Name",
+			"companyOptional": "Company (optional)",
+			"streetAddress": "Street address",
+			"streetAddress2Optional": "Apt, suite, etc. (optional)",
+			"city": "City",
+			"postalCode": "Postal code",
+			"stateProvince": "State / Province",
+			"countryCode": "Country code",
+			"phoneOptional": "Phone (optional)"
+		},
+		"placeholders": {
+			"email": "you@example.com",
+			"password": "Enter your password",
+			"firstName": "First name",
+			"lastName": "Last name",
+			"newPasswordMin": "At least 8 characters…",
+			"confirmPassword": "Confirm your password",
+			"reenterPassword": "Re-enter your password",
+			"countryCode": "US"
+		},
+		"common": {
+			"cancel": "Cancel",
+			"save": "Save",
+			"saving": "Saving…",
+			"edit": "Edit",
+			"delete": "Delete",
+			"updated": "Updated",
+			"showPassword": "Show password",
+			"hidePassword": "Hide password",
+			"free": "Free",
+			"qty": "Qty: {count}",
+			"itemCount": "{count, plural, one {# item} other {# items}}",
+			"notSet": "Not set",
+			"change": "Change",
+			"changing": "Changing…",
+			"sending": "Sending…"
+		},
+		"errors": {
+			"invalidEmail": "Please enter a valid email address",
+			"invalidEmailFirst": "Please enter a valid email address first",
+			"passwordRequired": "Please enter your password",
+			"passwordMinLength": "Password must be at least 8 characters",
+			"passwordsMismatch": "Passwords do not match",
+			"newPasswordRequired": "Please enter a new password",
+			"generic": "An error occurred. Please try again.",
+			"signInFailed": "Sign in failed. Please try again.",
+			"invalidCredentials": "Invalid email or password. Please try again.",
+			"rateLimited": "Too many sign-in attempts. Please wait and try again.",
+			"resetLinkFailed": "Failed to send reset link",
+			"accountExists": "An account with this email already exists. Please sign in instead.",
+			"createAccountFailed": "Failed to create account",
+			"invalidResetToken": "This password reset link has expired. Please request a new one.",
+			"setPasswordFailed": "Failed to set password",
+			"invalidConfirmToken": "This confirmation link has expired or was already used. Try signing in or register again.",
+			"confirmFailed": "Failed to confirm account",
+			"loadOrdersFailed": "We couldn't load your orders. Please try again in a moment.",
+			"loadOrderFailed": "We couldn't load this order. Please try again.",
+			"loadRecentOrdersFailed": "We couldn't load your recent orders.",
+			"updateProfileFailed": "Failed to update profile",
+			"changePasswordFailed": "Failed to change password",
+			"createAddressFailed": "Failed to create address",
+			"updateAddressFailed": "Failed to update address",
+			"deleteAddressFailed": "Failed to delete address",
+			"setDefaultAddressFailed": "Failed to set default address",
+			"deleteAccountFailed": "Failed to request account deletion"
+		},
+		"login": {
+			"title": "Welcome Back",
+			"noAccount": "Don't have an account?",
+			"signUp": "Sign up",
+			"forgotPassword": "Forgot password?",
+			"submit": "Sign In",
+			"submitting": "Signing in…",
+			"resetSent": "If an account exists for {email}, a password reset link has been sent. Note: You can only request one reset link every 15 minutes."
+		},
+		"signup": {
+			"title": "Create an Account",
+			"hasAccount": "Already have an account?",
+			"signIn": "Sign in",
+			"submit": "Create Account",
+			"submitting": "Creating account…",
+			"successTitle": "Account Created!",
+			"successBody": "Please check your email to verify your account.",
+			"goToSignIn": "Go to Sign In",
+			"terms": "By creating an account, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+			"termsLink": "Terms of Service",
+			"privacyLink": "Privacy Policy"
+		},
+		"setPassword": {
+			"title": "Set New Password",
+			"subtitle": "Enter a new password for {email}",
+			"submit": "Update Password",
+			"submitting": "Updating…",
+			"backToSignIn": "Back to Sign In",
+			"successTitle": "Password Updated!",
+			"successBody": "Your password has been successfully reset. You are now signed in.",
+			"redirecting": "Redirecting you to the store…"
+		},
+		"confirm": {
+			"confirmingTitle": "Confirming your account",
+			"confirmingBody": "Verifying {email}…",
+			"successTitle": "Account confirmed",
+			"successBody": "Your account for {email} is active. Sign in with the password you created.",
+			"signIn": "Sign in",
+			"continueShopping": "Continue shopping",
+			"errorTitle": "Couldn't confirm account",
+			"goToSignIn": "Go to sign in"
+		},
+		"nav": {
+			"ariaLabel": "Account",
+			"backToStore": "Back to store",
+			"signOut": "Sign out",
+			"overview": "Overview",
+			"orders": "Orders",
+			"addresses": "Addresses",
+			"settings": "Settings"
+		},
+		"overview": {
+			"welcome": "Welcome back, {name}",
+			"subtitle": "Here is an overview of your account activity.",
+			"recentOrders": "Recent Orders",
+			"viewAll": "View all",
+			"noOrdersYet": "You haven't placed any orders yet."
+		},
+		"orders": {
+			"title": "Orders",
+			"count": "{count, plural, =0 {No orders yet} one {# order} other {# orders}}",
+			"empty": "You haven't placed any orders yet.",
+			"loadMore": "Load more orders",
+			"signInRequired": "Sign in to view your orders.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Placed on {date}",
+			"items": "Items ({count})",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"tax": "Tax",
+			"total": "Total",
+			"shippingAddress": "Shipping Address",
+			"billingAddress": "Billing Address",
+			"paymentMethod": "Payment Method",
+			"paid": "Paid",
+			"needHelp": "Need Help?",
+			"signInRequired": "Sign in to view this order.",
+			"loadFailed": "We couldn't load this order. Please try again.",
+			"timeline": "Order Timeline"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "Processing",
+			"UNCONFIRMED": "Pending confirmation",
+			"PARTIALLY_FULFILLED": "Partially shipped",
+			"FULFILLED": "Shipped"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Order confirmed",
+			"orderConfirmedDescription": "Payment confirmed and order placed",
+			"FULFILLED": "Shipped",
+			"FULFILLEDDescription": "Your order has been shipped",
+			"CANCELED": "Fulfillment cancelled",
+			"CANCELEDDescription": "Shipment was cancelled",
+			"REFUNDED": "Refunded",
+			"REFUNDEDDescription": "Payment has been refunded",
+			"REFUNDED_AND_RETURNED": "Refunded & Returned",
+			"REFUNDED_AND_RETURNEDDescription": "Items returned and refunded",
+			"REPLACED": "Replaced",
+			"REPLACEDDescription": "Items have been replaced",
+			"RETURNED": "Returned",
+			"RETURNEDDescription": "Items have been returned",
+			"WAITING_FOR_APPROVAL": "Awaiting approval",
+			"WAITING_FOR_APPROVALDescription": "Fulfillment is pending approval",
+			"trackingUpdated": "Tracking updated",
+			"trackingNumber": "Tracking number: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# item} other {# items}})"
+		},
+		"settings": {
+			"title": "Settings",
+			"subtitle": "Manage your account settings",
+			"memberSince": "Member since {date}"
+		},
+		"addresses": {
+			"title": "Addresses",
+			"subtitle": "Manage your saved addresses",
+			"empty": "No saved addresses yet.",
+			"addAddress": "Add address",
+			"editAddress": "Edit address",
+			"addNewAddress": "Add new address",
+			"editAddressDescription": "Update your address details",
+			"addAddressDescription": "Add a new address to your account",
+			"editAddressAria": "Edit address",
+			"updateAddress": "Update address",
+			"deleteAddressAria": "Delete address",
+			"defaultShipping": "Default shipping",
+			"defaultBilling": "Default billing",
+			"makeDefaultShipping": "Make default shipping",
+			"makeDefaultBilling": "Make default billing"
+		},
+		"deleteAccount": {
+			"title": "Delete account",
+			"description": "Permanently remove your account and all associated data.",
+			"submit": "Delete account",
+			"confirm": "Yes, delete my account",
+			"confirmBody": "This action cannot be undone. You will receive a confirmation email before your account is deleted.",
+			"emailSent": "A confirmation email has been sent. Please check your inbox to complete account deletion."
+		},
+		"changePassword": {
+			"submit": "Change password"
+		},
+		"unavailable": {
+			"title": "Unable to load your account",
+			"body": "The store is temporarily unavailable. Refresh the page or try again in a moment."
+		}
 	}
 }

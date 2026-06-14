@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { MapPin, CreditCard } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { OrderByNumberDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
@@ -30,31 +31,25 @@ export default function OrderDetailPage({ params }: Props) {
 async function OrderDetailContent({ params }: Props) {
 	const { number, locale } = await params;
 	const intlLocale = resolveLocaleFromSlug(locale).bcp47;
+	const t = await getTranslations({ locale, namespace: "account.orderDetail" });
+	const tCommon = await getTranslations({ locale, namespace: "account.common" });
+	const tOrders = await getTranslations({ locale, namespace: "account.orders" });
 
-	// Gate on a session cookie before the authenticated fetch (mirrors the account layout):
-	// during prerender there are no cookies, so this skips the network call that would
-	// otherwise hang/retry and time out the sibling `getStorefrontContent` cache fill.
 	if (!(await hasAuthSession())) {
-		return <p className="text-sm text-muted-foreground">Sign in to view this order.</p>;
+		return <p className="text-sm text-muted-foreground">{t("signInRequired")}</p>;
 	}
 
-	// Saleor's `me.orders` doesn't support filtering by number (UserOrdersArgs
-	// only has pagination args). We fetch a page and find client-side. This covers
-	// the vast majority of customers; a dedicated `orderByToken` query would be
-	// more efficient if order counts grow large.
 	const result = await executeAuthenticatedGraphQL(OrderByNumberDocument, {
 		variables: { first: 100, ...graphqlLanguageCodeVariables(locale) },
 		cache: "no-cache",
 	});
 
 	if (!result.ok) {
-		return (
-			<p className="text-sm text-muted-foreground">We couldn&apos;t load this order. Please try again.</p>
-		);
+		return <p className="text-sm text-muted-foreground">{t("loadFailed")}</p>;
 	}
 
 	if (!result.data.me) {
-		return <p className="text-sm text-muted-foreground">Sign in to view this order.</p>;
+		return <p className="text-sm text-muted-foreground">{t("signInRequired")}</p>;
 	}
 
 	const orders = result.data.me.orders?.edges ?? [];
@@ -65,24 +60,25 @@ async function OrderDetailContent({ params }: Props) {
 	}
 
 	const itemCount = order.lines.reduce((sum, l) => sum + l.quantity, 0);
+	const placedDate = formatDate(new Date(order.created), undefined, intlLocale);
 
 	return (
 		<div className="space-y-6">
 			<div className="flex flex-wrap items-start justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-semibold tracking-tight">ORD-{order.number}</h1>
-					<p className="mt-1 text-sm text-muted-foreground">
-						Placed on {formatDate(new Date(order.created), undefined, intlLocale)}
-					</p>
+					<h1 className="text-2xl font-semibold tracking-tight">
+						{tOrders("orderNumber", { number: order.number })}
+					</h1>
+					<p className="mt-1 text-sm text-muted-foreground">{t("placedOn", { date: placedDate })}</p>
 				</div>
-				<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} />
+				<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} localeSlug={locale} />
 			</div>
 
 			<div className="grid gap-6 lg:grid-cols-[1fr_320px]">
 				<div className="space-y-6">
 					<div className="rounded-xl border">
 						<div className="border-b px-5 py-4">
-							<h2 className="text-sm font-semibold">Items ({itemCount})</h2>
+							<h2 className="text-sm font-semibold">{t("items", { count: itemCount })}</h2>
 						</div>
 						<div className="divide-y">
 							{order.lines.map((line) => {
@@ -118,7 +114,9 @@ async function OrderDetailContent({ params }: Props) {
 											{variantName !== variant.id && Boolean(variantName) && (
 												<p className="text-[13px] text-muted-foreground">{variantName}</p>
 											)}
-											<p className="text-[13px] text-muted-foreground">Qty: {line.quantity}</p>
+											<p className="text-[13px] text-muted-foreground">
+												{tCommon("qty", { count: line.quantity })}
+											</p>
 										</div>
 										{lineTotal != null && currency && (
 											<span className="text-sm font-medium tabular-nums">
@@ -133,16 +131,16 @@ async function OrderDetailContent({ params }: Props) {
 						<div className="border-t px-5 py-4">
 							<dl className="space-y-2 text-sm">
 								<div className="flex justify-between">
-									<dt className="text-muted-foreground">Subtotal</dt>
+									<dt className="text-muted-foreground">{t("subtotal")}</dt>
 									<dd className="tabular-nums">
 										{formatMoney(order.subtotal.gross.amount, order.subtotal.gross.currency, intlLocale)}
 									</dd>
 								</div>
 								<div className="flex justify-between">
-									<dt className="text-muted-foreground">Shipping</dt>
+									<dt className="text-muted-foreground">{t("shipping")}</dt>
 									<dd className="tabular-nums">
 										{order.shippingPrice.gross.amount === 0
-											? "Free"
+											? tCommon("free")
 											: formatMoney(
 													order.shippingPrice.gross.amount,
 													order.shippingPrice.gross.currency,
@@ -152,14 +150,14 @@ async function OrderDetailContent({ params }: Props) {
 								</div>
 								{order.total.tax.amount > 0 && (
 									<div className="flex justify-between">
-										<dt className="text-muted-foreground">Tax</dt>
+										<dt className="text-muted-foreground">{t("tax")}</dt>
 										<dd className="tabular-nums">
 											{formatMoney(order.total.tax.amount, order.total.tax.currency, intlLocale)}
 										</dd>
 									</div>
 								)}
 								<div className="flex justify-between border-t pt-2 font-semibold">
-									<dt>Total</dt>
+									<dt>{t("total")}</dt>
 									<dd className="tabular-nums">
 										{formatMoney(order.total.gross.amount, order.total.gross.currency, intlLocale)}
 									</dd>
@@ -168,20 +166,24 @@ async function OrderDetailContent({ params }: Props) {
 						</div>
 					</div>
 
-					<OrderTimeline order={order} intlLocale={intlLocale} />
+					<OrderTimeline order={order} localeSlug={locale} />
 				</div>
 
 				<div className="space-y-4">
-					{order.shippingAddress && <OrderAddress title="Shipping Address" address={order.shippingAddress} />}
-					{order.billingAddress && <OrderAddress title="Billing Address" address={order.billingAddress} />}
+					{order.shippingAddress && (
+						<OrderAddress title={t("shippingAddress")} address={order.shippingAddress} />
+					)}
+					{order.billingAddress && (
+						<OrderAddress title={t("billingAddress")} address={order.billingAddress} />
+					)}
 
 					{order.isPaid && (
 						<div className="rounded-xl border px-5 py-4">
-							<h3 className="mb-3 text-sm font-semibold">Payment Method</h3>
+							<h3 className="mb-3 text-sm font-semibold">{t("paymentMethod")}</h3>
 							<div className="flex items-center gap-3">
 								<CreditCard className="h-4 w-4 text-muted-foreground" />
 								<span className="text-sm">
-									{order.paymentStatus === "FULLY_CHARGED" ? "Paid" : order.paymentStatus}
+									{order.paymentStatus === "FULLY_CHARGED" ? t("paid") : order.paymentStatus}
 								</span>
 							</div>
 						</div>
@@ -191,7 +193,7 @@ async function OrderDetailContent({ params }: Props) {
 						href="/contact"
 						className="hover:bg-secondary/50 block w-full rounded-xl border px-5 py-3 text-center text-sm font-medium transition-colors"
 					>
-						Need Help?
+						{t("needHelp")}
 					</LinkWithChannel>
 				</div>
 			</div>

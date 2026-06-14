@@ -124,5 +124,236 @@
 			"marketTitle": "Marked",
 			"marketDescription": "Valuta, avgifter og frakt"
 		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Logg inn",
+			"loginDescription": "Logg inn på kontoen din for å få tilgang til bestillingene og lagrede adressene dine.",
+			"signupTitle": "Opprett konto",
+			"signupDescription": "Opprett en konto for å lagre adresser og bestillingshistorikk.",
+			"accountTitle": "Min konto"
+		},
+		"fields": {
+			"email": "E-post",
+			"emailAddress": "E-postadresse",
+			"password": "Passord",
+			"firstName": "Fornavn",
+			"lastName": "Etternavn",
+			"confirmPassword": "Bekreft passord",
+			"currentPassword": "Nåværende passord",
+			"newPassword": "Nytt passord",
+			"confirmNewPassword": "Bekreft nytt passord",
+			"name": "Navn",
+			"companyOptional": "Firma (valgfritt)",
+			"streetAddress": "Gateadresse",
+			"streetAddress2Optional": "Leilighet, suite osv. (valgfritt)",
+			"city": "By",
+			"postalCode": "Postnummer",
+			"stateProvince": "Fylke / provins",
+			"countryCode": "Landskode",
+			"phoneOptional": "Telefon (valgfritt)"
+		},
+		"placeholders": {
+			"email": "deg@eksempel.no",
+			"password": "Skriv inn passordet ditt",
+			"firstName": "Fornavn",
+			"lastName": "Etternavn",
+			"newPasswordMin": "Minst 8 tegn…",
+			"confirmPassword": "Bekreft passordet ditt",
+			"reenterPassword": "Skriv inn passordet på nytt",
+			"countryCode": "NO"
+		},
+		"common": {
+			"cancel": "Avbryt",
+			"save": "Lagre",
+			"saving": "Lagrer…",
+			"edit": "Rediger",
+			"delete": "Slett",
+			"updated": "Oppdatert",
+			"showPassword": "Vis passord",
+			"hidePassword": "Skjul passord",
+			"free": "Gratis",
+			"qty": "Ant.: {count}",
+			"itemCount": "{count, plural, one {# vare} other {# varer}}",
+			"notSet": "Ikke angitt",
+			"change": "Endre",
+			"changing": "Endrer…",
+			"sending": "Sender…"
+		},
+		"errors": {
+			"invalidEmail": "Skriv inn en gyldig e-postadresse",
+			"invalidEmailFirst": "Skriv inn en gyldig e-postadresse først",
+			"passwordRequired": "Skriv inn passordet ditt",
+			"passwordMinLength": "Passordet må være minst 8 tegn",
+			"passwordsMismatch": "Passordene stemmer ikke overens",
+			"newPasswordRequired": "Skriv inn et nytt passord",
+			"generic": "En feil oppstod. Prøv igjen.",
+			"signInFailed": "Innlogging mislyktes. Prøv igjen.",
+			"invalidCredentials": "Ugyldig e-post eller passord. Prøv igjen.",
+			"rateLimited": "For mange innloggingsforsøk. Vent litt og prøv igjen.",
+			"resetLinkFailed": "Kunne ikke sende tilbakestillingslenke",
+			"accountExists": "En konto med denne e-postadressen finnes allerede. Logg inn i stedet.",
+			"createAccountFailed": "Kunne ikke opprette konto",
+			"invalidResetToken": "Denne lenken for tilbakestilling av passord har utløpt. Be om en ny.",
+			"setPasswordFailed": "Kunne ikke angi passord",
+			"invalidConfirmToken": "Denne bekreftelseslenken har utløpt eller er allerede brukt. Prøv å logge inn eller registrer deg på nytt.",
+			"confirmFailed": "Kunne ikke bekrefte konto",
+			"loadOrdersFailed": "Vi kunne ikke laste bestillingene dine. Prøv igjen om litt.",
+			"loadOrderFailed": "Vi kunne ikke laste denne bestillingen. Prøv igjen.",
+			"loadRecentOrdersFailed": "Vi kunne ikke laste de siste bestillingene dine.",
+			"updateProfileFailed": "Kunne ikke oppdatere profil",
+			"changePasswordFailed": "Kunne ikke endre passord",
+			"createAddressFailed": "Kunne ikke opprette adresse",
+			"updateAddressFailed": "Kunne ikke oppdatere adresse",
+			"deleteAddressFailed": "Kunne ikke slette adresse",
+			"setDefaultAddressFailed": "Kunne ikke angi standardadresse",
+			"deleteAccountFailed": "Kunne ikke sende forespørsel om sletting av konto"
+		},
+		"login": {
+			"title": "Velkommen tilbake",
+			"noAccount": "Har du ikke en konto?",
+			"signUp": "Registrer deg",
+			"forgotPassword": "Glemt passord?",
+			"submit": "Logg inn",
+			"submitting": "Logger inn…",
+			"resetSent": "Hvis det finnes en konto for {email}, er en lenke for tilbakestilling av passord sendt. Merk: Du kan bare be om én lenke hvert 15. minutt."
+		},
+		"signup": {
+			"title": "Opprett en konto",
+			"hasAccount": "Har du allerede en konto?",
+			"signIn": "Logg inn",
+			"submit": "Opprett konto",
+			"submitting": "Oppretter konto…",
+			"successTitle": "Konto opprettet!",
+			"successBody": "Sjekk e-posten din for å bekrefte kontoen.",
+			"goToSignIn": "Gå til innlogging",
+			"terms": "Ved å opprette en konto godtar du våre <terms>vilkår for bruk</terms> og <privacy>personvernregler</privacy>.",
+			"termsLink": "Vilkår for bruk",
+			"privacyLink": "Personvernregler"
+		},
+		"setPassword": {
+			"title": "Angi nytt passord",
+			"subtitle": "Skriv inn et nytt passord for {email}",
+			"submit": "Oppdater passord",
+			"submitting": "Oppdaterer…",
+			"backToSignIn": "Tilbake til innlogging",
+			"successTitle": "Passord oppdatert!",
+			"successBody": "Passordet ditt er tilbakestilt. Du er nå logget inn.",
+			"redirecting": "Omdirigerer deg til butikken…"
+		},
+		"confirm": {
+			"confirmingTitle": "Bekrefter kontoen din",
+			"confirmingBody": "Verifiserer {email}…",
+			"successTitle": "Konto bekreftet",
+			"successBody": "Kontoen din for {email} er aktiv. Logg inn med passordet du opprettet.",
+			"signIn": "Logg inn",
+			"continueShopping": "Fortsett å handle",
+			"errorTitle": "Kunne ikke bekrefte konto",
+			"goToSignIn": "Gå til innlogging"
+		},
+		"nav": {
+			"ariaLabel": "Konto",
+			"backToStore": "Tilbake til butikken",
+			"signOut": "Logg ut",
+			"overview": "Oversikt",
+			"orders": "Bestillinger",
+			"addresses": "Adresser",
+			"settings": "Innstillinger"
+		},
+		"overview": {
+			"welcome": "Velkommen tilbake, {name}",
+			"subtitle": "Her er en oversikt over kontoaktiviteten din.",
+			"recentOrders": "Siste bestillinger",
+			"viewAll": "Se alle",
+			"noOrdersYet": "Du har ikke lagt inn noen bestillinger ennå."
+		},
+		"orders": {
+			"title": "Bestillinger",
+			"count": "{count, plural, =0 {Ingen bestillinger ennå} one {# bestilling} other {# bestillinger}}",
+			"empty": "Du har ikke lagt inn noen bestillinger ennå.",
+			"loadMore": "Last inn flere bestillinger",
+			"signInRequired": "Logg inn for å se bestillingene dine.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Bestilt {date}",
+			"items": "Varer ({count})",
+			"subtotal": "Delsum",
+			"shipping": "Frakt",
+			"tax": "Avgift",
+			"total": "Totalt",
+			"shippingAddress": "Leveringsadresse",
+			"billingAddress": "Fakturaadresse",
+			"paymentMethod": "Betalingsmåte",
+			"paid": "Betalt",
+			"needHelp": "Trenger du hjelp?",
+			"signInRequired": "Logg inn for å se denne bestillingen.",
+			"loadFailed": "Vi kunne ikke laste denne bestillingen. Prøv igjen.",
+			"timeline": "Bestillingshistorikk"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "Behandles",
+			"UNCONFIRMED": "Venter på bekreftelse",
+			"PARTIALLY_FULFILLED": "Delvis sendt",
+			"FULFILLED": "Sendt"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Bestilling bekreftet",
+			"orderConfirmedDescription": "Betaling bekreftet og bestilling lagt inn",
+			"FULFILLED": "Sendt",
+			"FULFILLEDDescription": "Bestillingen din er sendt",
+			"CANCELED": "Levering kansellert",
+			"CANCELEDDescription": "Forsendelsen ble kansellert",
+			"REFUNDED": "Refundert",
+			"REFUNDEDDescription": "Betalingen er refundert",
+			"REFUNDED_AND_RETURNED": "Refundert og returnert",
+			"REFUNDED_AND_RETURNEDDescription": "Varer returnert og refundert",
+			"REPLACED": "Erstattet",
+			"REPLACEDDescription": "Varene er erstattet",
+			"RETURNED": "Returnert",
+			"RETURNEDDescription": "Varene er returnert",
+			"WAITING_FOR_APPROVAL": "Venter på godkjenning",
+			"WAITING_FOR_APPROVALDescription": "Levering venter på godkjenning",
+			"trackingUpdated": "Sporing oppdatert",
+			"trackingNumber": "Sporingsnummer: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# vare} other {# varer}})"
+		},
+		"settings": {
+			"title": "Innstillinger",
+			"subtitle": "Administrer kontoinnstillingene dine",
+			"memberSince": "Medlem siden {date}"
+		},
+		"addresses": {
+			"title": "Adresser",
+			"subtitle": "Administrer lagrede adresser",
+			"empty": "Ingen lagrede adresser ennå.",
+			"addAddress": "Legg til adresse",
+			"editAddress": "Rediger adresse",
+			"addNewAddress": "Legg til ny adresse",
+			"editAddressDescription": "Oppdater adresseopplysninger",
+			"addAddressDescription": "Legg til en ny adresse på kontoen din",
+			"editAddressAria": "Rediger adresse",
+			"updateAddress": "Oppdater adresse",
+			"deleteAddressAria": "Slett adresse",
+			"defaultShipping": "Standard leveringsadresse",
+			"defaultBilling": "Standard fakturaadresse",
+			"makeDefaultShipping": "Angi som standard leveringsadresse",
+			"makeDefaultBilling": "Angi som standard fakturaadresse"
+		},
+		"deleteAccount": {
+			"title": "Slett konto",
+			"description": "Fjern kontoen din og alle tilknyttede data permanent.",
+			"submit": "Slett konto",
+			"confirm": "Ja, slett kontoen min",
+			"confirmBody": "Denne handlingen kan ikke angres. Du vil motta en bekreftelses-e-post før kontoen slettes.",
+			"emailSent": "En bekreftelses-e-post er sendt. Sjekk innboksen din for å fullføre sletting av kontoen."
+		},
+		"changePassword": {
+			"submit": "Endre passord"
+		},
+		"unavailable": {
+			"title": "Kunne ikke laste kontoen din",
+			"body": "Butikken er midlertidig utilgjengelig. Oppdater siden eller prøv igjen om litt."
+		}
 	}
 }

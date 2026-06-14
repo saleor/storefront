@@ -1,4 +1,5 @@
 import { type ReactNode, Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { AuthFormSection } from "@/ui/components/auth/auth-form-section";
 import { AccountLogin } from "@/ui/components/account/account-login";
 import { AccountNav } from "@/ui/components/account/account-nav";
@@ -7,19 +8,29 @@ import { AccountProvider } from "@/ui/components/account/account-context";
 import { AccountUnavailable } from "@/ui/components/account/account-unavailable";
 import { getAccountAuthState } from "./get-current-user";
 
-export const metadata = {
-	title: "My Account",
+type LayoutProps = {
+	children: ReactNode;
+	params: Promise<{ locale: string; channel: string }>;
 };
 
-export default function AccountLayout({ children }: { children: ReactNode }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "account.metadata" });
+	return {
+		title: t("accountTitle"),
+	};
+}
+
+export default function AccountLayout({ children, params }: LayoutProps) {
 	return (
 		<Suspense fallback={<AccountSkeleton />}>
-			<AccountShell>{children}</AccountShell>
+			<AccountShell params={params}>{children}</AccountShell>
 		</Suspense>
 	);
 }
 
-async function AccountShell({ children }: { children: ReactNode }) {
+async function AccountShell({ children, params }: LayoutProps) {
+	const { locale } = await params;
 	const auth = await getAccountAuthState();
 
 	if (auth.status === "guest") {
@@ -31,7 +42,7 @@ async function AccountShell({ children }: { children: ReactNode }) {
 	}
 
 	if (auth.status === "unavailable") {
-		return <AccountUnavailable />;
+		return <AccountUnavailable locale={locale} />;
 	}
 
 	return (

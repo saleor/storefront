@@ -1,10 +1,11 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { resolveLocaleFromSlug } from "@/config/locale";
 import { OrderRow } from "@/ui/components/account/order-row";
+import { buildOrderRowLabels } from "@/ui/components/account/order-row-labels";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Button } from "@/ui/components/ui/button";
 import { accountRoutes } from "@/ui/components/account/routes";
@@ -27,13 +28,13 @@ export default function AccountOrdersPage({ params, searchParams }: Props) {
 
 async function AccountOrdersContent({ params, searchParams }: Props) {
 	const [{ locale }, { after }] = await Promise.all([params, searchParams]);
-	const intlLocale = resolveLocaleFromSlug(locale).bcp47;
+	const t = await getTranslations({ locale, namespace: "account.orders" });
+	const tErrors = await getTranslations({ locale, namespace: "account.errors" });
+	const tOrder = await getTranslations({ locale, namespace: "account" });
+	const tStatus = await getTranslations({ locale, namespace: "account.orderStatus" });
 
-	// Gate on a session cookie before the authenticated fetch (mirrors the account layout):
-	// during prerender there are no cookies, so this skips the network call that would
-	// otherwise hang/retry and time out the sibling `getStorefrontContent` cache fill.
 	if (!(await hasAuthSession())) {
-		return <AccountOrdersError message="Sign in to view your orders." />;
+		return <AccountOrdersError title={t("title")} message={t("signInRequired")} />;
 	}
 
 	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
@@ -46,11 +47,11 @@ async function AccountOrdersContent({ params, searchParams }: Props) {
 	});
 
 	if (!result.ok) {
-		return <AccountOrdersError message="We couldn't load your orders. Please try again in a moment." />;
+		return <AccountOrdersError title={t("title")} message={tErrors("loadOrdersFailed")} />;
 	}
 
 	if (!result.data.me) {
-		return <AccountOrdersError message="Sign in to view your orders." />;
+		return <AccountOrdersError title={t("title")} message={t("signInRequired")} />;
 	}
 
 	const ordersConnection = result.data.me.orders;
@@ -61,28 +62,31 @@ async function AccountOrdersContent({ params, searchParams }: Props) {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">Orders</h1>
-				<p className="mt-1 text-sm text-muted-foreground">
-					{totalCount === 0 ? "No orders yet" : `${totalCount} order${totalCount !== 1 ? "s" : ""}`}
-				</p>
+				<h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+				<p className="mt-1 text-sm text-muted-foreground">{t("count", { count: totalCount })}</p>
 			</div>
 
 			{orders.length === 0 ? (
 				<div className="rounded-lg border border-dashed p-8 text-center">
-					<p className="text-muted-foreground">You haven&apos;t placed any orders yet.</p>
+					<p className="text-muted-foreground">{t("empty")}</p>
 				</div>
 			) : (
 				<>
 					<div className="space-y-2">
 						{orders.map(({ node: order }) => (
-							<OrderRow key={order.id} order={order} intlLocale={intlLocale} />
+							<OrderRow
+								key={order.id}
+								order={order}
+								localeSlug={locale}
+								labels={buildOrderRowLabels(tOrder, tStatus, order)}
+							/>
 						))}
 					</div>
 
 					{pageInfo?.hasNextPage && pageInfo.endCursor && (
 						<div className="flex justify-center pt-2">
 							<LinkWithChannel href={`${accountRoutes.orders}?after=${pageInfo.endCursor}`}>
-								<Button variant="outline-solid">Load more orders</Button>
+								<Button variant="outline-solid">{t("loadMore")}</Button>
 							</LinkWithChannel>
 						</div>
 					)}
@@ -92,11 +96,11 @@ async function AccountOrdersContent({ params, searchParams }: Props) {
 	);
 }
 
-function AccountOrdersError({ message }: { message: string }) {
+function AccountOrdersError({ title, message }: { title: string; message: string }) {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">Orders</h1>
+				<h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
 			</div>
 			<div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
 				{message}

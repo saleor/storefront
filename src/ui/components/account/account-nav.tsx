@@ -2,6 +2,7 @@
 
 import { usePathname, useParams } from "next/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { LayoutGrid, Receipt, MapPin, Settings, ArrowLeft } from "lucide-react";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { cn } from "@/lib/utils";
@@ -12,17 +13,18 @@ import { stripStorefrontPrefix } from "@/lib/storefront-path";
 
 const navItems: ReadonlyArray<{
 	href: string;
-	label: string;
+	labelKey: "overview" | "orders" | "addresses" | "settings";
 	icon: typeof LayoutGrid;
 	exact?: boolean;
 }> = [
-	{ href: accountRoutes.overview, label: "Overview", icon: LayoutGrid, exact: true },
-	{ href: accountRoutes.orders, label: "Orders", icon: Receipt },
-	{ href: accountRoutes.addresses, label: "Addresses", icon: MapPin },
-	{ href: accountRoutes.settings, label: "Settings", icon: Settings },
+	{ href: accountRoutes.overview, labelKey: "overview", icon: LayoutGrid, exact: true },
+	{ href: accountRoutes.orders, labelKey: "orders", icon: Receipt },
+	{ href: accountRoutes.addresses, labelKey: "addresses", icon: MapPin },
+	{ href: accountRoutes.settings, labelKey: "settings", icon: Settings },
 ];
 
 export function AccountNav() {
+	const t = useTranslations("account.nav");
 	const user = useAccountUser();
 	const pathname = usePathname();
 	const { locale, channel } = useParams<{ locale?: string; channel?: string }>();
@@ -45,7 +47,7 @@ export function AccountNav() {
 				className="mb-8 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
 			>
 				<span className="text-base leading-none">&lsaquo;</span>
-				Back to store
+				{t("backToStore")}
 			</LinkWithChannel>
 
 			<div className="mb-8 hidden md:block">
@@ -68,16 +70,14 @@ export function AccountNav() {
 				<p className="mt-0.5 text-sm text-muted-foreground">{user.email}</p>
 			</div>
 
-			{/* Mobile: equal-width segmented control (icon over label) so every tab fits without
-			    horizontal scroll. Desktop (md+): vertical sidebar list. */}
 			<nav
-				aria-label="Account"
+				aria-label={t("ariaLabel")}
 				className={cn(
 					"bg-secondary/60 grid auto-cols-fr grid-flow-col gap-1 rounded-xl p-1",
 					"md:flex md:flex-col md:gap-0.5 md:rounded-none md:bg-transparent md:p-0",
 				)}
 			>
-				{navItems.map(({ href, label, icon: Icon, exact }) => {
+				{navItems.map(({ href, labelKey, icon: Icon, exact }) => {
 					const active = isActive(href, exact);
 					return (
 						<LinkWithChannel
@@ -93,7 +93,7 @@ export function AccountNav() {
 							)}
 						>
 							<Icon className="h-5 w-5 shrink-0 md:h-[18px] md:w-[18px]" strokeWidth={active ? 2 : 1.75} />
-							<span className="max-w-full truncate">{label}</span>
+							<span className="max-w-full truncate">{t(labelKey)}</span>
 						</LinkWithChannel>
 					);
 				})}
@@ -102,7 +102,7 @@ export function AccountNav() {
 			<div className="mt-auto hidden pt-10 md:block">
 				<LogoutButton className="flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
 					<ArrowLeft className="h-[18px] w-[18px]" strokeWidth={1.75} />
-					Sign out
+					{t("signOut")}
 				</LogoutButton>
 			</div>
 		</div>

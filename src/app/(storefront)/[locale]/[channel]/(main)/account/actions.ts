@@ -15,10 +15,9 @@ import {
 } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { getFormString, getFormStringOptional } from "@/ui/components/account/form-utils";
+import type { AccountActionResult } from "@/ui/components/account/account-action-result";
 
-type ActionResult = { success: true } | { success: false; error: string };
-
-export async function updateProfile(formData: FormData): Promise<ActionResult> {
+export async function updateProfile(formData: FormData): Promise<AccountActionResult> {
 	const firstName = getFormString(formData, "firstName");
 	const lastName = getFormString(formData, "lastName");
 
@@ -33,24 +32,26 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
 
 	const errors = result.data.accountUpdate?.errors;
 	if (errors?.length) {
-		return { success: false, error: errors[0].message ?? "Failed to update profile" };
+		return errors[0].message
+			? { success: false, error: errors[0].message }
+			: { success: false, errorKey: "updateProfileFailed" };
 	}
 
 	revalidateAccountLayout();
 	return { success: true };
 }
 
-export async function changePassword(formData: FormData): Promise<ActionResult> {
+export async function changePassword(formData: FormData): Promise<AccountActionResult> {
 	const oldPassword = getFormString(formData, "oldPassword");
 	const newPassword = getFormString(formData, "newPassword");
 	const confirmPassword = getFormString(formData, "confirmPassword");
 
 	if (newPassword.length < 8) {
-		return { success: false, error: "New password must be at least 8 characters" };
+		return { success: false, errorKey: "passwordMinLength" };
 	}
 
 	if (newPassword !== confirmPassword) {
-		return { success: false, error: "Passwords do not match" };
+		return { success: false, errorKey: "passwordsMismatch" };
 	}
 
 	const result = await executeAuthenticatedGraphQL(PasswordChangeDocument, {
@@ -64,13 +65,15 @@ export async function changePassword(formData: FormData): Promise<ActionResult> 
 
 	const errors = result.data.passwordChange?.errors;
 	if (errors?.length) {
-		return { success: false, error: errors[0].message ?? "Failed to change password" };
+		return errors[0].message
+			? { success: false, error: errors[0].message }
+			: { success: false, errorKey: "changePasswordFailed" };
 	}
 
 	return { success: true };
 }
 
-export async function createAddress(formData: FormData): Promise<ActionResult> {
+export async function createAddress(formData: FormData): Promise<AccountActionResult> {
 	const input = extractAddressInput(formData);
 
 	const result = await executeAuthenticatedGraphQL(AccountAddressCreateDocument, {
@@ -84,14 +87,16 @@ export async function createAddress(formData: FormData): Promise<ActionResult> {
 
 	const errors = result.data.accountAddressCreate?.errors;
 	if (errors?.length) {
-		return { success: false, error: errors[0].message ?? "Failed to create address" };
+		return errors[0].message
+			? { success: false, error: errors[0].message }
+			: { success: false, errorKey: "createAddressFailed" };
 	}
 
 	revalidateAccountLayout();
 	return { success: true };
 }
 
-export async function updateAddress(formData: FormData): Promise<ActionResult> {
+export async function updateAddress(formData: FormData): Promise<AccountActionResult> {
 	const id = getFormString(formData, "id");
 	const input = extractAddressInput(formData);
 
@@ -106,14 +111,16 @@ export async function updateAddress(formData: FormData): Promise<ActionResult> {
 
 	const errors = result.data.accountAddressUpdate?.errors;
 	if (errors?.length) {
-		return { success: false, error: errors[0].message ?? "Failed to update address" };
+		return errors[0].message
+			? { success: false, error: errors[0].message }
+			: { success: false, errorKey: "updateAddressFailed" };
 	}
 
 	revalidateAccountLayout();
 	return { success: true };
 }
 
-export async function deleteAddress(formData: FormData): Promise<ActionResult> {
+export async function deleteAddress(formData: FormData): Promise<AccountActionResult> {
 	const id = getFormString(formData, "id");
 
 	const result = await executeAuthenticatedGraphQL(AccountAddressDeleteDocument, {
@@ -127,14 +134,16 @@ export async function deleteAddress(formData: FormData): Promise<ActionResult> {
 
 	const errors = result.data.accountAddressDelete?.errors;
 	if (errors?.length) {
-		return { success: false, error: errors[0].message ?? "Failed to delete address" };
+		return errors[0].message
+			? { success: false, error: errors[0].message }
+			: { success: false, errorKey: "deleteAddressFailed" };
 	}
 
 	revalidateAccountLayout();
 	return { success: true };
 }
 
-export async function setDefaultAddress(formData: FormData): Promise<ActionResult> {
+export async function setDefaultAddress(formData: FormData): Promise<AccountActionResult> {
 	const id = getFormString(formData, "id");
 	const type = getFormString(formData, "type");
 
@@ -151,14 +160,16 @@ export async function setDefaultAddress(formData: FormData): Promise<ActionResul
 
 	const errors = result.data.accountSetDefaultAddress?.errors;
 	if (errors?.length) {
-		return { success: false, error: errors[0].message ?? "Failed to set default address" };
+		return errors[0].message
+			? { success: false, error: errors[0].message }
+			: { success: false, errorKey: "setDefaultAddressFailed" };
 	}
 
 	revalidateAccountLayout();
 	return { success: true };
 }
 
-export async function requestAccountDeletion(formData: FormData): Promise<ActionResult> {
+export async function requestAccountDeletion(formData: FormData): Promise<AccountActionResult> {
 	const redirectUrl = getFormString(formData, "redirectUrl");
 	const channel = getFormStringOptional(formData, "channel");
 
@@ -173,7 +184,9 @@ export async function requestAccountDeletion(formData: FormData): Promise<Action
 
 	const errors = result.data.accountRequestDeletion?.errors;
 	if (errors?.length) {
-		return { success: false, error: errors[0].message ?? "Failed to request account deletion" };
+		return errors[0].message
+			? { success: false, error: errors[0].message }
+			: { success: false, errorKey: "deleteAccountFailed" };
 	}
 
 	return { success: true };

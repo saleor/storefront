@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { AuthFormSection } from "@/ui/components/auth/auth-form-section";
 import { ConfirmAccountMode } from "@/ui/components/auth/confirm-account-mode";
 import { LoginForm } from "@/ui/components/login-form";
@@ -12,10 +13,14 @@ import { CurrentUserDocument } from "@/gql/graphql";
 import { fetchAuthenticatedUserIfSession } from "@/lib/auth/fetch-authenticated-user";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
-export const metadata = {
-	title: "Sign In",
-	description: "Sign in to your account to access your orders and saved addresses.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "account.metadata" });
+	return {
+		title: t("loginTitle"),
+		description: t("loginDescription"),
+	};
+}
 
 type LoginPageProps = {
 	params: Promise<{ locale: string; channel: string }>;

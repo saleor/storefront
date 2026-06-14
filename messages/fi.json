@@ -124,5 +124,236 @@
 			"marketTitle": "Markkina",
 			"marketDescription": "Valuutta, verot ja toimitus"
 		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Kirjaudu sisään",
+			"loginDescription": "Kirjaudu tilillesi nähdäksesi tilauksesi ja tallennetut osoitteesi.",
+			"signupTitle": "Luo tili",
+			"signupDescription": "Luo tili tallentaaksesi osoitteesi ja tilaushistoriasi.",
+			"accountTitle": "Oma tili"
+		},
+		"fields": {
+			"email": "Sähköposti",
+			"emailAddress": "Sähköpostiosoite",
+			"password": "Salasana",
+			"firstName": "Etunimi",
+			"lastName": "Sukunimi",
+			"confirmPassword": "Vahvista salasana",
+			"currentPassword": "Nykyinen salasana",
+			"newPassword": "Uusi salasana",
+			"confirmNewPassword": "Vahvista uusi salasana",
+			"name": "Nimi",
+			"companyOptional": "Yritys (valinnainen)",
+			"streetAddress": "Katuosoite",
+			"streetAddress2Optional": "Asunto, huoneisto jne. (valinnainen)",
+			"city": "Kaupunki",
+			"postalCode": "Postinumero",
+			"stateProvince": "Maakunta / osavaltio",
+			"countryCode": "Maakoodi",
+			"phoneOptional": "Puhelin (valinnainen)"
+		},
+		"placeholders": {
+			"email": "sinä@esimerkki.fi",
+			"password": "Syötä salasanasi",
+			"firstName": "Etunimi",
+			"lastName": "Sukunimi",
+			"newPasswordMin": "Vähintään 8 merkkiä…",
+			"confirmPassword": "Vahvista salasanasi",
+			"reenterPassword": "Syötä salasana uudelleen",
+			"countryCode": "FI"
+		},
+		"common": {
+			"cancel": "Peruuta",
+			"save": "Tallenna",
+			"saving": "Tallennetaan…",
+			"edit": "Muokkaa",
+			"delete": "Poista",
+			"updated": "Päivitetty",
+			"showPassword": "Näytä salasana",
+			"hidePassword": "Piilota salasana",
+			"free": "Ilmainen",
+			"qty": "Määrä: {count}",
+			"itemCount": "{count, plural, one {# tuote} other {# tuotetta}}",
+			"notSet": "Ei asetettu",
+			"change": "Vaihda",
+			"changing": "Vaihdetaan…",
+			"sending": "Lähetetään…"
+		},
+		"errors": {
+			"invalidEmail": "Anna kelvollinen sähköpostiosoite",
+			"invalidEmailFirst": "Anna ensin kelvollinen sähköpostiosoite",
+			"passwordRequired": "Anna salasanasi",
+			"passwordMinLength": "Salasanan on oltava vähintään 8 merkkiä",
+			"passwordsMismatch": "Salasanat eivät täsmää",
+			"newPasswordRequired": "Anna uusi salasana",
+			"generic": "Tapahtui virhe. Yritä uudelleen.",
+			"signInFailed": "Kirjautuminen epäonnistui. Yritä uudelleen.",
+			"invalidCredentials": "Virheellinen sähköposti tai salasana. Yritä uudelleen.",
+			"rateLimited": "Liian monta kirjautumisyritystä. Odota hetki ja yritä uudelleen.",
+			"resetLinkFailed": "Nollauslinkin lähetys epäonnistui",
+			"accountExists": "Tällä sähköpostiosoitteella on jo tili. Kirjaudu sisään sen sijaan.",
+			"createAccountFailed": "Tilin luominen epäonnistui",
+			"invalidResetToken": "Tämä salasanan nollauslinkki on vanhentunut. Pyydä uusi linkki.",
+			"setPasswordFailed": "Salasanan asettaminen epäonnistui",
+			"invalidConfirmToken": "Tämä vahvistuslinkki on vanhentunut tai se on jo käytetty. Yritä kirjautua tai rekisteröidy uudelleen.",
+			"confirmFailed": "Tilin vahvistaminen epäonnistui",
+			"loadOrdersFailed": "Tilausten lataaminen epäonnistui. Yritä hetken kuluttua uudelleen.",
+			"loadOrderFailed": "Tämän tilauksen lataaminen epäonnistui. Yritä uudelleen.",
+			"loadRecentOrdersFailed": "Viimeisimpien tilausten lataaminen epäonnistui.",
+			"updateProfileFailed": "Profiilin päivittäminen epäonnistui",
+			"changePasswordFailed": "Salasanan vaihtaminen epäonnistui",
+			"createAddressFailed": "Osoitteen luominen epäonnistui",
+			"updateAddressFailed": "Osoitteen päivittäminen epäonnistui",
+			"deleteAddressFailed": "Osoitteen poistaminen epäonnistui",
+			"setDefaultAddressFailed": "Oletusosoitteen asettaminen epäonnistui",
+			"deleteAccountFailed": "Tilin poistopyynnön lähetys epäonnistui"
+		},
+		"login": {
+			"title": "Tervetuloa takaisin",
+			"noAccount": "Eikö sinulla ole tiliä?",
+			"signUp": "Rekisteröidy",
+			"forgotPassword": "Unohditko salasanan?",
+			"submit": "Kirjaudu sisään",
+			"submitting": "Kirjaudutaan…",
+			"resetSent": "Jos tilille {email} on olemassa, salasanan nollauslinkki on lähetetty. Huom: voit pyytää nollauslinkin vain kerran 15 minuutissa."
+		},
+		"signup": {
+			"title": "Luo tili",
+			"hasAccount": "Onko sinulla jo tili?",
+			"signIn": "Kirjaudu sisään",
+			"submit": "Luo tili",
+			"submitting": "Luodaan tiliä…",
+			"successTitle": "Tili luotu!",
+			"successBody": "Tarkista sähköpostisi vahvistaaksesi tilisi.",
+			"goToSignIn": "Siirry kirjautumiseen",
+			"terms": "Luomalla tilin hyväksyt <terms>käyttöehdot</terms> ja <privacy>tietosuojakäytännön</privacy>.",
+			"termsLink": "Käyttöehdot",
+			"privacyLink": "Tietosuojakäytäntö"
+		},
+		"setPassword": {
+			"title": "Aseta uusi salasana",
+			"subtitle": "Anna uusi salasana osoitteelle {email}",
+			"submit": "Päivitä salasana",
+			"submitting": "Päivitetään…",
+			"backToSignIn": "Takaisin kirjautumiseen",
+			"successTitle": "Salasana päivitetty!",
+			"successBody": "Salasanasi on nollattu onnistuneesti. Olet nyt kirjautunut sisään.",
+			"redirecting": "Ohjataan kauppaan…"
+		},
+		"confirm": {
+			"confirmingTitle": "Vahvistetaan tiliä",
+			"confirmingBody": "Vahvistetaan {email}…",
+			"successTitle": "Tili vahvistettu",
+			"successBody": "Tilisi osoitteelle {email} on aktiivinen. Kirjaudu sisään luomallasi salasanalla.",
+			"signIn": "Kirjaudu sisään",
+			"continueShopping": "Jatka ostoksia",
+			"errorTitle": "Tilin vahvistaminen epäonnistui",
+			"goToSignIn": "Siirry kirjautumiseen"
+		},
+		"nav": {
+			"ariaLabel": "Tili",
+			"backToStore": "Takaisin kauppaan",
+			"signOut": "Kirjaudu ulos",
+			"overview": "Yleiskatsaus",
+			"orders": "Tilaukset",
+			"addresses": "Osoitteet",
+			"settings": "Asetukset"
+		},
+		"overview": {
+			"welcome": "Tervetuloa takaisin, {name}",
+			"subtitle": "Tässä on yleiskatsaus tilisi toiminnasta.",
+			"recentOrders": "Viimeisimmät tilaukset",
+			"viewAll": "Näytä kaikki",
+			"noOrdersYet": "Et ole vielä tehnyt tilauksia."
+		},
+		"orders": {
+			"title": "Tilaukset",
+			"count": "{count, plural, =0 {Ei tilauksia} one {# tilaus} other {# tilausta}}",
+			"empty": "Et ole vielä tehnyt tilauksia.",
+			"loadMore": "Lataa lisää tilauksia",
+			"signInRequired": "Kirjaudu sisään nähdäksesi tilauksesi.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Tilattu {date}",
+			"items": "Tuotteet ({count})",
+			"subtotal": "Välisumma",
+			"shipping": "Toimitus",
+			"tax": "Vero",
+			"total": "Yhteensä",
+			"shippingAddress": "Toimitusosoite",
+			"billingAddress": "Laskutusosoite",
+			"paymentMethod": "Maksutapa",
+			"paid": "Maksettu",
+			"needHelp": "Tarvitsetko apua?",
+			"signInRequired": "Kirjaudu sisään nähdäksesi tämän tilauksen.",
+			"loadFailed": "Tämän tilauksen lataaminen epäonnistui. Yritä uudelleen.",
+			"timeline": "Tilauksen aikajana"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "Käsittelyssä",
+			"UNCONFIRMED": "Odottaa vahvistusta",
+			"PARTIALLY_FULFILLED": "Osittain lähetetty",
+			"FULFILLED": "Lähetetty"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Tilaus vahvistettu",
+			"orderConfirmedDescription": "Maksu vahvistettu ja tilaus tehty",
+			"FULFILLED": "Lähetetty",
+			"FULFILLEDDescription": "Tilauksesi on lähetetty",
+			"CANCELED": "Toimitus peruutettu",
+			"CANCELEDDescription": "Lähetys peruutettiin",
+			"REFUNDED": "Hyvitetty",
+			"REFUNDEDDescription": "Maksu on hyvitetty",
+			"REFUNDED_AND_RETURNED": "Hyvitetty ja palautettu",
+			"REFUNDED_AND_RETURNEDDescription": "Tuotteet palautettu ja maksu hyvitetty",
+			"REPLACED": "Korvattu",
+			"REPLACEDDescription": "Tuotteet on korvattu",
+			"RETURNED": "Palautettu",
+			"RETURNEDDescription": "Tuotteet on palautettu",
+			"WAITING_FOR_APPROVAL": "Odottaa hyväksyntää",
+			"WAITING_FOR_APPROVALDescription": "Toimitus odottaa hyväksyntää",
+			"trackingUpdated": "Seuranta päivitetty",
+			"trackingNumber": "Seurantanumero: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# tuote} other {# tuotetta}})"
+		},
+		"settings": {
+			"title": "Asetukset",
+			"subtitle": "Hallitse tilisi asetuksia",
+			"memberSince": "Jäsen {date} lähtien"
+		},
+		"addresses": {
+			"title": "Osoitteet",
+			"subtitle": "Hallitse tallennettuja osoitteitasi",
+			"empty": "Ei tallennettuja osoitteita.",
+			"addAddress": "Lisää osoite",
+			"editAddress": "Muokkaa osoitetta",
+			"addNewAddress": "Lisää uusi osoite",
+			"editAddressDescription": "Päivitä osoitetiedot",
+			"addAddressDescription": "Lisää uusi osoite tilillesi",
+			"editAddressAria": "Muokkaa osoitetta",
+			"updateAddress": "Päivitä osoite",
+			"deleteAddressAria": "Poista osoite",
+			"defaultShipping": "Oletustoimitusosoite",
+			"defaultBilling": "Oletuslaskutusosoite",
+			"makeDefaultShipping": "Aseta oletustoimitusosoitteeksi",
+			"makeDefaultBilling": "Aseta oletuslaskutusosoitteeksi"
+		},
+		"deleteAccount": {
+			"title": "Poista tili",
+			"description": "Poista tilisi ja kaikki siihen liittyvät tiedot pysyvästi.",
+			"submit": "Poista tili",
+			"confirm": "Kyllä, poista tilini",
+			"confirmBody": "Tätä toimintoa ei voi perua. Saat vahvistussähköpostin ennen tilisi poistamista.",
+			"emailSent": "Vahvistussähköposti on lähetetty. Tarkista postilaatikkosi viimeistelläksesi tilin poiston."
+		},
+		"changePassword": {
+			"submit": "Vaihda salasana"
+		},
+		"unavailable": {
+			"title": "Tiliä ei voitu ladata",
+			"body": "Kauppa on tilapäisesti poissa käytöstä. Päivitä sivu tai yritä hetken kuluttua uudelleen."
+		}
 	}
 }

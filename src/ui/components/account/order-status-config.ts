@@ -58,11 +58,3 @@ export const defaultStatusStyle: StatusConfig = {
 	icon: Circle,
 	className: "text-muted-foreground",
 };
-
-/** Customer-friendly overrides for Saleor's internal status labels. */
-export const customerStatusLabel: Partial<Record<OrderStatus, string>> = {
-	[OrderStatus.Unfulfilled]: "Processing",
-	[OrderStatus.Unconfirmed]: "Pending confirmation",
-	[OrderStatus.PartiallyFulfilled]: "Partially shipped",
-	[OrderStatus.Fulfilled]: "Shipped",
-};
