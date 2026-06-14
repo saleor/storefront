@@ -1,14 +1,8 @@
 import { cn } from "@/lib/utils";
-import { Badge } from "@/ui/components/ui/badge";
 
-/** "Sale" chip for PLP cards, PDP header, etc. */
-export function SaleBadge({ className }: { className?: string }) {
-	return (
-		<Badge variant="destructive" className={cn("text-xs", className)}>
-			Sale
-		</Badge>
-	);
-}
+// Localized badges live in a client module (next-intl). Re-exported here so existing
+// `@/ui/components/ui/sale-label` import paths keep working.
+export { SaleBadge, NewBadge } from "@/ui/components/ui/product-badges";
 
 type DiscountPercentLabelProps = {
 	percent: number;
@@ -17,7 +11,11 @@ type DiscountPercentLabelProps = {
 	size?: "inline" | "pill";
 };
 
-/** Discount percentage label (e.g. -20%). Uses `--destructive` for sale color. */
+/**
+ * Discount percentage label (e.g. -20%). Uses `--destructive` for sale color.
+ * Presentational only (no translations) so it stays a Server Component and renders
+ * on any surface.
+ */
 export function DiscountPercentLabel({ percent, size = "inline", className }: DiscountPercentLabelProps) {
 	if (size === "pill") {
 		return (

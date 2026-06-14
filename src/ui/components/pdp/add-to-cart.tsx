@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
+import { useTranslations } from "next-intl";
 import { ShoppingBag } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
@@ -12,6 +13,8 @@ interface AddToCartProps {
 	discountPercent?: number | null;
 	disabled?: boolean;
 	disabledReason?: "no-selection" | "out-of-stock";
+	secureCheckoutLabel: string;
+	freeShippingTrustLabel?: string | null;
 }
 
 function AddToCartButton({
@@ -22,16 +25,15 @@ function AddToCartButton({
 	disabledReason?: "no-selection" | "out-of-stock";
 }) {
 	const { pending } = useFormStatus();
+	const t = useTranslations("pdp");
 
 	const getButtonText = () => {
-		if (pending) return "Adding...";
-		if (!disabled) return "Add to bag";
-		if (disabledReason === "out-of-stock") return "Out of stock";
-		return "Select options";
+		if (pending) return t("adding");
+		if (!disabled) return t("addToBag");
+		if (disabledReason === "out-of-stock") return t("outOfStock");
+		return t("selectOptions");
 	};
 
-	// Simple, clean - no success state needed
-	// The cart badge/drawer updating IS the feedback (like Apple)
 	return (
 		<Button
 			type="submit"
@@ -51,10 +53,11 @@ export function AddToCart({
 	discountPercent,
 	disabled = false,
 	disabledReason,
+	secureCheckoutLabel,
+	freeShippingTrustLabel,
 }: AddToCartProps) {
 	return (
 		<div className="space-y-4">
-			{/* Price Display */}
 			<div className="flex items-baseline gap-3">
 				<span className="text-2xl font-semibold tracking-tight">{price}</span>
 				{compareAtPrice && (
@@ -65,24 +68,24 @@ export function AddToCart({
 				)}
 			</div>
 
-			{/* Add to Cart Button */}
 			<AddToCartButton disabled={disabled} disabledReason={disabledReason} />
 
-			{/* Trust Signals */}
 			<div className="flex items-center justify-center gap-6 pt-2 text-xs text-muted-foreground">
 				<span className="flex items-center gap-1.5">
 					<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
 						<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
 					</svg>
-					Secure checkout
+					{secureCheckoutLabel}
 				</span>
-				<span className="flex items-center gap-1.5">
-					<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-						<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-						<path d="M9 22V12h6v10" />
-					</svg>
-					Free delivery over €100
-				</span>
+				{freeShippingTrustLabel ? (
+					<span className="flex items-center gap-1.5">
+						<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+							<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+							<path d="M9 22V12h6v10" />
+						</svg>
+						{freeShippingTrustLabel}
+					</span>
+				) : null}
 			</div>
 		</div>
 	);

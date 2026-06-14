@@ -25,5 +25,25 @@
 	"productsListing": {
 		"breadcrumbHome": "Accueil",
 		"breadcrumbProducts": "Produits"
+	},
+	"pdp": {
+		"addToBag": "Ajouter au panier",
+		"adding": "Ajout…",
+		"outOfStock": "Rupture de stock",
+		"selectOptions": "Choisir les options",
+		"free": "GRATUIT",
+		"breadcrumbHome": "Accueil",
+		"badges": {
+			"sale": "Promo",
+			"new": "Nouveau"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} — rupture de stock",
+			"willChangeSelections": "{name} — modifie les autres options",
+			"percentOffTitle": "{name} — {percent}% de réduction",
+			"outOfStockA11y": "rupture de stock",
+			"percentOffA11y": "{percent}% de réduction",
+			"selectedA11y": "sélectionné"
+		}
 	}
 }

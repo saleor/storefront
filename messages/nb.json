@@ -25,5 +25,25 @@
 	"productsListing": {
 		"breadcrumbHome": "Hjem",
 		"breadcrumbProducts": "Produkter"
+	},
+	"pdp": {
+		"addToBag": "Legg i handlekurv",
+		"adding": "Legger til…",
+		"outOfStock": "Utsolgt",
+		"selectOptions": "Velg alternativer",
+		"free": "GRATIS",
+		"breadcrumbHome": "Hjem",
+		"badges": {
+			"sale": "Salg",
+			"new": "Ny"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} — utsolgt",
+			"willChangeSelections": "{name} — endrer andre valg",
+			"percentOffTitle": "{name} — {percent}% rabatt",
+			"outOfStockA11y": "utsolgt",
+			"percentOffA11y": "{percent}% rabatt",
+			"selectedA11y": "valgt"
+		}
 	}
 }

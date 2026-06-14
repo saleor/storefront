@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { useFormStatus } from "react-dom";
+import { useTranslations } from "next-intl";
 import { ShoppingBag } from "lucide-react";
 import { throttle } from "lodash-es";
 import { Button } from "@/ui/components/ui/button";
@@ -35,20 +36,17 @@ interface StickyBarProps {
 
 function StickyAddButton() {
 	const { pending } = useFormStatus();
+	const t = useTranslations("pdp");
 
 	return (
 		<Button
 			type="submit"
 			size="lg"
 			disabled={pending}
-			className={cn(
-				"min-w-[130px] shrink-0",
-				// Override transition to prevent flash on state change
-				"transition-none disabled:opacity-100",
-			)}
+			className={cn("min-w-[130px] shrink-0", "transition-none disabled:opacity-100")}
 		>
 			<ShoppingBag className="h-4 w-4" />
-			{pending ? "Adding..." : "Add to bag"}
+			{pending ? t("adding") : t("addToBag")}
 		</Button>
 	);
 }
@@ -60,7 +58,6 @@ export function StickyBar({ productName, price, show = false }: StickyBarProps) 
 		getServerScrollSnapshot,
 	);
 
-	// Only show if both conditions are met
 	const isVisible = show && scrolledPastThreshold;
 
 	return (

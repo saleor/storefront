@@ -3,6 +3,7 @@
 import { cn, formatMoney } from "@/lib/utils";
 import { useIntlLocale } from "@/hooks/use-storefront-href";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
+import { useVariantOptionLabels } from "@/ui/components/pdp/use-variant-option-labels";
 
 /**
  * Fallback selector for variants that have no structured attributes.
@@ -51,6 +52,7 @@ export function VariantNameSelector({
 	isPending,
 }: VariantNameSelectorProps) {
 	const intlLocale = useIntlLocale();
+	const labels = useVariantOptionLabels();
 
 	// Check if prices differ between variants (show price if so)
 	const prices = variants
@@ -90,9 +92,9 @@ export function VariantNameSelector({
 					// Build accessible label
 					const accessibleParts = [
 						variant.name,
-						isOutOfStock && "out of stock",
+						isOutOfStock && labels.outOfStockA11y(),
 						showPrices && price && formatMoney(price.amount, price.currency, intlLocale),
-						discountPercent && `${discountPercent}% off`,
+						discountPercent && labels.percentOffA11y(discountPercent),
 					].filter(Boolean);
 
 					return (
@@ -110,7 +112,7 @@ export function VariantNameSelector({
 										: "border-border bg-background text-foreground hover:border-foreground",
 									isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
 								)}
-								title={isOutOfStock ? `${variant.name} - Out of stock` : undefined}
+								title={isOutOfStock ? labels.outOfStockTitle(variant.name) : undefined}
 								aria-label={accessibleParts.join(", ")}
 								aria-pressed={isSelected}
 							>

@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/ui/components/ui/badge";
-import { DiscountPercentLabel, SaleBadge } from "@/ui/components/ui/sale-label";
+import { DiscountPercentLabel, NewBadge, SaleBadge } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
@@ -60,7 +59,7 @@ export function ProductCardBase({
 				{product.badge === "Sale" ? (
 					<SaleBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
 				) : product.badge === "New" ? (
-					<Badge className="pointer-events-none absolute left-3 top-3 z-[1]">New</Badge>
+					<NewBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
 				) : null}
 
 				{imageOverlay ? <div className="absolute inset-0 z-10">{imageOverlay}</div> : null}

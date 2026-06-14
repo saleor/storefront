@@ -25,5 +25,25 @@
 	"productsListing": {
 		"breadcrumbHome": "Home",
 		"breadcrumbProducts": "Products"
+	},
+	"pdp": {
+		"addToBag": "Add to bag",
+		"adding": "Adding...",
+		"outOfStock": "Out of stock",
+		"selectOptions": "Select options",
+		"free": "FREE",
+		"breadcrumbHome": "Home",
+		"badges": {
+			"sale": "Sale",
+			"new": "New"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} - Out of stock",
+			"willChangeSelections": "{name} - Will change other selections",
+			"percentOffTitle": "{name} - {percent}% off",
+			"outOfStockA11y": "out of stock",
+			"percentOffA11y": "{percent}% off",
+			"selectedA11y": "selected"
+		}
 	}
 }

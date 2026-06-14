@@ -25,5 +25,25 @@
 	"productsListing": {
 		"breadcrumbHome": "Etusivu",
 		"breadcrumbProducts": "Tuotteet"
+	},
+	"pdp": {
+		"addToBag": "Lisää koriin",
+		"adding": "Lisätään…",
+		"outOfStock": "Loppunut varastosta",
+		"selectOptions": "Valitse vaihtoehdot",
+		"free": "ILMAINEN",
+		"breadcrumbHome": "Etusivu",
+		"badges": {
+			"sale": "Ale",
+			"new": "Uutuus"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} — loppunut varastosta",
+			"willChangeSelections": "{name} — muuttaa muita valintoja",
+			"percentOffTitle": "{name} — {percent}% alennus",
+			"outOfStockA11y": "loppunut varastosta",
+			"percentOffA11y": "{percent}% alennus",
+			"selectedA11y": "valittu"
+		}
 	}
 }

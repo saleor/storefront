@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
+import { useVariantOptionLabels } from "@/ui/components/pdp/use-variant-option-labels";
 import type { OptionRendererProps } from "../types";
 
 /**
@@ -20,13 +21,13 @@ export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: O
 	const isOutOfStock = !option.available;
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
+	const labels = useVariantOptionLabels();
 
-	// Build accessible label with all relevant info
 	const accessibleLabel = [
 		option.name,
-		isOutOfStock && "out of stock",
-		hasDiscount && `${option.discountPercent}% off`,
-		isSelected && "selected",
+		isOutOfStock && labels.outOfStockA11y(),
+		hasDiscount && labels.percentOffA11y(option.discountPercent!),
+		isSelected && labels.selectedA11y(),
 	]
 		.filter(Boolean)
 		.join(", ");
@@ -55,11 +56,11 @@ export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: O
 				)}
 				title={
 					isOutOfStock
-						? `${option.name} - Out of stock`
+						? labels.outOfStockTitle(option.name)
 						: isIncompatible
-							? `${option.name} - Will change other selections`
+							? labels.willChangeSelections(option.name)
 							: option.discountPercent
-								? `${option.name} - ${option.discountPercent}% off`
+								? labels.percentOffTitle(option.name, option.discountPercent)
 								: option.name
 				}
 				aria-label={accessibleLabel}

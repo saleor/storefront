@@ -25,5 +25,25 @@
 	"productsListing": {
 		"breadcrumbHome": "Startseite",
 		"breadcrumbProducts": "Produkte"
+	},
+	"pdp": {
+		"addToBag": "In die Tasche",
+		"adding": "Wird hinzugefügt…",
+		"outOfStock": "Nicht auf Lager",
+		"selectOptions": "Optionen wählen",
+		"free": "KOSTENLOS",
+		"breadcrumbHome": "Startseite",
+		"badges": {
+			"sale": "Sale",
+			"new": "Neu"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} — nicht auf Lager",
+			"willChangeSelections": "{name} — ändert andere Auswahl",
+			"percentOffTitle": "{name} — {percent}% Rabatt",
+			"outOfStockA11y": "nicht auf Lager",
+			"percentOffA11y": "{percent}% Rabatt",
+			"selectedA11y": "ausgewählt"
+		}
 	}
 }

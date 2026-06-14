@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
@@ -122,7 +123,10 @@ async function ProductShell({
 }) {
 	const params = await paramsPromise;
 	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);
-	const product = await getProductData(params.slug, params.channel, params.locale);
+	const [product, tPdp] = await Promise.all([
+		getProductData(params.slug, params.channel, params.locale),
+		getTranslations({ locale: params.locale, namespace: "pdp" }),
+	]);
 
 	if (!product) {
 		notFound();
@@ -134,7 +138,7 @@ async function ProductShell({
 	const defaultImages = getDefaultGalleryImages(product);
 
 	const breadcrumbs = [
-		{ label: "Home", href: browse("/") },
+		{ label: tPdp("breadcrumbHome"), href: browse("/") },
 		...(product.category
 			? [{ label: product.category.name, href: browse(`/categories/${product.category.slug}`) }]
 			: []),
