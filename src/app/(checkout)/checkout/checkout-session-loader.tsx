@@ -5,6 +5,7 @@ import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
 import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
 import { getStorefrontContent } from "@/lib/content/server";
+import { loadCheckoutMessages } from "@/i18n/load-messages";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import {
 	getCheckoutSessionCheckout,
@@ -51,7 +52,7 @@ export async function CheckoutSessionLoader({
 
 	const [initialUser, checkoutResult] = await Promise.all([
 		getCheckoutSessionUser(),
-		checkoutIdFromUrl ? getCheckoutSessionCheckout(checkoutIdFromUrl) : Promise.resolve(null),
+		checkoutIdFromUrl ? getCheckoutSessionCheckout(checkoutIdFromUrl, browseLocale) : Promise.resolve(null),
 	]);
 
 	let loadState: CheckoutLoadState = "none";
@@ -90,7 +91,10 @@ export async function CheckoutSessionLoader({
 
 	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
 	const contentChannel = browseChannel ?? DefaultChannelSlug ?? "default-channel";
-	const checkoutContent = (await getStorefrontContent(contentChannel, browseLocale)).surfaces.checkout;
+	const [checkoutContent, messages] = await Promise.all([
+		getStorefrontContent(contentChannel, browseLocale).then((content) => content.surfaces.checkout),
+		loadCheckoutMessages(browseLocale),
+	]);
 
 	return (
 		<CheckoutApp
@@ -101,6 +105,7 @@ export async function CheckoutSessionLoader({
 			shippingCountries={shippingCountries}
 			checkoutContent={checkoutContent}
 			storefrontLocale={browseLocale}
+			messages={messages}
 		/>
 	);
 }

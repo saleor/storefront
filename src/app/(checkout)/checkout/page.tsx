@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
+import { CheckoutRouteFallback } from "@/checkout/views/saleor-checkout/checkout-route-fallback";
 import { formatPageTitle } from "@/config/brand";
 import { CheckoutSessionLoader } from "./checkout-session-loader";
 
@@ -17,7 +17,7 @@ export default function CheckoutPage(props: {
 	searchParams: Promise<{ checkout?: string; order?: string; locale?: string }>;
 }) {
 	return (
-		<Suspense fallback={<CheckoutLoadingFallback />}>
+		<Suspense fallback={<CheckoutRouteFallback />}>
 			<CheckoutSessionLoader searchParams={props.searchParams} />
 		</Suspense>
 	);

@@ -84,6 +84,7 @@ import {
 import { getStripePaymentGuardError, isStripePaymentEnabled } from "@/checkout/lib/payment/providers/stripe";
 import { buildMarketingConsentMetadata } from "@/checkout/lib/marketing-consent";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
+import { getCheckoutServerTranslations } from "@/checkout/lib/server/get-checkout-server-translations";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { checkoutGraphqlLanguageCode } from "@/lib/checkout-locale";
@@ -220,9 +221,10 @@ export async function updateCheckoutMarketingConsent(
 
 	const errors = result.data.updateMetadata?.errors ?? [];
 	if (errors.length > 0) {
+		const { server: t } = await getCheckoutServerTranslations();
 		return {
 			ok: false,
-			error: errors[0]?.message ?? "Failed to save marketing preference",
+			error: errors[0]?.message ?? t("marketingSaveFailed"),
 		};
 	}
 
@@ -275,7 +277,8 @@ export async function registerCheckoutAccount(input: {
 }): Promise<SimpleActionResult> {
 	// Confirmation emails embed this URL — reject foreign origins (phishing vector).
 	if (!isAllowedRedirectUrl(input.redirectUrl, await getRequestOrigin())) {
-		return { ok: false, error: "Invalid redirect URL" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("invalidRedirectUrl") };
 	}
 
 	const result = await executeRawGraphQL<{
@@ -302,12 +305,13 @@ export async function registerCheckoutAccount(input: {
 			return { ok: true };
 		}
 
+		const { server: t } = await getCheckoutServerTranslations();
 		return {
 			ok: false,
 			fieldErrors: errors.map(
 				(error): CheckoutFieldError => ({
 					field: error.field,
-					message: error.message ?? "Failed to create account",
+					message: error.message ?? t("createAccountFailed"),
 					code: error.code as CheckoutFieldError["code"],
 				}),
 			),
@@ -385,11 +389,13 @@ export async function calculateDeliveryOptions(checkoutId: string): Promise<Deli
 
 	const payload = result.data.deliveryOptionsCalculate;
 	if (!payload) {
-		return { ok: false, error: "No response from Saleor" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("noSaleorResponse") };
 	}
 
 	if (payload.errors?.length) {
-		return { ok: false, error: payload.errors[0].message ?? "Failed to load shipping methods" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: payload.errors[0].message ?? t("shippingMethodsFailed") };
 	}
 
 	return { ok: true, deliveries: payload.deliveries ?? [] };
@@ -451,11 +457,13 @@ export async function initializePaymentGateways(
 
 	const payload = result.data.paymentGatewayInitialize;
 	if (!payload) {
-		return { ok: false, error: "No response from Saleor" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("noSaleorResponse") };
 	}
 
 	if (payload.errors?.length) {
-		return { ok: false, error: payload.errors[0].message ?? "Payment gateway initialization failed" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: payload.errors[0].message ?? t("gatewayInitFailed") };
 	}
 
 	return { ok: true, data: payload };
@@ -464,14 +472,16 @@ export async function initializePaymentGateways(
 export async function initializeCheckoutTransaction(
 	variables: TransactionInitializeMutationVariables,
 ): Promise<TransactionInitializeActionResult> {
+	const { server: t } = await getCheckoutServerTranslations();
+
 	const dummyGuardError = getDummyPaymentGuardError(variables.paymentGateway?.id);
 	if (dummyGuardError) {
-		return { ok: false, error: dummyGuardError };
+		return { ok: false, error: t("dummyNotAllowed") };
 	}
 
 	const stripeGuardError = getStripePaymentGuardError(variables.paymentGateway?.id);
 	if (stripeGuardError) {
-		return { ok: false, error: stripeGuardError };
+		return { ok: false, error: t("stripeNotEnabled") };
 	}
 
 	// Defense in depth: never trust the client-supplied amount. Saleor re-validates
@@ -479,14 +489,14 @@ export async function initializeCheckoutTransaction(
 	if (typeof variables.amount === "number") {
 		const live = await fetchCheckoutOnServer(variables.checkoutId);
 		if (!live.ok || !live.checkout) {
-			return { ok: false, error: "Could not verify the checkout total. Please try again." };
+			return { ok: false, error: t("totalVerifyFailed") };
 		}
 
 		const liveAmount = getCheckoutPayAmount(live.checkout);
 		if (liveAmount === null || hasMaterialCheckoutTotalChange(liveAmount, variables.amount)) {
 			return {
 				ok: false,
-				error: "The checkout total has changed. Please review your order and try again.",
+				error: t("totalChanged"),
 			};
 		}
 	}
@@ -502,11 +512,11 @@ export async function initializeCheckoutTransaction(
 
 	const payload = result.data.transactionInitialize;
 	if (!payload) {
-		return { ok: false, error: "No response from Saleor" };
+		return { ok: false, error: t("noSaleorResponse") };
 	}
 
 	if (payload.errors?.length) {
-		return { ok: false, error: payload.errors[0].message ?? "Payment initialization failed" };
+		return { ok: false, error: payload.errors[0].message ?? t("paymentInitFailed") };
 	}
 
 	return { ok: true, data: payload };
@@ -519,7 +529,8 @@ export async function processCheckoutTransaction(
 	// environment, a direct call to this action must not drive transactions either.
 	// Forks adding gateways should extend this check alongside the initialize guards.
 	if (!isStripePaymentEnabled() && !isDummyPaymentAllowed()) {
-		return { ok: false, error: "Payments are not enabled in this environment." };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("paymentsDisabled") };
 	}
 
 	const result = await executeAuthenticatedGraphQL(transactionProcessDocument, {
@@ -533,11 +544,13 @@ export async function processCheckoutTransaction(
 
 	const payload = result.data.transactionProcess;
 	if (!payload) {
-		return { ok: false, error: "No response from Saleor" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("noSaleorResponse") };
 	}
 
 	if (payload.errors?.length) {
-		return { ok: false, error: payload.errors[0].message ?? "Payment processing failed" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: payload.errors[0].message ?? t("paymentProcessFailed") };
 	}
 
 	return { ok: true, data: payload };
@@ -555,16 +568,18 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 
 	const payload = result.data.checkoutComplete;
 	if (!payload) {
-		return { ok: false, error: "No response from Saleor" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("noSaleorResponse") };
 	}
 
 	if (payload.errors?.length) {
+		const { server: t } = await getCheckoutServerTranslations();
 		return {
 			ok: false,
-			error: payload.errors[0].message ?? "Failed to complete order",
+			error: payload.errors[0].message ?? t("completeOrderFailed"),
 			fieldErrors: payload.errors.map((error) => ({
 				field: error.field,
-				message: error.message ?? "Failed to complete order",
+				message: error.message ?? t("completeOrderFailed"),
 				code: error.code,
 			})),
 		};
@@ -573,9 +588,10 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 	const orderId = payload.order?.id;
 	const channelSlug = payload.order?.channel?.slug;
 	if (!orderId) {
+		const { server: t } = await getCheckoutServerTranslations();
 		return {
 			ok: false,
-			error: "Payment was processed but the order could not be created. Please try again or contact support.",
+			error: t("orderCreateFailed"),
 		};
 	}
 
@@ -606,7 +622,8 @@ export async function getAddressValidationRules(
 	}
 
 	if (!result.data.addressValidationRules) {
-		return { ok: false, error: "Validation rules not available" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("validationRulesUnavailable") };
 	}
 
 	return { ok: true, rules: result.data.addressValidationRules };
@@ -659,7 +676,8 @@ export async function requestCheckoutPasswordReset(input: {
 }): Promise<SimpleActionResult> {
 	// Reset emails embed this URL — reject foreign origins (phishing vector).
 	if (!isAllowedRedirectUrl(input.redirectUrl, await getRequestOrigin())) {
-		return { ok: false, error: "Invalid redirect URL" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("invalidRedirectUrl") };
 	}
 
 	const result = await executeRawGraphQL<RequestPasswordResetMutation>({
@@ -696,7 +714,8 @@ export async function setUserDefaultAddress(
 
 	const errors = result.data.accountSetDefaultAddress?.errors ?? [];
 	if (errors.length > 0) {
-		return { ok: false, error: errors[0].message ?? "Failed to set default address" };
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: errors[0].message ?? t("setDefaultAddressFailed") };
 	}
 
 	return { ok: true };

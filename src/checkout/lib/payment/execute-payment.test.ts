@@ -1,7 +1,27 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { setCheckoutTransport, type CheckoutTransport } from "@/checkout/lib/checkout-transport";
+import { buildCheckoutGatewayMessages } from "@/checkout/lib/payment/gateway-messages";
 import { executePayment } from "./execute-payment";
+
+const gatewayMessages = buildCheckoutGatewayMessages((key, values) => {
+	const templates: Record<string, string> = {
+		unsupportedList: `Unsupported: ${values?.gateways ?? ""}`,
+		unsupportedEmpty: "No gateway",
+		dummyMissingBody: "Dummy missing",
+		noneTitle: "None",
+		noneBody: "None body",
+		unsupportedTitle: "Unsupported",
+		dummyMissingTitle: "Dummy missing title",
+		noGatewayConfigured: "No gateway configured",
+		stripeUseCardForm: "Use card form",
+		paymentFailed: "Payment failed",
+		paymentTryAgain: "Try again",
+		paymentWebhookFailed: "Webhook failed",
+		paymentInitFailed: "Init failed",
+	};
+	return templates[key] ?? key;
+});
 
 const initializeTransaction = vi.fn<CheckoutTransport["initializeTransaction"]>();
 const completeCheckout = vi.fn<CheckoutTransport["completeCheckout"]>();
@@ -36,6 +56,7 @@ describe("executePayment", () => {
 		const result = await executePayment(
 			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" }, submitMode: "server" },
 			{ checkoutId: "checkout-1", amount: 42.5 },
+			gatewayMessages,
 		);
 
 		expect(result).toEqual({ ok: true, orderId: "order-1" });
@@ -58,6 +79,7 @@ describe("executePayment", () => {
 		const result = await executePayment(
 			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" }, submitMode: "server" },
 			{ checkoutId: "checkout-1", amount: 10 },
+			gatewayMessages,
 		);
 
 		expect(result).toEqual({
@@ -73,6 +95,7 @@ describe("executePayment", () => {
 		const result = await executePayment(
 			{ type: "stripe", gateway: { id: "stripe", name: "Stripe" }, submitMode: "client" },
 			{ checkoutId: "checkout-1", amount: 0 },
+			gatewayMessages,
 		);
 
 		expect(result).toEqual({ ok: true, orderId: "order-free" });
@@ -84,6 +107,7 @@ describe("executePayment", () => {
 		const result = await executePayment(
 			{ type: "unsupported", gateways: [{ id: "stripe", name: "Stripe" }] },
 			{ checkoutId: "checkout-1", amount: 10 },
+			gatewayMessages,
 		);
 
 		expect(result.ok).toBe(false);

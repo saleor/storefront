@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { type ReadonlyURLSearchParams } from "next/navigation";
 
 import { useLiveCheckoutSearchString } from "@/checkout/lib/checkout-search-params";
-import { getCurrentStepFromParams, type CheckoutStep } from "@/checkout/views/saleor-checkout/flow";
+import { useCurrentCheckoutStepFromParams } from "@/checkout/hooks/use-checkout-steps";
+import type { CheckoutStep } from "@/checkout/views/saleor-checkout/flow";
 
 /** Current checkout step from the live URL bar (includes shallow `?step=` updates). */
 export function useCheckoutStepFromUrl(
@@ -11,8 +12,8 @@ export function useCheckoutStepFromUrl(
 ): CheckoutStep {
 	const searchString = useLiveCheckoutSearchString(searchParams.toString());
 
-	return useMemo(() => {
-		const params = new URLSearchParams(searchString);
-		return getCurrentStepFromParams(params, isShippingRequired);
-	}, [isShippingRequired, searchString]);
+	return useCurrentCheckoutStepFromParams(
+		useMemo(() => new URLSearchParams(searchString), [searchString]),
+		isShippingRequired,
+	);
 }

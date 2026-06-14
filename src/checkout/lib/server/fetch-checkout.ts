@@ -9,6 +9,7 @@ import type { CheckoutFetchResult } from "@/checkout/lib/checkout-types";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
+import type { LocaleSlug } from "@/config/locale";
 
 const checkoutQueryDocument = toTypedDocument<CheckoutQuery, CheckoutQueryVariables>(CheckoutDocument);
 
@@ -17,9 +18,12 @@ const checkoutQueryDocument = toTypedDocument<CheckoutQuery, CheckoutQueryVariab
  *
  * The checkout ID is the credential — no customer session or app token.
  */
-export async function fetchCheckoutOnServer(checkoutId: string): Promise<CheckoutFetchResult> {
+export async function fetchCheckoutOnServer(
+	checkoutId: string,
+	localeSlug?: LocaleSlug,
+): Promise<CheckoutFetchResult> {
 	const result = await executePublicGraphQL(checkoutQueryDocument, {
-		variables: { id: checkoutId, ...(await checkoutGraphqlLocaleVariables()) },
+		variables: { id: checkoutId, ...(await checkoutGraphqlLocaleVariables(localeSlug)) },
 		cache: "no-cache",
 	});
 

@@ -3,8 +3,10 @@ import { type ReadonlyURLSearchParams } from "next/navigation";
 
 import { updateCheckoutQuery } from "@/checkout/lib/checkout-search-params";
 import { useCheckoutStepFromUrl } from "@/checkout/hooks/use-checkout-step-from-url";
+import { useCheckoutStepLabels, useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import type { ServerCheckout } from "@/checkout/lib/checkout-types";
-import { getCheckoutSteps, type CheckoutStepType } from "@/checkout/views/saleor-checkout/flow";
+import type { CheckoutStepType } from "@/checkout/views/saleor-checkout/flow";
+import { getCheckoutSteps } from "@/checkout/views/saleor-checkout/flow";
 
 type UseCheckoutStepOptions = {
 	isShippingRequired: boolean;
@@ -15,25 +17,28 @@ type UseCheckoutStepOptions = {
 export function useCheckoutStep({ isShippingRequired, searchParams, setCheckout }: UseCheckoutStepOptions) {
 	const stepRef = useRef<HTMLDivElement>(null);
 	const currentStep = useCheckoutStepFromUrl(searchParams, isShippingRequired);
+	const labels = useCheckoutStepLabels();
+	const steps = useCheckoutSteps(isShippingRequired);
 
 	const goToStep = useCallback(
 		(stepType: CheckoutStepType) => {
-			const step = getCheckoutSteps(isShippingRequired).find((s) => s.id === stepType);
+			const step = steps.find((s) => s.id === stepType);
 			if (!step) return;
 			updateCheckoutQuery({ step: step.slug });
 		},
-		[isShippingRequired],
+		[steps],
 	);
 
 	const completeStep = useCallback(
 		(checkout: ServerCheckout, stepType: CheckoutStepType) => {
-			const step = getCheckoutSteps(checkout.isShippingRequired).find((s) => s.id === stepType);
+			const nextSteps = getCheckoutSteps(checkout.isShippingRequired, labels);
+			const step = nextSteps.find((s) => s.id === stepType);
 			if (!step) return;
 
 			setCheckout(checkout);
 			updateCheckoutQuery({ step: step.slug }, { history: "push" });
 		},
-		[setCheckout],
+		[setCheckout, labels],
 	);
 
 	useEffect(() => {

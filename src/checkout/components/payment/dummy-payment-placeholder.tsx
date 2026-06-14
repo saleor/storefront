@@ -1,7 +1,9 @@
 "use client";
 
 import { type FC } from "react";
+import { useTranslations } from "next-intl";
 import { FlaskConical } from "lucide-react";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 
 export interface DummyPaymentPlaceholderProps {
 	/** Gateway display name from Saleor (e.g. "Dummy Payment App") */
@@ -13,17 +15,19 @@ export interface DummyPaymentPlaceholderProps {
  * No card fields or method picker — the gateway is chosen server-side on Pay.
  */
 export const DummyPaymentPlaceholder: FC<DummyPaymentPlaceholderProps> = ({ gatewayName }) => {
-	const label = gatewayName?.trim() || "Dummy Payment";
+	const tSteps = useTranslations("checkout.steps");
+	const paymentMessages = useCheckoutPaymentMessages();
+	const label = gatewayName?.trim() || paymentMessages.dummyGateway;
 
 	return (
 		<section className="space-y-3">
-			<h2 className="text-lg font-semibold">Payment</h2>
+			<h2 className="text-lg font-semibold">{tSteps("payment")}</h2>
 			<p className="flex items-start gap-2 text-sm text-muted-foreground">
 				<FlaskConical className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
 				<span>
 					<span className="text-foreground">{label}</span>
 					{" · "}
-					Test mode. No card details needed — use Pay to complete a test order.
+					{paymentMessages.dummyTestMode}
 				</span>
 			</p>
 			<TestCardMockup />
@@ -47,9 +51,6 @@ const CARD_SURFACE_STYLE = {
 
 /**
  * Decorative card preview — non-interactive, test checkout only.
- * Slightly flatter than ISO ID-1 (856/520 vs 856/540) for a sleeker mockup.
- * Outer shell owns aspect-ratio; inner layer is absolutely positioned so flex
- * content cannot expand the box past the card proportions.
  */
 const TestCardMockup: FC = () => (
 	<div aria-hidden className="relative aspect-[856/520] w-full">

@@ -10,7 +10,29 @@ import {
 	isDummyPaymentAllowed,
 	resolvePaymentGatewayStatus,
 } from "./payment-gateways";
+import { buildCheckoutGatewayMessages } from "./payment/gateway-messages";
 import { STRIPE_GATEWAY_ID } from "./payment/providers/stripe";
+
+const gatewayMessages = buildCheckoutGatewayMessages((key, values) => {
+	const templates: Record<string, string> = {
+		unsupportedList: `This checkout does not support the available payment gateway(s): ${
+			values?.gateways ?? ""
+		}.`,
+		unsupportedEmpty: "No supported payment gateway is available for this checkout.",
+		dummyMissingBody: "Dummy missing",
+		noneTitle: "None",
+		noneBody: "None body",
+		unsupportedTitle: "Unsupported",
+		dummyMissingTitle: "Dummy missing title",
+		noGatewayConfigured: "No payment gateway configured.",
+		stripeUseCardForm: "Use card form",
+		paymentFailed: "Payment failed",
+		paymentTryAgain: "Payment failed. Please try again.",
+		paymentWebhookFailed: "Payment app webhook failed.",
+		paymentInitFailed: "Payment could not be initialized.",
+	};
+	return templates[key] ?? key;
+});
 
 describe("isDummyGateway", () => {
 	it("matches known dummy app ids", () => {
@@ -138,7 +160,10 @@ describe("formatGatewayList", () => {
 
 describe("getUnsupportedGatewayMessage", () => {
 	it("includes available gateways", () => {
-		const message = getUnsupportedGatewayMessage([{ id: "saleor.app.payment.stripe", name: "Stripe" }]);
+		const message = getUnsupportedGatewayMessage(
+			[{ id: "saleor.app.payment.stripe", name: "Stripe" }],
+			gatewayMessages,
+		);
 		expect(message).toContain("Stripe (saleor.app.payment.stripe)");
 		expect(message).toMatch(/does not support/i);
 	});
@@ -201,34 +226,43 @@ describe("resolvePaymentGatewayStatus", () => {
 describe("getTransactionInitializeError", () => {
 	it("returns mutation errors", () => {
 		expect(
-			getTransactionInitializeError({
-				errors: [{ message: "Gateway unavailable" }],
-				transaction: { id: "tx-1" },
-			}),
+			getTransactionInitializeError(
+				{
+					errors: [{ message: "Gateway unavailable" }],
+					transaction: { id: "tx-1" },
+				},
+				gatewayMessages,
+			),
 		).toBe("Gateway unavailable");
 	});
 
 	it("returns webhook delivery guidance for authorization failures", () => {
 		expect(
-			getTransactionInitializeError({
-				transactionEvent: { type: "AUTHORIZATION_FAILURE", message: "Failed to delivery request." },
-				transaction: { id: "tx-1" },
-			}),
+			getTransactionInitializeError(
+				{
+					transactionEvent: { type: "AUTHORIZATION_FAILURE", message: "Failed to delivery request." },
+					transaction: { id: "tx-1" },
+				},
+				gatewayMessages,
+			),
 		).toMatch(/webhook/i);
 	});
 
 	it("returns message when transaction id is missing", () => {
-		expect(getTransactionInitializeError({ transactionEvent: { type: "CHARGE_SUCCESS" } })).toMatch(
-			/Payment could not be initialized/,
-		);
+		expect(
+			getTransactionInitializeError({ transactionEvent: { type: "CHARGE_SUCCESS" } }, gatewayMessages),
+		).toMatch(/Payment could not be initialized/);
 	});
 
 	it("returns null for a successful initialize payload", () => {
 		expect(
-			getTransactionInitializeError({
-				transactionEvent: { type: "CHARGE_SUCCESS" },
-				transaction: { id: "tx-1" },
-			}),
+			getTransactionInitializeError(
+				{
+					transactionEvent: { type: "CHARGE_SUCCESS" },
+					transaction: { id: "tx-1" },
+				},
+				gatewayMessages,
+			),
 		).toBeNull();
 	});
 });

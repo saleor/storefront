@@ -81,20 +81,21 @@ Enable a subset per deployment with `NEXT_PUBLIC_STOREFRONT_LOCALES` (comma-sepa
 
 ## next-intl namespaces (storefront surface)
 
-| Namespace         | Surfaces                                                   |
-| ----------------- | ---------------------------------------------------------- |
-| `cart`            | Cart drawer + cart page functional chrome                  |
-| `productsListing` | PLP breadcrumbs                                            |
-| `common`          | Shared UI (`pagination`, etc.)                             |
-| `pdp`             | Add to bag, variant labels, badges                         |
-| `plp`             | Filters, sort, quick add                                   |
-| `search`          | Search page, bar, sort, empty state                        |
-| `nav`             | Header, cart button, user menu, region picker, breadcrumbs |
-| `account`         | Login, signup, account shell, orders, settings, addresses  |
+| Namespace         | Surfaces                                                    |
+| ----------------- | ----------------------------------------------------------- |
+| `cart`            | Cart drawer + cart page functional chrome                   |
+| `productsListing` | PLP breadcrumbs                                             |
+| `common`          | Shared UI (`pagination`, etc.)                              |
+| `pdp`             | Add to bag, variant labels, badges                          |
+| `plp`             | Filters, sort, quick add                                    |
+| `search`          | Search page, bar, sort, empty state                         |
+| `nav`             | Header, cart button, user menu, region picker, breadcrumbs  |
+| `account`         | Login, signup, account shell, orders, settings, addresses   |
+| `checkout`        | Steps, summary, shipping/payment CTAs, errors, confirmation |
 
-**Patterns:** Server `getTranslations({ locale, namespace })` with URL `params.locale`. Client `useTranslations("namespace")` under `NextIntlClientProvider` in `(storefront)/[locale]/layout.tsx`. Types from `messages/en.json` via `src/i18n/types.d.ts`.
+**Patterns:** Browse — server `getTranslations({ locale, namespace })` with URL `params.locale`; client under `NextIntlClientProvider` in `(storefront)/[locale]/layout.tsx`. **Checkout** — same provider pattern via `CheckoutIntlProvider`; locale from `browse-locale` cookie / `?locale=`. Types from `messages/en.json` via `src/i18n/types.d.ts`.
 
-**Checkout** functional UI is still CMS-owned (`checkout.*` in storefront content). See ADR 0002 follow-up.
+Editorial checkout copy (empty session, trust, marketing opt-in) stays in storefront content (`useCheckoutContent`).
 
 ---
 
@@ -146,12 +147,12 @@ Details: [`data-caching.md`](../skills/saleor-paper-storefront/rules/data-cachin
 
 ## Backlog (known gaps)
 
-| Item                                 | Notes                                          |
-| ------------------------------------ | ---------------------------------------------- |
-| Checkout functional UI → next-intl   | Deferred; still `checkout.*` in CMS            |
-| `not-found` / global error pages     | English                                        |
-| PLP price filter labels              | Hardcoded USD ranges                           |
-| GraphQL error `message` pass-through | Some account/auth API errors stay API language |
+| Item                                 | Notes                                                  |
+| ------------------------------------ | ------------------------------------------------------ |
+| Checkout contact/auth/address/Stripe | Done — server-action fallbacks + gateway alerts remain |
+| `not-found` / global error pages     | English                                                |
+| PLP price filter labels              | Hardcoded USD ranges                                   |
+| GraphQL error `message` pass-through | Some account/auth API errors stay API language         |
 
 ---
 

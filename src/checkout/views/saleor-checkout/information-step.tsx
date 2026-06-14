@@ -32,7 +32,8 @@ import {
 	getCheckoutSaveAddressFlag,
 	isUsingSavedShippingAddress,
 } from "@/checkout/lib/shipping-address-submit";
-import { getStepNumber } from "./flow";
+import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
+import { useTranslations } from "next-intl";
 
 // Extracted components
 import { SignInForm, ResetPasswordForm } from "@/checkout/components/contact";
@@ -103,6 +104,10 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 }) => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const t = useTranslations("checkout.actions");
+	const tErrors = useTranslations("checkout.errors");
+	const tAccount = useTranslations("account.errors");
+	const infoStep = useCheckoutStepNumber("INFO", checkout.isShippingRequired);
 	const {
 		isOrphaned,
 		isRecovering,
@@ -199,7 +204,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 	const handleEmailBlur = () => {
 		if (email && !validateEmail(email)) {
-			setErrors((prev) => ({ ...prev, email: "Please enter a valid email address" }));
+			setErrors((prev) => ({ ...prev, email: tAccount("invalidEmail") }));
 		}
 	};
 
@@ -271,12 +276,12 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 			// Validate email (guests only)
 			if (!authenticated) {
-				if (!email) newErrors.email = "Email is required";
-				else if (!validateEmail(email)) newErrors.email = "Please enter a valid email";
+				if (!email) newErrors.email = tErrors("emailRequired");
+				else if (!validateEmail(email)) newErrors.email = tAccount("invalidEmail");
 
 				if (createAccount) {
-					if (!accountPassword) newErrors.password = "Password is required";
-					else if (accountPassword.length < 8) newErrors.password = "Password must be at least 8 characters";
+					if (!accountPassword) newErrors.password = tAccount("passwordRequired");
+					else if (accountPassword.length < 8) newErrors.password = tAccount("passwordMinLength");
 				}
 			}
 
@@ -292,7 +297,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 				if (usingSavedAddress) {
 					if (!selectedAddressId) {
-						newErrors.address = "Please select a shipping address";
+						newErrors.address = tErrors("selectShippingAddress");
 					}
 				} else {
 					orderedAddressFields.forEach((field) => {
@@ -314,7 +319,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 			if (isOrphaned) {
 				setErrors({
-					email: "This cart is still linked to a signed-in account. Continue as guest above, or log in.",
+					email: tErrors("orphanedCartBlocked"),
 				});
 				return;
 			}
@@ -329,11 +334,11 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 						if (emailResult.fieldErrors?.length) {
 							const errorMap: Record<string, string> = {};
 							emailResult.fieldErrors.forEach((err) => {
-								errorMap[err.field || "email"] = err.message || "Invalid value";
+								errorMap[err.field || "email"] = err.message || tErrors("invalidValue");
 							});
 							setErrors(errorMap);
 						} else {
-							setErrors({ email: emailResult.error ?? "Failed to update email" });
+							setErrors({ email: emailResult.error ?? tErrors("updateEmailFailed") });
 						}
 						setIsSubmitting(false);
 						return;
@@ -358,7 +363,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 						if (!registerResult.ok) {
 							const fieldError = registerResult.fieldErrors?.[0];
 							setErrors({
-								password: fieldError?.message ?? registerResult.error ?? "Failed to create account",
+								password: fieldError?.message ?? registerResult.error ?? tErrors("createAccountFailed"),
 							});
 							setIsSubmitting(false);
 							return;
@@ -401,11 +406,11 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 								const errorMap: Record<string, string> = {};
 								addressResult.fieldErrors.forEach((err) => {
 									const field = err.field || "streetAddress1";
-									errorMap[field] = err.message || "Invalid value";
+									errorMap[field] = err.message || tErrors("invalidValue");
 								});
 								setErrors(errorMap);
 							} else {
-								setErrors({ streetAddress1: addressResult.error ?? "Failed to update address" });
+								setErrors({ streetAddress1: addressResult.error ?? tErrors("updateAddressFailed") });
 							}
 							setIsSubmitting(false);
 							return;
@@ -484,19 +489,16 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 	// ----- Render: Main Form -----
 	const buttonText = isSubmitting
-		? "Saving..."
+		? t("saving")
 		: checkout.isShippingRequired
-			? "Continue to shipping"
-			: "Continue to payment";
+			? t("continueToShipping")
+			: t("continueToPayment");
 
 	return (
 		<form className="space-y-8" onSubmit={handleSubmit} noValidate>
 			{isOrphaned ? (
 				<div className="bg-muted/40 space-y-3 rounded-lg border border-border p-4">
-					<p className="text-sm text-foreground">
-						This cart is still linked to a signed-in account. To check out as a guest, start a fresh anonymous
-						cart with the same items, or log in instead.
-					</p>
+					<p className="text-sm text-foreground">{tErrors("orphanedCartMessage")}</p>
 					<div className="flex flex-wrap gap-3">
 						<Button
 							type="button"
@@ -505,10 +507,10 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 							disabled={isRecovering}
 							onClick={() => void recoverAsGuest()}
 						>
-							{isRecovering ? "Preparing guest cart..." : "Continue as guest"}
+							{isRecovering ? t("preparingGuestCart") : t("continueAsGuest")}
 						</Button>
 						<Button type="button" variant="ghost" size="sm" onClick={() => setContactView("signIn")}>
-							Log in
+							{t("logIn")}
 						</Button>
 					</div>
 					{recoveryError ? <p className="text-sm text-destructive">{recoveryError}</p> : null}
@@ -572,12 +574,12 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			</Button>
 
 			<MobileStickyAction
-				step={getStepNumber("INFO", checkout.isShippingRequired)}
+				step={infoStep}
 				isShippingRequired={checkout.isShippingRequired}
 				type="submit"
 				onAction={handleSubmit}
 				isLoading={isSubmitting}
-				loadingText="Saving..."
+				loadingText={t("saving")}
 			/>
 		</form>
 	);

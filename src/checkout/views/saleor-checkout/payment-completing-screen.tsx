@@ -1,5 +1,8 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { SaleorThrobber } from "@/checkout/ui-kit/saleor-throbber";
-import { getStepNumber } from "./flow";
+import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
 import { CheckoutPageShell } from "./checkout-page-shell";
 
 type PaymentCompletingScreenProps = {
@@ -15,7 +18,8 @@ export function PaymentCompletingScreen({
 	isShippingRequired = true,
 	storefrontChannel,
 }: PaymentCompletingScreenProps) {
-	const step = getStepNumber("PAYMENT", isShippingRequired);
+	const t = useTranslations("checkout.payment");
+	const step = useCheckoutStepNumber("PAYMENT", isShippingRequired);
 
 	return (
 		<CheckoutPageShell
@@ -34,11 +38,10 @@ export function PaymentCompletingScreen({
 						<SaleorThrobber size={40} className="text-muted-foreground" />
 
 						<h1 className="mt-5 text-lg font-semibold tracking-tight text-foreground md:text-xl">
-							Processing your order
+							{t("completingTitle")}
 						</h1>
 						<p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-							We&apos;re confirming your payment and creating your order. This usually takes a few seconds —
-							please don&apos;t close or refresh this page.
+							{t("completingBody")}
 						</p>
 					</div>
 				</div>

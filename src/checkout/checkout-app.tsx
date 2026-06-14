@@ -13,6 +13,8 @@ import { CheckoutBrowseProvider } from "@/checkout/providers/checkout-browse";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
 import { CheckoutPaymentReturnErrorProvider } from "@/checkout/providers/checkout-payment-return-error";
 import type { LocaleSlug } from "@/config/locale";
+import type { CheckoutMessages } from "@/i18n/load-messages";
+import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
 import { RootViews } from "./views/root-views";
 import { CheckoutPaymentHistoryGuard } from "@/checkout/components/checkout-payment-history-guard";
 import { CheckoutSessionCleanup } from "@/checkout/components/checkout-session-cleanup";
@@ -34,6 +36,7 @@ type CheckoutAppProps = {
 	shippingCountries: ShippingCountries;
 	checkoutContent: CheckoutContent;
 	storefrontLocale: LocaleSlug;
+	messages: CheckoutMessages;
 };
 
 /**
@@ -48,35 +51,38 @@ export function CheckoutApp({
 	shippingCountries,
 	checkoutContent,
 	storefrontLocale,
+	messages,
 }: CheckoutAppProps) {
 	return (
-		<CheckoutBrowseProvider locale={storefrontLocale}>
-			<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
-				<CheckoutSessionCleanup />
-				<CheckoutPaymentHistoryGuard />
-				<CheckoutUserProvider initialUser={initialUser}>
-					<CheckoutDataProvider
-						key={checkoutId ?? "none"}
-						checkoutId={checkoutId}
-						loadState={loadState}
-						initialCheckout={initialCheckout}
-						shippingCountries={shippingCountries}
-					>
-						<CheckoutContentProvider content={checkoutContent}>
-							<CheckoutPaymentReturnErrorProvider>
-								<Suspense fallback={null}>
-									<StripeCheckoutCompletionHost />
-								</Suspense>
-								<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
-									<Suspense fallback={<CheckoutLoadingFallback />}>
-										<RootViews />
+		<CheckoutIntlProvider locale={storefrontLocale} messages={messages}>
+			<CheckoutBrowseProvider locale={storefrontLocale}>
+				<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
+					<CheckoutSessionCleanup />
+					<CheckoutPaymentHistoryGuard />
+					<CheckoutUserProvider initialUser={initialUser}>
+						<CheckoutDataProvider
+							key={checkoutId ?? "none"}
+							checkoutId={checkoutId}
+							loadState={loadState}
+							initialCheckout={initialCheckout}
+							shippingCountries={shippingCountries}
+						>
+							<CheckoutContentProvider content={checkoutContent}>
+								<CheckoutPaymentReturnErrorProvider>
+									<Suspense fallback={null}>
+										<StripeCheckoutCompletionHost />
 									</Suspense>
-								</ErrorBoundary>
-							</CheckoutPaymentReturnErrorProvider>
-						</CheckoutContentProvider>
-					</CheckoutDataProvider>
-				</CheckoutUserProvider>
-			</CheckoutSessionProvider>
-		</CheckoutBrowseProvider>
+									<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
+										<Suspense fallback={<CheckoutLoadingFallback />}>
+											<RootViews />
+										</Suspense>
+									</ErrorBoundary>
+								</CheckoutPaymentReturnErrorProvider>
+							</CheckoutContentProvider>
+						</CheckoutDataProvider>
+					</CheckoutUserProvider>
+				</CheckoutSessionProvider>
+			</CheckoutBrowseProvider>
+		</CheckoutIntlProvider>
 	);
 }

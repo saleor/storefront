@@ -1,16 +1,16 @@
 import "server-only";
 
 import { isStorefrontLocaleSlug, type LocaleSlug } from "@/config/locale";
-import { getBrowseLocaleSlug } from "@/lib/browse-locale-server";
+import { getCheckoutLocaleSlug } from "@/lib/browse-locale-server";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import type { LanguageCodeEnum } from "@/gql/graphql";
 
-/** Browse locale for cart/checkout GraphQL — URL slug on storefront, cookie on `/checkout`. */
+/** Browse locale for cart/checkout GraphQL — URL slug on storefront, cookie/referer on `/checkout`. */
 export async function resolveCheckoutLocaleSlug(localeSlug?: string): Promise<LocaleSlug> {
 	if (localeSlug && isStorefrontLocaleSlug(localeSlug)) {
 		return localeSlug;
 	}
-	return getBrowseLocaleSlug();
+	return getCheckoutLocaleSlug();
 }
 
 export async function checkoutGraphqlLanguageCode(localeSlug?: string): Promise<LanguageCodeEnum> {

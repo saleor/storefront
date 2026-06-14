@@ -1,6 +1,7 @@
 "use client";
 
 import { Lock } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { type ReactNode } from "react";
 
 import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
@@ -15,6 +16,7 @@ type OrderConfirmationPageShellProps = {
 /** Minimal chrome for order confirmation — no checkout step indicator. */
 export function OrderConfirmationPageShell({ children, storefrontChannel }: OrderConfirmationPageShellProps) {
 	const storefrontLocale = useCheckoutBrowseLocale();
+	const t = useTranslations("checkout.steps");
 
 	return (
 		<div className="min-h-screen overscroll-none bg-secondary">
@@ -31,7 +33,7 @@ export function OrderConfirmationPageShell({ children, storefrontChannel }: Orde
 
 						<div className="flex items-center gap-1.5 text-muted-foreground">
 							<Lock className="h-3.5 w-3.5" />
-							<span className="text-xs">Secure checkout</span>
+							<span className="text-xs">{t("secureCheckout")}</span>
 						</div>
 					</div>
 				</div>

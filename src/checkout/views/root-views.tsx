@@ -9,6 +9,7 @@ import {
 	getEmailAndTokenFromSearchParams,
 	isAccountConfirmationLink,
 } from "@/lib/auth/account-confirmation-url";
+import { useTranslations } from "next-intl";
 import { ConfirmAccountMode } from "@/ui/components/auth/confirm-account-mode";
 import { useCheckoutTransition } from "@/checkout/hooks/use-checkout-transition";
 import type { CheckoutLoadState } from "@/checkout/providers/checkout-data";
@@ -41,6 +42,7 @@ function shouldPrioritizeAccountConfirmation(
 
 export const RootViews = () => {
 	const { emptySession } = useCheckoutContent();
+	const t = useTranslations("checkout.errors");
 	const storefrontLocale = useCheckoutBrowseLocale();
 	const searchParams = useSearchParams();
 	const { loadState, checkout } = useCheckoutData();
@@ -82,21 +84,11 @@ export const RootViews = () => {
 	}
 
 	if (loadState === "not_found") {
-		return (
-			<PageNotFound
-				title="Checkout session expired"
-				message="This cart is no longer available. Add items again to start a new checkout."
-			/>
-		);
+		return <PageNotFound title={t("sessionExpiredTitle")} message={t("sessionExpiredMessage")} />;
 	}
 
 	if (loadState === "error") {
-		return (
-			<PageNotFound
-				title="Couldn't load checkout"
-				message="We had trouble loading your cart. Please try again or start a new checkout from the store."
-			/>
-		);
+		return <PageNotFound title={t("loadFailedTitle")} message={t("loadFailedMessage")} />;
 	}
 
 	if (loadState === "empty") {

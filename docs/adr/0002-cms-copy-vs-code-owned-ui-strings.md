@@ -58,12 +58,14 @@ merchant might reword for brand voice stayed in the CMS:
 | `productsListing`: breadcrumb Home / Products                                                                                        | `products`: listing title & description                                                                                                 |
 | `pdp`: add to bag, variant a11y, badges                                                                                              | `homepage.*` (all sections)                                                                                                             |
 | `plp`: filters, sort, quick add                                                                                                      | `chrome.announcementBar`, `chrome.nav` fallback labels (`allProductsLabel`, `viewAllLabel`) — menu item names stay in Saleor (bucket 1) |
-| `search`: page, bar, sort, empty state                                                                                               | `checkout.*` (all checkout functional copy — follow-up)                                                                                 |
+| `search`: page, bar, sort, empty state                                                                                               |                                                                                                                                         |
 | `nav`: header chrome, cart button, user menu, region picker, breadcrumbs                                                             |                                                                                                                                         |
 | `account`: auth, account shell, orders, settings, addresses                                                                          |                                                                                                                                         |
+| `checkout`: steps, CTAs, summary, shipping/payment chrome, errors, confirmation                                                      | `checkout.*` editorial: empty cart/session, marketing opt-in, trust badges                                                              |
 
-Because all migrated strings live on storefront-only surfaces, **next-intl is wired into the
-storefront surface only** — the checkout surface is untouched.
+Because migrated strings on the **storefront** surface shipped first, **next-intl was wired there first**. **Checkout** now uses the same pattern (`CheckoutIntlProvider` + `checkout` namespace); editorial checkout copy remains in the content layer.
+
+**Checkout surface:** `CheckoutSessionLoader` / order confirmation load `messages/{locale}.json` and wrap `CheckoutApp` with `NextIntlClientProvider` — locale from `browse-locale` cookie / `?locale=`, not a URL segment (ADR 0001).
 
 **Interpolation stays `{token}`-shaped.** next-intl uses ICU, which is a superset of the
 existing `formatContentLabel` `{token}` syntax, so authors see one placeholder style across both
@@ -105,7 +107,7 @@ unaffected by this split.
 ### Follow-up work
 
 1. Extend the catalog opportunistically as new functional strings appear (default to code for chrome).
-2. Consider migrating checkout-surface functional strings (currently still CMS) in a later pass if the same smells appear there.
+2. Migrate remaining checkout strings (contact/auth forms, address labels, Stripe copy, server-action fallbacks) opportunistically — reuse `account.*` where possible.
 3. **Done** — documented in `ui-i18n` skill rule and `docs/international-storefront.md`; fork routing upgrade remains `migrations/atomic/2026-06-locale-channel-routing/`.
 
 ## References

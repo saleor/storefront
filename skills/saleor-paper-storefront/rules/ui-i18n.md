@@ -44,8 +44,9 @@ Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`.
 | `search`          | Search page, bar (`search.bar`), sort, empty state             |
 | `nav`             | Header, cart button, user menu, region picker, breadcrumb aria |
 | `account`         | Auth, account nav, orders, settings, addresses                 |
+| `checkout`        | Steps, summary, shipping/payment CTAs, errors, confirmation    |
 
-Prefer **sub-namespaces** in JSON (`nav.userMenu`, `account.orderDetail`) and narrow `useTranslations("nav.userMenu")` calls.
+Prefer **sub-namespaces** in JSON (`nav.userMenu`, `account.orderDetail`, `checkout.summary`) and narrow `useTranslations("nav.userMenu")` calls.
 
 ---
 
@@ -122,7 +123,11 @@ Client-side validation should use the same `account.errors.*` keys before callin
 
 ## Checkout
 
-Checkout surface is **not** on next-intl yet — functional checkout copy remains in storefront content (`checkout.*`). Browse handoff sets `languageCode` on GraphQL; UI migration is ADR 0002 follow-up.
+Checkout uses the **`checkout` namespace** for functional chrome (same ADR 0002 split as cart). Locale is passed from RSC (`loadMessagesForLocale` + `CheckoutIntlProvider`), not from a `[locale]` URL segment.
+
+**Still CMS (`useCheckoutContent`):** `emptyCart`, `emptySession`, `marketingOptInLabel`, `trust.*`.
+
+**Still to migrate:** server-action error fallbacks in `src/app/(checkout)/actions.ts`, `PaymentGatewayAlerts`, trust footer copy (CMS).
 
 ---
 

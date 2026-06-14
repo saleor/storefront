@@ -13,6 +13,7 @@ import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { executeStripeCheckoutPayment } from "./execute-stripe-checkout-payment";
 import { type StripeBillingContext } from "./stripe-billing-context";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 
 const expressCheckoutOptions: StripeExpressCheckoutElementOptions = {
 	buttonType: {
@@ -55,6 +56,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 	const elements = useElements();
 	const searchParams = useSearchParams();
 	const { refreshCheckout } = useCheckoutData();
+	const paymentMessages = useCheckoutPaymentMessages();
 	const [hasWallets, setHasWallets] = useState<boolean | null>(null);
 
 	const handleConfirm = useCallback(
@@ -63,7 +65,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			onPaymentActivityChange?.(true);
 
 			if (!stripe || !elements) {
-				event.paymentFailed({ message: "Payment system is not available. Please try again." });
+				event.paymentFailed({ message: paymentMessages.unavailable });
 				onPaymentActivityChange?.(false);
 				return;
 			}
@@ -79,6 +81,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 					surface: "expressCheckout",
 					expressPaymentType: event.expressPaymentType,
 				},
+				messages: paymentMessages,
 			});
 
 			if (!result.ok) {
@@ -93,7 +96,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 
 				if (result.kind === "price_change") {
 					onPriceChangeNotice(result.notice);
-					event.paymentFailed({ message: "Order total changed. Review the updated amount and try again." });
+					event.paymentFailed({ message: paymentMessages.totalChanged });
 					return;
 				}
 
@@ -110,6 +113,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			onError,
 			onPaymentActivityChange,
 			onPriceChangeNotice,
+			paymentMessages,
 			refreshCheckout,
 			searchParams,
 			stripe,

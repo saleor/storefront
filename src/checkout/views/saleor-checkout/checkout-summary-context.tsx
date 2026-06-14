@@ -1,6 +1,7 @@
 "use client";
 
 import { type FC } from "react";
+import { useTranslations } from "next-intl";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { formatShippingPrice } from "@/checkout/lib/utils/money";
 
@@ -9,6 +10,14 @@ interface SummaryRow {
 	value: string;
 	onChangeStep?: number;
 }
+
+export type CheckoutSummaryLabels = {
+	contact: string;
+	shipTo: string;
+	method: string;
+	delivery: string;
+	digital: string;
+};
 
 interface CheckoutSummaryContextProps {
 	checkout: CheckoutFragment;
@@ -23,6 +32,8 @@ interface CheckoutSummaryContextProps {
  * Used in ShippingStep and PaymentStep to show context from previous steps.
  */
 export const CheckoutSummaryContext: FC<CheckoutSummaryContextProps> = ({ rows, onGoToStep }) => {
+	const tCommon = useTranslations("account.common");
+
 	return (
 		<section className="divide-y divide-border rounded-lg border border-border text-sm">
 			{rows.map((row) => (
@@ -35,7 +46,7 @@ export const CheckoutSummaryContext: FC<CheckoutSummaryContextProps> = ({ rows, 
 							onClick={() => onGoToStep(row.onChangeStep!)}
 							className="shrink-0 text-sm underline underline-offset-2 hover:no-underline"
 						>
-							Change
+							{tCommon("change")}
 						</button>
 					)}
 				</div>
@@ -65,27 +76,43 @@ export function formatShippingMethod(checkout: CheckoutFragment): string {
 }
 
 /** Build standard summary rows for shipping step */
-export function buildShippingSummaryRows(checkout: CheckoutFragment): SummaryRow[] {
+export function buildShippingSummaryRows(
+	checkout: CheckoutFragment,
+	labels: CheckoutSummaryLabels,
+): SummaryRow[] {
 	return [
-		{ label: "Contact", value: checkout.email || "", onChangeStep: 1 },
-		{ label: "Ship to", value: formatAddressLine(checkout.shippingAddress), onChangeStep: 1 },
+		{ label: labels.contact, value: checkout.email || "", onChangeStep: 1 },
+		{ label: labels.shipTo, value: formatAddressLine(checkout.shippingAddress), onChangeStep: 1 },
 	];
 }
 
 /** Build standard summary rows for payment step */
-export function buildPaymentSummaryRows(checkout: CheckoutFragment): SummaryRow[] {
-	const rows: SummaryRow[] = [{ label: "Contact", value: checkout.email || "", onChangeStep: 1 }];
+export function buildPaymentSummaryRows(
+	checkout: CheckoutFragment,
+	labels: CheckoutSummaryLabels,
+): SummaryRow[] {
+	const rows: SummaryRow[] = [{ label: labels.contact, value: checkout.email || "", onChangeStep: 1 }];
 
-	// Only show shipping info for physical products
 	if (checkout.isShippingRequired) {
 		rows.push(
-			{ label: "Ship to", value: formatAddressLine(checkout.shippingAddress), onChangeStep: 1 },
-			{ label: "Method", value: formatShippingMethod(checkout), onChangeStep: 2 },
+			{ label: labels.shipTo, value: formatAddressLine(checkout.shippingAddress), onChangeStep: 1 },
+			{ label: labels.method, value: formatShippingMethod(checkout), onChangeStep: 2 },
 		);
 	} else {
-		// Digital products - show delivery type instead
-		rows.push({ label: "Delivery", value: "Digital" });
+		rows.push({ label: labels.delivery, value: labels.digital });
 	}
 
 	return rows;
+}
+
+/** Labels for summary row builders — call from client components inside IntlProvider. */
+export function useCheckoutSummaryLabels(): CheckoutSummaryLabels {
+	const t = useTranslations("checkout.summary");
+	return {
+		contact: t("contact"),
+		shipTo: t("shipTo"),
+		method: t("method"),
+		delivery: t("delivery"),
+		digital: t("digital"),
+	};
 }

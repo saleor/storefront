@@ -1,5 +1,5 @@
 import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
-import { getTransactionInitializeError } from "@/checkout/lib/payment-gateways";
+import { getTransactionInitializeError, type CheckoutGatewayMessages } from "@/checkout/lib/payment-gateways";
 import { type PaymentContext, type PaymentResult } from "../types";
 import { completeCheckoutOrder } from "../complete-order";
 
@@ -10,6 +10,7 @@ import { completeCheckoutOrder } from "../complete-order";
 export async function executeDummyPayment(
 	context: PaymentContext,
 	gatewayId: string,
+	messages: CheckoutGatewayMessages,
 ): Promise<PaymentResult> {
 	const initResult = await getCheckoutTransport().initializeTransaction({
 		checkoutId: context.checkoutId,
@@ -29,12 +30,12 @@ export async function executeDummyPayment(
 		console.error("Payment initialization error:", initResult.error);
 		return {
 			ok: false,
-			error: initResult.error || "Payment failed. Please try again.",
+			error: initResult.error || messages.paymentTryAgain,
 			errorKey: "payment",
 		};
 	}
 
-	const transactionError = getTransactionInitializeError(initResult.data);
+	const transactionError = getTransactionInitializeError(initResult.data, messages);
 	if (transactionError) {
 		console.error("Transaction initialize failed:", initResult.data);
 		return { ok: false, error: transactionError, errorKey: "payment" };

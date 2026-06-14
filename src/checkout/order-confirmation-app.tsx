@@ -12,12 +12,15 @@ import { CheckoutCrashFallback } from "@/checkout/views/page-not-found";
 import "./index.css";
 
 import type { LocaleSlug } from "@/config/locale";
+import type { CheckoutMessages } from "@/i18n/load-messages";
+import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
 
 type OrderConfirmationAppProps = {
 	orderId: string | null;
 	initialOrder: ServerOrder | null;
 	initialUser: CheckoutUser | null;
 	storefrontLocale: LocaleSlug;
+	messages: CheckoutMessages;
 };
 
 /**
@@ -28,18 +31,21 @@ export function OrderConfirmationApp({
 	initialOrder,
 	initialUser,
 	storefrontLocale,
+	messages,
 }: OrderConfirmationAppProps) {
 	return (
-		<CheckoutBrowseProvider locale={storefrontLocale}>
-			<CheckoutUserProvider initialUser={initialUser}>
-				<OrderDataProvider orderId={orderId} initialOrder={initialOrder}>
-					<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
-						<Suspense fallback={<OrderConfirmationSkeleton />}>
-							<OrderConfirmation />
-						</Suspense>
-					</ErrorBoundary>
-				</OrderDataProvider>
-			</CheckoutUserProvider>
-		</CheckoutBrowseProvider>
+		<CheckoutIntlProvider locale={storefrontLocale} messages={messages}>
+			<CheckoutBrowseProvider locale={storefrontLocale}>
+				<CheckoutUserProvider initialUser={initialUser}>
+					<OrderDataProvider orderId={orderId} initialOrder={initialOrder}>
+						<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
+							<Suspense fallback={<OrderConfirmationSkeleton />}>
+								<OrderConfirmation />
+							</Suspense>
+						</ErrorBoundary>
+					</OrderDataProvider>
+				</CheckoutUserProvider>
+			</CheckoutBrowseProvider>
+		</CheckoutIntlProvider>
 	);
 }
