@@ -80,6 +80,7 @@ Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
 - **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 14 task-specific rules covering GraphQL, caching, variant selection, checkout v2, and more
+- **[`skills/saleor-paper-remix/`](skills/saleor-paper-remix/)** — Repo-local workflow for domain remixes and Saleor Configurator modeling
 - **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor API patterns; install additional skills (React best practices, composition patterns) via `npx skills add`
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
@@ -335,13 +336,14 @@ If you're working with AI coding assistants, point them to:
 
 - **`AGENTS.md`** — Architecture, commands, gotchas
 - **`skills/saleor-paper-storefront/`** — 13 project-specific rules (GraphQL, caching, checkout, etc.)
+- **`skills/saleor-paper-remix/`** — Domain remix and Configurator workflow
 - **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor patterns and optional community skills (React best practices, composition patterns, etc.)
 
 To install skills for agent auto-discovery:
 
 ```shell
-# Project skill (already in this repo)
-npx skills add . --skill saleor-paper-storefront
+# Repo-local Paper skills
+npx skills add . --skill saleor-paper-storefront saleor-paper-remix --agent '*'
 
 # Universal Saleor API patterns
 npx skills add saleor/agent-skills --skill saleor-storefront
@@ -386,8 +388,14 @@ Paper works as a reference implementation and as a starting point for your own s
 
 - **Colors & typography** → `src/styles/brand.css`
 - **Components** → `src/ui/components/`
-- **Checkout flow** → `src/checkout/views/SaleorCheckout/`
-- **Data model** → [`CONFIGURATOR.md`](CONFIGURATOR.md) — define categories, product types, collections, and menus in `config.yml` and deploy to Saleor
+- **Checkout flow** → `src/app/(checkout)/checkout/` and `src/checkout/`
+- **Data model** → [`CONFIGURATOR.md`](CONFIGURATOR.md) and [`saleor-paper-remix`](skills/saleor-paper-remix/SKILL.md) — define categories, product types, collections, and menus in `config.yml` and deploy to Saleor
+
+Install the repo-local Paper skills into your coding agent after cloning:
+
+```bash
+npx skills add . --skill saleor-paper-remix --agent '*'
+```
 
 The design token system uses CSS custom properties—swap the entire color palette by editing a few lines.
 

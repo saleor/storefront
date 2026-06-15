@@ -1,23 +1,31 @@
 # Saleor Configurator
 
-Define your entire Saleor data model — channels, categories, collections, product types, attributes, menus — in a single `config.yml` file, then deploy it to any Saleor instance.
+Define your entire Saleor data model - channels, categories, collections, product types, attributes, menus - in a single `config.yml` file, then deploy it to any Saleor instance.
 
 ## Why
 
 Instead of clicking through the Dashboard to create categories, attributes, and product types one by one, you declare everything in YAML and deploy it. This gives you:
 
-- **Reproducible setups** — spin up identical stores across environments
-- **Version control** — track data model changes in git alongside your storefront code
-- **AI-assisted modeling** — use Claude Code slash commands to generate and validate configs
+- **Reproducible setups** - spin up identical stores across environments
+- **Version control** - track data model changes in git alongside your storefront code
+- **AI-assisted modeling** - use the portable `saleor-paper-remix` skill to generate and validate configs
 
 ## Quick Start
 
 ### 1. Generate a config
 
-Use the built-in slash commands in Claude Code:
+After cloning this repository, install the repo-local Paper skills into your coding agent:
+
+```bash
+npx skills add . --skill saleor-paper-remix --agent '*'
+```
+
+The canonical workflow lives in [`skills/saleor-paper-remix/SKILL.md`](skills/saleor-paper-remix/SKILL.md). It is intentionally repo-local because it references this storefront's exact file structure.
+
+If you have the Saleor Configurator plugin commands available, these are useful shortcuts:
 
 ```
-/configurator init          # Start from a skeleton template
+/configurator init             # Start from a skeleton template
 /recipe fashion             # Start from a pre-built recipe (fashion, electronics, etc.)
 /discover https://example.com  # Generate config by analyzing an existing website
 ```
@@ -44,18 +52,19 @@ Preview changes first with `diff`:
 pnpm dlx @saleor/configurator diff --url=https://your-instance.saleor.cloud/graphql/ --token=YOUR_TOKEN
 ```
 
-## Slash Commands
+## Agent Workflow and Shortcuts
 
-| Command                  | Description                                                            |
-| ------------------------ | ---------------------------------------------------------------------- |
-| `/configurator init`     | Create a new `config.yml` from skeleton                                |
-| `/configurator validate` | Validate config for errors and warnings                                |
-| `/configurator edit`     | Interactive menu to add/modify/remove entities                         |
-| `/configurator review`   | Deep review for best practices and common mistakes                     |
-| `/recipe [type]`         | Apply a pre-built template (fashion, electronics, food, subscriptions) |
-| `/discover [url]`        | Generate config from an existing website or Saleor instance            |
-| `/configurator-model`    | Interactive wizard for designing product types and catalog structure   |
-| `/configurator-fix`      | Auto-fix common config.yml issues                                      |
+| Command                                                   | Description                                                            |
+| --------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `npx skills add . --skill saleor-paper-remix --agent '*'` | Install the repo-local remix skill into supported agents               |
+| `/configurator init`                                      | Create a new `config.yml` from skeleton                                |
+| `/configurator validate`                                  | Validate config for errors and warnings                                |
+| `/configurator edit`                                      | Interactive menu to add/modify/remove entities                         |
+| `/configurator review`                                    | Deep review for best practices and common mistakes                     |
+| `/recipe [type]`                                          | Apply a pre-built template (fashion, electronics, food, subscriptions) |
+| `/discover [url]`                                         | Generate config from an existing website or Saleor instance            |
+| `/configurator-model`                                     | Interactive wizard for designing product types and catalog structure   |
+| `/configurator-fix`                                       | Auto-fix common config.yml issues                                      |
 
 ## Schema
 

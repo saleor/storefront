@@ -1,0 +1,4 @@
+interface:
+  display_name: "Saleor Paper Remix"
+  short_description: "Paper storefront domain remix workflow"
+  default_prompt: "Remix this Saleor Paper storefront for a new store domain while preserving the current architecture."
