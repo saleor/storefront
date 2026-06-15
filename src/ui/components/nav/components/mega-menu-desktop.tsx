@@ -1,12 +1,6 @@
 "use client";
 
-import {
-	useEffect,
-	useState,
-	type KeyboardEvent,
-	type MouseEvent,
-	type PointerEvent as ReactPointerEvent,
-} from "react";
+import { useEffect, useState, type MouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { type NavMenuItem, hasNavMenuChildren, isExternalNavHref } from "@/lib/menus/serialize-menu-for-nav";
 import { formatContentLabel } from "@/lib/content/format-label";
@@ -89,7 +83,16 @@ function MegaMenuTriggerLabel({ item, onClose }: { item: NavMenuItem; onClose: (
 		router.push(buildStorefrontPath(params.locale, params.channel, item.href));
 	};
 
-	const isMousePointer = (event: ReactPointerEvent | MouseEvent) => event.pointerType === "mouse";
+	const getPointerType = (event: ReactPointerEvent | MouseEvent) => {
+		if ("pointerType" in event) {
+			return event.pointerType;
+		}
+
+		const nativeEvent = event.nativeEvent;
+		return "pointerType" in nativeEvent ? (nativeEvent as PointerEvent).pointerType : "mouse";
+	};
+
+	const isMousePointer = (event: ReactPointerEvent | MouseEvent) => getPointerType(event) === "mouse";
 
 	return (
 		<span
