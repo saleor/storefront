@@ -161,6 +161,8 @@ Sizes use `clamp()` in `rem` so they respect user font-size settings and scale f
 
 **Future:** On Tailwind v4, type tokens can move into `@theme` in `brand.css` and collapse the split between CSS variables and `tailwind.config.cjs`.
 
+**Typography theme examples (optional):** The default is Direction C (Geist everywhere). An **editorial** example (Fraunces display + Geist body) ships under [`config/themes/`](../../config/themes/README.md) — try with `pnpm run dev:theme-editorial` or merge `config/themes/typography-editorial.env.example` into `.env.local`.
+
 **Dev server / Tailwind config:** After changing `tailwind.config.cjs` (new `fontSize` tokens, plugins, etc.), restart the dev server. If utilities like `text-display` appear in HTML but render at body size, clear the webpack cache: `rm -rf .next` and restart. Tailwind JIT reads config at startup; stale `.next` can serve CSS from before the change.
 
 ---

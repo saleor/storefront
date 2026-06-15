@@ -56,7 +56,10 @@
 	 * Sized in rem so it respects the user's browser font size (a11y).
 	 * clamp() scales smoothly between mobile and desktop — no breakpoint jumps.
 	 * Weight / tracking / line-height are baked into the Tailwind fontSize tokens
-	 * (see tailwind.config.cjs → theme.extend.fontSize): text-display/h1/h2/h3/lead. */
+	 * (see tailwind.config.cjs → theme.extend.fontSize): text-display/h1/h2/h3/lead.
+	 *
+	 * --font-display: heading family (Geist by default; Fraunces when data-typography=editorial). */
+	--font-display: var(--font-geist-sans), system-ui, sans-serif;
 	--text-display: clamp(2.75rem, 1.9rem + 4.2vw, 4.5rem); /* 44 → 72px */
 	--text-h1: clamp(2rem, 1.5rem + 2.4vw, 3rem); /* 32 → 48px */
 	--text-h2: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem); /* 24 → 36px */
@@ -69,6 +72,12 @@
 
 	/* --- Skeleton --- */
 	--skeleton-delay: 300ms;
+}
+
+/* Direction A — Editorial Adventure (example theme: Fraunces display + Geist body).
+ * Enable via NEXT_PUBLIC_TYPOGRAPHY_THEME=editorial — see config/themes/README.md */
+html[data-typography="editorial"] {
+	--font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
 /* ============================================

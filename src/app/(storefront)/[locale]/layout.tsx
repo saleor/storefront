@@ -1,5 +1,3 @@
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import "../../globals.css";
 import { type ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
@@ -14,6 +12,7 @@ import {
 	resolveLocaleFromSlug,
 } from "@/config/locale";
 import { PersistBrowseLocaleCookie } from "@/ui/components/persist-browse-locale-cookie";
+import { getRootHtmlFontProps } from "@/lib/fonts";
 
 export const metadata = rootMetadata;
 
@@ -49,9 +48,10 @@ export default async function LocaleRootLayout({
 	// message resolution stays static (no `headers()`) — preserves PPR / Cache Components.
 	setRequestLocale(localeSlug);
 	const messages = await getMessages();
+	const htmlProps = getRootHtmlFontProps(htmlLang);
 
 	return (
-		<html lang={htmlLang} className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}>
+		<html {...htmlProps}>
 			<body className="min-h-dvh font-sans">
 				<NextIntlClientProvider locale={localeSlug} messages={messages}>
 					<PersistBrowseLocaleCookie locale={localeSlug} />

@@ -1,9 +1,8 @@
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import "../globals.css";
 import { type ReactNode } from "react";
 import { rootMetadata } from "@/lib/seo";
 import { getDefaultLocaleSlug, resolveLocaleFromSlug } from "@/config/locale";
+import { getRootHtmlFontProps } from "@/lib/fonts";
 
 export const metadata = rootMetadata;
 
@@ -15,9 +14,10 @@ export const metadata = rootMetadata;
  */
 export default function RootGroupLayout({ children }: { children: ReactNode }) {
 	const htmlLang = resolveLocaleFromSlug(getDefaultLocaleSlug()).htmlLang;
+	const htmlProps = getRootHtmlFontProps(htmlLang);
 
 	return (
-		<html lang={htmlLang} className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}>
+		<html {...htmlProps}>
 			<body className="min-h-dvh font-sans">{children}</body>
 		</html>
 	);

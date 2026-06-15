@@ -1,9 +1,8 @@
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import "../globals.css";
 import { type ReactNode } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getDefaultLocaleSlug, resolveLocaleFromSlug } from "@/config/locale";
+import { getRootHtmlFontProps } from "@/lib/fonts";
 
 const defaultHtmlLang = resolveLocaleFromSlug(getDefaultLocaleSlug()).htmlLang;
 
@@ -15,8 +14,10 @@ const defaultHtmlLang = resolveLocaleFromSlug(getDefaultLocaleSlug()).htmlLang;
  * syncs the resolved browse locale after RSC loads inside page Suspense.
  */
 export default function CheckoutLayout(props: { children: ReactNode }) {
+	const htmlProps = getRootHtmlFontProps(defaultHtmlLang);
+
 	return (
-		<html lang={defaultHtmlLang} className={`${GeistSans.variable} ${GeistMono.variable} min-h-dvh`}>
+		<html {...htmlProps}>
 			<body className="min-h-dvh font-sans">
 				<main className="min-h-dvh">{props.children}</main>
 				<SpeedInsights />
