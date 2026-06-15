@@ -13,6 +13,7 @@
 		"start": "next start",
 		"predev": "pnpm run generate:all",
 		"prebuild": "pnpm run generate:all",
+		"pretypecheck": "pnpm run generate:all",
 		"lint": "eslint",
 		"lint:fix": "eslint --fix",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
