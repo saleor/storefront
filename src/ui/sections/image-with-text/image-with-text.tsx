@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
@@ -20,6 +21,8 @@ export interface ImageWithTextProps {
 	imageAlt?: string;
 	imagePosition?: ImageWithTextPosition;
 	cta?: ImageWithTextCta;
+	/** Shown when `image` is absent; defaults to wave pattern. */
+	placeholder?: ReactNode;
 	className?: string;
 }
 
@@ -30,6 +33,7 @@ export function ImageWithText({
 	imageAlt = "",
 	imagePosition = "left",
 	cta,
+	placeholder,
 	className,
 }: ImageWithTextProps) {
 	const hasImage = Boolean(image);
@@ -56,7 +60,7 @@ export function ImageWithText({
 							quality={PRODUCT_IMAGE_QUALITY}
 						/>
 					) : (
-						<WavePattern className="h-full w-full text-secondary" />
+						placeholder ?? <WavePattern className="h-full w-full text-secondary" />
 					)}
 				</div>
 

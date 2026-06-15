@@ -32,7 +32,14 @@ export async function Header({
 				<div className="flex h-16 items-center justify-between gap-4">
 					<Logo />
 
-					<div className="hidden flex-1 justify-center md:flex">
+					<nav
+						className="hidden flex-1 justify-center lg:ml-10 lg:flex xl:ml-14"
+						aria-label={tNavHeader("mainAriaLabel")}
+					>
+						<NavLinksDesktop items={navItems} nav={nav} />
+					</nav>
+
+					<div className="hidden md:flex md:max-w-md md:flex-1 md:justify-end lg:flex-none">
 						<SearchBar
 							locale={locale}
 							channel={channel}
@@ -41,10 +48,6 @@ export async function Header({
 						/>
 					</div>
 
-					<nav className="hidden lg:flex" aria-label={tNavHeader("mainAriaLabel")}>
-						<NavLinksDesktop items={navItems} nav={nav} />
-					</nav>
-
 					<div className="flex items-center gap-1">
 						<UserMenuContainer locale={locale} channel={channel} />
 						<Suspense fallback={<div className="h-10 w-10" />}>
@@ -52,6 +55,7 @@ export async function Header({
 						</Suspense>
 						<Suspense>
 							<MobileMenu>
+								<MobileNavLinks items={navItems} nav={nav} />
 								<li className="py-3">
 									<SearchBar
 										locale={locale}
@@ -60,7 +64,6 @@ export async function Header({
 										srOnlyLabel={tSearchBar("srOnlyLabel")}
 									/>
 								</li>
-								<MobileNavLinks items={navItems} nav={nav} />
 							</MobileMenu>
 						</Suspense>
 					</div>

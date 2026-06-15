@@ -8,6 +8,7 @@ import { getStorefrontContent } from "@/lib/content/server";
 import { FeaturedCollectionSection } from "@/ui/sections/featured-collection-section/featured-collection-section";
 import { FeaturedCollectionSkeleton } from "@/ui/sections/featured-collection-section/featured-collection-skeleton";
 import { HeroBanner } from "@/ui/sections/hero-banner/hero-banner";
+import { PaperSignEditorialPlaceholder } from "@/ui/components/shared/paper-sign";
 import { ImageWithText } from "@/ui/sections/image-with-text/image-with-text";
 import { MulticolumnSection } from "@/ui/sections/multicolumn-section/multicolumn-section";
 import { RichTextBlock } from "@/ui/sections/rich-text-block/rich-text-block";
@@ -67,6 +68,7 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 				heading={editorial.heading}
 				paragraphs={editorial.paragraphs}
 				imagePosition={editorial.imagePosition}
+				placeholder={<PaperSignEditorialPlaceholder />}
 				cta={{
 					label: editorial.ctaLabel,
 					href: "/collections",
