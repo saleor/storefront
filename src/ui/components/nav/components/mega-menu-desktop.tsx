@@ -89,18 +89,24 @@ function MegaMenuTriggerLabel({ item, onClose }: { item: NavMenuItem; onClose: (
 		router.push(buildStorefrontPath(params.locale, params.channel, item.href));
 	};
 
-	const stopTriggerToggle = (event: ReactPointerEvent | MouseEvent | KeyboardEvent) => {
-		event.stopPropagation();
-	};
+	const isMousePointer = (event: ReactPointerEvent | MouseEvent) => event.pointerType === "mouse";
 
 	return (
 		<span
 			role="link"
 			tabIndex={0}
 			className="cursor-pointer hover:text-foreground"
-			onPointerDown={stopTriggerToggle}
+			onPointerDown={(event) => {
+				// On touch, let the trigger open the mega menu instead of navigating.
+				if (isMousePointer(event)) {
+					event.stopPropagation();
+				}
+			}}
 			onClick={(event) => {
-				stopTriggerToggle(event);
+				if (!isMousePointer(event)) {
+					return;
+				}
+				event.stopPropagation();
 				event.preventDefault();
 				navigate();
 			}}
@@ -108,7 +114,7 @@ function MegaMenuTriggerLabel({ item, onClose }: { item: NavMenuItem; onClose: (
 				if (event.key !== "Enter" && event.key !== " ") {
 					return;
 				}
-				stopTriggerToggle(event);
+				event.stopPropagation();
 				event.preventDefault();
 				navigate();
 			}}
