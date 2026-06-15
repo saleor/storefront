@@ -40,8 +40,8 @@ export function PageHeader({ title, description, breadcrumbs, breadcrumbAriaLabe
 					))}
 				</nav>
 
-				<h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">{title}</h1>
-				{description && <p className="mt-2 max-w-2xl text-muted-foreground">{description}</p>}
+				<h1 className="text-balance text-h1 text-foreground">{title}</h1>
+				{description && <p className="mt-2 max-w-2xl text-pretty text-muted-foreground">{description}</p>}
 			</div>
 		</div>
 	);

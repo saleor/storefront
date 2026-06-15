@@ -30,7 +30,7 @@ export function RichTextBlock({
 
 	return (
 		<section
-			className={cn("border-b border-border bg-background py-12 md:py-16", className)}
+			className={cn("bg-background py-16 md:py-24 lg:py-28", className)}
 			aria-labelledby={heading ? "rich-text-heading" : undefined}
 		>
 			<div
@@ -41,12 +41,12 @@ export function RichTextBlock({
 				)}
 			>
 				{heading ? (
-					<h2 id="rich-text-heading" className="text-2xl font-semibold tracking-tight md:text-3xl">
+					<h2 id="rich-text-heading" className="text-balance text-h2">
 						{heading}
 					</h2>
 				) : null}
 				{paragraphs.length > 0 ? (
-					<div className={cn("space-y-4 text-base text-muted-foreground md:text-lg", heading && "mt-4")}>
+					<div className={cn("space-y-5 text-pretty text-lead text-muted-foreground", heading && "mt-5")}>
 						{paragraphs.map((paragraph) => (
 							<p key={paragraph}>{paragraph}</p>
 						))}

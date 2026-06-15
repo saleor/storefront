@@ -49,7 +49,7 @@ async function PageContent({ params: paramsPromise }: { params: Promise<{ slug: 
 
 	return (
 		<div className="mx-auto max-w-7xl p-8 pb-16">
-			<h1 className="text-3xl font-semibold">{title}</h1>
+			<h1 className="mb-6 text-balance text-h1">{title}</h1>
 			{contentHtml && (
 				<div className="prose">
 					{contentHtml.map((content) => (

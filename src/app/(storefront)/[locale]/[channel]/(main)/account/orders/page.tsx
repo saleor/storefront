@@ -62,7 +62,7 @@ async function AccountOrdersContent({ params, searchParams }: Props) {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+				<h1 className="text-balance text-h1">{t("title")}</h1>
 				<p className="mt-1 text-sm text-muted-foreground">{t("count", { count: totalCount })}</p>
 			</div>
 
@@ -100,7 +100,7 @@ function AccountOrdersError({ title, message }: { title: string; message: string
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+				<h1 className="text-balance text-h1">{title}</h1>
 			</div>
 			<div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
 				{message}

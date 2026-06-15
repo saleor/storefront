@@ -20,7 +20,7 @@ export default function ProductNotFound() {
 				</span>
 
 				{/* Heading */}
-				<h1 className="mb-2 text-2xl font-bold tracking-tight text-foreground">Product Not Found</h1>
+				<h1 className="mb-2 text-balance text-h1 text-foreground">Product Not Found</h1>
 
 				{/* Message */}
 				<p className="mb-8 text-muted-foreground">

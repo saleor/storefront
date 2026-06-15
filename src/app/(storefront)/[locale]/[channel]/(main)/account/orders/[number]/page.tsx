@@ -66,9 +66,7 @@ async function OrderDetailContent({ params }: Props) {
 		<div className="space-y-6">
 			<div className="flex flex-wrap items-start justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-semibold tracking-tight">
-						{tOrders("orderNumber", { number: order.number })}
-					</h1>
+					<h1 className="text-balance text-h1">{tOrders("orderNumber", { number: order.number })}</h1>
 					<p className="mt-1 text-sm text-muted-foreground">{t("placedOn", { date: placedDate })}</p>
 				</div>
 				<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} localeSlug={locale} />

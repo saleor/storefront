@@ -24,14 +24,11 @@ export async function FeaturedCollectionSection({
 
 	return (
 		<section
-			className={cn("bg-background py-10 md:py-12", className)}
+			className={cn("bg-background py-16 md:py-24 lg:py-28", className)}
 			aria-labelledby="featured-collection-heading"
 		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-				<h2
-					id="featured-collection-heading"
-					className="mb-6 text-2xl font-semibold tracking-tight md:text-3xl"
-				>
+				<h2 id="featured-collection-heading" className="mb-8 text-balance text-h2">
 					{heading}
 				</h2>
 				{products.length > 0 ? (

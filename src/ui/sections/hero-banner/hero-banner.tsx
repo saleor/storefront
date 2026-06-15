@@ -87,17 +87,14 @@ export function HeroBanner({
 				<div className="max-w-2xl">
 					<h1
 						id="homepage-hero-heading"
-						className={cn(
-							"text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl",
-							hasImage ? "text-background" : "text-foreground",
-						)}
+						className={cn("text-balance text-display", hasImage ? "text-background" : "text-foreground")}
 					>
 						{heading}
 					</h1>
 					{subheading ? (
 						<p
 							className={cn(
-								"mt-4 text-base md:text-lg",
+								"mt-5 text-pretty text-lead md:mt-6",
 								hasImage ? "text-background/85" : "text-muted-foreground",
 							)}
 						>

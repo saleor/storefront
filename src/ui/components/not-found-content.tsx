@@ -11,7 +11,7 @@ export function NotFoundContent() {
 					404
 				</span>
 
-				<h1 className="mb-2 text-2xl font-bold tracking-tight text-foreground">Page Not Found</h1>
+				<h1 className="mb-2 text-balance text-h1 text-foreground">Page Not Found</h1>
 
 				<p className="mb-8 text-muted-foreground">
 					The page you&apos;re looking for doesn&apos;t exist or has been moved.

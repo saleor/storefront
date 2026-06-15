@@ -60,7 +60,7 @@ async function CartContent({
 	if (!checkout || checkout.lines.length < 1) {
 		return (
 			<div className="mt-12">
-				<h1 className="text-3xl font-bold text-foreground">{t("title")}</h1>
+				<h1 className="text-balance text-h1 text-foreground">{t("title")}</h1>
 				<p className="my-12 text-sm text-muted-foreground">{cart.empty.body}</p>
 				<LinkWithChannel href="/products" className={buttonClassName({ className: "max-w-full sm:px-16" })}>
 					{cart.empty.ctaLabel}
@@ -71,7 +71,7 @@ async function CartContent({
 
 	return (
 		<>
-			<h1 className="mt-8 text-3xl font-bold text-foreground">{t("title")}</h1>
+			<h1 className="mt-8 text-balance text-h1 text-foreground">{t("title")}</h1>
 			<form className="mt-12">
 				<ul
 					data-testid="CartProductList"

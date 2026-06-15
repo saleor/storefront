@@ -124,7 +124,7 @@ export function SignUpForm() {
 		<div className="mx-auto mt-16 w-full max-w-md">
 			<div className="rounded-lg border border-border bg-card p-8 shadow-sm">
 				<div className="mb-6 text-center">
-					<h1 className="text-2xl font-semibold">{t("signup.title")}</h1>
+					<h1 className="text-balance text-h1">{t("signup.title")}</h1>
 					<p className="mt-2 text-sm text-muted-foreground">
 						{t("signup.hasAccount")}{" "}
 						<Link

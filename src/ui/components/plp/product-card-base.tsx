@@ -65,11 +65,11 @@ export function ProductCardBase({
 				{imageOverlay ? <div className="absolute inset-0 z-10">{imageOverlay}</div> : null}
 			</div>
 
-			<Link href={product.href} prefetch={false} className="block">
+			<Link href={product.href} prefetch={false} className="block no-underline hover:no-underline">
 				<div className="space-y-1.5">
-					{product.brand && <p className="text-xs tracking-wide text-muted-foreground">{product.brand}</p>}
+					{product.brand && <p className="text-eyebrow uppercase text-muted-foreground">{product.brand}</p>}
 					<h3
-						className="truncate font-medium leading-snug underline-offset-2 md:group-hover:underline"
+						className="text-foreground/80 truncate font-medium leading-snug no-underline transition-colors duration-200 md:group-hover:text-foreground"
 						title={product.name}
 					>
 						{product.name}
@@ -92,9 +92,9 @@ export function ProductCardBase({
 					)}
 
 					<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 pt-0.5">
-						<span className="font-semibold">{formatProductPrice(product)}</span>
+						<span className="font-semibold tabular-nums">{formatProductPrice(product)}</span>
 						{product.compareAtPrice != null && (
-							<span className="text-sm text-muted-foreground line-through">
+							<span className="text-sm tabular-nums text-muted-foreground line-through">
 								{formatPrice(product.compareAtPrice, product.currency, product.localeBcp47)}
 							</span>
 						)}

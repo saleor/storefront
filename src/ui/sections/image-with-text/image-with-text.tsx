@@ -39,10 +39,7 @@ export function ImageWithText({
 	const hasImage = Boolean(image);
 
 	return (
-		<section
-			className={cn("border-b border-border bg-background", className)}
-			aria-labelledby="image-with-text-heading"
-		>
+		<section className={cn("bg-background", className)} aria-labelledby="image-with-text-heading">
 			<div className="mx-auto grid max-w-7xl lg:grid-cols-2">
 				<div
 					className={cn(
@@ -66,15 +63,15 @@ export function ImageWithText({
 
 				<div
 					className={cn(
-						"flex flex-col justify-center px-4 py-10 sm:px-6 sm:py-12 lg:px-12 lg:py-16",
+						"flex flex-col justify-center px-4 py-16 sm:px-6 sm:py-20 lg:px-12 lg:py-24",
 						imagePosition === "right" && "lg:order-1",
 					)}
 				>
-					<h2 id="image-with-text-heading" className="text-2xl font-semibold tracking-tight md:text-3xl">
+					<h2 id="image-with-text-heading" className="text-balance text-h2">
 						{heading}
 					</h2>
 					{paragraphs.length > 0 ? (
-						<div className="mt-4 space-y-4 text-base text-muted-foreground md:text-lg">
+						<div className="mt-5 space-y-5 text-pretty text-lead text-muted-foreground">
 							{paragraphs.map((paragraph) => (
 								<p key={paragraph}>{paragraph}</p>
 							))}

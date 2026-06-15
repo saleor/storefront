@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { cn } from "@/lib/utils";
 import { WavePattern } from "./wave-pattern";
 
 interface BreadcrumbItem {
@@ -78,18 +79,15 @@ export function CategoryHero({
 					))}
 				</nav>
 
-				<h1
-					className={`text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl ${
-						hasImage ? "text-background" : "text-foreground"
-					}`}
-				>
+				<h1 className={cn("text-balance text-h1", hasImage ? "text-background" : "text-foreground")}>
 					{title}
 				</h1>
 				{description && (
 					<p
-						className={`mt-3 max-w-lg text-base md:text-lg ${
-							hasImage ? "text-background/80" : "text-muted-foreground"
-						}`}
+						className={cn(
+							"mt-5 max-w-lg text-pretty text-lead",
+							hasImage ? "text-background/80" : "text-muted-foreground",
+						)}
 					>
 						{description}
 					</p>

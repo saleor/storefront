@@ -90,7 +90,7 @@ export function ConfirmAccountMode({
 				<div className="rounded-lg border border-border bg-card p-8 shadow-sm">
 					<div className="flex flex-col items-center gap-4 text-center">
 						<Loader2 className="h-10 w-10 animate-spin text-muted-foreground" aria-hidden />
-						<h1 className="text-2xl font-semibold">{t("confirm.confirmingTitle")}</h1>
+						<h1 className="text-balance text-h1">{t("confirm.confirmingTitle")}</h1>
 						<p className="text-sm text-muted-foreground">{t("confirm.confirmingBody", { email })}</p>
 					</div>
 				</div>
@@ -106,7 +106,7 @@ export function ConfirmAccountMode({
 						<div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
 							<CheckCircle className="h-8 w-8 text-green-600" aria-hidden />
 						</div>
-						<h1 className="text-2xl font-semibold">{t("confirm.successTitle")}</h1>
+						<h1 className="text-balance text-h1">{t("confirm.successTitle")}</h1>
 						<p className="text-muted-foreground">{t("confirm.successBody", { email })}</p>
 						<Link
 							href={loginHref}
@@ -136,7 +136,7 @@ export function ConfirmAccountMode({
 					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
 						<Mail className="h-8 w-8 text-muted-foreground" aria-hidden />
 					</div>
-					<h1 className="text-2xl font-semibold">{t("confirm.errorTitle")}</h1>
+					<h1 className="text-balance text-h1">{t("confirm.errorTitle")}</h1>
 					<p role="alert" className="text-sm text-destructive">
 						{errorMessage}
 					</p>

@@ -78,7 +78,7 @@ export const OrderConfirmation = () => {
 									</div>
 									<div>
 										<p className="text-muted-foreground">{t("orderNumber", { number: order.number })}</p>
-										<h1 className="mt-1 text-2xl font-semibold">{t("thankYou")}</h1>
+										<h1 className="mt-1 text-balance text-h1">{t("thankYou")}</h1>
 									</div>
 								</div>
 

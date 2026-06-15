@@ -59,10 +59,10 @@ export function AddToCart({
 	return (
 		<div className="space-y-4">
 			<div className="flex items-baseline gap-3">
-				<span className="text-2xl font-semibold tracking-tight">{price}</span>
+				<span className="text-2xl font-semibold tabular-nums tracking-tight">{price}</span>
 				{compareAtPrice && (
 					<>
-						<span className="text-lg text-muted-foreground line-through">{compareAtPrice}</span>
+						<span className="text-lg tabular-nums text-muted-foreground line-through">{compareAtPrice}</span>
 						{discountPercent ? <DiscountPercentLabel percent={discountPercent} /> : null}
 					</>
 				)}

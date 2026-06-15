@@ -201,9 +201,7 @@ async function ProductShell({
 					</div>
 
 					<div className="flex flex-col gap-3">
-						<h1 className="order-2 text-balance text-3xl font-semibold tracking-tight lg:text-4xl">
-							{product.name}
-						</h1>
+						<h1 className="order-2 text-balance text-h1">{product.name}</h1>
 
 						<ErrorBoundary FallbackComponent={VariantSectionError}>
 							<Suspense fallback={<VariantSectionSkeleton />}>

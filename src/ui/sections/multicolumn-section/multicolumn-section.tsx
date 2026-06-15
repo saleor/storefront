@@ -35,15 +35,12 @@ export function MulticolumnSection({
 
 	return (
 		<section
-			className={cn("border-b border-border bg-background py-12 md:py-16", className)}
+			className={cn("bg-background py-16 md:py-24 lg:py-28", className)}
 			aria-labelledby={heading ? "multicolumn-heading" : undefined}
 		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				{heading ? (
-					<h2
-						id="multicolumn-heading"
-						className="mb-8 text-center text-2xl font-semibold tracking-tight md:text-3xl"
-					>
+					<h2 id="multicolumn-heading" className="mb-8 text-balance text-center text-h2">
 						{heading}
 					</h2>
 				) : null}
@@ -63,8 +60,8 @@ export function MulticolumnSection({
 								</div>
 							) : null}
 							<div>
-								<h3 className="text-lg font-semibold tracking-tight">{column.title}</h3>
-								<p className="mt-2 text-sm text-muted-foreground md:text-base">{column.text}</p>
+								<h3 className="text-h3">{column.title}</h3>
+								<p className="mt-3 text-pretty text-sm text-muted-foreground md:text-base">{column.text}</p>
 							</div>
 						</li>
 					))}

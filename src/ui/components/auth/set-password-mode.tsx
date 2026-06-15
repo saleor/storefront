@@ -85,7 +85,7 @@ export function SetPasswordMode({ email, token }: Props) {
 						<div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
 							<CheckCircle className="h-8 w-8 text-green-600" />
 						</div>
-						<h1 className="text-2xl font-semibold">{t("setPassword.successTitle")}</h1>
+						<h1 className="text-balance text-h1">{t("setPassword.successTitle")}</h1>
 						<p className="text-muted-foreground">{t("setPassword.successBody")}</p>
 						<p className="text-sm text-muted-foreground">{t("setPassword.redirecting")}</p>
 					</div>
@@ -98,7 +98,7 @@ export function SetPasswordMode({ email, token }: Props) {
 		<div className="mx-auto my-16 w-full max-w-md">
 			<div className="rounded-lg border border-border bg-card p-8 shadow-sm">
 				<div className="mb-6 text-center">
-					<h1 className="text-2xl font-semibold">{t("setPassword.title")}</h1>
+					<h1 className="text-balance text-h1">{t("setPassword.title")}</h1>
 					<p className="mt-2 text-sm text-muted-foreground">{t("setPassword.subtitle", { email })}</p>
 				</div>
 

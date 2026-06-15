@@ -32,7 +32,7 @@ export function ErrorContent({ error, reset }: ErrorContentProps) {
 					<AlertCircle className="h-8 w-8 text-destructive" />
 				</div>
 
-				<h1 className="mb-2 text-2xl font-bold tracking-tight text-foreground">
+				<h1 className="mb-2 text-balance text-h1 text-foreground">
 					{errorType === "network" ? "Connection Error" : "Something Went Wrong"}
 				</h1>
 

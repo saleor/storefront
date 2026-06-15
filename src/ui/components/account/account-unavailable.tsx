@@ -8,7 +8,7 @@ export async function AccountUnavailable({ locale }: { locale: string }) {
 	return (
 		<AuthFormSection>
 			<div className="mx-auto my-16 w-full max-w-md text-center">
-				<h1 className="text-2xl font-semibold">{t("title")}</h1>
+				<h1 className="text-balance text-h1">{t("title")}</h1>
 				<p className="mt-2 text-sm text-muted-foreground">{t("body")}</p>
 			</div>
 		</AuthFormSection>
