@@ -16,8 +16,14 @@ export const CheckoutSkeleton = ({ step = 1, isShippingRequired = true }: Checko
 		<div className="min-h-screen overscroll-none bg-secondary">
 			<CheckoutHeaderSkeleton step={step} totalSteps={totalSteps} />
 			<div className="animate-skeleton-delayed opacity-0">
-				<main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-8 lg:px-8">
-					<div className="flex flex-col gap-8 md:flex-row">
+				<main
+					className="mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-8 lg:px-8"
+					role="status"
+					aria-live="polite"
+					aria-busy="true"
+					aria-label="Loading checkout"
+				>
+					<div className="flex flex-col gap-8 md:flex-row" aria-hidden="true">
 						{/* Left column - Form */}
 						<div className="flex-1">
 							<div className="rounded-lg border border-border bg-card p-6 md:p-8">

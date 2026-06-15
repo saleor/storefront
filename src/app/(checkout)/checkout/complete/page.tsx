@@ -6,7 +6,7 @@ import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-
 import { fetchOrderOnServer } from "@/checkout/lib/server/fetch-order";
 import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
 import { loadCheckoutMessages } from "@/i18n/load-messages";
-import { OrderConfirmationSkeleton } from "@/checkout/views/order-confirmation";
+import { OrderConfirmationRouteFallback } from "@/checkout/views/order-confirmation/order-confirmation-route-fallback";
 import { formatPageTitle } from "@/config/brand";
 
 export const metadata = {
@@ -22,7 +22,7 @@ export default function OrderCompletePage(props: {
 	searchParams: Promise<{ order?: string; locale?: string }>;
 }) {
 	return (
-		<Suspense fallback={<OrderConfirmationSkeleton />}>
+		<Suspense fallback={<OrderConfirmationRouteFallback />}>
 			<OrderCompleteContent searchParams={props.searchParams} />
 		</Suspense>
 	);
