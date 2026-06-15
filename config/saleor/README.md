@@ -77,6 +77,22 @@ config/saleor/fixtures/translations/
 
 Each file maps `page slug → attribute slug → translated plain text`. Policy placeholders (`{freeShippingThreshold}`, `{returnsWindowDays}`, `{amount}`, `{label}`) must be preserved. Apply with `pnpm configurator:storefront-content:translations` (GraphQL `attributeValueTranslate` — not supported by Configurator itself).
 
+### Catalog translations (products, categories, collections)
+
+> **Experimental — not officially supported.** May change or be removed. Typically a merchandiser/Dashboard or TMS-export concern, not a developer workflow.
+
+**Advanced, opt-in tooling** for translating native Saleor catalog copy. Real fixture files are **gitignored** (`fixtures/catalog-translations/locales/`); only fictional templates ship in `examples/`.
+
+See [`fixtures/catalog-translations/README.md`](fixtures/catalog-translations/README.md):
+
+```bash
+pnpm catalog:translations:fetch   # pull English baseline from your Saleor (local, gitignored)
+pnpm catalog:translations:plan    # preflight — fails on slug mismatch
+pnpm catalog:translations:deploy  # push locales/*.yaml (after plan passes)
+```
+
+Requires `SALEOR_CONFIGURATOR_TOKEN` in `.env.configurator.local` — same rules as Configurator above.
+
 ## How Configurator actually behaves (from `../configurator` source)
 
 **Diff vs deploy are not the same.**

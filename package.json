@@ -28,6 +28,9 @@
 		"configurator:storefront-content:drop": "node scripts/drop-storefront-models.mjs",
 		"configurator:storefront-content:translations": "node scripts/deploy-storefront-translations.mjs",
 		"configurator:storefront-content:reset": "node scripts/drop-storefront-models.mjs && sh scripts/configurator-storefront-content.sh deploy && sh scripts/configurator-storefront-content.sh deploy && node scripts/deploy-storefront-translations.mjs",
+		"catalog:translations:fetch": "node scripts/fetch-catalog-translations.mjs",
+		"catalog:translations:plan": "node scripts/deploy-catalog-translations.mjs --dry-run --fail-on-skip",
+		"catalog:translations:deploy": "node scripts/deploy-catalog-translations.mjs --fail-on-skip",
 		"content:verify-attribute-slugs": "node scripts/verify-storefront-attribute-slugs.mjs"
 	},
 	"dependencies": {
