@@ -3,9 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { type Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { searchProducts, parseSearchSortParam } from "@/lib/search";
-import { resolveLocaleFromSlug } from "@/config/locale";
 import { SearchResults } from "@/ui/components/search-results";
 import { Pagination } from "@/ui/components/pagination";
+import { ProductsGridSkeleton } from "@/ui/components/plp";
 import { SearchSort } from "./search-sort";
 import { SearchIcon } from "lucide-react";
 import { buttonClassName } from "@/ui/components/ui/button";
@@ -122,7 +122,7 @@ async function SearchContent({
 			{/* Header with count and sort */}
 			<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
-					<h1 className="text-2xl font-semibold">{t("resultsFor", { query })}</h1>
+					<h1 className="text-balance text-h1">{t("resultsFor", { query })}</h1>
 					<p className="mt-1 text-sm text-muted-foreground">
 						{t("resultCount", { count: pagination.totalCount })}
 					</p>
@@ -131,11 +131,7 @@ async function SearchContent({
 			</div>
 
 			{/* Results grid */}
-			<SearchResults
-				products={products}
-				locale={resolveLocaleFromSlug(params.locale).bcp47}
-				noImageLabel={t("noImage")}
-			/>
+			<SearchResults products={products} />
 
 			{/* Pagination */}
 			{(pagination.hasNextPage || pagination.hasPreviousPage) && (
@@ -163,20 +159,7 @@ function SearchSkeleton() {
 				<div className="h-8 w-64 animate-pulse rounded bg-muted" />
 				<div className="mt-2 h-4 w-32 animate-pulse rounded bg-muted" />
 			</div>
-			{/* Matches SearchResults: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 */}
-			<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-				{Array.from({ length: 6 }).map((_, i) => (
-					<div key={i} className="animate-pulse overflow-hidden rounded-lg border border-border bg-card">
-						{/* Matches SearchResultCard: aspect-square image + p-4 content */}
-						<div className="aspect-square bg-muted" />
-						<div className="p-4">
-							<div className="mb-1 h-3 w-16 rounded bg-muted" />
-							<div className="h-4 w-3/4 rounded bg-muted" />
-							<div className="mt-2 h-4 w-20 rounded bg-muted" />
-						</div>
-					</div>
-				))}
-			</div>
+			<ProductsGridSkeleton className="mx-0 max-w-none px-0 py-0" desktopColumns={3} itemCount={6} />
 		</div>
 	);
 }
@@ -197,7 +180,7 @@ function EmptyState({
 			<div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
 				<SearchIcon className="h-8 w-8 text-muted-foreground" />
 			</div>
-			<h1 className="text-2xl font-semibold">{title}</h1>
+			<h1 className="text-balance text-h1">{title}</h1>
 			<p className="mt-2 max-w-md text-muted-foreground">{body}</p>
 			<div className="mt-8 flex flex-col gap-3 sm:flex-row">
 				<LinkWithChannel
