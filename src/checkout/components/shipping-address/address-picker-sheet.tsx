@@ -2,6 +2,7 @@
 
 import { type FC, useMemo } from "react";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { type AddressFragment, type AddressTypeEnum } from "@/checkout/graphql";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetCloseButton } from "@/ui/components/ui/sheet";
@@ -40,10 +41,14 @@ export const AddressPickerSheet: FC<AddressPickerSheetProps> = ({
 	selectedAddressId,
 	onSelectAddress,
 	defaultAddressId,
-	title = "Select address",
+	title,
 	onAddNew,
 	onEdit,
 }) => {
+	const tAddresses = useTranslations("checkout.addresses");
+	const tAccount = useTranslations("account");
+	const resolvedTitle = title ?? tAddresses("selectPrompt");
+
 	// Sort addresses: default first, then alphabetically
 	// Note: We don't re-sort based on selection - that would be disorienting.
 	// The radio indicator already shows what's selected.
@@ -69,13 +74,13 @@ export const AddressPickerSheet: FC<AddressPickerSheetProps> = ({
 			<SheetContent side="right" className="flex flex-col p-0">
 				<SheetHeader className="shrink-0 border-b px-4 py-4">
 					<SheetCloseButton className="-ml-2" />
-					<SheetTitle>{title}</SheetTitle>
+					<SheetTitle>{resolvedTitle}</SheetTitle>
 				</SheetHeader>
 
 				{/* Address list */}
 				<div className="flex-1 overflow-y-auto px-4 py-3">
 					{sortedAddresses.length === 0 ? (
-						<p className="py-8 text-center text-sm text-muted-foreground">No saved addresses</p>
+						<p className="py-8 text-center text-sm text-muted-foreground">{tAddresses("emptySaved")}</p>
 					) : (
 						<div className="space-y-2">
 							{sortedAddresses.map((address) => {
@@ -112,7 +117,7 @@ export const AddressPickerSheet: FC<AddressPickerSheetProps> = ({
 												</span>
 												{isDefault && (
 													<span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-														Default
+														{tAddresses("defaultBadge")}
 													</span>
 												)}
 											</div>
@@ -135,7 +140,7 @@ export const AddressPickerSheet: FC<AddressPickerSheetProps> = ({
 												}}
 												className="shrink-0 rounded px-2 py-1 text-xs text-muted-foreground opacity-0 transition-opacity hover:bg-muted group-hover:opacity-100"
 											>
-												Edit
+												{tAccount("common.edit")}
 											</button>
 										)}
 									</button>
@@ -158,7 +163,7 @@ export const AddressPickerSheet: FC<AddressPickerSheetProps> = ({
 							}}
 						>
 							<Plus className="h-4 w-4" />
-							Add new address
+							{tAccount("addresses.addNewAddress")}
 						</Button>
 					</div>
 				)}

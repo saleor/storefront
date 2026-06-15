@@ -431,7 +431,8 @@
 			"resetPasswordTitle": "Réinitialiser votre mot de passe",
 			"resetPasswordSubtitle": "Saisissez un nouveau mot de passe pour votre compte",
 			"processing": "Traitement…",
-			"passwordMinPlaceholder": "Mot de passe (8 caractères minimum)"
+			"passwordMinPlaceholder": "Mot de passe (8 caractères minimum)",
+			"signedIn": "Connecté"
 		},
 		"summary": {
 			"title": "Récapitulatif de commande",
@@ -460,6 +461,7 @@
 		},
 		"shipping": {
 			"methodTitle": "Mode de livraison",
+			"loadingMethods": "Chargement des modes de livraison…",
 			"noAddressYet": "Veuillez revenir en arrière et saisir d'abord votre adresse de livraison.",
 			"addressTitle": "Adresse de livraison",
 			"countryRegion": "Pays/Région",

@@ -1,4 +1,5 @@
 import { getDefaultLocaleSlug, isStorefrontLocaleSlug, type LocaleSlug } from "@/config/locale";
+import { mergeMessagesWithDefault } from "@/i18n/merge-messages";
 
 type FullMessages = typeof import("../../messages/en.json");
 
@@ -13,13 +14,24 @@ export type CheckoutMessages = {
 	account: FullMessages["account"];
 };
 
+async function loadFullMessages(locale: LocaleSlug): Promise<FullMessages> {
+	return ((await import(`../../messages/${locale}.json`)) as { default: FullMessages }).default;
+}
+
 /** Load the sliced checkout message catalog for a locale (validated against the allowlist). */
 export async function loadCheckoutMessages(locale: LocaleSlug): Promise<CheckoutMessages> {
-	const safeLocale = isStorefrontLocaleSlug(locale) ? locale : getDefaultLocaleSlug();
-	const full = ((await import(`../../messages/${safeLocale}.json`)) as { default: FullMessages }).default;
+	const defaultLocale = getDefaultLocaleSlug();
+	const safeLocale = isStorefrontLocaleSlug(locale) ? locale : defaultLocale;
+	const [defaultMessages, localeMessages] = await Promise.all([
+		loadFullMessages(defaultLocale),
+		safeLocale === defaultLocale ? null : loadFullMessages(safeLocale),
+	]);
+
+	const merged =
+		localeMessages === null ? defaultMessages : mergeMessagesWithDefault(defaultMessages, localeMessages);
 
 	return {
-		checkout: full.checkout,
-		account: full.account,
+		checkout: merged.checkout,
+		account: merged.account,
 	};
 }

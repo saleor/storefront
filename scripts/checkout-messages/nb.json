@@ -61,7 +61,8 @@
 		"resetPasswordTitle": "Tilbakestill passordet ditt",
 		"resetPasswordSubtitle": "Skriv inn et nytt passord for kontoen din",
 		"processing": "Behandler…",
-		"passwordMinPlaceholder": "Passord (minimum 8 tegn)"
+		"passwordMinPlaceholder": "Passord (minimum 8 tegn)",
+		"signedIn": "Innlogget"
 	},
 	"summary": {
 		"title": "Ordresammendrag",
@@ -90,6 +91,7 @@
 	},
 	"shipping": {
 		"methodTitle": "Fraktmetode",
+		"loadingMethods": "Laster fraktmetoder…",
 		"noAddressYet": "Gå tilbake og oppgi leveringsadressen din først.",
 		"addressTitle": "Leveringsadresse",
 		"countryRegion": "Land/region",

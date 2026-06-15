@@ -119,7 +119,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 				{showSpinner ? (
 					<div className="flex items-center gap-3 rounded-lg border border-border p-4">
 						<div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
-						<p className="text-sm text-muted-foreground">Loading shipping methods...</p>
+						<p className="text-sm text-muted-foreground">{t("shipping.loadingMethods")}</p>
 					</div>
 				) : deliveries.length === 0 ? (
 					<div className="rounded-lg border border-amber-200 bg-amber-50 p-4">

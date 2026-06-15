@@ -431,7 +431,8 @@
 			"resetPasswordTitle": "Passwort zurücksetzen",
 			"resetPasswordSubtitle": "Geben Sie ein neues Passwort für Ihr Konto ein",
 			"processing": "Wird verarbeitet…",
-			"passwordMinPlaceholder": "Passwort (mindestens 8 Zeichen)"
+			"passwordMinPlaceholder": "Passwort (mindestens 8 Zeichen)",
+			"signedIn": "Angemeldet"
 		},
 		"summary": {
 			"title": "Bestellübersicht",
@@ -460,6 +461,7 @@
 		},
 		"shipping": {
 			"methodTitle": "Versandart",
+			"loadingMethods": "Versandarten werden geladen…",
 			"noAddressYet": "Bitte gehen Sie zurück und geben Sie zuerst Ihre Lieferadresse ein.",
 			"addressTitle": "Lieferadresse",
 			"countryRegion": "Land/Region",

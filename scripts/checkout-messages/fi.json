@@ -61,7 +61,8 @@
 		"resetPasswordTitle": "Nollaa salasanasi",
 		"resetPasswordSubtitle": "Anna uusi salasana tilillesi",
 		"processing": "Käsitellään…",
-		"passwordMinPlaceholder": "Salasana (vähintään 8 merkkiä)"
+		"passwordMinPlaceholder": "Salasana (vähintään 8 merkkiä)",
+		"signedIn": "Kirjautuneena"
 	},
 	"summary": {
 		"title": "Tilauksen yhteenveto",
@@ -90,6 +91,7 @@
 	},
 	"shipping": {
 		"methodTitle": "Toimitustapa",
+		"loadingMethods": "Ladataan toimitustapoja…",
 		"noAddressYet": "Palaa takaisin ja anna ensin toimitusosoitteesi.",
 		"addressTitle": "Toimitusosoite",
 		"countryRegion": "Maa/alue",

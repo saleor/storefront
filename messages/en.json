@@ -379,22 +379,22 @@
 			"stepOf": "Step {step} of {total}"
 		},
 		"actions": {
-			"saving": "Saving...",
-			"loading": "Loading...",
+			"saving": "Saving…",
+			"loading": "Loading…",
 			"continueToShipping": "Continue to shipping",
 			"continueToPayment": "Continue to payment",
 			"continue": "Continue",
 			"continueAsGuest": "Continue as guest",
-			"preparingGuestCart": "Preparing guest cart...",
+			"preparingGuestCart": "Preparing guest cart…",
 			"logIn": "Log in",
 			"returnToInformation": "Return to information",
 			"returnToShipping": "Return to shipping",
 			"payNow": "Pay now",
 			"payTotal": "Pay {total}",
 			"completeOrder": "Complete order",
-			"placingOrder": "Placing order...",
-			"creatingOrder": "Creating order...",
-			"processingPayment": "Processing payment...",
+			"placingOrder": "Placing order…",
+			"creatingOrder": "Creating order…",
+			"processingPayment": "Processing payment…",
 			"continueShopping": "Continue shopping",
 			"tryAgain": "Try again"
 		},
@@ -430,8 +430,9 @@
 			"signInTitle": "Sign in",
 			"resetPasswordTitle": "Reset your password",
 			"resetPasswordSubtitle": "Enter a new password for your account",
-			"processing": "Processing...",
-			"passwordMinPlaceholder": "Password (minimum 8 characters)"
+			"processing": "Processing…",
+			"passwordMinPlaceholder": "Password (minimum 8 characters)",
+			"signedIn": "Signed in"
 		},
 		"summary": {
 			"title": "Order Summary",
@@ -455,11 +456,12 @@
 		"promo": {
 			"placeholder": "Discount code",
 			"apply": "Apply",
-			"applying": "Applying...",
+			"applying": "Applying…",
 			"removeAriaLabel": "Remove discount code"
 		},
 		"shipping": {
 			"methodTitle": "Shipping method",
+			"loadingMethods": "Loading shipping methods…",
 			"noAddressYet": "Please go back and enter your shipping address first.",
 			"addressTitle": "Shipping address",
 			"countryRegion": "Country/Region",
@@ -491,8 +493,8 @@
 			"completingBody": "We're confirming your payment and creating your order. This usually takes a few seconds — please don't close or refresh this page.",
 			"initFailed": "Failed to initialize payment system.",
 			"unavailable": "Payment system is not available. Please try again.",
-			"loadingGateway": "Loading {gateway} payment form...",
-			"confirmingPayment": "Confirming your payment...",
+			"loadingGateway": "Loading {gateway} payment form…",
+			"confirmingPayment": "Confirming your payment…",
 			"securingWithStripe": "We're securing your payment with Stripe. This usually takes a few seconds.",
 			"doNotClose": "Please don't close or refresh this page.",
 			"completeOrderFailed": "Could not complete your order. Please try again.",

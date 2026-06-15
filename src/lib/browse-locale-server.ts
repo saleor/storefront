@@ -3,11 +3,7 @@ import "server-only";
 import { cookies, headers } from "next/headers";
 import { cache } from "react";
 import { isStorefrontLocaleSlug, type LocaleSlug } from "@/config/locale";
-import {
-	BROWSE_LOCALE_COOKIE,
-	getBrowseLocaleCookieOptions,
-	resolveBrowseLocaleSlug,
-} from "@/lib/browse-locale";
+import { BROWSE_LOCALE_COOKIE, resolveBrowseLocaleSlug } from "@/lib/browse-locale";
 
 /** Browse locale from cookie — use on surfaces without `[locale]` in the URL. */
 export async function getBrowseLocaleSlug(): Promise<LocaleSlug> {
@@ -50,20 +46,11 @@ export const getCheckoutLocaleSlug = cache(async (explicitLocale?: string | null
 	return getBrowseLocaleSlug();
 });
 
-/** Sync browse locale cookie from checkout RSC (middleware skips `/checkout`). */
-export async function persistBrowseLocaleCookie(slug: LocaleSlug): Promise<void> {
-	const cookieStore = await cookies();
-	const current = cookieStore.get(BROWSE_LOCALE_COOKIE)?.value;
-	if (current === slug) {
-		return;
-	}
-
-	cookieStore.set(BROWSE_LOCALE_COOKIE, slug, getBrowseLocaleCookieOptions());
-}
-
-/** Checkout locale: `?locale=` from cart handoff wins, then referer, cookie, default. */
+/**
+ * Checkout locale for RSC loaders. Does not write cookies — Next.js 16 only allows
+ * `cookies().set()` in Server Actions / Route Handlers; sync happens client-side via
+ * `CheckoutBrowseProvider`.
+ */
 export async function resolveBrowseLocaleForCheckout(urlLocale?: string | null): Promise<LocaleSlug> {
-	const locale = await getCheckoutLocaleSlug(urlLocale);
-	await persistBrowseLocaleCookie(locale);
-	return locale;
+	return getCheckoutLocaleSlug(urlLocale);
 }

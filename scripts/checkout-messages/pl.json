@@ -61,7 +61,8 @@
 		"resetPasswordTitle": "Zresetuj hasło",
 		"resetPasswordSubtitle": "Wprowadź nowe hasło do konta",
 		"processing": "Przetwarzanie…",
-		"passwordMinPlaceholder": "Hasło (minimum 8 znaków)"
+		"passwordMinPlaceholder": "Hasło (minimum 8 znaków)",
+		"signedIn": "Zalogowano"
 	},
 	"summary": {
 		"title": "Podsumowanie",
@@ -90,6 +91,7 @@
 	},
 	"shipping": {
 		"methodTitle": "Metoda dostawy",
+		"loadingMethods": "Ładowanie metod dostawy…",
 		"noAddressYet": "Wróć i podaj adres dostawy.",
 		"addressTitle": "Adres dostawy",
 		"countryRegion": "Kraj/region",
