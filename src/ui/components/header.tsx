@@ -27,7 +27,10 @@ export async function Header({
 	]);
 
 	return (
-		<header className="sticky top-0 z-40 border-b border-border bg-background">
+		<header
+			id="storefront-header"
+			className="relative sticky top-0 z-40 border-b border-border bg-background"
+		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-16 items-center justify-between gap-4">
 					<Logo />
