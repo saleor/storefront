@@ -53,6 +53,8 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Hero CTA label
     inputType: PLAIN_TEXT
+  - name: Hero image
+    inputType: FILE
   - name: Featured heading
     inputType: PLAIN_TEXT
   - name: Featured collection
@@ -159,6 +161,7 @@ modelTypes:
       - attribute: Hero heading
       - attribute: Hero subheading
       - attribute: Hero CTA label
+      - attribute: Hero image
       - attribute: Featured heading
       - attribute: Featured collection
       - attribute: Featured limit

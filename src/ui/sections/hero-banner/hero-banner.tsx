@@ -3,7 +3,6 @@ import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
 import { cn } from "@/lib/utils";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
-import { WavePattern } from "@/ui/components/plp/wave-pattern";
 import { buttonClassName } from "@/ui/components/ui/button";
 
 export type HeroBannerHeight = "compact" | "default" | "large";
@@ -64,24 +63,20 @@ export function HeroBanner({
 			className={cn("relative overflow-hidden border-b border-border", heightClassName[height], className)}
 			aria-labelledby="homepage-hero-heading"
 		>
-			<div className="absolute inset-0">
-				{hasImage && backgroundImage ? (
-					<>
-						<Image
-							src={backgroundImage}
-							alt={backgroundImageAlt}
-							fill
-							className="object-cover"
-							sizes={PLP_HERO_IMAGE_SIZES}
-							quality={PRODUCT_IMAGE_QUALITY}
-							priority
-						/>
-						<div className="from-foreground/70 via-foreground/40 absolute inset-0 bg-gradient-to-r to-transparent" />
-					</>
-				) : (
-					<WavePattern className="h-full w-full" />
-				)}
-			</div>
+			{hasImage && backgroundImage ? (
+				<div className="absolute inset-0">
+					<Image
+						src={backgroundImage}
+						alt={backgroundImageAlt}
+						fill
+						className="object-cover"
+						sizes={PLP_HERO_IMAGE_SIZES}
+						quality={PRODUCT_IMAGE_QUALITY}
+						priority
+					/>
+					<div className="from-foreground/70 via-foreground/40 absolute inset-0 bg-gradient-to-r to-transparent" />
+				</div>
+			) : null}
 
 			<div className="relative mx-auto flex h-full min-h-[inherit] max-w-7xl flex-col justify-end px-4 pb-10 pt-16 sm:px-6 sm:pb-12 lg:px-8">
 				<div className="max-w-2xl">

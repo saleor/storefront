@@ -38,6 +38,8 @@ export type HomepageHeroContent = {
 	heading: string;
 	subheading: string;
 	primaryCtaLabel: string;
+	/** Set only when Saleor storefront-homepage model provides hero-image (FILE). */
+	backgroundImage?: string | null;
 };
 
 export type HomepageFeaturedCollectionContent = {

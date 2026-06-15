@@ -9,17 +9,25 @@ function homepagePage(
 		slug: string;
 		plainText?: string | null;
 		collectionSlug?: string | null;
+		fileUrl?: string | null;
 	}>,
 ): StorefrontContentPageFragment {
 	return {
 		slug: "storefront-homepage",
 		isPublished: true,
 		pageType: { slug: "storefront-homepage" },
-		assignedAttributes: attributes.map(({ slug, plainText, collectionSlug }) => {
+		assignedAttributes: attributes.map(({ slug, plainText, collectionSlug, fileUrl }) => {
 			if (collectionSlug) {
 				return {
 					attribute: { slug },
 					collection: { slug: collectionSlug },
+				};
+			}
+
+			if (fileUrl) {
+				return {
+					attribute: { slug },
+					file: { url: fileUrl },
 				};
 			}
 
@@ -32,6 +40,15 @@ function homepagePage(
 }
 
 describe("mapHomepagePage", () => {
+	it("maps hero image from Saleor FILE attribute", () => {
+		const partial = mapHomepagePage(
+			homepagePage([{ slug: "hero-image", fileUrl: "https://cdn.example.com/hero.jpg" }]),
+		);
+		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
+
+		expect(merged.surfaces.homepage.hero.backgroundImage).toBe("https://cdn.example.com/hero.jpg");
+	});
+
 	it("keeps code default subheading when Saleor only sets hero heading", () => {
 		const partial = mapHomepagePage(
 			homepagePage([

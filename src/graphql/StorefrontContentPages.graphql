@@ -33,5 +33,10 @@ fragment StorefrontContentPage on Page {
 				slug
 			}
 		}
+		... on AssignedFileAttribute {
+			file: value {
+				url
+			}
+		}
 	}
 }

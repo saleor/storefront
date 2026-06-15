@@ -44,6 +44,7 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 			<HeroBanner
 				heading={hero.heading}
 				subheading={hero.subheading}
+				backgroundImage={hero.backgroundImage}
 				height="large"
 				primaryCta={{
 					label: hero.primaryCtaLabel,
