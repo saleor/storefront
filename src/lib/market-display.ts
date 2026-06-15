@@ -1,30 +1,22 @@
 import type { ChannelSelectOption } from "@/config/channels";
 
 export type MarketSelectOption = ChannelSelectOption & {
-	/** Human market name when slug maps to a region, otherwise title-cased slug */
-	regionLabel: string;
+	/** Saleor channel name, or currency code when name is missing */
+	displayLabel: string;
+	/** Shown beside the label when a channel name is available */
+	currencyHint?: string;
 };
 
-const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-
-/** Map channel slug to a display region name when possible (e.g. `uk` → United Kingdom). */
-export function getMarketRegionLabel(slug: string): string {
-	if (slug.length === 2) {
-		const region = regionNames.of(slug.toUpperCase());
-		if (region) return region;
-	}
-
-	return slug
-		.split("-")
-		.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-		.join(" ");
-}
-
 export function enrichMarketOptions(channels: ChannelSelectOption[]): MarketSelectOption[] {
-	return channels.map((channel) => ({
-		...channel,
-		regionLabel: getMarketRegionLabel(channel.slug),
-	}));
+	return channels.map((channel) => {
+		const name = channel.name.trim();
+
+		return {
+			...channel,
+			displayLabel: name || channel.currencyCode,
+			currencyHint: name ? channel.currencyCode : undefined,
+		};
+	});
 }
 
 /** Narrow currency symbol for compact trigger labels. */

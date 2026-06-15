@@ -1,21 +1,32 @@
 import { describe, expect, it } from "vitest";
-import { enrichMarketOptions, getCurrencySymbol, getMarketRegionLabel } from "./market-display";
-
-describe("getMarketRegionLabel", () => {
-	it("maps ISO-like channel slugs to region names", () => {
-		expect(getMarketRegionLabel("uk")).toBe("United Kingdom");
-		expect(getMarketRegionLabel("us")).toBe("United States");
-	});
-
-	it("title-cases multi-segment slugs", () => {
-		expect(getMarketRegionLabel("eu-west")).toBe("Eu West");
-	});
-});
+import { enrichMarketOptions, getCurrencySymbol } from "./market-display";
 
 describe("enrichMarketOptions", () => {
-	it("adds region labels to channel options", () => {
-		expect(enrichMarketOptions([{ id: "1", slug: "uk", currencyCode: "GBP" }])).toEqual([
-			{ id: "1", slug: "uk", currencyCode: "GBP", regionLabel: "United Kingdom" },
+	it("uses Saleor channel name for the market label", () => {
+		expect(
+			enrichMarketOptions([{ id: "1", name: "Channel PLN", slug: "channel-pln", currencyCode: "PLN" }]),
+		).toEqual([
+			{
+				id: "1",
+				name: "Channel PLN",
+				slug: "channel-pln",
+				currencyCode: "PLN",
+				displayLabel: "Channel PLN",
+				currencyHint: "PLN",
+			},
+		]);
+	});
+
+	it("falls back to currency code when name is empty", () => {
+		expect(enrichMarketOptions([{ id: "1", name: "  ", slug: "uk", currencyCode: "GBP" }])).toEqual([
+			{
+				id: "1",
+				name: "  ",
+				slug: "uk",
+				currencyCode: "GBP",
+				displayLabel: "GBP",
+				currencyHint: undefined,
+			},
 		]);
 	});
 });

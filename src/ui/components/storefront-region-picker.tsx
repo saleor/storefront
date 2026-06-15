@@ -55,11 +55,13 @@ function PickerSection({
 
 function OptionRow({ label, hint, selected }: { label: string; hint?: string; selected?: boolean }) {
 	return (
-		<span className="flex min-w-0 flex-1 items-center justify-between gap-3">
-			<span className="truncate font-medium">{label}</span>
-			<span className="flex shrink-0 items-center gap-2">
-				{hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}
-				{selected ? <Check className="h-4 w-4 text-foreground" aria-hidden /> : null}
+		<span className="flex min-w-0 flex-1 items-center gap-3">
+			<span className="min-w-0 flex-1 truncate font-medium">{label}</span>
+			{hint ? (
+				<span className="min-w-8 shrink-0 text-right text-xs tabular-nums text-muted-foreground">{hint}</span>
+			) : null}
+			<span className="flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden>
+				{selected ? <Check className="h-4 w-4 text-foreground" /> : null}
 			</span>
 		</span>
 	);
@@ -186,8 +188,8 @@ export function StorefrontRegionPicker({
 											className="data-[state=checked]:bg-accent/60 my-0.5 rounded-lg py-2.5 pl-3 pr-3 [&>span:first-child]:hidden"
 										>
 											<OptionRow
-												label={item.regionLabel}
-												hint={item.currencyCode}
+												label={item.displayLabel}
+												hint={item.currencyHint}
 												selected={item.slug === channel}
 											/>
 										</DropdownMenuRadioItem>

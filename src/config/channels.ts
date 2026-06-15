@@ -81,6 +81,7 @@ export function filterToStorefrontChannels<T extends { slug: string; isActive?: 
 
 export type ChannelSelectOption = {
 	id: string;
+	name: string;
 	slug: string;
 	currencyCode: string;
 };
@@ -90,8 +91,9 @@ export function toChannelSelectOptions(
 	channels: Array<ChannelSelectOption & { isActive?: boolean | null }>,
 	allowedSlugs: readonly string[],
 ): ChannelSelectOption[] {
-	return filterToStorefrontChannels(channels, allowedSlugs).map(({ id, slug, currencyCode }) => ({
+	return filterToStorefrontChannels(channels, allowedSlugs).map(({ id, name, slug, currencyCode }) => ({
 		id,
+		name,
 		slug,
 		currencyCode,
 	}));
