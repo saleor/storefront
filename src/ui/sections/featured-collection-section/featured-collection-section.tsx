@@ -1,5 +1,5 @@
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
-import { HOMEPAGE_IMAGE_SIZES } from "@/lib/images";
+import { FEATURED_COLLECTION_IMAGE_SIZES } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import { ProductGrid } from "@/ui/components/plp/product-grid";
 
@@ -39,7 +39,8 @@ export async function FeaturedCollectionSection({
 						locale={locale}
 						channel={channel}
 						products={products}
-						imageSizes={HOMEPAGE_IMAGE_SIZES}
+						imageSizes={FEATURED_COLLECTION_IMAGE_SIZES}
+						desktopColumns={4}
 					/>
 				) : (
 					<p className="text-muted-foreground">

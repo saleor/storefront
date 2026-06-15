@@ -50,7 +50,11 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 				}}
 			/>
 
-			<Suspense fallback={<FeaturedCollectionSkeleton heading={featuredCollection.heading} />}>
+			<Suspense
+				fallback={
+					<FeaturedCollectionSkeleton heading={featuredCollection.heading} limit={featuredCollection.limit} />
+				}
+			>
 				<FeaturedCollectionLoader
 					params={props.params}
 					heading={featuredCollection.heading}

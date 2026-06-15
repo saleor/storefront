@@ -1,7 +1,7 @@
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import Image from "next/image";
 import type { SearchProduct } from "@/lib/search";
-import { HOMEPAGE_IMAGE_SIZES, LCP_IMAGE_PRIORITY_COUNT, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { LCP_IMAGE_PRIORITY_COUNT, PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { localeConfig } from "@/config/locale";
 
 interface SearchResultsProps {
@@ -64,7 +64,7 @@ function SearchResultCard({
 						src={product.thumbnailUrl}
 						alt={product.thumbnailAlt || product.name}
 						fill
-						sizes={HOMEPAGE_IMAGE_SIZES}
+						sizes={PLP_IMAGE_SIZES}
 						quality={PRODUCT_IMAGE_QUALITY}
 						className="object-cover transition-transform duration-300 group-hover:scale-105"
 						priority={priority}
