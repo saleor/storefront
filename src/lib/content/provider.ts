@@ -15,7 +15,9 @@ const codeProvider: ContentProvider = {
 };
 
 function resolveContentProviderId(): ContentProviderId {
-	const value = process.env.CONTENT_PROVIDER?.toLowerCase();
+	// Bracket access — Next.js inlines `process.env.CONTENT_PROVIDER` at build time; dynamic
+	// lookup keeps Vercel/runtime env changes effective without a rebuild.
+	const value = process.env["CONTENT_PROVIDER"]?.trim().toLowerCase();
 	if (value === "saleor" || value === "url") return value;
 	return "code";
 }
