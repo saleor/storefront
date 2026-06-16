@@ -21,6 +21,7 @@ jobs:
       NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
       NEXT_PUBLIC_DEFAULT_CHANNEL: default-channel
       STOREFRONT_CHANNELS: aud,default-channel
+      CONTENT_PROVIDER: saleor
 
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -33,5 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Typecheck
         run: pnpm run typecheck
+      - name: Test
+        run: pnpm run test:run
       - name: Build
         run: pnpm run build
