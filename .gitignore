@@ -25,6 +25,10 @@ src/checkout/graphql/generated/
 config/saleor/fixtures/catalog-translations/locales/*
 !config/saleor/fixtures/catalog-translations/locales/.gitkeep
 
+# Local-only dev scripts (see scripts/local/README.md)
+scripts/local/*
+!scripts/local/README.md
+
 # misc
 .DS_Store
 *.pem
