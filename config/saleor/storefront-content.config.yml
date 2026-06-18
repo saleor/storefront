@@ -208,90 +208,86 @@ modelTypes:
 
 # Model attribute keys use contentAttribute *names* (Configurator). Saleor assigns slugs
 # (see src/lib/content/attribute-slugs.ts) which Paper mappers read at runtime.
+#
+# EN seed values below are generated from src/lib/content/defaults.ts — do not edit by hand.
+# After changing defaults.ts: pnpm content:export-seed  |  CI: pnpm content:verify-seed
 models:
-  # Channel-wide policy values. Override per channel with slug storefront-policy-{channelSlug}
-  # (e.g. a PLN channel: Free shipping threshold 300). Numbers are in the channel currency.
   - title: Storefront Policies
     slug: storefront-policy
-    modelType: "Storefront — Policies"
+    modelType: Storefront — Policies
     isPublished: true
     attributes:
       Free shipping threshold: 75
       Returns window days: 30
-
   - title: Storefront Chrome
     slug: storefront-chrome
-    modelType: "Storefront — Chrome"
+    modelType: Storefront — Chrome
     isPublished: true
     attributes:
       Announcement ID: welcome-promo
-      Announcement message: "Free shipping on orders over {freeShippingThreshold}"
+      Announcement message: Free shipping on orders over {freeShippingThreshold}
       Announcement dismissible: true
-      Nav all products label: "All"
-      Nav view all label: "View all {label}"
-
+      Nav all products label: All
+      Nav view all label: View all {label}
   - title: Storefront Products
     slug: storefront-products
-    modelType: "Storefront — Products"
+    modelType: Storefront — Products
     isPublished: true
     attributes:
-      Listing title: "All Products"
-      Listing description: "Discover our full collection of premium products."
-
+      Listing title: All Products
+      Listing description: Discover our full collection of premium products.
   - title: Storefront Homepage
     slug: storefront-homepage
-    modelType: "Storefront — Homepage"
+    modelType: Storefront — Homepage
     isPublished: true
     attributes:
-      Hero heading: "Discover our collection"
-      # Keep in sync with brandConfig.tagline (src/config/brand.ts) — the code default derives
-      # the subheading from it; this seed bootstraps the same value into Saleor.
-      Hero subheading: "Premium products with exceptional quality. Discover our curated collection."
-      Hero CTA label: "Shop all"
-      Featured heading: "Featured products"
+      Hero heading: Discover our collection
+      Hero subheading: Premium products with exceptional quality. Discover our curated collection.
+      Hero CTA label: Shop all
+      Featured heading: Featured products
       Featured collection: featured-products
       Featured limit: 8
-      Brand story heading: "Built for real commerce"
-      Brand story paragraph 1: "Paper is a minimal, production-ready storefront for Saleor — clean as a blank page, built to ship."
-      Brand story paragraph 2: "Customize sections in code, connect your catalog, and keep checkout, cart, and product pages battle-tested out of the box."
-      Values heading: "Why shop with us"
+      Brand story heading: Built for real commerce
+      Brand story paragraph 1: Paper is a minimal, production-ready storefront for Saleor — clean as a
+        blank page, built to ship.
+      Brand story paragraph 2: Customize sections in code, connect your catalog, and keep checkout, cart,
+        and product pages battle-tested out of the box.
+      Values heading: Why shop with us
       Values columns desktop: 3
-      Values column 1 title: "Curated quality"
-      Values column 1 text: "Every product is selected for craftsmanship and longevity — not trend-chasing."
-      Values column 2 title: "Fast fulfillment"
-      Values column 2 text: "Orders ship from regional warehouses with tracking from checkout to delivery."
-      Values column 3 title: "Easy returns"
-      Values column 3 text: "Hassle-free returns within {returnsWindowDays} days. We stand behind what we sell."
-      Editorial heading: "Designed to last"
-      Editorial paragraph 1: "Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season."
+      Values column 1 title: Curated quality
+      Values column 1 text: Every product is selected for craftsmanship and longevity — not trend-chasing.
+      Values column 2 title: Fast fulfillment
+      Values column 2 text: Orders ship from regional warehouses with tracking from checkout to delivery.
+      Values column 3 title: Easy returns
+      Values column 3 text: Hassle-free returns within {returnsWindowDays} days. We stand behind what we sell.
+      Editorial heading: Designed to last
+      Editorial paragraph 1: Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season.
       Editorial image position: right
-      Editorial CTA label: "Explore collections"
-
+      Editorial CTA label: Explore collections
   - title: Storefront Cart
     slug: storefront-cart
-    modelType: "Storefront — Cart"
+    modelType: Storefront — Cart
     isPublished: true
     attributes:
-      Empty title: "Your bag is empty"
-      Empty body: "Looks like you haven't added anything to your bag yet."
-      Empty CTA label: "Start Shopping"
-      Trust free shipping prefix: "Free delivery over"
+      Empty title: Your bag is empty
+      Empty body: Looks like you haven't added anything to your bag yet.
+      Empty CTA label: Start Shopping
+      Trust free shipping prefix: Free delivery over
       Trust returns label: "{returnsWindowDays}-day returns"
-      Drawer title: "Your Bag"
-      Drawer add for free shipping: "Add {amount} more for free shipping"
-      Drawer free shipping qualified: "You qualify for free shipping!"
-
+      Drawer title: Your Bag
+      Drawer add for free shipping: Add {amount} more for free shipping
+      Drawer free shipping qualified: You qualify for free shipping!
   - title: Storefront Checkout
     slug: storefront-checkout
-    modelType: "Storefront — Checkout"
+    modelType: Storefront — Checkout
     isPublished: true
     attributes:
-      Empty cart title: "Your cart is empty"
-      Empty cart body: "Looks like you haven't added anything to your cart yet."
-      Empty cart start label: "Start Shopping"
-      Empty cart go back label: "Go back"
-      Empty session title: "Your cart is empty"
-      Empty session message: "Add items from the store, then return here to complete your purchase."
-      Marketing opt-in label: "Email me with news and offers"
-      Trust secure checkout: "Secure checkout"
-      Trust Stripe processor: "Payments processed by Stripe"
+      Empty cart title: Your cart is empty
+      Empty cart body: Looks like you haven't added anything to your cart yet.
+      Empty cart start label: Start Shopping
+      Empty cart go back label: Go back
+      Empty session title: Your cart is empty
+      Empty session message: Add items from the store, then return here to complete your purchase.
+      Marketing opt-in label: Email me with news and offers
+      Trust secure checkout: Secure checkout
+      Trust Stripe processor: Payments processed by Stripe

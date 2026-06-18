@@ -2,6 +2,26 @@
 
 Deploys **Storefront — \*** model types, content attributes, and seed models for Paper's `CONTENT_PROVIDER=saleor` layer.
 
+## Copy ownership (source of truth)
+
+| Layer                      | English                                             | Other locales                                   | Ongoing edits                                     |
+| -------------------------- | --------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| **Runtime**                | `src/lib/content/defaults.ts`                       | Saleor Model translations                       | Dashboard → Models when `CONTENT_PROVIDER=saleor` |
+| **Configurator bootstrap** | `models:` in YAML — **exported from `defaults.ts`** | `fixtures/translations/*.yaml` (demo seed only) | Export + deploy on greenfield or schema changes   |
+
+**YAML is a deploy vehicle, not the editorial system.** Configurator needs YAML to create PageTypes and seed Pages; merchants edit copy in Dashboard once bootstrapped.
+
+### Changing English copy
+
+1. Edit `src/lib/content/defaults.ts` (and `src/lib/content/types.ts` when the shape changes).
+2. Export Configurator seed: `pnpm content:export-seed` (runs verify automatically)
+3. Verify (CI / `pnpm test:run`): `pnpm content:verify-seed`
+4. Deploy when bootstrapping Saleor: `pnpm configurator:storefront-content:deploy`
+
+Do **not** hand-edit English strings under `models:` in `storefront-content.config.yml` — `content:verify-seed` fails on drift.
+
+Schema sections (`contentAttributes`, `modelTypes`) stay hand-edited in YAML when adding new attributes or PageTypes.
+
 ## Safe token setup (dev)
 
 Use **two tokens**, in **two files**:
@@ -58,13 +78,19 @@ pnpm configurator:storefront-content:deploy
 pnpm configurator:storefront-content:reset
 # Note: reset runs deploy twice — Configurator needs page types committed before models on greenfield.
 
-# Push translation fixtures only (after deploy)
+# Push translation fixtures only (after deploy — demo/bootstrap locales)
 pnpm configurator:storefront-content:translations
+
+# Verify EN seed models match defaults.ts (also in pnpm test:run)
+pnpm content:verify-seed
+
+# Regenerate models: section from defaults.ts
+pnpm content:export-seed
 ```
 
-### Translation fixtures
+### Translation fixtures (bootstrap only)
 
-Configurator seeds **English** defaults in `storefront-content.config.yml`. Non-default locales live in separate YAML files:
+Configurator seeds **English** attribute values via the exported `models:` block (from `defaults.ts`). Non-default locales live in separate YAML files used **once** to populate a fresh Saleor instance:
 
 ```
 config/saleor/fixtures/translations/
@@ -76,6 +102,8 @@ config/saleor/fixtures/translations/
 ```
 
 Each file maps `page slug → attribute slug → translated plain text`. Policy placeholders (`{freeShippingThreshold}`, `{returnsWindowDays}`, `{amount}`, `{label}`) must be preserved. Apply with `pnpm configurator:storefront-content:translations` (GraphQL `attributeValueTranslate` — not supported by Configurator itself).
+
+After bootstrap, locale copy is maintained in **Dashboard → Models**, not in these YAML files.
 
 ### Catalog translations (products, categories, collections)
 
@@ -177,6 +205,7 @@ Verify locally (and optionally against Saleor):
 
 ```bash
 pnpm content:verify-attribute-slugs
+pnpm content:verify-seed
 ```
 
 ### Supported Saleor attribute types (storefront GraphQL)

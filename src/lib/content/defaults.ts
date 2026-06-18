@@ -4,6 +4,8 @@ import { STOREFRONT_CONTENT_VERSION, type StorefrontContent } from "@/lib/conten
 /**
  * Code fallback for all storefront marketing copy.
  * Saleor PageType overrides merge on top when CONTENT_PROVIDER=saleor.
+ *
+ * English SoT for editorial copy — export to Configurator seed: pnpm content:export-seed
  */
 export const defaultStorefrontContent = {
 	version: STOREFRONT_CONTENT_VERSION,
