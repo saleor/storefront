@@ -50,6 +50,16 @@
 			"outOfStockA11y": "nicht auf Lager",
 			"percentOffA11y": "{percent}% Rabatt",
 			"selectedA11y": "ausgewählt"
+		},
+		"attributes": {
+			"description": "Beschreibung",
+			"productDetails": "Produktdetails",
+			"careInstructions": "Pflegehinweise",
+			"shippingReturns": "Versand & Rückgabe",
+			"shippingBody": "Kostenloser Versand bei Bestellungen über {freeShippingThreshold}. Standardlieferung in 3–5 Werktagen.",
+			"returnsBody": "Kostenlose Rückgabe innerhalb von {returnsWindowDays} Tagen nach dem Kauf. Artikel müssen ungetragen und mit Etiketten versehen sein.",
+			"yes": "Ja",
+			"no": "Nein"
 		}
 	},
 	"plp": {

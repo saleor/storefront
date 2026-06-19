@@ -50,6 +50,16 @@
 			"outOfStockA11y": "out of stock",
 			"percentOffA11y": "{percent}% off",
 			"selectedA11y": "selected"
+		},
+		"attributes": {
+			"description": "Description",
+			"productDetails": "Product Details",
+			"careInstructions": "Care Instructions",
+			"shippingReturns": "Shipping & Returns",
+			"shippingBody": "Free shipping on orders over {freeShippingThreshold}. Standard delivery 3-5 business days.",
+			"returnsBody": "Free returns within {returnsWindowDays} days of purchase. Items must be unworn with tags attached.",
+			"yes": "Yes",
+			"no": "No"
 		}
 	},
 	"plp": {

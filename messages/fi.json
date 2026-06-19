@@ -50,6 +50,16 @@
 			"outOfStockA11y": "loppunut varastosta",
 			"percentOffA11y": "{percent}% alennus",
 			"selectedA11y": "valittu"
+		},
+		"attributes": {
+			"description": "Kuvaus",
+			"productDetails": "Tuotetiedot",
+			"careInstructions": "Hoito-ohjeet",
+			"shippingReturns": "Toimitus ja palautukset",
+			"shippingBody": "Ilmainen toimitus tilauksille yli {freeShippingThreshold}. Normaali toimitus 3–5 arkipäivää.",
+			"returnsBody": "Ilmaiset palautukset {returnsWindowDays} päivän kuluessa ostosta. Tuotteiden on oltava käyttämättömiä ja tunnisteineen.",
+			"yes": "Kyllä",
+			"no": "Ei"
 		}
 	},
 	"plp": {

@@ -50,6 +50,16 @@
 			"outOfStockA11y": "brak w magazynie",
 			"percentOffA11y": "{percent}% taniej",
 			"selectedA11y": "wybrane"
+		},
+		"attributes": {
+			"description": "Opis",
+			"productDetails": "Szczegóły produktu",
+			"careInstructions": "Instrukcje pielęgnacji",
+			"shippingReturns": "Dostawa i zwroty",
+			"shippingBody": "Darmowa dostawa przy zamówieniach powyżej {freeShippingThreshold}. Standardowa dostawa w 3–5 dni roboczych.",
+			"returnsBody": "Darmowe zwroty w ciągu {returnsWindowDays} dni od zakupu. Produkty muszą być nieużywane i z metkami.",
+			"yes": "Tak",
+			"no": "Nie"
 		}
 	},
 	"plp": {

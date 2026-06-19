@@ -8,6 +8,10 @@ import xss from "xss";
 
 import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
+import { resolveLocaleFromSlug } from "@/config/locale";
+import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
+import { buildPolicyLabelValues } from "@/lib/content";
+import { getStorefrontContent } from "@/lib/content/server";
 import { buildBrowsePageMetadata, buildProductJsonLd } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
@@ -123,11 +127,17 @@ async function ProductShell({
 }) {
 	const params = await paramsPromise;
 	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);
-	const [product, tPdp, tNav] = await Promise.all([
+	const [product, tPdp, tNav, content, currency] = await Promise.all([
 		getProductData(params.slug, params.channel, params.locale),
 		getTranslations({ locale: params.locale, namespace: "pdp" }),
 		getTranslations({ locale: params.locale, namespace: "nav" }),
+		getStorefrontContent(params.channel, params.locale),
+		resolveChannelCurrency(params.channel),
 	]);
+	const policyLabels = buildPolicyLabelValues(content.policies, {
+		currency,
+		locale: resolveLocaleFromSlug(params.locale).bcp47,
+	});
 
 	if (!product) {
 		notFound();
@@ -219,6 +229,7 @@ async function ProductShell({
 								descriptionHtml={descriptionHtml}
 								attributes={productAttributes}
 								careInstructions={careInstructions}
+								policyLabels={policyLabels}
 							/>
 						</div>
 					</div>
