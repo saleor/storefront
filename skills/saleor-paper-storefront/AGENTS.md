@@ -1,8 +1,8 @@
 # Saleor Paper Storefront
 
-**Version 1.7.0**  
+**Version 1.8.0**  
 Saleor Paper  
-February 2026
+June 2026
 
 > **Note:** This document is mainly for agents and LLMs to follow when maintaining,
 > generating, or refactoring this Saleor storefront codebase. Humans
@@ -16,7 +16,7 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 21 rules across 7 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 27 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -49,19 +49,28 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 3.4 [Payment Gateways](#34-payment-gateways)
    - 3.5 [Checkout Components](#35-checkout-components)
 
-4. [UI & Channels](#4-ui-channels) — **MEDIUM**
+4. [Design & Composition](#4-design-composition) — **HIGH**
 
-   - 4.1 [UI Components](#41-ui-components)
-   - 4.2 [Channels & Multi-Currency](#42-channels-multi-currency)
-   - 4.3 [Locale & Channel URL Routing](#43-locale-channel-url-routing)
-   - 4.4 [next-intl (Code-Owned UI Strings)](#44-next-intl-code-owned-ui-strings)
+   - 4.1 [UI Design System](#41-ui-design-system)
+   - 4.2 [Design Quality Rubric](#42-design-quality-rubric)
+   - 4.3 [UI Sections (Marketing Blocks)](#43-ui-sections-marketing-blocks)
+   - 4.4 [Page Composition (PDP & Homepage)](#44-page-composition-pdp-homepage)
+   - 4.5 [Design From Prompt or Image](#45-design-from-prompt-or-image)
+   - 4.6 [Design Verification Gates](#46-design-verification-gates)
 
-5. [SEO](#5-seo) — **MEDIUM**
+5. [UI & Channels](#5-ui-channels) — **MEDIUM**
 
-   - 5.1 [SEO & Metadata](#51-seo-metadata)
+   - 5.1 [UI Components](#51-ui-components)
+   - 5.2 [Channels & Multi-Currency](#52-channels-multi-currency)
+   - 5.3 [Locale & Channel URL Routing](#53-locale-channel-url-routing)
+   - 5.4 [next-intl (Code-Owned UI Strings)](#54-next-intl-code-owned-ui-strings)
 
-6. [Development](#6-development) — **MEDIUM**
-   - 6.1 [Saleor API Investigation](#61-saleor-api-investigation)
+6. [SEO](#6-seo) — **MEDIUM**
+
+   - 6.1 [SEO & Metadata](#61-seo-metadata)
+
+7. [Development](#7-development) — **MEDIUM**
+   - 7.1 [Saleor API Investigation](#71-saleor-api-investigation)
 
 ---
 
@@ -159,6 +168,7 @@ Real exceptions to the rules above — documented so the code and the convention
 | If you are…                        | Start with                                                                                                       |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
+| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                            |
 | Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
 | Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
 | Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
@@ -3460,16 +3470,616 @@ Keep inline when:
 
 ---
 
-## 4. UI & Channels
+## 4. Design & Composition
+
+**Impact: HIGH**
+
+How agents (and hand-coders) mold PDP and homepage at world-class quality without breaking PPR, caching, or mobile: the token design system, a design-quality bar, the marketing-section catalog, page composition within the PPR rails, designing from a prompt or image, and verification gates.
+
+### 4.1 UI Design System
+
+The token vocabulary an agent must use to build on-brand UI: color, typography, spacing/rhythm, page width, radius, elevation, motion, and the primitive variant matrix. This is the machine-readable grounding for any design work — read it before molding PDP, homepage, or any section.
+
+> **Canonical human doc:** [`src/styles/README.md`](../../../src/styles/README.md) (rebrand workflow, full token table)
+> **Tokens source of truth:** [`src/styles/brand.css`](../../../src/styles/brand.css) → mapped in [`tailwind.config.cjs`](../../../tailwind.config.cjs) > **Creating components / file locations:** [`ui-components.md`](ui-components.md) > **Design judgment (hierarchy, whitespace, mobile):** [`design-quality-rubric.md`](design-quality-rubric.md)
+
+## First principle: design with tokens, not values
+
+Realize a visual direction by **choosing tokens**, never by hardcoding hex, px, or one-off spacing. A rebrand edits `brand.css` once and the whole storefront follows. Hardcoded values silently break that contract and grow fork divergence.
+
+```tsx
+// ✅ token-backed
+<section className="bg-muted py-section-md">
+  <div className="container-content">…</div>
+</section>
+
+// ❌ hardcoded — invisible to rebrand, fails the hex-ban lint
+<section style={{ background: "#f5f5f3", padding: "96px 0" }}>
+```
+
+## Color (semantic, OKLCH)
+
+Use semantic Tailwind classes mapped to `brand.css` — never raw palette values.
+
+| Intent                          | Classes                                                                       |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| Page bg / text                  | `bg-background` / `text-foreground`                                           |
+| Secondary text                  | `text-muted-foreground`                                                       |
+| Cards, menus                    | `bg-card`                                                                     |
+| Subtle panels                   | `bg-muted`, `bg-secondary`                                                    |
+| Hover / active row              | `bg-accent`                                                                   |
+| CTAs                            | `bg-primary text-primary-foreground`                                          |
+| Sale / error                    | `text-destructive`, `bg-destructive` (use sale-label.tsx for sale UI)         |
+| Borders                         | `border-border`                                                               |
+| On dark bands (`bg-foreground`) | `text-inverse`, `text-inverse-subtle`, `text-inverse-muted`, `border-inverse` |
+
+Light-only UI (no `.dark`). Optional editorial display font via `NEXT_PUBLIC_TYPOGRAPHY_THEME=editorial`.
+
+## Typography (semantic, fluid)
+
+Headings/marketing copy use **role tokens** sized with `clamp()` — no `md:text-4xl` breakpoint stacks. Always merge through `cn()` (size + color share the `text-*` prefix; the merge config registers these).
+
+| Class          | Role                  | Mobile → desktop |
+| -------------- | --------------------- | ---------------- |
+| `text-display` | Homepage hero only    | 44 → 72px        |
+| `text-h1`      | Page titles, PDP name | 32 → 48px        |
+| `text-h2`      | Section headings      | 24 → 36px        |
+| `text-h3`      | Card / column titles  | 18 → 24px        |
+| `text-lead`    | Hero subheads, intros | 17 → 20px        |
+| `text-eyebrow` | Overlines (uppercase) | 12px fixed       |
+
+Default Tailwind sizes (`text-sm`, `text-lg`) remain for misc UI (price, breadcrumbs). Use role tokens for **roles**, not every node. Pair with `text-balance` (headings) / `text-pretty` (paragraphs).
+
+## Page width (flexible — not a fixed desktop assumption)
+
+Page width is a **design decision**. Paper does not assume a centered fixed-width desktop; full-bleed is first-class. Use the canonical container classes instead of bare `max-w-7xl`.
+
+| Class               | Width | Use for                                       |
+| ------------------- | ----- | --------------------------------------------- |
+| `container-prose`   | 48rem | Long-form copy, legal, FAQ (readable measure) |
+| `container-content` | 80rem | Default storefront body                       |
+| `container-wide`    | 96rem | Immersive / editorial layouts                 |
+| `container-full`    | 100%  | Full-bleed, edge-to-edge                      |
+
+Each bundles `mx-auto w-full px-4 sm:px-6 lg:px-8`. Width-only utilities: `max-w-content`, `max-w-wide`. **Full-width ≠ full-measure text** — nest a `container-prose` inside `container-full`/`container-wide` so line length stays ~60–80ch.
+
+```tsx
+<section className="bg-foreground py-section-lg">
+	<div className="container-full">
+		<div className="container-prose text-inverse">…readable copy on a full-bleed band…</div>
+	</div>
+</section>
+```
+
+## Spacing & section rhythm
+
+Layout spacing is normal Tailwind (`gap-4`, `grid-cols-2`). For **vertical rhythm between full-bleed bands**, use the fluid section tokens so cadence is consistent:
+
+| Class           | Mobile → desktop | Use for                     |
+| --------------- | ---------------- | --------------------------- |
+| `py-section-sm` | 40 → 64px        | Compact bands               |
+| `py-section-md` | 64 → 112px       | Standard marketing sections |
+| `py-section-lg` | 80 → 144px       | Hero-adjacent feature bands |
+
+Also available as `gap-section-*`, `mt-section-*`, etc.
+
+## Radius, elevation, motion
+
+| Concern   | Tokens                                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Radius    | `rounded-md` (controls/inputs), `rounded-lg` (CTAs), `rounded-xl` (cards/media), `rounded-full` (pills) — driven by `--radius` |
+| Elevation | `shadow-card` (resting), `shadow-elevated` (popovers/hover), `shadow-overlay` (sheets/modals)                                  |
+| Motion    | `duration-fast` (150ms), `duration-base` (250ms), `duration-slow` (400ms); `ease-standard`, `ease-emphasized`                  |
+
+Guard non-trivial motion with `motion-reduce:` / `prefers-reduced-motion`.
+
+## Primitive variant matrix (cva)
+
+Primitives in `src/ui/components/ui/` use [`class-variance-authority`](https://cva.style). Extend a variant by adding to the `cva` map — do not hand-roll new `cn()` conditionals or fork a primitive.
+
+| Primitive    | Export                                        | Variants                                                        | Sizes                         |
+| ------------ | --------------------------------------------- | --------------------------------------------------------------- | ----------------------------- |
+| `button.tsx` | `Button`, `buttonClassName`, `buttonVariants` | `default`, `secondary`, `outline-solid`, `ghost`, `destructive` | `default`, `sm`, `lg`, `icon` |
+| `badge.tsx`  | `Badge`, `badgeVariants`                      | `default`, `secondary`, `destructive`, `outline-solid`          | —                             |
+| `sheet.tsx`  | `SheetContent`, `sheetVariants`               | side: `top`, `bottom`, `left`, `right`                          | —                             |
+
+```tsx
+import { Button } from "@/ui/components/ui/button";
+<Button variant="secondary" size="lg">
+	Shop now
+</Button>;
+
+// Token-backed link CTA (aria-disabled, not native disabled):
+import { buttonClassName } from "@/ui/components/ui/button";
+<Link className={buttonClassName({ asLink: true, size: "lg" })} href="/products">
+	Browse
+</Link>;
+```
+
+Adding a variant: edit the `cva` `variants` map in the primitive → it flows to `VariantProps` types automatically. For a brand-new size/intent shared across the app, prefer extending the existing primitive over a new component.
+
+## Adding or changing a token (three files)
+
+1. `src/styles/brand.css` — the `--token`.
+2. `tailwind.config.cjs` — map it to a utility (`theme.extend`).
+3. `src/lib/utils.ts` — register custom `text-*` size groups in `extendTailwindMerge` so `cn()` doesn't drop them.
+
+Restart `next dev` after editing `tailwind.config.cjs`; `rm -rf .next` if JIT serves stale CSS.
+
+## Anti-patterns
+
+❌ Hardcoding hex/rgb/px or one-off spacing when a token exists — edit `brand.css` / use a token class
+❌ Bare `max-w-7xl` for new page bodies — use `container-content` (or another width token)
+❌ Full-bleed text with no inner `container-prose` — unreadable line length
+❌ `md:text-4xl`-style breakpoint stacks on headings — use the fluid role tokens
+❌ Hand-rolling a new primitive variant with `cn()` conditionals — extend the `cva` map
+❌ Forgetting to register a new `text-*` size in `cn()` merge — the size class silently drops
+
+---
+
+### 4.2 Design Quality Rubric
+
+The bar for "world-class" when molding storefront surfaces (PDP, homepage, marketing sections). Use this to make design decisions and to self-review before finishing. Pairs with [`ui-design-system`](ui-design-system.md) (the token vocabulary) and [`page-composition`](page-composition.md) (the architecture rails).
+
+> Aspire to the craft of top commerce design (Aesop, SSENSE, Apple, Glossier, Hermès): confident typography, generous and intentional whitespace, restrained palette, photography-led hierarchy. Restraint reads as premium. When in doubt, remove.
+> For an external accessibility/UX audit pass, invoke the `web-design-guidelines` skill.
+
+## The principles
+
+### 1. Hierarchy — one clear focal point per view
+
+Every screen has a single most-important element (hero headline, product image, price + CTA). Establish hierarchy with **size, weight, space, and color** — in that order. Don't compete: one display size per page (`text-display` is homepage-hero-only), one primary CTA per view.
+
+### 2. Typography — disciplined, not decorative
+
+- Use the role tokens (`text-display/h1/h2/h3/lead`). Don't invent sizes.
+- One typeface family for headings, one for body (Paper ships Geist; editorial theme adds Fraunces display). Never introduce a third.
+- Body/measure: keep line length ~60–80ch (`container-prose` / `max-w-prose`) even inside full-bleed bands.
+- Limit weights (regular + medium/semibold + the token-baked heading weights). Avoid faux-bold stacks.
+- `text-balance` for headlines, `text-pretty` for paragraphs.
+
+### 3. Whitespace & rhythm — let it breathe
+
+- Whitespace is a feature, not waste. Prefer more space around focal elements.
+- Use the section rhythm tokens (`py-section-sm/md/lg`) for vertical cadence — consistent spacing between bands is the strongest signal of polish.
+- Align to a consistent grid; keep gutters consistent (the container classes own them).
+
+### 4. Color & contrast — restrained, semantic, accessible
+
+- Lean on neutrals; use `--primary`/`--destructive` sparingly for action and emphasis.
+- Token-only (see `ui-design-system`). Body text ≥ 4.5:1, large text / UI ≥ 3:1. On `bg-foreground` bands use `text-inverse*`.
+
+### 5. Imagery — the product is the hero
+
+- Commerce is photography-led. Give images room; use consistent aspect ratios within a view (`aspect-square` / `aspect-[4/5]` for product media).
+- Always `next/image` with correct `sizes`; `priority` only on the LCP image. Provide meaningful `alt` (empty `alt=""` only for purely decorative).
+- Never let layout shift on image load (reserve space via aspect ratio).
+
+### 6. Motion — subtle, purposeful, optional
+
+- Micro-interactions only (hover, focus, reveal). Use `duration-fast/base` + `ease-standard`.
+- Always honor `motion-reduce:`. Motion must never gate content or be required to understand the page.
+
+### 7. Layout width is a deliberate choice — full-width is allowed
+
+Paper does **not** assume a fixed centered desktop width. Choose width per intent and state it:
+
+- Editorial / immersive PDP or homepage → `container-wide` or `container-full` bands are encouraged.
+- Reading-heavy content → `container-prose`.
+- Standard catalog body → `container-content`.
+
+A full-bleed desktop layout is a valid, premium choice — but **constrain text measure** within it and never let full-width leak into broken mobile (see below).
+
+## Mobile non-negotiables (NEVER compromise)
+
+Mobile is the majority of commerce traffic. A design is not done until mobile is excellent. These are hard requirements, not preferences:
+
+- **No horizontal scroll / overflow** at 320–430px width. Test the narrowest case.
+- **Tap targets ≥ 44×44px**; adequate spacing between interactive elements (no fat-finger ambiguity).
+- **No hover-only affordances** — anything reachable on hover must be reachable on tap/focus.
+- **Fluid type** via the `clamp()` role tokens — no tiny fixed text, no breakpoint jumps.
+- **Mobile-first composition**: design the single-column mobile view first; desktop _adds_ columns/width. Don't design desktop then cram it down.
+- **Primary action stays reachable**: PDP uses the sticky add-to-cart bar (`sticky-bar.tsx`) — preserve that pattern; don't bury the CTA.
+- **Correct input ergonomics**: `inputmode`, `autocomplete`, real `<label>`s on any form field.
+- **Performance is UX on mobile**: keep client JS minimal (Server Components by default), reserve image space, lazy-load below-the-fold media.
+
+Going full-width on desktop must not remove mobile gutters or rhythm — the container/section tokens own the mobile contract; use them rather than ad-hoc widths.
+
+## Self-check before finishing
+
+Run this checklist (and fix what fails) before considering a design done:
+
+- [ ] One clear focal point; one primary CTA per view.
+- [ ] Only role typography tokens; one display element; readable measure (~60–80ch) everywhere, including full-bleed.
+- [ ] Vertical rhythm uses `py-section-*`; spacing feels consistent and generous.
+- [ ] Color/spacing/radius/shadow are token-backed — zero hardcoded hex/px.
+- [ ] Images: `next/image`, correct `sizes`, `priority` only on LCP, consistent aspect ratios, no CLS, meaningful `alt`.
+- [ ] **Mobile (320–430px): no horizontal scroll; tap targets ≥44px; no hover-only; CTA reachable; single-column reads well.**
+- [ ] Width choice is intentional (`prose`/`content`/`wide`/`full`) and stated.
+- [ ] Motion is subtle and `motion-reduce`-guarded.
+- [ ] Server Component by default; `"use client"` only where interactivity demands it (see `page-composition`).
+- [ ] Reused existing primitives/sections where they fit; new components follow the section pattern and tokens.
+- [ ] Accessibility: focus-visible states, heading order (one `h1`), contrast — consider a `web-design-guidelines` pass.
+
+## Anti-patterns
+
+❌ Multiple competing focal points / multiple `text-display` per page
+❌ More than two type families, or faux-bold weight stacks
+❌ Cramped vertical rhythm or inconsistent section spacing
+❌ Designing desktop-first then shrinking — always mobile-first
+❌ Full-width layouts with unconstrained text measure
+❌ Hover-only menus/actions, tap targets < 44px, horizontal overflow on mobile
+❌ Decorative motion that blocks content or ignores `prefers-reduced-motion`
+❌ Reaching for hardcoded values or new primitives instead of tokens/existing components
+
+---
+
+### 4.3 UI Sections (Marketing Blocks)
+
+The catalog of reusable full-bleed marketing sections in [`src/ui/sections/`](../../../src/ui/sections/) and how to compose, select, and author them. **Reuse these before building anything new** — a hand-rolled hero is a code smell when `HeroBanner` exists.
+
+> **Tokens & width:** [`ui-design-system`](ui-design-system.md) · **Design bar:** [`design-quality-rubric`](design-quality-rubric.md) > **Page assembly & PPR rules:** [`page-composition`](page-composition.md) · **Copy source:** [`data-storefront-content`](data-storefront-content.md)
+> Exact prop types live in each component file — treat the source as the contract; this rule is the map and the selection guide.
+
+## Catalog
+
+| Section                     | File                           | Purpose                                                        | Key props / variants                                                                                                                     |
+| --------------------------- | ------------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `HeroBanner`                | `hero-banner/hero-banner.tsx`  | Top-of-page hero with optional background image + CTAs         | `heading`, `subheading`, `primaryCta`, `secondaryCta`, `backgroundImage`, `height` (`compact`/`default`/`large`)                         |
+| `FeaturedCollectionSection` | `featured-collection-section/` | Product grid from a Saleor collection                          | `heading`, `collectionSlug`, `limit`, `desktopColumns`; server data (`"use cache"`) — wrap in Suspense with `FeaturedCollectionSkeleton` |
+| `ImageWithText`             | `image-with-text/`             | Editorial split: image one side, copy + CTA the other          | `heading`, `paragraphs`, `image` (or `placeholder`), `imagePosition` (`left`/`right`), `cta`                                             |
+| `MulticolumnSection`        | `multicolumn-section/`         | 2–3 column value props / icons                                 | `heading`, `columns[]`, `columnsDesktop` (`2`/`3`)                                                                                       |
+| `RichTextBlock`             | `rich-text-block/`             | Centered/left prose band (brand story, intro)                  | `heading`, `paragraphs`, `align` (`left`/`center`), `width` (`narrow`/`default`/`wide`)                                                  |
+| `TestimonialSection`        | `testimonial/`                 | Social proof — one centered quote or 2–3 column quote cards    | `heading`, `testimonials[]` (`quote`, `author`, `detail`)                                                                                |
+| `FaqSection`                | `faq/`                         | FAQ accordion via native `<details>` (zero client JS)          | `heading`, `items[]` (`question`, `answer`)                                                                                              |
+| `SpecTable`                 | `spec-table/`                  | Specs / details table (label → value rows), semantic `<table>` | `heading`, `rows[]` (`label`, `value`)                                                                                                   |
+| `LogoStrip`                 | `logo-strip/`                  | Press / partner / trust logo row                               | `heading`, `logos[]` (`src`, `alt`, `href?`)                                                                                             |
+| `AnnouncementBar`           | `announcement-bar/`            | Chrome strip (layout, not page body)                           | from `content.chrome.announcementBar`                                                                                                    |
+
+> **Editorial with a real image:** use `ImageWithText` with its `image`/`imageAlt` props. The homepage editorial content model exposes `editorial.image` / `editorial.imageAlt` (`HomepageEditorialContent`); unset falls back to the brand placeholder.
+
+## Selection guide ("use X when…")
+
+- **Lead the page / set the mood** → `HeroBanner`. One per page; `height="large"` for homepage, `compact` for secondary pages.
+- **Show products** → `FeaturedCollectionSection` (collection-backed). Never hand-roll a product grid for the homepage.
+- **Tell a story with a visual** → `ImageWithText`. Alternate `imagePosition` between stacked instances for rhythm.
+- **List benefits / values / steps** → `MulticolumnSection`.
+- **Pure copy band (no media)** → `RichTextBlock` with `width="narrow"` for readable measure.
+- **Customer quotes / reviews** → `TestimonialSection`.
+- **Answer common questions** → `FaqSection` (native disclosure; great for SEO, no client JS).
+- **Specs / materials / dimensions** → `SpecTable`.
+- **Press / partner / "as seen in"** → `LogoStrip`.
+- **Nothing fits** → author a new section (below) and add it to this catalog. Don't overload an existing section with unrelated props.
+
+## The section pattern (for new sections)
+
+Every section is a **full-bleed `<section>` band with an inner width container**, token-driven, Server Component by default. Follow the shape of `rich-text-block.tsx` / `hero-banner.tsx`:
+
+```tsx
+import { cn } from "@/lib/utils";
+
+export interface FeatureBandProps {
+	heading: string;
+	children?: React.ReactNode;
+	tone?: "default" | "muted" | "inverse";
+	className?: string;
+}
+
+const toneClass = {
+	default: "bg-background text-foreground",
+	muted: "bg-muted text-foreground",
+	inverse: "bg-foreground text-inverse",
+} as const;
+
+export function FeatureBand({ heading, children, tone = "default", className }: FeatureBandProps) {
+	return (
+		<section
+			className={cn(toneClass[tone], "py-section-md", className)}
+			aria-labelledby="feature-band-heading"
+		>
+			<div className="container-content">
+				<h2 id="feature-band-heading" className="text-balance text-h2">
+					{heading}
+				</h2>
+				{children}
+			</div>
+		</section>
+	);
+}
+```
+
+Rules for new sections:
+
+- **Full-bleed band, inner container** — section owns background + `py-section-*`; inner uses a width container (`container-content` default; `container-wide`/`container-full` for immersive; nest `container-prose` for copy).
+- **Tokens only** — colors, spacing, radius, shadow, motion from `ui-design-system`. No hardcoded values.
+- **Server Component** unless it needs interactivity; if it fetches catalog data, use `"use cache"` + `applyCacheProfile` and expose a matching skeleton for Suspense (see `page-composition`, `data-caching`).
+- **Content via props** — copy comes from `getStorefrontContent()` upstream (the page passes it down), not fetched inside the section. Functional labels use next-intl (`ui-i18n`). Don't hardcode marketing strings.
+- **Accessible** — one `h2` per section linked via `aria-labelledby`; meaningful image `alt`; mobile-first per `design-quality-rubric`.
+- **Variants via props** (`tone`, `width`, `align`, `imagePosition`) using small `Record` maps or `cva` — keep the surface small and composable.
+- **Folder convention** — `src/ui/sections/<section-name>/<section-name>.tsx` (+ `-skeleton.tsx` if it streams). kebab-case files, PascalCase export (see `references/code-conventions.md`).
+
+## Images in sections
+
+Section imagery (hero, editorial) comes from the content layer where wired (e.g. hero `backgroundImage` is a Saleor `FILE` attribute). Some sections accept a `placeholder` node when no image is set. When adding an image field to a section, add the attribute to the content model too — see [`data-storefront-content-attributes`](data-storefront-content-attributes.md).
+
+## Anti-patterns
+
+❌ Hand-rolling a hero / product grid / value-columns layout when a catalog section exists
+❌ Fetching `getStorefrontContent` or catalog data _inside_ a presentational section — pass props from the page
+❌ Hardcoding marketing copy in a section component (use the content layer / next-intl)
+❌ A section that sets its own fixed `max-w-7xl` instead of a width container the page can vary
+❌ Adding a new section without a skeleton (if it streams) or without cataloging it here
+❌ Overloading one section with many unrelated boolean props instead of composing or adding a new section
+
+---
+
+### 4.4 Page Composition (PDP & Homepage)
+
+How to mold PDP and homepage layouts by editing the page files — adding, removing, reordering, and re-widthing sections — **without breaking PPR, caching, or LCP**. This is the bridge between "design freely" ([`design-quality-rubric`](design-quality-rubric.md)) and "respect the architecture" ([`paper-architecture`](paper-architecture.md), [`data-caching`](data-caching.md)).
+
+> Molding in Paper is **code-level composition**: edit the page's section list and props. There is no runtime page-builder — and that is deliberate (keeps PPR, performance, and fork divergence under control).
+> Sections: [`ui-sections`](ui-sections.md) · Tokens/width: [`ui-design-system`](ui-design-system.md) · PDP mechanics: [`product-pdp`](product-pdp.md)
+
+## The one rule that governs everything: the layer model
+
+Every browse page is **sync page → Suspense → cached shell → dynamic islands** (full detail in `data-caching`). Design changes must stay inside the right layer:
+
+```
+Page (sync export)                  ← no top-level await of runtime data
+└── Suspense (skeleton)
+    └── Shell (await params + "use cache" data ONLY)   ← STATIC design lives here
+          ├── sections built from cached content (hero, story, value columns…)
+          └── Suspense island(s)                       ← DYNAMIC design lives here
+                searchParams / cookies / client hooks  (variant gallery, featured grid, cart)
+```
+
+| Put it in the STATIC shell                        | Put it in a DYNAMIC island (nested Suspense)              |
+| ------------------------------------------------- | --------------------------------------------------------- |
+| Marketing sections from `getStorefrontContent()`  | Anything reading `searchParams` (variant gallery/section) |
+| `h1`, breadcrumbs, JSON-LD, copy, value props     | Anything reading `cookies()` (cart, auth chrome)          |
+| LCP image preload                                 | `cache: "no-cache"` fetches; client routing hooks         |
+| Cached collection grids via `"use cache"` helpers | Featured grid streams behind its skeleton                 |
+
+Hard constraints (never violate when redesigning):
+
+- Never `await searchParams`/`cookies()` in the shell or inside `"use cache"` — it collapses the whole page into a dynamic hole.
+- Catalog/content fetches use `applyCacheProfile(CACHE_PROFILES.*)` — never raw `cacheLife`/`cacheTag`.
+- Server Components by default; add `"use client"` only for genuine interactivity.
+- Don't fix a PPR build error by wrapping `<main>` in Suspense — fix the segment that owns the dynamic work.
+
+## Homepage molding
+
+File: [`src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`](<../../../src/app/(storefront)/[locale]/[channel]/(main)/page.tsx>)
+
+The homepage composes typed content (`getStorefrontContent`) into an ordered list of sections. To mold it:
+
+1. **Reorder / add / remove sections** by editing the JSX section list. Pull copy from `content.surfaces.homepage` (extend the content model for new fields — see `data-storefront-content`).
+2. **Keep product data streaming**: `FeaturedCollectionSection` stays inside its `<Suspense fallback={<FeaturedCollectionSkeleton/>}>`. Static editorial sections render directly in the shell.
+3. **Vary width per section** with the container tokens (a full-bleed `HeroBanner` + a `container-content` story + a `container-wide` editorial band is fine).
+4. **Width is intentional** — a full-width homepage is supported; don't default to centered-narrow.
+
+```tsx
+// Sketch: reordered homepage with a new full-bleed editorial band
+return (
+  <>
+    <HeroBanner heading={hero.heading} backgroundImage={hero.backgroundImage} height="large" primaryCta={…} />
+
+    <Suspense fallback={<FeaturedCollectionSkeleton heading={featured.heading} limit={featured.limit} />}>
+      <FeaturedCollectionLoader params={props.params} {...featured} />
+    </Suspense>
+
+    <ImageWithText heading={editorial.heading} paragraphs={editorial.paragraphs} imagePosition="right" cta={…} />
+    <MulticolumnSection heading={values.heading} columns={valueColumns} columnsDesktop={values.columnsDesktop} />
+    <RichTextBlock heading={brandStory.heading} paragraphs={brandStory.paragraphs} align="center" width="narrow" />
+  </>
+);
+```
+
+> Known divergence: the homepage uses an async page shell that awaits only `params` + cached content (no `searchParams`/`cookies`), so PPR is intact. Keep that constraint when editing; if you convert it to a sync-page shell, add a `loading.tsx` (see `paper-architecture` divergences).
+
+## PDP molding
+
+File: [`src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`](<../../../src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx>)
+
+PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDynamic`, `VariantSectionDynamic`). To mold the PDP:
+
+1. **Static design** (gallery column layout, name, attributes, breadcrumbs, new editorial/spec/related bands) lives in `ProductShell` from cached `product` data.
+2. **Variant-dependent UI** stays in the dynamic islands (they read `searchParams.variant`) — don't lift variant state into the shell.
+3. **Layout width / columns**: the default is a two-column `lg:grid-cols-2`; you may change the grid ratio, go full-width, or add full-bleed sections **below** the buy-box — all in the shell.
+4. **Add a new PDP section** (related products, reviews, story, spec table): render it in `ProductShell` from cached data, or as its own nested `<Suspense>` island if it needs runtime/searchParams data. Keep the buy box (`VariantSectionDynamic`) and its add-to-cart Server Action intact.
+5. **Preserve LCP**: keep the `<link rel="preload">` for the default hero image in `ProductShell` and `priority` on the first gallery image. Don't add a heavier hero above the gallery.
+6. **Preserve mobile commerce UX**: keep the sticky add-to-cart bar (`sticky-bar.tsx`); use CSS `order-*` (see `data-caching` §CSS order) when dynamic content must appear above static `h1` while keeping `h1` in the static shell for SEO.
+
+```tsx
+// Sketch: PDP with an added cached "details" band below the buy box
+<main className="container-content py-section-sm">
+	<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+		<div className="lg:sticky lg:top-24 lg:self-start">
+			<Suspense fallback={<GallerySkeleton />}>
+				<VariantGalleryDynamic product={product} searchParams={searchParams} />
+			</Suspense>
+		</div>
+		<div className="flex flex-col gap-3">
+			<h1 className="order-2 text-balance text-h1">{product.name}</h1>
+			<ErrorBoundary FallbackComponent={VariantSectionError}>
+				<Suspense fallback={<VariantSectionSkeleton />}>
+					<VariantSectionDynamic product={product} searchParams={searchParams} />
+				</Suspense>
+			</ErrorBoundary>
+			<ProductAttributes className="order-4 mt-6" product={product} />
+		</div>
+	</div>
+
+	{/* New static, cached section — fine in the shell (no searchParams) */}
+	<ProductStoryBand className="mt-section-md" product={product} />
+</main>
+```
+
+## Workflow for a layout change
+
+1. Decide static vs dynamic for each new/changed element (use the table above).
+2. Pick width per section (`container-*`) and rhythm (`py-section-*`).
+3. Build from existing sections/primitives; author new sections per `ui-sections` only when needed.
+4. Pull copy from the content layer / next-intl — don't hardcode.
+5. Run the `design-quality-rubric` self-check (especially mobile).
+6. Verify PPR/perf (see [`design-verification`](design-verification.md)): `pnpm exec tsc --noEmit`, then a build for PPR-sensitive changes.
+
+## Anti-patterns
+
+❌ Awaiting `searchParams`/`cookies()` in the shell or `"use cache"` to make a section "dynamic" — use a nested Suspense island
+❌ Lifting variant selection into the shell or into React state (URL is the source of truth — see `product-variants`)
+❌ Adding a marketing hero above the PDP gallery that displaces the LCP image
+❌ Making a whole section a Client Component for one interactive child — isolate the client part
+❌ Hardcoding section copy in the page instead of `getStorefrontContent()` / next-intl
+❌ Turning the page into a runtime block renderer to "reorder" — reorder in code; that is the supported mold surface
+❌ Fixing PPR build errors by wrapping `<main>` in Suspense
+
+---
+
+### 4.5 Design From Prompt or Image
+
+How to turn a user's prompt, reference screenshot, mockup, or "make it look like X" into Paper UI — by reconfiguring the design system, not bypassing it. This is the generative workflow that ties the design rules together.
+
+> Read together with [`ui-design-system`](ui-design-system.md) (tokens), [`ui-sections`](ui-sections.md) (blocks), [`page-composition`](page-composition.md) (PPR rails), [`design-quality-rubric`](design-quality-rubric.md) (the bar).
+> Core stance: **reproduce the design's spirit by adjusting tokens and composing existing blocks** — not by hardcoding values or cloning markup pixel-for-pixel. This keeps output on-brand, performant, accessible, and low-divergence.
+
+## Workflow
+
+### 1. Brief — extract intent before writing code
+
+From the prompt/image, write a short internal design brief (and ask 1–3 questions only if genuinely blocked):
+
+- **Surface & scope**: homepage? PDP? a single section? full redesign?
+- **Layout structure**: section stack, columns, and **width intent per band** (centered `content`, immersive `wide`, or `full`-bleed). Note that full-width is allowed.
+- **Type personality**: geometric/neutral (Geist) vs editorial/serif (Fraunces editorial theme); display scale usage.
+- **Palette direction**: neutral/warm/cool, accent usage, light (Paper is light-only).
+- **Density & rhythm**: airy vs compact (maps to `py-section-sm/md/lg`).
+- **Imagery role**: photography-led? product-forward? editorial?
+- **Mobile intent**: how the structure collapses to one column (it must — see rubric).
+
+If the user supplied an image, read it for these signals; don't transcribe its exact pixels.
+
+### 2. Map to the design system (not to raw values)
+
+Translate the brief into **token and component decisions**:
+
+| From the reference                            | Map to                                                                                                    |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Colors / mood                                 | Adjust `--background`, `--foreground`, `--primary`, etc. in `brand.css` (OKLCH) — never per-component hex |
+| Type personality                              | Choose default vs editorial typography theme; use role tokens (`text-display/h1/h2…`)                     |
+| Corner softness                               | `--radius`                                                                                                |
+| Spacing density                               | `py-section-*` choice + spacing tokens                                                                    |
+| Layout width                                  | `container-prose/content/wide/full` per band                                                              |
+| Elevation / depth                             | `shadow-card/elevated/overlay`                                                                            |
+| Sections (hero, split, columns, grid, quote…) | Pick from the `ui-sections` catalog                                                                       |
+
+A whole-store restyle is mostly a `brand.css` edit + section selection — that is the point.
+
+### 3. Select & compose existing blocks first
+
+- Match each region of the reference to a catalog section (`HeroBanner`, `ImageWithText`, `MulticolumnSection`, `FeaturedCollectionSection`, `RichTextBlock`).
+- Use section variant props (`height`, `imagePosition`, `columnsDesktop`, `align`, `width`) to approximate the reference.
+- Only author a **new** section when nothing fits — follow the section pattern in `ui-sections` (full-bleed band + width container, tokens, Server Component, skeleton if it streams). Add it to the catalog.
+
+### 4. Compose the page within the PPR rails
+
+- Assemble in the page file per [`page-composition`](page-composition.md): static design in the cached shell, runtime/searchParams/cookie UI in nested Suspense islands.
+- Pull copy from `getStorefrontContent()` / next-intl — placeholder copy only as a temporary stand-in, then wire the content model.
+- Keep LCP and the mobile sticky CTA intact on PDP.
+
+### 5. Verify (the autofixer loop)
+
+Run the [`design-quality-rubric`](design-quality-rubric.md) self-check, then the [`design-verification`](design-verification.md) gates:
+
+- `pnpm exec tsc --noEmit`; build for PPR-sensitive changes.
+- Hex-ban lint (token-only), unnecessary-`"use client"` check, mobile/overflow/tap-target review.
+- Optionally invoke the `web-design-guidelines` skill for an accessibility/UX audit pass.
+- Compare against the brief (not the pixels): same hierarchy, mood, density, width intent — and excellent on mobile.
+
+## Worked example (prompt → plan)
+
+> "Make the homepage feel like a high-end editorial fashion store — big imagery, lots of whitespace, full-width hero, serif headlines."
+
+1. **Brief**: homepage; full-bleed hero, generous rhythm; editorial/serif type; neutral palette, photography-led; airy density.
+2. **Tokens**: enable editorial typography theme (Fraunces display); keep neutral OKLCH palette, maybe warm `--background`; `py-section-lg` rhythm.
+3. **Blocks**: `HeroBanner height="large"` with `backgroundImage` (full-bleed) → `FeaturedCollectionSection` → `ImageWithText` (alternating) → `RichTextBlock width="narrow"` for the brand note.
+4. **Compose**: hero/editorial in the shell, featured grid streaming in Suspense; widths: hero `full`, story `content`, an editorial band `wide` with inner `prose`.
+5. **Verify**: rubric self-check (one display element, readable measure inside full-bleed, mobile single-column, tap targets), then gates.
+
+## Anti-patterns
+
+❌ Hardcoding the reference's exact hex/px/fonts into components instead of adjusting tokens
+❌ Cloning a screenshot's markup pixel-for-pixel (brittle, off-brand, unmaintainable) — reproduce intent via the system
+❌ Inventing new primitives/sections when a catalog block + variant would do
+❌ Ignoring the PPR layer model to get a layout "looking right" (breaks caching/LCP)
+❌ Shipping a desktop-accurate clone that breaks on mobile — mobile excellence is non-negotiable
+❌ Leaving placeholder copy hardcoded instead of wiring the content layer
+❌ Skipping the rubric self-check and gates before declaring done
+
+---
+
+### 4.6 Design Verification Gates
+
+The checks to run after molding UI — the "autofixer loop" that keeps generated/edited design Paper-correct, fast, and accessible. **Advisory-first by design**: one unambiguous hard gate, everything else is a guided review you fix before finishing. This protects hand-coder DX (no brittle CI walls) while still catching the common mistakes.
+
+> Run after the [`design-quality-rubric`](design-quality-rubric.md) self-check. Pairs with [`page-composition`](page-composition.md) (PPR rules) and [`ui-design-system`](ui-design-system.md) (tokens).
+
+## Hard gate (must pass)
+
+| Gate          | Command                       | Catches                                                                                    |
+| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
+| Design tokens | `pnpm run lint:design-tokens` | Raw hex / `rgb()` / `hsl()` in `src/ui/**/*.tsx` styling — use a `brand.css` token instead |
+| Types         | `pnpm exec tsc --noEmit`      | Type errors (incl. cva `VariantProps`)                                                     |
+| Lint          | `pnpm run lint`               | ESLint / Next rules                                                                        |
+
+The design-token gate (`scripts/check-design-tokens.mjs`) scans component styling only — color _data_ in `.ts` (swatch maps, fixtures) is excluded. Rare legitimate literal? Add a `design-tokens-allow` comment on that line.
+
+## Advisory checks (review, don't block)
+
+Fix these when molding; they are judgment calls, so they stay manual rather than failing CI:
+
+- **Unnecessary `"use client"`** — did a section/component become a Client Component without needing state, effects, event handlers, or browser APIs? Default to Server Components (`paper-architecture`, `page-composition`). Grep new `"use client"` directives and justify each.
+- **PPR / cache boundaries** — no `await searchParams` / `cookies()` in the shell or inside `"use cache"`; runtime UI lives in nested `<Suspense>` islands; catalog/content fetches use `applyCacheProfile` (`data-caching`). Verify with a build for PPR-sensitive routes: `pnpm run build`.
+- **LCP** — PDP keeps the default-image `<link rel="preload">` + `priority` on the first gallery image; no heavier hero displacing it (`product-pdp`).
+- **Client JS budget** — prefer composition over shipping large client components; isolate the interactive part.
+- **Content boundary** — marketing copy comes from `getStorefrontContent()`; functional strings from next-intl — not hardcoded (`data-storefront-content`, `ui-i18n`).
+
+## Accessibility / UX pass
+
+For anything user-facing, run the external **`web-design-guidelines`** skill (Web Interface Guidelines audit): focus-visible states, heading order (one `h1`), contrast, tap targets, reduced motion, form semantics. Treat its findings as part of "done", especially the mobile non-negotiables in `design-quality-rubric`.
+
+## When to run what
+
+| Change                                        | Gates                                             |
+| --------------------------------------------- | ------------------------------------------------- |
+| Token / styling tweak                         | `lint:design-tokens` + `tsc` + rubric self-check  |
+| New / moved section                           | above + advisory review + `web-design-guidelines` |
+| Page layout / Suspense change (PDP, homepage) | above + `pnpm run build` (PPR)                    |
+| Anything shipped to users                     | full self-check + all gates + a11y pass           |
+
+## Anti-patterns
+
+❌ Declaring a design done without the rubric self-check or these gates
+❌ Hardcoding a color to dodge `lint:design-tokens` instead of adding/using a token
+❌ Sprinkling `design-tokens-allow` to silence real violations
+❌ Turning advisory checks into hard CI walls that block prototyping (keep them guided)
+❌ Skipping a build on PPR-sensitive layout changes and shipping a dynamic-hole regression
+
+---
+
+## 5. UI & Channels
 
 **Impact: MEDIUM**
 
 UI components and channel configuration control the visual layer and multi-currency support.
 
-### 4.1 UI Components
+### 5.1 UI Components
 
 Create and style UI components with design tokens and shadcn/ui primitives.
 
+> **Design system (tokens, type scale, width, rhythm, cva variant matrix):** [`ui-design-system.md`](ui-design-system.md) — read it before non-trivial design work.  
+> **Marketing sections / page molding:** [`ui-sections.md`](ui-sections.md), [`page-composition.md`](page-composition.md) · **Design bar:** [`design-quality-rubric.md`](design-quality-rubric.md)  
+> **File naming & imports:** [`references/code-conventions.md`](../references/code-conventions.md)  
 > **Source**: [shadcn/ui](https://ui.shadcn.com/) - Component patterns and primitives used in this project
 
 ## Component Location
@@ -3562,7 +4172,7 @@ export function Card({ title, children, className }: CardProps) {
 
 ---
 
-### 4.2 Channels & Multi-Currency
+### 5.2 Channels & Multi-Currency
 
 Configure multi-channel and multi-currency support. This storefront supports multiple Saleor channels, each with its own currency. Understanding the underlying fulfillment model helps debug "product not purchasable" issues.
 
@@ -3733,7 +4343,7 @@ Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC
 
 ---
 
-### 4.3 Locale & Channel URL Routing
+### 5.3 Locale & Channel URL Routing
 
 Browse routes use **two URL prefixes**: locale (language) then channel (market). Checkout is unchanged.
 
@@ -3868,7 +4478,7 @@ Run **301** from old URLs for at least one release.
 
 ---
 
-### 4.4 next-intl (Code-Owned UI Strings)
+### 5.4 next-intl (Code-Owned UI Strings)
 
 Functional storefront strings — buttons, labels, validation, a11y, order status — live in **`messages/{locale}.json`**, not Saleor Models.
 
@@ -3914,8 +4524,9 @@ Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`.
 | `search`          | Search page, bar (`search.bar`), sort, empty state             |
 | `nav`             | Header, cart button, user menu, region picker, breadcrumb aria |
 | `account`         | Auth, account nav, orders, settings, addresses                 |
+| `checkout`        | Steps, summary, shipping/payment CTAs, errors, confirmation    |
 
-Prefer **sub-namespaces** in JSON (`nav.userMenu`, `account.orderDetail`) and narrow `useTranslations("nav.userMenu")` calls.
+Prefer **sub-namespaces** in JSON (`nav.userMenu`, `account.orderDetail`, `checkout.summary`) and narrow `useTranslations("nav.userMenu")` calls.
 
 ---
 
@@ -3992,7 +4603,11 @@ Client-side validation should use the same `account.errors.*` keys before callin
 
 ## Checkout
 
-Checkout surface is **not** on next-intl yet — functional checkout copy remains in storefront content (`checkout.*`). Browse handoff sets `languageCode` on GraphQL; UI migration is ADR 0002 follow-up.
+Checkout uses the **`checkout` namespace** for functional chrome (same ADR 0002 split as cart). Locale is passed from RSC (`loadMessagesForLocale` + `CheckoutIntlProvider`), not from a `[locale]` URL segment.
+
+**Still CMS (`useCheckoutContent`):** `emptyCart`, `emptySession`, `marketingOptInLabel`, `trust.*`.
+
+**Still to migrate:** server-action error fallbacks in `src/app/(checkout)/actions.ts`, `PaymentGatewayAlerts`, trust footer copy (CMS).
 
 ---
 
@@ -4004,13 +4619,13 @@ Checkout surface is **not** on next-intl yet — functional checkout copy remain
 
 ---
 
-## 5. SEO
+## 6. SEO
 
 **Impact: MEDIUM**
 
 Search engine optimization, structured data, and social sharing metadata help drive organic traffic and improve click-through rates.
 
-### 5.1 SEO & Metadata
+### 6.1 SEO & Metadata
 
 Add page metadata, JSON-LD structured data, and OG images.
 
@@ -4186,13 +4801,13 @@ To remove SEO features entirely:
 
 ---
 
-## 6. Development
+## 7. Development
 
 **Impact: MEDIUM**
 
 Investigation skills help diagnose Saleor API behavior when documentation is unclear.
 
-### 6.1 Saleor API Investigation
+### 7.1 Saleor API Investigation
 
 Investigate Saleor API behavior by checking source code when documentation is unclear or you need to understand exact data models.
 

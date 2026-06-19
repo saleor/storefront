@@ -68,6 +68,8 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 			<ImageWithText
 				heading={editorial.heading}
 				paragraphs={editorial.paragraphs}
+				image={editorial.image}
+				imageAlt={editorial.imageAlt}
 				imagePosition={editorial.imagePosition}
 				placeholder={<PaperSignEditorialPlaceholder />}
 				cta={{

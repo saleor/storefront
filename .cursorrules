@@ -25,6 +25,12 @@ Two skill sources are available:
 | Checkout flow debugging | `checkout-management` |
 | Adding a payment gateway | `checkout-payment-gateways` |
 | Checkout UI components | `checkout-components` |
+| Design tokens & variant matrix | `ui-design-system` |
+| Design quality / world-class bar | `design-quality-rubric` |
+| Marketing section catalog | `ui-sections` |
+| Molding PDP / homepage layout | `page-composition` |
+| Designing from a prompt or image | `design-from-image` |
+| Verifying design (gates, a11y) | `design-verification` |
 | File naming, exports, imports | `references/code-conventions` |
 | Creating/styling components | `ui-components` |
 | Channels, fulfillment & stock | `ui-channels` |

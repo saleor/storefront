@@ -22,6 +22,31 @@
 	}
 }
 
+/* Canonical page-width containers — bundle centering + responsive gutters + a width token,
+ * so the `mx-auto max-w-7xl px-4 sm:px-6 lg:px-8` incantation lives in ONE place.
+ * Optional and additive: plain Tailwind (`mx-auto max-w-7xl px-4 …`) still works everywhere.
+ * Width is a design choice — `container-full` is a first-class option, not a hack. */
+@layer components {
+	.container-prose,
+	.container-content,
+	.container-wide,
+	.container-full {
+		@apply mx-auto w-full px-4 sm:px-6 lg:px-8;
+	}
+	.container-prose {
+		max-width: var(--container-prose);
+	}
+	.container-content {
+		max-width: var(--container-content);
+	}
+	.container-wide {
+		max-width: var(--container-wide);
+	}
+	.container-full {
+		max-width: var(--container-full);
+	}
+}
+
 /* Semantic heading tokens use --font-display (Geist default, Fraunces in editorial theme). */
 @layer utilities {
 	.text-display,

@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.7.0"
+  version: "1.8.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -17,7 +17,8 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-21 rules across 7 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
+27 rules across 8 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
+design & composition (token system, design quality, section catalog, page composition, design-from-image, verification),
 components, UI patterns, locale routing, i18n, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
@@ -38,6 +39,7 @@ Reference these guidelines when:
 - Seeding or extending Saleor Models for storefront content (Configurator)
 - Migrating authenticated routes (account, session cookies) under Cache Components / PPR
 - Upgrading a forked shop — see **Migrations** below
+- Molding PDP or homepage layout/design, or designing from a prompt or reference image
 - Creating UI components with design tokens
 - Adding locale/channel routing, market picker, next-intl messages, or i18n URL structure
 - Adding SEO metadata, JSON-LD, or OG images
@@ -45,15 +47,16 @@ Reference these guidelines when:
 
 ## Rule Categories by Priority
 
-| Priority | Category      | Impact   | Prefix      |
-| -------- | ------------- | -------- | ----------- |
-| 0        | Architecture  | CRITICAL | `paper-`    |
-| 1        | Data Layer    | CRITICAL | `data-`     |
-| 2        | Product Pages | HIGH     | `product-`  |
-| 3        | Checkout Flow | HIGH     | `checkout-` |
-| 4        | UI & Channels | MEDIUM   | `ui-`       |
-| 5        | SEO           | MEDIUM   | `seo-`      |
-| 6        | Development   | MEDIUM   | `dev-`      |
+| Priority | Category             | Impact   | Prefix                      |
+| -------- | -------------------- | -------- | --------------------------- |
+| 0        | Architecture         | CRITICAL | `paper-`                    |
+| 1        | Data Layer           | CRITICAL | `data-`                     |
+| 2        | Product Pages        | HIGH     | `product-`                  |
+| 3        | Checkout Flow        | HIGH     | `checkout-`                 |
+| 4        | Design & Composition | HIGH     | `ui-` / `design-` / `page-` |
+| 5        | UI & Channels        | MEDIUM   | `ui-`                       |
+| 6        | SEO                  | MEDIUM   | `seo-`                      |
+| 7        | Development          | MEDIUM   | `dev-`                      |
 
 ## Quick Reference
 
@@ -85,7 +88,16 @@ Reference these guidelines when:
 - `checkout-payment-gateways` - Payment app registry, submit modes, Stripe Express Checkout wallets, adding a new gateway
 - `checkout-components` - Reusable checkout UI (SignInForm, AddressSelector, billing, integrated payment UI)
 
-### 4. UI & Channels (MEDIUM)
+### 4. Design & Composition (HIGH)
+
+- `ui-design-system` - **Start here for design** — token vocabulary (color, fluid type, width, rhythm, radius, elevation, motion) + cva variant matrix
+- `design-quality-rubric` - World-class bar: hierarchy, whitespace, full-width-allowed clause, mobile non-negotiables, self-check
+- `ui-sections` - Marketing-block catalog (HeroBanner, FeaturedCollection, ImageWithText, …), selection guide, section authoring pattern
+- `page-composition` - Mold PDP/homepage within the PPR rails (static shell vs dynamic islands)
+- `design-from-image` - Prompt/image → brief → tokens → blocks → compose → verify
+- `design-verification` - Gates: hard-fail token lint, advisory PPR/LCP/client-JS, a11y pass
+
+### 5. UI & Channels (MEDIUM)
 
 - `references/code-conventions.md` - kebab-case files, PascalCase exports, `@/` imports
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
@@ -93,11 +105,11 @@ Reference these guidelines when:
 - `ui-locale-routing` - `/{locale}/{channel}/` routing, middleware redirects, path helpers
 - `ui-i18n` - next-intl namespaces, server/client patterns, ADR 0002 boundary
 
-### 5. SEO (MEDIUM)
+### 6. SEO (MEDIUM)
 
 - `seo-metadata` - JSON-LD structured data, metadata helpers, OG image generation
 
-### 6. Development (MEDIUM)
+### 7. Development (MEDIUM)
 
 - `dev-investigation` - Saleor API source code investigation methodology
 

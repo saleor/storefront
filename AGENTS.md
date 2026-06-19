@@ -23,7 +23,7 @@ Skills are organized as follows:
 
 | Location                                                      | Purpose                           | Contents                                                                 |
 | ------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
-| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 21 rules + fork migrations under `migrations/`                           |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 27 rules + fork migrations under `migrations/`                           |
 | `skills-lock.json`                                            | External skill version pins       | Restored via `pnpm skills:bootstrap` → `npx skills experimental_install` |
 | [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Upstream source for `saleor-storefront` and optional Vercel skills       |
 
@@ -48,6 +48,12 @@ Skills are organized as follows:
 | Adding a payment gateway           | `checkout-payment-gateways`          |
 | Checkout UX / design principles    | `checkout-design-principles`         |
 | Checkout UI components             | `checkout-components`                |
+| Design tokens & variant matrix     | `ui-design-system`                   |
+| Design quality / world-class bar   | `design-quality-rubric`              |
+| Marketing section catalog          | `ui-sections`                        |
+| Molding PDP / homepage layout      | `page-composition`                   |
+| Designing from a prompt or image   | `design-from-image`                  |
+| Verifying design (gates, a11y)     | `design-verification`                |
 | Creating/styling components        | `ui-components`                      |
 | Channels, fulfillment & stock      | `ui-channels`                        |
 | Locale + channel URL routing       | `ui-locale-routing`                  |
@@ -267,7 +273,7 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ### Project Skill
 
-**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 21 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 27 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
 Rules by category:
 
@@ -275,9 +281,10 @@ Rules by category:
 1. **Data Layer** (CRITICAL): `data-caching`, `data-auth-routes`, `data-graphql`
 2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
 3. **Checkout Flow** (HIGH): `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
-4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
-5. **SEO** (MEDIUM): `seo-metadata`
-6. **Development** (MEDIUM): `dev-investigation`
+4. **Design & Composition** (HIGH): `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `design-from-image`, `design-verification`
+5. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
+6. **SEO** (MEDIUM): `seo-metadata`
+7. **Development** (MEDIUM): `dev-investigation`
 
 **Fork upgrades:** [`skills/saleor-paper-storefront/migrations/SKILL.md`](skills/saleor-paper-storefront/migrations/SKILL.md) — chronological migrations; track state in repo-root [`paper-version.json`](paper-version.json). Trigger: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching".
 

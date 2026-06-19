@@ -70,6 +70,37 @@
 	/* --- Layout --- */
 	--radius: 0.5rem;
 
+	/* --- Container widths ---
+	 * Named page-width tokens. `content` is the canonical storefront body width
+	 * (formerly the bare `max-w-7xl` magic string). Page width is a DESIGN DECISION:
+	 * full-bleed (`full`) is fully supported — Paper does not assume a fixed desktop
+	 * width. Even inside wide/full layouts, keep text measure readable (see README). */
+	--container-prose: 48rem; /* ~75ch reading measure — long-form copy, legal, FAQ */
+	--container-content: 80rem; /* 1280px — default storefront body width (was max-w-7xl) */
+	--container-wide: 96rem; /* 1536px — immersive / editorial layouts */
+	--container-full: 100%; /* edge-to-edge content */
+
+	/* --- Section rhythm (fluid vertical spacing for full-bleed bands) ---
+	 * Use as py-section-* / gap-section-*. Keeps the cadence between marketing
+	 * sections consistent instead of ad-hoc `py-16 md:py-24 lg:py-28` per section. */
+	--section-space-sm: clamp(2.5rem, 1.7rem + 3vw, 4rem); /* 40 → 64px */
+	--section-space-md: clamp(4rem, 2.6rem + 5vw, 7rem); /* 64 → 112px */
+	--section-space-lg: clamp(5rem, 3rem + 7vw, 9rem); /* 80 → 144px */
+
+	/* --- Elevation (use shadow-card / shadow-elevated / shadow-overlay) --- */
+	--shadow-card: 0 1px 2px 0 oklch(0.12 0 0 / 0.05);
+	--shadow-elevated: 0 4px 16px -2px oklch(0.12 0 0 / 0.1);
+	--shadow-overlay: 0 12px 40px -4px oklch(0.12 0 0 / 0.18);
+
+	/* --- Motion ---
+	 * Standard durations / easings (use duration-fast|base|slow, ease-standard|emphasized).
+	 * Always pair non-trivial motion with a prefers-reduced-motion guard in components. */
+	--duration-fast: 150ms;
+	--duration-base: 250ms;
+	--duration-slow: 400ms;
+	--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
 	/* --- Skeleton --- */
 	--skeleton-delay: 300ms;
 }

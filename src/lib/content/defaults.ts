@@ -77,6 +77,8 @@ export const defaultStorefrontContent = {
 				],
 				imagePosition: "right",
 				ctaLabel: "Explore collections",
+				image: null,
+				imageAlt: "",
 			},
 		},
 		products: {

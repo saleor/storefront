@@ -70,6 +70,9 @@ export type HomepageEditorialContent = {
 	paragraphs: readonly string[];
 	imagePosition: "left" | "right";
 	ctaLabel: string;
+	/** Editorial image URL; falls back to the brand placeholder when unset. */
+	image?: string | null;
+	imageAlt?: string;
 };
 
 export type HomepageContent = {

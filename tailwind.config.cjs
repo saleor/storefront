@@ -53,6 +53,34 @@ module.exports = {
 				sm: "calc(var(--radius) - 4px)",
 				xl: "calc(var(--radius) + 4px)",
 			},
+			// Named page-width tokens (brand.css). `max-w-content` is the canonical body
+			// width; `max-w-wide` for immersive layouts. Full-bleed = `max-w-full` (default).
+			// Note: Tailwind's default `max-w-prose` (65ch) is intentionally left intact —
+			// the prose container width is exposed via the `.container-prose` class instead.
+			maxWidth: {
+				content: "var(--container-content)",
+				wide: "var(--container-wide)",
+			},
+			// Fluid section rhythm — usable anywhere spacing applies (py-section-md, gap-section-lg, …).
+			spacing: {
+				"section-sm": "var(--section-space-sm)",
+				"section-md": "var(--section-space-md)",
+				"section-lg": "var(--section-space-lg)",
+			},
+			boxShadow: {
+				card: "var(--shadow-card)",
+				elevated: "var(--shadow-elevated)",
+				overlay: "var(--shadow-overlay)",
+			},
+			transitionDuration: {
+				fast: "var(--duration-fast)",
+				base: "var(--duration-base)",
+				slow: "var(--duration-slow)",
+			},
+			transitionTimingFunction: {
+				standard: "var(--ease-standard)",
+				emphasized: "var(--ease-emphasized)",
+			},
 			fontFamily: {
 				sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
 				mono: ["var(--font-geist-mono)", "monospace"],

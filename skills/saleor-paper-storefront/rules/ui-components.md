@@ -2,6 +2,8 @@
 
 Create and style UI components with design tokens and shadcn/ui primitives.
 
+> **Design system (tokens, type scale, width, rhythm, cva variant matrix):** [`ui-design-system.md`](ui-design-system.md) — read it before non-trivial design work.  
+> **Marketing sections / page molding:** [`ui-sections.md`](ui-sections.md), [`page-composition.md`](page-composition.md) · **Design bar:** [`design-quality-rubric.md`](design-quality-rubric.md)  
 > **File naming & imports:** [`references/code-conventions.md`](../references/code-conventions.md)  
 > **Source**: [shadcn/ui](https://ui.shadcn.com/) - Component patterns and primitives used in this project
 
