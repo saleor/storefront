@@ -86,6 +86,7 @@ Real exceptions to the rules above — documented so the code and the convention
 | If you are…                        | Start with                                                                                                       |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
+| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                            |
 | Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
 | Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
 | Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |

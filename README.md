@@ -86,7 +86,7 @@ Built for front-end developers _and_ AI agents. The codebase includes:
 
 - **`AGENTS.md`** — Architecture overview and quick reference for AI assistants
 - **[`skills/saleor-paper-storefront/`](skills/saleor-paper-storefront/)** — 21 task-specific rules covering GraphQL, caching, i18n, variant selection, checkout v2, and more
-- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor API patterns; install additional skills (React best practices, composition patterns) via `npx skills add`
+- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor API patterns; external skills via `pnpm skills:bootstrap` (`skills-lock.json`)
 - **Consistent patterns** — Predictable structure that AI tools can navigate and modify confidently
 
 Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase is designed to help them help you.
@@ -278,6 +278,9 @@ git clone https://github.com/saleor/storefront.git
 cd storefront
 cp .env.example .env
 pnpm install
+
+# Optional — wire agent skills for Cursor (see "For AI Agents" below)
+pnpm skills:bootstrap
 ```
 
 Edit `.env` with your Saleor instance details:
@@ -354,17 +357,16 @@ If you're working with AI coding assistants, point them to:
 
 - **`AGENTS.md`** — Architecture, commands, gotchas
 - **`skills/saleor-paper-storefront/`** — 21 project-specific rules (GraphQL, caching, i18n, checkout, etc.)
-- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor patterns and optional community skills (React best practices, composition patterns, etc.)
+- **`skills/saleor-paper-storefront/references/code-conventions.md`** — File naming, exports, imports
+- **[saleor/agent-skills](https://github.com/saleor/agent-skills)** — Universal Saleor patterns and optional community skills
 
-To install skills for agent auto-discovery:
+After clone, wire skills for Cursor discovery (repo-root `skills/` is not scanned automatically):
 
 ```shell
-# Project skill (already in this repo)
-npx skills add . --skill saleor-paper-storefront
-
-# Universal Saleor API patterns
-npx skills add saleor/agent-skills --skill saleor-storefront
+pnpm skills:bootstrap
 ```
+
+Symlinks the project skill into `.agents/skills/`, then runs `npx skills experimental_install` from `skills-lock.json`. Do **not** run `npx skills add . --skill saleor-paper-storefront` — it copies a drifting snapshot.
 
 ### Environment Variables
 

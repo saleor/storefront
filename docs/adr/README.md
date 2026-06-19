@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-Informal north-star for day-to-day conventions: [`skills/saleor-paper-storefront/rules/paper-architecture.md`](../skills/saleor-paper-storefront/rules/paper-architecture.md).
+Informal north-star for day-to-day conventions: [`skills/saleor-paper-storefront/rules/paper-architecture.md`](../skills/saleor-paper-storefront/rules/paper-architecture.md). File naming and imports: [`code-conventions.md`](../skills/saleor-paper-storefront/references/code-conventions.md).
 
 | ADR                                                 | Title                                                   | Status                 |
 | --------------------------------------------------- | ------------------------------------------------------- | ---------------------- |

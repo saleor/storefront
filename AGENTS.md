@@ -21,10 +21,11 @@ pnpm test                   # Run tests (watch mode)
 
 Skills are organized as follows:
 
-| Location                                                      | Purpose                           | Contents                                                                                             |
-| ------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 21 rules + fork migrations under `migrations/`                                                       |
-| [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Saleor API patterns, React best practices, composition patterns, etc. (install via `npx skills add`) |
+| Location                                                      | Purpose                           | Contents                                                                 |
+| ------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 21 rules + fork migrations under `migrations/`                           |
+| `skills-lock.json`                                            | External skill version pins       | Restored via `pnpm skills:bootstrap` → `npx skills experimental_install` |
+| [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Upstream source for `saleor-storefront` and optional Vercel skills       |
 
 ### When to Use Which Skill
 
@@ -55,7 +56,7 @@ Skills are organized as follows:
 | Investigating Saleor API           | `dev-investigation`                  |
 | Upgrading a forked Paper shop      | `migrations/SKILL.md`                |
 
-**External skills** ([saleor/agent-skills](https://github.com/saleor/agent-skills)) — install for generic best practices:
+**External skills** — pinned in `skills-lock.json`; after clone run `pnpm skills:bootstrap`. Maintainers add skills with `npx skills add …` and commit the lockfile.
 
 | Task                           | Skill                         |
 | ------------------------------ | ----------------------------- |
@@ -284,11 +285,20 @@ Full compiled document: [`skills/saleor-paper-storefront/AGENTS.md`](skills/sale
 
 ### External Skills
 
-Install from [saleor/agent-skills](https://github.com/saleor/agent-skills) and [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills):
+Cursor discovers `.agents/skills/` and `.cursor/skills/` — **not** repo-root `skills/`. After clone:
 
 ```shell
-npx skills add saleor/agent-skills --skill saleor-storefront
+pnpm skills:bootstrap
+```
+
+- Symlinks `skills/saleor-paper-storefront/` into `.agents/skills/` (Paper-specific)
+- Runs `npx skills experimental_install` to restore external skills from [`skills-lock.json`](skills-lock.json)
+
+Do **not** run `npx skills add . --skill saleor-paper-storefront` — edit `skills/saleor-paper-storefront/` directly.
+
+**Maintainers** — add or update an external skill (updates `skills-lock.json`):
+
+```shell
 npx skills add vercel-labs/agent-skills --skill react-best-practices
-npx skills add vercel-labs/agent-skills --skill composition-patterns
-npx skills add vercel-labs/agent-skills --skill web-design-guidelines
+git add skills-lock.json
 ```

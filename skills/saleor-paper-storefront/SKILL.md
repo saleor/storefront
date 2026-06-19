@@ -87,6 +87,7 @@ Reference these guidelines when:
 
 ### 4. UI & Channels (MEDIUM)
 
+- `references/code-conventions.md` - kebab-case files, PascalCase exports, `@/` imports
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
 - `ui-channels` - Channel allowlist, fulfillment triangle, multi-currency, channel selector
 - `ui-locale-routing` - `/{locale}/{channel}/` routing, middleware redirects, path helpers

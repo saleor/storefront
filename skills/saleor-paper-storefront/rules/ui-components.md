@@ -2,6 +2,7 @@
 
 Create and style UI components with design tokens and shadcn/ui primitives.
 
+> **File naming & imports:** [`references/code-conventions.md`](../references/code-conventions.md)  
 > **Source**: [shadcn/ui](https://ui.shadcn.com/) - Component patterns and primitives used in this project
 
 ## Component Location

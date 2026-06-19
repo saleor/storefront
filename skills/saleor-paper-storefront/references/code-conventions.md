@@ -1,5 +1,7 @@
 # Code Conventions
 
+File naming, exports, and import patterns for this storefront.
+
 ## File Naming
 
 **Use kebab-case for all files** (the shadcn/ui standard):
