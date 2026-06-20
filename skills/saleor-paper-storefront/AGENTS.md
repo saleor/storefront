@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 27 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 28 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -70,7 +70,8 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 6.1 [SEO & Metadata](#61-seo-metadata)
 
 7. [Development](#7-development) — **MEDIUM**
-   - 7.1 [Saleor API Investigation](#71-saleor-api-investigation)
+   - 7.1 [Local Development & Mobile Testing](#71-local-development-mobile-testing)
+   - 7.2 [Saleor API Investigation](#72-saleor-api-investigation)
 
 ---
 
@@ -976,6 +977,8 @@ The generated field is a union; only the matching member carries `value`, so nar
 
 > **Migration status (mixed — finish in a dedicated sweep).** The bestseller merchandising flag uses the new `assignedAttribute(slug:)`. The PDP spec accordion / care copy (`product.attributes`) and PLP variant selection (`selectionAttributes` via `attributes(variantSelection:)`) **still use the deprecated fields**. They work (the deprecated fields remain in the schema), but new attribute reads should use `assignedAttribute(s)`, and the remaining call sites should be migrated together to avoid drift.
 
+---
+
 ## Common Issues
 
 ### Permission Errors
@@ -1235,6 +1238,19 @@ next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 000
 
 `StorefrontContent` has a top-level **`policies`** branch (sibling to `chrome` / `surfaces`) for channel-wide _facts_ — `shipping.freeShippingThreshold`, `returns.windowDays`, etc. These are structured values (not strings): channel-scoped, locale-independent, and consumed by **logic** (cart progress math) as well as **copy**. Copy never hardcodes the number — it references it with `{freeShippingThreshold}` / `{returnsWindowDays}` tokens resolved via `buildPolicyLabelValues()` + `formatContentLabel()`. This is the single source of truth: the cart math, announcement bar, and cart trust signal can never disagree. Modeled in Saleor as the `storefront-policies` PageType (`NUMERIC`/`BOOLEAN`) — see `data-storefront-content-saleor.md`.
 
+### Announcement bar dismissal identity
+
+When `announcementBar.dismissible` is true, the bar stores dismissal in the visitor's `localStorage`. The key is resolved by `resolveAnnouncementDismissKey()` in `announcement-dismiss-key.ts` (client-safe export from `@/lib/content`):
+
+| `announcementBar.id`                                         | Dismissal key                                                                                       | When to use                                                                                                                                                 |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Empty** (code default)                                     | `paper:announcement-dismissed:content:{hash}` — hash of **rendered** `message`, `href`, `linkLabel` | Default. Merchants edit copy in Dashboard; any message/link change re-shows the bar for visitors who dismissed the old version. No extra field to maintain. |
+| **Non-empty** (`announcement-id` in Saleor or `defaults.ts`) | `paper:announcement-dismissed:id:{id}`                                                              | Campaign slug. Dismissal survives message tweaks until you change `id` (e.g. `summer-sale-2026` → `fall-sale-2026`).                                        |
+
+**Important:** Pass the **interpolated** message into the resolver (after `{freeShippingThreshold}` etc.) — `(main)/layout.tsx` does this before `MainChrome`. Policy threshold changes therefore change the content hash and re-show the bar, which is usually correct.
+
+Saleor: leave `announcement-id` unset for content-hash behavior; set it only when you need a stable campaign id across copy edits. Configurator seed may include an example id — remove it to opt into content-hash dismissal.
+
 ---
 
 ## Key Files
@@ -1244,6 +1260,7 @@ next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 000
 | Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)               |
 | Code fallback copy          | `src/lib/content/defaults.ts`                                         |
 | Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
+| Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                         |
 | Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
 | Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
 | Deep merge                  | `src/lib/content/merge.ts`                                            |
@@ -3559,14 +3576,24 @@ Default Tailwind sizes (`text-sm`, `text-lg`) remain for misc UI (price, breadcr
 
 Page width is a **design decision**. Paper does not assume a centered fixed-width desktop; full-bleed is first-class. Use the canonical container classes instead of bare `max-w-7xl`.
 
-| Class               | Width | Use for                                       |
-| ------------------- | ----- | --------------------------------------------- |
-| `container-prose`   | 48rem | Long-form copy, legal, FAQ (readable measure) |
-| `container-content` | 80rem | Default storefront body                       |
-| `container-wide`    | 96rem | Immersive / editorial layouts                 |
-| `container-full`    | 100%  | Full-bleed, edge-to-edge                      |
+| Class               | Width | Use for                                                                      |
+| ------------------- | ----- | ---------------------------------------------------------------------------- |
+| `container-prose`   | 48rem | Long-form copy, legal, FAQ (readable measure)                                |
+| `container-content` | 80rem | Default storefront body                                                      |
+| `container-wide`    | 96rem | Immersive / editorial layouts                                                |
+| `container-full`    | 100%  | Full-bleed, edge-to-edge                                                     |
+| `container-nav`     | token | Header bar + mega-menu column (`--container-nav`, defaults to content width) |
 
 Each bundles `mx-auto w-full px-4 sm:px-6 lg:px-8`. Width-only utilities: `max-w-content`, `max-w-wide`. **Full-width ≠ full-measure text** — nest a `container-prose` inside `container-full`/`container-wide` so line length stays ~60–80ch.
+
+**Nav width is a brand knob.** The header and its mega-menu both use `container-nav`, whose width comes from the `--container-nav` token in `brand.css` (default `var(--container-content)` = the current look). To take the nav edge-to-edge for a brand, set `--container-nav: var(--container-full)` (or `--container-wide`) — bar and dropdown follow, no component edits, fully reversible.
+
+**The body column is one token, too.** Every page body — PDP, PLP, search, cart, CMS pages, collections/categories, the footer, even loading skeletons — uses `container-content` (no more stray `max-w-7xl`). So the default body width is the single `--container-content` token: change it once and every page follows in lockstep. Two ways to go full-bleed:
+
+- **One page, rare case:** swap that page's wrapper to `container-full` (or `container-wide`). Edge-to-edge is first-class, so no escape hatch needed — e.g. a landing page that wants an immersive grid.
+- **Globally:** widen `--container-content` itself (affects bodies _and_ section defaults, which is usually what you want for a consistent frame).
+
+(The checkout surface keeps its own `max-w-7xl` frame by design — it's a separate surface and must not share storefront layout tokens.)
 
 ```tsx
 <section className="bg-foreground py-section-lg">
@@ -3590,11 +3617,11 @@ Also available as `gap-section-*`, `mt-section-*`, etc.
 
 ## Radius, elevation, motion
 
-| Concern   | Tokens                                                                                                                         |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Radius    | `rounded-md` (controls/inputs), `rounded-lg` (CTAs), `rounded-xl` (cards/media), `rounded-full` (pills) — driven by `--radius` |
-| Elevation | `shadow-card` (resting), `shadow-elevated` (popovers/hover), `shadow-overlay` (sheets/modals)                                  |
-| Motion    | `duration-fast` (150ms), `duration-base` (250ms), `duration-slow` (400ms); `ease-standard`, `ease-emphasized`                  |
+| Concern   | Tokens                                                                                                                                                                                                                                                                                                                                                         |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Radius    | `rounded-button` (buttons/CTAs ← `--radius-button`), `rounded-card` (cards/tiles/media ← `--radius-card`), plus the base `--radius` scale (`rounded-sm/md/lg/xl`). `rounded-full` stays for genuinely circular UI (avatars, dots). Re-shape the whole UI (e.g. pill buttons, hard-edged cards) by editing the shape tokens in `brand.css` — no component edits |
+| Elevation | `shadow-card` (resting), `shadow-elevated` (popovers/hover), `shadow-overlay` (sheets/modals)                                                                                                                                                                                                                                                                  |
+| Motion    | `duration-fast` (150ms), `duration-base` (250ms), `duration-slow` (400ms); `ease-standard`, `ease-emphasized`                                                                                                                                                                                                                                                  |
 
 Guard non-trivial motion with `motion-reduce:` / `prefers-reduced-motion`.
 
@@ -3748,25 +3775,31 @@ The catalog of reusable full-bleed marketing sections in [`src/ui/sections/`](..
 
 ## Catalog
 
-| Section                     | File                           | Purpose                                                        | Key props / variants                                                                                                                     |
-| --------------------------- | ------------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `HeroBanner`                | `hero-banner/hero-banner.tsx`  | Top-of-page hero with optional background image + CTAs         | `heading`, `subheading`, `primaryCta`, `secondaryCta`, `backgroundImage`, `height` (`compact`/`default`/`large`)                         |
-| `FeaturedCollectionSection` | `featured-collection-section/` | Product grid from a Saleor collection                          | `heading`, `collectionSlug`, `limit`, `desktopColumns`; server data (`"use cache"`) — wrap in Suspense with `FeaturedCollectionSkeleton` |
-| `ImageWithText`             | `image-with-text/`             | Editorial split: image one side, copy + CTA the other          | `heading`, `paragraphs`, `image` (or `placeholder`), `imagePosition` (`left`/`right`), `cta`                                             |
-| `MulticolumnSection`        | `multicolumn-section/`         | 2–3 column value props / icons                                 | `heading`, `columns[]`, `columnsDesktop` (`2`/`3`)                                                                                       |
-| `RichTextBlock`             | `rich-text-block/`             | Centered/left prose band (brand story, intro)                  | `heading`, `paragraphs`, `align` (`left`/`center`), `width` (`narrow`/`default`/`wide`)                                                  |
-| `TestimonialSection`        | `testimonial/`                 | Social proof — one centered quote or 2–3 column quote cards    | `heading`, `testimonials[]` (`quote`, `author`, `detail`)                                                                                |
-| `FaqSection`                | `faq/`                         | FAQ accordion via native `<details>` (zero client JS)          | `heading`, `items[]` (`question`, `answer`)                                                                                              |
-| `SpecTable`                 | `spec-table/`                  | Specs / details table (label → value rows), semantic `<table>` | `heading`, `rows[]` (`label`, `value`)                                                                                                   |
-| `LogoStrip`                 | `logo-strip/`                  | Press / partner / trust logo row                               | `heading`, `logos[]` (`src`, `alt`, `href?`)                                                                                             |
-| `AnnouncementBar`           | `announcement-bar/`            | Chrome strip (layout, not page body)                           | from `content.chrome.announcementBar`                                                                                                    |
+| Section                     | File                                        | Purpose                                                                                                       | Key props / variants                                                                                                                                                                                                         |
+| --------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MediaHero`                 | `media-hero/media-hero.tsx`                 | Full-viewport photographic / **video** hero with overlaid copy (the immersive, photography-led hero)          | `eyebrow`, `heading`, `subheading`, `primaryCta`, `secondaryCta`, `image`, `videoSrc`, `poster`, `align`, `height` (`medium`/`tall`/`full`), `overlay`, `copySurface` (`none`/`panel` — light frosted panel for busy photos) |
+| `HeroBanner`                | `hero-banner/hero-banner.tsx`               | Top-of-page hero with optional full-bleed background image + CTAs                                             | `heading`, `subheading`, `primaryCta`, `secondaryCta`, `backgroundImage`, `height` (`compact`/`default`/`large`)                                                                                                             |
+| `EditorialHero`             | `editorial-hero/editorial-hero.tsx`         | Split hero: confident type on a clean canvas + a large product image on a soft panel (suits studio packshots) | `eyebrow`, `heading`, `subheading`, `primaryCta`, `secondaryCta`, `image`, `imageAlt`, `placeholder`                                                                                                                         |
+| `CategoryTileGrid`          | `category-tile-grid/category-tile-grid.tsx` | Large image tiles linking to categories/collections (label overlay for lifestyle, label-below for packshots)  | `heading`, `eyebrow`, `intro`, `cta`, `tiles[]`, `columns` (`2`/`3`/`4`), `imageFit` (`cover`/`contain`), `aspect`, `tone`, `width`                                                                                          |
+| `FeaturedCollectionSection` | `featured-collection-section/`              | Product grid from a Saleor collection                                                                         | `heading`, `collectionSlug`, `limit`, `desktopColumns`; server data (`"use cache"`) — wrap in Suspense with `FeaturedCollectionSkeleton`                                                                                     |
+| `ImageWithText`             | `image-with-text/`                          | Editorial split: image one side, copy + CTA the other                                                         | `heading`, `paragraphs`, `image` (or `placeholder`), `imagePosition` (`left`/`right`), `cta`                                                                                                                                 |
+| `MulticolumnSection`        | `multicolumn-section/`                      | 2–3 column value props / icons                                                                                | `heading`, `columns[]`, `columnsDesktop` (`2`/`3`)                                                                                                                                                                           |
+| `RichTextBlock`             | `rich-text-block/`                          | Centered/left prose band (brand story, intro)                                                                 | `heading`, `paragraphs`, `align` (`left`/`center`), `width` (`narrow`/`default`/`wide`)                                                                                                                                      |
+| `TestimonialSection`        | `testimonial/`                              | Social proof — one centered quote or 2–3 column quote cards                                                   | `heading`, `testimonials[]` (`quote`, `author`, `detail`)                                                                                                                                                                    |
+| `FaqSection`                | `faq/`                                      | FAQ accordion via native `<details>` (zero client JS)                                                         | `heading`, `items[]` (`question`, `answer`)                                                                                                                                                                                  |
+| `SpecTable`                 | `spec-table/`                               | Specs / details table (label → value rows), semantic `<table>`                                                | `heading`, `rows[]` (`label`, `value`)                                                                                                                                                                                       |
+| `LogoStrip`                 | `logo-strip/`                               | Press / partner / trust logo row                                                                              | `heading`, `logos[]` (`src`, `alt`, `href?`)                                                                                                                                                                                 |
+| `AnnouncementBar`           | `announcement-bar/`                         | Chrome strip (layout, not page body); dismissible via content-hash or optional `id`                           | from `content.chrome.announcementBar`; dismissal keys → `data-storefront-content` § Announcement bar dismissal identity                                                                                                      |
 
 > **Editorial with a real image:** use `ImageWithText` with its `image`/`imageAlt` props. The homepage editorial content model exposes `editorial.image` / `editorial.imageAlt` (`HomepageEditorialContent`); unset falls back to the brand placeholder.
+>
+> **Shared primitives:** band sections compose two primitives — [`Section`](../../../src/ui/sections/section.tsx) (owns `tone` `default`/`muted`/`inverse`, `width`, `spacing`, `bleed`, `aria-labelledby`) and [`SectionHeader`](../../../src/ui/sections/section-header.tsx) (`eyebrow` + `heading` + `intro` + optional arrow `cta`, with a unique heading `id`). Most catalog sections therefore also accept `tone`, `width`, `eyebrow`, `intro`, and `cta` (see each source for the exact set). Use `tone` to alternate band backgrounds for rhythm; pass a distinct heading `id` when the same section repeats on a page. Arrow text links use [`ArrowLink`](../../../src/ui/components/ui/arrow-link.tsx). Button and card corners are token-driven (`rounded-button` / `rounded-card` ← `--radius-button` / `--radius-card` in `brand.css`) — re-shape the whole UI (e.g. pill buttons) from one place, never per-CTA.
 
 ## Selection guide ("use X when…")
 
-- **Lead the page / set the mood** → `HeroBanner`. One per page; `height="large"` for homepage, `compact` for secondary pages.
+- **Lead the page / set the mood** → `MediaHero` for an immersive full-viewport image/**video** hero (`overlay="gradient"` by default → inverse `text-inverse*` on scrim; optional `copySurface="panel"` for solid tone on a frosted card); `HeroBanner` for a simpler photographic hero; or `EditorialHero` for a split layout with packshots. One hero per page.
 - **Show products** → `FeaturedCollectionSection` (collection-backed). Never hand-roll a product grid for the homepage.
+- **Navigate to categories/collections** → `CategoryTileGrid` (large image tiles; `imageFit="cover"` for lifestyle photos, `"contain"` for packshots).
 - **Tell a story with a visual** → `ImageWithText`. Alternate `imagePosition` between stacked instances for rhythm.
 - **List benefits / values / steps** → `MulticolumnSection`.
 - **Pure copy band (no media)** → `RichTextBlock` with `width="narrow"` for readable measure.
@@ -3778,44 +3811,60 @@ The catalog of reusable full-bleed marketing sections in [`src/ui/sections/`](..
 
 ## The section pattern (for new sections)
 
-Every section is a **full-bleed `<section>` band with an inner width container**, token-driven, Server Component by default. Follow the shape of `rich-text-block.tsx` / `hero-banner.tsx`:
+Every section is a **full-bleed `<section>` band with an inner width container**, token-driven, Server Component by default. **Compose the shared primitives** rather than re-implementing the band/heading — `Section` owns tone + rhythm + width container, `SectionHeader` owns eyebrow/heading/intro/CTA + the unique `id`:
 
 ```tsx
-import { cn } from "@/lib/utils";
+import { Section, type SectionTone, type SectionWidth } from "@/ui/sections/section";
+import { SectionHeader, type SectionHeaderCta } from "@/ui/sections/section-header";
 
 export interface FeatureBandProps {
-	heading: string;
+	heading?: string;
+	eyebrow?: string;
+	intro?: string;
+	cta?: SectionHeaderCta;
 	children?: React.ReactNode;
-	tone?: "default" | "muted" | "inverse";
+	tone?: SectionTone; // default | muted | inverse
+	width?: SectionWidth; // prose | content | wide | full
 	className?: string;
 }
 
-const toneClass = {
-	default: "bg-background text-foreground",
-	muted: "bg-muted text-foreground",
-	inverse: "bg-foreground text-inverse",
-} as const;
-
-export function FeatureBand({ heading, children, tone = "default", className }: FeatureBandProps) {
+export function FeatureBand({
+	heading,
+	eyebrow,
+	intro,
+	cta,
+	children,
+	tone,
+	width,
+	className,
+}: FeatureBandProps) {
+	const headingId = "feature-band-heading";
 	return (
-		<section
-			className={cn(toneClass[tone], "py-section-md", className)}
-			aria-labelledby="feature-band-heading"
+		<Section
+			tone={tone}
+			width={width}
+			className={className}
+			aria-labelledby={heading ? headingId : undefined}
 		>
-			<div className="container-content">
-				<h2 id="feature-band-heading" className="text-balance text-h2">
-					{heading}
-				</h2>
-				{children}
-			</div>
-		</section>
+			<SectionHeader
+				id={headingId}
+				eyebrow={eyebrow}
+				heading={heading}
+				intro={intro}
+				cta={cta}
+				className="mb-10"
+			/>
+			{children}
+		</Section>
 	);
 }
 ```
 
+> Sections with a bespoke flush layout (e.g. `ImageWithText`, heroes) may render their own `<section>` instead of `Section`, but should still expose `tone`/`width` and a unique heading `id`.
+
 Rules for new sections:
 
-- **Full-bleed band, inner container** — section owns background + `py-section-*`; inner uses a width container (`container-content` default; `container-wide`/`container-full` for immersive; nest `container-prose` for copy).
+- **Compose `Section` + `SectionHeader`** — don't re-implement the band, tone map, rhythm, or `aria-labelledby` wiring by hand. `Section` defaults to `container-content`; use `width="wide"`/`"full"` for immersive, `"prose"` for copy, or `bleed` to own the full width.
 - **Tokens only** — colors, spacing, radius, shadow, motion from `ui-design-system`. No hardcoded values.
 - **Server Component** unless it needs interactivity; if it fetches catalog data, use `"use cache"` + `applyCacheProfile` and expose a matching skeleton for Suspense (see `page-composition`, `data-caching`).
 - **Content via props** — copy comes from `getStorefrontContent()` upstream (the page passes it down), not fetched inside the section. Functional labels use next-intl (`ui-i18n`). Don't hardcode marketing strings.
@@ -3919,7 +3968,7 @@ PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDyn
 // Sketch: PDP with an added cached "details" band below the buy box
 <main className="container-content py-section-sm">
 	<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-		<div className="lg:sticky lg:top-24 lg:self-start">
+		<div className="lg:sticky lg:top-[calc(var(--header-height)_+_2rem)] lg:self-start">
 			<Suspense fallback={<GallerySkeleton />}>
 				<VariantGalleryDynamic product={product} searchParams={searchParams} />
 			</Suspense>
@@ -4830,9 +4879,114 @@ To remove SEO features entirely:
 
 **Impact: MEDIUM**
 
-Investigation skills help diagnose Saleor API behavior when documentation is unclear.
+Local dev environment gotchas and Saleor API investigation when documentation is unclear.
 
-### 7.1 Saleor API Investigation
+### 7.1 Local Development & Mobile Testing
+
+Patterns for running `pnpm dev` on a real phone (ngrok, LAN IP, tunnel) without mistaking Next.js dev restrictions for product bugs.
+
+---
+
+## Cross-origin dev resources (ngrok / tunnels)
+
+### Symptom
+
+Testing on a **real device** via ngrok (or similar) while the dev server runs on your laptop:
+
+- Client components behave broken (carousels won't swipe, buttons feel dead, hydration oddities)
+- Browser console shows Next.js blocking `/_next/*` (HMR, chunks, dev middleware)
+- **Chrome DevTools responsive mode on localhost still works** — the page origin matches the dev server
+
+This is **not** a production bug and often **not** a component/touch bug. The HTML loads from the tunnel host, but dev assets are rejected when the browser treats the request as cross-origin.
+
+### Fix
+
+Allow the tunnel hostname in `allowedDevOrigins` and **restart** `pnpm dev`.
+
+Paper reads hostnames from `.env.local`:
+
+```env
+# Hostname only — no https://, comma-separated for multiple tunnels
+ALLOWED_DEV_ORIGINS=servilely-quare-polly.ngrok-free.dev
+```
+
+`next.config.js` maps that to Next.js:
+
+```javascript
+allowedDevOrigins: ["servilely-quare-polly.ngrok-free.dev"];
+```
+
+After changing `ALLOWED_DEV_ORIGINS` or `next.config.js`, restart the dev server.
+
+### LAN testing (`--hostname 0.0.0.0`)
+
+Same rule applies when you open `http://192.168.x.x:3000` from your phone. Add the IP (or a stable local hostname) to `ALLOWED_DEV_ORIGINS` if dev chunks are blocked.
+
+### When to use production build instead
+
+For final QA of touch/gesture behavior without dev middleware:
+
+```bash
+pnpm build && pnpm start
+```
+
+Tunnel or LAN to the production server — no `allowedDevOrigins` needed.
+
+---
+
+## Chrome on iOS: `__gcruniqueid` hydration warnings
+
+### Symptom
+
+After ngrok/LAN dev works, the console shows a hydration mismatch on `<form>` / `<input>` (often `SearchBar` in the header):
+
+```diff
+  <form ...>
+-   __gcruniqueid="1"
+  <input ...>
+-   __gcruniqueid="2"
+```
+
+Paper does **not** render these attributes — grep the repo finds nothing.
+
+### Cause
+
+**Chrome (and Chromium-based Edge) on iOS** inject `__gcruniqueid` / `__gchrome_uniqueid` on form fields for autofill **after** the server HTML is sent but **before** React hydrates. React then warns because client DOM ≠ server HTML.
+
+This is a [known Chromium + React limitation](https://github.com/vercel/next.js/issues/77710). Safari on iOS typically does not inject these attributes.
+
+### What to do
+
+| Goal                | Action                                                                                                     |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Confirm it's benign | Reproduce in **Safari** on the same phone — warning usually disappears                                     |
+| Ignore in dev       | Safe — **no user-visible breakage** in production per Next.js/React guidance                               |
+| Quieter dev console | Avoid Chrome on iOS for day-to-day mobile QA; use Safari                                                   |
+| Last resort         | `suppressHydrationWarning` on affected inputs — silences real mismatches too; not recommended project-wide |
+
+Do **not** refactor `SearchBar` or disable SSR on the header to silence this.
+
+---
+
+## Debugging checklist (mobile-only issues)
+
+1. **Console on the phone** — Safari Web Inspector (Mac) or Eruda; look for Next.js "Cross-origin access to Next.js dev resources" first.
+2. **`ALLOWED_DEV_ORIGINS`** — tunnel hostname listed? Dev server restarted?
+3. **Origin mismatch** — ngrok URL in the address bar must match the hostname in `ALLOWED_DEV_ORIGINS` (subdomain changes when ngrok restarts free tunnels).
+4. **Component layer** — only after dev origins are clean; e.g. Embla carousels need `touch-pan-y` on the viewport for real iOS touch (see `src/ui/components/ui/carousel.tsx`).
+5. **Hydration on `__gcruniqueid`** — Chrome on iOS autofill injection; not a storefront bug (see above).
+
+---
+
+## Anti-patterns
+
+❌ **Don't debug carousel swipe on ngrok** before fixing `allowedDevOrigins` — client JS may not load  
+❌ **Don't commit personal ngrok hostnames** — use `ALLOWED_DEV_ORIGINS` in `.env.local`  
+❌ **Don't assume Chrome device toolbar = real phone** — it uses localhost + mouse events, not tunnel + touch
+
+---
+
+### 7.2 Saleor API Investigation
 
 Investigate Saleor API behavior by checking source code when documentation is unclear or you need to understand exact data models.
 

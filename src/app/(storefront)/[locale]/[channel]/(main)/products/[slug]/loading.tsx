@@ -22,7 +22,7 @@ export default function ProductLoading() {
 			{/* Product Grid */}
 			<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 				{/* Gallery skeleton */}
-				<div className="lg:sticky lg:top-24 lg:self-start">
+				<div className="lg:sticky lg:top-[calc(var(--header-height)_+_2rem)] lg:self-start">
 					<div className="flex flex-col gap-4">
 						<div className="aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
 						<div className="hidden gap-2 sm:flex">

@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-27 rules across 8 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
+28 rules across 8 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
 design & composition (token system, design quality, section catalog, page composition, design-from-image, verification),
 components, UI patterns, locale routing, i18n, and SEO.
 
@@ -44,6 +44,7 @@ Reference these guidelines when:
 - Adding locale/channel routing, market picker, next-intl messages, or i18n URL structure
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
+- Testing on a real phone via ngrok or LAN while `pnpm dev` is running
 
 ## Rule Categories by Priority
 
@@ -111,6 +112,7 @@ Reference these guidelines when:
 
 ### 7. Development (MEDIUM)
 
+- `dev-local` - ngrok/LAN mobile testing, `allowedDevOrigins`, dev vs production QA
 - `dev-investigation` - Saleor API source code investigation methodology
 
 ## How to Use

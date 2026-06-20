@@ -1,5 +1,8 @@
 import { ProductGallery } from "./product-gallery";
 import { ProductGalleryShell } from "./product-gallery-shell";
+import { ImmersiveGallery } from "./immersive-gallery";
+import { ImmersiveGallerySkeleton } from "./immersive-gallery-fallback";
+import { PDP_GALLERY_LAYOUT } from "./gallery-layout";
 import { getGalleryImages, resolveSelectedVariantId, type Product } from "./gallery-utils";
 
 interface VariantGalleryDynamicProps {
@@ -20,10 +23,18 @@ export async function VariantGalleryDynamic({ product, searchParams }: VariantGa
 	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
 	const images = getGalleryImages(product, selectedVariant);
 
+	if (PDP_GALLERY_LAYOUT === "immersive") {
+		return <ImmersiveGallery images={images} productName={product.name} />;
+	}
+
 	return <ProductGallery images={images} productName={product.name} />;
 }
 
 export function GallerySkeleton() {
+	if (PDP_GALLERY_LAYOUT === "immersive") {
+		return <ImmersiveGallerySkeleton />;
+	}
+
 	return (
 		<ProductGalleryShell imageCount={1} showChrome={false}>
 			<div className="relative aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />

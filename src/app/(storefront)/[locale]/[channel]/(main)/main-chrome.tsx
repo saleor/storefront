@@ -93,7 +93,7 @@ export function MainChrome({
 			<Suspense fallback={<HeaderSkeleton />}>
 				<Header locale={locale} channel={channel} nav={chrome.nav} />
 			</Suspense>
-			<div className="flex min-h-[calc(100dvh-64px)] flex-col">
+			<div className="flex min-h-[calc(100dvh-var(--chrome-offset))] flex-col">
 				<main className="flex-1">{children}</main>
 				<Suspense fallback={<FooterSkeleton />}>
 					<Footer locale={locale} channel={channel} />

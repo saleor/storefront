@@ -1,6 +1,14 @@
 export { ProductGallery } from "./product-gallery";
 export { ProductGalleryFallback } from "./product-gallery-fallback";
 export { ProductGalleryShell } from "./product-gallery-shell";
+export { ImmersiveGallery } from "./immersive-gallery";
+export { ImmersiveGalleryFallback, ImmersiveGallerySkeleton } from "./immersive-gallery-fallback";
+export {
+	PDP_GALLERY_LAYOUT,
+	PDP_LAYOUT_CLASSES,
+	type PdpGalleryLayout,
+	type PdpLayoutClasses,
+} from "./gallery-layout";
 export { ProductAttributes } from "./product-attributes";
 export { AddToCart } from "./add-to-cart";
 export { StickyBar } from "./sticky-bar";

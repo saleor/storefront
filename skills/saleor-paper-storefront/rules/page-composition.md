@@ -79,7 +79,7 @@ PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDyn
 // Sketch: PDP with an added cached "details" band below the buy box
 <main className="container-content py-section-sm">
 	<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-		<div className="lg:sticky lg:top-24 lg:self-start">
+		<div className="lg:sticky lg:top-[calc(var(--header-height)_+_2rem)] lg:self-start">
 			<Suspense fallback={<GallerySkeleton />}>
 				<VariantGalleryDynamic product={product} searchParams={searchParams} />
 			</Suspense>

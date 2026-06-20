@@ -22,7 +22,7 @@ export const defaultStorefrontContent = {
 	},
 	chrome: {
 		announcementBar: {
-			id: "welcome-promo",
+			id: "",
 			message: "Free shipping on orders over {freeShippingThreshold}",
 			href: null,
 			linkLabel: null,

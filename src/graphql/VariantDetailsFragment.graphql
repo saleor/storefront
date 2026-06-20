@@ -9,6 +9,7 @@ fragment VariantDetails on ProductVariant {
 	selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
 		values {
 			name
+			slug
 			value
 			translation(languageCode: $languageCode) {
 				name
@@ -29,6 +30,7 @@ fragment VariantDetails on ProductVariant {
 	nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {
 		values {
 			name
+			slug
 			value
 			translation(languageCode: $languageCode) {
 				name

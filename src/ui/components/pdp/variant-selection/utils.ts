@@ -26,6 +26,7 @@ export { COLOR_NAME_TO_HEX };
  */
 export type SaleorAttributeValue = {
 	name?: string | null;
+	slug?: string | null;
 	value?: string | null;
 	translation?: { name?: string | null } | null;
 	file?: { url?: string | null } | null;
@@ -80,9 +81,16 @@ export function normalizeAttributeValueId(name: string): string {
 	return name.toLowerCase().replace(/\s+/g, "-");
 }
 
-/** Stable selection id for URL params — prefers Saleor `value` slug over display name. */
+/**
+ * Stable, readable selection id for URL params.
+ *
+ * Prefers Saleor's `slug` (e.g. "pure-blue") so URLs stay human-readable and
+ * translation-independent. Note: we intentionally do NOT use `value`, because for
+ * SWATCH/color attributes Saleor stores the hex code there (e.g. "#0000ff"), which
+ * would produce ugly encoded params like `?color=%230000ff`.
+ */
 export function getAttributeValueSelectionId(value: SaleorAttributeValue): string {
-	const slug = value.value?.trim();
+	const slug = value.slug?.trim();
 	if (slug) return slug.toLowerCase();
 	const name = value.name?.trim();
 	return name ? normalizeAttributeValueId(name) : "";

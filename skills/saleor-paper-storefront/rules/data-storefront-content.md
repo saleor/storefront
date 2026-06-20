@@ -38,6 +38,19 @@ next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 000
 
 `StorefrontContent` has a top-level **`policies`** branch (sibling to `chrome` / `surfaces`) for channel-wide _facts_ — `shipping.freeShippingThreshold`, `returns.windowDays`, etc. These are structured values (not strings): channel-scoped, locale-independent, and consumed by **logic** (cart progress math) as well as **copy**. Copy never hardcodes the number — it references it with `{freeShippingThreshold}` / `{returnsWindowDays}` tokens resolved via `buildPolicyLabelValues()` + `formatContentLabel()`. This is the single source of truth: the cart math, announcement bar, and cart trust signal can never disagree. Modeled in Saleor as the `storefront-policies` PageType (`NUMERIC`/`BOOLEAN`) — see `data-storefront-content-saleor.md`.
 
+### Announcement bar dismissal identity
+
+When `announcementBar.dismissible` is true, the bar stores dismissal in the visitor's `localStorage`. The key is resolved by `resolveAnnouncementDismissKey()` in `announcement-dismiss-key.ts` (client-safe export from `@/lib/content`):
+
+| `announcementBar.id`                                         | Dismissal key                                                                                       | When to use                                                                                                                                                 |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Empty** (code default)                                     | `paper:announcement-dismissed:content:{hash}` — hash of **rendered** `message`, `href`, `linkLabel` | Default. Merchants edit copy in Dashboard; any message/link change re-shows the bar for visitors who dismissed the old version. No extra field to maintain. |
+| **Non-empty** (`announcement-id` in Saleor or `defaults.ts`) | `paper:announcement-dismissed:id:{id}`                                                              | Campaign slug. Dismissal survives message tweaks until you change `id` (e.g. `summer-sale-2026` → `fall-sale-2026`).                                        |
+
+**Important:** Pass the **interpolated** message into the resolver (after `{freeShippingThreshold}` etc.) — `(main)/layout.tsx` does this before `MainChrome`. Policy threshold changes therefore change the content hash and re-show the bar, which is usually correct.
+
+Saleor: leave `announcement-id` unset for content-hash behavior; set it only when you need a stable campaign id across copy edits. Configurator seed may include an example id — remove it to opt into content-hash dismissal.
+
 ---
 
 ## Key Files
@@ -47,6 +60,7 @@ next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 000
 | Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)               |
 | Code fallback copy          | `src/lib/content/defaults.ts`                                         |
 | Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
+| Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                         |
 | Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
 | Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
 | Deep merge                  | `src/lib/content/merge.ts`                                            |

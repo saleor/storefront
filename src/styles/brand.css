@@ -104,6 +104,19 @@
 	 * restore var(--container-content) for the default. */
 	--container-nav: var(--container-full);
 
+	/* --- Chrome heights (single source of truth for sticky/offset math) ---
+	 * Everything that needs to reason about "how tall is the fixed chrome?" reads
+	 * these instead of hardcoding magic numbers. Keep the announcement bar a known,
+	 * single-line height so the sum is deterministic; consumers always subtract the
+	 * MAX chrome (bar present), so a dismissed/absent bar only leaves harmless extra
+	 * space — it can never clip content. See `gallery-layout.ts`, `main-chrome.tsx`. */
+	--header-height: 4rem; /* matches header h-16 */
+	--announcement-bar-height: 2.5rem; /* single-line announcement bar */
+	--chrome-offset: calc(var(--header-height) + var(--announcement-bar-height));
+	/* PDP-local vertical budget above/below the immersive image (breadcrumb, page
+	 * padding, gallery gap, controls row) — stable, not chrome-dependent. */
+	--pdp-immersive-reserved: 9.5rem;
+
 	/* --- Section rhythm (fluid vertical spacing for full-bleed bands) ---
 	 * Use as py-section-* / gap-section-*. Keeps the cadence between marketing
 	 * sections consistent instead of ad-hoc `py-16 md:py-24 lg:py-28` per section. */
@@ -127,6 +140,15 @@
 
 	/* --- Skeleton --- */
 	--skeleton-delay: 300ms;
+}
+
+/* Dismissible announcement bar — no-flash guard.
+ * A pre-paint inline script (see `announcement-bar.tsx`) sets this attribute on
+ * <html> before first paint when the current announcement was dismissed, so the
+ * bar is never painted and the page never shifts. The script also zeroes
+ * --announcement-bar-height so downstream chrome math reclaims the space. */
+html[data-announcement-dismissed] [data-announcement-bar] {
+	display: none;
 }
 
 /* Direction A — Editorial Adventure (example theme: Fraunces display + Geist body).

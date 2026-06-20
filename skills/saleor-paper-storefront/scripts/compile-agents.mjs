@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 27;
+const RULE_COUNT = 28;
 
 const catalog = [
 	{
@@ -103,8 +103,11 @@ const catalog = [
 		num: 7,
 		title: "Development",
 		impact: "MEDIUM",
-		intro: "Investigation skills help diagnose Saleor API behavior when documentation is unclear.",
-		rules: [{ num: "7.1", file: "dev-investigation.md", title: "Saleor API Investigation" }],
+		intro: "Local dev environment gotchas and Saleor API investigation when documentation is unclear.",
+		rules: [
+			{ num: "7.1", file: "dev-local.md", title: "Local Development & Mobile Testing" },
+			{ num: "7.2", file: "dev-investigation.md", title: "Saleor API Investigation" },
+		],
 	},
 ];
 

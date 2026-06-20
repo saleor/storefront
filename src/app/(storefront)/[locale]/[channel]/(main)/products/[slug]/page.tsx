@@ -24,12 +24,15 @@ import { BestsellerBadge } from "@/ui/components/ui/sale-label";
 import {
 	ProductAttributes,
 	ProductGalleryFallback,
+	ImmersiveGalleryFallback,
 	VariantGalleryDynamic,
 	GallerySkeleton,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
 	VariantSectionError,
 	getDefaultGalleryImages,
+	PDP_GALLERY_LAYOUT,
+	PDP_LAYOUT_CLASSES,
 } from "@/ui/components/pdp";
 
 // ============================================================================
@@ -180,6 +183,28 @@ async function ProductShell({
 	// Reserve mobile dots / desktop thumbs in fallback when product has multiple images
 	const showGalleryChrome = defaultImages.length > 1;
 	const showBestsellerBadge = isBestseller(product);
+	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
+	const galleryFallback = lcpImage ? (
+		PDP_GALLERY_LAYOUT === "immersive" ? (
+			<ImmersiveGalleryFallback src={lcpImage.url} alt={lcpImage.alt ?? product.name} />
+		) : (
+			<ProductGalleryFallback
+				src={lcpImage.url}
+				alt={lcpImage.alt ?? product.name}
+				imageCount={defaultImages.length}
+				showChrome={showGalleryChrome}
+			/>
+		)
+	) : null;
+
+	const productAttributesNode = (
+		<ProductAttributes
+			descriptionHtml={descriptionHtml}
+			attributes={productAttributes}
+			careInstructions={careInstructions}
+			policyLabels={policyLabels}
+		/>
+	);
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
@@ -190,30 +215,19 @@ async function ProductShell({
 				/>
 			)}
 
-			<main className="container-content flex-1 py-4 sm:py-6 lg:py-10">
+			<main className={layout.main}>
 				<div className="mb-6 hidden sm:block">
 					<Breadcrumbs items={breadcrumbs} ariaLabel={tNav("breadcrumbAriaLabel")} />
 				</div>
 
-				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-					<div className="lg:sticky lg:top-24 lg:self-start">
-						<Suspense
-							fallback={
-								lcpImage ? (
-									<ProductGalleryFallback
-										src={lcpImage.url}
-										alt={lcpImage.alt ?? product.name}
-										imageCount={defaultImages.length}
-										showChrome={showGalleryChrome}
-									/>
-								) : null
-							}
-						>
+				<div className={layout.grid}>
+					<div className={layout.galleryColumn}>
+						<Suspense fallback={galleryFallback}>
 							<VariantGalleryDynamic product={product} searchParams={searchParams} />
 						</Suspense>
 					</div>
 
-					<div className="flex flex-col gap-3">
+					<div className={layout.infoColumn}>
 						{showBestsellerBadge && (
 							<div className="order-1 flex items-center gap-2">
 								<BestsellerBadge />
@@ -233,15 +247,14 @@ async function ProductShell({
 							</Suspense>
 						</ErrorBoundary>
 
-						<div className="order-4 mt-6">
-							<ProductAttributes
-								descriptionHtml={descriptionHtml}
-								attributes={productAttributes}
-								careInstructions={careInstructions}
-								policyLabels={policyLabels}
-							/>
-						</div>
+						{layout.attributesPlacement === "info" && (
+							<div className="order-4 mt-6">{productAttributesNode}</div>
+						)}
 					</div>
+
+					{layout.attributesPlacement === "gallery" && layout.attributesGalleryBlock && (
+						<div className={layout.attributesGalleryBlock}>{productAttributesNode}</div>
+					)}
 				</div>
 			</main>
 		</div>
@@ -253,13 +266,14 @@ async function ProductShell({
 // ============================================================================
 
 function ProductPageSkeleton() {
+	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
 	return (
 		<div className="flex min-h-screen animate-skeleton-delayed flex-col bg-background opacity-0">
-			<main className="container-content flex-1 py-4 sm:py-6 lg:py-10">
+			<main className={layout.main}>
 				<div className="mb-6 hidden h-4 w-64 animate-pulse rounded bg-secondary sm:block" />
-				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+				<div className={layout.grid}>
 					<GallerySkeleton />
-					<div className="flex flex-col gap-4">
+					<div className={layout.infoColumn}>
 						<div className="h-8 w-3/4 animate-pulse rounded bg-secondary" />
 						<div className="h-6 w-24 animate-pulse rounded bg-secondary" />
 						<div className="mt-4 space-y-3">

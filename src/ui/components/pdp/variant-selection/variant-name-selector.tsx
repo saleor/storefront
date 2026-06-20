@@ -98,36 +98,38 @@ export function VariantNameSelector({
 					].filter(Boolean);
 
 					return (
-						<div key={variant.id} className="relative">
-							<button
-								type="button"
-								onClick={() => onSelect(variant.id)}
-								disabled={isOutOfStock}
-								aria-disabled={isOutOfStock}
-								className={cn(
-									"h-12 min-w-[4.5rem] rounded-lg border px-4 text-sm font-medium transition-all",
-									"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-									isSelected
-										? "border-foreground bg-foreground text-background"
-										: "border-border bg-background text-foreground hover:border-foreground",
-									isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
-								)}
-								title={isOutOfStock ? labels.outOfStockTitle(variant.name) : undefined}
-								aria-label={accessibleParts.join(", ")}
-								aria-pressed={isSelected}
-							>
-								<span className="flex items-center gap-2">
-									{variant.name}
-									{showPrices && price && (
-										<span className={cn("text-xs", isSelected ? "opacity-80" : "text-muted-foreground")}>
-											{formatMoney(price.amount, price.currency, intlLocale)}
-										</span>
+						<div key={variant.id} className={cn("relative p-1", discountPercent && !isOutOfStock && "pb-2")}>
+							<div className="relative w-fit">
+								<button
+									type="button"
+									onClick={() => onSelect(variant.id)}
+									disabled={isOutOfStock}
+									aria-disabled={isOutOfStock}
+									className={cn(
+										"h-12 min-w-[4.5rem] rounded-lg border px-4 text-sm font-medium transition-all",
+										"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+										isSelected
+											? "border-foreground bg-foreground text-background"
+											: "border-border bg-background text-foreground hover:border-foreground",
+										isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
 									)}
-								</span>
-							</button>
-							{discountPercent && !isOutOfStock ? (
-								<DiscountPercentLabel percent={discountPercent} size="pill" />
-							) : null}
+									title={isOutOfStock ? labels.outOfStockTitle(variant.name) : undefined}
+									aria-label={accessibleParts.join(", ")}
+									aria-pressed={isSelected}
+								>
+									<span className="flex items-center gap-2">
+										{variant.name}
+										{showPrices && price && (
+											<span className={cn("text-xs", isSelected ? "opacity-80" : "text-muted-foreground")}>
+												{formatMoney(price.amount, price.currency, intlLocale)}
+											</span>
+										)}
+									</span>
+								</button>
+								{discountPercent && !isOutOfStock ? (
+									<DiscountPercentLabel percent={discountPercent} size="pill" />
+								) : null}
+							</div>
 						</div>
 					);
 				})}

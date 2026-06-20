@@ -27,6 +27,12 @@ export type StorefrontPolicies = {
 };
 
 export type AnnouncementBarContent = {
+	/**
+	 * Optional campaign slug for dismissal persistence. When empty (default), dismissals
+	 * are keyed by a hash of `message` + `href` + `linkLabel` — copy edits re-show the
+	 * bar. Set `announcement-id` in Saleor (or here in code) to pin dismissal across
+	 * message tweaks. See `resolveAnnouncementDismissKey` in `announcement-dismiss-key.ts`.
+	 */
 	id: string;
 	message: string;
 	href: string | null;

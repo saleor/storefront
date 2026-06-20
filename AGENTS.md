@@ -23,7 +23,7 @@ Skills are organized as follows:
 
 | Location                                                      | Purpose                           | Contents                                                                 |
 | ------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
-| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 27 rules + fork migrations under `migrations/`                           |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 28 rules + fork migrations under `migrations/`                           |
 | `skills-lock.json`                                            | External skill version pins       | Restored via `pnpm skills:bootstrap` → `npx skills experimental_install` |
 | [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Upstream source for `saleor-storefront` and optional Vercel skills       |
 
@@ -60,6 +60,7 @@ Skills are organized as follows:
 | Code-owned UI strings (next-intl)  | `ui-i18n`                            |
 | SEO, metadata, OG images           | `seo-metadata`                       |
 | Investigating Saleor API           | `dev-investigation`                  |
+| Mobile dev via ngrok / LAN         | `dev-local`                          |
 | Upgrading a forked Paper shop      | `migrations/SKILL.md`                |
 
 **External skills** — pinned in `skills-lock.json`; after clone run `pnpm skills:bootstrap`. Maintainers add skills with `npx skills add …` and commit the lockfile.
@@ -245,6 +246,18 @@ useEffect(() => {
 // Good - parent derives state from what it knows, or callback on user action
 ```
 
+### 8. Mobile Dev via ngrok / Tunnel
+
+Next.js blocks cross-origin access to dev resources (`/_next/*`, HMR) by default. When you open the dev server through ngrok on a real phone, client components can appear broken (e.g. carousel swipe) even though Chrome's responsive mode on localhost works fine.
+
+Add the tunnel **hostname** (no `https://`) to `.env.local` and restart `pnpm dev`:
+
+```env
+ALLOWED_DEV_ORIGINS=servilely-quare-polly.ngrok-free.dev
+```
+
+Wired in `next.config.js` as `allowedDevOrigins`. Full detail: `skills/saleor-paper-storefront/rules/dev-local.md`.
+
 ---
 
 ## Caching Strategy
@@ -273,7 +286,7 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ### Project Skill
 
-**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 27 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 28 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
 Rules by category:
 
@@ -284,7 +297,7 @@ Rules by category:
 4. **Design & Composition** (HIGH): `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `design-from-image`, `design-verification`
 5. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
 6. **SEO** (MEDIUM): `seo-metadata`
-7. **Development** (MEDIUM): `dev-investigation`
+7. **Development** (MEDIUM): `dev-local`, `dev-investigation`
 
 **Fork upgrades:** [`skills/saleor-paper-storefront/migrations/SKILL.md`](skills/saleor-paper-storefront/migrations/SKILL.md) — chronological migrations; track state in repo-root [`paper-version.json`](paper-version.json). Trigger: "upgrade Paper", "apply Paper migrations", "catch up with upstream caching".
 

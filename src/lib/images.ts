@@ -23,6 +23,13 @@ export const PLP_HERO_IMAGE_SIZES = "100vw";
 /** PDP main gallery: full width on mobile, half viewport on desktop split layout */
 export const PDP_MAIN_IMAGE_SIZES = "(max-width: 768px) 100vw, 50vw";
 
+/**
+ * PDP immersive gallery: full-width square on mobile, height-driven square that
+ * fills the viewport (≈ 60% width) on desktop. Width follows the fixed height,
+ * so request a generously sized variant on large screens.
+ */
+export const PDP_IMMERSIVE_IMAGE_SIZES = "(max-width: 1024px) 100vw, 60vw";
+
 /** PDP desktop thumbnail strip */
 export const PDP_THUMBNAIL_IMAGE_SIZES = "80px";
 
