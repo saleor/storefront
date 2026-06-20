@@ -78,6 +78,30 @@ describe("mapHomepagePage", () => {
 		);
 	});
 
+	it("maps hero eyebrow and category section copy from Saleor", () => {
+		const partial = mapHomepagePage(
+			homepagePage([
+				{ slug: "hero-eyebrow", plainText: "New season" },
+				{ slug: "categories-heading", plainText: "Browse the range" },
+				{ slug: "categories-eyebrow", plainText: "Collections" },
+			]),
+		);
+		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
+
+		expect(merged.surfaces.homepage.hero.eyebrow).toBe("New season");
+		expect(merged.surfaces.homepage.categories.heading).toBe("Browse the range");
+		expect(merged.surfaces.homepage.categories.eyebrow).toBe("Collections");
+	});
+
+	it("keeps default category heading when Saleor leaves it unset", () => {
+		const partial = mapHomepagePage(homepagePage([{ slug: "hero-heading", plainText: "Hi" }]));
+		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
+
+		expect(merged.surfaces.homepage.categories.heading).toBe(
+			defaultStorefrontContent.surfaces.homepage.categories.heading,
+		);
+	});
+
 	it("keeps default editorial paragraphs when only heading is set in Saleor", () => {
 		const partial = mapHomepagePage(homepagePage([{ slug: "editorial-heading", plainText: "New story" }]));
 		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);

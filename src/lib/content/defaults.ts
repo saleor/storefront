@@ -45,6 +45,9 @@ export const defaultStorefrontContent = {
 				collectionSlug: "featured-products",
 				limit: 8,
 			},
+			categories: {
+				heading: "Shop by category",
+			},
 			brandStory: {
 				heading: "Built for real commerce",
 				paragraphs: [

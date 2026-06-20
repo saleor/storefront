@@ -35,6 +35,8 @@ export type AnnouncementBarContent = {
 };
 
 export type HomepageHeroContent = {
+	/** Short overline above the hero heading. Optional — rendered only when set. */
+	eyebrow?: string;
 	heading: string;
 	subheading: string;
 	primaryCtaLabel: string;
@@ -75,9 +77,19 @@ export type HomepageEditorialContent = {
 	imageAlt?: string;
 };
 
+/**
+ * Copy for the shop-by-category tiles. The tiles themselves are derived from the
+ * catalog (categories) in the page; only the section heading/eyebrow are editable.
+ */
+export type HomepageCategoriesContent = {
+	heading: string;
+	eyebrow?: string;
+};
+
 export type HomepageContent = {
 	hero: HomepageHeroContent;
 	featuredCollection: HomepageFeaturedCollectionContent;
+	categories: HomepageCategoriesContent;
 	brandStory: HomepageBrandStoryContent;
 	values: HomepageValuesContent;
 	editorial: HomepageEditorialContent;

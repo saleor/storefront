@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Etusivu",
 		"badges": {
 			"sale": "Ale",
-			"new": "Uutuus"
+			"new": "Uutuus",
+			"bestseller": "Myydyin"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — loppunut varastosta",

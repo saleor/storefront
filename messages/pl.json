@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Strona główna",
 		"badges": {
 			"sale": "Promocja",
-			"new": "Nowość"
+			"new": "Nowość",
+			"bestseller": "Bestseller"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — brak w magazynie",

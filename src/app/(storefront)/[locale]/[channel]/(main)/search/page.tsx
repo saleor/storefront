@@ -45,7 +45,7 @@ export default function Page(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }) {
 	return (
-		<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+		<section className="container-content py-8">
 			<Suspense fallback={<SearchSkeleton />}>
 				<SearchContent searchParams={props.searchParams} params={props.params} />
 			</Suspense>

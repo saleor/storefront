@@ -67,7 +67,7 @@ export function StickyBar({ productName, price, show = false }: StickyBarProps) 
 				isVisible ? "translate-y-0" : "translate-y-full",
 			)}
 		>
-			<div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
+			<div className="container-content flex items-center justify-between gap-4 py-3">
 				<div className="min-w-0 flex-1">
 					<p className="truncate font-medium">{productName}</p>
 					<p className="text-sm text-muted-foreground">{price}</p>

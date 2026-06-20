@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Hjem",
 		"badges": {
 			"sale": "Salg",
-			"new": "Ny"
+			"new": "Ny",
+			"bestseller": "Bestselger"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — utsolgt",

@@ -29,7 +29,7 @@ export function PaperSign({ size, className }: PaperSignProps) {
 			className={cn("text-foreground", className)}
 			aria-hidden
 		>
-			<g fill="currentColor" stroke="var(--background)" strokeWidth={0.15} shapeRendering="crispEdges">
+			<g fill="currentColor" stroke="oklch(var(--background))" strokeWidth={0.15} shapeRendering="crispEdges">
 				<path d="M5.66023 0H3.77344V1.91667H5.66023V0Z" />
 				<path d="M7.54695 0H5.66016V1.91667H7.54695V0Z" />
 				<path d="M9.43416 0H7.54736V1.91667H9.43416V0Z" />

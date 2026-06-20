@@ -9,14 +9,15 @@
 	*,
 	*::before,
 	*::after {
-		border-color: var(--border);
+		/* Tokens are bare channels — wrap in oklch() to use as a color (see brand.css). */
+		border-color: oklch(var(--border));
 	}
 	html {
 		scroll-behavior: smooth;
 	}
 	body {
-		background-color: var(--background);
-		color: var(--foreground);
+		background-color: oklch(var(--background));
+		color: oklch(var(--foreground));
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	}
@@ -30,7 +31,8 @@
 	.container-prose,
 	.container-content,
 	.container-wide,
-	.container-full {
+	.container-full,
+	.container-nav {
 		@apply mx-auto w-full px-4 sm:px-6 lg:px-8;
 	}
 	.container-prose {
@@ -44,6 +46,17 @@
 	}
 	.container-full {
 		max-width: var(--container-full);
+	}
+	/* Header/nav column — width driven by --container-nav (see brand.css). */
+	.container-nav {
+		max-width: var(--container-nav);
+	}
+
+	/* Merchandising badge — explicit class so color survives global border reset + JIT cache.
+	 * Tokens are bare channels, so wrap in oklch() (see brand.css). */
+	.badge-bestseller {
+		color: oklch(var(--bestseller));
+		border-color: oklch(var(--bestseller));
 	}
 }
 

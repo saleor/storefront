@@ -37,7 +37,7 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 	return (
 		<footer className="bg-foreground text-background">
 			{/* Extra bottom padding on mobile to account for sticky add-to-cart bar */}
-			<div className="mx-auto max-w-7xl px-4 pb-24 pt-12 sm:px-6 sm:pb-12 lg:px-8 lg:py-16">
+			<div className="container-content pb-24 pt-12 sm:pb-12 lg:py-16">
 				<div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 					{/* Brand */}
 					<div className="col-span-2 md:col-span-1">

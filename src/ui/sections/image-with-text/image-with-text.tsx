@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { WavePattern } from "@/ui/components/plp/wave-pattern";
 import { buttonClassName } from "@/ui/components/ui/button";
+import type { SectionTone } from "@/ui/sections/section";
 
 export type ImageWithTextPosition = "left" | "right";
 
@@ -14,36 +15,66 @@ export interface ImageWithTextCta {
 	href: string;
 }
 
+export type ImageWithTextFit = "cover" | "contain";
+export type ImageWithTextWidth = "content" | "wide" | "full";
+
 export interface ImageWithTextProps {
 	heading: string;
 	paragraphs: readonly string[];
+	eyebrow?: string;
 	image?: string | null;
 	imageAlt?: string;
 	imagePosition?: ImageWithTextPosition;
+	/** `contain` (on a soft panel) suits studio packshots; `cover` suits lifestyle photos. */
+	imageFit?: ImageWithTextFit;
 	cta?: ImageWithTextCta;
+	tone?: SectionTone;
+	width?: ImageWithTextWidth;
+	/** Unique heading id for `aria-labelledby` — pass a distinct value when stacking instances. */
+	id?: string;
 	/** Shown when `image` is absent; defaults to wave pattern. */
 	placeholder?: ReactNode;
 	className?: string;
 }
 
+const toneClassName: Record<SectionTone, string> = {
+	default: "bg-background text-foreground",
+	muted: "bg-muted text-foreground",
+	inverse: "bg-foreground text-inverse",
+};
+
+const widthClassName: Record<ImageWithTextWidth, string> = {
+	content: "max-w-content",
+	wide: "max-w-wide",
+	full: "max-w-full",
+};
+
 export function ImageWithText({
 	heading,
 	paragraphs,
+	eyebrow,
 	image,
 	imageAlt = "",
 	imagePosition = "left",
+	imageFit = "cover",
 	cta,
+	tone = "default",
+	width = "content",
+	id = "image-with-text-heading",
 	placeholder,
 	className,
 }: ImageWithTextProps) {
 	const hasImage = Boolean(image);
+	const isContain = imageFit === "contain";
+	const isInverse = tone === "inverse";
 
 	return (
-		<section className={cn("bg-background", className)} aria-labelledby="image-with-text-heading">
-			<div className="mx-auto grid max-w-7xl lg:grid-cols-2">
+		<section className={cn(toneClassName[tone], className)} aria-labelledby={id}>
+			<div className={cn("mx-auto grid lg:grid-cols-2", widthClassName[width])}>
 				<div
 					className={cn(
-						"relative min-h-[280px] overflow-hidden lg:min-h-[420px]",
+						"relative min-h-[320px] overflow-hidden lg:min-h-[480px]",
+						isContain && "bg-secondary",
 						imagePosition === "right" && "lg:order-2",
 					)}
 				>
@@ -52,7 +83,7 @@ export function ImageWithText({
 							src={image}
 							alt={imageAlt}
 							fill
-							className="object-cover"
+							className={cn(isContain ? "object-contain p-10 sm:p-14 lg:p-16" : "object-cover")}
 							sizes={PLP_HERO_IMAGE_SIZES}
 							quality={PRODUCT_IMAGE_QUALITY}
 						/>
@@ -63,15 +94,30 @@ export function ImageWithText({
 
 				<div
 					className={cn(
-						"flex flex-col justify-center px-4 py-16 sm:px-6 sm:py-20 lg:px-12 lg:py-24",
+						"flex flex-col justify-center px-4 py-section-md sm:px-6 lg:px-12 lg:py-section-lg",
 						imagePosition === "right" && "lg:order-1",
 					)}
 				>
-					<h2 id="image-with-text-heading" className="text-balance text-h2">
+					{eyebrow ? (
+						<p
+							className={cn(
+								"mb-3 text-eyebrow uppercase",
+								isInverse ? "text-inverse-muted" : "text-muted-foreground",
+							)}
+						>
+							{eyebrow}
+						</p>
+					) : null}
+					<h2 id={id} className="text-balance text-h2">
 						{heading}
 					</h2>
 					{paragraphs.length > 0 ? (
-						<div className="mt-5 space-y-5 text-pretty text-lead text-muted-foreground">
+						<div
+							className={cn(
+								"mt-5 space-y-5 text-pretty text-lead",
+								isInverse ? "text-inverse-subtle" : "text-muted-foreground",
+							)}
+						>
 							{paragraphs.map((paragraph) => (
 								<p key={paragraph}>{paragraph}</p>
 							))}

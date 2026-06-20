@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Accueil",
 		"badges": {
 			"sale": "Promo",
-			"new": "Nouveau"
+			"new": "Nouveau",
+			"bestseller": "Best-seller"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — rupture de stock",

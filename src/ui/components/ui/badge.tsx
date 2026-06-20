@@ -10,6 +10,7 @@ export const badgeVariants = cva(
 				default: "bg-primary text-primary-foreground",
 				secondary: "bg-secondary text-secondary-foreground",
 				destructive: "bg-destructive text-destructive-foreground",
+				bestseller: "badge-bestseller border bg-transparent",
 				"outline-solid": "border border-border text-foreground",
 			},
 		},

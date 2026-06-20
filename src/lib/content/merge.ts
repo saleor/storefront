@@ -49,6 +49,10 @@ export function mergeStorefrontContent(
 					...base.surfaces.homepage.featuredCollection,
 					...override.surfaces?.homepage?.featuredCollection,
 				},
+				categories: {
+					...base.surfaces.homepage.categories,
+					...override.surfaces?.homepage?.categories,
+				},
 				brandStory: {
 					...base.surfaces.homepage.brandStory,
 					...override.surfaces?.homepage?.brandStory,

@@ -27,3 +27,14 @@ export function NewBadge({ className }: { className?: string }) {
 
 	return <Badge className={cn("text-xs", className)}>{t("new")}</Badge>;
 }
+
+/** Outline "Bestseller" chip for PLP cards and PDP meta row. */
+export function BestsellerBadge({ className }: { className?: string }) {
+	const t = useTranslations("pdp.badges");
+
+	return (
+		<Badge variant="bestseller" className={cn("text-eyebrow font-normal tracking-wide", className)}>
+			{t("bestseller")}
+		</Badge>
+	);
+}

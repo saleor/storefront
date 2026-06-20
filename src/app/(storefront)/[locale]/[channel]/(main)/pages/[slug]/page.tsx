@@ -48,7 +48,7 @@ async function PageContent({ params: paramsPromise }: { params: Promise<{ slug: 
 	const contentHtml = content ? parser.parse(JSON.parse(content)) : null;
 
 	return (
-		<div className="mx-auto max-w-7xl p-8 pb-16">
+		<div className="container-content py-8 pb-16">
 			<h1 className="mb-6 text-balance text-h1">{title}</h1>
 			{contentHtml && (
 				<div className="prose">

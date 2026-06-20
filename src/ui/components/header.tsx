@@ -31,7 +31,7 @@ export async function Header({
 			id="storefront-header"
 			className="relative sticky top-0 z-40 border-b border-border bg-background"
 		>
-			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<div className="container-nav">
 				<div className="flex h-16 items-center justify-between gap-4">
 					<Logo />
 

@@ -15,42 +15,53 @@
  * Light theme (only)
  * ============================================ */
 :root {
-	/* --- Backgrounds --- */
-	--background: oklch(0.98 0.005 90); /* Page background - warm off-white */
-	--card: oklch(1 0 0); /* Cards, dropdowns, modals */
-	--popover: oklch(1 0 0);
-	--secondary: oklch(0.96 0.003 90);
-	--muted: oklch(0.94 0.003 90);
-	--accent: oklch(0.94 0.003 90);
+	/* --- Color tokens — BARE OKLCH CHANNELS (no oklch() wrapper) ---
+	 * IMPORTANT: these hold raw `L C H` components, NOT a finished color. Tailwind wraps
+	 * them as `oklch(var(--token) / <alpha-value>)` (see tailwind.config.cjs), which is what
+	 * makes opacity modifiers work everywhere — `bg-foreground/40`, `text-background/80`,
+	 * gradient scrims, etc. (A bare `var(--background)` color silently drops the `/NN`.)
+	 *
+	 * Consequence: never use `var(--token)` directly as a color in CSS/SVG/inline styles —
+	 * it isn't a color on its own. Wrap it: `color: oklch(var(--foreground))`. In JSX prefer
+	 * a Tailwind utility (`text-foreground`) over inline `var()`.
+	 *
+	 * Cool, neutral palette: crisp near-white page with soft grey panels. */
+	--background: 0.99 0 0; /* Page background - crisp near-white */
+	--card: 1 0 0; /* Cards, dropdowns, modals */
+	--popover: 1 0 0;
+	--secondary: 0.965 0 0; /* Soft grey panels (hero/editorial image tiles) */
+	--muted: 0.95 0 0;
+	--accent: 0.95 0 0;
 
 	/* --- Foregrounds (text on light surfaces) --- */
-	--foreground: oklch(0.12 0 0);
-	--card-foreground: oklch(0.12 0 0);
-	--popover-foreground: oklch(0.12 0 0);
-	--secondary-foreground: oklch(0.12 0 0);
-	--muted-foreground: oklch(0.45 0 0);
-	--accent-foreground: oklch(0.12 0 0);
+	--foreground: 0.12 0 0;
+	--card-foreground: 0.12 0 0;
+	--popover-foreground: 0.12 0 0;
+	--secondary-foreground: 0.12 0 0;
+	--muted-foreground: 0.45 0 0;
+	--accent-foreground: 0.12 0 0;
 
 	/* --- Primary (CTAs, key actions) --- */
-	--primary: oklch(0.12 0 0);
-	--primary-foreground: oklch(0.98 0 0);
+	--primary: 0.12 0 0;
+	--primary-foreground: 0.98 0 0;
 
 	/* --- Semantic --- */
-	--destructive: oklch(0.55 0.2 25);
-	--destructive-foreground: oklch(0.98 0 0);
-	--success: oklch(0.55 0.15 145);
-	--success-foreground: oklch(0.98 0 0);
+	--destructive: 0.55 0.2 25;
+	--destructive-foreground: 0.98 0 0;
+	--success: 0.55 0.15 145;
+	--success-foreground: 0.98 0 0;
+	--bestseller: 0.56 0.084 68; /* Bronze outline (~#8B6B3D) — bestseller badge */
 
 	/* --- Interactive --- */
-	--border: oklch(0.9 0.003 90);
-	--input: oklch(0.9 0.003 90);
-	--ring: oklch(0.12 0 0);
+	--border: 0.915 0 0;
+	--input: 0.915 0 0;
+	--ring: 0.12 0 0;
 
 	/* --- Inverse surfaces (dark bands: bg-foreground text-background) --- */
-	--inverse: oklch(0.82 0 0);
-	--inverse-subtle: oklch(0.65 0 0);
-	--inverse-muted: oklch(0.55 0 0);
-	--border-inverse: oklch(0.28 0 0);
+	--inverse: 0.82 0 0;
+	--inverse-subtle: 0.65 0 0;
+	--inverse-muted: 0.55 0 0;
+	--border-inverse: 0.28 0 0;
 
 	/* --- Typography: fluid type scale (rem + clamp) ---
 	 * Sized in rem so it respects the user's browser font size (a11y).
@@ -67,8 +78,14 @@
 	--text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); /* 17 → 20px */
 	--text-eyebrow: 0.75rem; /* 12px fixed — overlines, brand labels */
 
-	/* --- Layout --- */
-	--radius: 0.5rem;
+	/* --- Layout / shape ---
+	 * Corner styles are split out so the whole UI can be re-shaped from one place.
+	 * To experiment with a different look in dev, change these here — every button,
+	 * input, card and tile follows. E.g. set --radius-button: 9999px for pill buttons
+	 * site-wide, or --radius-card: 0 for hard-edged tiles. No component edits needed. */
+	--radius: 0.5rem; /* base scale → rounded-sm/md/lg/xl */
+	--radius-button: calc(var(--radius) - 2px); /* buttons + token-backed link CTAs */
+	--radius-card: calc(var(--radius) + 4px); /* cards, tiles, image panels */
 
 	/* --- Container widths ---
 	 * Named page-width tokens. `content` is the canonical storefront body width
@@ -79,6 +96,13 @@
 	--container-content: 80rem; /* 1280px — default storefront body width (was max-w-7xl) */
 	--container-wide: 96rem; /* 1536px — immersive / editorial layouts */
 	--container-full: 100%; /* edge-to-edge content */
+
+	/* Header/nav column width. Defaults to the main content width so the nav lines
+	 * up with page bodies (the current look). A brand can take the nav edge-to-edge
+	 * by setting this to var(--container-full) (or var(--container-wide)) — the header
+	 * bar AND the mega-menu panel follow, no component edits. Always reversible:
+	 * restore var(--container-content) for the default. */
+	--container-nav: var(--container-full);
 
 	/* --- Section rhythm (fluid vertical spacing for full-bleed bands) ---
 	 * Use as py-section-* / gap-section-*. Keeps the cadence between marketing

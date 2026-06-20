@@ -17,8 +17,10 @@ import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { withTranslatedProductFields, pickTranslatedName } from "@/lib/saleor-translations";
+import { isBestseller, BESTSELLER_ATTRIBUTE_SLUGS } from "@/lib/catalog/product-flags";
 import { getAttributeValueDisplayName } from "@/ui/components/pdp/variant-selection/utils";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
+import { BestsellerBadge } from "@/ui/components/ui/sale-label";
 import {
 	ProductAttributes,
 	ProductGalleryFallback,
@@ -177,6 +179,7 @@ async function ProductShell({
 	const lcpImage = defaultImages[0];
 	// Reserve mobile dots / desktop thumbs in fallback when product has multiple images
 	const showGalleryChrome = defaultImages.length > 1;
+	const showBestsellerBadge = isBestseller(product);
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
@@ -187,7 +190,7 @@ async function ProductShell({
 				/>
 			)}
 
-			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
+			<main className="container-content flex-1 py-4 sm:py-6 lg:py-10">
 				<div className="mb-6 hidden sm:block">
 					<Breadcrumbs items={breadcrumbs} ariaLabel={tNav("breadcrumbAriaLabel")} />
 				</div>
@@ -211,6 +214,12 @@ async function ProductShell({
 					</div>
 
 					<div className="flex flex-col gap-3">
+						{showBestsellerBadge && (
+							<div className="order-1 flex items-center gap-2">
+								<BestsellerBadge />
+							</div>
+						)}
+
 						<h1 className="order-2 text-balance text-h1">{product.name}</h1>
 
 						<ErrorBoundary FallbackComponent={VariantSectionError}>
@@ -246,7 +255,7 @@ async function ProductShell({
 function ProductPageSkeleton() {
 	return (
 		<div className="flex min-h-screen animate-skeleton-delayed flex-col bg-background opacity-0">
-			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
+			<main className="container-content flex-1 py-4 sm:py-6 lg:py-10">
 				<div className="mb-6 hidden h-4 w-64 animate-pulse rounded bg-secondary sm:block" />
 				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 					<GallerySkeleton />
@@ -282,7 +291,7 @@ function parseDescription(description: string | null | undefined): string[] | nu
 
 function extractProductAttributes(product: NonNullable<ProductDetailsQuery["product"]>) {
 	const variantAttributeSlugs = ["size", "color", "colour", "variant"];
-	const internalAttributeSlugs = ["care-instructions", "care"];
+	const internalAttributeSlugs = ["care-instructions", "care", ...BESTSELLER_ATTRIBUTE_SLUGS];
 
 	return (product.attributes || [])
 		.filter((attr) => attr.attribute.name)

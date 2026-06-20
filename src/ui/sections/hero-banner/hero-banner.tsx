@@ -74,11 +74,11 @@ export function HeroBanner({
 						quality={PRODUCT_IMAGE_QUALITY}
 						priority
 					/>
-					<div className="from-foreground/70 via-foreground/40 absolute inset-0 bg-gradient-to-r to-transparent" />
+					<div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/40 to-transparent" />
 				</div>
 			) : null}
 
-			<div className="relative mx-auto flex h-full min-h-[inherit] max-w-7xl flex-col justify-end px-4 pb-10 pt-16 sm:px-6 sm:pb-12 lg:px-8">
+			<div className="container-content relative flex h-full min-h-[inherit] flex-col justify-end pb-10 pt-16 sm:pb-12">
 				<div className="max-w-2xl">
 					<h1
 						id="homepage-hero-heading"
@@ -90,7 +90,7 @@ export function HeroBanner({
 						<p
 							className={cn(
 								"mt-5 text-pretty text-lead md:mt-6",
-								hasImage ? "text-background/85" : "text-muted-foreground",
+								hasImage ? "text-background" : "text-muted-foreground",
 							)}
 						>
 							{subheading}
@@ -117,7 +117,7 @@ export function HeroBanner({
 										size: "lg",
 										variant: secondaryCta.variant === "primary" ? "default" : "outline-solid",
 										className: hasImage
-											? "border-background/30 bg-background/10 hover:bg-background/20 text-background"
+											? "border-background/30 bg-background/10 text-background hover:bg-background/20"
 											: undefined,
 									})}
 								/>

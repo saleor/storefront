@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Startseite",
 		"badges": {
 			"sale": "Sale",
-			"new": "Neu"
+			"new": "Neu",
+			"bestseller": "Bestseller"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — nicht auf Lager",

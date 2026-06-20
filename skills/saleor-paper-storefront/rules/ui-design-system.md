@@ -56,14 +56,24 @@ Default Tailwind sizes (`text-sm`, `text-lg`) remain for misc UI (price, breadcr
 
 Page width is a **design decision**. Paper does not assume a centered fixed-width desktop; full-bleed is first-class. Use the canonical container classes instead of bare `max-w-7xl`.
 
-| Class               | Width | Use for                                       |
-| ------------------- | ----- | --------------------------------------------- |
-| `container-prose`   | 48rem | Long-form copy, legal, FAQ (readable measure) |
-| `container-content` | 80rem | Default storefront body                       |
-| `container-wide`    | 96rem | Immersive / editorial layouts                 |
-| `container-full`    | 100%  | Full-bleed, edge-to-edge                      |
+| Class               | Width | Use for                                                                      |
+| ------------------- | ----- | ---------------------------------------------------------------------------- |
+| `container-prose`   | 48rem | Long-form copy, legal, FAQ (readable measure)                                |
+| `container-content` | 80rem | Default storefront body                                                      |
+| `container-wide`    | 96rem | Immersive / editorial layouts                                                |
+| `container-full`    | 100%  | Full-bleed, edge-to-edge                                                     |
+| `container-nav`     | token | Header bar + mega-menu column (`--container-nav`, defaults to content width) |
 
 Each bundles `mx-auto w-full px-4 sm:px-6 lg:px-8`. Width-only utilities: `max-w-content`, `max-w-wide`. **Full-width ≠ full-measure text** — nest a `container-prose` inside `container-full`/`container-wide` so line length stays ~60–80ch.
+
+**Nav width is a brand knob.** The header and its mega-menu both use `container-nav`, whose width comes from the `--container-nav` token in `brand.css` (default `var(--container-content)` = the current look). To take the nav edge-to-edge for a brand, set `--container-nav: var(--container-full)` (or `--container-wide`) — bar and dropdown follow, no component edits, fully reversible.
+
+**The body column is one token, too.** Every page body — PDP, PLP, search, cart, CMS pages, collections/categories, the footer, even loading skeletons — uses `container-content` (no more stray `max-w-7xl`). So the default body width is the single `--container-content` token: change it once and every page follows in lockstep. Two ways to go full-bleed:
+
+- **One page, rare case:** swap that page's wrapper to `container-full` (or `container-wide`). Edge-to-edge is first-class, so no escape hatch needed — e.g. a landing page that wants an immersive grid.
+- **Globally:** widen `--container-content` itself (affects bodies _and_ section defaults, which is usually what you want for a consistent frame).
+
+(The checkout surface keeps its own `max-w-7xl` frame by design — it's a separate surface and must not share storefront layout tokens.)
 
 ```tsx
 <section className="bg-foreground py-section-lg">
@@ -87,11 +97,11 @@ Also available as `gap-section-*`, `mt-section-*`, etc.
 
 ## Radius, elevation, motion
 
-| Concern   | Tokens                                                                                                                         |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Radius    | `rounded-md` (controls/inputs), `rounded-lg` (CTAs), `rounded-xl` (cards/media), `rounded-full` (pills) — driven by `--radius` |
-| Elevation | `shadow-card` (resting), `shadow-elevated` (popovers/hover), `shadow-overlay` (sheets/modals)                                  |
-| Motion    | `duration-fast` (150ms), `duration-base` (250ms), `duration-slow` (400ms); `ease-standard`, `ease-emphasized`                  |
+| Concern   | Tokens                                                                                                                                                                                                                                                                                                                                                         |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Radius    | `rounded-button` (buttons/CTAs ← `--radius-button`), `rounded-card` (cards/tiles/media ← `--radius-card`), plus the base `--radius` scale (`rounded-sm/md/lg/xl`). `rounded-full` stays for genuinely circular UI (avatars, dots). Re-shape the whole UI (e.g. pill buttons, hard-edged cards) by editing the shape tokens in `brand.css` — no component edits |
+| Elevation | `shadow-card` (resting), `shadow-elevated` (popovers/hover), `shadow-overlay` (sheets/modals)                                                                                                                                                                                                                                                                  |
+| Motion    | `duration-fast` (150ms), `duration-base` (250ms), `duration-slow` (400ms); `ease-standard`, `ease-emphasized`                                                                                                                                                                                                                                                  |
 
 Guard non-trivial motion with `motion-reduce:` / `prefers-reduced-motion`.
 

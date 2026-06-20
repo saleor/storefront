@@ -23,6 +23,7 @@ export const STOREFRONT_PRODUCTS_ATTRIBUTES = {
 } as const;
 
 export const STOREFRONT_HOMEPAGE_ATTRIBUTES = {
+	heroEyebrow: "hero-eyebrow",
 	heroHeading: "hero-heading",
 	heroSubheading: "hero-subheading",
 	heroCtaLabel: "hero-cta-label",
@@ -30,6 +31,8 @@ export const STOREFRONT_HOMEPAGE_ATTRIBUTES = {
 	featuredHeading: "featured-heading",
 	featuredCollection: "featured-collection",
 	featuredLimit: "featured-limit",
+	categoriesHeading: "categories-heading",
+	categoriesEyebrow: "categories-eyebrow",
 	brandStoryHeading: "brand-story-heading",
 	brandStoryParagraph1: "brand-story-paragraph-1",
 	brandStoryParagraph2: "brand-story-paragraph-2",

@@ -3,48 +3,52 @@ module.exports = {
 	content: ["./src/**/*.{ts,tsx}"],
 	theme: {
 		extend: {
+			// Colors are `oklch(var(--token) / <alpha-value>)` so opacity modifiers work
+			// (bg-foreground/40, text-background/80, gradient scrims). Tokens in brand.css
+			// are BARE channels (`L C H`) for this reason — never finished colors.
 			colors: {
-				background: "var(--background)",
-				foreground: "var(--foreground)",
+				background: "oklch(var(--background) / <alpha-value>)",
+				foreground: "oklch(var(--foreground) / <alpha-value>)",
 				card: {
-					DEFAULT: "var(--card)",
-					foreground: "var(--card-foreground)",
+					DEFAULT: "oklch(var(--card) / <alpha-value>)",
+					foreground: "oklch(var(--card-foreground) / <alpha-value>)",
 				},
 				popover: {
-					DEFAULT: "var(--popover)",
-					foreground: "var(--popover-foreground)",
+					DEFAULT: "oklch(var(--popover) / <alpha-value>)",
+					foreground: "oklch(var(--popover-foreground) / <alpha-value>)",
 				},
 				primary: {
-					DEFAULT: "var(--primary)",
-					foreground: "var(--primary-foreground)",
+					DEFAULT: "oklch(var(--primary) / <alpha-value>)",
+					foreground: "oklch(var(--primary-foreground) / <alpha-value>)",
 				},
 				secondary: {
-					DEFAULT: "var(--secondary)",
-					foreground: "var(--secondary-foreground)",
+					DEFAULT: "oklch(var(--secondary) / <alpha-value>)",
+					foreground: "oklch(var(--secondary-foreground) / <alpha-value>)",
 				},
 				muted: {
-					DEFAULT: "var(--muted)",
-					foreground: "var(--muted-foreground)",
+					DEFAULT: "oklch(var(--muted) / <alpha-value>)",
+					foreground: "oklch(var(--muted-foreground) / <alpha-value>)",
 				},
 				accent: {
-					DEFAULT: "var(--accent)",
-					foreground: "var(--accent-foreground)",
+					DEFAULT: "oklch(var(--accent) / <alpha-value>)",
+					foreground: "oklch(var(--accent-foreground) / <alpha-value>)",
 				},
 				destructive: {
-					DEFAULT: "var(--destructive)",
-					foreground: "var(--destructive-foreground)",
+					DEFAULT: "oklch(var(--destructive) / <alpha-value>)",
+					foreground: "oklch(var(--destructive-foreground) / <alpha-value>)",
 				},
 				success: {
-					DEFAULT: "var(--success)",
-					foreground: "var(--success-foreground)",
+					DEFAULT: "oklch(var(--success) / <alpha-value>)",
+					foreground: "oklch(var(--success-foreground) / <alpha-value>)",
 				},
-				border: "var(--border)",
-				input: "var(--input)",
-				ring: "var(--ring)",
+				bestseller: "oklch(var(--bestseller) / <alpha-value>)",
+				border: "oklch(var(--border) / <alpha-value>)",
+				input: "oklch(var(--input) / <alpha-value>)",
+				ring: "oklch(var(--ring) / <alpha-value>)",
 				inverse: {
-					DEFAULT: "var(--inverse)",
-					subtle: "var(--inverse-subtle)",
-					muted: "var(--inverse-muted)",
+					DEFAULT: "oklch(var(--inverse) / <alpha-value>)",
+					subtle: "oklch(var(--inverse-subtle) / <alpha-value>)",
+					muted: "oklch(var(--inverse-muted) / <alpha-value>)",
 				},
 			},
 			borderRadius: {
@@ -52,6 +56,10 @@ module.exports = {
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
 				xl: "calc(var(--radius) + 4px)",
+				// Component-shape tokens (brand.css). Use rounded-button / rounded-card so
+				// button + card corners are driven from one place, not hardcoded per component.
+				button: "var(--radius-button)",
+				card: "var(--radius-card)",
 			},
 			// Named page-width tokens (brand.css). `max-w-content` is the canonical body
 			// width; `max-w-wide` for immersive layouts. Full-bleed = `max-w-full` (default).
@@ -98,11 +106,11 @@ module.exports = {
 				eyebrow: ["var(--text-eyebrow)", { lineHeight: "1.4", letterSpacing: "0.1em", fontWeight: "600" }],
 			},
 			borderColor: {
-				DEFAULT: "var(--border)",
-				inverse: "var(--border-inverse)",
+				DEFAULT: "oklch(var(--border) / <alpha-value>)",
+				inverse: "oklch(var(--border-inverse) / <alpha-value>)",
 			},
 			ringColor: {
-				DEFAULT: "var(--ring)",
+				DEFAULT: "oklch(var(--ring) / <alpha-value>)",
 			},
 			keyframes: {
 				"accordion-down": {
