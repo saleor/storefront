@@ -3,6 +3,7 @@ import type { StorefrontChromeContent } from "@/lib/content";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
 import { Logo } from "@/ui/components/shared/logo";
+import { ScrollToTopOnNavigate } from "@/ui/components/shared/scroll-to-top-on-navigate";
 import { AnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar";
 
 function HeaderSkeleton() {
@@ -81,6 +82,7 @@ export function MainChrome({
 
 	return (
 		<>
+			<ScrollToTopOnNavigate />
 			<AnnouncementBar
 				id={announcementBar.id}
 				message={announcementBar.message}
