@@ -37,6 +37,7 @@ Two skill sources are available:
 | Locale + channel URL routing | `ui-locale-routing` |
 | Code-owned UI strings (next-intl) | `ui-i18n` |
 | SEO, metadata, OG images | `seo-metadata` |
+| Third-party widget embeds (reviews, scripts) | `third-party-embeds` |
 | Investigating Saleor API | `dev-investigation` |
 | Mobile dev via ngrok / LAN | `dev-local` |
 | Upgrading a forked shop | `migrations/SKILL.md` |

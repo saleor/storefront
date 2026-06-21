@@ -7,6 +7,22 @@ How to turn a user's prompt, reference screenshot, mockup, or "make it look like
 
 ## Workflow
 
+### 0. Audit & confirm scope (redesign-from-reference only)
+
+When the task is to **redesign an existing surface to match a reference** (screenshot, URL, or "make X look like Y") — not building net-new and not a small, well-specified edit — do this before writing any code:
+
+1. **Read both sides.** Read the reference for intent (Step 1 signals) and read the current implementation of the target surface (its page file + section/component tree).
+2. **Produce a categorized gap analysis**, grouping differences into:
+   - **Information architecture** — hierarchy, ordering, density, what leads the page.
+   - **Missing elements** — present in the reference, absent in ours (impact band, reviews summary, size guide, etc.).
+   - **Media / gallery** — how imagery is presented.
+   - **Third-party** — external widgets/integrations implied (reviews, etc.).
+3. **Confirm scope with the developer.** Present the gaps and ask which to build (a short multiple-choice is ideal). Do not start editing until scope is confirmed.
+
+Skip this gate for small, well-specified changes ("switch to the editorial theme", "reorder the buy box") — proceed directly to Step 1.
+
+> Why: keeps large redesigns intentional and developer-driven, and avoids over-building sections the merchant did not ask for.
+
 ### 1. Brief — extract intent before writing code
 
 From the prompt/image, write a short internal design brief (and ask 1–3 questions only if genuinely blocked):

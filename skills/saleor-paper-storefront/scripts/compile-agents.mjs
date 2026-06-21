@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 28;
+const RULE_COUNT = 29;
 
 const catalog = [
 	{
@@ -107,6 +107,7 @@ const catalog = [
 		rules: [
 			{ num: "7.1", file: "dev-local.md", title: "Local Development & Mobile Testing" },
 			{ num: "7.2", file: "dev-investigation.md", title: "Saleor API Investigation" },
+			{ num: "7.3", file: "third-party-embeds.md", title: "Third-Party Widget Embeds" },
 		],
 	},
 ];
