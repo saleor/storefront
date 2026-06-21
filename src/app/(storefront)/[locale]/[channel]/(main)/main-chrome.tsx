@@ -82,7 +82,10 @@ export function MainChrome({
 
 	return (
 		<>
-			<ScrollToTopOnNavigate />
+			{/* usePathname() is request-dynamic; isolate it so it doesn't block the static shell prerender. */}
+			<Suspense fallback={null}>
+				<ScrollToTopOnNavigate />
+			</Suspense>
 			<AnnouncementBar
 				id={announcementBar.id}
 				message={announcementBar.message}

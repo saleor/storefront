@@ -30,6 +30,13 @@ export const PDP_MAIN_IMAGE_SIZES = "(max-width: 768px) 100vw, 50vw";
  */
 export const PDP_IMMERSIVE_IMAGE_SIZES = "(max-width: 1024px) 100vw, 60vw";
 
+/**
+ * PDP mosaic gallery: all images tiled in a 2-column grid.
+ * Each tile is ~half the gallery column — half viewport on mobile, ~30vw on the
+ * wide editorial column on desktop.
+ */
+export const PDP_MOSAIC_IMAGE_SIZES = "(max-width: 1024px) 50vw, 30vw";
+
 /** PDP desktop thumbnail strip */
 export const PDP_THUMBNAIL_IMAGE_SIZES = "80px";
 

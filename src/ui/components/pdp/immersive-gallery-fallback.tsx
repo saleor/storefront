@@ -6,6 +6,9 @@ import { PDP_IMMERSIVE_IMAGE_HEIGHT } from "./gallery-layout";
 interface ImmersiveGalleryFallbackProps {
 	src: string;
 	alt: string;
+	/** Accepted for a uniform gallery-registry signature; immersive shows a single hero frame. */
+	imageCount?: number;
+	showChrome?: boolean;
 }
 
 /**

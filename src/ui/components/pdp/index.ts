@@ -1,8 +1,15 @@
-export { ProductGallery } from "./product-gallery";
-export { ProductGalleryFallback } from "./product-gallery-fallback";
-export { ProductGalleryShell } from "./product-gallery-shell";
-export { ImmersiveGallery } from "./immersive-gallery";
-export { ImmersiveGalleryFallback, ImmersiveGallerySkeleton } from "./immersive-gallery-fallback";
+// Gallery renderers/fallbacks/skeletons are NOT re-exported here on purpose.
+// The interactive renderers are Client Components (Embla); routing them through
+// this barrel — which Server Components import — risks pulling every layout's JS
+// into the bundle. Consume galleries only via the registry, which lazy-loads the
+// active layout's renderer. See `gallery-registry.tsx`.
+export {
+	activeGalleryVariant,
+	GALLERY_REGISTRY,
+	type GalleryRendererProps,
+	type GalleryFallbackProps,
+	type GalleryVariant,
+} from "./gallery-registry";
 export {
 	PDP_GALLERY_LAYOUT,
 	PDP_LAYOUT_CLASSES,

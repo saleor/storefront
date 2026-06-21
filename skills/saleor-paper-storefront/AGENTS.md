@@ -1672,7 +1672,7 @@ ProductPage (sync export)
     ├── Suspense → VariantGalleryDynamic (searchParams → variant images; LCP fallback image)
     └── ErrorBoundary + Suspense → VariantSectionDynamic (searchParams → price, selectors, add-to-cart)
 
-Layout + skeletons: PDP_GALLERY_LAYOUT in gallery-layout.ts (immersive | standard)
+Layout + skeletons: PDP_GALLERY_LAYOUT in gallery-layout.ts (immersive | standard | mosaic)
 Route loading: products/[slug]/loading.tsx → ProductRouteSkeleton (same layout constant)
 
 Data: getProductData() with applyCacheProfile(CACHE_PROFILES.products)  ← catalog tier (~5 min)
@@ -1744,15 +1744,18 @@ src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/
 └── page.tsx                          # Main PDP page
 
 src/ui/components/pdp/
-├── index.ts                          # Public exports (client-safe only)
+├── index.ts                          # Public exports (no gallery renderers — see registry)
 ├── gallery-layout.ts                 # PDP_GALLERY_LAYOUT + shell class bundles
+├── gallery-registry.tsx              # Canonical layout→renderer/fallback/skeleton map (lazy)
 ├── gallery-utils.ts                  # getGalleryImages, resolveSelectedVariantId
 ├── product-route-skeleton.tsx          # Shared route loading + page Suspense skeleton
-├── variant-gallery-dynamic.tsx       # Server: searchParams → gallery renderer
+├── variant-gallery-dynamic.tsx       # Server: searchParams → active registry renderer
 ├── product-gallery.tsx               # Client: standard Embla carousel wrapper
 ├── product-gallery-fallback.tsx      # Server: standard LCP fallback image
 ├── immersive-gallery.tsx             # Client: immersive filmstrip gallery
 ├── immersive-gallery-fallback.tsx    # Server: immersive LCP fallback + skeleton
+├── mosaic-gallery.tsx                # Server: editorial image grid (all images)
+├── mosaic-gallery-fallback.tsx       # Server: mosaic LCP fallback + skeleton
 ├── variant-section-dynamic.tsx       # Variant selection + add to cart
 ├── variant-section-error.tsx         # Error fallback (Client Component)
 ├── add-to-cart.tsx                   # Add to cart button
@@ -1770,16 +1773,63 @@ src/ui/components/ui/
 
 ### Layout modes (`PDP_GALLERY_LAYOUT`)
 
-The whole shop uses **one** PDP gallery style — a build-time constant in `gallery-layout.ts`, not per-product CMS config. Flip `"immersive"` ↔ `"standard"` there; shell classes, the dynamic island renderer, Suspense fallbacks, and route skeletons all read the same value.
+The whole shop uses **one** PDP gallery style — a build-time constant in `gallery-layout.ts`, not per-product CMS config. Set it to `"immersive"`, `"standard"`, or `"mosaic"`; shell classes, the dynamic island renderer, Suspense fallbacks, and route skeletons all read the same value.
 
-| Layout                    | Container           | Grid                                 | Gallery                                                       | Attributes accordion           |
-| ------------------------- | ------------------- | ------------------------------------ | ------------------------------------------------------------- | ------------------------------ |
-| **`immersive`** (default) | `container-full`    | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames | Below images in gallery column |
-| **`standard`**            | `container-content` | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                 | Under buy box in info column   |
+| Layout                    | Container           | Grid                                 | Gallery                                                        | Attributes accordion           |
+| ------------------------- | ------------------- | ------------------------------------ | -------------------------------------------------------------- | ------------------------------ |
+| **`immersive`** (default) | `container-full`    | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames  | Below images in gallery column |
+| **`mosaic`**              | `container-wide`    | Wide gallery + narrow sticky buy box | `MosaicGallery` — all images in a 2-col 4:5 grid (no carousel) | Under buy box in info column   |
+| **`standard`**            | `container-content` | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                  | Under buy box in info column   |
 
-`VariantGalleryDynamic` picks the renderer; `ProductRouteSkeleton` + `GallerySkeleton` / `ImmersiveGallerySkeleton` mirror the active layout so route `loading.tsx` never disagrees with the live page.
+All three surfaces (renderer, LCP fallback, skeleton) for each layout live in **`gallery-registry.tsx`** — see [Gallery registry](#gallery-registry-canonical-pattern). `VariantGalleryDynamic`, `ProductShell`, and `ProductRouteSkeleton` read the active layout's surfaces from `activeGalleryVariant()`, so route `loading.tsx` never disagrees with the live page.
+
+### Gallery registry (canonical pattern)
+
+A Paper shop ships exactly **one** gallery layout, picked at build time, but we keep a growing _library_ of layouts in the repo. The registry guarantees the unused ones never reach the browser — and that nobody has to think about it per-layout:
+
+```tsx
+// gallery-registry.tsx — the ONLY file that imports gallery renderers
+const StandardGallery = dynamic(() => import("./product-gallery").then((m) => m.ProductGallery), { loading });
+const ImmersiveGallery = dynamic(() => import("./immersive-gallery").then((m) => m.ImmersiveGallery), {
+	loading,
+});
+
+export const GALLERY_REGISTRY: Record<PdpGalleryLayout, GalleryVariant> = {
+	standard: { Gallery: StandardGallery, Fallback: ProductGalleryFallback, Skeleton: StandardGallerySkeleton },
+	immersive: {
+		Gallery: ImmersiveGallery,
+		Fallback: ImmersiveGalleryFallback,
+		Skeleton: ImmersiveGallerySkeleton,
+	},
+	mosaic: { Gallery: MosaicGallery, Fallback: MosaicGalleryFallback, Skeleton: MosaicGallerySkeleton }, // Server Component
+};
+
+export const activeGalleryVariant = () => GALLERY_REGISTRY[PDP_GALLERY_LAYOUT];
+```
+
+Three things make "only the active layout ships" the default behavior:
+
+1. **Interactive renderers load via `next/dynamic`** → each gets its own chunk; only the active layout's JS (incl. Embla) is requested. Server-Component renderers (mosaic) cost zero client JS and are imported directly.
+2. **The registry is the only importer of renderers.** They are NOT re-exported from `index.ts`.
+3. **`Record<PdpGalleryLayout, GalleryVariant>` is exhaustive.** Add a key to the union and the compiler forces you to register all three surfaces.
+
+**Add a layout** (the only files you touch): create `my-gallery.tsx` (+ fallback) → add the key to `PdpGalleryLayout` and classes to `PDP_LAYOUT_CLASSES` in `gallery-layout.ts` → add one entry to `GALLERY_REGISTRY`.
+
+> This is the project-wide model for build-time-selected variants of a component — see [Swappable variants of a component](ui-components.md#swappable-variants-of-a-component) for when to use it vs. `cva` prop variants.
+
+#### Molding it your own way
+
+The registry is a convenient default, **not a cage**. Want to hardcode one gallery and delete the rest? Go ahead — import your renderer straight into `VariantGalleryDynamic` and render it. Importing one renderer and using it ships exactly that renderer; nothing unused, no penalty. There is no lint rule policing this.
+
+The **one** thing that silently bloats the bundle (vs. harmless dead code): re-exporting _multiple_ `"use client"` gallery renderers through a barrel (e.g. `index.ts`) that a Server Component imports. A re-export counts as "used," so it defeats tree-shaking across the client boundary and pulls every re-exported renderer into the bundle even though one renders. That's the sole reason renderers stay out of `index.ts`. A plain unused `import` (no re-export) is tree-shaken normally and costs nothing.
 
 ### Features (by layout)
+
+**Mosaic (`MosaicGallery`)** — editorial grid
+
+- Every image rendered at once in a 2-column `aspect-[4/5]` grid — no carousel, the page scrolls through the imagery
+- Narrow sticky buy box (with the description/details accordion) sits beside the grid on desktop; mobile sticky bar keeps add-to-cart reachable while scanning
+- Pure Server Component (no client JS) — first tile eager, rest lazy-loaded
 
 **Immersive (`ImmersiveGallery`)**
 
@@ -1807,10 +1857,9 @@ export async function VariantGalleryDynamic({ product, searchParams }) {
 	const selectedVariant = product.variants?.find((v) => v.id === selectedVariantId);
 	const images = getGalleryImages(product, selectedVariant);
 
-	if (PDP_GALLERY_LAYOUT === "immersive") {
-		return <ImmersiveGallery images={images} productName={product.name} />;
-	}
-	return <ProductGallery images={images} productName={product.name} />;
+	// No per-layout branching — the registry resolves the active renderer.
+	const { Gallery } = activeGalleryVariant();
+	return <Gallery images={images} productName={product.name} />;
 }
 // Priority: variant.media → product.media → thumbnail
 ```
@@ -1819,7 +1868,7 @@ export async function VariantGalleryDynamic({ product, searchParams }) {
 
 Keep LCP in the **gallery Suspense fallback**, not a separate hero above the fold:
 
-1. **`ProductShell`** passes the default hero URL into `ImmersiveGalleryFallback` / `ProductGalleryFallback` as the nested Suspense fallback (real `<Image priority>` at immersive/standard size — no layout shift when the island streams)
+1. **`ProductShell`** passes the default hero URL into the active layout's `Fallback` (from `activeGalleryVariant()`) as the nested Suspense fallback (real `<Image priority>` at the layout's size — no layout shift when the island streams)
 2. **`ImmersiveGallery`** / **`ProductGallery`** sets eager/`priority` on the first visible carousel image when the island hydrates
 3. Variant-specific images load when the user selects a variant (acceptable trade-off)
 
@@ -1973,12 +2022,12 @@ Edit `image-carousel.tsx`:
 <button className="relative h-20 w-20 ...">  {/* Change h-20 w-20 */}
 ```
 
-### Switch PDP layout (immersive ↔ standard)
+### Switch PDP layout (mosaic ↔ immersive ↔ standard)
 
 Edit `gallery-layout.ts`:
 
 ```tsx
-export const PDP_GALLERY_LAYOUT: PdpGalleryLayout = "immersive"; // or "standard"
+export const PDP_GALLERY_LAYOUT: PdpGalleryLayout = "immersive"; // or "mosaic" | "standard"
 ```
 
 Shell, island, Suspense fallbacks, and `ProductRouteSkeleton` / `loading.tsx` follow automatically.
@@ -4291,6 +4340,38 @@ If component is in a subdirectory, export from index:
 // src/ui/components/pdp/index.ts
 export { NewComponent } from "./NewComponent";
 ```
+
+## Swappable variants of a component
+
+Three mechanisms — pick by **when the choice is made** and **whether the unused variants are heavy**:
+
+| You need…                                                                                          | Use                                                 | Do the unused variants ship? |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------- |
+| Visual variations of one component (size, tone, emphasis)                                          | **`cva` prop variants** — see `ui-design-system.md` | n/a (one component)          |
+| One of several **distinct, heavy** implementations, chosen at **build time**, others must not ship | **Variant registry** (below)                        | No — only the active one     |
+| Different implementation per request/product at **runtime**                                        | Plain conditional render (all candidates ship)      | Yes (can't tree-shake)       |
+
+### Variant registry (build-time choice)
+
+When a shop picks **one** of several mutually-exclusive, non-trivial implementations at build time (different PDP galleries, homepage hero styles, etc.) and you don't want the unused ones in the bundle, use a registry keyed by a build-time constant. Reference implementation: `src/ui/components/pdp/gallery-registry.tsx` (see `product-pdp.md`).
+
+```tsx
+// foo-registry.tsx — the ONLY module that imports the renderers
+const Fancy = dynamic(() => import("./foo-fancy").then((m) => m.FooFancy)); // "use client"
+export const FOO_REGISTRY: Record<FooVariant, ComponentType<FooProps>> = {
+	plain: FooPlain, // Server Component → imported directly (0 client JS)
+	fancy: Fancy, // client → lazy, ships only when active
+};
+export const activeFoo = () => FOO_REGISTRY[FOO_VARIANT];
+```
+
+Why it stays concise:
+
+- **`next/dynamic`** gives each client variant its own chunk → only the active one is requested.
+- **`Record<FooVariant, …>`** is exhaustive → the compiler forces an entry per variant.
+- **Renderers stay out of barrels (`index.ts`).** This is the only real footgun: re-exporting multiple `"use client"` variants through a barrel a Server Component imports defeats tree-shaking and pulls them all in. A plain unused `import` (no re-export) is tree-shaken normally.
+
+**Don't over-reach:** for lightweight visual differences reach for `cva`, not a registry. The registry is a convenient default, not a cage — a fork is free to delete the others and hardcode its chosen variant (one import, one render, ships one).
 
 ## Examples
 

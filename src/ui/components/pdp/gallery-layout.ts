@@ -16,9 +16,10 @@
  * fallback, and the skeleton can never disagree about the active layout.
  *
  * Agent note: when asked to make the PDP "full bleed" / immersive, set this to
- * `"immersive"`; to restore the classic split layout, set it to `"standard"`.
+ * `"immersive"`; to restore the classic split layout, set it to `"standard"`; for
+ * an editorial grid where every image is visible at once, set it to `"mosaic"`.
  */
-export type PdpGalleryLayout = "standard" | "immersive";
+export type PdpGalleryLayout = "standard" | "immersive" | "mosaic";
 
 /** Active gallery layout for the whole storefront. */
 export const PDP_GALLERY_LAYOUT: PdpGalleryLayout = "immersive";
@@ -77,5 +78,19 @@ export const PDP_LAYOUT_CLASSES: Record<PdpGalleryLayout, PdpLayoutClasses> = {
 		infoColumn: `order-2 flex flex-col gap-3 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:sticky ${STICKY_BELOW_HEADER} lg:self-start`,
 		attributesPlacement: "gallery",
 		attributesGalleryBlock: "order-3 mt-10 min-w-0 lg:col-start-1 lg:row-start-2 lg:mt-12",
+	},
+	/**
+	 * Editorial mosaic: every image tiled in a wide 2-column grid
+	 * with a narrow sticky buy box beside it. No carousel — the page scrolls
+	 * through all imagery. Description/details sit under the buy box (the gallery
+	 * column is already tall), and the mobile sticky bar keeps add-to-cart
+	 * reachable while the shopper scans the grid.
+	 */
+	mosaic: {
+		main: "container-wide flex-1 py-4 sm:py-6 lg:py-10",
+		grid: "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,28rem)] lg:items-start lg:gap-12",
+		galleryColumn: "min-w-0",
+		infoColumn: `flex flex-col gap-3 lg:sticky ${STICKY_BELOW_HEADER} lg:self-start`,
+		attributesPlacement: "info",
 	},
 };

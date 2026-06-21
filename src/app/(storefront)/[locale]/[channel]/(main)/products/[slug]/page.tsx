@@ -23,8 +23,7 @@ import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import { BestsellerBadge } from "@/ui/components/ui/sale-label";
 import {
 	ProductAttributes,
-	ProductGalleryFallback,
-	ImmersiveGalleryFallback,
+	activeGalleryVariant,
 	VariantGalleryDynamic,
 	ProductRouteSkeleton,
 	VariantSectionDynamic,
@@ -184,17 +183,14 @@ async function ProductShell({
 	const showGalleryChrome = defaultImages.length > 1;
 	const showBestsellerBadge = isBestseller(product);
 	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
+	const { Fallback: GalleryFallback } = activeGalleryVariant();
 	const galleryFallback = lcpImage ? (
-		PDP_GALLERY_LAYOUT === "immersive" ? (
-			<ImmersiveGalleryFallback src={lcpImage.url} alt={lcpImage.alt ?? product.name} />
-		) : (
-			<ProductGalleryFallback
-				src={lcpImage.url}
-				alt={lcpImage.alt ?? product.name}
-				imageCount={defaultImages.length}
-				showChrome={showGalleryChrome}
-			/>
-		)
+		<GalleryFallback
+			src={lcpImage.url}
+			alt={lcpImage.alt ?? product.name}
+			imageCount={defaultImages.length}
+			showChrome={showGalleryChrome}
+		/>
 	) : null;
 
 	const productAttributesNode = (
