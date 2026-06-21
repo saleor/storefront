@@ -26,7 +26,7 @@ import {
 	ProductGalleryFallback,
 	ImmersiveGalleryFallback,
 	VariantGalleryDynamic,
-	GallerySkeleton,
+	ProductRouteSkeleton,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
 	VariantSectionError,
@@ -113,7 +113,7 @@ export default function ProductPage(props: {
 	searchParams: Promise<{ variant?: string }>;
 }) {
 	return (
-		<Suspense fallback={<ProductPageSkeleton />}>
+		<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
 			<ProductShell params={props.params} searchParams={props.searchParams} />
 		</Suspense>
 	);
@@ -255,33 +255,6 @@ async function ProductShell({
 					{layout.attributesPlacement === "gallery" && layout.attributesGalleryBlock && (
 						<div className={layout.attributesGalleryBlock}>{productAttributesNode}</div>
 					)}
-				</div>
-			</main>
-		</div>
-	);
-}
-
-// ============================================================================
-// Skeleton
-// ============================================================================
-
-function ProductPageSkeleton() {
-	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
-	return (
-		<div className="flex min-h-screen animate-skeleton-delayed flex-col bg-background opacity-0">
-			<main className={layout.main}>
-				<div className="mb-6 hidden h-4 w-64 animate-pulse rounded bg-secondary sm:block" />
-				<div className={layout.grid}>
-					<GallerySkeleton />
-					<div className={layout.infoColumn}>
-						<div className="h-8 w-3/4 animate-pulse rounded bg-secondary" />
-						<div className="h-6 w-24 animate-pulse rounded bg-secondary" />
-						<div className="mt-4 space-y-3">
-							<div className="h-10 w-full animate-pulse rounded bg-secondary" />
-							<div className="h-10 w-full animate-pulse rounded bg-secondary" />
-						</div>
-						<div className="mt-4 h-12 w-full animate-pulse rounded bg-secondary" />
-					</div>
 				</div>
 			</main>
 		</div>

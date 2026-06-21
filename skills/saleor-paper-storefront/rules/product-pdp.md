@@ -14,9 +14,11 @@ For variant selection logic specifically, see `product-variants.md`.
 ProductPage (sync export)
 └── Suspense → ProductShell (params + getProductData only — never await searchParams)
     ├── breadcrumbs, h1, attributes, JSON-LD
-    ├── <link rel="preload"> for default gallery LCP image
-    ├── Suspense → VariantGalleryDynamic (searchParams → variant images)
+    ├── Suspense → VariantGalleryDynamic (searchParams → variant images; LCP fallback image)
     └── ErrorBoundary + Suspense → VariantSectionDynamic (searchParams → price, selectors, add-to-cart)
+
+Layout + skeletons: PDP_GALLERY_LAYOUT in gallery-layout.ts (immersive | standard)
+Route loading: products/[slug]/loading.tsx → ProductRouteSkeleton (same layout constant)
 
 Data: getProductData() with applyCacheProfile(CACHE_PROFILES.products)  ← catalog tier (~5 min)
 ```
@@ -88,8 +90,14 @@ src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/
 
 src/ui/components/pdp/
 ├── index.ts                          # Public exports (client-safe only)
-├── variant-gallery-dynamic.tsx       # Server: reads searchParams, renders ProductGallery
-├── product-gallery.tsx               # Client: Embla carousel wrapper
+├── gallery-layout.ts                 # PDP_GALLERY_LAYOUT + shell class bundles
+├── gallery-utils.ts                  # getGalleryImages, resolveSelectedVariantId
+├── product-route-skeleton.tsx          # Shared route loading + page Suspense skeleton
+├── variant-gallery-dynamic.tsx       # Server: searchParams → gallery renderer
+├── product-gallery.tsx               # Client: standard Embla carousel wrapper
+├── product-gallery-fallback.tsx      # Server: standard LCP fallback image
+├── immersive-gallery.tsx             # Client: immersive filmstrip gallery
+├── immersive-gallery-fallback.tsx    # Server: immersive LCP fallback + skeleton
 ├── variant-section-dynamic.tsx       # Variant selection + add to cart
 ├── variant-section-error.tsx         # Error fallback (Client Component)
 ├── add-to-cart.tsx                   # Add to cart button
@@ -100,16 +108,38 @@ src/ui/components/pdp/
 
 src/ui/components/ui/
 ├── carousel.tsx                      # Embla carousel primitives
-└── image-carousel.tsx                # Reusable image carousel
+└── image-carousel.tsx                # Reusable image carousel (standard gallery)
 ```
 
 ## Image Gallery
 
-### Features
+### Layout modes (`PDP_GALLERY_LAYOUT`)
 
-- **Mobile**: Horizontal swipe (Embla Carousel) + dot indicators
+The whole shop uses **one** PDP gallery style — a build-time constant in `gallery-layout.ts`, not per-product CMS config. Flip `"immersive"` ↔ `"standard"` there; shell classes, the dynamic island renderer, Suspense fallbacks, and route skeletons all read the same value.
+
+| Layout                    | Container           | Grid                                 | Gallery                                                       | Attributes accordion           |
+| ------------------------- | ------------------- | ------------------------------------ | ------------------------------------------------------------- | ------------------------------ |
+| **`immersive`** (default) | `container-full`    | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames | Below images in gallery column |
+| **`standard`**            | `container-content` | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                 | Under buy box in info column   |
+
+`VariantGalleryDynamic` picks the renderer; `ProductRouteSkeleton` + `GallerySkeleton` / `ImmersiveGallerySkeleton` mirror the active layout so route `loading.tsx` never disagrees with the live page.
+
+### Features (by layout)
+
+**Immersive (`ImmersiveGallery`)**
+
+- Horizontal Embla filmstrip — square images sized to `100svh - chrome` on desktop
+- Controls **below** the strip: prev/next buttons, pill dots, `n / total` counter
+- Mobile: swipe the filmstrip; same controls below
+
+**Standard (`ProductGallery` / `ImageCarousel`)**
+
+- **Mobile**: Horizontal swipe + dot indicators under the hero
 - **Desktop**: Arrow navigation (hover) + thumbnail strip
-- **LCP**: `<link rel="preload">` in `ProductShell` for default gallery image + `priority` on first carousel image
+
+**Both**
+
+- **LCP**: server-rendered first image in the gallery Suspense fallback (`ImmersiveGalleryFallback` or `ProductGalleryFallback`) with `priority`, plus eager load on the first streamed carousel frame
 - **Variant-aware**: `VariantGalleryDynamic` resolves images from `searchParams.variant`
 
 ### How Variant Images Work
@@ -117,9 +147,14 @@ src/ui/components/ui/
 ```tsx
 // variant-gallery-dynamic.tsx — searchParams read here, NOT in ProductShell
 export async function VariantGalleryDynamic({ product, searchParams }) {
-	const { variant: variantId } = await searchParams;
-	const selectedVariant = variantId ? product.variants?.find((v) => v.id === variantId) : null;
+	const { variant: variantParam } = await searchParams;
+	const selectedVariantId = resolveSelectedVariantId(product, variantParam);
+	const selectedVariant = product.variants?.find((v) => v.id === selectedVariantId);
 	const images = getGalleryImages(product, selectedVariant);
+
+	if (PDP_GALLERY_LAYOUT === "immersive") {
+		return <ImmersiveGallery images={images} productName={product.name} />;
+	}
 	return <ProductGallery images={images} productName={product.name} />;
 }
 // Priority: variant.media → product.media → thumbnail
@@ -127,16 +162,19 @@ export async function VariantGalleryDynamic({ product, searchParams }) {
 
 ### LCP Strategy
 
-Keep LCP simple — no hero-in-fallback pattern:
+Keep LCP in the **gallery Suspense fallback**, not a separate hero above the fold:
 
-1. **`ProductShell`** emits `<link rel="preload" as="image" fetchPriority="high">` for the default (non-variant) hero URL
-2. **`ProductGallery`** / `ImageCarousel` sets `priority` on the first visible image
+1. **`ProductShell`** passes the default hero URL into `ImmersiveGalleryFallback` / `ProductGalleryFallback` as the nested Suspense fallback (real `<Image priority>` at immersive/standard size — no layout shift when the island streams)
+2. **`ImmersiveGallery`** / **`ProductGallery`** sets eager/`priority` on the first visible carousel image when the island hydrates
 3. Variant-specific images load when the user selects a variant (acceptable trade-off)
 
 ### Customizing Gallery
 
+**Switch layout for the whole storefront** — edit `PDP_GALLERY_LAYOUT` in `gallery-layout.ts`.
+
+**Standard gallery chrome** — `image-carousel.tsx` props:
+
 ```tsx
-// image-carousel.tsx props
 <ImageCarousel
 	images={images}
 	productName="..."
@@ -146,6 +184,8 @@ Keep LCP simple — no hero-in-fallback pattern:
 	onImageClick={(i) => {}} // For future lightbox
 />
 ```
+
+**Immersive frame height** — `PDP_IMMERSIVE_IMAGE_HEIGHT` in `gallery-layout.ts` (uses `--chrome-offset` + `--pdp-immersive-reserved` from `brand.css`).
 
 ### Adding Zoom/Lightbox (Future)
 
@@ -270,13 +310,23 @@ User clicks "Add to bag"
 3. Extract in `page.tsx` helper function
 4. Pass to `ProductAttributes` component
 
-### Change gallery thumbnail size
+### Change gallery thumbnail size (standard layout only)
 
 Edit `image-carousel.tsx`:
 
 ```tsx
 <button className="relative h-20 w-20 ...">  {/* Change h-20 w-20 */}
 ```
+
+### Switch PDP layout (immersive ↔ standard)
+
+Edit `gallery-layout.ts`:
+
+```tsx
+export const PDP_GALLERY_LAYOUT: PdpGalleryLayout = "immersive"; // or "standard"
+```
+
+Shell, island, Suspense fallbacks, and `ProductRouteSkeleton` / `loading.tsx` follow automatically.
 
 ### Change sticky bar scroll threshold
 
@@ -317,13 +367,15 @@ pnpm test src/ui/components/pdp  # Run PDP tests
 
 ### Manual Testing Checklist
 
-- [ ] Gallery swipe works on mobile
-- [ ] Arrows appear on desktop hover
+- [ ] Route `loading.tsx` skeleton matches live layout (no 2-col flash on immersive)
+- [ ] Gallery swipe works on mobile (filmstrip or carousel)
+- [ ] Immersive: arrows + counter below strip; standard: arrows on desktop hover + thumbnails
 - [ ] Variant selection updates URL
 - [ ] Variant images change when variant selected
 - [ ] Add to cart shows pending state
 - [ ] Sticky bar appears after scroll
 - [ ] Error boundary catches failures
+- [ ] Attributes accordion sits in the correct column for the active layout
 
 ## Anti-patterns
 
@@ -347,8 +399,13 @@ async function ProductShell({ searchParams, ... }) {
 }
 
 // ✅ Good — pass searchParams promise to dynamic islands only
-<Suspense fallback={<GallerySkeleton />}>
+<Suspense fallback={<ImmersiveGalleryFallback src={...} alt={...} />}>
   <VariantGalleryDynamic product={product} searchParams={searchParams} />
+</Suspense>
+
+// Route + page skeletons share ProductRouteSkeleton (reads PDP_GALLERY_LAYOUT)
+<Suspense fallback={<ProductRouteSkeleton />}>
+  <ProductShell ... />
 </Suspense>
 ```
 

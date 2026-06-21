@@ -66,37 +66,41 @@ return (
 
 File: [`src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`](<../../../src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx>)
 
-PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDynamic`, `VariantSectionDynamic`). To mold the PDP:
+PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDynamic`, `VariantSectionDynamic`). **Layout width, grid ratio, and gallery style** are centralized in [`gallery-layout.ts`](../../../src/ui/components/pdp/gallery-layout.ts) (`PDP_GALLERY_LAYOUT`). To mold the PDP:
 
-1. **Static design** (gallery column layout, name, attributes, breadcrumbs, new editorial/spec/related bands) lives in `ProductShell` from cached `product` data.
+1. **Static design** (gallery column shell, name, breadcrumbs, new editorial/spec/related bands) lives in `ProductShell` from cached `product` data.
 2. **Variant-dependent UI** stays in the dynamic islands (they read `searchParams.variant`) — don't lift variant state into the shell.
-3. **Layout width / columns**: the default is a two-column `lg:grid-cols-2`; you may change the grid ratio, go full-width, or add full-bleed sections **below** the buy-box — all in the shell.
+3. **Layout width / columns**: flip `PDP_GALLERY_LAYOUT` for shop-wide immersive vs standard, or extend `PDP_LAYOUT_CLASSES` for a new ratio. `container-full` + wide gallery column is the default immersive path.
 4. **Add a new PDP section** (related products, reviews, story, spec table): render it in `ProductShell` from cached data, or as its own nested `<Suspense>` island if it needs runtime/searchParams data. Keep the buy box (`VariantSectionDynamic`) and its add-to-cart Server Action intact.
-5. **Preserve LCP**: keep the `<link rel="preload">` for the default hero image in `ProductShell` and `priority` on the first gallery image. Don't add a heavier hero above the gallery.
+5. **Preserve LCP**: keep the gallery Suspense fallback (`ImmersiveGalleryFallback` / `ProductGalleryFallback`) with `priority` on the default hero — don't add a heavier hero above the gallery.
 6. **Preserve mobile commerce UX**: keep the sticky add-to-cart bar (`sticky-bar.tsx`); use CSS `order-*` (see `data-caching` §CSS order) when dynamic content must appear above static `h1` while keeping `h1` in the static shell for SEO.
+7. **Route skeletons**: use `ProductRouteSkeleton` in `loading.tsx` — never hand-roll a 2-column skeleton that disagrees with `PDP_GALLERY_LAYOUT`.
 
 ```tsx
-// Sketch: PDP with an added cached "details" band below the buy box
-<main className="container-content py-section-sm">
-	<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-		<div className="lg:sticky lg:top-[calc(var(--header-height)_+_2rem)] lg:self-start">
-			<Suspense fallback={<GallerySkeleton />}>
+// Sketch: immersive PDP (default) — attributes below gallery, buy box sticky right
+const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
+
+<main className={layout.main}>
+	<div className={layout.grid}>
+		<div className={layout.galleryColumn}>
+			<Suspense fallback={<ImmersiveGalleryFallback src={lcpUrl} alt={product.name} />}>
 				<VariantGalleryDynamic product={product} searchParams={searchParams} />
 			</Suspense>
 		</div>
-		<div className="flex flex-col gap-3">
+		<div className={layout.infoColumn}>
 			<h1 className="order-2 text-balance text-h1">{product.name}</h1>
 			<ErrorBoundary FallbackComponent={VariantSectionError}>
 				<Suspense fallback={<VariantSectionSkeleton />}>
 					<VariantSectionDynamic product={product} searchParams={searchParams} />
 				</Suspense>
 			</ErrorBoundary>
-			<ProductAttributes className="order-4 mt-6" product={product} />
 		</div>
+		{layout.attributesPlacement === "gallery" && (
+			<div className={layout.attributesGalleryBlock}>
+				<ProductAttributes ... />
+			</div>
+		)}
 	</div>
-
-	{/* New static, cached section — fine in the shell (no searchParams) */}
-	<ProductStoryBand className="mt-section-md" product={product} />
 </main>
 ```
 
