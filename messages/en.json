@@ -61,6 +61,14 @@
 			"returnsBody": "Free returns within {returnsWindowDays} days of purchase. Items must be unworn with tags attached.",
 			"yes": "Yes",
 			"no": "No"
+		},
+		"zoom": {
+			"title": "{productName} — enlarged image",
+			"imageAlt": "{productName} — view {index}",
+			"close": "Close enlarged image",
+			"previous": "Previous image",
+			"next": "Next image",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

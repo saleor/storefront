@@ -61,6 +61,14 @@
 			"returnsBody": "Retours gratuits sous {returnsWindowDays} jours après l'achat. Les articles doivent être non portés et avec leurs étiquettes.",
 			"yes": "Oui",
 			"no": "Non"
+		},
+		"zoom": {
+			"title": "{productName} — image agrandie",
+			"imageAlt": "{productName} — vue {index}",
+			"close": "Fermer l'image agrandie",
+			"previous": "Image précédente",
+			"next": "Image suivante",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

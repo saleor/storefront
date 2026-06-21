@@ -12,12 +12,12 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 			seoTitle
 			seoDescription
 		}
-		thumbnail(size: 1024, format: WEBP) {
+		thumbnail(size: 2048, format: WEBP) {
 			url
 			alt
 		}
 		media {
-			url(size: 1024, format: WEBP)
+			url(size: 2048, format: WEBP)
 			alt
 			type
 		}

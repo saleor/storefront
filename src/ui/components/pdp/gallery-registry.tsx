@@ -14,8 +14,7 @@
  *
  * 1. **Interactive (`"use client"`) renderers are loaded via `next/dynamic`** so
  *    each compiles to its own chunk and only the active layout's JS is ever
- *    requested by the browser. Server-Component renderers (e.g. mosaic) cost zero
- *    client JS and are imported directly.
+ *    requested by the browser. Fallbacks and skeletons stay Server Components.
  * 2. **The registry is the only place that references the renderers.** They are
  *    NOT re-exported from `index.ts`; consumers (`VariantGalleryDynamic`,
  *    `ProductShell`, `ProductRouteSkeleton`) read the active variant through
@@ -36,7 +35,7 @@ import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { ImageCarouselImage } from "@/ui/components/ui/image-carousel";
 import { PDP_GALLERY_LAYOUT, type PdpGalleryLayout } from "./gallery-layout";
-import { MosaicGallery } from "./mosaic-gallery";
+import { galleryImageFrameClass } from "@/ui/components/shared/gallery-image-frame";
 import { MosaicGalleryFallback, MosaicGallerySkeleton } from "./mosaic-gallery-fallback";
 import { ProductGalleryFallback } from "./product-gallery-fallback";
 import { ProductGalleryShell } from "./product-gallery-shell";
@@ -65,7 +64,7 @@ export interface GalleryVariant {
 function StandardGallerySkeleton() {
 	return (
 		<ProductGalleryShell imageCount={1} showChrome={false}>
-			<div className="relative aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
+			<div className={galleryImageFrameClass("aspect-[4/5] w-full animate-pulse bg-muted")} />
 		</ProductGalleryShell>
 	);
 }
@@ -82,6 +81,10 @@ const LazyImmersiveGallery = dynamic(
 	},
 );
 
+const LazyMosaicGallery = dynamic(() => import("./mosaic-gallery").then((mod) => mod.MosaicGallery), {
+	loading: () => <MosaicGallerySkeleton />,
+});
+
 export const GALLERY_REGISTRY: Record<PdpGalleryLayout, GalleryVariant> = {
 	standard: {
 		Gallery: LazyStandardGallery,
@@ -93,9 +96,9 @@ export const GALLERY_REGISTRY: Record<PdpGalleryLayout, GalleryVariant> = {
 		Fallback: ImmersiveGalleryFallback,
 		Skeleton: ImmersiveGallerySkeleton,
 	},
-	// Server Component renderer — zero client JS, imported directly.
+	// Client renderer — lazy so zoom + grid JS ships only when mosaic is active.
 	mosaic: {
-		Gallery: MosaicGallery,
+		Gallery: LazyMosaicGallery,
 		Fallback: MosaicGalleryFallback,
 		Skeleton: MosaicGallerySkeleton,
 	},

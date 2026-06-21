@@ -61,6 +61,14 @@
 			"returnsBody": "Ilmaiset palautukset {returnsWindowDays} päivän kuluessa ostosta. Tuotteiden on oltava käyttämättömiä ja tunnisteineen.",
 			"yes": "Kyllä",
 			"no": "Ei"
+		},
+		"zoom": {
+			"title": "{productName} — suurennettu kuva",
+			"imageAlt": "{productName} — näkymä {index}",
+			"close": "Sulje suurennettu kuva",
+			"previous": "Edellinen kuva",
+			"next": "Seuraava kuva",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

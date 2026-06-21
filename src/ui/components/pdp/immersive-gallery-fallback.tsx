@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { PDP_IMMERSIVE_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
-import { cn } from "@/lib/utils";
+import { GalleryImageFrame, galleryImageFrameClass } from "@/ui/components/shared/gallery-image-frame";
 import { PDP_IMMERSIVE_IMAGE_HEIGHT } from "./gallery-layout";
 
 interface ImmersiveGalleryFallbackProps {
@@ -21,9 +21,9 @@ export function ImmersiveGalleryFallback({ src, alt }: ImmersiveGalleryFallbackP
 		<div className="flex flex-col gap-4">
 			<div className="overflow-hidden">
 				<div className="flex gap-2">
-					<div
-						className={cn(
-							"relative aspect-square w-full shrink-0 overflow-hidden rounded-lg bg-secondary lg:w-auto lg:basis-auto",
+					<GalleryImageFrame
+						className={galleryImageFrameClass(
+							"aspect-square w-full shrink-0 lg:w-auto lg:basis-auto",
 							PDP_IMMERSIVE_IMAGE_HEIGHT,
 						)}
 					>
@@ -36,7 +36,7 @@ export function ImmersiveGalleryFallback({ src, alt }: ImmersiveGalleryFallbackP
 							quality={PRODUCT_IMAGE_QUALITY}
 							priority
 						/>
-					</div>
+					</GalleryImageFrame>
 				</div>
 			</div>
 		</div>
@@ -48,10 +48,7 @@ export function ImmersiveGallerySkeleton() {
 	return (
 		<div className="flex flex-col gap-4">
 			<div
-				className={cn(
-					"aspect-square w-full animate-pulse rounded-lg bg-muted lg:w-auto",
-					PDP_IMMERSIVE_IMAGE_HEIGHT,
-				)}
+				className={`aspect-square w-full animate-pulse rounded-lg bg-muted lg:w-auto ${PDP_IMMERSIVE_IMAGE_HEIGHT}`}
 			/>
 		</div>
 	);

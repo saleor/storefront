@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { PDP_MOSAIC_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { GalleryImageFrame } from "@/ui/components/shared/gallery-image-frame";
 
 interface MosaicGalleryFallbackProps {
 	src: string;
@@ -24,7 +25,7 @@ export function MosaicGalleryFallback({
 
 	return (
 		<div className="grid grid-cols-2 gap-2 sm:gap-3">
-			<div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
+			<GalleryImageFrame className="aspect-[4/5] w-full">
 				<Image
 					src={src}
 					alt={alt}
@@ -34,7 +35,7 @@ export function MosaicGalleryFallback({
 					quality={PRODUCT_IMAGE_QUALITY}
 					priority
 				/>
-			</div>
+			</GalleryImageFrame>
 			{Array.from({ length: placeholderCount }).map((_, index) => (
 				<div key={index} className="aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
 			))}

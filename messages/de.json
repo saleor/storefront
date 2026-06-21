@@ -61,6 +61,14 @@
 			"returnsBody": "Kostenlose Rückgabe innerhalb von {returnsWindowDays} Tagen nach dem Kauf. Artikel müssen ungetragen und mit Etiketten versehen sein.",
 			"yes": "Ja",
 			"no": "Nein"
+		},
+		"zoom": {
+			"title": "{productName} — vergrößertes Bild",
+			"imageAlt": "{productName} — Ansicht {index}",
+			"close": "Vergrößertes Bild schließen",
+			"previous": "Vorheriges Bild",
+			"next": "Nächstes Bild",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

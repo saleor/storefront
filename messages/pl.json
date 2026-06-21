@@ -61,6 +61,14 @@
 			"returnsBody": "Darmowe zwroty w ciągu {returnsWindowDays} dni od zakupu. Produkty muszą być nieużywane i z metkami.",
 			"yes": "Tak",
 			"no": "Nie"
+		},
+		"zoom": {
+			"title": "{productName} — powiększone zdjęcie",
+			"imageAlt": "{productName} — widok {index}",
+			"close": "Zamknij powiększone zdjęcie",
+			"previous": "Poprzednie zdjęcie",
+			"next": "Następne zdjęcie",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

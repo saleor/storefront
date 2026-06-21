@@ -61,6 +61,14 @@
 			"returnsBody": "Gratis retur innen {returnsWindowDays} dager etter kjøp. Varene må være ubrukte med merkelapper.",
 			"yes": "Ja",
 			"no": "Nei"
+		},
+		"zoom": {
+			"title": "{productName} — forstørret bilde",
+			"imageAlt": "{productName} — visning {index}",
+			"close": "Lukk forstørret bilde",
+			"previous": "Forrige bilde",
+			"next": "Neste bilde",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {
