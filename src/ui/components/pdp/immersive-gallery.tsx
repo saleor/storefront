@@ -117,7 +117,7 @@ export function ImmersiveGallery({ images, productName }: ImmersiveGalleryProps)
 								type="button"
 								variant="outline-solid"
 								size="icon"
-								className="rounded-full"
+								className="rounded-full shadow-none"
 								onClick={() => api?.scrollPrev()}
 								disabled={!canScrollPrev}
 								aria-label="Previous image"
@@ -128,7 +128,7 @@ export function ImmersiveGallery({ images, productName }: ImmersiveGalleryProps)
 								type="button"
 								variant="outline-solid"
 								size="icon"
-								className="rounded-full"
+								className="rounded-full shadow-none"
 								onClick={() => api?.scrollNext()}
 								disabled={!canScrollNext}
 								aria-label="Next image"

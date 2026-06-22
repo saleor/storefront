@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { TransformComponent, TransformWrapper, type ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/ui/components/shared/logo";
+import { GalleryProgressDots } from "@/ui/components/shared/gallery-progress-dots";
 import { Button } from "@/ui/components/ui/button";
 import {
 	Dialog,
@@ -84,6 +85,7 @@ export function ProductImageViewer({
 				fullscreen
 				className="border-0 bg-background p-0 shadow-none"
 				onOpenAutoFocus={(event) => event.preventDefault()}
+				onCloseAutoFocus={(event) => event.preventDefault()}
 			>
 				<DialogTitle className="sr-only">{t("title", { productName })}</DialogTitle>
 				<DialogDescription className="sr-only">{alt}</DialogDescription>
@@ -125,8 +127,14 @@ export function ProductImageViewer({
 					</div>
 
 					{hasMultiple && (
-						<footer className="relative z-20 flex shrink-0 justify-center px-4 pb-4 pt-2">
-							<span className="text-sm tabular-nums text-muted-foreground" aria-live="polite">
+						<footer className="relative z-20 flex shrink-0 flex-col items-center gap-2 px-4 pb-5 pt-3">
+							<GalleryProgressDots
+								count={images.length}
+								activeIndex={index}
+								onSelect={setIndex}
+								getAriaLabel={(imageIndex) => t("imageAlt", { productName, index: imageIndex })}
+							/>
+							<span className="sr-only" aria-live="polite">
 								{t("counter", { current: index + 1, total: images.length })}
 							</span>
 						</footer>
@@ -138,7 +146,7 @@ export function ProductImageViewer({
 								type="button"
 								variant="outline-solid"
 								size="icon"
-								className={cn("pointer-events-auto rounded-full bg-background/90 shadow-md")}
+								className={cn("pointer-events-auto rounded-full bg-background/90 shadow-none")}
 								onClick={goToPrevious}
 								aria-label={t("previous")}
 							>
@@ -148,7 +156,7 @@ export function ProductImageViewer({
 								type="button"
 								variant="outline-solid"
 								size="icon"
-								className={cn("pointer-events-auto rounded-full bg-background/90 shadow-md")}
+								className={cn("pointer-events-auto rounded-full bg-background/90 shadow-none")}
 								onClick={goToNext}
 								aria-label={t("next")}
 							>

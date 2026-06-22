@@ -15,9 +15,10 @@
  * Keeping both in one place means the shell, the dynamic island, the Suspense
  * fallback, and the skeleton can never disagree about the active layout.
  *
- * Agent note: when asked to make the PDP "full bleed" / immersive, set this to
+ * Agent note: when asked to make the PDP immersive (wide gallery + sticky buy box), set this to
  * `"immersive"`; to restore the classic split layout, set it to `"standard"`; for
  * an editorial grid where every image is visible at once, set it to `"mosaic"`.
+ * For edge-to-edge width, change the active layout's `main` class to `container-full`.
  */
 export type PdpGalleryLayout = "standard" | "immersive" | "mosaic";
 

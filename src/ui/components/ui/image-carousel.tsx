@@ -168,14 +168,14 @@ export function ImageCarousel({
 							<CarouselPrevious
 								variant="ghost"
 								className={cn(
-									"left-4 z-10 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
+									"left-4 z-10 hidden border border-border bg-background opacity-0 shadow-none transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>
 							<CarouselNext
 								variant="ghost"
 								className={cn(
-									"right-4 z-10 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
+									"right-4 z-10 hidden border border-border bg-background opacity-0 shadow-none transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>
