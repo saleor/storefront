@@ -56,6 +56,17 @@ import { Sheet, SheetContent, SheetTrigger } from "@/ui/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/ui/components/ui/dropdown-menu";
 ```
 
+## Beautify the primitive — never ship the default look
+
+shadcn/Radix primitives are an **unstyled starting point, not the finished product.** A default-looking button or input is a tell that the work isn't done. When you touch a primitive, make it look _considered_:
+
+- **Extend the `cva` matrix, don't fork.** Add the variant/size you need to the primitive's `cva` map (it flows to `VariantProps`) — see `ui-design-system.md`. Never hand-roll a one-off with `cn()` conditionals or a parallel component.
+- **State is part of the design.** Every interactive primitive needs deliberate `hover`, `focus-visible`, `active`, and `disabled`/`aria-disabled` treatments — token-backed, consistent, accessible (`focus-visible` ring, ≥44px tap target).
+- **Rhythm over arbitrary numbers.** Size, padding, and radius come from tokens (`rounded-button`/`rounded-card`, spacing scale), so a primitive matches the rest of the system.
+- **Restraint still rules.** "Beautiful" here means crafted and consistent, not loud — spend brand color by tier (see `design-quality-rubric` Brand Influence Policy). A primitive earns brand color only on its Tier-1 moments (primary CTA, selected state), never by tinting its whole surface.
+
+> The bar: a developer should be able to drop in a primitive and have it already look like it belongs in a premium store — because the variant, states, and tokens were designed, not defaulted.
+
 ## Export Pattern
 
 If component is in a subdirectory, export from index:
@@ -122,7 +133,8 @@ export function Card({ title, children, className }: CardProps) {
 
 ## Anti-patterns
 
-❌ **Don't hardcode brand colors** (hex/rgb in components) when a token exists — edit `brand.css` instead  
+❌ **NEVER hardcode colors.** No hex / `rgb()` / `hsl()` — hard-failed by the `check-design-tokens` gate. And by convention, no literal `text-white` / `bg-black` / `text-black` in `className` either (use `text-primary-foreground`, `text-inverse*`, etc.) — _everything_ is themed through `brand.css` tokens. Need a color that doesn't exist? Add the token, don't inline it.  
+❌ **Don't ship the default primitive look** — extend the `cva` matrix with crafted variants + states (see "Beautify the primitive")  
 ❌ **Don't add `"use client"` unless needed** - Prefer Server Components  
-❌ **Don't create new primitives** - Use existing shadcn/ui components  
-❌ **Don't use inline styles** for brand colors - Use Tailwind classes backed by tokens
+❌ **Don't hand-roll a new primitive** when an existing shadcn/ui one can be extended via its `cva` map  
+❌ **Don't use inline styles** for brand values - Use Tailwind classes backed by tokens

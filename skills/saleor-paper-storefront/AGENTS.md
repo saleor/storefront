@@ -3664,6 +3664,14 @@ Use semantic Tailwind classes mapped to `brand.css` — never raw palette values
 
 Light-only UI (no `.dark`). Optional editorial display font via `NEXT_PUBLIC_TYPOGRAPHY_THEME=editorial`.
 
+**Keep the palette to ~3–5 colors.** A premium palette is small: **one** primary/brand color + the neutral ramp (background/foreground/greys) + **1–2** accents (e.g. `bestseller`, sale). Don't exceed ~5 meaningful colors without a deliberate reason — more colors read as noise, not richness.
+
+**Don't default to purple/violet.** It's the generic "AI-generated" tell. Use it only when the brand or reference genuinely calls for it — never as a fallback brand color.
+
+**Changing a background means changing its text.** Never set a surface color without its paired foreground. Use the token _pairs_ so contrast is automatic — `bg-primary`→`text-primary-foreground`, `bg-foreground`→`text-inverse*`, `bg-card`→`text-card-foreground`. Don't hand-pick a text color against a new background.
+
+**Spend brand color by tier (Brand Influence Policy).** Having a token does not mean painting it with brand color. The shell stays neutral; brand color is reserved for **Tier-1 signature** slots (`primary`/CTAs, focus emphasis, links, bestseller/sale badges, selected states). Backgrounds, cards, borders, muted panels and text are a **neutral ramp** — they take at most a whisper of hue, and only when a `tinted`/`bold` surface strategy is deliberately chosen. `destructive`/`success` stay true red/green. See [`design-quality-rubric`](design-quality-rubric.md#the-brand-influence-policy--spend-brand-color-by-tier) for the full tier table, surface strategy, and section rhythm, and [`design-from-image`](design-from-image.md#borrowing-colors-from-a-reference-with-restraint) for borrowing reference colors into OKLCH tokens.
+
 ## Typography (semantic, fluid)
 
 Headings/marketing copy use **role tokens** sized with `clamp()` — no `md:text-4xl` breakpoint stacks. Always merge through `cn()` (size + color share the `text-*` prefix; the merge config registers these).
@@ -3732,6 +3740,22 @@ Also available as `gap-section-*`, `mt-section-*`, etc.
 
 Guard non-trivial motion with `motion-reduce:` / `prefers-reduced-motion`.
 
+## Expressive layer (opt-in, Tier-2 — define as tokens, never inline)
+
+Some brands _do_ call for richer surfaces — a gradient hero band, a softer elevated hover, a signature motion. That's legitimate **Tier-2 structural** expression. Two rules keep it premium instead of cheap:
+
+1. **It lives in `brand.css` as a token**, never as an inline `style`/one-off class. Add e.g. `--gradient-hero`, `--shadow-elevated-brand`, `--ease-signature`, map it in `tailwind.config.cjs`, then use the utility. A rebrand still flows from one place.
+2. **It's opt-in and contained, not a default.** Expressive treatment belongs on the _same_ deliberate surfaces the influence policy already allows a color band (~1 in 3–4 sections; a hero; a feature CTA). The neutral shell and product surfaces stay clean.
+
+```css
+/* brand.css — only if the brand calls for it */
+--gradient-hero: linear-gradient(180deg, oklch(var(--secondary)), oklch(var(--background)));
+```
+
+**If you do use a gradient, keep it disciplined:** subtle accent only (never on primary/interactive elements or behind product media); **analogous** hues only (blue→teal, orange→red) — never opposing temperatures (orange→blue, pink→green, red→cyan); **2–3 stops max**, no rainbow ramps.
+
+**Hard nos (these read as dated/cheap in premium commerce):** glow shadows (`--shadow-glow`), neon/`drop-shadow` on text, rainbow or high-contrast gradients on body surfaces, gradients behind product imagery. Aesop/SSENSE/Hermès don't glow — neither do we by default. When unsure, omit it: restraint is the house style (see [`design-quality-rubric`](design-quality-rubric.md)).
+
 ## Primitive variant matrix (cva)
 
 Primitives in `src/ui/components/ui/` use [`class-variance-authority`](https://cva.style). Extend a variant by adding to the `cva` map — do not hand-roll new `cn()` conditionals or fork a primitive.
@@ -3780,7 +3804,7 @@ Restart `next dev` after editing `tailwind.config.cjs`; `rm -rf .next` if JIT se
 
 The bar for "world-class" when molding storefront surfaces (PDP, homepage, marketing sections). Use this to make design decisions and to self-review before finishing. Pairs with [`ui-design-system`](ui-design-system.md) (the token vocabulary) and [`page-composition`](page-composition.md) (the architecture rails).
 
-> Aspire to the craft of top commerce design (Aesop, SSENSE, Apple, Glossier, Hermès): confident typography, generous and intentional whitespace, restrained palette, photography-led hierarchy. Restraint reads as premium. When in doubt, remove.
+> **Always act as a world-class ecommerce designer.** Before any visual work, step into the role of a senior product designer at a top commerce studio (Aesop, SSENSE, Apple, Glossier, Hermès, Cotopaxi). Hold every screen to that bar: confident typography, generous and intentional whitespace, a **restrained palette**, and photography-led hierarchy. **Restraint reads as premium — when in doubt, remove.** A page that looks "branded everywhere" looks like a template; a page that looks expensive spends its brand budget deliberately.
 > For an external accessibility/UX audit pass, invoke the `web-design-guidelines` skill.
 
 ## The principles
@@ -3806,7 +3830,34 @@ Every screen has a single most-important element (hero headline, product image, 
 ### 4. Color & contrast — restrained, semantic, accessible
 
 - Lean on neutrals; use `--primary`/`--destructive` sparingly for action and emphasis.
-- Token-only (see `ui-design-system`). Body text ≥ 4.5:1, large text / UI ≥ 3:1. On `bg-foreground` bands use `text-inverse*`.
+- **Keep to ~3–5 colors**: one primary/brand + the neutral ramp + 1–2 accents. Don't default to purple/violet (the generic "AI" tell) unless the brand calls for it.
+- Token-only (see `ui-design-system`). Body text ≥ 4.5:1, large text / UI ≥ 3:1. On `bg-foreground` bands use `text-inverse*`; change a background only via its paired foreground token.
+
+#### The Brand Influence Policy — spend brand color by tier
+
+Not every element deserves brand color. Each token carries an explicit "expression budget." This is what separates a premium store from a recoloured template:
+
+| Tier                  | Elements                                                                                               | Brand influence                                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **1 — Signature**     | Primary CTA (`bg-primary`), focus emphasis, links, bestseller/sale badges, selected/active states      | **Full accent.** These — and only these — carry the saturated brand hue.                                                             |
+| **2 — Structural**    | Radius, typography (`--radius`, display font)                                                          | **Full, free.** Personality is cheap and safe here; let shape + type do most of the "feel."                                          |
+| **3 — Neutral shell** | `background`, `card`, `popover`, `muted`, `secondary`, `accent`, `border`, `input`, all `*-foreground` | **Near-zero.** Stay a high-contrast neutral grayscale. At most a _whisper_ of hue, and only via a deliberate surface choice (below). |
+
+Semantic colors (`destructive` error, `success`) stay true red/green — they're trust signals, not brand paint. Focus rings stay neutral chrome for consistency.
+
+#### Surface strategy — the background decision is deliberate, not automatic
+
+Most world-class stores use a **white/near-white** ground and reserve color for Tier 1. Going colored is a _choice_, not a default:
+
+- **Clean** (default, ~90% of premium commerce): white/near-white shell, near-black text, color only on signature slots. SSENSE, Apple, Glossier, Cotopaxi.
+- **Tinted**: a deliberate, very subtle brand-tinted ground (still light, capped chroma). Aesop, Le Labo.
+- **Bold**: a confident colored/dark shell — but keep **product surfaces (cards/media) near-white** so the product stays the hero. Use rarely and commit fully.
+
+#### Section accent rhythm — which sections may take color
+
+Keep most bands on the neutral ground. Reserve color/contrast for rhythm: **at most ~1 in 3–4 sections** becomes a dark (`bg-foreground`) or brand (`bg-primary`) "feature" band — a hero, a values/CTA band, an editorial break. Product media always sits on a neutral surface. One bold moment reads as confident; bold everywhere reads as noise.
+
+> Apply this whether you're steering prompt-by-prompt or matching a reference: keep the neutral ramp neutral, choose a surface strategy deliberately, and route brand color to Tier-1 only. For borrowing exact colors from a reference into OKLCH tokens, see [`design-from-image`](design-from-image.md#borrowing-colors-from-a-reference-with-restraint).
 
 ### 5. Imagery — the product is the hero
 
@@ -3852,6 +3903,7 @@ Run this checklist (and fix what fails) before considering a design done:
 - [ ] Only role typography tokens; one display element; readable measure (~60–80ch) everywhere, including full-bleed.
 - [ ] Vertical rhythm uses `py-section-*`; spacing feels consistent and generous.
 - [ ] Color/spacing/radius/shadow are token-backed — zero hardcoded hex/px.
+- [ ] **Brand budget spent by tier**: shell/chrome stays neutral; brand color appears only on Tier-1 signature slots; surface strategy (clean/tinted/bold) is intentional; ≤ ~1 in 3–4 sections takes a color/dark band.
 - [ ] Images: `next/image`, correct `sizes`, `priority` only on LCP, consistent aspect ratios, no CLS, meaningful `alt`.
 - [ ] **Mobile (320–430px): no horizontal scroll; tap targets ≥44px; no hover-only; CTA reachable; single-column reads well.**
 - [ ] Width choice is intentional (`prose`/`content`/`wide`/`full`) and stated.
@@ -3862,6 +3914,8 @@ Run this checklist (and fix what fails) before considering a design done:
 
 ## Anti-patterns
 
+❌ Branding the shell — tinting backgrounds/cards/borders or coloring most sections (template look). Keep neutrals neutral; reserve brand color for Tier-1 slots
+❌ Mistaking "beautiful" for "loud" — glow shadows, neon gradients, gradient-behind-product, maximalist color. Beauty here = crafted typography, space, and restraint, expressed through a customized design system (rich treatments are opt-in Tier-2 tokens, not defaults)
 ❌ Multiple competing focal points / multiple `text-display` per page
 ❌ More than two type families, or faux-bold weight stacks
 ❌ Cramped vertical rhythm or inconsistent section spacing
@@ -4126,6 +4180,7 @@ const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
 How to turn a user's prompt, reference screenshot, mockup, or "make it look like X" into Paper UI — by reconfiguring the design system, not bypassing it. This is the generative workflow that ties the design rules together.
 
 > Read together with [`ui-design-system`](ui-design-system.md) (tokens), [`ui-sections`](ui-sections.md) (blocks), [`page-composition`](page-composition.md) (PPR rails), [`design-quality-rubric`](design-quality-rubric.md) (the bar).
+> **Act as a world-class ecommerce designer** (see the rubric's opening directive): reproduce the _spirit_, with restraint. A reference that's loud everywhere should still become a tasteful, premium store, not a literal repaint.
 > Core stance: **reproduce the design's spirit by adjusting tokens and composing existing blocks** — not by hardcoding values or cloning markup pixel-for-pixel. This keeps output on-brand, performant, accessible, and low-divergence.
 
 ## Workflow
@@ -4153,7 +4208,7 @@ From the prompt/image, write a short internal design brief (and ask 1–3 questi
 - **Surface & scope**: homepage? PDP? a single section? full redesign?
 - **Layout structure**: section stack, columns, and **width intent per band** (centered `content`, immersive `wide`, or `full`-bleed). Note that full-width is allowed.
 - **Type personality**: geometric/neutral (Geist) vs editorial/serif (Fraunces editorial theme); display scale usage.
-- **Palette direction**: neutral/warm/cool, accent usage, light (Paper is light-only).
+- **Palette direction & surface strategy**: decide the shell first — `clean` (white/near-white, the premium default), `tinted` (subtle brand ground), or `bold` (colored shell, cards stay near-white). Then pick the **accent** the brand spends on Tier-1 only (CTA, badges, links). Don't tint the whole shell to match a colorful reference — that's the template trap (see the rubric's Brand Influence Policy). Light-only.
 - **Density & rhythm**: airy vs compact (maps to `py-section-sm/md/lg`).
 - **Imagery role**: photography-led? product-forward? editorial?
 - **Mobile intent**: how the structure collapses to one column (it must — see rubric).
@@ -4164,17 +4219,36 @@ If the user supplied an image, read it for these signals; don't transcribe its e
 
 Translate the brief into **token and component decisions**:
 
-| From the reference                            | Map to                                                                                                    |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Colors / mood                                 | Adjust `--background`, `--foreground`, `--primary`, etc. in `brand.css` (OKLCH) — never per-component hex |
-| Type personality                              | Choose default vs editorial typography theme; use role tokens (`text-display/h1/h2…`)                     |
-| Corner softness                               | `--radius`                                                                                                |
-| Spacing density                               | `py-section-*` choice + spacing tokens                                                                    |
-| Layout width                                  | `container-prose/content/wide/full` per band                                                              |
-| Elevation / depth                             | `shadow-card/elevated/overlay`                                                                            |
-| Sections (hero, split, columns, grid, quote…) | Pick from the `ui-sections` catalog                                                                       |
+| From the reference                            | Map to                                                                                                          |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Shell mood (bg/text)                          | Pick a **surface strategy** (clean/tinted/bold); keep the neutral ramp neutral unless tinted/bold is deliberate |
+| Brand / accent color                          | Tier-1 only: `--primary` (+ `--bestseller`/sale). Adjust in `brand.css` (OKLCH) — never per-component hex       |
+| Type personality                              | Choose default vs editorial typography theme; use role tokens (`text-display/h1/h2…`)                           |
+| Corner softness                               | `--radius`                                                                                                      |
+| Spacing density                               | `py-section-*` choice + spacing tokens                                                                          |
+| Layout width                                  | `container-prose/content/wide/full` per band                                                                    |
+| Elevation / depth                             | `shadow-card/elevated/overlay`                                                                                  |
+| Sections (hero, split, columns, grid, quote…) | Pick from the `ui-sections` catalog                                                                             |
 
 A whole-store restyle is mostly a `brand.css` edit + section selection — that is the point.
+
+#### Borrowing colors from a reference (with restraint)
+
+When the reference gives you concrete colors (swatches, an image, a brand site), map them onto tokens **by tier**, never by repainting the shell:
+
+1. **Pick the shell first** — usually `clean` (keep `--background`/`--foreground` neutral). Choose `tinted`/`bold` only if the reference is _deliberately_ colored and you commit to it (cards/product stay near-white).
+2. **Extract only the signature color(s)** — the brand's CTA/accent hue (sometimes a secondary for badges). Ignore the dozens of incidental colors in a screenshot.
+3. **Convert to OKLCH channels** — brand.css needs bare `"L C H"`, which you can't eyeball. Use the helper:
+
+```bash
+node scripts/brand/color.mjs "#1466b3" "#f08c1d"
+# 1466b3 -> 0.5064 0.1424 252.3   → paste into --primary
+# f08c1d -> 0.7318 0.1628 60.7    → paste into --bestseller
+```
+
+4. **Assign to Tier-1 only** — `--primary` (+ `--bestseller`/sale). Leave the neutral ramp and semantic `--destructive`/`--success` alone. See the rubric's Brand Influence Policy.
+
+This is the whole "match a reference's color" job — a couple of OKLCH tokens, not a brand-DNA exercise.
 
 ### 3. Select & compose existing blocks first
 
@@ -4209,6 +4283,7 @@ Run the [`design-quality-rubric`](design-quality-rubric.md) self-check, then the
 
 ## Anti-patterns
 
+❌ Repainting the whole shell to match a colorful reference (tinted backgrounds/cards everywhere) instead of a clean shell + Tier-1 accent — the template trap
 ❌ Hardcoding the reference's exact hex/px/fonts into components instead of adjusting tokens
 ❌ Cloning a screenshot's markup pixel-for-pixel (brittle, off-brand, unmaintainable) — reproduce intent via the system
 ❌ Inventing new primitives/sections when a catalog block + variant would do
@@ -4332,6 +4407,17 @@ import { Sheet, SheetContent, SheetTrigger } from "@/ui/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/ui/components/ui/dropdown-menu";
 ```
 
+## Beautify the primitive — never ship the default look
+
+shadcn/Radix primitives are an **unstyled starting point, not the finished product.** A default-looking button or input is a tell that the work isn't done. When you touch a primitive, make it look _considered_:
+
+- **Extend the `cva` matrix, don't fork.** Add the variant/size you need to the primitive's `cva` map (it flows to `VariantProps`) — see `ui-design-system.md`. Never hand-roll a one-off with `cn()` conditionals or a parallel component.
+- **State is part of the design.** Every interactive primitive needs deliberate `hover`, `focus-visible`, `active`, and `disabled`/`aria-disabled` treatments — token-backed, consistent, accessible (`focus-visible` ring, ≥44px tap target).
+- **Rhythm over arbitrary numbers.** Size, padding, and radius come from tokens (`rounded-button`/`rounded-card`, spacing scale), so a primitive matches the rest of the system.
+- **Restraint still rules.** "Beautiful" here means crafted and consistent, not loud — spend brand color by tier (see `design-quality-rubric` Brand Influence Policy). A primitive earns brand color only on its Tier-1 moments (primary CTA, selected state), never by tinting its whole surface.
+
+> The bar: a developer should be able to drop in a primitive and have it already look like it belongs in a premium store — because the variant, states, and tokens were designed, not defaulted.
+
 ## Export Pattern
 
 If component is in a subdirectory, export from index:
@@ -4398,10 +4484,11 @@ export function Card({ title, children, className }: CardProps) {
 
 ## Anti-patterns
 
-❌ **Don't hardcode brand colors** (hex/rgb in components) when a token exists — edit `brand.css` instead  
+❌ **NEVER hardcode colors.** No hex / `rgb()` / `hsl()` — hard-failed by the `check-design-tokens` gate. And by convention, no literal `text-white` / `bg-black` / `text-black` in `className` either (use `text-primary-foreground`, `text-inverse*`, etc.) — _everything_ is themed through `brand.css` tokens. Need a color that doesn't exist? Add the token, don't inline it.  
+❌ **Don't ship the default primitive look** — extend the `cva` matrix with crafted variants + states (see "Beautify the primitive")  
 ❌ **Don't add `"use client"` unless needed** - Prefer Server Components  
-❌ **Don't create new primitives** - Use existing shadcn/ui components  
-❌ **Don't use inline styles** for brand colors - Use Tailwind classes backed by tokens
+❌ **Don't hand-roll a new primitive** when an existing shadcn/ui one can be extended via its `cva` map  
+❌ **Don't use inline styles** for brand values - Use Tailwind classes backed by tokens
 
 ---
 

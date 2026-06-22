@@ -37,6 +37,14 @@ Use semantic Tailwind classes mapped to `brand.css` — never raw palette values
 
 Light-only UI (no `.dark`). Optional editorial display font via `NEXT_PUBLIC_TYPOGRAPHY_THEME=editorial`.
 
+**Keep the palette to ~3–5 colors.** A premium palette is small: **one** primary/brand color + the neutral ramp (background/foreground/greys) + **1–2** accents (e.g. `bestseller`, sale). Don't exceed ~5 meaningful colors without a deliberate reason — more colors read as noise, not richness.
+
+**Don't default to purple/violet.** It's the generic "AI-generated" tell. Use it only when the brand or reference genuinely calls for it — never as a fallback brand color.
+
+**Changing a background means changing its text.** Never set a surface color without its paired foreground. Use the token _pairs_ so contrast is automatic — `bg-primary`→`text-primary-foreground`, `bg-foreground`→`text-inverse*`, `bg-card`→`text-card-foreground`. Don't hand-pick a text color against a new background.
+
+**Spend brand color by tier (Brand Influence Policy).** Having a token does not mean painting it with brand color. The shell stays neutral; brand color is reserved for **Tier-1 signature** slots (`primary`/CTAs, focus emphasis, links, bestseller/sale badges, selected states). Backgrounds, cards, borders, muted panels and text are a **neutral ramp** — they take at most a whisper of hue, and only when a `tinted`/`bold` surface strategy is deliberately chosen. `destructive`/`success` stay true red/green. See [`design-quality-rubric`](design-quality-rubric.md#the-brand-influence-policy--spend-brand-color-by-tier) for the full tier table, surface strategy, and section rhythm, and [`design-from-image`](design-from-image.md#borrowing-colors-from-a-reference-with-restraint) for borrowing reference colors into OKLCH tokens.
+
 ## Typography (semantic, fluid)
 
 Headings/marketing copy use **role tokens** sized with `clamp()` — no `md:text-4xl` breakpoint stacks. Always merge through `cn()` (size + color share the `text-*` prefix; the merge config registers these).
@@ -104,6 +112,22 @@ Also available as `gap-section-*`, `mt-section-*`, etc.
 | Motion    | `duration-fast` (150ms), `duration-base` (250ms), `duration-slow` (400ms); `ease-standard`, `ease-emphasized`                                                                                                                                                                                                                                                  |
 
 Guard non-trivial motion with `motion-reduce:` / `prefers-reduced-motion`.
+
+## Expressive layer (opt-in, Tier-2 — define as tokens, never inline)
+
+Some brands _do_ call for richer surfaces — a gradient hero band, a softer elevated hover, a signature motion. That's legitimate **Tier-2 structural** expression. Two rules keep it premium instead of cheap:
+
+1. **It lives in `brand.css` as a token**, never as an inline `style`/one-off class. Add e.g. `--gradient-hero`, `--shadow-elevated-brand`, `--ease-signature`, map it in `tailwind.config.cjs`, then use the utility. A rebrand still flows from one place.
+2. **It's opt-in and contained, not a default.** Expressive treatment belongs on the _same_ deliberate surfaces the influence policy already allows a color band (~1 in 3–4 sections; a hero; a feature CTA). The neutral shell and product surfaces stay clean.
+
+```css
+/* brand.css — only if the brand calls for it */
+--gradient-hero: linear-gradient(180deg, oklch(var(--secondary)), oklch(var(--background)));
+```
+
+**If you do use a gradient, keep it disciplined:** subtle accent only (never on primary/interactive elements or behind product media); **analogous** hues only (blue→teal, orange→red) — never opposing temperatures (orange→blue, pink→green, red→cyan); **2–3 stops max**, no rainbow ramps.
+
+**Hard nos (these read as dated/cheap in premium commerce):** glow shadows (`--shadow-glow`), neon/`drop-shadow` on text, rainbow or high-contrast gradients on body surfaces, gradients behind product imagery. Aesop/SSENSE/Hermès don't glow — neither do we by default. When unsure, omit it: restraint is the house style (see [`design-quality-rubric`](design-quality-rubric.md)).
 
 ## Primitive variant matrix (cva)
 

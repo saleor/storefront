@@ -3,6 +3,7 @@
 How to turn a user's prompt, reference screenshot, mockup, or "make it look like X" into Paper UI — by reconfiguring the design system, not bypassing it. This is the generative workflow that ties the design rules together.
 
 > Read together with [`ui-design-system`](ui-design-system.md) (tokens), [`ui-sections`](ui-sections.md) (blocks), [`page-composition`](page-composition.md) (PPR rails), [`design-quality-rubric`](design-quality-rubric.md) (the bar).
+> **Act as a world-class ecommerce designer** (see the rubric's opening directive): reproduce the _spirit_, with restraint. A reference that's loud everywhere should still become a tasteful, premium store, not a literal repaint.
 > Core stance: **reproduce the design's spirit by adjusting tokens and composing existing blocks** — not by hardcoding values or cloning markup pixel-for-pixel. This keeps output on-brand, performant, accessible, and low-divergence.
 
 ## Workflow
@@ -30,7 +31,7 @@ From the prompt/image, write a short internal design brief (and ask 1–3 questi
 - **Surface & scope**: homepage? PDP? a single section? full redesign?
 - **Layout structure**: section stack, columns, and **width intent per band** (centered `content`, immersive `wide`, or `full`-bleed). Note that full-width is allowed.
 - **Type personality**: geometric/neutral (Geist) vs editorial/serif (Fraunces editorial theme); display scale usage.
-- **Palette direction**: neutral/warm/cool, accent usage, light (Paper is light-only).
+- **Palette direction & surface strategy**: decide the shell first — `clean` (white/near-white, the premium default), `tinted` (subtle brand ground), or `bold` (colored shell, cards stay near-white). Then pick the **accent** the brand spends on Tier-1 only (CTA, badges, links). Don't tint the whole shell to match a colorful reference — that's the template trap (see the rubric's Brand Influence Policy). Light-only.
 - **Density & rhythm**: airy vs compact (maps to `py-section-sm/md/lg`).
 - **Imagery role**: photography-led? product-forward? editorial?
 - **Mobile intent**: how the structure collapses to one column (it must — see rubric).
@@ -41,17 +42,36 @@ If the user supplied an image, read it for these signals; don't transcribe its e
 
 Translate the brief into **token and component decisions**:
 
-| From the reference                            | Map to                                                                                                    |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Colors / mood                                 | Adjust `--background`, `--foreground`, `--primary`, etc. in `brand.css` (OKLCH) — never per-component hex |
-| Type personality                              | Choose default vs editorial typography theme; use role tokens (`text-display/h1/h2…`)                     |
-| Corner softness                               | `--radius`                                                                                                |
-| Spacing density                               | `py-section-*` choice + spacing tokens                                                                    |
-| Layout width                                  | `container-prose/content/wide/full` per band                                                              |
-| Elevation / depth                             | `shadow-card/elevated/overlay`                                                                            |
-| Sections (hero, split, columns, grid, quote…) | Pick from the `ui-sections` catalog                                                                       |
+| From the reference                            | Map to                                                                                                          |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Shell mood (bg/text)                          | Pick a **surface strategy** (clean/tinted/bold); keep the neutral ramp neutral unless tinted/bold is deliberate |
+| Brand / accent color                          | Tier-1 only: `--primary` (+ `--bestseller`/sale). Adjust in `brand.css` (OKLCH) — never per-component hex       |
+| Type personality                              | Choose default vs editorial typography theme; use role tokens (`text-display/h1/h2…`)                           |
+| Corner softness                               | `--radius`                                                                                                      |
+| Spacing density                               | `py-section-*` choice + spacing tokens                                                                          |
+| Layout width                                  | `container-prose/content/wide/full` per band                                                                    |
+| Elevation / depth                             | `shadow-card/elevated/overlay`                                                                                  |
+| Sections (hero, split, columns, grid, quote…) | Pick from the `ui-sections` catalog                                                                             |
 
 A whole-store restyle is mostly a `brand.css` edit + section selection — that is the point.
+
+#### Borrowing colors from a reference (with restraint)
+
+When the reference gives you concrete colors (swatches, an image, a brand site), map them onto tokens **by tier**, never by repainting the shell:
+
+1. **Pick the shell first** — usually `clean` (keep `--background`/`--foreground` neutral). Choose `tinted`/`bold` only if the reference is _deliberately_ colored and you commit to it (cards/product stay near-white).
+2. **Extract only the signature color(s)** — the brand's CTA/accent hue (sometimes a secondary for badges). Ignore the dozens of incidental colors in a screenshot.
+3. **Convert to OKLCH channels** — brand.css needs bare `"L C H"`, which you can't eyeball. Use the helper:
+
+```bash
+node scripts/brand/color.mjs "#1466b3" "#f08c1d"
+# 1466b3 -> 0.5064 0.1424 252.3   → paste into --primary
+# f08c1d -> 0.7318 0.1628 60.7    → paste into --bestseller
+```
+
+4. **Assign to Tier-1 only** — `--primary` (+ `--bestseller`/sale). Leave the neutral ramp and semantic `--destructive`/`--success` alone. See the rubric's Brand Influence Policy.
+
+This is the whole "match a reference's color" job — a couple of OKLCH tokens, not a brand-DNA exercise.
 
 ### 3. Select & compose existing blocks first
 
@@ -86,6 +106,7 @@ Run the [`design-quality-rubric`](design-quality-rubric.md) self-check, then the
 
 ## Anti-patterns
 
+❌ Repainting the whole shell to match a colorful reference (tinted backgrounds/cards everywhere) instead of a clean shell + Tier-1 accent — the template trap
 ❌ Hardcoding the reference's exact hex/px/fonts into components instead of adjusting tokens
 ❌ Cloning a screenshot's markup pixel-for-pixel (brittle, off-brand, unmaintainable) — reproduce intent via the system
 ❌ Inventing new primitives/sections when a catalog block + variant would do

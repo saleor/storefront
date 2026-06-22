@@ -2,7 +2,7 @@
 
 The bar for "world-class" when molding storefront surfaces (PDP, homepage, marketing sections). Use this to make design decisions and to self-review before finishing. Pairs with [`ui-design-system`](ui-design-system.md) (the token vocabulary) and [`page-composition`](page-composition.md) (the architecture rails).
 
-> Aspire to the craft of top commerce design (Aesop, SSENSE, Apple, Glossier, Hermès): confident typography, generous and intentional whitespace, restrained palette, photography-led hierarchy. Restraint reads as premium. When in doubt, remove.
+> **Always act as a world-class ecommerce designer.** Before any visual work, step into the role of a senior product designer at a top commerce studio (Aesop, SSENSE, Apple, Glossier, Hermès, Cotopaxi). Hold every screen to that bar: confident typography, generous and intentional whitespace, a **restrained palette**, and photography-led hierarchy. **Restraint reads as premium — when in doubt, remove.** A page that looks "branded everywhere" looks like a template; a page that looks expensive spends its brand budget deliberately.
 > For an external accessibility/UX audit pass, invoke the `web-design-guidelines` skill.
 
 ## The principles
@@ -28,7 +28,34 @@ Every screen has a single most-important element (hero headline, product image, 
 ### 4. Color & contrast — restrained, semantic, accessible
 
 - Lean on neutrals; use `--primary`/`--destructive` sparingly for action and emphasis.
-- Token-only (see `ui-design-system`). Body text ≥ 4.5:1, large text / UI ≥ 3:1. On `bg-foreground` bands use `text-inverse*`.
+- **Keep to ~3–5 colors**: one primary/brand + the neutral ramp + 1–2 accents. Don't default to purple/violet (the generic "AI" tell) unless the brand calls for it.
+- Token-only (see `ui-design-system`). Body text ≥ 4.5:1, large text / UI ≥ 3:1. On `bg-foreground` bands use `text-inverse*`; change a background only via its paired foreground token.
+
+#### The Brand Influence Policy — spend brand color by tier
+
+Not every element deserves brand color. Each token carries an explicit "expression budget." This is what separates a premium store from a recoloured template:
+
+| Tier                  | Elements                                                                                               | Brand influence                                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **1 — Signature**     | Primary CTA (`bg-primary`), focus emphasis, links, bestseller/sale badges, selected/active states      | **Full accent.** These — and only these — carry the saturated brand hue.                                                             |
+| **2 — Structural**    | Radius, typography (`--radius`, display font)                                                          | **Full, free.** Personality is cheap and safe here; let shape + type do most of the "feel."                                          |
+| **3 — Neutral shell** | `background`, `card`, `popover`, `muted`, `secondary`, `accent`, `border`, `input`, all `*-foreground` | **Near-zero.** Stay a high-contrast neutral grayscale. At most a _whisper_ of hue, and only via a deliberate surface choice (below). |
+
+Semantic colors (`destructive` error, `success`) stay true red/green — they're trust signals, not brand paint. Focus rings stay neutral chrome for consistency.
+
+#### Surface strategy — the background decision is deliberate, not automatic
+
+Most world-class stores use a **white/near-white** ground and reserve color for Tier 1. Going colored is a _choice_, not a default:
+
+- **Clean** (default, ~90% of premium commerce): white/near-white shell, near-black text, color only on signature slots. SSENSE, Apple, Glossier, Cotopaxi.
+- **Tinted**: a deliberate, very subtle brand-tinted ground (still light, capped chroma). Aesop, Le Labo.
+- **Bold**: a confident colored/dark shell — but keep **product surfaces (cards/media) near-white** so the product stays the hero. Use rarely and commit fully.
+
+#### Section accent rhythm — which sections may take color
+
+Keep most bands on the neutral ground. Reserve color/contrast for rhythm: **at most ~1 in 3–4 sections** becomes a dark (`bg-foreground`) or brand (`bg-primary`) "feature" band — a hero, a values/CTA band, an editorial break. Product media always sits on a neutral surface. One bold moment reads as confident; bold everywhere reads as noise.
+
+> Apply this whether you're steering prompt-by-prompt or matching a reference: keep the neutral ramp neutral, choose a surface strategy deliberately, and route brand color to Tier-1 only. For borrowing exact colors from a reference into OKLCH tokens, see [`design-from-image`](design-from-image.md#borrowing-colors-from-a-reference-with-restraint).
 
 ### 5. Imagery — the product is the hero
 
@@ -74,6 +101,7 @@ Run this checklist (and fix what fails) before considering a design done:
 - [ ] Only role typography tokens; one display element; readable measure (~60–80ch) everywhere, including full-bleed.
 - [ ] Vertical rhythm uses `py-section-*`; spacing feels consistent and generous.
 - [ ] Color/spacing/radius/shadow are token-backed — zero hardcoded hex/px.
+- [ ] **Brand budget spent by tier**: shell/chrome stays neutral; brand color appears only on Tier-1 signature slots; surface strategy (clean/tinted/bold) is intentional; ≤ ~1 in 3–4 sections takes a color/dark band.
 - [ ] Images: `next/image`, correct `sizes`, `priority` only on LCP, consistent aspect ratios, no CLS, meaningful `alt`.
 - [ ] **Mobile (320–430px): no horizontal scroll; tap targets ≥44px; no hover-only; CTA reachable; single-column reads well.**
 - [ ] Width choice is intentional (`prose`/`content`/`wide`/`full`) and stated.
@@ -84,6 +112,8 @@ Run this checklist (and fix what fails) before considering a design done:
 
 ## Anti-patterns
 
+❌ Branding the shell — tinting backgrounds/cards/borders or coloring most sections (template look). Keep neutrals neutral; reserve brand color for Tier-1 slots
+❌ Mistaking "beautiful" for "loud" — glow shadows, neon gradients, gradient-behind-product, maximalist color. Beauty here = crafted typography, space, and restraint, expressed through a customized design system (rich treatments are opt-in Tier-2 tokens, not defaults)
 ❌ Multiple competing focal points / multiple `text-display` per page
 ❌ More than two type families, or faux-bold weight stacks
 ❌ Cramped vertical rhythm or inconsistent section spacing
