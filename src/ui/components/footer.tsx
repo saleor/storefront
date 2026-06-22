@@ -12,6 +12,7 @@ import { getFooterMenuItems } from "@/lib/menus/get-menu-data";
 import { getStorefrontLocaleOptions } from "@/lib/locale-display";
 import { FooterMenuColumns } from "./footer-menu-columns";
 import { CopyrightText } from "./copyright-text";
+import { FooterAttribution } from "./footer-attribution";
 import { brandConfig } from "@/config/brand";
 import { Logo } from "./shared/logo";
 
@@ -59,9 +60,12 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 
 				{/* Bottom bar */}
 				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-inverse pt-8 sm:flex-row">
-					<p className="text-xs text-inverse-muted">
-						<CopyrightText />
-					</p>
+					<div className="flex flex-col items-center gap-2 text-center sm:items-start sm:text-left">
+						<p className="text-xs text-inverse-muted">
+							<CopyrightText />
+						</p>
+						<FooterAttribution />
+					</div>
 					<div className="flex items-center gap-6">
 						<Link
 							href="/privacy"
