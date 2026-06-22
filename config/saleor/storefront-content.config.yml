@@ -237,7 +237,7 @@ models:
     modelType: Storefront — Chrome
     isPublished: true
     attributes:
-      Announcement ID: welcome-promo
+      Announcement ID: ""
       Announcement message: Free shipping on orders over {freeShippingThreshold}
       Announcement dismissible: true
       Nav all products label: All
