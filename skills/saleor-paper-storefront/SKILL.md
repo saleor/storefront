@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.5.0"
+  version: "1.7.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -17,8 +17,8 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-15 rules across 6 categories covering caching, PDP architecture, checkout v2,
-components, UI patterns, and SEO.
+21 rules across 7 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
+components, UI patterns, locale routing, i18n, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
 > for universal Saleor API knowledge (data model, permissions, checkout lifecycle,
@@ -26,15 +26,20 @@ components, UI patterns, and SEO.
 
 ## When to Apply
 
+**Unfamiliar with the codebase?** Read [`paper-architecture`](rules/paper-architecture.md) first.
+
 Reference these guidelines when:
 
 - Working on product detail pages (PDP), variant selection, or filtering
 - Modifying checkout flow or payment integration
 - Editing GraphQL queries or regenerating types
 - Debugging caching, stale content, or revalidation
+- Editing merchandising copy, homepage content, or `CONTENT_PROVIDER=saleor`
+- Seeding or extending Saleor Models for storefront content (Configurator)
 - Migrating authenticated routes (account, session cookies) under Cache Components / PPR
 - Upgrading a forked shop — see **Migrations** below
 - Creating UI components with design tokens
+- Adding locale/channel routing, market picker, next-intl messages, or i18n URL structure
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
 
@@ -42,6 +47,7 @@ Reference these guidelines when:
 
 | Priority | Category      | Impact   | Prefix      |
 | -------- | ------------- | -------- | ----------- |
+| 0        | Architecture  | CRITICAL | `paper-`    |
 | 1        | Data Layer    | CRITICAL | `data-`     |
 | 2        | Product Pages | HIGH     | `product-`  |
 | 3        | Checkout Flow | HIGH     | `checkout-` |
@@ -51,11 +57,18 @@ Reference these guidelines when:
 
 ## Quick Reference
 
+### 0. Architecture (CRITICAL)
+
+- `paper-architecture` - **Start here** — canonical Next.js stance, pillars, non-goals, where to read next
+
 ### 1. Data Layer (CRITICAL)
 
 - `data-caching` - Cache Components (PPR), three-layer page model, cache manifest, webhooks
 - `data-auth-routes` - BFF auth, `resolveSessionUser`, account PPR, header chrome refresh
 - `data-graphql` - Two codegen setups (checkout types via server actions, not urql runtime)
+- `data-storefront-content` - Provider-agnostic copy layer, merge semantics, cache tags, wiring
+- `data-storefront-content-saleor` - Saleor Models, slug stack, channel overrides, Configurator
+- `data-storefront-content-attributes` - Attribute inputTypes, catalog references, scalar roadmap
 
 ### 2. Product Pages (HIGH)
 
@@ -66,7 +79,7 @@ Reference these guidelines when:
 
 ### 3. Checkout Flow (HIGH)
 
-- `paper-surfaces` - **Start here for checkout** — surfaces, routes, v2 data flow, session handoff
+- `paper-surfaces` - Two surfaces, routes, v2 data flow, session handoff (read `paper-architecture` first)
 - `checkout-design-principles` - Evidence-based UX principles (guest-first, mobile, pricing, express pay)
 - `checkout-management` - Lifecycle, RSC sync, shallow steps, payment transition UX (+ cheat sheet)
 - `checkout-payment-gateways` - Payment app registry, submit modes, Stripe Express Checkout wallets, adding a new gateway
@@ -74,8 +87,11 @@ Reference these guidelines when:
 
 ### 4. UI & Channels (MEDIUM)
 
+- `references/code-conventions.md` - kebab-case files, PascalCase exports, `@/` imports
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
 - `ui-channels` - Channel allowlist, fulfillment triangle, multi-currency, channel selector
+- `ui-locale-routing` - `/{locale}/{channel}/` routing, middleware redirects, path helpers
+- `ui-i18n` - next-intl namespaces, server/client patterns, ADR 0002 boundary
 
 ### 5. SEO (MEDIUM)
 

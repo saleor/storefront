@@ -2,34 +2,35 @@
 
 import { usePathname, useParams } from "next/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { LayoutGrid, Receipt, MapPin, Settings, ArrowLeft } from "lucide-react";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "@/lib/auth/logout-button";
 import { useAccountUser } from "@/ui/components/account/account-context";
 import { accountRoutes } from "@/ui/components/account/routes";
+import { stripStorefrontPrefix } from "@/lib/storefront-path";
 
 const navItems: ReadonlyArray<{
 	href: string;
-	label: string;
+	labelKey: "overview" | "orders" | "addresses" | "settings";
 	icon: typeof LayoutGrid;
 	exact?: boolean;
 }> = [
-	{ href: accountRoutes.overview, label: "Overview", icon: LayoutGrid, exact: true },
-	{ href: accountRoutes.orders, label: "Orders", icon: Receipt },
-	{ href: accountRoutes.addresses, label: "Addresses", icon: MapPin },
-	{ href: accountRoutes.settings, label: "Settings", icon: Settings },
+	{ href: accountRoutes.overview, labelKey: "overview", icon: LayoutGrid, exact: true },
+	{ href: accountRoutes.orders, labelKey: "orders", icon: Receipt },
+	{ href: accountRoutes.addresses, labelKey: "addresses", icon: MapPin },
+	{ href: accountRoutes.settings, labelKey: "settings", icon: Settings },
 ];
 
 export function AccountNav() {
+	const t = useTranslations("account.nav");
 	const user = useAccountUser();
 	const pathname = usePathname();
-	const { channel } = useParams<{ channel: string }>();
-
-	const channelPrefix = `/${channel}`;
+	const { locale, channel } = useParams<{ locale?: string; channel?: string }>();
 
 	const isActive = (href: string, exact?: boolean) => {
-		const accountPath = pathname.startsWith(channelPrefix) ? pathname.slice(channelPrefix.length) : pathname;
+		const accountPath = locale && channel ? stripStorefrontPrefix(pathname, locale, channel) : pathname;
 		if (exact) return accountPath === href;
 		return accountPath.startsWith(href);
 	};
@@ -46,7 +47,7 @@ export function AccountNav() {
 				className="mb-8 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
 			>
 				<span className="text-base leading-none">&lsaquo;</span>
-				Back to store
+				{t("backToStore")}
 			</LinkWithChannel>
 
 			<div className="mb-8 hidden md:block">
@@ -69,23 +70,30 @@ export function AccountNav() {
 				<p className="mt-0.5 text-sm text-muted-foreground">{user.email}</p>
 			</div>
 
-			<nav aria-label="Account" className="flex gap-1 overflow-x-auto md:flex-col md:gap-0.5">
-				{navItems.map(({ href, label, icon: Icon, exact }) => {
+			<nav
+				aria-label={t("ariaLabel")}
+				className={cn(
+					"bg-secondary/60 grid auto-cols-fr grid-flow-col gap-1 rounded-xl p-1",
+					"md:flex md:flex-col md:gap-0.5 md:rounded-none md:bg-transparent md:p-0",
+				)}
+			>
+				{navItems.map(({ href, labelKey, icon: Icon, exact }) => {
 					const active = isActive(href, exact);
 					return (
 						<LinkWithChannel
 							key={href}
 							href={href}
+							aria-current={active ? "page" : undefined}
 							className={cn(
-								"flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors",
-								"whitespace-nowrap",
+								"flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-center text-xs font-medium transition-colors",
+								"md:flex-row md:justify-start md:gap-3 md:px-3.5 md:py-2.5 md:text-sm",
 								active
-									? "bg-foreground text-background"
-									: "text-muted-foreground hover:bg-secondary hover:text-foreground",
+									? "bg-foreground text-background shadow-sm md:shadow-none"
+									: "text-muted-foreground md:hover:bg-secondary md:hover:text-foreground",
 							)}
 						>
-							<Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2 : 1.75} />
-							{label}
+							<Icon className="h-5 w-5 shrink-0 md:h-[18px] md:w-[18px]" strokeWidth={active ? 2 : 1.75} />
+							<span className="max-w-full truncate">{t(labelKey)}</span>
 						</LinkWithChannel>
 					);
 				})}
@@ -94,7 +102,7 @@ export function AccountNav() {
 			<div className="mt-auto hidden pt-10 md:block">
 				<LogoutButton className="flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
 					<ArrowLeft className="h-[18px] w-[18px]" strokeWidth={1.75} />
-					Sign out
+					{t("signOut")}
 				</LogoutButton>
 			</div>
 		</div>

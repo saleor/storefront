@@ -2,6 +2,7 @@
 
 import { type FC } from "react";
 import { Lock } from "lucide-react";
+import { useCheckoutContent } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 export type PaymentTrustProvider = "stripe" | "default";
@@ -23,6 +24,7 @@ export const PaymentTrustSignals: FC<PaymentTrustSignalsProps> = ({
 	provider = "default",
 	className,
 }) => {
+	const { trust } = useCheckoutContent();
 	const isCompact = variant === "compact";
 
 	return (
@@ -35,13 +37,13 @@ export const PaymentTrustSignals: FC<PaymentTrustSignalsProps> = ({
 			role="note"
 		>
 			<Lock className="h-3.5 w-3.5 shrink-0" aria-hidden />
-			<span>Secure checkout</span>
+			<span>{trust.secureCheckout}</span>
 			{provider === "stripe" ? (
 				<>
 					<span aria-hidden className="text-muted-foreground/50">
 						·
 					</span>
-					<span>Payments processed by Stripe</span>
+					<span>{trust.stripeProcessor}</span>
 				</>
 			) : null}
 		</p>

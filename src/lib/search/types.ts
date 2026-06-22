@@ -12,8 +12,8 @@
  * - Meilisearch: Tenant tokens, multi-search, filterable attributes
  *
  * Instead, we provide:
- * 1. A common type for rendering results (SearchProduct)
- * 2. A helper to transform provider results to SearchProduct
+ * 1. A common type for rendering results (SearchProduct) — for external search engines
+ * 2. Saleor provider returns ProductCardData via SearchResult<ProductCardData> (full PLP card fields)
  * 3. Example implementations showing how to use each SDK directly
  */
 

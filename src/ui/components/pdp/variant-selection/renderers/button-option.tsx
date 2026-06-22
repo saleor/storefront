@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
+import { useVariantOptionLabels } from "@/ui/components/pdp/use-variant-option-labels";
 import type { OptionRendererProps } from "../types";
 
 export interface ButtonOptionProps extends OptionRendererProps {
@@ -32,12 +33,12 @@ export function ButtonOption({
 	const isOutOfStock = !option.available;
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
+	const labels = useVariantOptionLabels();
 
-	// Build accessible label with context
 	const accessibleParts = [
 		labelPrefix ? `${labelPrefix} ${option.name}` : option.name,
-		isOutOfStock && "out of stock",
-		hasDiscount && `${option.discountPercent}% off`,
+		isOutOfStock && labels.outOfStockA11y(),
+		hasDiscount && labels.percentOffA11y(option.discountPercent!),
 	].filter(Boolean);
 
 	return (
@@ -66,11 +67,11 @@ export function ButtonOption({
 				)}
 				title={
 					isOutOfStock
-						? `${option.name} - Out of stock`
+						? labels.outOfStockTitle(option.name)
 						: isIncompatible
-							? `${option.name} - Will change other selections`
+							? labels.willChangeSelections(option.name)
 							: option.discountPercent
-								? `${option.name} - ${option.discountPercent}% off`
+								? labels.percentOffTitle(option.name, option.discountPercent)
 								: undefined
 				}
 				aria-label={accessibleParts.join(", ")}

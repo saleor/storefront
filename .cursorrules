@@ -10,24 +10,31 @@ Two skill sources are available:
 
 | Task | Rule |
 |------|------|
+| Architecture / canonical Next.js (start here) | `paper-architecture` |
 | Modifying `.graphql` files | `data-graphql` |
 | Caching, ISR, webhooks | `data-caching` |
+| Storefront marketing copy layer | `data-storefront-content` |
+| Saleor Models for storefront copy | `data-storefront-content-saleor` |
+| Storefront content attribute types | `data-storefront-content-attributes` |
 | Product detail page (PDP) | `product-pdp` |
 | Variant selection on PDP | `product-variants` |
 | Product filtering/sorting | `product-filtering` |
-| Storefront vs checkout (start here) | `paper-surfaces` |
+| Storefront vs checkout surfaces | `paper-surfaces` |
 | BFF auth / session / account PPR | `data-auth-routes` |
 | Checkout UX / design principles | `checkout-design-principles` |
 | Checkout flow debugging | `checkout-management` |
 | Adding a payment gateway | `checkout-payment-gateways` |
 | Checkout UI components | `checkout-components` |
+| File naming, exports, imports | `references/code-conventions` |
 | Creating/styling components | `ui-components` |
 | Channels, fulfillment & stock | `ui-channels` |
+| Locale + channel URL routing | `ui-locale-routing` |
+| Code-owned UI strings (next-intl) | `ui-i18n` |
 | SEO, metadata, OG images | `seo-metadata` |
 | Investigating Saleor API | `dev-investigation` |
 | Upgrading a forked shop | `migrations/SKILL.md` |
 
-**External skills** ([saleor/agent-skills](https://github.com/saleor/agent-skills)) — install via `npx skills add` for generic best practices:
+**External skills** — pinned in `skills-lock.json`; `pnpm skills:bootstrap` runs `npx skills experimental_install`. Cursor scans `.agents/skills/` and `.cursor/skills/`, not repo-root `skills/`.
 
 | Task | Skill |
 |------|-------|
@@ -70,4 +77,5 @@ pnpm run build              # Full build
 - **Full docs**: `AGENTS.md` in project root
 - **Project skill**: `skills/saleor-paper-storefront/SKILL.md`
 - **Fork migrations**: `skills/saleor-paper-storefront/migrations/SKILL.md` + `paper-version.json`
-- **External skills**: [saleor/agent-skills](https://github.com/saleor/agent-skills) (install via `npx skills add`)
+- **Code conventions**: `skills/saleor-paper-storefront/references/code-conventions.md`
+- **External skills**: `skills-lock.json` + `pnpm skills:bootstrap` (symlink + external installs)

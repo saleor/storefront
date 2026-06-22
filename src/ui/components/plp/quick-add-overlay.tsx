@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/ui/components/ui/button";
 
 interface QuickAddOverlayProps {
@@ -10,6 +11,8 @@ interface QuickAddOverlayProps {
 }
 
 export function QuickAddOverlay({ onQuickAdd, alwaysVisible = false }: QuickAddOverlayProps) {
+	const t = useTranslations("plp");
+
 	return (
 		<div
 			className={
@@ -29,7 +32,7 @@ export function QuickAddOverlay({ onQuickAdd, alwaysVisible = false }: QuickAddO
 				}}
 			>
 				<Plus className="mr-1.5 h-4 w-4" />
-				Quick Add
+				{t("quickAdd")}
 			</Button>
 		</div>
 	);

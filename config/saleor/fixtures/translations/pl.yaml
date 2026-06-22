@@ -1,0 +1,52 @@
+# Polish storefront model translations (Saleor LanguageCodeEnum: PL)
+languageCode: PL
+
+pages:
+  storefront-chrome:
+    announcement-message: "Darmowa dostawa od {freeShippingThreshold}"
+    nav-all-products-label: "Wszystko"
+    nav-view-all-label: "Zobacz wszystkie {label}"
+
+  storefront-products:
+    listing-title: "Wszystkie produkty"
+    listing-description: "Odkryj naszą pełną kolekcję produktów premium."
+
+  storefront-homepage:
+    hero-heading: "Odkryj naszą kolekcję"
+    hero-subheading: "Produkty premium o wyjątkowej jakości. Poznaj naszą starannie wyselekcjonowaną ofertę."
+    hero-cta-label: "Zobacz wszystko"
+    featured-heading: "Polecane produkty"
+    brand-story-heading: "Stworzone do prawdziwego handlu"
+    brand-story-paragraph-1: "Paper to minimalistyczny, gotowy do produkcji storefront dla Saleor — czysty jak biała kartka, gotowy do wdrożenia."
+    brand-story-paragraph-2: "Dostosuj sekcje w kodzie, połącz katalog i korzystaj ze sprawdzonych stron koszyka, kasy i produktów."
+    values-heading: "Dlaczego warto u nas kupować"
+    values-column-1-title: "Starannie wyselekcjonowana jakość"
+    values-column-1-text: "Każdy produkt wybieramy ze względu na rzemiosło i trwałość — nie za modą."
+    values-column-2-title: "Szybka realizacja"
+    values-column-2-text: "Zamówienia wysyłamy z regionalnych magazynów z pełnym śledzeniem przesyłki."
+    values-column-3-title: "Łatwe zwroty"
+    values-column-3-text: "Bezproblemowe zwroty w ciągu {returnsWindowDays} dni. Stoimy za tym, co sprzedajemy."
+    editorial-heading: "Zaprojektowane na lata"
+    editorial-paragraph-1: "Przemyślane materiały i ponadczasowe kroje — rzeczy, po które sięgniesz sezon za sezonem."
+    editorial-cta-label: "Przeglądaj kolekcje"
+
+  storefront-cart:
+    empty-title: "Twój koszyk jest pusty"
+    empty-body: "Nie dodałeś jeszcze nic do koszyka."
+    empty-cta-label: "Rozpocznij zakupy"
+    trust-free-shipping-prefix: "Darmowa dostawa powyżej"
+    trust-returns-label: "Zwroty przez {returnsWindowDays} dni"
+    drawer-title: "Twój koszyk"
+    drawer-add-for-free-shipping: "Brakuje {amount} do darmowej dostawy"
+    drawer-free-shipping-qualified: "Darmowa dostawa!"
+
+  storefront-checkout:
+    empty-cart-title: "Twój koszyk jest pusty"
+    empty-cart-body: "Nie dodałeś jeszcze nic do koszyka."
+    empty-cart-start-label: "Rozpocznij zakupy"
+    empty-cart-go-back-label: "Wróć"
+    empty-session-title: "Twój koszyk jest pusty"
+    empty-session-message: "Dodaj produkty i wróć tutaj, by dokończyć."
+    marketing-opt-in-label: "Oferty e-mailem"
+    trust-secure-checkout: "Bezpieczna płatność"
+    trust-stripe-processor: "Płatności obsługiwane przez Stripe"

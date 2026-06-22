@@ -1,0 +1,573 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# item} other {# items}}",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"shippingFree": "Free",
+			"shippingCalculated": "Calculated at checkout",
+			"total": "Total",
+			"checkout": "Checkout",
+			"continueShopping": "Continue Shopping",
+			"removeItem": "Remove {product}",
+			"decreaseQuantity": "Decrease quantity",
+			"increaseQuantity": "Increase quantity"
+		},
+		"page": {
+			"title": "Shopping Cart",
+			"quantity": "Qty: {count}",
+			"variant": "Variant: {name}",
+			"yourTotal": "Your Total",
+			"shippingNote": "Shipping will be calculated in the next step",
+			"checkout": "Checkout"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Home",
+		"breadcrumbProducts": "Products"
+	},
+	"common": {
+		"pagination": {
+			"previous": "Previous",
+			"next": "Next"
+		}
+	},
+	"pdp": {
+		"addToBag": "Add to bag",
+		"adding": "Adding...",
+		"outOfStock": "Out of stock",
+		"selectOptions": "Select options",
+		"free": "FREE",
+		"breadcrumbHome": "Home",
+		"badges": {
+			"sale": "Sale",
+			"new": "New"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} - Out of stock",
+			"willChangeSelections": "{name} - Will change other selections",
+			"percentOffTitle": "{name} - {percent}% off",
+			"outOfStockA11y": "out of stock",
+			"percentOffA11y": "{percent}% off",
+			"selectedA11y": "selected"
+		}
+	},
+	"plp": {
+		"quickAdd": "Quick Add",
+		"filtersButton": "Filters",
+		"filterLabels": {
+			"category": "Category",
+			"color": "Color",
+			"size": "Size",
+			"price": "Price",
+			"priceRange": "Price Range"
+		},
+		"sort": "Sort",
+		"sortOptions": {
+			"featured": "Featured",
+			"newest": "Newest",
+			"price_asc": "Price: Low to High",
+			"price_desc": "Price: High to Low",
+			"bestselling": "Best Selling"
+		},
+		"resultCount": "{count, plural, one {# product} other {# products}}",
+		"clearAllFilters": "Clear all filters ({count})",
+		"clearAll": "Clear all",
+		"removeFilter": "Remove {value} filter"
+	},
+	"search": {
+		"title": "Search",
+		"description": "Search our full collection of products.",
+		"bar": {
+			"placeholder": "Search for products...",
+			"srOnlyLabel": "Search for products"
+		},
+		"resultsFor": "Results for \"{query}\"",
+		"resultCount": "{count, plural, one {# product found} other {# products found}}",
+		"noResultsTitle": "No results for \"{query}\"",
+		"noResultsBody": "We couldn't find any products matching your search. Try a different term or browse our categories.",
+		"browseAllProducts": "Browse All Products",
+		"goToHomepage": "Go to Homepage",
+		"noImage": "No image",
+		"sort": "Sort",
+		"sortOptions": {
+			"relevance": "Relevance",
+			"price-asc": "Price: Low to High",
+			"price-desc": "Price: High to Low",
+			"name": "Name",
+			"newest": "Newest"
+		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Main"
+		},
+		"breadcrumbAriaLabel": "Breadcrumb",
+		"cartButton": "{count, plural, one {# item in cart, view bag} other {# items in cart, view bag}}",
+		"mobileMenu": {
+			"open": "Open menu",
+			"title": "Navigation menu"
+		},
+		"userMenu": {
+			"open": "Open user menu",
+			"login": "Log in",
+			"myAccount": "My account",
+			"myOrders": "My orders",
+			"logOut": "Log Out",
+			"unavailableAriaLabel": "Account unavailable",
+			"unavailableTitle": "Couldn't load account"
+		},
+		"regionPicker": {
+			"ariaLabel": "Language and market",
+			"languageTitle": "Language",
+			"languageDescription": "Site copy & formatting",
+			"marketTitle": "Market",
+			"marketDescription": "Currency, tax & shipping"
+		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Sign In",
+			"loginDescription": "Sign in to your account to access your orders and saved addresses.",
+			"signupTitle": "Create Account",
+			"signupDescription": "Create a new account to save your addresses and order history.",
+			"accountTitle": "My Account"
+		},
+		"fields": {
+			"email": "Email",
+			"emailAddress": "Email address",
+			"password": "Password",
+			"firstName": "First name",
+			"lastName": "Last name",
+			"confirmPassword": "Confirm password",
+			"currentPassword": "Current password",
+			"newPassword": "New password",
+			"confirmNewPassword": "Confirm new password",
+			"name": "Name",
+			"companyOptional": "Company (optional)",
+			"streetAddress": "Street address",
+			"streetAddress2Optional": "Apt, suite, etc. (optional)",
+			"city": "City",
+			"postalCode": "Postal code",
+			"stateProvince": "State / Province",
+			"countryCode": "Country code",
+			"phoneOptional": "Phone (optional)",
+			"country": "Country",
+			"cityArea": "City area",
+			"localized": {
+				"province": "Province",
+				"district": "District",
+				"state": "State",
+				"zip": "Zip code",
+				"postal": "Postal code",
+				"postTown": "Post town",
+				"prefecture": "Prefecture"
+			}
+		},
+		"placeholders": {
+			"email": "you@example.com",
+			"password": "Enter your password",
+			"firstName": "First name",
+			"lastName": "Last name",
+			"newPasswordMin": "At least 8 characters…",
+			"confirmPassword": "Confirm your password",
+			"reenterPassword": "Re-enter your password",
+			"countryCode": "US"
+		},
+		"common": {
+			"cancel": "Cancel",
+			"save": "Save",
+			"saving": "Saving…",
+			"edit": "Edit",
+			"delete": "Delete",
+			"updated": "Updated",
+			"showPassword": "Show password",
+			"hidePassword": "Hide password",
+			"free": "Free",
+			"qty": "Qty: {count}",
+			"itemCount": "{count, plural, one {# item} other {# items}}",
+			"notSet": "Not set",
+			"change": "Change",
+			"changing": "Changing…",
+			"sending": "Sending…"
+		},
+		"errors": {
+			"invalidEmail": "Please enter a valid email address",
+			"invalidEmailFirst": "Please enter a valid email address first",
+			"passwordRequired": "Please enter your password",
+			"passwordMinLength": "Password must be at least 8 characters",
+			"passwordsMismatch": "Passwords do not match",
+			"newPasswordRequired": "Please enter a new password",
+			"generic": "An error occurred. Please try again.",
+			"signInFailed": "Sign in failed. Please try again.",
+			"invalidCredentials": "Invalid email or password. Please try again.",
+			"rateLimited": "Too many sign-in attempts. Please wait and try again.",
+			"resetLinkFailed": "Failed to send reset link",
+			"accountExists": "An account with this email already exists. Please sign in instead.",
+			"createAccountFailed": "Failed to create account",
+			"invalidResetToken": "This password reset link has expired. Please request a new one.",
+			"setPasswordFailed": "Failed to set password",
+			"invalidConfirmToken": "This confirmation link has expired or was already used. Try signing in or register again.",
+			"confirmFailed": "Failed to confirm account",
+			"loadOrdersFailed": "We couldn't load your orders. Please try again in a moment.",
+			"loadOrderFailed": "We couldn't load this order. Please try again.",
+			"loadRecentOrdersFailed": "We couldn't load your recent orders.",
+			"updateProfileFailed": "Failed to update profile",
+			"changePasswordFailed": "Failed to change password",
+			"createAddressFailed": "Failed to create address",
+			"updateAddressFailed": "Failed to update address",
+			"deleteAddressFailed": "Failed to delete address",
+			"setDefaultAddressFailed": "Failed to set default address",
+			"deleteAccountFailed": "Failed to request account deletion"
+		},
+		"login": {
+			"title": "Welcome Back",
+			"noAccount": "Don't have an account?",
+			"signUp": "Sign up",
+			"forgotPassword": "Forgot password?",
+			"resendResetLink": "Resend reset link",
+			"submit": "Sign In",
+			"submitting": "Signing in…",
+			"resetSent": "If an account exists for {email}, a password reset link has been sent. Note: You can only request one reset link every 15 minutes."
+		},
+		"signup": {
+			"title": "Create an Account",
+			"hasAccount": "Already have an account?",
+			"signIn": "Sign in",
+			"submit": "Create Account",
+			"submitting": "Creating account…",
+			"successTitle": "Account Created!",
+			"successBody": "Please check your email to verify your account.",
+			"goToSignIn": "Go to Sign In",
+			"terms": "By creating an account, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+			"termsLink": "Terms of Service",
+			"privacyLink": "Privacy Policy"
+		},
+		"setPassword": {
+			"title": "Set New Password",
+			"subtitle": "Enter a new password for {email}",
+			"submit": "Update Password",
+			"submitting": "Updating…",
+			"backToSignIn": "Back to Sign In",
+			"successTitle": "Password Updated!",
+			"successBody": "Your password has been successfully reset. You are now signed in.",
+			"redirecting": "Redirecting you to the store…"
+		},
+		"confirm": {
+			"confirmingTitle": "Confirming your account",
+			"confirmingBody": "Verifying {email}…",
+			"successTitle": "Account confirmed",
+			"successBody": "Your account for {email} is active. Sign in with the password you created.",
+			"signIn": "Sign in",
+			"continueShopping": "Continue shopping",
+			"errorTitle": "Couldn't confirm account",
+			"goToSignIn": "Go to sign in"
+		},
+		"nav": {
+			"ariaLabel": "Account",
+			"backToStore": "Back to store",
+			"signOut": "Sign out",
+			"overview": "Overview",
+			"orders": "Orders",
+			"addresses": "Addresses",
+			"settings": "Settings"
+		},
+		"overview": {
+			"welcome": "Welcome back, {name}",
+			"subtitle": "Here is an overview of your account activity.",
+			"recentOrders": "Recent Orders",
+			"viewAll": "View all",
+			"noOrdersYet": "You haven't placed any orders yet."
+		},
+		"orders": {
+			"title": "Orders",
+			"count": "{count, plural, =0 {No orders yet} one {# order} other {# orders}}",
+			"empty": "You haven't placed any orders yet.",
+			"loadMore": "Load more orders",
+			"signInRequired": "Sign in to view your orders.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Placed on {date}",
+			"items": "Items ({count})",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"tax": "Tax",
+			"total": "Total",
+			"shippingAddress": "Shipping Address",
+			"billingAddress": "Billing Address",
+			"paymentMethod": "Payment Method",
+			"paid": "Paid",
+			"needHelp": "Need Help?",
+			"signInRequired": "Sign in to view this order.",
+			"loadFailed": "We couldn't load this order. Please try again.",
+			"timeline": "Order Timeline"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "Processing",
+			"UNCONFIRMED": "Pending confirmation",
+			"PARTIALLY_FULFILLED": "Partially shipped",
+			"FULFILLED": "Shipped"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Order confirmed",
+			"orderConfirmedDescription": "Payment confirmed and order placed",
+			"FULFILLED": "Shipped",
+			"FULFILLEDDescription": "Your order has been shipped",
+			"CANCELED": "Fulfillment cancelled",
+			"CANCELEDDescription": "Shipment was cancelled",
+			"REFUNDED": "Refunded",
+			"REFUNDEDDescription": "Payment has been refunded",
+			"REFUNDED_AND_RETURNED": "Refunded & Returned",
+			"REFUNDED_AND_RETURNEDDescription": "Items returned and refunded",
+			"REPLACED": "Replaced",
+			"REPLACEDDescription": "Items have been replaced",
+			"RETURNED": "Returned",
+			"RETURNEDDescription": "Items have been returned",
+			"WAITING_FOR_APPROVAL": "Awaiting approval",
+			"WAITING_FOR_APPROVALDescription": "Fulfillment is pending approval",
+			"trackingUpdated": "Tracking updated",
+			"trackingNumber": "Tracking number: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# item} other {# items}})"
+		},
+		"settings": {
+			"title": "Settings",
+			"subtitle": "Manage your account settings",
+			"memberSince": "Member since {date}"
+		},
+		"addresses": {
+			"title": "Addresses",
+			"subtitle": "Manage your saved addresses",
+			"empty": "No saved addresses yet.",
+			"addAddress": "Add address",
+			"editAddress": "Edit address",
+			"addNewAddress": "Add new address",
+			"editAddressDescription": "Update your address details",
+			"addAddressDescription": "Add a new address to your account",
+			"editAddressAria": "Edit address",
+			"updateAddress": "Update address",
+			"deleteAddressAria": "Delete address",
+			"defaultShipping": "Default shipping",
+			"defaultBilling": "Default billing",
+			"makeDefaultShipping": "Make default shipping",
+			"makeDefaultBilling": "Make default billing"
+		},
+		"deleteAccount": {
+			"title": "Delete account",
+			"description": "Permanently remove your account and all associated data.",
+			"submit": "Delete account",
+			"confirm": "Yes, delete my account",
+			"confirmBody": "This action cannot be undone. You will receive a confirmation email before your account is deleted.",
+			"emailSent": "A confirmation email has been sent. Please check your inbox to complete account deletion."
+		},
+		"changePassword": {
+			"submit": "Change password"
+		},
+		"unavailable": {
+			"title": "Unable to load your account",
+			"body": "The store is temporarily unavailable. Refresh the page or try again in a moment."
+		}
+	},
+	"checkout": {
+		"steps": {
+			"information": "Information",
+			"shipping": "Shipping",
+			"payment": "Payment",
+			"stepsAriaLabel": "Checkout steps",
+			"secureCheckout": "Secure checkout",
+			"complete": "Complete",
+			"stepOf": "Step {step} of {total}"
+		},
+		"actions": {
+			"saving": "Saving…",
+			"loading": "Loading…",
+			"continueToShipping": "Continue to shipping",
+			"continueToPayment": "Continue to payment",
+			"continue": "Continue",
+			"continueAsGuest": "Continue as guest",
+			"preparingGuestCart": "Preparing guest cart…",
+			"logIn": "Log in",
+			"returnToInformation": "Return to information",
+			"returnToShipping": "Return to shipping",
+			"payNow": "Pay now",
+			"payTotal": "Pay {total}",
+			"completeOrder": "Complete order",
+			"placingOrder": "Placing order…",
+			"creatingOrder": "Creating order…",
+			"processingPayment": "Processing payment…",
+			"continueShopping": "Continue shopping",
+			"tryAgain": "Try again"
+		},
+		"errors": {
+			"sessionExpiredTitle": "Checkout session expired",
+			"sessionExpiredMessage": "This cart is no longer available. Add items again to start a new checkout.",
+			"loadFailedTitle": "Couldn't load checkout",
+			"loadFailedMessage": "We had trouble loading your cart. Please try again or start a new checkout from the store.",
+			"orderNotFoundTitle": "Order not found",
+			"orderNotFoundMessage": "We couldn't find this order. It may have been removed or the link is invalid.",
+			"emailRequired": "Email is required",
+			"selectShippingAddress": "Please select a shipping address",
+			"selectShippingMethod": "Please select a shipping method",
+			"updateShippingMethodFailed": "Failed to update shipping method",
+			"orphanedCartMessage": "This cart is still linked to a signed-in account. To check out as a guest, start a fresh anonymous cart with the same items, or log in instead.",
+			"orphanedCartBlocked": "This cart is still linked to a signed-in account. Continue as guest above, or log in.",
+			"discountApplyFailed": "This discount code could not be applied.",
+			"discountRemoveFailed": "Failed to remove discount code.",
+			"invalidValue": "Invalid value",
+			"updateEmailFailed": "Failed to update email",
+			"createAccountFailed": "Failed to create account",
+			"updateAddressFailed": "Failed to update address",
+			"crashTitle": "Checkout error",
+			"crashMessage": "Something went wrong loading checkout. Please try again."
+		},
+		"contact": {
+			"title": "Contact",
+			"haveAccount": "Have an account?",
+			"createAccountLabel": "Create an account for faster checkout next time",
+			"activationNotice": "After checkout, you'll receive an email to activate your account before you can sign in.",
+			"guestCheckout": "Guest checkout",
+			"newCustomer": "New customer?",
+			"signInTitle": "Sign in",
+			"resetPasswordTitle": "Reset your password",
+			"resetPasswordSubtitle": "Enter a new password for your account",
+			"processing": "Processing…",
+			"passwordMinPlaceholder": "Password (minimum 8 characters)",
+			"signedIn": "Signed in"
+		},
+		"summary": {
+			"title": "Order Summary",
+			"show": "Show",
+			"hide": "Hide",
+			"toggleOrderSummary": "{action} order summary",
+			"itemCount": "{count, plural, one {# item} other {# items}}",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"taxVat": "Tax (VAT)",
+			"discount": "Discount",
+			"total": "Total",
+			"includingVat": "Including VAT",
+			"productFallback": "Product",
+			"contact": "Contact",
+			"shipTo": "Ship to",
+			"method": "Method",
+			"delivery": "Delivery",
+			"digital": "Digital"
+		},
+		"promo": {
+			"placeholder": "Discount code",
+			"apply": "Apply",
+			"applying": "Applying…",
+			"removeAriaLabel": "Remove discount code"
+		},
+		"shipping": {
+			"methodTitle": "Shipping method",
+			"loadingMethods": "Loading shipping methods…",
+			"noAddressYet": "Please go back and enter your shipping address first.",
+			"addressTitle": "Shipping address",
+			"countryRegion": "Country/Region",
+			"selectCountry": "Select country",
+			"backToSavedAddresses": "← Back to saved addresses",
+			"emptySavedShipping": "You don't have any saved addresses yet. Please enter your shipping address below.",
+			"selectShippingAddressSheet": "Select shipping address"
+		},
+		"billing": {
+			"title": "Billing address",
+			"sameAsShipping": "Same as shipping address",
+			"selectBillingSheet": "Select billing address",
+			"emptySavedBilling": "No saved addresses available.",
+			"backToSavedAddresses": "Back to saved addresses"
+		},
+		"addresses": {
+			"selectPrompt": "Select an address",
+			"setDefaultShipping": "Set as my default shipping address",
+			"setDefaultBilling": "Set as my default billing address",
+			"defaultBadge": "Default",
+			"emptySaved": "You don't have any saved addresses yet."
+		},
+		"payment": {
+			"totalUpdatedTitle": "Your order total was updated",
+			"totalUpdatedBody": "The total changed from {previous} to {next}. Review the updated order summary before completing your payment.",
+			"deliveryInvalidTitle": "Shipping method no longer available",
+			"deliveryInvalidBody": "Please go back to the shipping step and select a valid shipping method before completing your order.",
+			"completingTitle": "Processing your order",
+			"completingBody": "We're confirming your payment and creating your order. This usually takes a few seconds — please don't close or refresh this page.",
+			"initFailed": "Failed to initialize payment system.",
+			"unavailable": "Payment system is not available. Please try again.",
+			"loadingGateway": "Loading {gateway} payment form…",
+			"confirmingPayment": "Confirming your payment…",
+			"securingWithStripe": "We're securing your payment with Stripe. This usually takes a few seconds.",
+			"doNotClose": "Please don't close or refresh this page.",
+			"completeOrderFailed": "Could not complete your order. Please try again.",
+			"placeOrderFailed": "Could not place your order. Please try again or contact support.",
+			"totalsRefreshFailed": "Could not refresh checkout totals. Please try again.",
+			"totalUnavailable": "Checkout total is unavailable. Please refresh the page and try again.",
+			"currencyUnavailable": "Checkout currency is unavailable. Please refresh the page and try again.",
+			"validationFailed": "Payment validation failed",
+			"methodRequired": "Could not determine the selected payment method. Please choose a payment option and try again.",
+			"detailsUnavailable": "Could not retrieve payment details. Please try again.",
+			"expressReset": "The express checkout buttons were reset before payment could be confirmed. Please try again.",
+			"formReset": "The payment form was reset before your card could be confirmed. Please try Pay again without refreshing the page.",
+			"totalChanged": "Order total changed. Review the updated amount and try again.",
+			"bankDeclined": "Your bank declined the payment. Please try again or use a different card.",
+			"sessionExpired": "Payment session expired after redirect. Please try again.",
+			"channelUnresolved": "Could not resolve checkout channel after payment. Please contact support.",
+			"unexpectedError": "An unexpected error occurred while completing your payment.",
+			"stripeConfigFailed": "Stripe gateway configuration failed",
+			"stripeKeyMissing": "Stripe publishable key is missing. Check Stripe app configuration in Saleor Dashboard.",
+			"dummyGateway": "Dummy Payment",
+			"failed": "Payment failed",
+			"interruptedBeforeCharge": "Payment was interrupted before you were charged. You can safely try again.",
+			"interruptedAfterAuthorize": "Your payment went through, but your order has not been placed yet. Do not pay again — use “Complete order” below to finish.",
+			"verificationUnavailable": "We could not verify your previous payment attempt. Please refresh the page — do not pay again until it is verified.",
+			"authorizedTitle": "Payment authorized — place your order",
+			"authorizedBody": "Your payment is authorized (capture happens when we fulfill the order). Tap below to place your order — you will not be charged again at checkout.",
+			"freeOrderBody": "Your order total is {total}. No payment is required — confirm below to place your order.",
+			"dummyTestMode": "Test mode. No card details needed — use Pay to complete a test order.",
+			"stripeLoadTitle": "Could not load Stripe"
+		},
+		"confirmation": {
+			"orderNumber": "Order #{number}",
+			"thankYou": "Thank you for your order!",
+			"confirmedTitle": "Your order is confirmed",
+			"confirmedEmail": "You'll receive a confirmation email at {email}",
+			"emailSent": "Confirmation email sent",
+			"shippingAddress": "Shipping address",
+			"billingAddress": "Billing address",
+			"estimatedDelivery": "Estimated delivery"
+		},
+		"server": {
+			"marketingSaveFailed": "Failed to save marketing preference",
+			"invalidRedirectUrl": "Invalid redirect URL",
+			"createAccountFailed": "Failed to create account",
+			"noSaleorResponse": "No response from Saleor",
+			"shippingMethodsFailed": "Failed to load shipping methods",
+			"gatewayInitFailed": "Payment gateway initialization failed",
+			"totalVerifyFailed": "Could not verify the checkout total. Please try again.",
+			"totalChanged": "The checkout total has changed. Please review your order and try again.",
+			"paymentInitFailed": "Payment initialization failed",
+			"paymentsDisabled": "Payments are not enabled in this environment.",
+			"paymentProcessFailed": "Payment processing failed",
+			"completeOrderFailed": "Failed to complete order",
+			"orderCreateFailed": "Payment was processed but the order could not be created. Please try again or contact support.",
+			"validationRulesUnavailable": "Validation rules not available",
+			"setDefaultAddressFailed": "Failed to set default address",
+			"dummyNotAllowed": "Test payment is not available in this environment.",
+			"stripeNotEnabled": "Stripe payments are not enabled in this environment. Set NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS=true on the storefront."
+		},
+		"gateways": {
+			"noneTitle": "No payment gateway configured",
+			"noneBody": "To accept payments, install a payment app (like Saleor Dummy Payment for testing, or Stripe/Adyen for production) from the Saleor Dashboard.",
+			"unsupportedTitle": "Unsupported payment gateway",
+			"unsupportedList": "This checkout does not support the available payment gateway(s): {gateways}.",
+			"unsupportedEmpty": "No supported payment gateway is available for this checkout.",
+			"dummyMissingTitle": "Dummy Payment not available on this checkout",
+			"dummyMissingBody": "Dummy Payment App is installed, but it is not available for this checkout. In Saleor Dashboard, check the app is active, webhooks are delivering successfully, and the checkout currency is supported (USD for the hosted app).",
+			"noGatewayConfigured": "No payment gateway configured. Please contact support or configure a payment app in Saleor.",
+			"stripeUseCardForm": "Stripe payment is handled by the card form. Complete payment using the Stripe payment section above.",
+			"paymentFailed": "Payment failed",
+			"paymentTryAgain": "Payment failed. Please try again.",
+			"paymentWebhookFailed": "Payment app webhook failed. In Saleor Dashboard → Apps → Dummy Payment App, check webhook deliveries are succeeding.",
+			"paymentInitFailed": "Payment could not be initialized. Check that the payment app is running in Saleor."
+		}
+	}
+}

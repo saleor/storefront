@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/ui/components/ui/button";
 import {
 	DropdownMenu,
@@ -26,6 +27,18 @@ import { Check } from "lucide-react";
 
 export type SortOption = "featured" | "newest" | "price_asc" | "price_desc" | "bestselling";
 
+const SORT_OPTIONS = [
+	"featured",
+	"newest",
+	"price_asc",
+	"price_desc",
+	"bestselling",
+] as const satisfies readonly SortOption[];
+
+type FilterLabelKey = "category" | "color" | "size" | "price";
+
+export type { FilterLabelKey };
+
 export interface FilterOption {
 	name: string;
 	count: number;
@@ -40,7 +53,7 @@ export interface CategoryFilterOption {
 }
 
 export interface ActiveFilter {
-	key: string;
+	key: FilterLabelKey;
 	label: string;
 	value: string;
 }
@@ -90,6 +103,10 @@ export function FilterBar({
 	onPriceRangeChange,
 }: FilterBarProps) {
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+	const t = useTranslations("plp");
+	const tFilter = useTranslations("plp.filterLabels");
+	const tSort = useTranslations("plp.sortOptions");
+	const filterLabel = (key: FilterLabelKey) => tFilter(key);
 
 	const hasFilters =
 		categoryOptions.length > 0 || colorOptions.length > 0 || sizeOptions.length > 0 || priceRanges.length > 0;
@@ -111,7 +128,7 @@ export function FilterBar({
 								<SheetTrigger asChild>
 									<Button variant="outline-solid" size="sm" className="shrink-0 bg-transparent md:hidden">
 										<SlidersHorizontal className="mr-2 h-4 w-4" />
-										Filters
+										{t("filtersButton")}
 										{activeFilterCount > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{activeFilterCount}
@@ -121,7 +138,7 @@ export function FilterBar({
 								</SheetTrigger>
 								<SheetContent side="left" className="flex w-[280px] flex-col p-0">
 									<SheetHeader className="flex-row items-center justify-between border-b border-border px-4 py-4">
-										<SheetTitle>Filters</SheetTitle>
+										<SheetTitle>{t("filtersButton")}</SheetTitle>
 										<SheetCloseButton />
 									</SheetHeader>
 
@@ -131,7 +148,7 @@ export function FilterBar({
 											{categoryOptions.length > 0 && onCategoryToggle && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Category
+														{filterLabel("category")}
 													</h3>
 													<div className="space-y-3">
 														{categoryOptions.map((category) => {
@@ -163,7 +180,7 @@ export function FilterBar({
 											{colorOptions.length > 0 && onColorToggle && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Color
+														{filterLabel("color")}
 													</h3>
 													<div className="space-y-3">
 														{colorOptions.map((color) => {
@@ -202,7 +219,7 @@ export function FilterBar({
 											{sizeOptions.length > 0 && onSizeToggle && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Size
+														{filterLabel("size")}
 													</h3>
 													<div className="flex flex-wrap gap-2">
 														{sizeOptions.map((size) => {
@@ -229,7 +246,7 @@ export function FilterBar({
 											{priceRanges.length > 0 && onPriceRangeChange && (
 												<div className="px-4 py-6">
 													<h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-														Price
+														{filterLabel("price")}
 													</h3>
 													<div className="space-y-3">
 														{priceRanges.map((range) => {
@@ -268,7 +285,7 @@ export function FilterBar({
 													setMobileFiltersOpen(false);
 												}}
 											>
-												Clear all filters ({activeFilterCount})
+												{t("clearAllFilters", { count: activeFilterCount })}
 											</Button>
 										</div>
 									)}
@@ -285,7 +302,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Category
+										{filterLabel("category")}
 										{selectedCategories.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{selectedCategories.length}
@@ -295,7 +312,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-56">
-									<DropdownMenuLabel>Category</DropdownMenuLabel>
+									<DropdownMenuLabel>{filterLabel("category")}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									{categoryOptions.map((category) => (
 										<DropdownMenuCheckboxItem
@@ -319,7 +336,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Color
+										{filterLabel("color")}
 										{selectedColors.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{selectedColors.length}
@@ -329,7 +346,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-56">
-									<DropdownMenuLabel>Color</DropdownMenuLabel>
+									<DropdownMenuLabel>{filterLabel("color")}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									{colorOptions.map((color) => (
 										<DropdownMenuCheckboxItem
@@ -360,7 +377,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Size
+										{filterLabel("size")}
 										{selectedSizes.length > 0 && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												{selectedSizes.length}
@@ -370,7 +387,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-48">
-									<DropdownMenuLabel>Size</DropdownMenuLabel>
+									<DropdownMenuLabel>{filterLabel("size")}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									{sizeOptions.map((size) => (
 										<DropdownMenuCheckboxItem
@@ -395,7 +412,7 @@ export function FilterBar({
 										size="sm"
 										className="hidden shrink-0 bg-transparent md:flex"
 									>
-										Price
+										{filterLabel("price")}
 										{selectedPriceRange && (
 											<Badge variant="secondary" className="ml-2 h-5 px-1.5 py-0 text-xs">
 												1
@@ -405,7 +422,7 @@ export function FilterBar({
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="w-48">
-									<DropdownMenuLabel>Price Range</DropdownMenuLabel>
+									<DropdownMenuLabel>{tFilter("priceRange")}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									<DropdownMenuRadioGroup
 										value={selectedPriceRange || ""}
@@ -425,13 +442,13 @@ export function FilterBar({
 					{/* Right: Result Count + Sort */}
 					<div className="flex shrink-0 items-center gap-3">
 						<span className="hidden text-sm text-muted-foreground sm:block">
-							{resultCount} {resultCount === 1 ? "product" : "products"}
+							{t("resultCount", { count: resultCount })}
 						</span>
 
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant="outline-solid" size="sm" className="bg-transparent">
-									Sort
+									{t("sort")}
 									<ChevronDown className="ml-1.5 h-4 w-4 opacity-50" />
 								</Button>
 							</DropdownMenuTrigger>
@@ -440,11 +457,11 @@ export function FilterBar({
 									value={sortValue}
 									onValueChange={(v) => onSortChange(v as SortOption)}
 								>
-									<DropdownMenuRadioItem value="featured">Featured</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="newest">Newest</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="price_asc">Price: Low to High</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="price_desc">Price: High to Low</DropdownMenuRadioItem>
-									<DropdownMenuRadioItem value="bestselling">Best Selling</DropdownMenuRadioItem>
+									{SORT_OPTIONS.map((option) => (
+										<DropdownMenuRadioItem key={option} value={option}>
+											{tSort(option)}
+										</DropdownMenuRadioItem>
+									))}
 								</DropdownMenuRadioGroup>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -460,14 +477,14 @@ export function FilterBar({
 								variant="secondary"
 								className="shrink-0 gap-1.5 pr-1.5"
 							>
-								<span className="text-xs text-muted-foreground">{filter.label}:</span>
+								<span className="text-xs text-muted-foreground">{filterLabel(filter.key)}:</span>
 								{filter.value}
 								<button
 									onClick={() => onRemoveFilter(filter.key, filter.value)}
 									className="hover:bg-background/50 ml-0.5 rounded-full p-0.5 transition-colors"
 								>
 									<X className="h-3 w-3" />
-									<span className="sr-only">Remove {filter.value} filter</span>
+									<span className="sr-only">{t("removeFilter", { value: filter.value })}</span>
 								</button>
 							</Badge>
 						))}
@@ -477,7 +494,7 @@ export function FilterBar({
 							className="h-6 shrink-0 px-2 text-xs text-muted-foreground"
 							onClick={onClearFilters}
 						>
-							Clear all
+							{t("clearAll")}
 						</Button>
 					</div>
 				)}

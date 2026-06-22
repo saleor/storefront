@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useMemo, useEffect, useTransition, useOptimistic } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import type { VariantSelectionSectionProps } from "./types";
 import { VariantSelector } from "./variant-selector";
 import { VariantNameSelector } from "./variant-name-selector";
@@ -58,6 +59,7 @@ export function VariantSelectionSection({
 	children,
 }: VariantSelectionSectionProps) {
 	const router = useRouter();
+	const { locale } = useParams<{ locale: string; channel: string }>();
 	const searchParams = useSearchParams();
 	const [isPending, startTransition] = useTransition();
 
@@ -132,7 +134,12 @@ export function VariantSelectionSection({
 
 			startTransition(() => {
 				setOptimisticSelections(newSelections);
-				router.push(`/${channel}/products/${productSlug}?${params.toString()}`, { scroll: false });
+				const path = `${buildStorefrontPath(
+					locale,
+					channel,
+					`/products/${productSlug}`,
+				)}?${params.toString()}`;
+				router.push(path, { scroll: false });
 			});
 		},
 		[
@@ -140,6 +147,7 @@ export function VariantSelectionSection({
 			variants,
 			attributeGroups,
 			channel,
+			locale,
 			productSlug,
 			router,
 			startTransition,
@@ -168,10 +176,15 @@ export function VariantSelectionSection({
 		(variantId: string) => {
 			startTransition(() => {
 				setOptimisticVariantId(variantId);
-				router.push(`/${channel}/products/${productSlug}?variant=${variantId}`, { scroll: false });
+				const path = `${buildStorefrontPath(
+					locale,
+					channel,
+					`/products/${productSlug}`,
+				)}?variant=${variantId}`;
+				router.push(path, { scroll: false });
 			});
 		},
-		[channel, productSlug, router, startTransition, setOptimisticVariantId],
+		[channel, locale, productSlug, router, startTransition, setOptimisticVariantId],
 	);
 
 	if (children) {

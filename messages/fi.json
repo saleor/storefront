@@ -1,0 +1,573 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# tuote} other {# tuotetta}}",
+			"subtotal": "Välisumma",
+			"shipping": "Toimitus",
+			"shippingFree": "Ilmainen",
+			"shippingCalculated": "Lasketaan kassalla",
+			"total": "Yhteensä",
+			"checkout": "Kassalle",
+			"continueShopping": "Jatka ostoksia",
+			"removeItem": "Poista {product}",
+			"decreaseQuantity": "Vähennä määrää",
+			"increaseQuantity": "Lisää määrää"
+		},
+		"page": {
+			"title": "Ostoskori",
+			"quantity": "Määrä: {count}",
+			"variant": "Variantti: {name}",
+			"yourTotal": "Kokonaissumma",
+			"shippingNote": "Toimitus lasketaan seuraavassa vaiheessa",
+			"checkout": "Kassalle"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Etusivu",
+		"breadcrumbProducts": "Tuotteet"
+	},
+	"common": {
+		"pagination": {
+			"previous": "Edellinen",
+			"next": "Seuraava"
+		}
+	},
+	"pdp": {
+		"addToBag": "Lisää koriin",
+		"adding": "Lisätään…",
+		"outOfStock": "Loppunut varastosta",
+		"selectOptions": "Valitse vaihtoehdot",
+		"free": "ILMAINEN",
+		"breadcrumbHome": "Etusivu",
+		"badges": {
+			"sale": "Ale",
+			"new": "Uutuus"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} — loppunut varastosta",
+			"willChangeSelections": "{name} — muuttaa muita valintoja",
+			"percentOffTitle": "{name} — {percent}% alennus",
+			"outOfStockA11y": "loppunut varastosta",
+			"percentOffA11y": "{percent}% alennus",
+			"selectedA11y": "valittu"
+		}
+	},
+	"plp": {
+		"quickAdd": "Pikalisäys",
+		"filtersButton": "Suodattimet",
+		"filterLabels": {
+			"category": "Kategoria",
+			"color": "Väri",
+			"size": "Koko",
+			"price": "Hinta",
+			"priceRange": "Hintaväli"
+		},
+		"sort": "Järjestä",
+		"sortOptions": {
+			"featured": "Suositellut",
+			"newest": "Uusimmat",
+			"price_asc": "Hinta: halvin ensin",
+			"price_desc": "Hinta: kallein ensin",
+			"bestselling": "Myydyimmät"
+		},
+		"resultCount": "{count, plural, one {# tuote} other {# tuotetta}}",
+		"clearAllFilters": "Tyhjennä suodattimet ({count})",
+		"clearAll": "Tyhjennä kaikki",
+		"removeFilter": "Poista suodatin {value}"
+	},
+	"search": {
+		"title": "Haku",
+		"description": "Etsi koko tuotevalikoimastamme.",
+		"bar": {
+			"placeholder": "Etsi tuotteita...",
+			"srOnlyLabel": "Etsi tuotteita"
+		},
+		"resultsFor": "Tulokset haulle \"{query}\"",
+		"resultCount": "{count, plural, one {# tuote löytyi} other {# tuotetta löytyi}}",
+		"noResultsTitle": "Ei tuloksia haulle \"{query}\"",
+		"noResultsBody": "Hakuun ei löytynyt tuotteita. Kokeile toista hakusanaa tai selaa kategorioita.",
+		"browseAllProducts": "Selaa tuotteita",
+		"goToHomepage": "Etusivu",
+		"noImage": "Ei kuvaa",
+		"sort": "Järjestä",
+		"sortOptions": {
+			"relevance": "Osuvuus",
+			"price-asc": "Hinta: halvin ensin",
+			"price-desc": "Hinta: kallein ensin",
+			"name": "Nimi",
+			"newest": "Uusimmat"
+		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Päänavigaatio"
+		},
+		"breadcrumbAriaLabel": "Murupolku",
+		"cartButton": "{count, plural, one {# tuote ostoskorissa, avaa kassi} other {# tuotetta ostoskorissa, avaa kassi}}",
+		"mobileMenu": {
+			"open": "Avaa valikko",
+			"title": "Navigointivalikko"
+		},
+		"userMenu": {
+			"open": "Avaa käyttäjävalikko",
+			"login": "Kirjaudu sisään",
+			"myAccount": "Oma tili",
+			"myOrders": "Omat tilaukset",
+			"logOut": "Kirjaudu ulos",
+			"unavailableAriaLabel": "Tili ei saatavilla",
+			"unavailableTitle": "Tilin lataaminen epäonnistui"
+		},
+		"regionPicker": {
+			"ariaLabel": "Kieli ja markkina",
+			"languageTitle": "Kieli",
+			"languageDescription": "Sisältö ja muotoilu",
+			"marketTitle": "Markkina",
+			"marketDescription": "Valuutta, verot ja toimitus"
+		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Kirjaudu sisään",
+			"loginDescription": "Kirjaudu tilillesi nähdäksesi tilauksesi ja tallennetut osoitteesi.",
+			"signupTitle": "Luo tili",
+			"signupDescription": "Luo tili tallentaaksesi osoitteesi ja tilaushistoriasi.",
+			"accountTitle": "Oma tili"
+		},
+		"fields": {
+			"email": "Sähköposti",
+			"emailAddress": "Sähköpostiosoite",
+			"password": "Salasana",
+			"firstName": "Etunimi",
+			"lastName": "Sukunimi",
+			"confirmPassword": "Vahvista salasana",
+			"currentPassword": "Nykyinen salasana",
+			"newPassword": "Uusi salasana",
+			"confirmNewPassword": "Vahvista uusi salasana",
+			"name": "Nimi",
+			"companyOptional": "Yritys (valinnainen)",
+			"streetAddress": "Katuosoite",
+			"streetAddress2Optional": "Asunto, huoneisto jne. (valinnainen)",
+			"city": "Kaupunki",
+			"postalCode": "Postinumero",
+			"stateProvince": "Maakunta / osavaltio",
+			"countryCode": "Maakoodi",
+			"phoneOptional": "Puhelin (valinnainen)",
+			"country": "Maa",
+			"cityArea": "Kaupunginosa",
+			"localized": {
+				"province": "Maakunta",
+				"district": "Piiri",
+				"state": "Osavaltio",
+				"zip": "Postinumero",
+				"postal": "Postinumero",
+				"postTown": "Postitoimipaikka",
+				"prefecture": "Prefektuuri"
+			}
+		},
+		"placeholders": {
+			"email": "sinä@esimerkki.fi",
+			"password": "Syötä salasanasi",
+			"firstName": "Etunimi",
+			"lastName": "Sukunimi",
+			"newPasswordMin": "Vähintään 8 merkkiä…",
+			"confirmPassword": "Vahvista salasanasi",
+			"reenterPassword": "Syötä salasana uudelleen",
+			"countryCode": "FI"
+		},
+		"common": {
+			"cancel": "Peruuta",
+			"save": "Tallenna",
+			"saving": "Tallennetaan…",
+			"edit": "Muokkaa",
+			"delete": "Poista",
+			"updated": "Päivitetty",
+			"showPassword": "Näytä salasana",
+			"hidePassword": "Piilota salasana",
+			"free": "Ilmainen",
+			"qty": "Määrä: {count}",
+			"itemCount": "{count, plural, one {# tuote} other {# tuotetta}}",
+			"notSet": "Ei asetettu",
+			"change": "Vaihda",
+			"changing": "Vaihdetaan…",
+			"sending": "Lähetetään…"
+		},
+		"errors": {
+			"invalidEmail": "Anna kelvollinen sähköpostiosoite",
+			"invalidEmailFirst": "Anna ensin kelvollinen sähköpostiosoite",
+			"passwordRequired": "Anna salasanasi",
+			"passwordMinLength": "Salasanan on oltava vähintään 8 merkkiä",
+			"passwordsMismatch": "Salasanat eivät täsmää",
+			"newPasswordRequired": "Anna uusi salasana",
+			"generic": "Tapahtui virhe. Yritä uudelleen.",
+			"signInFailed": "Kirjautuminen epäonnistui. Yritä uudelleen.",
+			"invalidCredentials": "Virheellinen sähköposti tai salasana. Yritä uudelleen.",
+			"rateLimited": "Liian monta kirjautumisyritystä. Odota hetki ja yritä uudelleen.",
+			"resetLinkFailed": "Nollauslinkin lähetys epäonnistui",
+			"accountExists": "Tällä sähköpostiosoitteella on jo tili. Kirjaudu sisään sen sijaan.",
+			"createAccountFailed": "Tilin luominen epäonnistui",
+			"invalidResetToken": "Tämä salasanan nollauslinkki on vanhentunut. Pyydä uusi linkki.",
+			"setPasswordFailed": "Salasanan asettaminen epäonnistui",
+			"invalidConfirmToken": "Tämä vahvistuslinkki on vanhentunut tai se on jo käytetty. Yritä kirjautua tai rekisteröidy uudelleen.",
+			"confirmFailed": "Tilin vahvistaminen epäonnistui",
+			"loadOrdersFailed": "Tilausten lataaminen epäonnistui. Yritä hetken kuluttua uudelleen.",
+			"loadOrderFailed": "Tämän tilauksen lataaminen epäonnistui. Yritä uudelleen.",
+			"loadRecentOrdersFailed": "Viimeisimpien tilausten lataaminen epäonnistui.",
+			"updateProfileFailed": "Profiilin päivittäminen epäonnistui",
+			"changePasswordFailed": "Salasanan vaihtaminen epäonnistui",
+			"createAddressFailed": "Osoitteen luominen epäonnistui",
+			"updateAddressFailed": "Osoitteen päivittäminen epäonnistui",
+			"deleteAddressFailed": "Osoitteen poistaminen epäonnistui",
+			"setDefaultAddressFailed": "Oletusosoitteen asettaminen epäonnistui",
+			"deleteAccountFailed": "Tilin poistopyynnön lähetys epäonnistui"
+		},
+		"login": {
+			"title": "Tervetuloa takaisin",
+			"noAccount": "Eikö sinulla ole tiliä?",
+			"signUp": "Rekisteröidy",
+			"forgotPassword": "Unohditko salasanan?",
+			"resendResetLink": "Lähetä linkki uudelleen",
+			"submit": "Kirjaudu sisään",
+			"submitting": "Kirjaudutaan…",
+			"resetSent": "Jos tilille {email} on olemassa, salasanan nollauslinkki on lähetetty. Huom: voit pyytää nollauslinkin vain kerran 15 minuutissa."
+		},
+		"signup": {
+			"title": "Luo tili",
+			"hasAccount": "Onko sinulla jo tili?",
+			"signIn": "Kirjaudu sisään",
+			"submit": "Luo tili",
+			"submitting": "Luodaan tiliä…",
+			"successTitle": "Tili luotu!",
+			"successBody": "Tarkista sähköpostisi vahvistaaksesi tilisi.",
+			"goToSignIn": "Siirry kirjautumiseen",
+			"terms": "Luomalla tilin hyväksyt <terms>käyttöehdot</terms> ja <privacy>tietosuojakäytännön</privacy>.",
+			"termsLink": "Käyttöehdot",
+			"privacyLink": "Tietosuojakäytäntö"
+		},
+		"setPassword": {
+			"title": "Aseta uusi salasana",
+			"subtitle": "Anna uusi salasana osoitteelle {email}",
+			"submit": "Päivitä salasana",
+			"submitting": "Päivitetään…",
+			"backToSignIn": "Takaisin kirjautumiseen",
+			"successTitle": "Salasana päivitetty!",
+			"successBody": "Salasanasi on nollattu onnistuneesti. Olet nyt kirjautunut sisään.",
+			"redirecting": "Ohjataan kauppaan…"
+		},
+		"confirm": {
+			"confirmingTitle": "Vahvistetaan tiliä",
+			"confirmingBody": "Vahvistetaan {email}…",
+			"successTitle": "Tili vahvistettu",
+			"successBody": "Tilisi osoitteelle {email} on aktiivinen. Kirjaudu sisään luomallasi salasanalla.",
+			"signIn": "Kirjaudu sisään",
+			"continueShopping": "Jatka ostoksia",
+			"errorTitle": "Tilin vahvistaminen epäonnistui",
+			"goToSignIn": "Siirry kirjautumiseen"
+		},
+		"nav": {
+			"ariaLabel": "Tili",
+			"backToStore": "Takaisin kauppaan",
+			"signOut": "Kirjaudu ulos",
+			"overview": "Yleiskatsaus",
+			"orders": "Tilaukset",
+			"addresses": "Osoitteet",
+			"settings": "Asetukset"
+		},
+		"overview": {
+			"welcome": "Tervetuloa takaisin, {name}",
+			"subtitle": "Tässä on yleiskatsaus tilisi toiminnasta.",
+			"recentOrders": "Viimeisimmät tilaukset",
+			"viewAll": "Näytä kaikki",
+			"noOrdersYet": "Et ole vielä tehnyt tilauksia."
+		},
+		"orders": {
+			"title": "Tilaukset",
+			"count": "{count, plural, =0 {Ei tilauksia} one {# tilaus} other {# tilausta}}",
+			"empty": "Et ole vielä tehnyt tilauksia.",
+			"loadMore": "Lataa lisää tilauksia",
+			"signInRequired": "Kirjaudu sisään nähdäksesi tilauksesi.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Tilattu {date}",
+			"items": "Tuotteet ({count})",
+			"subtotal": "Välisumma",
+			"shipping": "Toimitus",
+			"tax": "Vero",
+			"total": "Yhteensä",
+			"shippingAddress": "Toimitusosoite",
+			"billingAddress": "Laskutusosoite",
+			"paymentMethod": "Maksutapa",
+			"paid": "Maksettu",
+			"needHelp": "Tarvitsetko apua?",
+			"signInRequired": "Kirjaudu sisään nähdäksesi tämän tilauksen.",
+			"loadFailed": "Tämän tilauksen lataaminen epäonnistui. Yritä uudelleen.",
+			"timeline": "Tilauksen aikajana"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "Käsittelyssä",
+			"UNCONFIRMED": "Odottaa vahvistusta",
+			"PARTIALLY_FULFILLED": "Osittain lähetetty",
+			"FULFILLED": "Lähetetty"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Tilaus vahvistettu",
+			"orderConfirmedDescription": "Maksu vahvistettu ja tilaus tehty",
+			"FULFILLED": "Lähetetty",
+			"FULFILLEDDescription": "Tilauksesi on lähetetty",
+			"CANCELED": "Toimitus peruutettu",
+			"CANCELEDDescription": "Lähetys peruutettiin",
+			"REFUNDED": "Hyvitetty",
+			"REFUNDEDDescription": "Maksu on hyvitetty",
+			"REFUNDED_AND_RETURNED": "Hyvitetty ja palautettu",
+			"REFUNDED_AND_RETURNEDDescription": "Tuotteet palautettu ja maksu hyvitetty",
+			"REPLACED": "Korvattu",
+			"REPLACEDDescription": "Tuotteet on korvattu",
+			"RETURNED": "Palautettu",
+			"RETURNEDDescription": "Tuotteet on palautettu",
+			"WAITING_FOR_APPROVAL": "Odottaa hyväksyntää",
+			"WAITING_FOR_APPROVALDescription": "Toimitus odottaa hyväksyntää",
+			"trackingUpdated": "Seuranta päivitetty",
+			"trackingNumber": "Seurantanumero: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# tuote} other {# tuotetta}})"
+		},
+		"settings": {
+			"title": "Asetukset",
+			"subtitle": "Hallitse tilisi asetuksia",
+			"memberSince": "Jäsen {date} lähtien"
+		},
+		"addresses": {
+			"title": "Osoitteet",
+			"subtitle": "Hallitse tallennettuja osoitteitasi",
+			"empty": "Ei tallennettuja osoitteita.",
+			"addAddress": "Lisää osoite",
+			"editAddress": "Muokkaa osoitetta",
+			"addNewAddress": "Lisää uusi osoite",
+			"editAddressDescription": "Päivitä osoitetiedot",
+			"addAddressDescription": "Lisää uusi osoite tilillesi",
+			"editAddressAria": "Muokkaa osoitetta",
+			"updateAddress": "Päivitä osoite",
+			"deleteAddressAria": "Poista osoite",
+			"defaultShipping": "Oletustoimitusosoite",
+			"defaultBilling": "Oletuslaskutusosoite",
+			"makeDefaultShipping": "Aseta oletustoimitusosoitteeksi",
+			"makeDefaultBilling": "Aseta oletuslaskutusosoitteeksi"
+		},
+		"deleteAccount": {
+			"title": "Poista tili",
+			"description": "Poista tilisi ja kaikki siihen liittyvät tiedot pysyvästi.",
+			"submit": "Poista tili",
+			"confirm": "Kyllä, poista tilini",
+			"confirmBody": "Tätä toimintoa ei voi perua. Saat vahvistussähköpostin ennen tilisi poistamista.",
+			"emailSent": "Vahvistussähköposti on lähetetty. Tarkista postilaatikkosi viimeistelläksesi tilin poiston."
+		},
+		"changePassword": {
+			"submit": "Vaihda salasana"
+		},
+		"unavailable": {
+			"title": "Tiliä ei voitu ladata",
+			"body": "Kauppa on tilapäisesti poissa käytöstä. Päivitä sivu tai yritä hetken kuluttua uudelleen."
+		}
+	},
+	"checkout": {
+		"steps": {
+			"information": "Tiedot",
+			"shipping": "Toimitus",
+			"payment": "Maksu",
+			"stepsAriaLabel": "Kassan vaiheet",
+			"secureCheckout": "Turvallinen kassa",
+			"complete": "Valmis",
+			"stepOf": "Vaihe {step} / {total}"
+		},
+		"actions": {
+			"saving": "Tallennetaan…",
+			"loading": "Ladataan…",
+			"continueToShipping": "Jatka toimitukseen",
+			"continueToPayment": "Jatka maksuun",
+			"continue": "Jatka",
+			"continueAsGuest": "Jatka vieraana",
+			"preparingGuestCart": "Valmistellaan vieraskoria…",
+			"logIn": "Kirjaudu",
+			"returnToInformation": "Takaisin tietoihin",
+			"returnToShipping": "Takaisin toimitukseen",
+			"payNow": "Maksa nyt",
+			"payTotal": "Maksa {total}",
+			"completeOrder": "Viimeistele tilaus",
+			"placingOrder": "Tilataan…",
+			"creatingOrder": "Luodaan tilausta…",
+			"processingPayment": "Käsitellään maksua…",
+			"continueShopping": "Jatka ostoksia",
+			"tryAgain": "Yritä uudelleen"
+		},
+		"errors": {
+			"sessionExpiredTitle": "Kassaistunto vanhentunut",
+			"sessionExpiredMessage": "Tämä ostoskori ei ole enää saatavilla. Lisää tuotteita uudelleen aloittaaksesi uuden kassan.",
+			"loadFailedTitle": "Kassaa ei voitu ladata",
+			"loadFailedMessage": "Ostoskorin lataamisessa ilmeni ongelma. Yritä uudelleen tai aloita uusi kassa kaupasta.",
+			"orderNotFoundTitle": "Tilausta ei löytynyt",
+			"orderNotFoundMessage": "Emme löytäneet tätä tilausta. Se on ehkä poistettu tai linkki on virheellinen.",
+			"emailRequired": "Sähköposti vaaditaan",
+			"selectShippingAddress": "Valitse toimitusosoite",
+			"selectShippingMethod": "Valitse toimitustapa",
+			"updateShippingMethodFailed": "Toimitustavan päivitys epäonnistui",
+			"orphanedCartMessage": "Tämä ostoskori on yhä linkitetty kirjautuneeseen tiliin. Maksaaksesi vieraana, aloita uusi anonyymi ostoskori samoilla tuotteilla tai kirjaudu sisään.",
+			"orphanedCartBlocked": "Tämä ostoskori on yhä linkitetty kirjautuneeseen tiliin. Jatka vieraana yllä tai kirjaudu sisään.",
+			"discountApplyFailed": "Alennuskoodia ei voitu käyttää.",
+			"discountRemoveFailed": "Alennuskoodin poisto epäonnistui.",
+			"invalidValue": "Virheellinen arvo",
+			"updateEmailFailed": "Sähköpostin päivitys epäonnistui",
+			"createAccountFailed": "Tilin luonti epäonnistui",
+			"updateAddressFailed": "Osoitteen päivitys epäonnistui",
+			"crashTitle": "Kassavirhe",
+			"crashMessage": "Kassan lataamisessa tapahtui virhe. Yritä uudelleen."
+		},
+		"contact": {
+			"title": "Yhteystiedot",
+			"haveAccount": "Onko sinulla tili?",
+			"createAccountLabel": "Luo tili nopeampaa kassaa varten seuraavalla kerralla",
+			"activationNotice": "Kassan jälkeen saat sähköpostin tilisi aktivoimiseksi ennen kuin voit kirjautua sisään.",
+			"guestCheckout": "Vieraskassa",
+			"newCustomer": "Uusi asiakas?",
+			"signInTitle": "Kirjaudu",
+			"resetPasswordTitle": "Nollaa salasanasi",
+			"resetPasswordSubtitle": "Anna uusi salasana tilillesi",
+			"processing": "Käsitellään…",
+			"passwordMinPlaceholder": "Salasana (vähintään 8 merkkiä)",
+			"signedIn": "Kirjautuneena"
+		},
+		"summary": {
+			"title": "Tilauksen yhteenveto",
+			"show": "Näytä",
+			"hide": "Piilota",
+			"toggleOrderSummary": "{action} tilauksen yhteenveto",
+			"itemCount": "{count, plural, one {# tuote} other {# tuotetta}}",
+			"subtotal": "Välisumma",
+			"shipping": "Toimitus",
+			"taxVat": "Vero (ALV)",
+			"discount": "Alennus",
+			"total": "Yhteensä",
+			"includingVat": "Sis. ALV",
+			"productFallback": "Tuote",
+			"contact": "Yhteystiedot",
+			"shipTo": "Toimitusosoite",
+			"method": "Tapa",
+			"delivery": "Toimitus",
+			"digital": "Digitaalinen"
+		},
+		"promo": {
+			"placeholder": "Alennuskoodi",
+			"apply": "Käytä",
+			"applying": "Käytetään…",
+			"removeAriaLabel": "Poista alennuskoodi"
+		},
+		"shipping": {
+			"methodTitle": "Toimitustapa",
+			"loadingMethods": "Ladataan toimitustapoja…",
+			"noAddressYet": "Palaa takaisin ja anna ensin toimitusosoitteesi.",
+			"addressTitle": "Toimitusosoite",
+			"countryRegion": "Maa/alue",
+			"selectCountry": "Valitse maa",
+			"backToSavedAddresses": "← Takaisin tallennettuihin osoitteisiin",
+			"emptySavedShipping": "Sinulla ei ole vielä tallennettuja osoitteita. Anna toimitusosoitteesi alla.",
+			"selectShippingAddressSheet": "Valitse toimitusosoite"
+		},
+		"billing": {
+			"title": "Laskutusosoite",
+			"sameAsShipping": "Sama kuin toimitusosoite",
+			"selectBillingSheet": "Valitse laskutusosoite",
+			"emptySavedBilling": "Tallennettuja osoitteita ei ole saatavilla.",
+			"backToSavedAddresses": "Takaisin tallennettuihin osoitteisiin"
+		},
+		"addresses": {
+			"selectPrompt": "Valitse osoite",
+			"setDefaultShipping": "Aseta oletustoimitusosoitteeksi",
+			"setDefaultBilling": "Aseta oletuslaskutusosoitteeksi",
+			"defaultBadge": "Oletus",
+			"emptySaved": "Sinulla ei ole vielä tallennettuja osoitteita."
+		},
+		"payment": {
+			"totalUpdatedTitle": "Tilauksesi summa päivitettiin",
+			"totalUpdatedBody": "Summa muuttui arvosta {previous} arvoon {next}. Tarkista päivitetty yhteenveto ennen maksun suorittamista.",
+			"deliveryInvalidTitle": "Toimitustapa ei ole enää saatavilla",
+			"deliveryInvalidBody": "Palaa toimitusvaiheeseen ja valitse kelvollinen toimitustapa ennen tilauksen viimeistelyä.",
+			"completingTitle": "Käsitellään tilaustasi",
+			"completingBody": "Vahvistamme maksusi ja luomme tilauksesi. Tämä kestää yleensä muutaman sekunnin — älä sulje tai päivitä tätä sivua.",
+			"initFailed": "Maksujärjestelmän alustus epäonnistui.",
+			"unavailable": "Maksujärjestelmä ei ole käytettävissä. Yritä uudelleen.",
+			"loadingGateway": "Ladataan {gateway}-maksulomaketta…",
+			"confirmingPayment": "Vahvistetaan maksuasi…",
+			"securingWithStripe": "Turvaamme maksusi Stripen avulla. Tämä kestää yleensä muutaman sekunnin.",
+			"doNotClose": "Älä sulje tai päivitä tätä sivua.",
+			"completeOrderFailed": "Tilausta ei voitu viimeistellä. Yritä uudelleen.",
+			"placeOrderFailed": "Tilausta ei voitu tehdä. Yritä uudelleen tai ota yhteyttä tukeen.",
+			"totalsRefreshFailed": "Kassan summia ei voitu päivittää. Yritä uudelleen.",
+			"totalUnavailable": "Kassan summa ei ole saatavilla. Päivitä sivu ja yritä uudelleen.",
+			"currencyUnavailable": "Kassan valuutta ei ole saatavilla. Päivitä sivu ja yritä uudelleen.",
+			"validationFailed": "Maksun vahvistus epäonnistui",
+			"methodRequired": "Valittua maksutapaa ei voitu määrittää. Valitse maksuvaihtoehto ja yritä uudelleen.",
+			"detailsUnavailable": "Maksutietoja ei voitu hakea. Yritä uudelleen.",
+			"expressReset": "Pikakassapainikkeet nollattiin ennen maksun vahvistamista. Yritä uudelleen.",
+			"formReset": "Maksulomake nollattiin ennen kortin vahvistamista. Yritä maksaa uudelleen päivittämättä sivua.",
+			"totalChanged": "Tilauksen summa muuttui. Tarkista päivitetty summa ja yritä uudelleen.",
+			"bankDeclined": "Pankkisi hylkäsi maksun. Yritä uudelleen tai käytä toista korttia.",
+			"sessionExpired": "Maksuistunto vanhentui uudelleenohjauksen jälkeen. Yritä uudelleen.",
+			"channelUnresolved": "Kassakanavaa ei voitu määrittää maksun jälkeen. Ota yhteyttä tukeen.",
+			"unexpectedError": "Odottamaton virhe tapahtui maksua viimeistellessä.",
+			"stripeConfigFailed": "Stripen yhdyskäytävän määritys epäonnistui",
+			"stripeKeyMissing": "Stripen julkinen avain puuttuu. Tarkista Stripen sovelluksen määritys Saleor-hallintapaneelissa.",
+			"dummyGateway": "Testimaksu",
+			"failed": "Maksu epäonnistui",
+			"interruptedBeforeCharge": "Maksu keskeytettiin ennen veloitusta. Voit turvallisesti yrittää uudelleen.",
+			"interruptedAfterAuthorize": "Maksusi onnistui, mutta tilausta ei ole vielä tehty. Älä maksa uudelleen — käytä alla olevaa „Viimeistele tilaus” -painiketta.",
+			"verificationUnavailable": "Emme voineet vahvistaa aiempaa maksuyritystäsi. Päivitä sivu — älä maksa uudelleen ennen kuin se on vahvistettu.",
+			"authorizedTitle": "Maksu valtuutettu — viimeistele tilauksesi",
+			"authorizedBody": "Maksusi on valtuutettu (veloitus tapahtuu tilauksen toimituksen yhteydessä). Napauta alla tehdäksesi tilauksen — sinua ei veloiteta uudelleen kassalla.",
+			"freeOrderBody": "Tilauksesi summa on {total}. Maksua ei vaadita — vahvista alla tehdäksesi tilauksen.",
+			"dummyTestMode": "Testitila. Korttitietoja ei tarvita — käytä Maksa-painiketta testitilauksen viimeistelyyn.",
+			"stripeLoadTitle": "Stripea ei voitu ladata"
+		},
+		"confirmation": {
+			"orderNumber": "Tilaus #{number}",
+			"thankYou": "Kiitos tilauksestasi!",
+			"confirmedTitle": "Tilauksesi on vahvistettu",
+			"confirmedEmail": "Saat vahvistussähköpostin osoitteeseen {email}",
+			"emailSent": "Vahvistussähköposti lähetetty",
+			"shippingAddress": "Toimitusosoite",
+			"billingAddress": "Laskutusosoite",
+			"estimatedDelivery": "Arvioitu toimitus"
+		},
+		"server": {
+			"marketingSaveFailed": "Markkinointiasetuksen tallennus epäonnistui",
+			"invalidRedirectUrl": "Virheellinen uudelleenohjauksen URL",
+			"createAccountFailed": "Tilin luonti epäonnistui",
+			"noSaleorResponse": "Ei vastausta Saleorilta",
+			"shippingMethodsFailed": "Toimitustapojen lataus epäonnistui",
+			"gatewayInitFailed": "Maksuyhdyskäytävän alustus epäonnistui",
+			"totalVerifyFailed": "Kassan summaa ei voitu vahvistaa. Yritä uudelleen.",
+			"totalChanged": "Kassan summa on muuttunut. Tarkista tilauksesi ja yritä uudelleen.",
+			"paymentInitFailed": "Maksun alustus epäonnistui",
+			"paymentsDisabled": "Maksut eivät ole käytössä tässä ympäristössä.",
+			"paymentProcessFailed": "Maksun käsittely epäonnistui",
+			"completeOrderFailed": "Tilauksen viimeistely epäonnistui",
+			"orderCreateFailed": "Maksu käsiteltiin, mutta tilausta ei voitu luoda. Yritä uudelleen tai ota yhteyttä tukeen.",
+			"validationRulesUnavailable": "Validointisäännöt eivät ole saatavilla",
+			"setDefaultAddressFailed": "Oletusosoitteen asettaminen epäonnistui",
+			"dummyNotAllowed": "Testimaksu ei ole käytettävissä tässä ympäristössä.",
+			"stripeNotEnabled": "Stripe-maksut eivät ole käytössä tässä ympäristössä. Aseta NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS=true kaupassa."
+		},
+		"gateways": {
+			"noneTitle": "Maksuyhdyskäytävää ei ole määritetty",
+			"noneBody": "Hyväksyäksesi maksuja, asenna maksusovellus (esim. Saleor Dummy Payment testaukseen tai Stripe/Adyen tuotantoon) Saleor-hallintapaneelista.",
+			"unsupportedTitle": "Ei-tuettu maksuyhdyskäytävä",
+			"unsupportedList": "Tämä kassa ei tue saatavilla olevia maksuyhdyskäytäviä: {gateways}.",
+			"unsupportedEmpty": "Tälle kassalle ei ole saatavilla tuettua maksuyhdyskäytävää.",
+			"dummyMissingTitle": "Dummy Payment ei ole saatavilla tällä kassalla",
+			"dummyMissingBody": "Dummy Payment -sovellus on asennettu, mutta se ei ole saatavilla tälle kassalle. Tarkista Saleor-hallintapaneelista, että sovellus on aktiivinen, webhookit toimitetaan onnistuneesti ja kassan valuuttaa tuetaan (USD hostatulle sovellukselle).",
+			"noGatewayConfigured": "Maksuyhdyskäytävää ei ole määritetty. Ota yhteyttä tukeen tai määritä maksusovellus Saleorissa.",
+			"stripeUseCardForm": "Stripe-maksu suoritetaan korttilomakkeella. Viimeistele maksu yllä olevassa Stripe-osiossa.",
+			"paymentFailed": "Maksu epäonnistui",
+			"paymentTryAgain": "Maksu epäonnistui. Yritä uudelleen.",
+			"paymentWebhookFailed": "Maksusovelluksen webhook epäonnistui. Tarkista Saleor-hallintapaneelissa → Sovellukset → Dummy Payment App, että webhook-toimitukset onnistuvat.",
+			"paymentInitFailed": "Maksua ei voitu alustaa. Tarkista, että maksusovellus on käynnissä Saleorissa."
+		}
+	}
+}

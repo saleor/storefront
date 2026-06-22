@@ -1,6 +1,6 @@
 # Saleor Paper Storefront
 
-**Version 1.5.0**  
+**Version 1.7.0**  
 Saleor Paper  
 February 2026
 
@@ -16,17 +16,24 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 15 rules across 6 categories: data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 21 rules across 7 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
 ## Table of Contents
+
+0. [Architecture](#0-architecture) — **CRITICAL**
+
+   - 0.1 [Paper Architecture](#01-paper-architecture)
 
 1. [Data Layer](#1-data-layer) — **CRITICAL**
 
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
    - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
+   - 1.4 [Storefront Content Layer](#14-storefront-content-layer)
+   - 1.5 [Storefront Content (Saleor Models)](#15-storefront-content-saleor-models)
+   - 1.6 [Storefront Content Attributes](#16-storefront-content-attributes)
 
 2. [Product Pages](#2-product-pages) — **HIGH**
 
@@ -46,6 +53,8 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 
    - 4.1 [UI Components](#41-ui-components)
    - 4.2 [Channels & Multi-Currency](#42-channels-multi-currency)
+   - 4.3 [Locale & Channel URL Routing](#43-locale-channel-url-routing)
+   - 4.4 [next-intl (Code-Owned UI Strings)](#44-next-intl-code-owned-ui-strings)
 
 5. [SEO](#5-seo) — **MEDIUM**
 
@@ -53,6 +62,121 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 
 6. [Development](#6-development) — **MEDIUM**
    - 6.1 [Saleor API Investigation](#61-saleor-api-investigation)
+
+---
+
+## 0. Architecture
+
+**Impact: CRITICAL**
+
+North-star conventions for canonical Next.js App Router patterns. Read before unfamiliar changes; task rules below cover implementation detail.
+
+### 0.1 Paper Architecture
+
+North-star for how this storefront is built. Read this before unfamiliar changes; use task rules for implementation detail.
+
+> **Not** a fork migration guide — see `migrations/SKILL.md`.  
+> **Not** Saleor API reference — see `saleor-storefront` skill.
+
+---
+
+## Stance
+
+Paper follows **canonical Next.js App Router** patterns (Next.js 16):
+
+- **Server Components by default** — `"use client"` only for interactivity, browser APIs, or client hooks.
+- **Server Actions** for cart, checkout, and account mutations — not client-side GraphQL.
+- **RSC data fetching** on the server via `executePublicGraphQL` / `executeAuthenticatedGraphQL` — not urql, not browser Saleor SDK.
+- **Cache Components (PPR)** for browse/catalog — `"use cache"` at the data boundary, `Suspense` for runtime holes.
+- **BFF auth** — login/session via `/api/auth/*` and HttpOnly cookies, shared across storefront and checkout.
+
+We align with upstream Next.js docs rather than inventing parallel data layers. When Next.js offers a first-class pattern (metadata API, `loading.tsx`, Server Actions, `use cache`), prefer it.
+
+---
+
+## Architectural pillars
+
+| Pillar              | Decision                                                  | Detail                                                                                                                                                                                                                          |
+| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
+| **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
+| **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
+| **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
+| **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
+| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
+| **Copy & i18n**     | Three string systems                                      | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
+| **Channels**        | Explicit storefront allowlist                             | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
+
+---
+
+## Data flow (mental model)
+
+```
+Browse (storefront)                    Commerce (cart / checkout / account)
+─────────────────                    ─────────────────────────────────────
+RSC page (sync export)               RSC loader or Server Action
+  └── Suspense                         └── executeAuthenticatedGraphQL
+        └── Shell ("use cache" data)         cache: "no-cache"
+              └── Suspense islands           mutations → revalidatePath / refresh
+                    searchParams, cookies
+```
+
+Saleor remains the source of truth for prices at checkout; cached PDP prices may lag until cart refresh.
+
+---
+
+## Deliberate non-goals
+
+Patterns we **do not** use — regressions to avoid:
+
+| Avoid                                                | Use instead                                         |
+| ---------------------------------------------------- | --------------------------------------------------- |
+| Client-side Saleor GraphQL (urql, Apollo in browser) | Server helpers + Server Actions                     |
+| Browser Saleor SDK for login                         | BFF `/api/auth/*`                                   |
+| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cache-manifest.ts` + webhooks      |
+| `searchParams` / `cookies()` inside `"use cache"`    | Dynamic islands in nested `Suspense`                |
+| Async page components that fetch cached data         | Sync page + inner Suspense boundary                 |
+| `Suspense fallback={null}` on `<main>`               | Route `loading.tsx` + section skeletons             |
+| `router.replace` for checkout step-only changes      | `updateCheckoutQuery()` (shallow history)           |
+| Storefront importing `@/checkout/*`                  | `@paper/session-bridge` for cross-surface URLs only |
+| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `applyCacheProfile` from `cache-manifest.ts`        |
+
+---
+
+## Known divergences (accepted, deferred)
+
+Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
+
+| Divergence                                                                                                                                                                                                         | Why it's safe today                                                                                                                                                                                                                                                                                                                                     | Deferred fix                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Homepage** (`(main)/page.tsx`) and **category** (`categories/[slug]/page.tsx`) use an **async page shell** that awaits cached data at the page top, instead of the canonical sync page → Suspense → async shell. | Both await only `params` + `"use cache"` data (`getStorefrontContent` / `getCategoryData`) — never `searchParams`/`cookies` — so the static shell still prerenders and PPR is intact. Dynamic islands (featured collection, product grid) stay in nested `Suspense`. Build passes.                                                                      | Convert to sync page + inner `<Suspense fallback>` shell when touched.                     |
+| **Homepage has no `loading.tsx`.**                                                                                                                                                                                 | Content is `"use cache"` and reused from the layout's own `getStorefrontContent` fetch (warm per request); stale-while-revalidate avoids blocking on TTL expiry. Only a truly cold cache renders `<main>` empty briefly — per-key, not traffic-amplified. The layout also awaits the same cached content, so the page is not the main cold-start lever. | Add a homepage `loading.tsx` (or sync-shell skeleton) alongside the sync-shell conversion. |
+
+---
+
+## Where to read next
+
+| If you are…                        | Start with                                                                                                       |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
+| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
+| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
+| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
+| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
+| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
+| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)      |
+| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
+
+Formal architecture decisions beyond day-to-day conventions: [`docs/adr/`](../../../docs/adr/).
+
+---
+
+## Anti-patterns
+
+❌ **Don't add a client data-fetching layer** when Server Components or Server Actions suffice  
+❌ **Don't bypass the cache manifest** for catalog tags/TTLs  
+❌ **Don't fix PPR build errors by wrapping `<main>` in Suspense** — fix the route segment that owns dynamic work  
+❌ **Don't duplicate architecture essays in feature PRs** — extend this file or an ADR if the decision is cross-cutting
 
 ---
 
@@ -176,7 +300,7 @@ Layout shell
 ├── Suspense → Footer (cached menus + channels)
 └── Suspense → CartDrawer (cookies, no-cache)
 
-Invalidation: Saleor webhook → revalidateTag(tag, profile) + revalidatePath per channel
+Invalidation: Saleor webhook → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
 ```
 
 **Key files**
@@ -198,14 +322,15 @@ All cache profiles are defined in `src/lib/cache-manifest.ts`. This module is im
 - **`/api/cache-info`** — to serve the manifest to the saleor-paper-app (Dashboard)
 
 ```typescript
-import { PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
-async function getProductData(slug: string, channel: string) {
+async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
-	applyCacheProfile(PROFILES.products, slug);
+	applyCacheProfile(CACHE_PROFILES.products, slug);
 
 	return executePublicGraphQL(ProductDetailsDocument, {
-		variables: { slug, channel },
+		variables: { slug, channel, ...graphqlLanguageCodeVariables(localeSlug) },
 	});
 }
 ```
@@ -214,15 +339,16 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 
 ### Tag Registry
 
-| Tag Pattern             | Profile ID    | Used By                                        | Invalidated When          |
-| ----------------------- | ------------- | ---------------------------------------------- | ------------------------- |
-| `product:{slug}`        | `products`    | PDP `getProductData()`                         | Product updated in Saleor |
-| `category:{slug}`       | `categories`  | `getCategoryData()`                            | Category updated          |
-| `collection:{slug}`     | `collections` | `getCollectionData()`, `getFeaturedProducts()` | Collection updated        |
-| `page:{slug}`           | `pages`       | `getPageData()` (CMS)                          | Page updated              |
-| `navigation:{channel}`  | `navigation`  | `getNavbarMenuItems()`                         | Navbar menu changed       |
-| `footer-menu:{channel}` | `footerMenu`  | `getFooterMenuItems()`                         | Footer menu changed       |
-| `channels`              | `channels`    | `getCachedChannelsList()`                      | Channel list changed      |
+| Tag Pattern                             | Profile ID           | Used By                                        | Invalidated When            |
+| --------------------------------------- | -------------------- | ---------------------------------------------- | --------------------------- |
+| `product:{slug}`                        | `products`           | PDP `getProductData()`                         | Product updated in Saleor   |
+| `category:{slug}`                       | `categories`         | `getCategoryData()`                            | Category updated            |
+| `collection:{slug}`                     | `collections`        | `getCollectionData()`, `getFeaturedProducts()` | Collection updated          |
+| `page:{slug}`                           | `pages`              | `getPageData()` (CMS)                          | Page updated                |
+| `navigation:{channel}`                  | `navigation`         | `getNavbarMenuItems()`                         | Navbar menu changed         |
+| `footer-menu:{channel}`                 | `footerMenu`         | `getFooterMenuItems()`                         | Footer menu changed         |
+| `storefront-content:{channel}:{locale}` | `storefront-content` | `getStorefrontContent()`                       | `storefront-*` Page updated |
+| `channels`                              | `channels`           | `getCachedChannelsList()`                      | Channel list changed        |
 
 **Named `cacheLife` tiers** (via `applyCacheProfile`, configured in `next.config.js`):
 
@@ -231,9 +357,70 @@ To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actua
 | `products`                  | `catalog`  | ~5 min      | Products, categories, collections |
 | `pages`                     | `catalog`  | ~5 min      | CMS pages                         |
 | `navigation` / `footerMenu` | `menus`    | ~1 hour     | Nav + footer menus                |
+| `storefront-content`        | `menus`    | ~5 min      | Merchandising copy (Models)       |
 | `channels`                  | `channels` | longer      | Channel metadata list             |
 
 Do **not** add fetch-level `revalidate` on GraphQL calls inside `"use cache"` functions — `cacheLife` + webhooks handle freshness.
+
+### Locale & Caching
+
+Browse routes are `/{locale}/{channel}/…` (see `ui-locale-routing.md`, ADR 0001). Locale affects **what** is cached (translated GraphQL payloads), not **how fast** repeat visits are.
+
+#### Cache keys vs cache tags
+
+| Mechanism                                   | Includes locale?            | Role                                                                 |
+| ------------------------------------------- | --------------------------- | -------------------------------------------------------------------- |
+| **`"use cache"` function arguments**        | ✅ Yes (`localeSlug` param) | Separate cache entry per locale — `/pl/…` and `/en/…` do not collide |
+| **`cacheTag` (invalidation)**               | Usually ❌ for catalog      | One tag per slug/channel; webhook busts all locale variants together |
+| **`storefront-content:{channel}:{locale}`** | ✅ Yes (BCP 47)             | Homepage/marketing copy from Saleor Models                           |
+
+```typescript
+// Separate cache entries — localeSlug is part of the Next.js cache key
+getProductData("hoodie", "default-channel", "en"); // → English translation payload
+getProductData("hoodie", "default-channel", "pl"); // → Polish translation payload
+
+// Single invalidation tag — product update clears both entries
+applyCacheProfile(CACHE_PROFILES.products, slug); // → tag: product:hoodie
+```
+
+**Performance:** After the first visitor per locale, that locale’s PDP/PLP is as fast as before locale routing. Adding `pl` and `de` creates ~N additional cache entries (one per locale × page), not extra work on every request.
+
+**Cold start:** Each locale warms independently on first hit after deploy. English may be warm while Polish is still cold — normal, not a cross-locale penalty.
+
+#### GraphQL `languageCode`
+
+Cached fetches pass `graphqlLanguageCodeVariables(localeSlug)` so Saleor returns `translation { … }` fields for the browse locale. Map URL slugs to Saleor **base** language codes in `src/config/locale.ts` (e.g. `pl` → `PL`, not `PL_PL`) — Dashboard stores translations under `/translations/PL/…`.
+
+Merge translated display fields with `withTranslatedProductFields()` / siblings in `src/lib/saleor-translations.ts` after the fetch.
+
+#### Invalidation fan-out
+
+Catalog tags stay slug-scoped (`product:{slug}`, `category:{slug}`, etc.) because Saleor webhooks do not signal “only PL changed.” On product/category/collection/page updates, `buildPathsForAllLocales()` revalidates every configured locale path:
+
+```
+/en/default-channel/products/hoodie
+/pl/default-channel/products/hoodie
+/de/default-channel/products/hoodie
+```
+
+Menus use channel-scoped tags (`navigation:{channel}`) while `localeSlug` remains in the cached function args — same pattern: per-locale cache entries, one tag clears all languages for that channel.
+
+Storefront content uses explicit per-locale tags (`storefront-content:{channel}:{locale}`) via `buildStorefrontContentCacheTags()`.
+
+#### Mental model
+
+```
+Request: /pl/default-channel/products/foo
+         │
+         ▼
+   getProductData(slug, channel, "pl")     ← locale in cache key
+         │
+         ├─ HIT  → instant (same speed as pre-locale routing)
+         └─ MISS → GraphQL languageCode: PL → cache ~5 min
+                   tag: product:foo         ← shared; invalidates all locales
+```
+
+**Future refinement (optional):** Locale-scoped catalog tags (`product:{slug}:{locale}`) only if you get translation-only invalidation signals. Current design is simpler and correct for generic `PRODUCT_UPDATED` webhooks.
 
 ### Cache Introspection Endpoint
 
@@ -268,8 +455,8 @@ export default function Page(props: PageProps) {
 }
 
 async function PageShell({ params, searchParams }) {
-	const { slug, channel } = await params;
-	const product = await getProductData(slug, channel); // "use cache"
+	const { slug, channel, locale } = await params;
+	const product = await getProductData(slug, channel, locale); // "use cache"
 	return (
 		<>
 			<h1>{product.name}</h1>
@@ -338,7 +525,7 @@ Any component accessing runtime data must be wrapped in Suspense.
 <main className="flex-1">{props.children}</main>
 
 // Route-level loading UI (preferred for page transitions)
-// src/app/[channel]/(main)/categories/[slug]/loading.tsx
+// src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/loading.tsx
 
 // Header wraps NavLinks in Suspense (uses usePathname for active state)
 <Suspense fallback={<NavLinksSkeleton />}>
@@ -366,18 +553,18 @@ export default function Page(props: PageProps) {
 
 async function PageContent({ params: paramsPromise }) {
 	const params = await paramsPromise;
-	const data = await getCachedData(params.slug, params.channel);
+	const data = await getCachedData(params.slug, params.channel, params.locale);
 	return <ProductList products={data} channel={params.channel} />;
 }
 ```
 
 All page routes in this project follow this pattern:
 
-- `src/app/[channel]/(main)/page.tsx` (homepage)
-- `src/app/[channel]/(main)/pages/[slug]/page.tsx` (CMS pages)
-- `src/app/[channel]/(main)/categories/[slug]/page.tsx`
-- `src/app/[channel]/(main)/collections/[slug]/page.tsx`
-- `src/app/[channel]/(main)/products/[slug]/page.tsx`
+- `src/app/(storefront)/[locale]/[channel]/(main)/page.tsx` (homepage)
+- `src/app/(storefront)/[locale]/[channel]/(main)/pages/[slug]/page.tsx` (CMS pages)
+- `src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/page.tsx`
+- `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx`
+- `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`
 
 ### 6. Public vs Authenticated Queries
 
@@ -390,10 +577,10 @@ Two explicit GraphQL helpers:
 import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
 
 // ✅ Public data - safe inside "use cache"
-async function getProductData(slug: string, channel: string) {
+async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
 	return executePublicGraphQL(ProductDetailsDocument, {
-		variables: { slug, channel },
+		variables: { slug, channel, ...graphqlLanguageCodeVariables(localeSlug) },
 	});
 }
 
@@ -463,28 +650,31 @@ This keeps `<h1>` in the static shell for SEO while allowing dynamic content to 
 
 ### Automatic via Webhooks (Recommended)
 
-When configured, Saleor sends webhooks on data changes, triggering instant invalidation.
+**Production path: [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** (`../saleor-paper-app/` when developing both repos locally).
 
-**Setup in Saleor Dashboard:**
+```
+Saleor event → paper-app webhook handler → POST /api/revalidate → storefront cache purge
+```
 
-1. Go to **Configuration → Webhooks**
-2. Create webhook pointing to: `https://your-site.com/api/revalidate`
-3. Subscribe to events:
-   - `PRODUCT_CREATED`, `PRODUCT_UPDATED`, `PRODUCT_DELETED`
-   - `CATEGORY_CREATED`, `CATEGORY_UPDATED`, `CATEGORY_DELETED`
-   - `COLLECTION_CREATED`, `COLLECTION_UPDATED`, `COLLECTION_DELETED`
-   - `PAGE_CREATED`, `PAGE_UPDATED`, `PAGE_DELETED`
-   - `MENU_CREATED`, `MENU_UPDATED`, `MENU_DELETED`
-   - `MENU_ITEM_CREATED`, `MENU_ITEM_UPDATED`, `MENU_ITEM_DELETED`
-4. Copy the **secret key** to `SALEOR_WEBHOOK_SECRET` env var
+On install, the app registers managed webhooks (product, category, collection, promotion, page, menu) and proxies payloads to the storefront URL configured in app settings. Merchants get revalidation logs and manual purge in Dashboard; `REVALIDATE_SECRET` is shared between app and storefront.
+
+| Event family                              | paper-app handler       | Storefront effect                                                                             |
+| ----------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------- |
+| `PRODUCT_*`, `CATEGORY_*`, `COLLECTION_*` | `product-changed`, etc. | Catalog tags + paths                                                                          |
+| `PAGE_*`                                  | `page-changed`          | CMS `page:{slug}` **and** `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
+| `MENU_*`, `MENU_ITEM_*`                   | `menu-changed`          | `navigation:{channel}`, `footer-menu:{channel}`                                               |
+
+**Do not** create parallel Saleor webhooks pointing directly at `/api/revalidate` when the Paper app is installed — duplicate deliveries cause redundant work and bypass app logging.
+
+**Direct storefront webhooks** (Saleor Dashboard → `https://your-site.com/api/revalidate`) remain valid for self-hosted setups without the app. Subscribe to the same events and set `SALEOR_WEBHOOK_SECRET` on the storefront.
 
 **What happens on webhook** (via `src/app/api/revalidate/route.ts`):
 
 ```typescript
-// Product update — tag + path per storefront channel
+// Product update — tag + paths for every locale × storefront channel
 revalidateTag(`product:${slug}`, resolveRevalidateCacheLifeProfile("products"));
-for (const channel of await getStorefrontChannelSlugs()) {
-	revalidatePath(`/${channel}/products/${slug}`);
+for (const path of buildPathsForAllLocales(CACHE_PROFILES.products, { channel, slug })) {
+	revalidatePath(path); // e.g. /pl/default-channel/products/hoodie
 }
 
 // Menu update — channel-scoped tags (navbar vs footer mapped by menu slug)
@@ -492,18 +682,18 @@ revalidateTag(`navigation:${channel}`, resolveRevalidateCacheLifeProfile("naviga
 revalidateTag(`footer-menu:${channel}`, resolveRevalidateCacheLifeProfile("footerMenu"));
 ```
 
-Path revalidation uses `getStorefrontChannelSlugs()` so multi-channel deployments invalidate every allowed channel. See `ui-channels.md` for allowlist configuration.
+Path revalidation uses `getStorefrontChannelSlugs()` and `buildPathsForAllLocales()` so multi-channel, multi-locale deployments invalidate every allowed URL. See `ui-channels.md` for allowlist configuration.
 
 ### Manual Invalidation
 
 All manual invalidation requests use the `Authorization: Bearer` header (timing-safe comparison):
 
 ```bash
-# Invalidate a specific product (both tag and path)
+# Invalidate a specific product (both tag and path — use a concrete locale path)
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/default-channel/products/blue-hoodie"
+  "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/en/default-channel/products/blue-hoodie"
 
-# Invalidate just the cached function data
+# Invalidate just the cached function data (all locale variants for that slug)
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
   "https://store.com/api/revalidate?tag=product:blue-hoodie"
 
@@ -563,7 +753,13 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
      "https://store.com/api/revalidate?tag=product:my-product"
    ```
 
-5. **Check browser cache:**
+5. **Translation updated but still English on `/pl/…`?**
+
+   - Confirm Saleor has a translation for base language `PL` (Dashboard: `/translations/PL/…`)
+   - Bust cache: `curl -H "Authorization: Bearer …" "…/api/revalidate?tag=product:my-product"`
+   - Restart dev server if you changed `src/config/locale.ts` GraphQL language mapping
+
+6. **Check browser cache:**
    - Hard refresh: Cmd+Shift+R / Ctrl+Shift+R
 
 ---
@@ -580,6 +776,8 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ❌ **Don't wrap `<main>` in Suspense with `fallback={null}`** — Blocks route `loading.tsx` skeletons  
 ❌ **Don't make page components async when using `"use cache"` data** — Use the sync page shell pattern  
 ❌ **Don't pass `REVALIDATE_SECRET` in query strings** — Use the `Authorization: Bearer` header  
+❌ **Don't omit `localeSlug` from cached catalog/menu fetches** — All locales would share one cache entry and show the wrong language  
+❌ **Don't use regional Saleor codes (`PL_PL`) in `graphqlLanguageCode`** — Dashboard translations use base codes (`PL`); see `src/config/locale.ts`  
 ❌ **Don't re-export server cached helpers from client-mixed barrels** — Import catalog/menu modules directly
 
 ---
@@ -601,13 +799,13 @@ const config = {
 
 Remove `"use cache"`, `cacheLife()`, and `cacheTag()` from these files:
 
-| File                                                   | What to Remove                           |
-| ------------------------------------------------------ | ---------------------------------------- |
-| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | `getProductData()` cache directives      |
-| `src/app/[channel]/(main)/categories/[slug]/page.tsx`  | `getCategoryData()` cache directives     |
-| `src/app/[channel]/(main)/collections/[slug]/page.tsx` | `getCollectionData()` cache directives   |
-| `src/app/[channel]/(main)/page.tsx`                    | `getFeaturedProducts()` cache directives |
-| `src/ui/components/nav/components/nav-links.tsx`       | Navigation cache directives              |
+| File                                                                         | What to Remove                           |
+| ---------------------------------------------------------------------------- | ---------------------------------------- |
+| `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`    | `getProductData()` cache directives      |
+| `src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/page.tsx`  | `getCategoryData()` cache directives     |
+| `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx` | `getCollectionData()` cache directives   |
+| `src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`                    | `getFeaturedProducts()` cache directives |
+| `src/ui/components/nav/components/nav-links.tsx`                             | Navigation cache directives              |
 
 ### Step 3: Update Revalidation
 
@@ -630,26 +828,29 @@ revalidateTag(`product:${slug}`); // Remove second argument
 
 ## Files Reference
 
-| File                                                   | Purpose                                                               |
-| ------------------------------------------------------ | --------------------------------------------------------------------- |
-| `src/lib/api-auth.ts`                                  | Shared auth: timing-safe secret verification, Bearer token extraction |
-| `src/lib/cache-manifest.ts`                            | Cache profile definitions (single source of truth)                    |
-| `src/app/api/cache-info/route.ts`                      | Cache introspection endpoint for dashboard app                        |
-| `src/app/api/revalidate/route.ts`                      | Webhook endpoint and manual revalidation                              |
-| `src/lib/catalog/*.ts`                                 | Catalog `"use cache"` fetches (featured, category, collection, page)  |
-| `src/lib/menus/get-menu-data.ts`                       | Navbar + footer menu cached fetches                                   |
-| `src/lib/channels/get-channels-data.ts`                | Channel list cache                                                    |
-| `src/lib/channel-slugs.ts`                             | Storefront channel allowlist resolution                               |
-| `src/app/[channel]/(main)/products/[slug]/page.tsx`    | PDP with ProductShell + dynamic islands                               |
-| `src/app/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                                             |
-| `src/app/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"                                           |
-| `src/app/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                                             |
-| `src/ui/components/nav/components/nav-links.tsx`       | Navigation with "use cache"                                           |
-| `src/ui/components/footer.tsx`                         | Footer menu + channels with "use cache"                               |
-| `src/ui/components/pdp/variant-section-dynamic.tsx`    | Dynamic variant section                                               |
-| `src/ui/components/header.tsx`                         | Header with Suspense boundaries                                       |
-| `src/lib/checkout.ts`                                  | Cart operations (always fresh)                                        |
-| `next.config.js`                                       | `cacheComponents: true`                                               |
+| File                                                                         | Purpose                                                               |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `src/lib/api-auth.ts`                                                        | Shared auth: timing-safe secret verification, Bearer token extraction |
+| `src/lib/cache-manifest.ts`                                                  | Cache profile definitions (single source of truth)                    |
+| `src/lib/graphql-locale.ts`                                                  | `languageCode` GraphQL variables from URL locale slug                 |
+| `src/lib/saleor-translations.ts`                                             | Merge `translation { … }` fields after cached fetches                 |
+| `src/config/locale.ts`                                                       | URL slug → BCP 47, GraphQL language code, `html lang`                 |
+| `src/app/api/cache-info/route.ts`                                            | Cache introspection endpoint for dashboard app                        |
+| `src/app/api/revalidate/route.ts`                                            | Webhook endpoint and manual revalidation                              |
+| `src/lib/catalog/*.ts`                                                       | Catalog `"use cache"` fetches (featured, category, collection, page)  |
+| `src/lib/menus/get-menu-data.ts`                                             | Navbar + footer menu cached fetches                                   |
+| `src/lib/channels/get-channels-data.ts`                                      | Channel list cache                                                    |
+| `src/lib/channel-slugs.ts`                                                   | Storefront channel allowlist resolution                               |
+| `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`    | PDP with ProductShell + dynamic islands                               |
+| `src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                                             |
+| `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"                                           |
+| `src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                                             |
+| `src/ui/components/nav/components/nav-links.tsx`                             | Navigation with "use cache"                                           |
+| `src/ui/components/footer.tsx`                                               | Footer menu + channels with "use cache"                               |
+| `src/ui/components/pdp/variant-section-dynamic.tsx`                          | Dynamic variant section                                               |
+| `src/ui/components/header.tsx`                                               | Header with Suspense boundaries                                       |
+| `src/lib/checkout.ts`                                                        | Cart operations (always fresh)                                        |
+| `next.config.js`                                                             | `cacheComponents: true`                                               |
 
 ---
 
@@ -959,6 +1160,440 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 
 ---
 
+### 1.4 Storefront Content Layer
+
+Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
+
+> **Companion rules**: Saleor Models → `data-storefront-content-saleor.md` · Attribute types & catalog refs → `data-storefront-content-attributes.md`  
+> **Operational docs**: `config/saleor/README.md`
+
+---
+
+## Mental Model
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  UI (layout, homepage, cart drawer, checkout)                   │
+│       ↓ reads StorefrontContent                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  getStorefrontContent(channel, locale)   ← "use cache" (server) │
+│       ↓                                                         │
+│  loadStorefrontContent → ContentProvider (code | saleor)        │
+│       ↓                                                         │
+│  code: defaults.ts          saleor: fetch Pages → mappers       │
+│       ↓                              ↓                          │
+│       └──────── mergeStorefrontContent(defaults, partial) ─────┘
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Code defaults always win as the base.** Saleor (or a future CMS provider) supplies **partials** that overlay defaults. The app never ships with blank copy when Saleor is down or a field is unset.
+
+### Scope: editorial copy vs functional UI strings (ADR 0002)
+
+This layer holds **editorial / merchant-editable copy only** — text a merchandiser would reword per shop (announcement bar, homepage sections, listing title/description, cart empty-state & trust signals, checkout). **Functional UI strings** (cart totals/buttons, the `{count} items` counter, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels, PDP/PLP/search/nav/account chrome) are **code-owned via next-intl** in `messages/{locale}.json` — type-safe, reviewed in code, with ICU plurals. See `ui-i18n.md` for namespaces.
+
+Rule of thumb: _"Would a merchant reword this per shop?"_ → content layer (CMS); otherwise → `messages/*.json`.
+
+next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 0001) stays authoritative and is passed explicitly (`getTranslations({ locale })` in RSC; `<NextIntlClientProvider locale={…}>` in `(storefront)/[locale]/layout.tsx`). See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`.
+
+### Policy vs copy
+
+`StorefrontContent` has a top-level **`policies`** branch (sibling to `chrome` / `surfaces`) for channel-wide _facts_ — `shipping.freeShippingThreshold`, `returns.windowDays`, etc. These are structured values (not strings): channel-scoped, locale-independent, and consumed by **logic** (cart progress math) as well as **copy**. Copy never hardcodes the number — it references it with `{freeShippingThreshold}` / `{returnsWindowDays}` tokens resolved via `buildPolicyLabelValues()` + `formatContentLabel()`. This is the single source of truth: the cart math, announcement bar, and cart trust signal can never disagree. Modeled in Saleor as the `storefront-policies` PageType (`NUMERIC`/`BOOLEAN`) — see `data-storefront-content-saleor.md`.
+
+---
+
+## Key Files
+
+| Purpose                     | Location                                                              |
+| --------------------------- | --------------------------------------------------------------------- |
+| Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)               |
+| Code fallback copy          | `src/lib/content/defaults.ts`                                         |
+| Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
+| Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
+| Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
+| Deep merge                  | `src/lib/content/merge.ts`                                            |
+| Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |
+| Client-safe exports         | `src/lib/content/index.ts`                                            |
+| Server-only export          | `src/lib/content/server.ts`                                           |
+| Saleor fetch + mappers      | `src/lib/content/saleor/`                                             |
+| Cache profile + tags        | `src/lib/cache-manifest.ts` (`storefront-content:{channel}:{locale}`) |
+
+**Do not** import `getStorefrontContent` from the client barrel — `"use cache"` must stay server-only.
+
+---
+
+## Providers
+
+| `CONTENT_PROVIDER` | Behavior                                                                  |
+| ------------------ | ------------------------------------------------------------------------- |
+| `code` (default)   | Returns `defaults.ts` only — no Saleor call                               |
+| `saleor`           | Fetches storefront Pages, maps attributes → partial, merges over defaults |
+| `url`              | Reserved; falls back to `code`                                            |
+
+Restart `next dev` after changing `CONTENT_PROVIDER`.
+
+---
+
+## Merge Semantics (important)
+
+When extending mappers or adding fields:
+
+1. **`omitEmpty`** — skip empty strings so Saleor does not overwrite a default with `""`.
+2. **`coalesceArray`** — empty arrays from Saleor do not wipe default list content (e.g. homepage paragraphs).
+3. **Saleor provider** folds surface mappers with `reduce(mergeStorefrontContent, defaults)`.
+4. On GraphQL failure, Saleor provider returns **full defaults** (warn in dev, error log in prod).
+
+Exact field list lives in `types.ts` / `defaults.ts` — those evolve; merge rules stay stable.
+
+---
+
+## Where Content Is Consumed
+
+| Surface                                        | Loader                                                         |
+| ---------------------------------------------- | -------------------------------------------------------------- |
+| Announcement bar, shared chrome                | `(main)/layout.tsx` → `MainChrome`                             |
+| Homepage sections                              | `(main)/page.tsx`                                              |
+| Cart trust / empty copy                        | Cart drawer (client reads props or context from server parent) |
+| Checkout empty states, trust, marketing opt-in | `checkout-session-loader.tsx` → `CheckoutContentProvider`      |
+
+Checkout resolves **channel from cart cookies** when loading content so copy can match the cart's channel.
+
+---
+
+## Caching & Freshness
+
+- Profile: `storefront-content` (~menus tier, ~5 min stale).
+- Tag: `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`).
+- **Locale** keys both the cache tag and the `"use cache"` function args. Catalog/menus/CMS use `localeSlug` in function args with slug-scoped tags — see `data-caching.md` § Locale & Caching.
+- **Catalog translations** (products, categories, menus, CMS pages) are wired: GraphQL `languageCode` + `withTranslated*Fields`.
+- **Storefront Models content** uses `StorefrontContentPages.graphql` `translation` on plain-text attributes via `buildAttributeMap`.
+- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — do not point Saleor webhooks directly at the storefront for production. The app subscribes to Saleor events, then `POST`s to Paper's `/api/revalidate` with the same payload shape the storefront handler expects.
+- **Storefront content:** `PAGE_*` on Pages whose slug matches `storefront-*` (e.g. `storefront-homepage`, `storefront-homepage-{channel}`) → `planStorefrontContentRevalidation()` in `cache-manifest.ts` → `revalidateTag(storefront-content:{channel}:{locale})` + homepage paths per channel.
+- **Menus** (nav/footer): `MENU_*` / `MENU_ITEM_*` → separate profiles (`navigation`, `footerMenu`) — same paper-app → storefront path.
+- The `storefront-content` profile is listed in `GET /api/cache-info` so the Dashboard app can offer manual purge alongside catalog entities.
+- Manual (dev / emergency): `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+
+```
+Saleor (PAGE_UPDATED on storefront-homepage)
+    → saleor-paper-app (page-changed webhook)
+    → POST /api/revalidate { page: { slug } }
+    → planStorefrontContentRevalidation → revalidateTag + revalidatePath
+```
+
+Marketing copy is cached like navigation — cart/checkout **transactional** data stays fresh via `cache: "no-cache"`.
+
+---
+
+## Changing Copy (agent checklist)
+
+**Code-only (no Saleor):**
+
+1. Edit `defaults.ts` and/or `types.ts` if shape changes.
+2. Wire new fields through the relevant page/component.
+
+**Saleor-backed — copy only (no schema change):**
+
+1. Edit values in Dashboard → Models.
+2. Revalidate cache or wait for TTL.
+
+**Saleor-backed — new field or PageType (commerce-as-code):**
+
+1. Add attribute + model field in Configurator YAML (see `data-storefront-content-saleor.md`).
+2. Extend `StorefrontContentPages.graphql` if new attribute types are needed → `pnpm run generate`.
+3. Add slug to `attribute-slugs.ts` and a mapper in `src/lib/content/saleor/mappers/`.
+4. Run `pnpm content:verify-attribute-slugs`.
+5. Configurator deploy to sync schema/seed to Saleor; then set copy in Dashboard for ongoing editorial work.
+6. Revalidate cache or wait for TTL.
+
+---
+
+## Anti-Patterns
+
+- Importing `@/lib/content/server` from `"use client"` components.
+- Putting merchandising copy in `src/config/*.ts` — use the content layer.
+- Hardcoding announcement/homepage strings in UI components when `getStorefrontContent` is available upstream.
+- Assuming empty Saleor attribute means "clear this field" — empty means **keep default** unless you intentionally change merge rules.
+- Listing every attribute slug in this rule — read `attribute-slugs.ts` and mappers for the current contract.
+
+---
+
+### 1.5 Storefront Content (Saleor Models)
+
+Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-type attributes). The storefront maps those Pages into the normalized `StorefrontContent` shape defined in code.
+
+> **Runtime behavior** (providers, merge, cache): `data-storefront-content.md`  
+> **Deploy & tokens**: `config/saleor/README.md`  
+> **Exact attributes** change over time — treat `src/lib/content/attribute-slugs.ts` and `config/saleor/storefront-content.config.yml` as the live contract, not this doc.
+
+---
+
+## Models as the content surface
+
+**Saleor Models** (PageTypes + Pages) are the dedicated place for merchandising and editorial copy in Paper. Each **PageType** defines a purpose — chrome, homepage, cart, checkout — and the **attributes** on that type give structure to otherwise unstructured text (headings, labels, paragraphs, flags).
+
+| Model (PageType)                                                          | Purpose                                                                                                  |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `storefront-policies` (PageType) / `storefront-policy` (global Page slug) | Channel-wide **policy values** (free-shipping threshold, returns window) — `NUMERIC`/`BOOLEAN`, not copy |
+| `storefront-chrome`                                                       | Site-wide chrome (e.g. announcement bar)                                                                 |
+| `storefront-homepage`                                                     | Homepage sections                                                                                        |
+| `storefront-cart`                                                         | Cart drawer **editorial** copy (title, free-shipping nudges, empty state, trust)                         |
+| `storefront-checkout`                                                     | Checkout surface copy                                                                                    |
+
+**Editorial only (ADR 0002):** these models hold merchant-editable copy. **Functional UI strings** — cart totals/buttons, item count, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels, PDP/PLP/search/nav/account chrome — are **not** modeled here; they are code-owned via next-intl (`messages/{locale}.json`). When adding an attribute, ask _"would a merchant reword this per shop?"_ — if not, it belongs in `messages/*.json`, not a PageType. See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md` and `ui-i18n.md`.
+
+**Policy vs copy:** `storefront-policy` holds the _facts_ (a number/boolean); the other models hold _copy_ that only describes those facts via `{freeShippingThreshold}` / `{returnsWindowDays}` placeholders. One threshold feeds the cart progress math, the announcement bar, and the cart trust signal — change it in one place, everything stays consistent. Override per channel with `storefront-policy-{channelSlug}` (numbers are in the channel currency).
+
+That is what modeling is for: keep flexible marketing content **structured and editable** through typed attributes, and mappable into a stable `StorefrontContent` contract in code. **Day-to-day copy changes** happen in Dashboard → Models; Configurator is for **commerce-as-code** when the Saleor schema itself needs updating (see below).
+
+**Models are translatable in Saleor** — attribute values on a Page can be translated per language in Dashboard today. Merchandisers can enter translations now; Paper will serve them once the storefront fetch is wired (no Saleor schema change required).
+
+Pages are **not** channel-scoped in Saleor. Per-channel copy is a **convention** — separate Page instances distinguished by slug (see below), resolved in the storefront provider.
+
+---
+
+## Conceptual Schema
+
+```
+PageType (e.g. storefront-homepage)
+  └── assigned PAGE_TYPE attributes  (hero heading, CTA label, …)
+  └── Page instances (Models in Dashboard)
+        └── attribute values per page
+```
+
+**One PageType per storefront surface** (chrome, homepage, cart, checkout). Constants in `src/lib/content/constants.ts` (`STOREFRONT_PAGE_TYPES`).
+
+Dashboard tabs are typically named **Storefront — Chrome**, **Storefront — Homepage**, etc. PageType slugs use the `storefront-` prefix.
+
+---
+
+## Slug Stack (global vs per-channel copy)
+
+Saleor enforces **globally unique page slugs** — there is no native “this page belongs to channel X”. Paper simulates per-channel copy with slug naming:
+
+| Tier                 | Page slug pattern                                                       | Purpose                       |
+| -------------------- | ----------------------------------------------------------------------- | ----------------------------- |
+| **Global**           | Same as PageType slug (e.g. `storefront-homepage`)                      | Default copy for all channels |
+| **Channel override** | `{pageTypeSlug}-{channelSlug}` (e.g. `storefront-homepage-channel-pln`) | Per-channel copy              |
+
+**Resolution order** (in `resolve-page.ts`):
+
+```
+1. storefront-{surface}-{channel}   ← channel override wins
+2. storefront-{surface}           ← global fallback
+3. defaults.ts                    ← code fallback (always present)
+```
+
+Fetch collects **both** candidate slugs per surface, then picks the best match.
+
+**Revalidation scope:** editing the global page invalidates all channels; editing a channel-specific page invalidates that channel only (`resolveStorefrontContentChannelsForPageSlug`).
+
+---
+
+## Attributes: Names vs Slugs
+
+| Layer                  | Uses                                                                       |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Configurator YAML**  | Human **display names** on `contentAttributes` and model `attributes` keys |
+| **Saleor**             | Assigns **slugs** from names (slugify)                                     |
+| **Storefront mappers** | Read by **slug** via `attribute-slugs.ts`                                  |
+
+Configurator resolves attributes by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — run `pnpm content:verify-attribute-slugs`.
+
+**Greenfield bootstrap:** with no storefront models yet, `pnpm configurator:storefront-content:deploy` creates PageTypes, attributes, and seed models from `storefront-content.config.yml`. Copy fields that reference channel policies use `{freeShippingThreshold}` / `{returnsWindowDays}` in seed values — keep those tokens in Dashboard translations too (see YAML comments on those attributes).
+
+**Attribute types:** see `data-storefront-content-attributes.md` — scalar types, catalog **references** (`SINGLE_REFERENCE` / `REFERENCE`), and what Paper wires today.
+
+---
+
+## Configurator (commerce-as-code, not editorial)
+
+**Saleor Configurator** syncs YAML to Saleor when the **structure** of storefront content changes — new PageTypes, new attributes, seed models, baseline values for new environments. It is **not** the day-to-day editor for merchandisers.
+
+| Who / when                                                        | Tool                                                        |
+| ----------------------------------------------------------------- | ----------------------------------------------------------- |
+| Merchandiser updating hero text, trust labels, translations       | **Dashboard → Models**                                      |
+| Developer adding a new content field or bootstrapping dev/staging | **Configurator** (`storefront-content.config.yml` + deploy) |
+
+Seed file: `config/saleor/storefront-content.config.yml`
+
+```bash
+pnpm configurator:storefront-content:validate   # offline schema check
+pnpm configurator:storefront-content:plan       # dry-run remote diff
+pnpm configurator:storefront-content:deploy     # apply (additive for omitted sections)
+```
+
+**Token split (dev safety):**
+
+| Variable                    | File                      | Used by                           |
+| --------------------------- | ------------------------- | --------------------------------- |
+| `SALEOR_APP_TOKEN`          | `.env.local`              | Next.js runtime (narrow)          |
+| `SALEOR_CONFIGURATOR_TOKEN` | `.env.configurator.local` | Configurator scripts only (broad) |
+
+Never expose configurator token as `NEXT_PUBLIC_*` or import it in app code.
+
+**Plan vs deploy:** `plan` may show spurious DELETE drift for entities not in the partial YAML. `deploy` only creates/updates what's listed — it does not wipe the catalog when sections are omitted. See `config/saleor/README.md` for details.
+
+**After deploy:** set `CONTENT_PROVIDER=saleor`, restart dev server. Ongoing copy work stays in Dashboard — only return to Configurator when the attribute schema or seed models need to change in code.
+
+---
+
+## Mapper Pipeline (saleor provider)
+
+```
+collectStorefrontContentPageSlugs(channel)
+  → GraphQL StorefrontContentPages (by slug list)
+  → indexStorefrontPagesBySlug (skip unpublished)
+  → resolveStorefrontPageForType per surface
+  → mapChromePage | mapHomepagePage | mapCartPage | mapCheckoutPage
+  → reduce(mergeStorefrontContent, defaults)
+```
+
+Each mapper returns a **partial** `StorefrontContent`. Mappers live under `src/lib/content/saleor/mappers/`.
+
+When adding a new editable field:
+
+1. Add `contentAttribute` + model default in YAML.
+2. Add slug constant in `attribute-slugs.ts`.
+3. Map in the appropriate surface mapper using `buildAttributeMap` / `attrText`.
+4. Add to `types.ts`, `defaults.ts`, and the UI consumer.
+
+---
+
+## Channel Override Recipe
+
+To override homepage copy for channel `channel-pln`:
+
+1. Create (or deploy) a Page with slug `storefront-homepage-channel-pln` under PageType `storefront-homepage`.
+2. Set attribute values on that page.
+3. Request `getStorefrontContent("channel-pln", locale)` — provider resolves the channel page first.
+
+Global page `storefront-homepage` remains the fallback for other channels.
+
+---
+
+## i18n
+
+**Saleor (ready now):** Models support translations — editors can translate attribute values per language on each Page in Dashboard. The content is there when Paper asks for it.
+
+**Paper (fetch wired):**
+
+- `getStorefrontContent(channel, localeSlug)` and cache tags (`storefront-content:{channel}:{locale}`) key by locale.
+- `StorefrontContentPages.graphql` passes `languageCode`; plain-text attributes use `translation(languageCode: …)` in `buildAttributeMap`.
+
+**Policy placeholders in translations:** localized strings must keep the same `{freeShippingThreshold}` / `{returnsWindowDays}` tokens as the default language — never bake channel-specific amounts or currencies into Dashboard translations (e.g. avoid `"$75"` or `"30 dni"` literals). Paper formats money from `policies` + channel currency at render time. Missing placeholders are warned in development via `formatPolicyAwareLabel`.
+
+---
+
+## Cache & Revalidation (saleor-paper-app)
+
+Storefront content is cached (`storefront-content:{channel}:{locale}`). **Freshness is owned by the Paper Saleor app**, not ad-hoc Saleor → storefront webhooks.
+
+| Layer                | Responsibility                                                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Storefront**       | Define profile + tags in `cache-manifest.ts`; implement `planStorefrontContentRevalidation()`; expose `/api/revalidate` + `/api/cache-info`. |
+| **saleor-paper-app** | Register Saleor webhooks on install; forward `PAGE_*` (and `MENU_*` for nav) to the configured storefront URL with `REVALIDATE_SECRET`.      |
+| **Merchant**         | Edit Models in Dashboard; app receives `PAGE_UPDATED` and triggers revalidation automatically.                                               |
+
+When a merchant saves a `storefront-*` Page, Saleor emits `PAGE_UPDATED` → paper-app `page-changed` handler → `POST /api/revalidate` with `{ page: { slug } }` → storefront resolves slug to channel(s) and purges `storefront-content` tags.
+
+**Agent checklist when adding content fields:**
+
+1. Storefront only — no paper-app change if slug conventions and cache profile stay the same.
+2. New cache profile or tag shape — update `cache-manifest.ts` **and** ensure paper-app still forwards the right events (or add a webhook definition in `../saleor-paper-app/src/modules/revalidation/webhook-events.ts`).
+3. After paper-app webhook changes — reinstall or sync webhooks from the app configuration UI.
+
+See `data-caching.md` for the full invalidation architecture and `migrations/atomic/2026-06-menu-webhooks/` for the menu analogue.
+
+---
+
+## Anti-Patterns
+
+- Mixing surfaces on one PageType — keep chrome, homepage, cart, and checkout as separate types with their own attribute sets.
+- Reusing slug `default` for pages — Saleor needs unique slugs; use the PageType slug for global singletons.
+- Putting **slugs** in Configurator model `attributes` keys — use **display names** (Configurator resolves to attributes).
+- Duplicating attribute lists in skills/docs — grep `attribute-slugs.ts` instead.
+- Expecting `plan` delete noise to match `deploy` behavior — trust the README, not the scary diff.
+- Running Configurator deploy to change live copy — edit Models in Dashboard instead; Configurator is for schema and environment bootstrap.
+- Pointing Saleor webhooks straight at `/api/revalidate` while the Paper app is installed — use the app's managed webhooks so merchants get logs, manual purge, and a single revalidation path.
+
+---
+
+### 1.6 Storefront Content Attributes
+
+How to choose Saleor attribute `inputType`s on storefront Models, and what Paper reads today.
+
+> **Models setup**: `data-storefront-content-saleor.md`  
+> **Runtime layer**: `data-storefront-content.md`  
+> **Slug contract**: `src/lib/content/attribute-slugs.ts`
+
+---
+
+## Catalog vs copy (don't duplicate entities)
+
+Collections and categories already have **name**, **description** (rich text), and **image** in Saleor.
+
+| Store in Models                                                 | Store in catalog API                           |
+| --------------------------------------------------------------- | ---------------------------------------------- |
+| Section heading when editorial (e.g. "Staff picks")             | Collection/category **name**                   |
+| **Reference** to which collection/category (slug via attribute) | **Description**, **image**, product membership |
+| Hero copy, trust labels, booleans                               | Product fields                                 |
+
+Use **reference attributes** for pointers; fetch display fields from `src/lib/catalog/` when rendering.
+
+---
+
+## Reference attributes (Saleor 3.22+)
+
+| Configurator `inputType` | Cardinality | `entityType` examples                       | Paper use                                  |
+| ------------------------ | ----------- | ------------------------------------------- | ------------------------------------------ |
+| `SINGLE_REFERENCE`       | One         | `COLLECTION`, `CATEGORY`, `PRODUCT`, `PAGE` | Featured collection slug on homepage       |
+| `REFERENCE`              | Many        | Same                                        | Future: collection list (multi-collection) |
+
+Configurator seed values use the **target entity slug** (e.g. `featured-products`).
+
+GraphQL: `AssignedSingleCollectionReferenceAttribute`, `AssignedMultiCollectionReferenceAttribute`, and siblings for category/product/page — extend `StorefrontContentPages.graphql` per type.
+
+---
+
+## Scalar & media types (roadmap)
+
+| `inputType`                       | Typical storefront use                        | Wired in Paper                                                           |
+| --------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------ |
+| `PLAIN_TEXT`                      | Headings, labels, short copy                  | Yes                                                                      |
+| `BOOLEAN`                         | Dismissible flags, toggles                    | Yes                                                                      |
+| `SINGLE_REFERENCE` + `COLLECTION` | Featured collection override                  | Yes (`featured-collection`)                                              |
+| `SINGLE_REFERENCE` + `CATEGORY`   | Category spotlight                            | No                                                                       |
+| `REFERENCE` + `COLLECTION`        | Collection list ordering                      | No                                                                       |
+| `RICH_TEXT`                       | Long copy, collection description on homepage | No — prefer catalog `description` for entities                           |
+| `FILE`                            | Hero / editorial images                       | No                                                                       |
+| `DROPDOWN` / `SWATCH`             | Layout variants (e.g. image left/right)       | No — code enum today for editorial position                              |
+| `NUMERIC`                         | Policy values, limits, counts                 | Yes — `free-shipping-threshold`, `returns-window-days`, `featured-limit` |
+
+`NUMERIC` is read via `attrNumber()` (`buildAttributeMap` stores the `Float` directly); `attrInt()` truncates it. Use `NUMERIC` for any value consumed by logic or formatted as money/count — not `PLAIN_TEXT`. Policy money values are stored in the channel currency; format with the live cart currency (cart drawer) or `resolveChannelCurrency()` (chrome/homepage), then interpolate via `buildPolicyLabelValues()` + `formatContentLabel()`.
+
+Add types in this order when a section needs them: extend GraphQL fragment → mapper helper in `attributes.ts` → `attribute-slugs.ts` → Configurator (commerce-as-code) → Dashboard for merchandisers.
+
+---
+
+## Adding a reference attribute (checklist)
+
+1. `contentAttributes` in `storefront-content.config.yml` with `inputType` + `entityType`.
+2. Assign on the relevant `modelTypes` entry.
+3. Slug constant in `attribute-slugs.ts` (verify script matches display name).
+4. Fragment inline on `AssignedSingle*ReferenceAttribute` / `AssignedMulti*ReferenceAttribute`.
+5. `pnpm run generate` → mapper reads slug(s) → `types.ts` + `defaults.ts` fallback.
+6. Section/catalog code consumes slug; **metadata** from catalog queries.
+
+---
+
+## Anti-patterns
+
+- Storing collection **title** or **description** on `storefront-homepage` when the section showcases that collection.
+- Using `PLAIN_TEXT` for a collection slug — no Dashboard picker, no validation.
+- Extending GraphQL for a type before you have a section that needs it (YAGNI) — except document roadmap here.
+
+---
+
 ## 2. Product Pages
 
 **Impact: HIGH**
@@ -1001,14 +1636,14 @@ Data: getProductData() with applyCacheProfile(CACHE_PROFILES.products)  ← cata
 **Read this first** - understanding how data flows makes everything else click:
 
 ```
-URL: /us/products/blue-shirt?variant=abc123
+URL: /pl/default-channel/products/blue-shirt?variant=abc123
                 │
                 ▼
 ┌───────────────────────────────────────────────────────────────────┐
 │ ProductPage (sync) → Suspense → ProductShell                      │
 │                                                                   │
-│   1. await params → getProductData("blue-shirt", "us")            │
-│      └──► "use cache" + CACHE_PROFILES.products ──► product data  │
+│   1. await params → getProductData("blue-shirt", "default-channel", "pl") │
+│      └──► "use cache" + CACHE_PROFILES.products ──► translated product    │
 │                                                                   │
 │   2. Static shell: h1, breadcrumbs, attributes, JSON-LD, preload  │
 │                                                                   │
@@ -1050,7 +1685,7 @@ URL: /us/products/blue-shirt?variant=abc123
 ## File Structure
 
 ```
-src/app/[channel]/(main)/products/[slug]/
+src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/
 └── page.tsx                          # Main PDP page
 
 src/ui/components/pdp/
@@ -1128,18 +1763,25 @@ Use the `onImageClick` callback:
 
 ```tsx
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
+import { withTranslatedProductFields } from "@/lib/saleor-translations";
 
-async function getProductData(slug: string, channel: string) {
+async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
 	applyCacheProfile(CACHE_PROFILES.products, slug);
 
-	return await executePublicGraphQL(ProductDetailsDocument, {
-		variables: { slug: decodeURIComponent(slug), channel },
+	const result = await executePublicGraphQL(ProductDetailsDocument, {
+		variables: {
+			slug: decodeURIComponent(slug),
+			channel,
+			...graphqlLanguageCodeVariables(localeSlug),
+		},
 	});
+	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
 }
 ```
 
-**Note:** Do not add fetch-level `revalidate` here — the cache manifest profile + webhooks handle freshness. See `data-caching.md`.
+**Note:** `localeSlug` is part of the Next.js cache key (separate entry per language). Tag stays `product:{slug}` — webhooks invalidate all locales. Do not add fetch-level `revalidate` here. See `data-caching.md`.
 
 ### What's Cached vs Dynamic
 
@@ -1708,6 +2350,8 @@ Checkout handles payment and order completion. Bugs here directly cause lost rev
 ### 3.1 Paper Surfaces
 
 One Next.js project, two product surfaces, one shared handoff package.
+
+> **North star:** [`paper-architecture.md`](paper-architecture.md) — canonical Next.js stance and pillar index.
 
 ## Documentation map (checkout v2)
 
@@ -2830,14 +3474,15 @@ Create and style UI components with design tokens and shadcn/ui primitives.
 
 ## Component Location
 
-| Type                       | Location                  |
-| -------------------------- | ------------------------- |
-| Shared components          | `src/ui/components/`      |
-| Product page components    | `src/ui/components/pdp/`  |
-| Product listing components | `src/ui/components/plp/`  |
-| Base primitives            | `src/ui/components/ui/`   |
-| Navigation                 | `src/ui/components/nav/`  |
-| Cart                       | `src/ui/components/cart/` |
+| Type                          | Location                  |
+| ----------------------------- | ------------------------- |
+| Shared components             | `src/ui/components/`      |
+| Homepage & marketing sections | `src/ui/sections/`        |
+| Product page components       | `src/ui/components/pdp/`  |
+| Product listing components    | `src/ui/components/plp/`  |
+| Base primitives               | `src/ui/components/ui/`   |
+| Navigation                    | `src/ui/components/nav/`  |
+| Cart                          | `src/ui/components/cart/` |
 
 ## Design Tokens
 
@@ -3073,20 +3718,11 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 | `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
 | `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
 
-## Locale Considerations
+## Locale & routing
 
-Currently, number/date formatting uses a single locale (`localeConfig.default`), regardless of channel. For true per-channel locale:
+**Browse URLs:** `/{locale}/{channel}/…` — see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`, and `docs/international-storefront.md`. Legacy `/{channel}/…` redirects via middleware.
 
-```typescript
-// Potential future enhancement
-const channelLocales: Record<string, string> = {
-	uk: "en-GB",
-	us: "en-US",
-	de: "de-DE",
-};
-```
-
-This is NOT implemented - formatting is currently `en-US` for all channels.
+Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC_STOREFRONT_LOCALES` for additional languages (built-in slugs: `en`, `pl`, `de`, `fr`, `fi`, `nb` — see `src/config/locale.ts`).
 
 ## Anti-patterns
 
@@ -3094,6 +3730,277 @@ This is NOT implemented - formatting is currently `en-US` for all channels.
 ❌ **Don't assume stock means purchasable** — Warehouse must be in both the channel AND a shipping zone for that channel
 ❌ **Don't debug availability client-side only** - Check the 7-point purchasability checklist in Saleor Dashboard first
 ❌ **Don't hardcode channel slugs without fallback** - Use `DefaultChannelSlug` from config
+
+---
+
+### 4.3 Locale & Channel URL Routing
+
+Browse routes use **two URL prefixes**: locale (language) then channel (market). Checkout is unchanged.
+
+> **ADR:** `docs/adr/0001-locale-channel-url-routing.md`  
+> **Status:** Implemented — browse routes (`/[locale]/[channel]/…`), middleware 308 from legacy `/{channel}/…`, GraphQL `languageCode` on catalog/menus/search/CMS, region picker, per-locale cache keys. Checkout locale from cookie is a follow-up.  
+> **Channels (markets):** `ui-channels.md` · **Caching:** `data-caching.md` · **SEO:** `seo-metadata.md`
+
+---
+
+## URL shape (target)
+
+```
+/{locale}/{channel}/{path}
+```
+
+| Segment   | Role                                                  | Examples                           |
+| --------- | ----------------------------------------------------- | ---------------------------------- |
+| `locale`  | Language, `html lang`, `Intl`, GraphQL `languageCode` | `en`, `pl`, `de`, `en-gb`, `en-us` |
+| `channel` | Saleor channel — currency, pricing, stock, shipping   | `uk`, `us`, `pl`                   |
+
+```
+/en/uk/products/hoodie     English UI, UK market (GBP)
+/en/us/products/hoodie     English UI, US market (USD)
+/pl/pl/products/hoodie     Polish UI, Poland market (PLN)
+```
+
+**Checkout** (no locale/channel in path):
+
+```
+/checkout?checkout=…       channel + locale from cookies set in browse layout
+```
+
+---
+
+## Saleor: two independent axes
+
+| Axis     | Saleor concept                    | URL segment |
+| -------- | --------------------------------- | ----------- |
+| Market   | Channel                           | `{channel}` |
+| Language | `LanguageCodeEnum` / translations | `{locale}`  |
+
+Do not collapse channel into locale unless the merchant uses a fixed 1:1 market–locale map (Shopify-style) — that is a separate routing mode, not the Paper default.
+
+When **the same language spans multiple channels** (English on `us` and `uk`), either:
+
+- Keep channel in the path: `/en/us/…` vs `/en/uk/…`, or
+- Use region in the locale slug: `/en-us/…` vs `/en-gb/…` (channel may still be present or derived from config)
+
+Bare `/en/…` without channel is ambiguous for pricing and stock.
+
+---
+
+## Conventions (lock when implementing)
+
+1. **Canonical** — always `/{locale}/{channel}/…`; 301 legacy `/{channel}/…` during migration.
+2. **Locale slugs** — lowercase BCP 47; map to Saleor in `src/config/locale.ts` (`graphqlLanguageCode`, `htmlLang`, `Intl` locale).
+3. **Root `/`** → `/{defaultLocale}/{defaultChannel}/`.
+4. **Allowlist** — valid `(locale, channel)` pairs from config; invalid → `notFound()` or redirect.
+5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes (market switch warns when cart cookie exists).
+6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
+7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
+8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid. Must be `NEXT_PUBLIC_` — both the server (404 guard, hreflang) and the client picker/nav read it. See `src/config/locale-channel.ts`.
+
+---
+
+## Caching with locale
+
+Browse performance is unchanged after locale routing — locale is part of the **cache key** (function arguments), not an extra runtime cost on warm pages.
+
+| Layer              | Locale in key?      | Notes                                                       |
+| ------------------ | ------------------- | ----------------------------------------------------------- |
+| PDP / PLP / CMS    | ✅ `localeSlug` arg | Separate cached GraphQL payload per language                |
+| Nav / footer menus | ✅ `localeSlug` arg | Tag `navigation:{channel}` clears all languages for channel |
+| Storefront content | ✅ tag + arg        | `storefront-content:{channel}:{locale}`                     |
+| Cart / checkout    | N/A                 | Always `cache: "no-cache"`                                  |
+
+**GraphQL:** Map URL slugs to Saleor **base** language codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge `translation { … }` fields after fetch (`src/lib/saleor-translations.ts`).
+
+**Invalidation:** Product update → `revalidateTag("product:{slug}")` → busts EN/PL/DE cached entries → `revalidatePath` for every `/{locale}/{channel}/products/{slug}`.
+
+Full detail: `data-caching.md` § Locale & Caching.
+
+## Implementation map (when migration starts)
+
+| Concern         | Location (planned)                                                                        |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                               |
+| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                   |
+| Channel guard   | move/extend current `[channel]/layout.tsx`                                                |
+| Links           | replace `LinkWithChannel` → locale-aware helper                                           |
+| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                       |
+| Middleware      | root redirect, optional `Accept-Language`, preference cookie                              |
+| GraphQL         | pass `languageCode` on public queries                                                     |
+| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired |
+| Picker          | header market + language UI (footer channel select retired or secondary)                  |
+| SEO             | `hreflang`, canonical, sitemap per locale×channel                                         |
+
+---
+
+## Migration from `/{channel}/…`
+
+| Today                              | Target                                |
+| ---------------------------------- | ------------------------------------- |
+| `/uk/products/foo`                 | `/en/uk/products/foo`                 |
+| `LinkWithChannel` href `/products` | `/{locale}/{channel}/products`        |
+| `ChannelSelect` → `/${channel}`    | swap channel segment in full pathname |
+| `app/page.tsx` redirect            | `/${defaultLocale}/${defaultChannel}` |
+
+Run **301** from old URLs for at least one release.
+
+---
+
+## Anti-patterns
+
+❌ **Cookie-only locale** for browse — hurts SEO and sharing  
+❌ **`?lang=pl` on channel URLs** as the primary mechanism  
+❌ **Dropping channel** when multiple markets share a language  
+❌ **Putting locale after channel** (`/uk/en/…`) — conflicts with this ADR  
+❌ **Implementing `[locale]` routes** before ADR helpers and redirect plan exist  
+❌ **Hardcoding `EN_US` / `PL_PL` in `graphqlLanguageCode`** — Dashboard translations use base codes (`EN`, `PL`); see `src/config/locale.ts`  
+❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language
+
+---
+
+## Related
+
+- `ui-channels.md` — channel allowlist, fulfillment, channel selector (today)
+- `data-storefront-content` — locale-keyed content cache
+- `data-caching.md` — locale cache keys, tags, invalidation fan-out
+- `ui-i18n` — next-intl namespaces and patterns
+- `docs/international-storefront.md` — human overview (three string systems)
+
+---
+
+### 4.4 next-intl (Code-Owned UI Strings)
+
+Functional storefront strings — buttons, labels, validation, a11y, order status — live in **`messages/{locale}.json`**, not Saleor Models.
+
+> **ADR:** `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md`  
+> **Overview:** `docs/international-storefront.md`  
+> **Routing / locale segment:** `ui-locale-routing.md` (next-intl does **not** own routing)
+
+---
+
+## Boundary (ADR 0002)
+
+| Bucket                       | Mechanism              | Examples                                                                     |
+| ---------------------------- | ---------------------- | ---------------------------------------------------------------------------- |
+| **Code** (`messages/*.json`) | next-intl              | `Add to bag`, `Subtotal`, `Sign in`, filter labels, `sr-only` remove buttons |
+| **CMS** (content layer)      | `getStorefrontContent` | Homepage hero, announcement message, cart empty state, checkout steps        |
+| **Saleor catalog**           | GraphQL `languageCode` | Product names, menu labels from API                                          |
+
+Rule of thumb: _Would a merchant reword this per shop?_ → CMS. Otherwise → messages.
+
+---
+
+## Locales
+
+- **Definitions:** `src/config/locale.ts` (`LOCALE_DEFINITIONS`) — slug, BCP 47, Saleor `graphqlLanguageCode`, `htmlLang`.
+- **Allowlist:** `NEXT_PUBLIC_STOREFRONT_LOCALES` (must be `NEXT_PUBLIC_*` — server and client read it).
+- **Files:** one JSON per slug: `messages/en.json`, `messages/pl.json`, …
+- **Types:** `src/i18n/types.d.ts` augments next-intl from `en.json` (source of truth).
+- **Loader:** `src/i18n/request.ts` — dynamic import by locale filename; keep aligned with `LOCALE_DEFINITIONS`.
+
+Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`.
+
+---
+
+## Namespaces
+
+| Namespace         | Used for                                                       |
+| ----------------- | -------------------------------------------------------------- |
+| `cart`            | Drawer + page functional chrome                                |
+| `productsListing` | PLP breadcrumbs (`breadcrumbHome`, `breadcrumbProducts`)       |
+| `common`          | Shared (`pagination`)                                          |
+| `pdp`             | PDP actions, variant a11y, badges                              |
+| `plp`             | Filters, sort, quick add                                       |
+| `search`          | Search page, bar (`search.bar`), sort, empty state             |
+| `nav`             | Header, cart button, user menu, region picker, breadcrumb aria |
+| `account`         | Auth, account nav, orders, settings, addresses                 |
+
+Prefer **sub-namespaces** in JSON (`nav.userMenu`, `account.orderDetail`) and narrow `useTranslations("nav.userMenu")` calls.
+
+---
+
+## Server Components
+
+Pass URL locale explicitly — never rely on cookies for browse UI:
+
+```typescript
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "search" });
+	return { title: t("title"), description: t("description") };
+}
+```
+
+List pages: call `getTranslations` **once** per page, pass pre-built label objects into child components (see `buildOrderRowLabels` in `order-row-labels.ts`) — avoid per-row `getTranslations` in a loop.
+
+---
+
+## Client Components
+
+`"use client"` + `useTranslations`:
+
+```typescript
+import { useTranslations } from "next-intl";
+
+export function AddToCart() {
+	const t = useTranslations("pdp");
+	return <button>{t("addToBag")}</button>;
+}
+```
+
+Provider: `(storefront)/[locale]/layout.tsx` wraps browse with `<NextIntlClientProvider locale={localeSlug} messages={…}>`.
+
+---
+
+## ICU & rich text
+
+- Plurals: `{count, plural, one {# item} other {# items}}` — use `few`/`many` for Polish.
+- Interpolation: `{name}`, `{email}` — same token style as CMS `{freeShippingThreshold}`.
+- Rich legal copy: `t.rich("signup.terms", { terms: (chunks) => <Link>…</Link> })`.
+
+---
+
+## Server actions + errors
+
+Account mutations return `AccountActionResult` (`account-action-result.ts`):
+
+- `{ success: false; errorKey: "passwordMinLength" }` → client translates via `resolveAccountActionError(t, result)`
+- `{ success: false; error: string }` → pass-through Saleor/API message when present
+
+Client-side validation should use the same `account.errors.*` keys before calling the action.
+
+---
+
+## Import boundaries
+
+❌ Client components must **not** import barrels that pull `server-only` modules (e.g. search sort importing `@/lib/search` instead of `@/lib/search/sort-options`).
+
+❌ Do not use next-intl middleware or `next-intl` navigation — ADR 0001 URL segment is authoritative.
+
+---
+
+## Adding strings
+
+1. Add key to `messages/en.json` (correct namespace).
+2. Mirror in all locale files (`pl`, `de`, `fr`, `fi`, `nb`, …).
+3. Wire component with `getTranslations` / `useTranslations`.
+4. Run `pnpm exec tsc --noEmit` — missing keys fail typecheck.
+
+---
+
+## Checkout
+
+Checkout surface is **not** on next-intl yet — functional checkout copy remains in storefront content (`checkout.*`). Browse handoff sets `languageCode` on GraphQL; UI migration is ADR 0002 follow-up.
+
+---
+
+## Related
+
+- `data-storefront-content.md` — CMS copy, policies, `{token}` formatting
+- `ui-locale-routing.md` — `/{locale}/{channel}/`, region picker, cache keys
+- `docs/international-storefront.md` — end-to-end guide
 
 ---
 
@@ -3239,6 +4146,28 @@ export default async function ProductPage({ params }) {
   );
 }
 ```
+
+## International URLs
+
+Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`).
+
+- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates (same channel, each configured locale).
+- `generateMetadata` `pathSuffix` is the path after locale/channel, e.g. `/products/${slug}`.
+- `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment — no client patching.
+
+```typescript
+import { buildBrowsePageMetadata } from "@/lib/seo";
+
+return buildBrowsePageMetadata({
+	title: category.name,
+	description: category.seoDescription,
+	locale: params.locale,
+	channel: params.channel,
+	pathSuffix: `/categories/${params.slug}`,
+});
+```
+
+Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
 
 ## Disabling SEO
 

@@ -1,7 +1,17 @@
 import { ProductsPerPage } from "@/app/config";
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
 import { formatPrice, formatDate as formatLocaleDate } from "@/config/locale";
+
+/** Custom semantic type tokens from tailwind.config.cjs — must be registered so twMerge
+ *  does not treat `text-display` + `text-foreground` as conflicting `text-*` utilities. */
+const twMerge = extendTailwindMerge({
+	extend: {
+		classGroups: {
+			"font-size": [{ text: ["display", "h1", "h2", "h3", "lead", "eyebrow"] }],
+		},
+	},
+});
 
 /** Merge class names with clsx and tailwind-merge for proper Tailwind class deduplication */
 export function cn(...inputs: ClassValue[]) {
@@ -19,10 +29,11 @@ export const formatMoneyRange = (
 		start?: { amount: number; currency: string } | null;
 		stop?: { amount: number; currency: string } | null;
 	} | null,
+	locale?: string,
 ) => {
 	const { start, stop } = range || {};
-	const startMoney = start && formatMoney(start.amount, start.currency);
-	const stopMoney = stop && formatMoney(stop.amount, stop.currency);
+	const startMoney = start && formatMoney(start.amount, start.currency, locale);
+	const stopMoney = stop && formatMoney(stop.amount, stop.currency, locale);
 
 	if (startMoney === stopMoney) {
 		return startMoney;

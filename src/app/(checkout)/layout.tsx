@@ -1,16 +1,27 @@
+import "../globals.css";
 import { type ReactNode } from "react";
-import { brandConfig, formatPageTitle } from "@/config/brand";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getDefaultLocaleSlug, resolveLocaleFromSlug } from "@/config/locale";
+import { getRootHtmlFontProps } from "@/lib/fonts";
 
-export const metadata = {
-	title: formatPageTitle("Checkout"),
-	description: brandConfig.description,
-	robots: { index: false, follow: false },
-};
+const defaultHtmlLang = resolveLocaleFromSlug(getDefaultLocaleSlug()).htmlLang;
 
 /**
- * Checkout surface layout — no storefront chrome (header/footer).
- * Auth and GraphQL providers live in `CheckoutApp`.
+ * Checkout surface root layout — its own `<html>`/`<body>` (multiple root layouts).
+ *
+ * Locale-less surface: no `cookies()` here (blocks the route outside Suspense).
+ * `html lang` defaults to `NEXT_PUBLIC_DEFAULT_LOCALE`; `CheckoutBrowseProvider`
+ * syncs the resolved browse locale after RSC loads inside page Suspense.
  */
 export default function CheckoutLayout(props: { children: ReactNode }) {
-	return <main className="min-h-dvh">{props.children}</main>;
+	const htmlProps = getRootHtmlFontProps(defaultHtmlLang);
+
+	return (
+		<html {...htmlProps}>
+			<body className="min-h-dvh font-sans">
+				<main className="min-h-dvh">{props.children}</main>
+				<SpeedInsights />
+			</body>
+		</html>
+	);
 }

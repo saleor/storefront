@@ -79,6 +79,12 @@
 			"upstreamSha": "223382c0",
 			"appliedAt": "2026-06-05",
 			"skipped": false
+		},
+		{
+			"id": "2026-06-locale-channel-routing",
+			"upstreamSha": "de64bb05",
+			"appliedAt": "2026-06-12",
+			"skipped": false
 		}
 	]
 }

@@ -52,11 +52,32 @@
 	--inverse-muted: oklch(0.55 0 0);
 	--border-inverse: oklch(0.28 0 0);
 
+	/* --- Typography: fluid type scale (rem + clamp) ---
+	 * Sized in rem so it respects the user's browser font size (a11y).
+	 * clamp() scales smoothly between mobile and desktop — no breakpoint jumps.
+	 * Weight / tracking / line-height are baked into the Tailwind fontSize tokens
+	 * (see tailwind.config.cjs → theme.extend.fontSize): text-display/h1/h2/h3/lead.
+	 *
+	 * --font-display: heading family (Geist by default; Fraunces when data-typography=editorial). */
+	--font-display: var(--font-geist-sans), system-ui, sans-serif;
+	--text-display: clamp(2.75rem, 1.9rem + 4.2vw, 4.5rem); /* 44 → 72px */
+	--text-h1: clamp(2rem, 1.5rem + 2.4vw, 3rem); /* 32 → 48px */
+	--text-h2: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem); /* 24 → 36px */
+	--text-h3: clamp(1.125rem, 1.05rem + 0.4vw, 1.5rem); /* 18 → 24px */
+	--text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); /* 17 → 20px */
+	--text-eyebrow: 0.75rem; /* 12px fixed — overlines, brand labels */
+
 	/* --- Layout --- */
 	--radius: 0.5rem;
 
 	/* --- Skeleton --- */
 	--skeleton-delay: 300ms;
+}
+
+/* Direction A — Editorial Adventure (example theme: Fraunces display + Geist body).
+ * Enable via NEXT_PUBLIC_TYPOGRAPHY_THEME=editorial — see config/themes/README.md */
+html[data-typography="editorial"] {
+	--font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
 /* ============================================

@@ -8,7 +8,7 @@ import { useCheckoutStep } from "@/checkout/hooks/use-checkout-step";
 import { useCheckoutStepFromUrl } from "@/checkout/hooks/use-checkout-step-from-url";
 import { useCustomerAttach } from "@/checkout/hooks/use-customer-attach";
 import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries";
-import { getCheckoutSteps } from "./flow";
+import { useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import { CheckoutPageShell } from "./checkout-page-shell";
 import { OrderSummary } from "./order-summary";
 import { InformationStep } from "./information-step";
@@ -31,6 +31,7 @@ export const SaleorCheckout: FC = () => {
 	useCustomerAttach();
 
 	const isShippingRequired = checkout?.isShippingRequired ?? true;
+	const checkoutSteps = useCheckoutSteps(isShippingRequired);
 	const urlStep = useCheckoutStepFromUrl(searchParams, isShippingRequired);
 	const { currentStep, stepRef, goToStep, completeStep } = useCheckoutStep({
 		isShippingRequired,
@@ -63,7 +64,7 @@ export const SaleorCheckout: FC = () => {
 				isCheckoutNavigationLocked
 					? undefined
 					: (stepIndex) => {
-							const step = getCheckoutSteps(isShippingRequired).find((s) => s.index === stepIndex);
+							const step = checkoutSteps.find((s) => s.index === stepIndex);
 							if (step) goToStep(step.id);
 						}
 			}

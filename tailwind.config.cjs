@@ -57,6 +57,18 @@ module.exports = {
 				sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
 				mono: ["var(--font-geist-mono)", "monospace"],
 			},
+			// Semantic type scale — fluid sizes from brand.css with weight/tracking/leading
+			// baked in. Use `text-display`/`text-h1`/`text-h2`/`text-h3`/`text-lead`/`text-eyebrow`
+			// instead of stacking `text-3xl font-semibold tracking-tight md:text-4xl`.
+			// Format: [fontSize, { lineHeight, letterSpacing, fontWeight }]
+			fontSize: {
+				display: ["var(--text-display)", { lineHeight: "1", letterSpacing: "-0.03em", fontWeight: "700" }],
+				h1: ["var(--text-h1)", { lineHeight: "1.05", letterSpacing: "-0.02em", fontWeight: "700" }],
+				h2: ["var(--text-h2)", { lineHeight: "1.12", letterSpacing: "-0.015em", fontWeight: "600" }],
+				h3: ["var(--text-h3)", { lineHeight: "1.25", letterSpacing: "-0.005em", fontWeight: "600" }],
+				lead: ["var(--text-lead)", { lineHeight: "1.55" }],
+				eyebrow: ["var(--text-eyebrow)", { lineHeight: "1.4", letterSpacing: "0.1em", fontWeight: "600" }],
+			},
 			borderColor: {
 				DEFAULT: "var(--border)",
 				inverse: "var(--border-inverse)",

@@ -21,35 +21,42 @@ pnpm test                   # Run tests (watch mode)
 
 Skills are organized as follows:
 
-| Location                                                      | Purpose                           | Contents                                                                                             |
-| ------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 15 rules + fork migrations under `migrations/`                                                       |
-| [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Saleor API patterns, React best practices, composition patterns, etc. (install via `npx skills add`) |
+| Location                                                      | Purpose                           | Contents                                                                 |
+| ------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------ |
+| `skills/saleor-paper-storefront/`                             | Project-specific domain knowledge | 21 rules + fork migrations under `migrations/`                           |
+| `skills-lock.json`                                            | External skill version pins       | Restored via `pnpm skills:bootstrap` → `npx skills experimental_install` |
+| [saleor/agent-skills](https://github.com/saleor/agent-skills) | Universal & community skills      | Upstream source for `saleor-storefront` and optional Vercel skills       |
 
 ### When to Use Which Skill
 
 **Project skill** ([`saleor-paper-storefront`](skills/saleor-paper-storefront/SKILL.md)) -- use for all Saleor storefront tasks:
 
-| Task                            | Rule                         |
-| ------------------------------- | ---------------------------- |
-| Modifying `.graphql` files      | `data-graphql`               |
-| Caching, ISR, webhooks          | `data-caching`               |
-| Product detail page (PDP)       | `product-pdp`                |
-| Variant/attribute selection     | `product-variants`           |
-| Product list filtering/sorting  | `product-filtering`          |
-| Storefront vs checkout surfaces | `paper-surfaces`             |
-| Checkout flow debugging         | `checkout-management`        |
-| BFF auth, session, PPR account  | `data-auth-routes`           |
-| Adding a payment gateway        | `checkout-payment-gateways`  |
-| Checkout UX / design principles | `checkout-design-principles` |
-| Checkout UI components          | `checkout-components`        |
-| Creating/styling components     | `ui-components`              |
-| Channels, fulfillment & stock   | `ui-channels`                |
-| SEO, metadata, OG images        | `seo-metadata`               |
-| Investigating Saleor API        | `dev-investigation`          |
-| Upgrading a forked Paper shop   | `migrations/SKILL.md`        |
+| Task                               | Rule                                 |
+| ---------------------------------- | ------------------------------------ |
+| Architecture / canonical Next.js   | `paper-architecture`                 |
+| Modifying `.graphql` files         | `data-graphql`                       |
+| Caching, ISR, webhooks             | `data-caching`                       |
+| Storefront marketing copy layer    | `data-storefront-content`            |
+| Saleor Models for storefront copy  | `data-storefront-content-saleor`     |
+| Storefront content attribute types | `data-storefront-content-attributes` |
+| Product detail page (PDP)          | `product-pdp`                        |
+| Variant/attribute selection        | `product-variants`                   |
+| Product list filtering/sorting     | `product-filtering`                  |
+| Storefront vs checkout surfaces    | `paper-surfaces`                     |
+| Checkout flow debugging            | `checkout-management`                |
+| BFF auth, session, PPR account     | `data-auth-routes`                   |
+| Adding a payment gateway           | `checkout-payment-gateways`          |
+| Checkout UX / design principles    | `checkout-design-principles`         |
+| Checkout UI components             | `checkout-components`                |
+| Creating/styling components        | `ui-components`                      |
+| Channels, fulfillment & stock      | `ui-channels`                        |
+| Locale + channel URL routing       | `ui-locale-routing`                  |
+| Code-owned UI strings (next-intl)  | `ui-i18n`                            |
+| SEO, metadata, OG images           | `seo-metadata`                       |
+| Investigating Saleor API           | `dev-investigation`                  |
+| Upgrading a forked Paper shop      | `migrations/SKILL.md`                |
 
-**External skills** ([saleor/agent-skills](https://github.com/saleor/agent-skills)) — install for generic best practices:
+**External skills** — pinned in `skills-lock.json`; after clone run `pnpm skills:bootstrap`. Maintainers add skills with `npx skills add …` and commit the lockfile.
 
 | Task                           | Skill                         |
 | ------------------------------ | ----------------------------- |
@@ -76,10 +83,8 @@ Skills are organized as follows:
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── [channel]/          # Channel-scoped routes
-│   │   └── (main)/         # Main layout (header/footer)
 │   ├── api/                # API routes (og/, revalidate/)
-│   ├── (storefront)/[channel]/  # Browse, cart, account
+│   ├── (storefront)/[locale]/[channel]/  # Browse, cart, account
 │   └── (checkout)/checkout/     # Checkout surface
 ├── session-bridge/         # @paper/session-bridge (cross-surface only)
 ├── checkout/               # Checkout flow (do not import from storefront)
@@ -124,6 +129,7 @@ NEXT_PUBLIC_STOREFRONT_URL=   # For canonical URLs and OG images
 REVALIDATE_SECRET=            # Manual cache invalidation
 SALEOR_WEBHOOK_SECRET=        # Webhook HMAC verification
 SALEOR_APP_TOKEN=             # For channels query (server-side only)
+CONTENT_PROVIDER=             # Storefront copy: code (default) | saleor (Saleor Models)
 
 # Rate Limiting (for build-time API calls)
 SALEOR_MAX_CONCURRENT_REQUESTS=3   # Max parallel requests to Saleor (default: 3)
@@ -133,6 +139,10 @@ NEXT_BUILD_RETRIES=1               # GraphQL retries during build (default: 3, u
 
 # Channel Configuration (required)
 NEXT_PUBLIC_DEFAULT_CHANNEL=       # Your Saleor channel slug (e.g., "default-channel")
+
+# Locale configuration (optional)
+NEXT_PUBLIC_DEFAULT_LOCALE=en      # Default URL locale slug
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb  # Enabled locale slugs
 
 # Multi-channel builds (optional) - discovers additional channels at build time
 # SALEOR_APP_TOKEN=                # If set, fetches all active channels from API
@@ -233,17 +243,20 @@ useEffect(() => {
 
 ## Caching Strategy
 
-| Layer            | TTL          | Purpose                |
-| ---------------- | ------------ | ---------------------- |
-| ISR              | 5 min        | Product/category pages |
-| GraphQL          | 5 min - 1 hr | API responses          |
-| Static Assets    | 1 year       | JS/CSS bundles         |
-| Category Lookups | 1 hour       | Slug → ID resolution   |
+| Layer               | TTL                | Purpose                                                                    |
+| ------------------- | ------------------ | -------------------------------------------------------------------------- |
+| ISR / `"use cache"` | ~5 min (`catalog`) | Product/category pages — **per locale** via `localeSlug` in cached fetches |
+| GraphQL (cached)    | 5 min - 1 hr       | Translated catalog payloads in `"use cache"` functions                     |
+| Static Assets       | 1 year             | JS/CSS bundles                                                             |
+| Category Lookups    | 1 hour             | Slug → ID resolution                                                       |
+
+Catalog cache **keys** include locale (function arguments); **tags** stay slug-scoped (`product:{slug}`) with path fan-out across locales on webhook. Storefront content uses `storefront-content:{channel}:{locale}`. Details: `skills/saleor-paper-storefront/rules/data-caching.md`.
 
 ### On-Demand Revalidation
 
 ```bash
-curl "/api/revalidate?secret=xxx&path=/channel/products/slug"
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?tag=product:slug&path=/pl/default-channel/products/slug"
 ```
 
 Or configure Saleor webhooks pointing to `/api/revalidate`.
@@ -254,14 +267,15 @@ Or configure Saleor webhooks pointing to `/api/revalidate`.
 
 ### Project Skill
 
-**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 15 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
+**[saleor-paper-storefront](skills/saleor-paper-storefront/SKILL.md)** -- 21 rules covering all Saleor storefront patterns. Follows the [agentskills.io](https://agentskills.io) specification.
 
 Rules by category:
 
+0. **Architecture** (CRITICAL): `paper-architecture`
 1. **Data Layer** (CRITICAL): `data-caching`, `data-auth-routes`, `data-graphql`
 2. **Product Pages** (HIGH): `product-pdp`, `product-variants`, `product-filtering`
 3. **Checkout Flow** (HIGH): `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
-4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`
+4. **UI & Channels** (MEDIUM): `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
 5. **SEO** (MEDIUM): `seo-metadata`
 6. **Development** (MEDIUM): `dev-investigation`
 
@@ -271,11 +285,20 @@ Full compiled document: [`skills/saleor-paper-storefront/AGENTS.md`](skills/sale
 
 ### External Skills
 
-Install from [saleor/agent-skills](https://github.com/saleor/agent-skills) and [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills):
+Cursor discovers `.agents/skills/` and `.cursor/skills/` — **not** repo-root `skills/`. After clone:
 
 ```shell
-npx skills add saleor/agent-skills --skill saleor-storefront
+pnpm skills:bootstrap
+```
+
+- Symlinks `skills/saleor-paper-storefront/` into `.agents/skills/` (Paper-specific)
+- Runs `npx skills experimental_install` to restore external skills from [`skills-lock.json`](skills-lock.json)
+
+Do **not** run `npx skills add . --skill saleor-paper-storefront` — edit `skills/saleor-paper-storefront/` directly.
+
+**Maintainers** — add or update an external skill (updates `skills-lock.json`):
+
+```shell
 npx skills add vercel-labs/agent-skills --skill react-best-practices
-npx skills add vercel-labs/agent-skills --skill composition-patterns
-npx skills add vercel-labs/agent-skills --skill web-design-guidelines
+git add skills-lock.json
 ```

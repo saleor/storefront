@@ -40,10 +40,16 @@ fragment OrderFullDetails on Order {
 		variant {
 			id
 			name
+			translation(languageCode: $languageCode) {
+				name
+			}
 			product {
 				id
 				name
 				slug
+				translation(languageCode: $languageCode) {
+					name
+				}
 				thumbnail {
 					url
 					alt
@@ -74,7 +80,7 @@ fragment OrderFullDetails on Order {
 	}
 }
 
-query OrderByNumber($first: Int) {
+query OrderByNumber($first: Int, $languageCode: LanguageCodeEnum!) {
 	me {
 		orders(first: $first) {
 			edges {

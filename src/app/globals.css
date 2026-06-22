@@ -21,3 +21,30 @@
 		-moz-osx-font-smoothing: grayscale;
 	}
 }
+
+/* Semantic heading tokens use --font-display (Geist default, Fraunces in editorial theme). */
+@layer utilities {
+	.text-display,
+	.text-h1,
+	.text-h2,
+	.text-h3 {
+		font-family: var(--font-display);
+	}
+
+	/* Fraunces reads heavier than Geist at the same weight — ease display headings slightly. */
+	html[data-typography="editorial"] .text-display {
+		font-weight: 600;
+		letter-spacing: -0.02em;
+	}
+	html[data-typography="editorial"] .text-h1 {
+		font-weight: 600;
+		letter-spacing: -0.015em;
+	}
+	html[data-typography="editorial"] .text-h2 {
+		font-weight: 500;
+		letter-spacing: -0.01em;
+	}
+	html[data-typography="editorial"] .text-h3 {
+		font-weight: 500;
+	}
+}

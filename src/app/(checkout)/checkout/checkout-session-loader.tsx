@@ -1,7 +1,11 @@
 import { redirect } from "next/navigation";
 import { invariant } from "ts-invariant";
 import { buildCheckoutPath, buildOrderConfirmationPath } from "@paper/session-bridge";
+import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
+import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
+import { getStorefrontContent } from "@/lib/content/server";
+import { loadCheckoutMessages } from "@/i18n/load-messages";
 import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import {
 	getCheckoutSessionCheckout,
@@ -14,6 +18,7 @@ import * as Checkout from "@/lib/checkout";
 export type CheckoutPageSearchParams = {
 	checkout?: string;
 	order?: string;
+	locale?: string;
 };
 
 type CheckoutSessionLoaderProps = {
@@ -32,6 +37,7 @@ export async function CheckoutSessionLoader({
 
 	const orderId = searchParams.order ?? null;
 	const checkoutIdFromUrl = searchParams.checkout ?? null;
+	const browseLocale = await resolveBrowseLocaleForCheckout(searchParams.locale);
 
 	if (orderId) {
 		redirect(buildOrderConfirmationPath({ orderId }));
@@ -40,13 +46,13 @@ export async function CheckoutSessionLoader({
 	if (!checkoutIdFromUrl) {
 		const checkoutIdFromCartCookie = await Checkout.getFirstCheckoutIdFromCartCookies();
 		if (checkoutIdFromCartCookie) {
-			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromCartCookie }));
+			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromCartCookie, browseLocale }));
 		}
 	}
 
 	const [initialUser, checkoutResult] = await Promise.all([
 		getCheckoutSessionUser(),
-		checkoutIdFromUrl ? getCheckoutSessionCheckout(checkoutIdFromUrl) : Promise.resolve(null),
+		checkoutIdFromUrl ? getCheckoutSessionCheckout(checkoutIdFromUrl, browseLocale) : Promise.resolve(null),
 	]);
 
 	let loadState: CheckoutLoadState = "none";
@@ -68,7 +74,7 @@ export async function CheckoutSessionLoader({
 		const checkoutIdFromChannelCookie = await Checkout.getIdFromCookies(channelSlug);
 
 		if (checkoutIdFromChannelCookie && checkoutIdFromChannelCookie !== checkoutIdFromUrl) {
-			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromChannelCookie }));
+			redirect(buildCheckoutPath({ checkoutId: checkoutIdFromChannelCookie, browseLocale }));
 		}
 
 		if (!checkoutResult.checkout.lines.length) {
@@ -83,6 +89,13 @@ export async function CheckoutSessionLoader({
 		shippingCountries = await getCheckoutSessionCountries(channelSlug);
 	}
 
+	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
+	const contentChannel = browseChannel ?? DefaultChannelSlug ?? "default-channel";
+	const [checkoutContent, messages] = await Promise.all([
+		getStorefrontContent(contentChannel, browseLocale).then((content) => content.surfaces.checkout),
+		loadCheckoutMessages(browseLocale),
+	]);
+
 	return (
 		<CheckoutApp
 			checkoutId={checkoutIdFromUrl}
@@ -90,6 +103,9 @@ export async function CheckoutSessionLoader({
 			initialCheckout={initialCheckout}
 			initialUser={initialUser}
 			shippingCountries={shippingCountries}
+			checkoutContent={checkoutContent}
+			storefrontLocale={browseLocale}
+			messages={messages}
 		/>
 	);
 }

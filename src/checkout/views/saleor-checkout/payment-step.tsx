@@ -3,12 +3,17 @@
 import { useState, useCallback, useMemo, useEffect, type FC } from "react";
 import { ChevronLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
-import { CheckoutSummaryContext, buildPaymentSummaryRows } from "./checkout-summary-context";
+import {
+	CheckoutSummaryContext,
+	buildPaymentSummaryRows,
+	useCheckoutSummaryLabels,
+} from "./checkout-summary-context";
 import { type CheckoutFragment, type CountryCode, type AddressFragment } from "@/checkout/graphql";
 import { useUser } from "@/checkout/hooks/use-user";
 import { useCheckoutPayment } from "@/checkout/hooks/use-checkout-payment";
 import { MobileStickyAction } from "./mobile-sticky-action";
-import { getStepNumber } from "./flow";
+import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
+import { useTranslations } from "next-intl";
 import {
 	PaymentGatewayAlerts,
 	PaymentMethodArea,
@@ -40,8 +45,10 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	onPaymentBusyChange,
 }) => {
 	const { user, authenticated } = useUser();
-
+	const tActions = useTranslations("checkout.actions");
+	const tPayment = useTranslations("checkout.payment");
 	const isShippingRequired = checkout.isShippingRequired;
+	const paymentStep = useCheckoutStepNumber("PAYMENT", isShippingRequired);
 	const hasShippingAddress = !!checkout.shippingAddress;
 	const shippingAddress = checkout.shippingAddress;
 
@@ -121,7 +128,11 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 		setBillingData(data);
 	}, []);
 
-	const summaryRows = buildPaymentSummaryRows(checkout);
+	const summaryLabels = useCheckoutSummaryLabels();
+	const summaryRows = useMemo(
+		() => buildPaymentSummaryRows(checkout, summaryLabels),
+		[checkout, summaryLabels],
+	);
 
 	const handleGoToStep = (step: number) => {
 		if (step === 1 && onGoToInformation) {
@@ -136,13 +147,13 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 
 	const buttonText = isLoading
 		? isCompletingOrder
-			? "Creating order..."
+			? tActions("creatingOrder")
 			: isFreeOrder
-				? "Placing order..."
-				: "Processing payment..."
+				? tActions("placingOrder")
+				: tActions("processingPayment")
 		: isFreeOrder
-			? "Complete order"
-			: `Pay ${totalStr}`;
+			? tActions("completeOrder")
+			: tActions("payTotal", { total: totalStr });
 
 	const hasInvalidDelivery = checkout.problems?.some(
 		(p) => p.__typename === "CheckoutProblemDeliveryMethodInvalid",
@@ -164,23 +175,18 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 				>
 					<AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
 					<div>
-						<p className="font-medium text-amber-800">Your order total was updated</p>
+						<p className="font-medium text-amber-800">{tPayment("totalUpdatedTitle")}</p>
 						<p className="mt-1 text-sm text-amber-700">
-							The total changed from{" "}
-							<span className="font-medium">
-								{getFormattedMoney({
+							{tPayment("totalUpdatedBody", {
+								previous: getFormattedMoney({
 									amount: priceChangeNotice.previousAmount,
 									currency: priceChangeNotice.currency,
-								})}
-							</span>{" "}
-							to{" "}
-							<span className="font-medium">
-								{getFormattedMoney({
+								}),
+								next: getFormattedMoney({
 									amount: priceChangeNotice.newAmount,
 									currency: priceChangeNotice.currency,
-								})}
-							</span>
-							. Review the updated order summary before completing your payment.
+								}),
+							})}
 						</p>
 					</div>
 				</div>
@@ -196,11 +202,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 				<div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
 					<AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
 					<div>
-						<p className="font-medium text-amber-800">Shipping method no longer available</p>
-						<p className="mt-1 text-sm text-amber-700">
-							Please go back to the shipping step and select a valid shipping method before completing your
-							order.
-						</p>
+						<p className="font-medium text-amber-800">{tPayment("deliveryInvalidTitle")}</p>
+						<p className="mt-1 text-sm text-amber-700">{tPayment("deliveryInvalidBody")}</p>
 					</div>
 				</div>
 			)}
@@ -271,7 +274,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 					className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
 				>
 					<ChevronLeft className="h-4 w-4" />
-					{isShippingRequired ? "Return to shipping" : "Return to information"}
+					{isShippingRequired ? tActions("returnToShipping") : tActions("returnToInformation")}
 				</button>
 				{!usesClientSubmit ? (
 					<div className="hidden flex-col items-end gap-3 md:flex">
@@ -292,14 +295,14 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 
 			{!usesClientSubmit ? (
 				<MobileStickyAction
-					step={getStepNumber("PAYMENT", isShippingRequired)}
+					step={paymentStep}
 					isShippingRequired={isShippingRequired}
 					type="submit"
 					onAction={submit}
 					isLoading={isLoading}
 					disabled={isDisabled}
 					total={totalStr}
-					loadingText={isCompletingOrder ? "Creating order..." : "Processing payment..."}
+					loadingText={isCompletingOrder ? tActions("creatingOrder") : tActions("processingPayment")}
 					showPaymentTrust
 				/>
 			) : null}

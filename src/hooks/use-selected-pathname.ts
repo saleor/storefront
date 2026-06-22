@@ -1,14 +1,17 @@
 "use client";
 
 import { useParams, usePathname } from "next/navigation";
+import { stripStorefrontPrefix } from "@/lib/storefront-path";
 
 function useSelectedPathname() {
 	const pathname = usePathname();
+	const { locale, channel } = useParams<{ locale?: string; channel?: string }>();
 
-	const { channel } = useParams<{ channel?: string }>();
+	if (locale && channel) {
+		return stripStorefrontPrefix(pathname, locale, channel);
+	}
 
-	const selectedPathname = channel ? pathname.replace(`/${channel}`, "") : pathname;
-	return selectedPathname;
+	return pathname;
 }
 
 export default useSelectedPathname;

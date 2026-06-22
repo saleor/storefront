@@ -2,8 +2,10 @@ import type { ProductListItemFragment } from "@/gql/graphql";
 import type { ProductCardData } from "./product-card-data";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
 import { sortSizes } from "@/lib/sizes";
-import { localeConfig } from "@/config/locale";
+import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
+import { buildStorefrontPath } from "@/lib/storefront-path";
+import { pickTranslatedName } from "@/lib/saleor-translations";
 
 /**
  * Extract colors from product variants
@@ -53,7 +55,11 @@ function extractSizesFromVariants(variants: ProductListItemFragment["variants"])
 }
 
 /** Map a Saleor list item to {@link ProductCardData} for cards and client filters. */
-export function toProductCardData(product: ProductListItemFragment, channel: string): ProductCardData {
+export function toProductCardData(
+	product: ProductListItemFragment,
+	locale: string,
+	channel: string,
+): ProductCardData {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
 	const stopPrice = product.pricing?.priceRange?.stop?.gross;
 	const undiscountedStartPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
@@ -75,25 +81,29 @@ export function toProductCardData(product: ProductListItemFragment, channel: str
 	const colors = extractColorsFromVariants(product.variants);
 	const sizes = extractSizesFromVariants(product.variants);
 
+	const productName = pickTranslatedName(product);
+	const categoryName = product.category ? pickTranslatedName(product.category) : null;
+
 	return {
 		id: product.id,
-		name: product.name,
+		name: productName,
 		slug: product.slug,
-		brand: product.category?.name ?? null,
+		brand: categoryName,
 		price: startAmount,
 		priceStop: stopAmount != null && stopAmount !== startAmount ? stopAmount : null,
 		compareAtPrice: isSale ? undiscountedStartAmount : null,
 		discountPercent,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
-		imageAlt: product.thumbnail?.alt ?? product.name,
+		imageAlt: product.thumbnail?.alt ?? productName,
 		hoverImage: null, // Would need additional media in fragment
-		href: `/${encodeURIComponent(channel)}/products/${encodeURIComponent(product.slug)}`,
+		localeBcp47: resolveLocaleFromSlug(locale).bcp47,
+		href: buildStorefrontPath(locale, channel, `/products/${product.slug}`),
 		badge: isSale ? "Sale" : null,
 		colors,
 		sizes,
 		category: product.category
-			? { id: product.category.id, name: product.category.name, slug: product.category.slug }
+			? { id: product.category.id, name: categoryName ?? product.category.name, slug: product.category.slug }
 			: null,
 		createdAt: product.created,
 		hasVariants: (product.variants?.length ?? 0) > 1,
@@ -104,10 +114,11 @@ export function toProductCardData(product: ProductListItemFragment, channel: str
 export const transformToProductCard = toProductCardData;
 
 /**
- * Format price with currency
+ * Format price with currency. Pass a BCP 47 `locale` to localize grouping/symbol placement;
+ * defaults to the base locale for backward compatibility.
  */
-export function formatPrice(amount: number, currency: string): string {
-	return new Intl.NumberFormat(localeConfig.default, {
+export function formatPrice(amount: number, currency: string, locale: string = localeConfig.default): string {
+	return new Intl.NumberFormat(locale, {
 		style: "currency",
 		currency: currency,
 	}).format(amount);

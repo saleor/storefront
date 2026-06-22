@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/ui/components/ui/badge";
-import { DiscountPercentLabel, SaleBadge } from "@/ui/components/ui/sale-label";
+import { DiscountPercentLabel, NewBadge, SaleBadge } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
@@ -60,16 +59,19 @@ export function ProductCardBase({
 				{product.badge === "Sale" ? (
 					<SaleBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
 				) : product.badge === "New" ? (
-					<Badge className="pointer-events-none absolute left-3 top-3 z-[1]">New</Badge>
+					<NewBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
 				) : null}
 
 				{imageOverlay ? <div className="absolute inset-0 z-10">{imageOverlay}</div> : null}
 			</div>
 
-			<Link href={product.href} prefetch={false} className="block">
+			<Link href={product.href} prefetch={false} className="block no-underline hover:no-underline">
 				<div className="space-y-1.5">
-					{product.brand && <p className="text-xs tracking-wide text-muted-foreground">{product.brand}</p>}
-					<h3 className="line-clamp-2 font-medium leading-snug underline-offset-2 md:group-hover:underline">
+					{product.brand && <p className="text-eyebrow uppercase text-muted-foreground">{product.brand}</p>}
+					<h3
+						className="text-foreground/80 truncate font-medium leading-snug no-underline transition-colors duration-200 md:group-hover:text-foreground"
+						title={product.name}
+					>
 						{product.name}
 					</h3>
 
@@ -90,10 +92,10 @@ export function ProductCardBase({
 					)}
 
 					<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 pt-0.5">
-						<span className="font-semibold">{formatProductPrice(product)}</span>
+						<span className="font-semibold tabular-nums">{formatProductPrice(product)}</span>
 						{product.compareAtPrice != null && (
-							<span className="text-sm text-muted-foreground line-through">
-								{formatPrice(product.compareAtPrice, product.currency)}
+							<span className="text-sm tabular-nums text-muted-foreground line-through">
+								{formatPrice(product.compareAtPrice, product.currency, product.localeBcp47)}
 							</span>
 						)}
 						{product.discountPercent != null && product.discountPercent > 0 && (

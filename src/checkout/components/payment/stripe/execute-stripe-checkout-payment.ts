@@ -14,8 +14,6 @@ import {
 	clearPaymentCompleting,
 	isCheckoutPaymentFlowStale,
 	markPaymentCompleting,
-	PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE,
-	PAYMENT_INTERRUPTED_MESSAGE,
 	stashPaymentCompletionError,
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
@@ -35,6 +33,7 @@ import {
 	clearStripeTransactionId,
 	storeStripeTransactionId,
 } from "@/checkout/lib/payment/stripe-transaction-storage";
+import type { CheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 
 export type StripeCheckoutPayResult =
 	| { ok: true }
@@ -50,12 +49,14 @@ type ExecuteStripeCheckoutPaymentParams = {
 	searchParams: ReadonlyURLSearchParams;
 	refreshCheckout: (options?: { updateState?: boolean }) => Promise<CheckoutFragment | null>;
 	paymentMethodContext: StripeInitializePaymentMethodContext;
+	messages: CheckoutPaymentMessages;
 };
 
-function stripeElementMountError(surface: StripeInitializePaymentMethodContext["surface"]): string {
-	return surface === "expressCheckout"
-		? "The express checkout buttons were reset before payment could be confirmed. Please try again."
-		: "The payment form was reset before your card could be confirmed. Please try Pay again without refreshing the page.";
+function stripeElementMountError(
+	surface: StripeInitializePaymentMethodContext["surface"],
+	messages: CheckoutPaymentMessages,
+): string {
+	return surface === "expressCheckout" ? messages.expressReset : messages.formReset;
 }
 
 let payInFlight: Promise<StripeCheckoutPayResult> | null = null;
@@ -95,9 +96,11 @@ export async function executeStripeCheckoutPayment(
 async function reconcileInterruptedAuthorizedPayment({
 	transactionId,
 	refreshCheckout,
+	messages,
 }: {
 	transactionId: string;
 	refreshCheckout: ExecuteStripeCheckoutPaymentParams["refreshCheckout"];
+	messages: CheckoutPaymentMessages;
 }): Promise<StripeCheckoutPayResult> {
 	try {
 		const processResult = await getCheckoutTransport().processTransaction({ id: transactionId });
@@ -116,8 +119,8 @@ async function reconcileInterruptedAuthorizedPayment({
 		console.error("Failed to sync interrupted authorized payment:", error);
 	}
 
-	stashPaymentCompletionError(PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE);
-	return { ok: false, kind: "error", message: PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE };
+	stashPaymentCompletionError(messages.interruptedAfterAuthorize);
+	return { ok: false, kind: "error", message: messages.interruptedAfterAuthorize };
 }
 
 async function runStripeCheckoutPayment({
@@ -128,6 +131,7 @@ async function runStripeCheckoutPayment({
 	searchParams,
 	refreshCheckout,
 	paymentMethodContext,
+	messages,
 }: ExecuteStripeCheckoutPaymentParams): Promise<StripeCheckoutPayResult> {
 	let stripePaymentConfirmed = false;
 	const paymentFlowGeneration = beginCheckoutPaymentFlow();
@@ -170,7 +174,7 @@ async function runStripeCheckoutPayment({
 
 		const liveCheckout = await refreshCheckout({ updateState: false });
 		if (!liveCheckout) {
-			return { ok: false, kind: "error", message: "Could not refresh checkout totals. Please try again." };
+			return { ok: false, kind: "error", message: messages.totalsRefreshFailed };
 		}
 
 		const displayedAmount = getCheckoutPayAmount(checkout);
@@ -179,7 +183,7 @@ async function runStripeCheckoutPayment({
 			return {
 				ok: false,
 				kind: "error",
-				message: "Checkout total is unavailable. Please refresh the page and try again.",
+				message: messages.totalUnavailable,
 			};
 		}
 
@@ -188,7 +192,7 @@ async function runStripeCheckoutPayment({
 			return {
 				ok: false,
 				kind: "error",
-				message: "Checkout currency is unavailable. Please refresh the page and try again.",
+				message: messages.currencyUnavailable,
 			};
 		}
 
@@ -208,7 +212,7 @@ async function runStripeCheckoutPayment({
 				return {
 					ok: false,
 					kind: "error",
-					message: submitResult.error.message || "Payment validation failed",
+					message: submitResult.error.message || messages.validationFailed,
 				};
 			}
 
@@ -225,15 +229,14 @@ async function runStripeCheckoutPayment({
 			return {
 				ok: false,
 				kind: "error",
-				message:
-					"Could not determine the selected payment method. Please choose a payment option and try again.",
+				message: messages.methodRequired,
 			};
 		}
 
 		// Browser Back / abandoned wallet sheet bumps the flow generation — stop before
 		// creating a Saleor transaction the shopper no longer expects.
 		if (isCheckoutPaymentFlowStale(paymentFlowGeneration)) {
-			return { ok: false, kind: "error", message: PAYMENT_INTERRUPTED_MESSAGE };
+			return { ok: false, kind: "error", message: messages.interruptedBeforeCharge };
 		}
 
 		const initResult = await getCheckoutTransport().initializeTransaction({
@@ -262,7 +265,7 @@ async function runStripeCheckoutPayment({
 		const transactionId = initResult.data.transaction?.id;
 
 		if (!clientSecret || !transactionId) {
-			return { ok: false, kind: "error", message: "Could not retrieve payment details. Please try again." };
+			return { ok: false, kind: "error", message: messages.detailsUnavailable };
 		}
 
 		storeStripeTransactionId(transactionId);
@@ -277,13 +280,13 @@ async function runStripeCheckoutPayment({
 			return {
 				ok: false,
 				kind: "error",
-				message: stripeElementMountError(paymentMethodContext.surface),
+				message: stripeElementMountError(paymentMethodContext.surface, messages),
 			};
 		}
 
 		// Last abort point before money moves — confirmPayment authorizes the charge.
 		if (isCheckoutPaymentFlowStale(paymentFlowGeneration)) {
-			return { ok: false, kind: "error", message: PAYMENT_INTERRUPTED_MESSAGE };
+			return { ok: false, kind: "error", message: messages.interruptedBeforeCharge };
 		}
 
 		const billingAddress = liveCheckout.billingAddress;
@@ -313,12 +316,12 @@ async function runStripeCheckoutPayment({
 		});
 
 		if (confirmError) {
-			return { ok: false, kind: "error", message: formatStripePayError(confirmError) };
+			return { ok: false, kind: "error", message: formatStripePayError(confirmError, messages) };
 		}
 
 		if (isCheckoutPaymentFlowStale(paymentFlowGeneration)) {
 			// Aborted after authorization — never suggest retrying; reconcile instead.
-			return reconcileInterruptedAuthorizedPayment({ transactionId, refreshCheckout });
+			return reconcileInterruptedAuthorizedPayment({ transactionId, refreshCheckout, messages });
 		}
 
 		// Stripe confirmed — safe to unmount Elements and show order-completion UI.
@@ -354,8 +357,8 @@ async function runStripeCheckoutPayment({
 		console.error("Stripe payment failed:", error);
 		// Post-confirm failures must never read as "retry" — the authorization exists.
 		const message = stripePaymentConfirmed
-			? PAYMENT_AUTHORIZED_INTERRUPTED_MESSAGE
-			: formatStripePayError(error);
+			? messages.interruptedAfterAuthorize
+			: formatStripePayError(error, messages);
 		if (stripePaymentConfirmed) {
 			stashPaymentCompletionError(message);
 		}

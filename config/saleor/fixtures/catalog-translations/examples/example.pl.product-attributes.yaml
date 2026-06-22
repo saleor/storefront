@@ -1,0 +1,6 @@
+# Polish per-product text attributes — fictional template only (Saleor LanguageCodeEnum: PL)
+languageCode: PL
+
+productAttributes:
+  example-product:
+    care-instructions: "Przykładowa instrukcja pielęgnacji."

@@ -1,6 +1,7 @@
 "use client";
 
 import { type FC, useState, useEffect, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { ChevronLeft } from "lucide-react";
 import { Label } from "@/ui/components/ui/label";
 import { Checkbox } from "@/ui/components/ui/checkbox";
@@ -82,6 +83,8 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 	initialSameAsShipping,
 	disabled = false,
 }) => {
+	const t = useTranslations("checkout.billing");
+	const tShipping = useTranslations("checkout.shipping");
 	const { availableShippingCountries } = useAvailableShippingCountries();
 
 	const hasShippingAddress = !!shippingAddress;
@@ -203,7 +206,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 			className={cn("space-y-4", disabled && "pointer-events-none opacity-60")}
 			aria-disabled={disabled || undefined}
 		>
-			<h2 className="text-lg font-semibold">Billing address</h2>
+			<h2 className="text-lg font-semibold">{t("title")}</h2>
 
 			{sectionError ? <p className="text-sm text-destructive">{sectionError}</p> : null}
 
@@ -217,7 +220,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 							onCheckedChange={(checked) => handleSameAsShippingChange(checked === true)}
 						/>
 						<Label htmlFor="same-billing" className="cursor-pointer text-sm">
-							Same as shipping address
+							{t("sameAsShipping")}
 						</Label>
 					</div>
 
@@ -245,20 +248,20 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 										onClick={handleBackToSavedAddresses}
 										className="mb-2 flex items-center gap-1 text-sm font-medium text-foreground underline underline-offset-2 hover:no-underline"
 									>
-										<ChevronLeft className="h-4 w-4" /> Back to saved addresses
+										<ChevronLeft className="h-4 w-4" /> {t("backToSavedAddresses")}
 									</button>
 
 									{/* Country selector */}
 									<div className="space-y-2">
 										<Label htmlFor="billing-country" className="text-sm font-medium">
-											Country/Region
+											{tShipping("countryRegion")}
 										</Label>
 										<FormSelect
 											id="billing-country"
 											name="countryCode"
 											value={countryCode}
 											onChange={handleCountryChange}
-											placeholder="Select country"
+											placeholder={tShipping("selectCountry")}
 											autoComplete="billing country"
 											options={availableShippingCountries.map((code) => ({
 												value: code,
@@ -288,10 +291,10 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 										selectedAddressId={selectedAddressId}
 										onSelectAddress={handleSelectSavedAddress}
 										defaultAddressId={defaultBillingAddressId}
-										emptyMessage="No saved addresses available."
+										emptyMessage={t("emptySavedBilling")}
 										name="billingAddress"
 										addressType="BILLING"
-										sheetTitle="Select billing address"
+										sheetTitle={t("selectBillingSheet")}
 										onAddNew={() => {
 											setShowNewAddressForm(true);
 											// Clear form for new entry
@@ -319,14 +322,14 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 							{/* Country selector */}
 							<div className="space-y-2">
 								<Label htmlFor="billing-country" className="text-sm font-medium">
-									Country/Region
+									{tShipping("countryRegion")}
 								</Label>
 								<FormSelect
 									id="billing-country"
 									name="countryCode"
 									value={countryCode}
 									onChange={handleCountryChange}
-									placeholder="Select country"
+									placeholder={tShipping("selectCountry")}
 									autoComplete="billing country"
 									options={availableShippingCountries.map((code) => ({
 										value: code,

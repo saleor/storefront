@@ -1,0 +1,42 @@
+query StorefrontContentPages($channel: String!, $slugs: [String!]!, $languageCode: LanguageCodeEnum!) {
+	pages(channel: $channel, where: { slug: { oneOf: $slugs } }, first: 20) {
+		edges {
+			node {
+				...StorefrontContentPage
+			}
+		}
+	}
+}
+
+fragment StorefrontContentPage on Page {
+	slug
+	isPublished
+	pageType {
+		slug
+	}
+	assignedAttributes {
+		attribute {
+			slug
+		}
+		... on AssignedPlainTextAttribute {
+			plainText: value
+			plainTextTranslation: translation(languageCode: $languageCode)
+		}
+		... on AssignedBooleanAttribute {
+			boolean: value
+		}
+		... on AssignedNumericAttribute {
+			numeric: value
+		}
+		... on AssignedSingleCollectionReferenceAttribute {
+			collection: value {
+				slug
+			}
+		}
+		... on AssignedFileAttribute {
+			file: value {
+				url
+			}
+		}
+	}
+}

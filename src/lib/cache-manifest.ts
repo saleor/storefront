@@ -1,4 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { getDefaultLocaleSlug, getLocaleBcp47List, getStorefrontLocaleSlugs } from "@/config/locale";
+import {
+	isStorefrontContentPageSlug,
+	resolveStorefrontContentChannelsForPageSlug,
+} from "@/lib/content/constants";
 import {
 	DEFAULT_PAPER_CACHE_LIFE_PROFILE,
 	type PaperCacheLifeProfile,
@@ -18,7 +23,7 @@ import {
 //   - /api/cache-info (manifest for dashboard)
 // ============================================================================
 
-const UNRESOLVED_PLACEHOLDER = /\{(slug|channel)\}/;
+const UNRESOLVED_PLACEHOLDER = /\{(slug|channel|locale)\}/;
 
 export type CacheLifeProfile = PaperCacheLifeProfile;
 
@@ -36,6 +41,8 @@ export interface CacheProfile {
 export type CacheTagParams = {
 	slug?: string;
 	channel?: string;
+	/** BCP 47 locale — storefront content cache key (Saleor translations not wired yet). */
+	locale?: string;
 };
 
 const profiles = {
@@ -44,28 +51,28 @@ const profiles = {
 		label: "Product Pages",
 		cacheProfile: "catalog",
 		tagPattern: "product:{slug}",
-		pathPattern: "/{channel}/products/{slug}",
+		pathPattern: "/{locale}/{channel}/products/{slug}",
 	},
 	categories: {
 		id: "categories",
 		label: "Category Pages",
 		cacheProfile: "catalog",
 		tagPattern: "category:{slug}",
-		pathPattern: "/{channel}/categories/{slug}",
+		pathPattern: "/{locale}/{channel}/categories/{slug}",
 	},
 	collections: {
 		id: "collections",
 		label: "Collection Pages",
 		cacheProfile: "catalog",
 		tagPattern: "collection:{slug}",
-		pathPattern: "/{channel}/collections/{slug}",
+		pathPattern: "/{locale}/{channel}/collections/{slug}",
 	},
 	pages: {
 		id: "pages",
 		label: "CMS Pages",
 		cacheProfile: "catalog",
 		tagPattern: "page:{slug}",
-		pathPattern: "/{channel}/pages/{slug}",
+		pathPattern: "/{locale}/{channel}/pages/{slug}",
 	},
 	navigation: {
 		id: "navigation",
@@ -87,6 +94,13 @@ const profiles = {
 		cacheProfile: "channels",
 		tagPattern: "channels",
 		pathPattern: null,
+	},
+	storefrontContent: {
+		id: "storefront-content",
+		label: "Storefront Content",
+		cacheProfile: "menus",
+		tagPattern: "storefront-content:{channel}:{locale}",
+		pathPattern: "/{locale}/{channel}",
 	},
 } as const satisfies Record<string, CacheProfile>;
 
@@ -200,9 +214,9 @@ export function planPageRevalidation(
 	const channelList = channels.length > 0 ? channels : fallbackChannel ? [fallbackChannel] : [];
 	if (channelList.length === 0) return { action: "error", reason: "no_channels" };
 
-	const paths = channelList
-		.map((channel) => buildPath(CACHE_PROFILES.pages, channel, slug))
-		.filter((path): path is string => path !== null);
+	const paths = channelList.flatMap((channel) =>
+		buildPathsForAllLocales(CACHE_PROFILES.pages, { channel, slug }),
+	);
 
 	return {
 		action: "revalidate",
@@ -213,6 +227,56 @@ export function planPageRevalidation(
 	};
 }
 
+export type StorefrontContentRevalidationPlan =
+	| {
+			action: "revalidate";
+			tags: Array<{ tag: string; profile: CacheLifeProfile }>;
+			paths: string[];
+	  }
+	| { action: "skip"; reason: "not_storefront_singleton" | "no_channels" };
+
+/**
+ * Plan invalidation for Saleor `storefront-*` singleton pages (`default`, `default-{channel}`).
+ * Merges with editorial CMS page revalidation in the webhook handler.
+ */
+export function planStorefrontContentRevalidation(
+	pageSlug: string | undefined,
+	channels: readonly string[],
+	fallbackChannel?: string | null,
+): StorefrontContentRevalidationPlan {
+	if (!pageSlug || !isStorefrontContentPageSlug(pageSlug)) {
+		return { action: "skip", reason: "not_storefront_singleton" };
+	}
+
+	const channelList = channels.length > 0 ? channels : fallbackChannel ? [fallbackChannel] : [];
+	if (channelList.length === 0) return { action: "skip", reason: "no_channels" };
+
+	const targetChannels = resolveStorefrontContentChannelsForPageSlug(pageSlug, channelList);
+	if (targetChannels.length === 0) {
+		return { action: "skip", reason: "not_storefront_singleton" };
+	}
+
+	const profile = CACHE_PROFILES.storefrontContent;
+
+	return {
+		action: "revalidate",
+		tags: targetChannels.flatMap((channel) =>
+			buildStorefrontContentCacheTags(channel).map((tag) => ({
+				tag,
+				profile: profile.cacheProfile,
+			})),
+		),
+		paths: targetChannels.flatMap((channel) => buildPathsForAllLocales(profile, { channel })),
+	};
+}
+
+/** All locale cache tags for storefront marketing copy on a channel. */
+export function buildStorefrontContentCacheTags(channel: string): string[] {
+	return getLocaleBcp47List().map((locale) =>
+		buildTag(CACHE_PROFILES.storefrontContent, { channel, locale }),
+	);
+}
+
 function normalizeTagParams(params?: string | CacheTagParams): CacheTagParams {
 	if (typeof params === "string") {
 		return { slug: params };
@@ -221,7 +285,7 @@ function normalizeTagParams(params?: string | CacheTagParams): CacheTagParams {
 }
 
 export function tagPatternHasPlaceholders(pattern: string): boolean {
-	return pattern.includes("{slug}") || pattern.includes("{channel}");
+	return pattern.includes("{slug}") || pattern.includes("{channel}") || pattern.includes("{locale}");
 }
 
 export function isGlobalTagProfile(profile: CacheProfile): boolean {
@@ -239,7 +303,12 @@ export function getChannelScopedTagProfiles(): CacheProfile[] {
 
 function tagPatternToRegExp(pattern: string): RegExp {
 	const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	return new RegExp(`^${escaped.replace("\\{slug\\}", "[^:]+").replace("\\{channel\\}", "[^:]+")}$`);
+	return new RegExp(
+		`^${escaped
+			.replace("\\{slug\\}", "[^:]+")
+			.replace("\\{channel\\}", "[^:]+")
+			.replace("\\{locale\\}", "[^:]+")}$`,
+	);
 }
 
 /**
@@ -313,13 +382,16 @@ export function applyCacheProfile(profile: CacheProfile, params?: string | Cache
 // ============================================================================
 
 export function buildTag(profile: CacheProfile, params?: string | CacheTagParams): string {
-	const { slug, channel } = normalizeTagParams(params);
+	const { slug, channel, locale } = normalizeTagParams(params);
 	let tag = profile.tagPattern;
 	if (slug) tag = tag.replaceAll("{slug}", slug);
 	if (channel) tag = tag.replaceAll("{channel}", channel);
+	if (locale) tag = tag.replaceAll("{locale}", locale);
 
 	if (UNRESOLVED_PLACEHOLDER.test(tag)) {
-		const missing = (["{slug}", "{channel}"] as const).filter((placeholder) => tag.includes(placeholder));
+		const missing = (["{slug}", "{channel}", "{locale}"] as const).filter((placeholder) =>
+			tag.includes(placeholder),
+		);
 		throw new Error(
 			`[cache-manifest] Unresolved tag "${tag}" for profile "${profile.id}". ` +
 				`Provide: ${missing.join(", ")}`,
@@ -329,11 +401,37 @@ export function buildTag(profile: CacheProfile, params?: string | CacheTagParams
 	return tag;
 }
 
-export function buildPath(profile: CacheProfile, channel: string, slug?: string): string | null {
+export type BuildPathParams = {
+	channel: string;
+	slug?: string;
+	/** URL locale slug — defaults to configured default locale */
+	locale?: string;
+};
+
+export function buildPath(
+	profile: CacheProfile,
+	channelOrParams: string | BuildPathParams,
+	legacySlug?: string,
+): string | null {
 	if (!profile.pathPattern) return null;
-	let path = profile.pathPattern.replace("{channel}", channel);
-	if (slug) path = path.replace("{slug}", slug);
+
+	const params: BuildPathParams =
+		typeof channelOrParams === "string" ? { channel: channelOrParams, slug: legacySlug } : channelOrParams;
+
+	const localeSlug = params.locale ?? getDefaultLocaleSlug();
+	let path = profile.pathPattern.replaceAll("{locale}", localeSlug).replaceAll("{channel}", params.channel);
+	if (params.slug) path = path.replaceAll("{slug}", params.slug);
 	return path;
+}
+
+/** Fan out a path pattern across all configured storefront locale slugs. */
+export function buildPathsForAllLocales(
+	profile: CacheProfile,
+	params: Omit<BuildPathParams, "locale">,
+): string[] {
+	return getStorefrontLocaleSlugs()
+		.map((locale) => buildPath(profile, { ...params, locale }))
+		.filter((path): path is string => path !== null);
 }
 
 // ============================================================================

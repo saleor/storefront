@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChannelSelect } from "./channel-select";
+import { StorefrontRegionPicker } from "./storefront-region-picker";
 import {
 	getStaticStorefrontChannelSlugs,
 	needsAsyncChannelDiscovery,
@@ -9,22 +9,26 @@ import {
 import { getCachedChannelsList } from "@/lib/channels/get-channels-data";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import { getFooterMenuItems } from "@/lib/menus/get-menu-data";
+import { getStorefrontLocaleOptions } from "@/lib/locale-display";
 import { FooterMenuColumns } from "./footer-menu-columns";
 import { CopyrightText } from "./copyright-text";
 import { brandConfig } from "@/config/brand";
 import { Logo } from "./shared/logo";
 
-export async function Footer({ channel }: { channel: string }) {
+import { buildStorefrontPath } from "@/lib/storefront-path";
+
+export async function Footer({ locale, channel }: { locale: string; channel: string }) {
 	const resolvedSlugs = needsAsyncChannelDiscovery()
 		? await getStorefrontChannelSlugs()
 		: getStaticStorefrontChannelSlugs();
 
 	const [menuItems, channels] = await Promise.all([
-		getFooterMenuItems(channel),
+		getFooterMenuItems(channel, locale),
 		shouldFetchChannelMetadata(resolvedSlugs) ? getCachedChannelsList() : Promise.resolve(null),
 	]);
 
 	const footerMenuItems = menuItems ?? [];
+	const localeOptions = getStorefrontLocaleOptions();
 	const selectorChannels =
 		channels?.channels && resolvedSlugs.length > 0
 			? toChannelSelectOptions(channels.channels, resolvedSlugs)
@@ -37,7 +41,7 @@ export async function Footer({ channel }: { channel: string }) {
 				<div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 					{/* Brand */}
 					<div className="col-span-2 md:col-span-1">
-						<Link href={`/${channel}`} prefetch={false} className="mb-4 inline-block">
+						<Link href={buildStorefrontPath(locale, channel)} prefetch={false} className="mb-4 inline-block">
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-inverse-subtle">{brandConfig.tagline}</p>
@@ -46,13 +50,10 @@ export async function Footer({ channel }: { channel: string }) {
 					<FooterMenuColumns items={footerMenuItems} />
 				</div>
 
-				{/* Channel selector — only storefront channels, hidden when single-channel */}
-				{selectorChannels.length > 1 && (
-					<div className="mt-8 text-inverse-subtle">
-						<label className="flex items-center gap-2 text-sm">
-							<span>Change currency:</span>
-							<ChannelSelect channels={selectorChannels} variant="inverted" />
-						</label>
+				{/* Language + market — hidden when only one option on each axis */}
+				{(localeOptions.length > 1 || selectorChannels.length > 1) && (
+					<div className="mt-10">
+						<StorefrontRegionPicker locales={localeOptions} channels={selectorChannels} variant="inverted" />
 					</div>
 				)}
 

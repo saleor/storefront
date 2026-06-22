@@ -1,0 +1,52 @@
+# Norwegian Bokmål storefront model translations (Saleor LanguageCodeEnum: NB)
+languageCode: NB
+
+pages:
+  storefront-chrome:
+    announcement-message: "Gratis frakt over {freeShippingThreshold}"
+    nav-all-products-label: "Alle"
+    nav-view-all-label: "Se alle {label}"
+
+  storefront-products:
+    listing-title: "Alle produkter"
+    listing-description: "Utforsk hele vår kolleksjon av premiumprodukter."
+
+  storefront-homepage:
+    hero-heading: "Utforsk kolleksjonen vår"
+    hero-subheading: "Premiumprodukter med eksepsjonell kvalitet. Oppdag vårt kuraterte utvalg."
+    hero-cta-label: "Handle alt"
+    featured-heading: "Utvalgte produkter"
+    brand-story-heading: "Bygget for ekte handel"
+    brand-story-paragraph-1: "Paper er en minimal, produksjonsklar nettbutikk for Saleor — ren som et blankt ark, klar til lansering."
+    brand-story-paragraph-2: "Tilpass seksjoner i koden, koble til katalogen din og behold testede handlekurv-, kasse- og produktsider."
+    values-heading: "Hvorfor handle hos oss"
+    values-column-1-title: "Kuratert kvalitet"
+    values-column-1-text: "Hvert produkt er valgt for håndverk og holdbarhet — ikke for trender."
+    values-column-2-title: "Rask oppfyllelse"
+    values-column-2-text: "Bestillinger sendes fra regionale lagre med sporing fra kasse til levering."
+    values-column-3-title: "Enkle returer"
+    values-column-3-text: "Problemfrie returer innen {returnsWindowDays} dager. Vi står bak det vi selger."
+    editorial-heading: "Designet for å vare"
+    editorial-paragraph-1: "Gjennomtenkte materialer og tidløse silhuetter — plagg du bruker sesong etter sesong."
+    editorial-cta-label: "Utforsk kolleksjoner"
+
+  storefront-cart:
+    empty-title: "Handlekurven din er tom"
+    empty-body: "Du har ikke lagt til noe ennå."
+    empty-cta-label: "Start shopping"
+    trust-free-shipping-prefix: "Gratis levering over"
+    trust-returns-label: "{returnsWindowDays} dagers retur"
+    drawer-title: "Handlekurven din"
+    drawer-add-for-free-shipping: "{amount} igjen til gratis frakt"
+    drawer-free-shipping-qualified: "Gratis frakt!"
+
+  storefront-checkout:
+    empty-cart-title: "Handlekurven din er tom"
+    empty-cart-body: "Du har ikke lagt til noe ennå."
+    empty-cart-start-label: "Start shopping"
+    empty-cart-go-back-label: "Gå tilbake"
+    empty-session-title: "Handlekurven din er tom"
+    empty-session-message: "Legg til varer og kom tilbake for å betale."
+    marketing-opt-in-label: "Tilbud på e-post"
+    trust-secure-checkout: "Sikker kasse"
+    trust-stripe-processor: "Betalinger behandles av Stripe"

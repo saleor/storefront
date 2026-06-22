@@ -17,6 +17,12 @@ describe("buildCheckoutPath", () => {
 			"/checkout?checkout=abc&step=payment",
 		);
 	});
+
+	it("includes browse locale when provided", () => {
+		expect(buildCheckoutPath({ checkoutId: "abc", browseLocale: "pl" })).toBe(
+			"/checkout?checkout=abc&locale=pl",
+		);
+	});
 });
 
 describe("buildOrderConfirmationPath", () => {

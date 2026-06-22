@@ -1,13 +1,17 @@
 import { Circle } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { type OrderStatus } from "@/gql/graphql";
-import { orderStatusBadgeStyle, customerStatusLabel } from "./order-status-config";
+import { orderStatusBadgeStyle } from "./order-status-config";
+import { getCustomerOrderStatusLabel } from "./order-status-labels";
 
 type Props = {
 	status: OrderStatus;
 	statusDisplay: string;
+	localeSlug: string;
 };
 
-export function OrderStatusBadge({ status, statusDisplay }: Props) {
+export async function OrderStatusBadge({ status, statusDisplay, localeSlug }: Props) {
+	const tStatus = await getTranslations({ locale: localeSlug, namespace: "account.orderStatus" });
 	const config = orderStatusBadgeStyle[status] ?? {
 		icon: Circle,
 		badgeClassName: "text-muted-foreground bg-secondary border-border",
@@ -19,7 +23,7 @@ export function OrderStatusBadge({ status, statusDisplay }: Props) {
 			className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium ${config.badgeClassName}`}
 		>
 			<Icon className="h-4 w-4" strokeWidth={1.75} />
-			{customerStatusLabel[status] ?? statusDisplay}
+			{getCustomerOrderStatusLabel(tStatus, status, statusDisplay)}
 		</span>
 	);
 }

@@ -154,20 +154,11 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 | `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
 | `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
 
-## Locale Considerations
+## Locale & routing
 
-Currently, number/date formatting uses a single locale (`localeConfig.default`), regardless of channel. For true per-channel locale:
+**Browse URLs:** `/{locale}/{channel}/…` — see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`, and `docs/international-storefront.md`. Legacy `/{channel}/…` redirects via middleware.
 
-```typescript
-// Potential future enhancement
-const channelLocales: Record<string, string> = {
-	uk: "en-GB",
-	us: "en-US",
-	de: "de-DE",
-};
-```
-
-This is NOT implemented - formatting is currently `en-US` for all channels.
+Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC_STOREFRONT_LOCALES` for additional languages (built-in slugs: `en`, `pl`, `de`, `fr`, `fi`, `nb` — see `src/config/locale.ts`).
 
 ## Anti-patterns
 

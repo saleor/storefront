@@ -1,0 +1,573 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# vare} other {# varer}}",
+			"subtotal": "Delsum",
+			"shipping": "Frakt",
+			"shippingFree": "Gratis",
+			"shippingCalculated": "Beregnes i kassen",
+			"total": "Totalt",
+			"checkout": "Til kassen",
+			"continueShopping": "Fortsett å handle",
+			"removeItem": "Fjern {product}",
+			"decreaseQuantity": "Reduser antall",
+			"increaseQuantity": "Øk antall"
+		},
+		"page": {
+			"title": "Handlekurv",
+			"quantity": "Ant.: {count}",
+			"variant": "Variant: {name}",
+			"yourTotal": "Din totalsum",
+			"shippingNote": "Frakt beregnes i neste steg",
+			"checkout": "Til kassen"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Hjem",
+		"breadcrumbProducts": "Produkter"
+	},
+	"common": {
+		"pagination": {
+			"previous": "Forrige",
+			"next": "Neste"
+		}
+	},
+	"pdp": {
+		"addToBag": "Legg i handlekurv",
+		"adding": "Legger til…",
+		"outOfStock": "Utsolgt",
+		"selectOptions": "Velg alternativer",
+		"free": "GRATIS",
+		"breadcrumbHome": "Hjem",
+		"badges": {
+			"sale": "Salg",
+			"new": "Ny"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} — utsolgt",
+			"willChangeSelections": "{name} — endrer andre valg",
+			"percentOffTitle": "{name} — {percent}% rabatt",
+			"outOfStockA11y": "utsolgt",
+			"percentOffA11y": "{percent}% rabatt",
+			"selectedA11y": "valgt"
+		}
+	},
+	"plp": {
+		"quickAdd": "Hurtigkjøp",
+		"filtersButton": "Filtre",
+		"filterLabels": {
+			"category": "Kategori",
+			"color": "Farge",
+			"size": "Størrelse",
+			"price": "Pris",
+			"priceRange": "Prisintervall"
+		},
+		"sort": "Sorter",
+		"sortOptions": {
+			"featured": "Utvalgte",
+			"newest": "Nyeste",
+			"price_asc": "Pris: lav til høy",
+			"price_desc": "Pris: høy til lav",
+			"bestselling": "Bestselgere"
+		},
+		"resultCount": "{count, plural, one {# produkt} other {# produkter}}",
+		"clearAllFilters": "Fjern alle filtre ({count})",
+		"clearAll": "Fjern alle",
+		"removeFilter": "Fjern filter {value}"
+	},
+	"search": {
+		"title": "Søk",
+		"description": "Søk i hele produktkatalogen vår.",
+		"bar": {
+			"placeholder": "Søk etter produkter...",
+			"srOnlyLabel": "Søk etter produkter"
+		},
+		"resultsFor": "Resultater for \"{query}\"",
+		"resultCount": "{count, plural, one {# produkt funnet} other {# produkter funnet}}",
+		"noResultsTitle": "Ingen resultater for \"{query}\"",
+		"noResultsBody": "Vi fant ingen produkter som matcher søket. Prøv et annet ord eller bla gjennom kategoriene våre.",
+		"browseAllProducts": "Se alle produkter",
+		"goToHomepage": "Forside",
+		"noImage": "Ingen bilde",
+		"sort": "Sorter",
+		"sortOptions": {
+			"relevance": "Relevans",
+			"price-asc": "Pris: lav til høy",
+			"price-desc": "Pris: høy til lav",
+			"name": "Navn",
+			"newest": "Nyeste"
+		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Hoved"
+		},
+		"breadcrumbAriaLabel": "Navigasjonssti",
+		"cartButton": "{count, plural, one {# vare i handlekurven, vis veske} other {# varer i handlekurven, vis veske}}",
+		"mobileMenu": {
+			"open": "Åpne meny",
+			"title": "Navigasjonsmeny"
+		},
+		"userMenu": {
+			"open": "Åpne brukermeny",
+			"login": "Logg inn",
+			"myAccount": "Min konto",
+			"myOrders": "Mine bestillinger",
+			"logOut": "Logg ut",
+			"unavailableAriaLabel": "Konto utilgjengelig",
+			"unavailableTitle": "Kunne ikke laste konto"
+		},
+		"regionPicker": {
+			"ariaLabel": "Språk og marked",
+			"languageTitle": "Språk",
+			"languageDescription": "Tekst og formatering",
+			"marketTitle": "Marked",
+			"marketDescription": "Valuta, avgifter og frakt"
+		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Logg inn",
+			"loginDescription": "Logg inn på kontoen din for å få tilgang til bestillingene og lagrede adressene dine.",
+			"signupTitle": "Opprett konto",
+			"signupDescription": "Opprett en konto for å lagre adresser og bestillingshistorikk.",
+			"accountTitle": "Min konto"
+		},
+		"fields": {
+			"email": "E-post",
+			"emailAddress": "E-postadresse",
+			"password": "Passord",
+			"firstName": "Fornavn",
+			"lastName": "Etternavn",
+			"confirmPassword": "Bekreft passord",
+			"currentPassword": "Nåværende passord",
+			"newPassword": "Nytt passord",
+			"confirmNewPassword": "Bekreft nytt passord",
+			"name": "Navn",
+			"companyOptional": "Firma (valgfritt)",
+			"streetAddress": "Gateadresse",
+			"streetAddress2Optional": "Leilighet, suite osv. (valgfritt)",
+			"city": "By",
+			"postalCode": "Postnummer",
+			"stateProvince": "Fylke / provins",
+			"countryCode": "Landskode",
+			"phoneOptional": "Telefon (valgfritt)",
+			"country": "Land",
+			"cityArea": "Bydel",
+			"localized": {
+				"province": "Provins",
+				"district": "Distrikt",
+				"state": "Delstat",
+				"zip": "Postnummer",
+				"postal": "Postnummer",
+				"postTown": "Poststed",
+				"prefecture": "Prefektur"
+			}
+		},
+		"placeholders": {
+			"email": "deg@eksempel.no",
+			"password": "Skriv inn passordet ditt",
+			"firstName": "Fornavn",
+			"lastName": "Etternavn",
+			"newPasswordMin": "Minst 8 tegn…",
+			"confirmPassword": "Bekreft passordet ditt",
+			"reenterPassword": "Skriv inn passordet på nytt",
+			"countryCode": "NO"
+		},
+		"common": {
+			"cancel": "Avbryt",
+			"save": "Lagre",
+			"saving": "Lagrer…",
+			"edit": "Rediger",
+			"delete": "Slett",
+			"updated": "Oppdatert",
+			"showPassword": "Vis passord",
+			"hidePassword": "Skjul passord",
+			"free": "Gratis",
+			"qty": "Ant.: {count}",
+			"itemCount": "{count, plural, one {# vare} other {# varer}}",
+			"notSet": "Ikke angitt",
+			"change": "Endre",
+			"changing": "Endrer…",
+			"sending": "Sender…"
+		},
+		"errors": {
+			"invalidEmail": "Skriv inn en gyldig e-postadresse",
+			"invalidEmailFirst": "Skriv inn en gyldig e-postadresse først",
+			"passwordRequired": "Skriv inn passordet ditt",
+			"passwordMinLength": "Passordet må være minst 8 tegn",
+			"passwordsMismatch": "Passordene stemmer ikke overens",
+			"newPasswordRequired": "Skriv inn et nytt passord",
+			"generic": "En feil oppstod. Prøv igjen.",
+			"signInFailed": "Innlogging mislyktes. Prøv igjen.",
+			"invalidCredentials": "Ugyldig e-post eller passord. Prøv igjen.",
+			"rateLimited": "For mange innloggingsforsøk. Vent litt og prøv igjen.",
+			"resetLinkFailed": "Kunne ikke sende tilbakestillingslenke",
+			"accountExists": "En konto med denne e-postadressen finnes allerede. Logg inn i stedet.",
+			"createAccountFailed": "Kunne ikke opprette konto",
+			"invalidResetToken": "Denne lenken for tilbakestilling av passord har utløpt. Be om en ny.",
+			"setPasswordFailed": "Kunne ikke angi passord",
+			"invalidConfirmToken": "Denne bekreftelseslenken har utløpt eller er allerede brukt. Prøv å logge inn eller registrer deg på nytt.",
+			"confirmFailed": "Kunne ikke bekrefte konto",
+			"loadOrdersFailed": "Vi kunne ikke laste bestillingene dine. Prøv igjen om litt.",
+			"loadOrderFailed": "Vi kunne ikke laste denne bestillingen. Prøv igjen.",
+			"loadRecentOrdersFailed": "Vi kunne ikke laste de siste bestillingene dine.",
+			"updateProfileFailed": "Kunne ikke oppdatere profil",
+			"changePasswordFailed": "Kunne ikke endre passord",
+			"createAddressFailed": "Kunne ikke opprette adresse",
+			"updateAddressFailed": "Kunne ikke oppdatere adresse",
+			"deleteAddressFailed": "Kunne ikke slette adresse",
+			"setDefaultAddressFailed": "Kunne ikke angi standardadresse",
+			"deleteAccountFailed": "Kunne ikke sende forespørsel om sletting av konto"
+		},
+		"login": {
+			"title": "Velkommen tilbake",
+			"noAccount": "Har du ikke en konto?",
+			"signUp": "Registrer deg",
+			"forgotPassword": "Glemt passord?",
+			"resendResetLink": "Send lenken på nytt",
+			"submit": "Logg inn",
+			"submitting": "Logger inn…",
+			"resetSent": "Hvis det finnes en konto for {email}, er en lenke for tilbakestilling av passord sendt. Merk: Du kan bare be om én lenke hvert 15. minutt."
+		},
+		"signup": {
+			"title": "Opprett en konto",
+			"hasAccount": "Har du allerede en konto?",
+			"signIn": "Logg inn",
+			"submit": "Opprett konto",
+			"submitting": "Oppretter konto…",
+			"successTitle": "Konto opprettet!",
+			"successBody": "Sjekk e-posten din for å bekrefte kontoen.",
+			"goToSignIn": "Gå til innlogging",
+			"terms": "Ved å opprette en konto godtar du våre <terms>vilkår for bruk</terms> og <privacy>personvernregler</privacy>.",
+			"termsLink": "Vilkår for bruk",
+			"privacyLink": "Personvernregler"
+		},
+		"setPassword": {
+			"title": "Angi nytt passord",
+			"subtitle": "Skriv inn et nytt passord for {email}",
+			"submit": "Oppdater passord",
+			"submitting": "Oppdaterer…",
+			"backToSignIn": "Tilbake til innlogging",
+			"successTitle": "Passord oppdatert!",
+			"successBody": "Passordet ditt er tilbakestilt. Du er nå logget inn.",
+			"redirecting": "Omdirigerer deg til butikken…"
+		},
+		"confirm": {
+			"confirmingTitle": "Bekrefter kontoen din",
+			"confirmingBody": "Verifiserer {email}…",
+			"successTitle": "Konto bekreftet",
+			"successBody": "Kontoen din for {email} er aktiv. Logg inn med passordet du opprettet.",
+			"signIn": "Logg inn",
+			"continueShopping": "Fortsett å handle",
+			"errorTitle": "Kunne ikke bekrefte konto",
+			"goToSignIn": "Gå til innlogging"
+		},
+		"nav": {
+			"ariaLabel": "Konto",
+			"backToStore": "Tilbake til butikken",
+			"signOut": "Logg ut",
+			"overview": "Oversikt",
+			"orders": "Bestillinger",
+			"addresses": "Adresser",
+			"settings": "Innstillinger"
+		},
+		"overview": {
+			"welcome": "Velkommen tilbake, {name}",
+			"subtitle": "Her er en oversikt over kontoaktiviteten din.",
+			"recentOrders": "Siste bestillinger",
+			"viewAll": "Se alle",
+			"noOrdersYet": "Du har ikke lagt inn noen bestillinger ennå."
+		},
+		"orders": {
+			"title": "Bestillinger",
+			"count": "{count, plural, =0 {Ingen bestillinger ennå} one {# bestilling} other {# bestillinger}}",
+			"empty": "Du har ikke lagt inn noen bestillinger ennå.",
+			"loadMore": "Last inn flere bestillinger",
+			"signInRequired": "Logg inn for å se bestillingene dine.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Bestilt {date}",
+			"items": "Varer ({count})",
+			"subtotal": "Delsum",
+			"shipping": "Frakt",
+			"tax": "Avgift",
+			"total": "Totalt",
+			"shippingAddress": "Leveringsadresse",
+			"billingAddress": "Fakturaadresse",
+			"paymentMethod": "Betalingsmåte",
+			"paid": "Betalt",
+			"needHelp": "Trenger du hjelp?",
+			"signInRequired": "Logg inn for å se denne bestillingen.",
+			"loadFailed": "Vi kunne ikke laste denne bestillingen. Prøv igjen.",
+			"timeline": "Bestillingshistorikk"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "Behandles",
+			"UNCONFIRMED": "Venter på bekreftelse",
+			"PARTIALLY_FULFILLED": "Delvis sendt",
+			"FULFILLED": "Sendt"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Bestilling bekreftet",
+			"orderConfirmedDescription": "Betaling bekreftet og bestilling lagt inn",
+			"FULFILLED": "Sendt",
+			"FULFILLEDDescription": "Bestillingen din er sendt",
+			"CANCELED": "Levering kansellert",
+			"CANCELEDDescription": "Forsendelsen ble kansellert",
+			"REFUNDED": "Refundert",
+			"REFUNDEDDescription": "Betalingen er refundert",
+			"REFUNDED_AND_RETURNED": "Refundert og returnert",
+			"REFUNDED_AND_RETURNEDDescription": "Varer returnert og refundert",
+			"REPLACED": "Erstattet",
+			"REPLACEDDescription": "Varene er erstattet",
+			"RETURNED": "Returnert",
+			"RETURNEDDescription": "Varene er returnert",
+			"WAITING_FOR_APPROVAL": "Venter på godkjenning",
+			"WAITING_FOR_APPROVALDescription": "Levering venter på godkjenning",
+			"trackingUpdated": "Sporing oppdatert",
+			"trackingNumber": "Sporingsnummer: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# vare} other {# varer}})"
+		},
+		"settings": {
+			"title": "Innstillinger",
+			"subtitle": "Administrer kontoinnstillingene dine",
+			"memberSince": "Medlem siden {date}"
+		},
+		"addresses": {
+			"title": "Adresser",
+			"subtitle": "Administrer lagrede adresser",
+			"empty": "Ingen lagrede adresser ennå.",
+			"addAddress": "Legg til adresse",
+			"editAddress": "Rediger adresse",
+			"addNewAddress": "Legg til ny adresse",
+			"editAddressDescription": "Oppdater adresseopplysninger",
+			"addAddressDescription": "Legg til en ny adresse på kontoen din",
+			"editAddressAria": "Rediger adresse",
+			"updateAddress": "Oppdater adresse",
+			"deleteAddressAria": "Slett adresse",
+			"defaultShipping": "Standard leveringsadresse",
+			"defaultBilling": "Standard fakturaadresse",
+			"makeDefaultShipping": "Angi som standard leveringsadresse",
+			"makeDefaultBilling": "Angi som standard fakturaadresse"
+		},
+		"deleteAccount": {
+			"title": "Slett konto",
+			"description": "Fjern kontoen din og alle tilknyttede data permanent.",
+			"submit": "Slett konto",
+			"confirm": "Ja, slett kontoen min",
+			"confirmBody": "Denne handlingen kan ikke angres. Du vil motta en bekreftelses-e-post før kontoen slettes.",
+			"emailSent": "En bekreftelses-e-post er sendt. Sjekk innboksen din for å fullføre sletting av kontoen."
+		},
+		"changePassword": {
+			"submit": "Endre passord"
+		},
+		"unavailable": {
+			"title": "Kunne ikke laste kontoen din",
+			"body": "Butikken er midlertidig utilgjengelig. Oppdater siden eller prøv igjen om litt."
+		}
+	},
+	"checkout": {
+		"steps": {
+			"information": "Informasjon",
+			"shipping": "Frakt",
+			"payment": "Betaling",
+			"stepsAriaLabel": "Kassesteg",
+			"secureCheckout": "Sikker kasse",
+			"complete": "Ferdig",
+			"stepOf": "Steg {step} av {total}"
+		},
+		"actions": {
+			"saving": "Lagrer…",
+			"loading": "Laster…",
+			"continueToShipping": "Fortsett til frakt",
+			"continueToPayment": "Fortsett til betaling",
+			"continue": "Fortsett",
+			"continueAsGuest": "Fortsett som gjest",
+			"preparingGuestCart": "Forbereder gjestekurv…",
+			"logIn": "Logg inn",
+			"returnToInformation": "Tilbake til informasjon",
+			"returnToShipping": "Tilbake til frakt",
+			"payNow": "Betal nå",
+			"payTotal": "Betal {total}",
+			"completeOrder": "Fullfør bestilling",
+			"placingOrder": "Legger inn bestilling…",
+			"creatingOrder": "Oppretter bestilling…",
+			"processingPayment": "Behandler betaling…",
+			"continueShopping": "Fortsett å handle",
+			"tryAgain": "Prøv igjen"
+		},
+		"errors": {
+			"sessionExpiredTitle": "Kasseøkt utløpt",
+			"sessionExpiredMessage": "Denne handlekurven er ikke lenger tilgjengelig. Legg til varer på nytt for å starte en ny kasse.",
+			"loadFailedTitle": "Kunne ikke laste kassen",
+			"loadFailedMessage": "Vi hadde problemer med å laste handlekurven. Prøv igjen eller start en ny kasse fra butikken.",
+			"orderNotFoundTitle": "Bestilling ikke funnet",
+			"orderNotFoundMessage": "Vi fant ikke denne bestillingen. Den kan ha blitt fjernet eller lenken er ugyldig.",
+			"emailRequired": "E-post er påkrevd",
+			"selectShippingAddress": "Velg en leveringsadresse",
+			"selectShippingMethod": "Velg en fraktmetode",
+			"updateShippingMethodFailed": "Kunne ikke oppdatere fraktmetode",
+			"orphanedCartMessage": "Denne handlekurven er fortsatt knyttet til en innlogget konto. For å betale som gjest, start en ny anonym handlekurv med de samme varene, eller logg inn i stedet.",
+			"orphanedCartBlocked": "Denne handlekurven er fortsatt knyttet til en innlogget konto. Fortsett som gjest over, eller logg inn.",
+			"discountApplyFailed": "Rabattkoden kunne ikke brukes.",
+			"discountRemoveFailed": "Kunne ikke fjerne rabattkode.",
+			"invalidValue": "Ugyldig verdi",
+			"updateEmailFailed": "Kunne ikke oppdatere e-post",
+			"createAccountFailed": "Kunne ikke opprette konto",
+			"updateAddressFailed": "Kunne ikke oppdatere adresse",
+			"crashTitle": "Kassefeil",
+			"crashMessage": "Noe gikk galt under lasting av kassen. Prøv igjen."
+		},
+		"contact": {
+			"title": "Kontakt",
+			"haveAccount": "Har du en konto?",
+			"createAccountLabel": "Opprett en konto for raskere kasse neste gang",
+			"activationNotice": "Etter kassen får du en e-post for å aktivere kontoen din før du kan logge inn.",
+			"guestCheckout": "Gjestekasse",
+			"newCustomer": "Ny kunde?",
+			"signInTitle": "Logg inn",
+			"resetPasswordTitle": "Tilbakestill passordet ditt",
+			"resetPasswordSubtitle": "Skriv inn et nytt passord for kontoen din",
+			"processing": "Behandler…",
+			"passwordMinPlaceholder": "Passord (minimum 8 tegn)",
+			"signedIn": "Innlogget"
+		},
+		"summary": {
+			"title": "Ordresammendrag",
+			"show": "Vis",
+			"hide": "Skjul",
+			"toggleOrderSummary": "{action} ordresammendrag",
+			"itemCount": "{count, plural, one {# vare} other {# varer}}",
+			"subtotal": "Delsum",
+			"shipping": "Frakt",
+			"taxVat": "MVA",
+			"discount": "Rabatt",
+			"total": "Totalt",
+			"includingVat": "Inkl. MVA",
+			"productFallback": "Produkt",
+			"contact": "Kontakt",
+			"shipTo": "Send til",
+			"method": "Metode",
+			"delivery": "Levering",
+			"digital": "Digital"
+		},
+		"promo": {
+			"placeholder": "Rabattkode",
+			"apply": "Bruk",
+			"applying": "Bruker…",
+			"removeAriaLabel": "Fjern rabattkode"
+		},
+		"shipping": {
+			"methodTitle": "Fraktmetode",
+			"loadingMethods": "Laster fraktmetoder…",
+			"noAddressYet": "Gå tilbake og oppgi leveringsadressen din først.",
+			"addressTitle": "Leveringsadresse",
+			"countryRegion": "Land/region",
+			"selectCountry": "Velg land",
+			"backToSavedAddresses": "← Tilbake til lagrede adresser",
+			"emptySavedShipping": "Du har ingen lagrede adresser ennå. Oppgi leveringsadressen din nedenfor.",
+			"selectShippingAddressSheet": "Velg leveringsadresse"
+		},
+		"billing": {
+			"title": "Fakturaadresse",
+			"sameAsShipping": "Samme som leveringsadresse",
+			"selectBillingSheet": "Velg fakturaadresse",
+			"emptySavedBilling": "Ingen lagrede adresser tilgjengelig.",
+			"backToSavedAddresses": "Tilbake til lagrede adresser"
+		},
+		"addresses": {
+			"selectPrompt": "Velg en adresse",
+			"setDefaultShipping": "Angi som standard leveringsadresse",
+			"setDefaultBilling": "Angi som standard fakturaadresse",
+			"defaultBadge": "Standard",
+			"emptySaved": "Du har ingen lagrede adresser ennå."
+		},
+		"payment": {
+			"totalUpdatedTitle": "Ordresummen din ble oppdatert",
+			"totalUpdatedBody": "Summen endret seg fra {previous} til {next}. Gjennomgå det oppdaterte ordresammendraget før du fullfører betalingen.",
+			"deliveryInvalidTitle": "Fraktmetode er ikke lenger tilgjengelig",
+			"deliveryInvalidBody": "Gå tilbake til fraktsteget og velg en gyldig fraktmetode før du fullfører bestillingen.",
+			"completingTitle": "Behandler bestillingen din",
+			"completingBody": "Vi bekrefter betalingen din og oppretter bestillingen. Dette tar vanligvis noen sekunder — ikke lukk eller oppdater denne siden.",
+			"initFailed": "Kunne ikke initialisere betalingssystemet.",
+			"unavailable": "Betalingssystemet er ikke tilgjengelig. Prøv igjen.",
+			"loadingGateway": "Laster {gateway}-betalingsskjema…",
+			"confirmingPayment": "Bekrefter betalingen din…",
+			"securingWithStripe": "Vi sikrer betalingen din med Stripe. Dette tar vanligvis noen sekunder.",
+			"doNotClose": "Ikke lukk eller oppdater denne siden.",
+			"completeOrderFailed": "Kunne ikke fullføre bestillingen. Prøv igjen.",
+			"placeOrderFailed": "Kunne ikke legge inn bestillingen. Prøv igjen eller kontakt kundestøtte.",
+			"totalsRefreshFailed": "Kunne ikke oppdatere kassesummer. Prøv igjen.",
+			"totalUnavailable": "Kassesum er ikke tilgjengelig. Oppdater siden og prøv igjen.",
+			"currencyUnavailable": "Kassevaluta er ikke tilgjengelig. Oppdater siden og prøv igjen.",
+			"validationFailed": "Betalingsvalidering mislyktes",
+			"methodRequired": "Kunne ikke fastslå valgt betalingsmetode. Velg et betalingsalternativ og prøv igjen.",
+			"detailsUnavailable": "Kunne ikke hente betalingsdetaljer. Prøv igjen.",
+			"expressReset": "Hurtigkasseknappene ble tilbakestilt før betalingen kunne bekreftes. Prøv igjen.",
+			"formReset": "Betalingsskjemaet ble tilbakestilt før kortet ditt kunne bekreftes. Prøv å betale på nytt uten å oppdatere siden.",
+			"totalChanged": "Ordresummen endret seg. Gjennomgå det oppdaterte beløpet og prøv igjen.",
+			"bankDeclined": "Banken din avviste betalingen. Prøv igjen eller bruk et annet kort.",
+			"sessionExpired": "Betalingsøkt utløpt etter omdirigering. Prøv igjen.",
+			"channelUnresolved": "Kunne ikke fastslå kassekanal etter betaling. Kontakt kundestøtte.",
+			"unexpectedError": "En uventet feil oppstod under fullføring av betalingen.",
+			"stripeConfigFailed": "Stripe-gateway-konfigurasjon mislyktes",
+			"stripeKeyMissing": "Stripe publiserbar nøkkel mangler. Sjekk Stripe-appkonfigurasjonen i Saleor Dashboard.",
+			"dummyGateway": "Testbetaling",
+			"failed": "Betaling mislyktes",
+			"interruptedBeforeCharge": "Betalingen ble avbrutt før du ble belastet. Du kan trygt prøve igjen.",
+			"interruptedAfterAuthorize": "Betalingen gikk gjennom, men bestillingen er ikke lagt inn ennå. Ikke betal igjen — bruk «Fullfør bestilling» nedenfor for å fullføre.",
+			"verificationUnavailable": "Vi kunne ikke bekrefte ditt forrige betalingsforsøk. Oppdater siden — ikke betal igjen før det er bekreftet.",
+			"authorizedTitle": "Betaling autorisert — legg inn bestillingen",
+			"authorizedBody": "Betalingen din er autorisert (belastning skjer når vi oppfyller bestillingen). Trykk nedenfor for å legge inn bestillingen — du belastes ikke igjen i kassen.",
+			"freeOrderBody": "Ordresummen din er {total}. Ingen betaling kreves — bekreft nedenfor for å legge inn bestillingen.",
+			"dummyTestMode": "Testmodus. Ingen kortdetaljer nødvendig — bruk Betal for å fullføre en testbestilling.",
+			"stripeLoadTitle": "Kunne ikke laste Stripe"
+		},
+		"confirmation": {
+			"orderNumber": "Bestilling #{number}",
+			"thankYou": "Takk for bestillingen!",
+			"confirmedTitle": "Bestillingen er bekreftet",
+			"confirmedEmail": "Du får en bekreftelse på {email}",
+			"emailSent": "Bekreftelses-e-post sendt",
+			"shippingAddress": "Leveringsadresse",
+			"billingAddress": "Fakturaadresse",
+			"estimatedDelivery": "Estimert levering"
+		},
+		"server": {
+			"marketingSaveFailed": "Kunne ikke lagre markedsføringspreferanse",
+			"invalidRedirectUrl": "Ugyldig omdirigerings-URL",
+			"createAccountFailed": "Kunne ikke opprette konto",
+			"noSaleorResponse": "Ingen respons fra Saleor",
+			"shippingMethodsFailed": "Kunne ikke laste fraktmetoder",
+			"gatewayInitFailed": "Initialisering av betalingsgateway mislyktes",
+			"totalVerifyFailed": "Kunne ikke bekrefte kassesummen. Prøv igjen.",
+			"totalChanged": "Kassesummen har endret seg. Gjennomgå bestillingen og prøv igjen.",
+			"paymentInitFailed": "Betalingsinitialisering mislyktes",
+			"paymentsDisabled": "Betalinger er ikke aktivert i dette miljøet.",
+			"paymentProcessFailed": "Betalingsbehandling mislyktes",
+			"completeOrderFailed": "Kunne ikke fullføre bestillingen",
+			"orderCreateFailed": "Betalingen ble behandlet, men bestillingen kunne ikke opprettes. Prøv igjen eller kontakt kundestøtte.",
+			"validationRulesUnavailable": "Valideringsregler er ikke tilgjengelige",
+			"setDefaultAddressFailed": "Kunne ikke angi standardadresse",
+			"dummyNotAllowed": "Testbetaling er ikke tilgjengelig i dette miljøet.",
+			"stripeNotEnabled": "Stripe-betalinger er ikke aktivert i dette miljøet. Sett NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS=true i butikken."
+		},
+		"gateways": {
+			"noneTitle": "Ingen betalingsgateway konfigurert",
+			"noneBody": "For å ta imot betalinger, installer en betalingsapp (som Saleor Dummy Payment for testing, eller Stripe/Adyen for produksjon) fra Saleor Dashboard.",
+			"unsupportedTitle": "Betalingsgateway støttes ikke",
+			"unsupportedList": "Denne kassen støtter ikke de tilgjengelige betalingsgatewayene: {gateways}.",
+			"unsupportedEmpty": "Ingen støttet betalingsgateway er tilgjengelig for denne kassen.",
+			"dummyMissingTitle": "Dummy Payment er ikke tilgjengelig for denne kassen",
+			"dummyMissingBody": "Dummy Payment-appen er installert, men er ikke tilgjengelig for denne kassen. I Saleor Dashboard, sjekk at appen er aktiv, webhooks leveres, og kassevalutaen støttes (USD for den hostede appen).",
+			"noGatewayConfigured": "Ingen betalingsgateway konfigurert. Kontakt kundestøtte eller konfigurer en betalingsapp i Saleor.",
+			"stripeUseCardForm": "Stripe-betaling håndteres via kortskjemaet. Fullfør betalingen i Stripe-seksjonen over.",
+			"paymentFailed": "Betaling mislyktes",
+			"paymentTryAgain": "Betaling mislyktes. Prøv igjen.",
+			"paymentWebhookFailed": "Webhook for betalingsappen mislyktes. I Saleor Dashboard → Apps → Dummy Payment App, sjekk at webhook-leveranser lykkes.",
+			"paymentInitFailed": "Betalingen kunne ikke initialiseres. Sjekk at betalingsappen kjører i Saleor."
+		}
+	}
+}

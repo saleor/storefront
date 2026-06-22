@@ -7,11 +7,13 @@
 	"scripts": {
 		"dev": "next dev --webpack",
 		"dev:webpack": "next dev --webpack",
+		"dev:theme-editorial": "NEXT_PUBLIC_TYPOGRAPHY_THEME=editorial next dev --webpack",
 		"dev:turbopack": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"predev": "pnpm run generate:all",
 		"prebuild": "pnpm run generate:all",
+		"pretypecheck": "pnpm run generate:all",
 		"lint": "eslint",
 		"lint:fix": "eslint --fix",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
@@ -21,12 +23,26 @@
 		"test:run": "vitest run",
 		"typecheck": "tsc --noEmit",
 		"knip": "knip",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"configurator:storefront-content:validate": "pnpm dlx @saleor/configurator validate --config config/saleor/storefront-content.config.yml",
+		"configurator:storefront-content:plan": "sh scripts/configurator-storefront-content.sh plan",
+		"configurator:storefront-content:deploy": "sh scripts/configurator-storefront-content.sh deploy",
+		"configurator:storefront-content:drop": "node scripts/drop-storefront-models.mjs",
+		"configurator:storefront-content:translations": "node scripts/deploy-storefront-translations.mjs",
+		"configurator:storefront-content:reset": "node scripts/drop-storefront-models.mjs && sh scripts/configurator-storefront-content.sh deploy && sh scripts/configurator-storefront-content.sh deploy && node scripts/deploy-storefront-translations.mjs",
+		"catalog:translations:fetch": "node scripts/fetch-catalog-translations.mjs",
+		"catalog:translations:plan": "node scripts/deploy-catalog-translations.mjs --dry-run --fail-on-skip",
+		"catalog:translations:deploy": "node scripts/deploy-catalog-translations.mjs --fail-on-skip",
+		"content:verify-attribute-slugs": "node scripts/verify-storefront-attribute-slugs.mjs",
+		"content:verify-seed": "vitest run src/lib/content/configurator-seed.sync.test.ts",
+		"content:export-seed": "node scripts/export-storefront-content-seed.mjs",
+		"skills:bootstrap": "node scripts/bootstrap-agent-skills.mjs"
 	},
 	"dependencies": {
 		"@graphql-typed-document-node/core": "3.2.0",
 		"@radix-ui/react-dialog": "1.1.15",
 		"@radix-ui/react-dropdown-menu": "2.1.16",
+		"@radix-ui/react-navigation-menu": "1.2.14",
 		"@saleor/auth-sdk": "1.0.3",
 		"@stripe/react-stripe-js": "6.6.0",
 		"@stripe/stripe-js": "9.7.0",
@@ -40,6 +56,7 @@
 		"lodash-es": "4.17.21",
 		"lucide-react": "0.358.0",
 		"next": "16.2.6",
+		"next-intl": "4.13.0",
 		"react": "^19.1.2",
 		"react-dom": "^19.1.2",
 		"react-error-boundary": "4.0.13",
@@ -79,7 +96,8 @@
 		"schema-dts": "1.1.2",
 		"tailwindcss": "3.4.19",
 		"typescript": "5.3.3",
-		"vitest": "4.0.17"
+		"vitest": "4.0.17",
+		"yaml": "2.9.0"
 	},
 	"resolutions": {
 		"graphql": "16.8.1"

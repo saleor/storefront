@@ -3,6 +3,8 @@
 import type { useRouter } from "next/navigation";
 
 import { revalidateStorefrontChromeAction } from "@/app/actions";
+import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 type Router = ReturnType<typeof useRouter>;
 
@@ -42,6 +44,12 @@ export async function syncAuthSurfacesAfterSignIn(
  * Use after checkout (or any `/checkout` surface) so the header picks up HttpOnly session cookies —
  * soft `router.push` can restore a cached anonymous `UserMenuServer` shell.
  */
-export function navigateToStorefrontHome(channel: string) {
-	window.location.assign(channel ? `/${channel}` : "/");
+export function navigateToStorefrontHome(channel: string, locale?: string) {
+	if (!channel) {
+		window.location.assign("/");
+		return;
+	}
+
+	const resolvedLocale = resolveBrowseLocaleSlugWithFallback(locale);
+	window.location.assign(buildStorefrontPath(resolvedLocale, channel));
 }

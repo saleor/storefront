@@ -7,9 +7,9 @@ import {
 } from "./account-confirmation-url";
 
 describe("buildAccountConfirmationRedirectUrl", () => {
-	it("points at channel login with confirm flag", () => {
-		expect(buildAccountConfirmationRedirectUrl("http://localhost:3000", "default-channel")).toBe(
-			"http://localhost:3000/default-channel/login?confirm=1",
+	it("points at locale/channel login with confirm flag", () => {
+		expect(buildAccountConfirmationRedirectUrl("http://localhost:3000", "en", "default-channel")).toBe(
+			"http://localhost:3000/en/default-channel/login?confirm=1",
 		);
 	});
 });

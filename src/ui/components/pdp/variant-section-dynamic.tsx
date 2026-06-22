@@ -1,11 +1,16 @@
-import { revalidatePath } from "next/cache";
-
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
+import { resolveLocaleFromSlug } from "@/config/locale";
 import { getDiscountInfo } from "@/lib/pricing";
-import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
+import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
+import { getStorefrontContent } from "@/lib/content/server";
+import {
+	revalidateStorefrontBrowsePath,
+	revalidateStorefrontChrome,
+} from "@/lib/auth/revalidate-storefront-chrome";
 import { CheckoutAddLineDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
+import { getTranslations } from "next-intl/server";
 
 import { AddToCart } from "./add-to-cart";
 import { VariantSelectionSection } from "./variant-selection";
@@ -17,6 +22,7 @@ import { resolveSelectedVariantId, type Product } from "./gallery-utils";
 interface VariantSectionDynamicProps {
 	product: Product;
 	channel: string;
+	localeSlug: string;
 	searchParams: Promise<{ variant?: string }>;
 }
 
@@ -27,8 +33,19 @@ interface VariantSectionDynamicProps {
  * (name, attributes, JSON-LD) stays in the static prerender cache.
  * Product data is passed from the shell and backed by getProductData() "use cache".
  */
-export async function VariantSectionDynamic({ product, channel, searchParams }: VariantSectionDynamicProps) {
+export async function VariantSectionDynamic({
+	product,
+	channel,
+	localeSlug,
+	searchParams,
+}: VariantSectionDynamicProps) {
 	const { variant: variantParam } = await searchParams;
+	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
+	const [t, content, currency] = await Promise.all([
+		getTranslations({ locale: localeSlug, namespace: "pdp" }),
+		getStorefrontContent(channel, localeSlug),
+		resolveChannelCurrency(channel),
+	]);
 	const variants = product.variants || [];
 	const selectedVariantID = resolveSelectedVariantId(product, variantParam);
 	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
@@ -47,12 +64,19 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 	// Format prices
 	const price = selectedVariant?.pricing?.price?.gross
 		? selectedVariant.pricing.price.gross.amount === 0
-			? "FREE"
-			: formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
-		: formatMoneyRange({
-				start: product.pricing?.priceRange?.start?.gross,
-				stop: product.pricing?.priceRange?.stop?.gross,
-			}) || "";
+			? t("free")
+			: formatMoney(
+					selectedVariant.pricing.price.gross.amount,
+					selectedVariant.pricing.price.gross.currency,
+					intlLocale,
+				)
+		: formatMoneyRange(
+				{
+					start: product.pricing?.priceRange?.start?.gross,
+					stop: product.pricing?.priceRange?.stop?.gross,
+				},
+				intlLocale,
+			) || "";
 
 	// Calculate discount/sale information
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
@@ -64,8 +88,20 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 			? formatMoney(
 					selectedVariant.pricing.priceUndiscounted.gross.amount,
 					selectedVariant.pricing.priceUndiscounted.gross.currency,
+					intlLocale,
 				)
 			: null;
+
+	const freeShippingThreshold = content.policies.shipping.freeShippingThreshold;
+	const freeShippingTrustLabel =
+		freeShippingThreshold != null
+			? `${content.surfaces.cart.trust.freeShippingPrefix} ${formatMoney(
+					freeShippingThreshold,
+					currency,
+					intlLocale,
+				)}`
+			: null;
+	const secureCheckoutLabel = content.surfaces.checkout.trust.secureCheckout;
 
 	// Server action for adding to cart
 	async function addToCart() {
@@ -80,6 +116,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 			const checkout = await Checkout.findOrCreate({
 				checkoutId: await Checkout.getIdFromCookies(channel),
 				channel: channel,
+				localeSlug,
 			});
 
 			if (!checkout) {
@@ -103,7 +140,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 				return;
 			}
 
-			revalidatePath(`/${channel}/cart`);
+			revalidateStorefrontBrowsePath(channel, "/cart");
 			revalidateStorefrontChrome(channel);
 		} catch (error) {
 			// Log error server-side - the UI feedback comes from cart drawer/badge update
@@ -120,7 +157,7 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 				{isOnSale && <SaleBadge />}
 				{!isAvailable && (
 					<Badge variant="secondary" className="text-xs">
-						Out of stock
+						{t("outOfStock")}
 					</Badge>
 				)}
 			</div>
@@ -142,6 +179,8 @@ export async function VariantSectionDynamic({ product, channel, searchParams }: 
 					discountPercent={discountPercent}
 					disabled={isAddToCartDisabled}
 					disabledReason={disabledReason}
+					secureCheckoutLabel={secureCheckoutLabel}
+					freeShippingTrustLabel={freeShippingTrustLabel}
 				/>
 
 				{/* Sticky Add to Cart Bar (Mobile) */}

@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
+      NEXT_PUBLIC_DEFAULT_CHANNEL: default-channel
+      STOREFRONT_CHANNELS: aud,default-channel
+      CONTENT_PROVIDER: saleor
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: "package.json"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm run typecheck
+      - name: Test
+        run: pnpm run test:run
+      - name: Build
+        run: pnpm run build

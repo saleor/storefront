@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { cn } from "@/lib/utils";
 import { WavePattern } from "./wave-pattern";
 
 interface BreadcrumbItem {
@@ -14,9 +15,16 @@ interface CategoryHeroProps {
 	description?: string | null;
 	backgroundImage?: string | null;
 	breadcrumbs: BreadcrumbItem[];
+	breadcrumbAriaLabel: string;
 }
 
-export function CategoryHero({ title, description, backgroundImage, breadcrumbs }: CategoryHeroProps) {
+export function CategoryHero({
+	title,
+	description,
+	backgroundImage,
+	breadcrumbs,
+	breadcrumbAriaLabel,
+}: CategoryHeroProps) {
 	const hasImage = !!backgroundImage;
 
 	return (
@@ -45,6 +53,7 @@ export function CategoryHero({ title, description, backgroundImage, breadcrumbs 
 			<div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-10 sm:px-6 lg:px-8">
 				{/* Breadcrumbs */}
 				<nav
+					aria-label={breadcrumbAriaLabel}
 					className={`mb-4 flex items-center gap-1.5 text-sm ${
 						hasImage ? "text-background/70" : "text-muted-foreground"
 					}`}
@@ -70,18 +79,15 @@ export function CategoryHero({ title, description, backgroundImage, breadcrumbs 
 					))}
 				</nav>
 
-				<h1
-					className={`text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl ${
-						hasImage ? "text-background" : "text-foreground"
-					}`}
-				>
+				<h1 className={cn("text-balance text-h1", hasImage ? "text-background" : "text-foreground")}>
 					{title}
 				</h1>
 				{description && (
 					<p
-						className={`mt-3 max-w-lg text-base md:text-lg ${
-							hasImage ? "text-background/80" : "text-muted-foreground"
-						}`}
+						className={cn(
+							"mt-5 max-w-lg text-pretty text-lead",
+							hasImage ? "text-background/80" : "text-muted-foreground",
+						)}
 					>
 						{description}
 					</p>

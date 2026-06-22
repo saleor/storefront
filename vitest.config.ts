@@ -6,6 +6,7 @@ export default defineConfig({
 		globals: true,
 		environment: "node",
 		include: ["src/**/*.test.ts"],
+		exclude: ["src/**/*.export-harness.test.ts"],
 	},
 	resolve: {
 		alias: {

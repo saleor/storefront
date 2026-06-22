@@ -1,20 +1,29 @@
 {
 	"version": 1,
 	"skills": {
+		"saleor-storefront": {
+			"source": "saleor/agent-skills",
+			"sourceType": "github",
+			"skillPath": "skills/saleor-storefront/SKILL.md",
+			"computedHash": "e4d3301c89e578f40d486b8c4151c3bf5336d649de565444e7593f89dc3c13c5"
+		},
 		"vercel-composition-patterns": {
 			"source": "vercel-labs/agent-skills",
 			"sourceType": "github",
-			"computedHash": "f98931159fa9c7fed043bcd18a891a46dcf89ababa38df13a4c5b7b30dc0ce07"
+			"skillPath": "skills/composition-patterns/SKILL.md",
+			"computedHash": "575757e3e25761c8c562d6e395d29f0b76c98b1273c0bd72d88e6ab1bc9c7d42"
 		},
 		"vercel-react-best-practices": {
 			"source": "vercel-labs/agent-skills",
 			"sourceType": "github",
-			"computedHash": "4365be772fd3b41994a72ad478472c6d680678e7f3859860ab010e9c46e48ee0"
+			"skillPath": "skills/react-best-practices/SKILL.md",
+			"computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
 		},
 		"web-design-guidelines": {
 			"source": "vercel-labs/agent-skills",
 			"sourceType": "github",
-			"computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+			"skillPath": "skills/web-design-guidelines/SKILL.md",
+			"computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
 		}
 	}
 }

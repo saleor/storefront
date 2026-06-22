@@ -287,6 +287,26 @@
 				"buildOrderConfirmationPath",
 				"resolveSessionUser"
 			]
+		},
+		{
+			"id": "2026-06-locale-channel-routing",
+			"title": "Locale-prefixed browse URLs with GraphQL translations and SEO hreflang",
+			"upstreamSha": "de64bb05",
+			"landedAt": "2026-06-12T00:00:00+02:00",
+			"introducedIn": "2026.06",
+			"requires": ["2026-06-channel-allowlist"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "routing",
+			"touchPaths": [
+				"src/app/(storefront)/[locale]/",
+				"src/config/locale.ts",
+				"src/lib/storefront-path.ts",
+				"src/middleware.ts",
+				"src/lib/saleor-translations.ts",
+				"src/graphql/StorefrontContentPages.graphql"
+			],
+			"detectMarkers": ["buildStorefrontPath", "graphqlLanguageCodeVariables", "StorefrontRegionPicker"]
 		}
 	]
 }

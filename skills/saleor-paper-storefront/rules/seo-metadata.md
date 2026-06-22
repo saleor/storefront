@@ -135,6 +135,28 @@ export default async function ProductPage({ params }) {
 }
 ```
 
+## International URLs
+
+Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`).
+
+- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates (same channel, each configured locale).
+- `generateMetadata` `pathSuffix` is the path after locale/channel, e.g. `/products/${slug}`.
+- `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment — no client patching.
+
+```typescript
+import { buildBrowsePageMetadata } from "@/lib/seo";
+
+return buildBrowsePageMetadata({
+	title: category.name,
+	description: category.seoDescription,
+	locale: params.locale,
+	channel: params.channel,
+	pathSuffix: `/categories/${params.slug}`,
+});
+```
+
+Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
+
 ## Disabling SEO
 
 To remove SEO features entirely:

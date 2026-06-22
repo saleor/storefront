@@ -6,17 +6,21 @@
  */
 
 import { executePublicGraphQL } from "@/lib/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { SearchProductsDocument, OrderDirection, ProductOrderField } from "@/gql/graphql";
-import type { SearchProduct, SearchResult, SearchPagination } from "./types";
-import { localeConfig } from "@/config/locale";
+import { toProductCardData } from "@/ui/components/plp/utils";
+import type { ProductCardData } from "@/ui/components/plp/product-card-data";
+import type { SearchResult, SearchPagination } from "./types";
+import type { SearchSortBy } from "./sort-options";
 
 interface SearchOptions {
 	query: string;
 	channel: string;
+	locale: string;
 	limit?: number;
 	cursor?: string;
 	direction?: "forward" | "backward";
-	sortBy?: "relevance" | "price-asc" | "price-desc" | "name" | "newest";
+	sortBy?: SearchSortBy;
 }
 
 /**
@@ -25,8 +29,8 @@ interface SearchOptions {
  * For production, replace this with your search engine of choice.
  * See the examples in ./index.ts for Typesense, Algolia, Meilisearch.
  */
-export async function searchProducts(options: SearchOptions): Promise<SearchResult> {
-	const { query, channel, limit = 20, cursor, direction = "forward", sortBy = "relevance" } = options;
+export async function searchProducts(options: SearchOptions): Promise<SearchResult<ProductCardData>> {
+	const { query, channel, locale, limit = 20, cursor, direction = "forward", sortBy = "relevance" } = options;
 
 	const { field, order } = mapSortToSaleor(sortBy);
 
@@ -43,6 +47,7 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 			after: isBackward ? undefined : cursor,
 			last: isBackward ? limit : undefined,
 			before: isBackward ? cursor : undefined,
+			...graphqlLanguageCodeVariables(locale),
 		},
 		revalidate: 60,
 	});
@@ -56,17 +61,8 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 
 	const products = result.data.products;
 
-	// Transform to common SearchProduct format
-	const searchProducts: SearchProduct[] = products.edges.map(({ node }) => ({
-		id: node.id,
-		name: node.name,
-		slug: node.slug,
-		thumbnailUrl: node.thumbnail?.url,
-		thumbnailAlt: node.thumbnail?.alt,
-		price: node.pricing?.priceRange?.start?.gross.amount ?? 0,
-		currency: node.pricing?.priceRange?.start?.gross.currency ?? localeConfig.fallbackCurrency,
-		categoryName: node.category?.name,
-	}));
+	// ProductListItem fragment includes pricing, variants, and category — map via shared PLP helper.
+	const searchProducts = products.edges.map(({ node }) => toProductCardData(node, locale, channel));
 
 	const pagination: SearchPagination = {
 		totalCount: products.totalCount ?? 0,

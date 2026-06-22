@@ -1,0 +1,293 @@
+# Paper storefront marketing copy — Saleor Configurator 3.23+
+#
+# Deploy:
+#   pnpm configurator:storefront-content:plan
+#   pnpm configurator:storefront-content:deploy
+#
+# Requires SALEOR_APP_TOKEN with MANAGE_PAGES + MANAGE_PAGE_TYPES_AND_ATTRIBUTES (or admin).
+# After deploy: CONTENT_PROVIDER=saleor in storefront .env.local
+#
+# Page slug convention (globally unique in Saleor):
+#   storefront-chrome, storefront-homepage, storefront-cart, storefront-checkout
+#   Channel override: storefront-chrome-{channelSlug}
+#
+# Attribute slugs must match src/lib/content/attribute-slugs.ts
+# Greenfield: pnpm configurator:storefront-content:deploy — creates PageTypes, attributes, and seed models below.
+#
+# Scope (ADR 0002): this layer holds *editorial / merchant-editable* copy only. Functional
+# UI strings (cart totals/buttons/a11y labels, item count, cart-page chrome, breadcrumbs)
+# are code-owned via next-intl (messages/*.json) and intentionally NOT modeled here.
+
+contentAttributes:
+  # Storefront — Policies (channel-wide facts; NUMERIC so the Dashboard validates them
+  # and the storefront can reuse the same value in cart math and in copy placeholders)
+  - name: Free shipping threshold
+    inputType: NUMERIC
+  - name: Returns window days
+    inputType: NUMERIC
+  # Storefront — Chrome
+  - name: Announcement ID
+    inputType: PLAIN_TEXT
+  # Seed + translations: keep {freeShippingThreshold} (value from storefront-policy model)
+  - name: Announcement message
+    inputType: PLAIN_TEXT
+  - name: Announcement href
+    inputType: PLAIN_TEXT
+  - name: Announcement link label
+    inputType: PLAIN_TEXT
+  - name: Announcement dismissible
+    inputType: BOOLEAN
+  - name: Nav all products label
+    inputType: PLAIN_TEXT
+  - name: Nav view all label
+    inputType: PLAIN_TEXT
+  # Storefront — Products listing
+  - name: Listing title
+    inputType: PLAIN_TEXT
+  - name: Listing description
+    inputType: PLAIN_TEXT
+  # Storefront — Homepage
+  - name: Hero heading
+    inputType: PLAIN_TEXT
+  - name: Hero subheading
+    inputType: PLAIN_TEXT
+  - name: Hero CTA label
+    inputType: PLAIN_TEXT
+  - name: Hero image
+    inputType: FILE
+  - name: Featured heading
+    inputType: PLAIN_TEXT
+  - name: Featured collection
+    inputType: SINGLE_REFERENCE
+    entityType: COLLECTION
+  - name: Featured limit
+    inputType: NUMERIC
+  - name: Brand story heading
+    inputType: PLAIN_TEXT
+  - name: Brand story paragraph 1
+    inputType: PLAIN_TEXT
+  - name: Brand story paragraph 2
+    inputType: PLAIN_TEXT
+  - name: Values heading
+    inputType: PLAIN_TEXT
+  - name: Values columns desktop
+    inputType: PLAIN_TEXT
+  - name: Values column 1 title
+    inputType: PLAIN_TEXT
+  - name: Values column 1 text
+    inputType: PLAIN_TEXT
+  - name: Values column 2 title
+    inputType: PLAIN_TEXT
+  # Seed + translations: keep {returnsWindowDays} (value from storefront-policy model)
+  - name: Values column 2 text
+    inputType: PLAIN_TEXT
+  - name: Values column 3 title
+    inputType: PLAIN_TEXT
+  - name: Values column 3 text
+    inputType: PLAIN_TEXT
+  - name: Editorial heading
+    inputType: PLAIN_TEXT
+  - name: Editorial paragraph 1
+    inputType: PLAIN_TEXT
+  - name: Editorial image position
+    inputType: PLAIN_TEXT
+  - name: Editorial CTA label
+    inputType: PLAIN_TEXT
+  # Storefront — Cart
+  - name: Empty title
+    inputType: PLAIN_TEXT
+  - name: Empty body
+    inputType: PLAIN_TEXT
+  - name: Empty CTA label
+    inputType: PLAIN_TEXT
+  - name: Trust free shipping prefix
+    inputType: PLAIN_TEXT
+  # Seed + translations: keep {returnsWindowDays}
+  - name: Trust returns label
+    inputType: PLAIN_TEXT
+  - name: Drawer title
+    inputType: PLAIN_TEXT
+  - name: Drawer add for free shipping
+    inputType: PLAIN_TEXT
+  - name: Drawer free shipping qualified
+    inputType: PLAIN_TEXT
+  # Storefront — Checkout
+  - name: Empty cart title
+    inputType: PLAIN_TEXT
+  - name: Empty cart body
+    inputType: PLAIN_TEXT
+  - name: Empty cart start label
+    inputType: PLAIN_TEXT
+  - name: Empty cart go back label
+    inputType: PLAIN_TEXT
+  - name: Empty session title
+    inputType: PLAIN_TEXT
+  - name: Empty session message
+    inputType: PLAIN_TEXT
+  - name: Marketing opt-in label
+    inputType: PLAIN_TEXT
+  - name: Trust secure checkout
+    inputType: PLAIN_TEXT
+  - name: Trust Stripe processor
+    inputType: PLAIN_TEXT
+
+modelTypes:
+  - name: "Storefront — Policies"
+    slug: storefront-policies
+    attributes:
+      - attribute: Free shipping threshold
+      - attribute: Returns window days
+
+  - name: "Storefront — Chrome"
+    slug: storefront-chrome
+    attributes:
+      - attribute: Announcement ID
+      - attribute: Announcement message
+      - attribute: Announcement href
+      - attribute: Announcement link label
+      - attribute: Announcement dismissible
+      - attribute: Nav all products label
+      - attribute: Nav view all label
+
+  - name: "Storefront — Products"
+    slug: storefront-products
+    attributes:
+      - attribute: Listing title
+      - attribute: Listing description
+
+  - name: "Storefront — Homepage"
+    slug: storefront-homepage
+    attributes:
+      - attribute: Hero heading
+      - attribute: Hero subheading
+      - attribute: Hero CTA label
+      - attribute: Hero image
+      - attribute: Featured heading
+      - attribute: Featured collection
+      - attribute: Featured limit
+      - attribute: Brand story heading
+      - attribute: Brand story paragraph 1
+      - attribute: Brand story paragraph 2
+      - attribute: Values heading
+      - attribute: Values columns desktop
+      - attribute: Values column 1 title
+      - attribute: Values column 1 text
+      - attribute: Values column 2 title
+      - attribute: Values column 2 text
+      - attribute: Values column 3 title
+      - attribute: Values column 3 text
+      - attribute: Editorial heading
+      - attribute: Editorial paragraph 1
+      - attribute: Editorial image position
+      - attribute: Editorial CTA label
+
+  - name: "Storefront — Cart"
+    slug: storefront-cart
+    attributes:
+      - attribute: Empty title
+      - attribute: Empty body
+      - attribute: Empty CTA label
+      - attribute: Trust free shipping prefix
+      - attribute: Trust returns label
+      - attribute: Drawer title
+      - attribute: Drawer add for free shipping
+      - attribute: Drawer free shipping qualified
+
+  - name: "Storefront — Checkout"
+    slug: storefront-checkout
+    attributes:
+      - attribute: Empty cart title
+      - attribute: Empty cart body
+      - attribute: Empty cart start label
+      - attribute: Empty cart go back label
+      - attribute: Empty session title
+      - attribute: Empty session message
+      - attribute: Marketing opt-in label
+      - attribute: Trust secure checkout
+      - attribute: Trust Stripe processor
+
+# Model attribute keys use contentAttribute *names* (Configurator). Saleor assigns slugs
+# (see src/lib/content/attribute-slugs.ts) which Paper mappers read at runtime.
+#
+# EN seed values below are generated from src/lib/content/defaults.ts — do not edit by hand.
+# After changing defaults.ts: pnpm content:export-seed  |  CI: pnpm content:verify-seed
+models:
+  - title: Storefront Policies
+    slug: storefront-policy
+    modelType: Storefront — Policies
+    isPublished: true
+    attributes:
+      Free shipping threshold: 75
+      Returns window days: 30
+  - title: Storefront Chrome
+    slug: storefront-chrome
+    modelType: Storefront — Chrome
+    isPublished: true
+    attributes:
+      Announcement ID: welcome-promo
+      Announcement message: Free shipping on orders over {freeShippingThreshold}
+      Announcement dismissible: true
+      Nav all products label: All
+      Nav view all label: View all {label}
+  - title: Storefront Products
+    slug: storefront-products
+    modelType: Storefront — Products
+    isPublished: true
+    attributes:
+      Listing title: All Products
+      Listing description: Discover our full collection of premium products.
+  - title: Storefront Homepage
+    slug: storefront-homepage
+    modelType: Storefront — Homepage
+    isPublished: true
+    attributes:
+      Hero heading: Discover our collection
+      Hero subheading: Premium products with exceptional quality. Discover our curated collection.
+      Hero CTA label: Shop all
+      Featured heading: Featured products
+      Featured collection: featured-products
+      Featured limit: 8
+      Brand story heading: Built for real commerce
+      Brand story paragraph 1: Paper is a minimal, production-ready storefront for Saleor — clean as a
+        blank page, built to ship.
+      Brand story paragraph 2: Customize sections in code, connect your catalog, and keep checkout, cart,
+        and product pages battle-tested out of the box.
+      Values heading: Why shop with us
+      Values columns desktop: 3
+      Values column 1 title: Curated quality
+      Values column 1 text: Every product is selected for craftsmanship and longevity — not trend-chasing.
+      Values column 2 title: Fast fulfillment
+      Values column 2 text: Orders ship from regional warehouses with tracking from checkout to delivery.
+      Values column 3 title: Easy returns
+      Values column 3 text: Hassle-free returns within {returnsWindowDays} days. We stand behind what we sell.
+      Editorial heading: Designed to last
+      Editorial paragraph 1: Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season.
+      Editorial image position: right
+      Editorial CTA label: Explore collections
+  - title: Storefront Cart
+    slug: storefront-cart
+    modelType: Storefront — Cart
+    isPublished: true
+    attributes:
+      Empty title: Your bag is empty
+      Empty body: Looks like you haven't added anything to your bag yet.
+      Empty CTA label: Start Shopping
+      Trust free shipping prefix: Free delivery over
+      Trust returns label: "{returnsWindowDays}-day returns"
+      Drawer title: Your Bag
+      Drawer add for free shipping: Add {amount} more for free shipping
+      Drawer free shipping qualified: You qualify for free shipping!
+  - title: Storefront Checkout
+    slug: storefront-checkout
+    modelType: Storefront — Checkout
+    isPublished: true
+    attributes:
+      Empty cart title: Your cart is empty
+      Empty cart body: Looks like you haven't added anything to your cart yet.
+      Empty cart start label: Start Shopping
+      Empty cart go back label: Go back
+      Empty session title: Your cart is empty
+      Empty session message: Add items from the store, then return here to complete your purchase.
+      Marketing opt-in label: Email me with news and offers
+      Trust secure checkout: Secure checkout
+      Trust Stripe processor: Payments processed by Stripe

@@ -19,6 +19,7 @@ Copy and metadata (site name, tagline) live in `src/config/brand.ts`.
 | Change                                | File                                                          |
 | ------------------------------------- | ------------------------------------------------------------- |
 | Colors, radius, inverted footer tones | `src/styles/brand.css`                                        |
+| Typography scale (fluid sizes)        | `src/styles/brand.css` + `tailwind.config.cjs` (see below)    |
 | Site name, tagline, copyright, social | `src/config/brand.ts`                                         |
 | Logo                                  | `public/logo.svg`, `public/logo-dark.svg` (inverted surfaces) |
 | Favicons                              | `public/favicon*`                                             |
@@ -119,22 +120,68 @@ Sale color is always `--destructive` (mapped to `text-destructive` / `border-des
 
 Don't mix arbitrarily on the same component type.
 
+### 7. Typography
+
+Headings and marketing copy use **semantic type tokens** — same pattern as colors (`--foreground` → `text-foreground`).
+
+```
+brand.css (--text-h1, …)  →  tailwind.config.cjs (text-h1 utility)  →  className
+                                      ↑
+              weight / tracking / line-height defined here
+```
+
+| Token class    | Use for                             | Approx. size (mobile → desktop) |
+| -------------- | ----------------------------------- | ------------------------------- |
+| `text-display` | Homepage hero only                  | 44px → 72px                     |
+| `text-h1`      | Page titles, PDP name, cart H1      | 32px → 48px                     |
+| `text-h2`      | Section headings                    | 24px → 36px                     |
+| `text-h3`      | Card/column titles                  | 18px → 24px                     |
+| `text-lead`    | Hero subheads, intro paragraphs     | 17px → 20px                     |
+| `text-eyebrow` | Brand labels, overlines (uppercase) | 12px fixed                      |
+
+Sizes use `clamp()` in `rem` so they respect user font-size settings and scale fluidly — no `md:text-4xl` breakpoint stacks on headings.
+
+**Pair with layout utilities:**
+
+```tsx
+<h1 className="text-balance text-h1 text-foreground">…</h1>
+<p className="text-pretty text-lead text-muted-foreground">…</p>
+<p className="text-eyebrow uppercase text-muted-foreground">Brand</p>
+```
+
+**Default Tailwind still works** (`text-sm`, `text-lg`, `text-2xl`, …) for misc UI — PDP price, breadcrumbs, cart line items. Use semantic tokens for **roles** (page title, section head), not every text node.
+
+**Adding or changing a token** — update all three:
+
+1. `src/styles/brand.css` — `--text-*` size variable (if fluid)
+2. `tailwind.config.cjs` — `theme.extend.fontSize` entry (size + weight/tracking/leading)
+3. `src/lib/utils.ts` — register the name in `extendTailwindMerge` so `cn("text-h1 text-foreground")` does not drop the size class
+
+**`cn()` + colors:** Custom `text-*` size utilities share a prefix with `text-foreground`. Always merge heading classes through `cn()` — the merge config is already set up for `display`, `h1`, `h2`, `h3`, `lead`, `eyebrow`.
+
+**Future:** On Tailwind v4, type tokens can move into `@theme` in `brand.css` and collapse the split between CSS variables and `tailwind.config.cjs`.
+
+**Typography theme examples (optional):** The default is Direction C (Geist everywhere). An **editorial** example (Fraunces display + Geist body) ships under [`config/themes/`](../../config/themes/README.md) — try with `pnpm run dev:theme-editorial` or merge `config/themes/typography-editorial.env.example` into `.env.local`.
+
+**Dev server / Tailwind config:** After changing `tailwind.config.cjs` (new `fontSize` tokens, plugins, etc.), restart the dev server. If utilities like `text-display` appear in HTML but render at body size, clear the webpack cache: `rm -rf .next` and restart. Tailwind JIT reads config at startup; stale `.next` can serve CSS from before the change.
+
 ---
 
 ## Token reference
 
-| Token                | Role                                                      |
-| -------------------- | --------------------------------------------------------- |
-| `--background`       | Page background                                           |
-| `--foreground`       | Primary text                                              |
-| `--muted-foreground` | Secondary text                                            |
-| `--card`             | Elevated surfaces                                         |
-| `--muted`            | Subtle backgrounds, skeletons                             |
-| `--primary`          | CTAs                                                      |
-| `--destructive`      | Errors, sale labels (`SaleBadge`, `DiscountPercentLabel`) |
-| `--border`           | Dividers                                                  |
-| `--radius`           | Border radius scale                                       |
-| `--inverse*`         | Text/borders on inverse surfaces (`bg-foreground`)        |
+| Token                                              | Role                                                      |
+| -------------------------------------------------- | --------------------------------------------------------- |
+| `--background`                                     | Page background                                           |
+| `--foreground`                                     | Primary text                                              |
+| `--muted-foreground`                               | Secondary text                                            |
+| `--card`                                           | Elevated surfaces                                         |
+| `--muted`                                          | Subtle backgrounds, skeletons                             |
+| `--primary`                                        | CTAs                                                      |
+| `--destructive`                                    | Errors, sale labels (`SaleBadge`, `DiscountPercentLabel`) |
+| `--border`                                         | Dividers                                                  |
+| `--radius`                                         | Border radius scale                                       |
+| `--text-display` … `--text-lead`, `--text-eyebrow` | Fluid type scale + fixed eyebrow (see Typography)         |
+| `--inverse*`                                       | Text/borders on inverse surfaces (`bg-foreground`)        |
 
 Colors use **OKLCH**: `oklch(lightness chroma hue)` — lightness 0–1, hue 0–360.
 
@@ -148,9 +195,10 @@ Perceptually uniform lightness, predictable mixing, easier contrast tuning than 
 
 ## Related files
 
-| File                   | Role                             |
-| ---------------------- | -------------------------------- |
-| `src/styles/brand.css` | Design tokens                    |
-| `tailwind.config.cjs`  | Maps tokens → Tailwind utilities |
-| `src/app/globals.css`  | Imports `brand.css`, base styles |
-| `src/config/brand.ts`  | Site name, tagline, SEO copy     |
+| File                   | Role                                                    |
+| ---------------------- | ------------------------------------------------------- |
+| `src/styles/brand.css` | Design tokens                                           |
+| `tailwind.config.cjs`  | Maps tokens → Tailwind utilities                        |
+| `src/lib/utils.ts`     | `cn()` / tailwind-merge (typography token registration) |
+| `src/app/globals.css`  | Imports `brand.css`, base styles                        |
+| `src/config/brand.ts`  | Site name, tagline, SEO copy                            |

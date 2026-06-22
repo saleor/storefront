@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FC } from "react";
+import { useTranslations } from "next-intl";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { Button } from "@/ui/components/ui/button";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
@@ -11,6 +12,7 @@ import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { PaymentTrustSignals } from "@/checkout/components/payment/payment-trust-signals";
 import { type StripeBillingContext } from "./stripe-payment-form";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 
 type FreeOrderCheckoutProps = {
 	checkout: CheckoutFragment;
@@ -29,6 +31,8 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 	onPaymentActivityChange,
 }) => {
 	const { refreshCheckout } = useCheckoutData();
+	const paymentMessages = useCheckoutPaymentMessages();
+	const tActions = useTranslations("checkout.actions");
 	const [isLoading, setIsLoading] = useState(false);
 	const totalStr = formatMoneyWithFallback(checkout.totalPrice?.gross);
 
@@ -63,7 +67,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 		} catch (error) {
 			rethrowNextInternalError(error);
 			console.error("Free order completion failed:", error);
-			onError("Could not complete your order. Please try again.");
+			onError(paymentMessages.completeOrderFailed);
 		} finally {
 			if (!orderPlaced) {
 				clearPaymentCompleting();
@@ -75,10 +79,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 
 	return (
 		<div className="bg-muted/30 space-y-4 rounded-lg border border-border p-6">
-			<p className="text-sm text-muted-foreground">
-				Your order total is <span className="font-medium text-foreground">{totalStr}</span>. No payment is
-				required — confirm below to place your order.
-			</p>
+			<p className="text-sm text-muted-foreground">{paymentMessages.freeOrderBody(totalStr)}</p>
 			<PaymentTrustSignals />
 			<Button
 				type="button"
@@ -89,10 +90,10 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 				{isLoading ? (
 					<span className="flex items-center justify-center gap-2">
 						<LoadingSpinner />
-						Placing order...
+						{tActions("placingOrder")}
 					</span>
 				) : (
-					"Complete order"
+					tActions("completeOrder")
 				)}
 			</Button>
 		</div>

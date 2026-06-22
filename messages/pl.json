@@ -1,0 +1,573 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+			"subtotal": "Suma częściowa",
+			"shipping": "Dostawa",
+			"shippingFree": "Za darmo",
+			"shippingCalculated": "Obliczana przy kasie",
+			"total": "Razem",
+			"checkout": "Przejdź do kasy",
+			"continueShopping": "Kontynuuj zakupy",
+			"removeItem": "Usuń {product}",
+			"decreaseQuantity": "Zmniejsz ilość",
+			"increaseQuantity": "Zwiększ ilość"
+		},
+		"page": {
+			"title": "Koszyk",
+			"quantity": "Ilość: {count}",
+			"variant": "Wariant: {name}",
+			"yourTotal": "Twoja suma",
+			"shippingNote": "Dostawa obliczana w następnym kroku",
+			"checkout": "Przejdź do kasy"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "Strona główna",
+		"breadcrumbProducts": "Produkty"
+	},
+	"common": {
+		"pagination": {
+			"previous": "Poprzednia",
+			"next": "Następna"
+		}
+	},
+	"pdp": {
+		"addToBag": "Dodaj do koszyka",
+		"adding": "Dodawanie…",
+		"outOfStock": "Brak w magazynie",
+		"selectOptions": "Wybierz opcje",
+		"free": "ZA DARMO",
+		"breadcrumbHome": "Strona główna",
+		"badges": {
+			"sale": "Promocja",
+			"new": "Nowość"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} — brak w magazynie",
+			"willChangeSelections": "{name} — zmieni inne opcje",
+			"percentOffTitle": "{name} — {percent}% taniej",
+			"outOfStockA11y": "brak w magazynie",
+			"percentOffA11y": "{percent}% taniej",
+			"selectedA11y": "wybrane"
+		}
+	},
+	"plp": {
+		"quickAdd": "Szybkie dodanie",
+		"filtersButton": "Filtry",
+		"filterLabels": {
+			"category": "Kategoria",
+			"color": "Kolor",
+			"size": "Rozmiar",
+			"price": "Cena",
+			"priceRange": "Zakres cen"
+		},
+		"sort": "Sortuj",
+		"sortOptions": {
+			"featured": "Polecane",
+			"newest": "Najnowsze",
+			"price_asc": "Cena: rosnąco",
+			"price_desc": "Cena: malejąco",
+			"bestselling": "Bestsellery"
+		},
+		"resultCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+		"clearAllFilters": "Wyczyść filtry ({count})",
+		"clearAll": "Wyczyść wszystko",
+		"removeFilter": "Usuń filtr {value}"
+	},
+	"search": {
+		"title": "Szukaj",
+		"description": "Przeszukaj całą kolekcję produktów.",
+		"bar": {
+			"placeholder": "Szukaj produktów...",
+			"srOnlyLabel": "Szukaj produktów"
+		},
+		"resultsFor": "Wyniki dla \"{query}\"",
+		"resultCount": "{count, plural, one {Znaleziono # produkt} few {Znaleziono # produkty} many {Znaleziono # produktów} other {Znaleziono # produktu}}",
+		"noResultsTitle": "Brak wyników dla \"{query}\"",
+		"noResultsBody": "Nie znaleźliśmy produktów pasujących do wyszukiwania. Spróbuj innego hasła lub przeglądaj kategorie.",
+		"browseAllProducts": "Przeglądaj produkty",
+		"goToHomepage": "Strona główna",
+		"noImage": "Brak zdjęcia",
+		"sort": "Sortuj",
+		"sortOptions": {
+			"relevance": "Trafność",
+			"price-asc": "Cena: rosnąco",
+			"price-desc": "Cena: malejąco",
+			"name": "Nazwa",
+			"newest": "Najnowsze"
+		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "Główne"
+		},
+		"breadcrumbAriaLabel": "Nawigacja okruszkowa",
+		"cartButton": "{count, plural, one {# produkt w koszyku, zobacz koszyk} few {# produkty w koszyku, zobacz koszyk} many {# produktów w koszyku, zobacz koszyk} other {# produktu w koszyku, zobacz koszyk}}",
+		"mobileMenu": {
+			"open": "Otwórz menu",
+			"title": "Menu nawigacji"
+		},
+		"userMenu": {
+			"open": "Otwórz menu użytkownika",
+			"login": "Zaloguj się",
+			"myAccount": "Moje konto",
+			"myOrders": "Moje zamówienia",
+			"logOut": "Wyloguj się",
+			"unavailableAriaLabel": "Konto niedostępne",
+			"unavailableTitle": "Nie udało się załadować konta"
+		},
+		"regionPicker": {
+			"ariaLabel": "Język i rynek",
+			"languageTitle": "Język",
+			"languageDescription": "Treść i formatowanie",
+			"marketTitle": "Rynek",
+			"marketDescription": "Waluta, podatki i dostawa"
+		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "Zaloguj się",
+			"loginDescription": "Zaloguj się na swoje konto, aby uzyskać dostęp do zamówień i zapisanych adresów.",
+			"signupTitle": "Utwórz konto",
+			"signupDescription": "Utwórz konto, aby zapisywać adresy i historię zamówień.",
+			"accountTitle": "Moje konto"
+		},
+		"fields": {
+			"email": "E-mail",
+			"emailAddress": "Adres e-mail",
+			"password": "Hasło",
+			"firstName": "Imię",
+			"lastName": "Nazwisko",
+			"confirmPassword": "Potwierdź hasło",
+			"currentPassword": "Aktualne hasło",
+			"newPassword": "Nowe hasło",
+			"confirmNewPassword": "Potwierdź nowe hasło",
+			"name": "Imię i nazwisko",
+			"companyOptional": "Firma (opcjonalnie)",
+			"streetAddress": "Ulica i numer",
+			"streetAddress2Optional": "Mieszkanie, lokal itp. (opcjonalnie)",
+			"city": "Miasto",
+			"postalCode": "Kod pocztowy",
+			"stateProvince": "Województwo / region",
+			"countryCode": "Kod kraju",
+			"phoneOptional": "Telefon (opcjonalnie)",
+			"country": "Kraj",
+			"cityArea": "Dzielnica",
+			"localized": {
+				"province": "Prowincja",
+				"district": "Dystrykt",
+				"state": "Stan",
+				"zip": "Kod pocztowy",
+				"postal": "Kod pocztowy",
+				"postTown": "Miejscowość",
+				"prefecture": "Prefektura"
+			}
+		},
+		"placeholders": {
+			"email": "ty@example.com",
+			"password": "Wprowadź hasło",
+			"firstName": "Imię",
+			"lastName": "Nazwisko",
+			"newPasswordMin": "Co najmniej 8 znaków…",
+			"confirmPassword": "Potwierdź hasło",
+			"reenterPassword": "Wprowadź hasło ponownie",
+			"countryCode": "PL"
+		},
+		"common": {
+			"cancel": "Anuluj",
+			"save": "Zapisz",
+			"saving": "Zapisywanie…",
+			"edit": "Edytuj",
+			"delete": "Usuń",
+			"updated": "Zaktualizowano",
+			"showPassword": "Pokaż hasło",
+			"hidePassword": "Ukryj hasło",
+			"free": "Bezpłatnie",
+			"qty": "Ilość: {count}",
+			"itemCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+			"notSet": "Nie ustawiono",
+			"change": "Zmień",
+			"changing": "Zmienianie…",
+			"sending": "Wysyłanie…"
+		},
+		"errors": {
+			"invalidEmail": "Wprowadź prawidłowy adres e-mail",
+			"invalidEmailFirst": "Najpierw wprowadź prawidłowy adres e-mail",
+			"passwordRequired": "Wprowadź hasło",
+			"passwordMinLength": "Hasło musi mieć co najmniej 8 znaków",
+			"passwordsMismatch": "Hasła nie są zgodne",
+			"newPasswordRequired": "Wprowadź nowe hasło",
+			"generic": "Wystąpił błąd. Spróbuj ponownie.",
+			"signInFailed": "Logowanie nie powiodło się. Spróbuj ponownie.",
+			"invalidCredentials": "Nieprawidłowy e-mail lub hasło. Spróbuj ponownie.",
+			"rateLimited": "Zbyt wiele prób logowania. Poczekaj i spróbuj ponownie.",
+			"resetLinkFailed": "Nie udało się wysłać linku do resetowania",
+			"accountExists": "Konto z tym adresem e-mail już istnieje. Zaloguj się zamiast tego.",
+			"createAccountFailed": "Nie udało się utworzyć konta",
+			"invalidResetToken": "Ten link do resetowania hasła wygasł. Poproś o nowy.",
+			"setPasswordFailed": "Nie udało się ustawić hasła",
+			"invalidConfirmToken": "Ten link potwierdzający wygasł lub został już użyty. Spróbuj się zalogować lub zarejestruj ponownie.",
+			"confirmFailed": "Nie udało się potwierdzić konta",
+			"loadOrdersFailed": "Nie udało się załadować zamówień. Spróbuj ponownie za chwilę.",
+			"loadOrderFailed": "Nie udało się załadować tego zamówienia. Spróbuj ponownie.",
+			"loadRecentOrdersFailed": "Nie udało się załadować ostatnich zamówień.",
+			"updateProfileFailed": "Nie udało się zaktualizować profilu",
+			"changePasswordFailed": "Nie udało się zmienić hasła",
+			"createAddressFailed": "Nie udało się dodać adresu",
+			"updateAddressFailed": "Nie udało się zaktualizować adresu",
+			"deleteAddressFailed": "Nie udało się usunąć adresu",
+			"setDefaultAddressFailed": "Nie udało się ustawić domyślnego adresu",
+			"deleteAccountFailed": "Nie udało się złożyć wniosku o usunięcie konta"
+		},
+		"login": {
+			"title": "Witaj ponownie",
+			"noAccount": "Nie masz konta?",
+			"signUp": "Zarejestruj się",
+			"forgotPassword": "Zapomniałeś hasła?",
+			"resendResetLink": "Wyślij link ponownie",
+			"submit": "Zaloguj się",
+			"submitting": "Logowanie…",
+			"resetSent": "Jeśli konto dla {email} istnieje, wysłaliśmy link do resetowania hasła. Uwaga: możesz poprosić o link tylko raz na 15 minut."
+		},
+		"signup": {
+			"title": "Utwórz konto",
+			"hasAccount": "Masz już konto?",
+			"signIn": "Zaloguj się",
+			"submit": "Utwórz konto",
+			"submitting": "Tworzenie konta…",
+			"successTitle": "Konto utworzone!",
+			"successBody": "Sprawdź e-mail, aby zweryfikować konto.",
+			"goToSignIn": "Przejdź do logowania",
+			"terms": "Tworząc konto, akceptujesz nasze <terms>Warunki korzystania</terms> i <privacy>Politykę prywatności</privacy>.",
+			"termsLink": "Warunki korzystania",
+			"privacyLink": "Polityka prywatności"
+		},
+		"setPassword": {
+			"title": "Ustaw nowe hasło",
+			"subtitle": "Wprowadź nowe hasło dla {email}",
+			"submit": "Zaktualizuj hasło",
+			"submitting": "Aktualizowanie…",
+			"backToSignIn": "Wróć do logowania",
+			"successTitle": "Hasło zaktualizowane!",
+			"successBody": "Hasło zostało pomyślnie zresetowane. Jesteś teraz zalogowany.",
+			"redirecting": "Przekierowujemy do sklepu…"
+		},
+		"confirm": {
+			"confirmingTitle": "Potwierdzanie konta",
+			"confirmingBody": "Weryfikacja {email}…",
+			"successTitle": "Konto potwierdzone",
+			"successBody": "Twoje konto dla {email} jest aktywne. Zaloguj się hasłem, które utworzyłeś.",
+			"signIn": "Zaloguj się",
+			"continueShopping": "Kontynuuj zakupy",
+			"errorTitle": "Nie udało się potwierdzić konta",
+			"goToSignIn": "Przejdź do logowania"
+		},
+		"nav": {
+			"ariaLabel": "Konto",
+			"backToStore": "Wróć do sklepu",
+			"signOut": "Wyloguj się",
+			"overview": "Przegląd",
+			"orders": "Zamówienia",
+			"addresses": "Adresy",
+			"settings": "Ustawienia"
+		},
+		"overview": {
+			"welcome": "Witaj ponownie, {name}",
+			"subtitle": "Oto przegląd aktywności na Twoim koncie.",
+			"recentOrders": "Ostatnie zamówienia",
+			"viewAll": "Zobacz wszystkie",
+			"noOrdersYet": "Nie złożyłeś jeszcze żadnych zamówień."
+		},
+		"orders": {
+			"title": "Zamówienia",
+			"count": "{count, plural, =0 {Brak zamówień} one {# zamówienie} few {# zamówienia} many {# zamówień} other {# zamówienia}}",
+			"empty": "Nie złożyłeś jeszcze żadnych zamówień.",
+			"loadMore": "Załaduj więcej zamówień",
+			"signInRequired": "Zaloguj się, aby zobaczyć zamówienia.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "Złożono {date}",
+			"items": "Produkty ({count})",
+			"subtotal": "Suma częściowa",
+			"shipping": "Dostawa",
+			"tax": "Podatek",
+			"total": "Razem",
+			"shippingAddress": "Adres dostawy",
+			"billingAddress": "Adres rozliczeniowy",
+			"paymentMethod": "Metoda płatności",
+			"paid": "Opłacone",
+			"needHelp": "Potrzebujesz pomocy?",
+			"signInRequired": "Zaloguj się, aby zobaczyć to zamówienie.",
+			"loadFailed": "Nie udało się załadować tego zamówienia. Spróbuj ponownie.",
+			"timeline": "Historia zamówienia"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "W realizacji",
+			"UNCONFIRMED": "Oczekuje na potwierdzenie",
+			"PARTIALLY_FULFILLED": "Częściowo wysłane",
+			"FULFILLED": "Wysłane"
+		},
+		"fulfillment": {
+			"orderConfirmed": "Zamówienie potwierdzone",
+			"orderConfirmedDescription": "Płatność potwierdzona i zamówienie złożone",
+			"FULFILLED": "Wysłane",
+			"FULFILLEDDescription": "Twoje zamówienie zostało wysłane",
+			"CANCELED": "Realizacja anulowana",
+			"CANCELEDDescription": "Wysyłka została anulowana",
+			"REFUNDED": "Zwrócone",
+			"REFUNDEDDescription": "Płatność została zwrócona",
+			"REFUNDED_AND_RETURNED": "Zwrócone i odebrane",
+			"REFUNDED_AND_RETURNEDDescription": "Produkty zwrócone i płatność zwrócona",
+			"REPLACED": "Wymienione",
+			"REPLACEDDescription": "Produkty zostały wymienione",
+			"RETURNED": "Odebrane",
+			"RETURNEDDescription": "Produkty zostały odebrane",
+			"WAITING_FOR_APPROVAL": "Oczekuje na zatwierdzenie",
+			"WAITING_FOR_APPROVALDescription": "Realizacja oczekuje na zatwierdzenie",
+			"trackingUpdated": "Zaktualizowano śledzenie",
+			"trackingNumber": "Numer śledzenia: {number}",
+			"descriptionWithItems": "{description} ({count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}})"
+		},
+		"settings": {
+			"title": "Ustawienia",
+			"subtitle": "Zarządzaj ustawieniami konta",
+			"memberSince": "Członek od {date}"
+		},
+		"addresses": {
+			"title": "Adresy",
+			"subtitle": "Zarządzaj zapisanymi adresami",
+			"empty": "Brak zapisanych adresów.",
+			"addAddress": "Dodaj adres",
+			"editAddress": "Edytuj adres",
+			"addNewAddress": "Dodaj nowy adres",
+			"editAddressDescription": "Zaktualizuj dane adresu",
+			"addAddressDescription": "Dodaj nowy adres do konta",
+			"editAddressAria": "Edytuj adres",
+			"updateAddress": "Zaktualizuj adres",
+			"deleteAddressAria": "Usuń adres",
+			"defaultShipping": "Domyślny do wysyłki",
+			"defaultBilling": "Domyślny do rozliczeń",
+			"makeDefaultShipping": "Ustaw jako domyślny do wysyłki",
+			"makeDefaultBilling": "Ustaw jako domyślny do rozliczeń"
+		},
+		"deleteAccount": {
+			"title": "Usuń konto",
+			"description": "Trwale usuń konto i wszystkie powiązane dane.",
+			"submit": "Usuń konto",
+			"confirm": "Tak, usuń moje konto",
+			"confirmBody": "Tej operacji nie można cofnąć. Otrzymasz e-mail potwierdzający przed usunięciem konta.",
+			"emailSent": "Wysłano e-mail potwierdzający. Sprawdź skrzynkę odbiorczą, aby dokończyć usuwanie konta."
+		},
+		"changePassword": {
+			"submit": "Zmień hasło"
+		},
+		"unavailable": {
+			"title": "Nie udało się załadować konta",
+			"body": "Sklep jest tymczasowo niedostępny. Odśwież stronę lub spróbuj ponownie za chwilę."
+		}
+	},
+	"checkout": {
+		"steps": {
+			"information": "Dane",
+			"shipping": "Dostawa",
+			"payment": "Płatność",
+			"stepsAriaLabel": "Kroki zamówienia",
+			"secureCheckout": "Bezpieczna płatność",
+			"complete": "Gotowe",
+			"stepOf": "Krok {step} z {total}"
+		},
+		"actions": {
+			"saving": "Zapisywanie…",
+			"loading": "Ładowanie…",
+			"continueToShipping": "Przejdź do dostawy",
+			"continueToPayment": "Przejdź do płatności",
+			"continue": "Kontynuuj",
+			"continueAsGuest": "Kontynuuj jako gość",
+			"preparingGuestCart": "Przygotowuję koszyk…",
+			"logIn": "Zaloguj się",
+			"returnToInformation": "Wróć do danych",
+			"returnToShipping": "Wróć do dostawy",
+			"payNow": "Zapłać teraz",
+			"payTotal": "Zapłać {total}",
+			"completeOrder": "Złóż zamówienie",
+			"placingOrder": "Składanie zamówienia…",
+			"creatingOrder": "Tworzenie zamówienia…",
+			"processingPayment": "Przetwarzanie płatności…",
+			"continueShopping": "Kontynuuj zakupy",
+			"tryAgain": "Spróbuj ponownie"
+		},
+		"errors": {
+			"sessionExpiredTitle": "Sesja wygasła",
+			"sessionExpiredMessage": "Ten koszyk nie jest już dostępny. Dodaj produkty ponownie, aby rozpocząć nowe zamówienie.",
+			"loadFailedTitle": "Nie udało się wczytać kasy",
+			"loadFailedMessage": "Mamy problem z wczytaniem koszyka. Spróbuj ponownie lub wróć do sklepu.",
+			"orderNotFoundTitle": "Nie znaleziono zamówienia",
+			"orderNotFoundMessage": "Nie znaleźliśmy tego zamówienia. Mogło zostać usunięte lub link jest nieprawidłowy.",
+			"emailRequired": "E-mail jest wymagany",
+			"selectShippingAddress": "Wybierz adres dostawy",
+			"selectShippingMethod": "Wybierz metodę dostawy",
+			"updateShippingMethodFailed": "Nie udało się zaktualizować metody dostawy",
+			"orphanedCartMessage": "Ten koszyk jest nadal powiązany z kontem. Aby kupić jako gość, utwórz nowy anonimowy koszyk z tymi samymi produktami albo się zaloguj.",
+			"orphanedCartBlocked": "Ten koszyk jest nadal powiązany z kontem. Kontynuuj jako gość powyżej albo się zaloguj.",
+			"discountApplyFailed": "Nie udało się zastosować kodu rabatowego.",
+			"discountRemoveFailed": "Nie udało się usunąć kodu rabatowego.",
+			"invalidValue": "Nieprawidłowa wartość",
+			"updateEmailFailed": "Nie udało się zaktualizować e-maila",
+			"createAccountFailed": "Nie udało się utworzyć konta",
+			"updateAddressFailed": "Nie udało się zaktualizować adresu",
+			"crashTitle": "Błąd kasy",
+			"crashMessage": "Coś poszło nie tak podczas ładowania kasy. Spróbuj ponownie."
+		},
+		"contact": {
+			"title": "Kontakt",
+			"haveAccount": "Masz konto?",
+			"createAccountLabel": "Utwórz konto, aby przyspieszyć kolejne zakupy",
+			"activationNotice": "Po złożeniu zamówienia otrzymasz e-mail z linkiem aktywacyjnym konta.",
+			"guestCheckout": "Zakupy jako gość",
+			"newCustomer": "Nowy klient?",
+			"signInTitle": "Zaloguj się",
+			"resetPasswordTitle": "Zresetuj hasło",
+			"resetPasswordSubtitle": "Wprowadź nowe hasło do konta",
+			"processing": "Przetwarzanie…",
+			"passwordMinPlaceholder": "Hasło (minimum 8 znaków)",
+			"signedIn": "Zalogowano"
+		},
+		"summary": {
+			"title": "Podsumowanie",
+			"show": "Pokaż",
+			"hide": "Ukryj",
+			"toggleOrderSummary": "{action} podsumowanie",
+			"itemCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+			"subtotal": "Suma częściowa",
+			"shipping": "Dostawa",
+			"taxVat": "Podatek (VAT)",
+			"discount": "Rabat",
+			"total": "Razem",
+			"includingVat": "W tym VAT",
+			"productFallback": "Produkt",
+			"contact": "Kontakt",
+			"shipTo": "Dostawa do",
+			"method": "Metoda",
+			"delivery": "Dostawa",
+			"digital": "Cyfrowe"
+		},
+		"promo": {
+			"placeholder": "Kod rabatowy",
+			"apply": "Zastosuj",
+			"applying": "Stosowanie…",
+			"removeAriaLabel": "Usuń kod rabatowy"
+		},
+		"shipping": {
+			"methodTitle": "Metoda dostawy",
+			"loadingMethods": "Ładowanie metod dostawy…",
+			"noAddressYet": "Wróć i podaj adres dostawy.",
+			"addressTitle": "Adres dostawy",
+			"countryRegion": "Kraj/region",
+			"selectCountry": "Wybierz kraj",
+			"backToSavedAddresses": "← Wróć do zapisanych adresów",
+			"emptySavedShipping": "Nie masz zapisanych adresów. Wprowadź adres dostawy poniżej.",
+			"selectShippingAddressSheet": "Wybierz adres dostawy"
+		},
+		"billing": {
+			"title": "Adres rozliczeniowy",
+			"sameAsShipping": "Taki sam jak adres dostawy",
+			"selectBillingSheet": "Wybierz adres rozliczeniowy",
+			"emptySavedBilling": "Brak zapisanych adresów.",
+			"backToSavedAddresses": "Wróć do zapisanych adresów"
+		},
+		"addresses": {
+			"selectPrompt": "Wybierz adres",
+			"setDefaultShipping": "Ustaw jako domyślny adres dostawy",
+			"setDefaultBilling": "Ustaw jako domyślny adres rozliczeniowy",
+			"defaultBadge": "Domyślny",
+			"emptySaved": "Nie masz jeszcze zapisanych adresów."
+		},
+		"payment": {
+			"totalUpdatedTitle": "Suma zamówienia została zaktualizowana",
+			"totalUpdatedBody": "Suma zmieniła się z {previous} na {next}. Sprawdź podsumowanie przed płatnością.",
+			"deliveryInvalidTitle": "Metoda dostawy jest niedostępna",
+			"deliveryInvalidBody": "Wróć do kroku dostawy i wybierz prawidłową metodę przed złożeniem zamówienia.",
+			"completingTitle": "Przetwarzanie zamówienia",
+			"completingBody": "Potwierdzamy płatność i tworzymy zamówienie. Zwykle trwa to kilka sekund — nie zamykaj ani nie odświeżaj tej strony.",
+			"initFailed": "Nie udało się zainicjować systemu płatności.",
+			"unavailable": "System płatności jest niedostępny. Spróbuj ponownie.",
+			"loadingGateway": "Ładowanie formularza płatności {gateway}…",
+			"confirmingPayment": "Potwierdzanie płatności…",
+			"securingWithStripe": "Zabezpieczamy płatność przez Stripe. Zwykle trwa to kilka sekund.",
+			"doNotClose": "Nie zamykaj ani nie odświeżaj tej strony.",
+			"completeOrderFailed": "Nie udało się złożyć zamówienia. Spróbuj ponownie.",
+			"placeOrderFailed": "Nie udało się złożyć zamówienia. Spróbuj ponownie lub skontaktuj się z obsługą.",
+			"totalsRefreshFailed": "Nie udało się odświeżyć sumy. Spróbuj ponownie.",
+			"totalUnavailable": "Suma zamówienia jest niedostępna. Odśwież stronę i spróbuj ponownie.",
+			"currencyUnavailable": "Waluta zamówienia jest niedostępna. Odśwież stronę i spróbuj ponownie.",
+			"validationFailed": "Walidacja płatności nie powiodła się",
+			"methodRequired": "Nie udało się określić metody płatności. Wybierz opcję płatności i spróbuj ponownie.",
+			"detailsUnavailable": "Nie udało się pobrać szczegółów płatności. Spróbuj ponownie.",
+			"expressReset": "Przyciski szybkiej płatności zostały zresetowane. Spróbuj ponownie.",
+			"formReset": "Formularz płatności został zresetowany. Kliknij Zapłać ponownie bez odświeżania strony.",
+			"totalChanged": "Suma zamówienia się zmieniła. Sprawdź kwotę i spróbuj ponownie.",
+			"bankDeclined": "Bank odrzucił płatność. Spróbuj ponownie lub użyj innej karty.",
+			"sessionExpired": "Sesja płatności wygasła po przekierowaniu. Spróbuj ponownie.",
+			"channelUnresolved": "Nie udało się ustalić kanału po płatności. Skontaktuj się z obsługą.",
+			"unexpectedError": "Wystąpił nieoczekiwany błąd podczas finalizacji płatności.",
+			"stripeConfigFailed": "Konfiguracja bramki Stripe nie powiodła się",
+			"stripeKeyMissing": "Brak klucza publicznego Stripe. Sprawdź konfigurację w panelu Saleor.",
+			"dummyGateway": "Płatność testowa",
+			"failed": "Płatność nie powiodła się",
+			"interruptedBeforeCharge": "Płatność została przerwana przed pobraniem środków. Możesz bezpiecznie spróbować ponownie.",
+			"interruptedAfterAuthorize": "Płatność przeszła, ale zamówienie nie zostało jeszcze złożone. Nie płać ponownie — użyj „Złóż zamówienie” poniżej, aby dokończyć.",
+			"verificationUnavailable": "Nie udało się zweryfikować poprzedniej próby płatności. Odśwież stronę — nie płać ponownie, dopóki nie zostanie to potwierdzone.",
+			"authorizedTitle": "Płatność autoryzowana — złóż zamówienie",
+			"authorizedBody": "Płatność jest autoryzowana (pobranie nastąpi przy realizacji zamówienia). Kliknij poniżej, aby złożyć zamówienie — nie zostaniesz obciążony ponownie przy kasie.",
+			"freeOrderBody": "Suma zamówienia to {total}. Płatność nie jest wymagana — potwierdź poniżej, aby złożyć zamówienie.",
+			"dummyTestMode": "Tryb testowy. Dane karty nie są potrzebne — użyj Zapłać, aby złożyć zamówienie testowe.",
+			"stripeLoadTitle": "Nie udało się wczytać Stripe"
+		},
+		"confirmation": {
+			"orderNumber": "Zamówienie #{number}",
+			"thankYou": "Dziękujemy za zamówienie!",
+			"confirmedTitle": "Zamówienie potwierdzone",
+			"confirmedEmail": "Wyślemy potwierdzenie na {email}",
+			"emailSent": "E-mail z potwierdzeniem wysłany",
+			"shippingAddress": "Adres dostawy",
+			"billingAddress": "Adres rozliczeniowy",
+			"estimatedDelivery": "Szacowana dostawa"
+		},
+		"server": {
+			"marketingSaveFailed": "Nie udało się zapisać zgody marketingowej",
+			"invalidRedirectUrl": "Nieprawidłowy adres przekierowania",
+			"createAccountFailed": "Nie udało się utworzyć konta",
+			"noSaleorResponse": "Brak odpowiedzi z Saleor",
+			"shippingMethodsFailed": "Nie udało się wczytać metod dostawy",
+			"gatewayInitFailed": "Nie udało się zainicjować bramki płatności",
+			"totalVerifyFailed": "Nie udało się zweryfikować sumy zamówienia. Spróbuj ponownie.",
+			"totalChanged": "Suma zamówienia się zmieniła. Sprawdź zamówienie i spróbuj ponownie.",
+			"paymentInitFailed": "Nie udało się zainicjować płatności",
+			"paymentsDisabled": "Płatności nie są włączone w tym środowisku.",
+			"paymentProcessFailed": "Nie udało się przetworzyć płatności",
+			"completeOrderFailed": "Nie udało się złożyć zamówienia",
+			"orderCreateFailed": "Płatność została przetworzona, ale nie udało się utworzyć zamówienia. Spróbuj ponownie lub skontaktuj się z obsługą.",
+			"validationRulesUnavailable": "Reguły walidacji są niedostępne",
+			"setDefaultAddressFailed": "Nie udało się ustawić domyślnego adresu",
+			"dummyNotAllowed": "Płatność testowa nie jest dostępna w tym środowisku.",
+			"stripeNotEnabled": "Płatności Stripe nie są włączone w tym środowisku. Ustaw NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS=true w witrynie."
+		},
+		"gateways": {
+			"noneTitle": "Brak skonfigurowanej bramki płatności",
+			"noneBody": "Aby przyjmować płatności, zainstaluj aplikację płatności (np. Saleor Dummy Payment do testów lub Stripe/Adyen do produkcji) w panelu Saleor.",
+			"unsupportedTitle": "Niewspierana bramka płatności",
+			"unsupportedList": "Ta kasa nie obsługuje dostępnych bramek płatności: {gateways}.",
+			"unsupportedEmpty": "Brak obsługiwanej bramki płatności dla tego zamówienia.",
+			"dummyMissingTitle": "Płatność testowa niedostępna w tej kasie",
+			"dummyMissingBody": "Aplikacja Dummy Payment jest zainstalowana, ale nie jest dostępna dla tej kasy. W panelu Saleor sprawdź, czy aplikacja jest aktywna, webhooki działają poprawnie, a waluta kasy jest obsługiwana (USD dla hostowanej aplikacji).",
+			"noGatewayConfigured": "Brak skonfigurowanej bramki płatności. Skontaktuj się z obsługą lub skonfiguruj aplikację płatności w Saleor.",
+			"stripeUseCardForm": "Płatność Stripe odbywa się przez formularz karty. Dokończ płatność w sekcji Stripe powyżej.",
+			"paymentFailed": "Płatność nie powiodła się",
+			"paymentTryAgain": "Płatność nie powiodła się. Spróbuj ponownie.",
+			"paymentWebhookFailed": "Webhook aplikacji płatności nie powiódł się. W panelu Saleor → Aplikacje → Dummy Payment App sprawdź dostarczanie webhooków.",
+			"paymentInitFailed": "Nie udało się zainicjować płatności. Sprawdź, czy aplikacja płatności działa w Saleor."
+		}
+	}
+}

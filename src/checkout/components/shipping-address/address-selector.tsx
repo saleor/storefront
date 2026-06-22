@@ -1,6 +1,7 @@
 "use client";
 
 import { type FC, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 import { setUserDefaultAddress } from "@/app/(checkout)/actions";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
@@ -51,6 +52,9 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 	showSetAsDefault = true,
 	onAddNew,
 }) => {
+	const t = useTranslations("checkout.addresses");
+	const tAccount = useTranslations("account");
+	const resolvedEmptyMessage = emptyMessage ?? t("emptySaved");
 	const refreshCheckoutRsc = useRefreshCheckoutRsc();
 	const [isSettingDefault, setIsSettingDefault] = useState(false);
 	const [setAsDefault, setSetAsDefault] = useState(false);
@@ -91,7 +95,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 	);
 
 	if (addresses.length === 0) {
-		return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;
+		return <p className="text-sm text-muted-foreground">{resolvedEmptyMessage}</p>;
 	}
 
 	const shouldShowSetAsDefault =
@@ -135,7 +139,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 								</span>
 								{isDefault && (
 									<span className="rounded bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-										Default
+										{t("defaultBadge")}
 									</span>
 								)}
 							</div>
@@ -160,7 +164,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 								}}
 								className="shrink-0 rounded px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 							>
-								Edit
+								{tAccount("common.edit")}
 							</button>
 						)}
 					</label>
@@ -181,7 +185,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 						className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground"
 					>
 						{isSettingDefault && <LoadingSpinner />}
-						Set as my default {addressType === "SHIPPING" ? "shipping" : "billing"} address
+						{addressType === "SHIPPING" ? t("setDefaultShipping") : t("setDefaultBilling")}
 					</Label>
 				</div>
 			)}
@@ -189,7 +193,7 @@ export const AddressSelector: FC<AddressSelectorProps> = ({
 			{onAddNew && (
 				<Button type="button" variant="outline-solid" className="w-full" onClick={onAddNew}>
 					<Plus className="h-4 w-4" />
-					Add new address
+					{tAccount("addresses.addNewAddress")}
 				</Button>
 			)}
 		</div>

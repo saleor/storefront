@@ -2,6 +2,8 @@
 
 One Next.js project, two product surfaces, one shared handoff package.
 
+> **North star:** [`paper-architecture.md`](paper-architecture.md) — canonical Next.js stance and pillar index.
+
 ## Documentation map (checkout v2)
 
 | Read first                                                                                        | When                                                        |

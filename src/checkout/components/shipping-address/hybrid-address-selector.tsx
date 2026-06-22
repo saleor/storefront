@@ -1,6 +1,7 @@
 "use client";
 
 import { type FC, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 import { setUserDefaultAddress } from "@/app/(checkout)/actions";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
@@ -48,14 +49,18 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 	selectedAddressId,
 	onSelectAddress,
 	defaultAddressId,
-	emptyMessage = "You don't have any saved addresses yet.",
+	emptyMessage,
 	name = "shippingAddress",
 	addressType = "SHIPPING",
 	onDefaultChange,
 	onAddNew,
 	onEdit,
-	sheetTitle = "Select address",
+	sheetTitle,
 }) => {
+	const t = useTranslations("checkout.addresses");
+	const tAccount = useTranslations("account.addresses");
+	const resolvedEmptyMessage = emptyMessage ?? t("emptySaved");
+	const resolvedSheetTitle = sheetTitle ?? t("selectPrompt");
 	const [sheetOpen, setSheetOpen] = useState(false);
 
 	// For collapsed mode: manage "set as default" state here
@@ -106,7 +111,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 
 	// Empty state
 	if (addresses.length === 0) {
-		return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;
+		return <p className="text-sm text-muted-foreground">{resolvedEmptyMessage}</p>;
 	}
 
 	// Inline mode: delegate to AddressSelector
@@ -117,7 +122,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 				selectedAddressId={selectedAddressId}
 				onSelectAddress={onSelectAddress}
 				defaultAddressId={defaultAddressId}
-				emptyMessage={emptyMessage}
+				emptyMessage={resolvedEmptyMessage}
 				name={name}
 				addressType={addressType}
 				onDefaultChange={onDefaultChange}
@@ -146,7 +151,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 					onClick={() => setSheetOpen(true)}
 					className="border-muted-foreground/50 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed p-4 text-sm text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
 				>
-					Select an address
+					{t("selectPrompt")}
 				</button>
 			)}
 
@@ -158,7 +163,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 				selectedAddressId={selectedAddressId}
 				onSelectAddress={handleSelectAddress}
 				defaultAddressId={defaultAddressId}
-				title={sheetTitle}
+				title={resolvedSheetTitle}
 				onAddNew={onAddNew}
 				onEdit={onEdit}
 				addressType={addressType}
@@ -178,7 +183,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 						className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground"
 					>
 						{isSettingDefault && <LoadingSpinner />}
-						Set as my default {addressType === "SHIPPING" ? "shipping" : "billing"} address
+						{addressType === "SHIPPING" ? t("setDefaultShipping") : t("setDefaultBilling")}
 					</Label>
 				</div>
 			)}
@@ -186,7 +191,7 @@ export const HybridAddressSelector: FC<HybridAddressSelectorProps> = ({
 			{onAddNew && (
 				<Button type="button" variant="outline-solid" className="w-full" onClick={onAddNew}>
 					<Plus className="h-4 w-4" />
-					Add new address
+					{tAccount("addNewAddress")}
 				</Button>
 			)}
 		</div>
