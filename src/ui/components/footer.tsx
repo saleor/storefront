@@ -9,10 +9,12 @@ import {
 import { getCachedChannelsList } from "@/lib/channels/get-channels-data";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import { getFooterMenuItems } from "@/lib/menus/get-menu-data";
+import { getStorefrontContent } from "@/lib/content/server";
 import { getStorefrontLocaleOptions } from "@/lib/locale-display";
 import { FooterMenuColumns } from "./footer-menu-columns";
 import { CopyrightText } from "./copyright-text";
 import { FooterAttribution } from "./footer-attribution";
+import { FooterPhotoCredits } from "./footer-photo-credits";
 import { brandConfig } from "@/config/brand";
 import { Logo } from "./shared/logo";
 
@@ -23,9 +25,10 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 		? await getStorefrontChannelSlugs()
 		: getStaticStorefrontChannelSlugs();
 
-	const [menuItems, channels] = await Promise.all([
+	const [menuItems, channels, content] = await Promise.all([
 		getFooterMenuItems(channel, locale),
 		shouldFetchChannelMetadata(resolvedSlugs) ? getCachedChannelsList() : Promise.resolve(null),
+		getStorefrontContent(channel, locale),
 	]);
 
 	const footerMenuItems = menuItems ?? [];
@@ -65,6 +68,7 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 							<CopyrightText />
 						</p>
 						<FooterAttribution />
+						<FooterPhotoCredits credits={content.surfaces.homepage.photoCredits} />
 					</div>
 					<div className="flex items-center gap-6">
 						<Link

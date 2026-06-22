@@ -99,6 +99,9 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Editorial CTA label
     inputType: PLAIN_TEXT
+  - name: Photo credits
+    inputType: PLAIN_TEXT
+    # JSON array: [{"name":"Artist","href":"https://unsplash.com/@handle"}, ...]
   # Storefront — Cart
   - name: Empty title
     inputType: PLAIN_TEXT
@@ -189,6 +192,7 @@ modelTypes:
       - attribute: Editorial paragraph 1
       - attribute: Editorial image position
       - attribute: Editorial CTA label
+      - attribute: Photo credits
 
   - name: "Storefront — Cart"
     slug: storefront-cart
@@ -276,6 +280,7 @@ models:
       Editorial paragraph 1: Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season.
       Editorial image position: right
       Editorial CTA label: Explore collections
+      Photo credits: "[]"
   - title: Storefront Cart
     slug: storefront-cart
     modelType: Storefront — Cart

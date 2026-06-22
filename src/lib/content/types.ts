@@ -92,10 +92,17 @@ export type HomepageCategoriesContent = {
 	eyebrow?: string;
 };
 
+export type HomepagePhotoCredit = {
+	name: string;
+	href: string;
+};
+
 export type HomepageContent = {
 	hero: HomepageHeroContent;
 	featuredCollection: HomepageFeaturedCollectionContent;
 	categories: HomepageCategoriesContent;
+	/** Photographer attribution for hero + category lifestyle images. */
+	photoCredits: readonly HomepagePhotoCredit[];
 	brandStory: HomepageBrandStoryContent;
 	values: HomepageValuesContent;
 	editorial: HomepageEditorialContent;

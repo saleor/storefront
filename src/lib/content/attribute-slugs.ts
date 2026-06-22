@@ -48,6 +48,7 @@ export const STOREFRONT_HOMEPAGE_ATTRIBUTES = {
 	editorialParagraph1: "editorial-paragraph-1",
 	editorialImagePosition: "editorial-image-position",
 	editorialCtaLabel: "editorial-cta-label",
+	photoCredits: "photo-credits",
 } as const;
 
 export const STOREFRONT_CART_ATTRIBUTES = {

@@ -111,4 +111,22 @@ describe("mapHomepagePage", () => {
 			defaultStorefrontContent.surfaces.homepage.editorial.paragraphs,
 		);
 	});
+
+	it("maps photo credits JSON from Saleor", () => {
+		const partial = mapHomepagePage(
+			homepagePage([
+				{
+					slug: "photo-credits",
+					plainText:
+						'[{"name":"Roman Malik","href":"https://unsplash.com/@alltimer"},{"name":"Frankie Cordoba","href":"https://unsplash.com/@noorvoux"}]',
+				},
+			]),
+		);
+		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
+
+		expect(merged.surfaces.homepage.photoCredits).toEqual([
+			{ name: "Roman Malik", href: "https://unsplash.com/@alltimer" },
+			{ name: "Frankie Cordoba", href: "https://unsplash.com/@noorvoux" },
+		]);
+	});
 });

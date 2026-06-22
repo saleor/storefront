@@ -48,6 +48,7 @@ export const defaultStorefrontContent = {
 			categories: {
 				heading: "Shop by category",
 			},
+			photoCredits: [],
 			brandStory: {
 				heading: "Built for real commerce",
 				paragraphs: [

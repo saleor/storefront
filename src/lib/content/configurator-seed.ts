@@ -1,5 +1,6 @@
 import { stringify } from "yaml";
 import { STOREFRONT_POLICY_PAGE_SLUG, STOREFRONT_PAGE_TYPES } from "@/lib/content/constants";
+import { serializePhotoCredits } from "@/lib/content/photo-credits";
 import type { StorefrontContent } from "@/lib/content/types";
 
 /** Configurator `models:` entry — attribute keys are contentAttribute display names. */
@@ -46,6 +47,7 @@ const ATTR = {
 	editorialParagraph1: "Editorial paragraph 1",
 	editorialImagePosition: "Editorial image position",
 	editorialCtaLabel: "Editorial CTA label",
+	photoCredits: "Photo credits",
 	emptyTitle: "Empty title",
 	emptyBody: "Empty body",
 	emptyCtaLabel: "Empty CTA label",
@@ -141,6 +143,7 @@ export function buildConfiguratorSeedModels(content: StorefrontContent): Configu
 				[ATTR.editorialParagraph1]: surfaces.homepage.editorial.paragraphs[0] ?? "",
 				[ATTR.editorialImagePosition]: surfaces.homepage.editorial.imagePosition,
 				[ATTR.editorialCtaLabel]: surfaces.homepage.editorial.ctaLabel,
+				[ATTR.photoCredits]: serializePhotoCredits(surfaces.homepage.photoCredits),
 			},
 		},
 		{

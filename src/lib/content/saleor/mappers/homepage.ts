@@ -9,6 +9,7 @@ import {
 	attrText,
 	buildAttributeMap,
 } from "@/lib/content/saleor/attributes";
+import { parsePhotoCredits } from "@/lib/content/photo-credits";
 import { omitEmpty } from "@/lib/content/saleor/omit-empty";
 
 const VALUE_COLUMNS = [
@@ -94,6 +95,12 @@ export function mapHomepagePage(page: StorefrontContentPageFragment | null): Par
 			...(editorialParagraph ? { paragraphs: [editorialParagraph] } : {}),
 			imagePosition: position === "left" ? "left" : "right",
 		};
+	}
+
+	const photoCreditsRaw = attrText(attrs, A.photoCredits);
+	const photoCredits = parsePhotoCredits(photoCreditsRaw);
+	if (photoCredits) {
+		homepage.photoCredits = photoCredits;
 	}
 
 	if (Object.keys(homepage).length === 0) {
