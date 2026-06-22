@@ -95,7 +95,12 @@
 	--container-prose: 48rem; /* ~75ch reading measure — long-form copy, legal, FAQ */
 	--container-content: 80rem; /* 1280px — default storefront body width (was max-w-7xl) */
 	--container-wide: 96rem; /* 1536px — immersive / editorial layouts */
-	--container-full: 100%; /* edge-to-edge content */
+	/* 160rem (2560px) — full-bleed feel on typical desktops; caps ultrawide / very wide 4K.
+	 * Identical to container-full below ~2560px CSS width; above that, content centers with
+	 * side margins. Use for immersive PDP and editorial bands. True edge-to-edge at any
+	 * resolution → container-full. See ui-design-system.md § Page width. */
+	--container-super-wide: 160rem;
+	--container-full: 100%; /* edge-to-edge content at every viewport width */
 
 	/* Header/nav column width. Defaults to the main content width so the nav lines
 	 * up with page bodies (the current look). A brand can take the nav edge-to-edge

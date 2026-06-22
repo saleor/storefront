@@ -120,11 +120,13 @@ src/ui/components/ui/
 
 The whole shop uses **one** PDP gallery style — a build-time constant in `gallery-layout.ts`, not per-product CMS config. Set it to `"immersive"`, `"standard"`, or `"mosaic"`; shell classes, the dynamic island renderer, Suspense fallbacks, and route skeletons all read the same value.
 
-| Layout                    | Container           | Grid                                 | Gallery                                                        | Attributes accordion           |
-| ------------------------- | ------------------- | ------------------------------------ | -------------------------------------------------------------- | ------------------------------ |
-| **`immersive`** (default) | `container-full`    | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames  | Below images in gallery column |
-| **`mosaic`**              | `container-wide`    | Wide gallery + narrow sticky buy box | `MosaicGallery` — all images in a 2-col 4:5 grid (no carousel) | Under buy box in info column   |
-| **`standard`**            | `container-content` | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                  | Under buy box in info column   |
+| Layout                    | Container              | Grid                                 | Gallery                                                        | Attributes accordion           |
+| ------------------------- | ---------------------- | ------------------------------------ | -------------------------------------------------------------- | ------------------------------ |
+| **`immersive`** (default) | `container-super-wide` | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames  | Below images in gallery column |
+| **`mosaic`**              | `container-content`    | Wide gallery + narrow sticky buy box | `MosaicGallery` — all images in a 2-col 4:5 grid (no carousel) | Under buy box in info column   |
+| **`standard`**            | `container-content`    | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                  | Under buy box in info column   |
+
+**Page width:** `standard` and `mosaic` use `container-content` so PDP body width matches PLP, cart, and search (Cotopaxi-style — one catalog column). Only **`immersive`** breaks wider (`container-super-wide`). Nav, footer, and marketing bands can still be full-bleed via `--container-nav` or section `width` independently.
 
 All three surfaces (renderer, LCP fallback, skeleton) for each layout live in **`gallery-registry.tsx`** — see [Gallery registry](#gallery-registry-canonical-pattern). `VariantGalleryDynamic`, `ProductShell`, and `ProductRouteSkeleton` read the active layout's surfaces from `activeGalleryVariant()`, so route `loading.tsx` never disagrees with the live page.
 

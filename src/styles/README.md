@@ -171,12 +171,13 @@ Sizes use `clamp()` in `rem` so they respect user font-size settings and scale f
 
 **Canonical container classes** (bundle centering + responsive gutters + a width token):
 
-| Class               | Width                         | Use for                                             |
-| ------------------- | ----------------------------- | --------------------------------------------------- |
-| `container-prose`   | `--container-prose` (48rem)   | Long-form copy, legal, FAQ — readable measure       |
-| `container-content` | `--container-content` (80rem) | Default storefront body (replaces bare `max-w-7xl`) |
-| `container-wide`    | `--container-wide` (96rem)    | Immersive / editorial layouts                       |
-| `container-full`    | `--container-full` (100%)     | Full-bleed, edge-to-edge content                    |
+| Class                  | Width                             | Use for                                             |
+| ---------------------- | --------------------------------- | --------------------------------------------------- |
+| `container-prose`      | `--container-prose` (48rem)       | Long-form copy, legal, FAQ — readable measure       |
+| `container-content`    | `--container-content` (80rem)     | Default storefront body (replaces bare `max-w-7xl`) |
+| `container-wide`       | `--container-wide` (96rem)        | Editorial marketing bands                           |
+| `container-super-wide` | `--container-super-wide` (160rem) | Immersive PDP — full-bleed with ultrawide cap       |
+| `container-full`       | `--container-full` (100%)         | True edge-to-edge at every viewport width           |
 
 ```tsx
 {
@@ -194,7 +195,9 @@ Sizes use `clamp()` in `rem` so they respect user font-size settings and scale f
 </section>;
 ```
 
-Need just the width (no gutter/centering)? Use `max-w-content` / `max-w-wide`. Plain Tailwind (`mx-auto max-w-7xl px-4 …`) still works — these are additive, never enforced.
+Need just the width (no gutter/centering)? Use `max-w-content` / `max-w-wide` / `max-w-super-wide`. Plain Tailwind (`mx-auto max-w-7xl px-4 …`) still works — these are additive, never enforced.
+
+**Immersive full-bleed:** prefer `container-super-wide` over `container-full` — identical below 2560px CSS width, caps on ultrawide (3440+) and very wide 4K. Use `container-full` only when content must touch the bezel at any resolution. See `skills/.../ui-design-system.md` § Full-bleed nuance.
 
 > Full-width does NOT mean full-measure text. Keep line length readable (~60–80ch) by nesting a `container-prose` (or `max-w-prose`) inside wide/full bands.
 

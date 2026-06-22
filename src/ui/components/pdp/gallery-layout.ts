@@ -18,7 +18,9 @@
  * Agent note: when asked to make the PDP immersive (wide gallery + sticky buy box), set this to
  * `"immersive"`; to restore the classic split layout, set it to `"standard"`; for
  * an editorial grid where every image is visible at once, set it to `"mosaic"`.
- * For edge-to-edge width, change the active layout's `main` class to `container-full`.
+ * Immersive uses `container-super-wide` (full-bleed up to 2560px, capped on ultrawide).
+ * Standard and mosaic use `container-content` — same body width as PLP/cart/search.
+ * For true edge-to-edge at every resolution, change immersive `main` to `container-full`.
  */
 export type PdpGalleryLayout = "standard" | "immersive" | "mosaic";
 
@@ -73,7 +75,7 @@ export const PDP_LAYOUT_CLASSES: Record<PdpGalleryLayout, PdpLayoutClasses> = {
 		attributesPlacement: "info",
 	},
 	immersive: {
-		main: "container-full flex-1 py-4 sm:py-6",
+		main: "container-super-wide flex-1 py-4 sm:py-6",
 		grid: "flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(20rem,30rem)] lg:items-start lg:gap-12",
 		galleryColumn: "order-1 min-w-0 lg:col-start-1 lg:row-start-1",
 		infoColumn: `order-2 flex flex-col gap-3 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:sticky ${STICKY_BELOW_HEADER} lg:self-start`,
@@ -82,13 +84,12 @@ export const PDP_LAYOUT_CLASSES: Record<PdpGalleryLayout, PdpLayoutClasses> = {
 	},
 	/**
 	 * Editorial mosaic: every image tiled in a wide 2-column grid
-	 * with a narrow sticky buy box beside it. No carousel — the page scrolls
-	 * through all imagery. Description/details sit under the buy box (the gallery
-	 * column is already tall), and the mobile sticky bar keeps add-to-cart
-	 * reachable while the shopper scans the grid.
+	 * with a narrow sticky buy box beside it. Uses container-content so PDP
+	 * body width matches PLP/cart/search — chrome (nav, footer) can still
+	 * be full-bleed via --container-nav. Only immersive breaks out wider.
 	 */
 	mosaic: {
-		main: "container-wide flex-1 py-4 sm:py-6 lg:py-10",
+		main: "container-content flex-1 py-4 sm:py-6 lg:py-10",
 		grid: "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,28rem)] lg:items-start lg:gap-12",
 		galleryColumn: "min-w-0",
 		infoColumn: `flex flex-col gap-3 lg:sticky ${STICKY_BELOW_HEADER} lg:self-start`,

@@ -178,7 +178,7 @@ export function MediaHero({
 					"w-full text-left",
 					isSplitLeft
 						? "grid flex-1 items-end lg:grid-cols-2"
-						: cn("container-wide flex flex-col py-section-lg", alignClassName[align]),
+						: cn("container-super-wide flex flex-col py-section-lg", alignClassName[align]),
 				)}
 			>
 				<div

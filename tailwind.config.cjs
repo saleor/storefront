@@ -68,6 +68,7 @@ module.exports = {
 			maxWidth: {
 				content: "var(--container-content)",
 				wide: "var(--container-wide)",
+				"super-wide": "var(--container-super-wide)",
 			},
 			// Fluid section rhythm — usable anywhere spacing applies (py-section-md, gap-section-lg, …).
 			spacing: {

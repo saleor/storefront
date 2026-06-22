@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export type SectionTone = "default" | "muted" | "inverse";
-export type SectionWidth = "prose" | "content" | "wide" | "full";
+export type SectionWidth = "prose" | "content" | "wide" | "super-wide" | "full";
 export type SectionSpacing = "none" | "sm" | "md" | "lg";
 
 const toneClassName: Record<SectionTone, string> = {
@@ -15,6 +15,7 @@ const widthClassName: Record<SectionWidth, string> = {
 	prose: "container-prose",
 	content: "container-content",
 	wide: "container-wide",
+	"super-wide": "container-super-wide",
 	full: "container-full",
 };
 

@@ -31,6 +31,7 @@
 	.container-prose,
 	.container-content,
 	.container-wide,
+	.container-super-wide,
 	.container-full,
 	.container-nav {
 		@apply mx-auto w-full px-4 sm:px-6 lg:px-8;
@@ -43,6 +44,9 @@
 	}
 	.container-wide {
 		max-width: var(--container-wide);
+	}
+	.container-super-wide {
+		max-width: var(--container-super-wide);
 	}
 	.container-full {
 		max-width: var(--container-full);
