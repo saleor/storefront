@@ -5,6 +5,7 @@ import { Header } from "@/ui/components/header";
 import { Logo } from "@/ui/components/shared/logo";
 import { ScrollToTopOnNavigate } from "@/ui/components/shared/scroll-to-top-on-navigate";
 import { AnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar";
+import { DismissibleAnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar-slot";
 
 function HeaderSkeleton() {
 	return (
@@ -79,6 +80,13 @@ export function MainChrome({
 	children: ReactNode;
 }) {
 	const { announcementBar } = chrome;
+	const announcementProps = {
+		id: announcementBar.id,
+		message: announcementBar.message,
+		href: announcementBar.href,
+		linkLabel: announcementBar.linkLabel,
+		dismissible: announcementBar.dismissible,
+	};
 
 	return (
 		<>
@@ -86,13 +94,16 @@ export function MainChrome({
 			<Suspense fallback={null}>
 				<ScrollToTopOnNavigate />
 			</Suspense>
-			<AnnouncementBar
-				id={announcementBar.id}
-				message={announcementBar.message}
-				href={announcementBar.href}
-				linkLabel={announcementBar.linkLabel}
-				dismissible={announcementBar.dismissible}
-			/>
+			{announcementBar.dismissible ? (
+				// Reading the dismiss cookie is per-request: render the visible bar as the static
+				// fallback (no shift for the common, non-dismissed case) and let the dynamic slot
+				// drop it for shoppers who already closed it. See `announcement-bar-slot.tsx`.
+				<Suspense fallback={<AnnouncementBar {...announcementProps} />}>
+					<DismissibleAnnouncementBar {...announcementProps} />
+				</Suspense>
+			) : (
+				<AnnouncementBar {...announcementProps} />
+			)}
 			<Suspense fallback={<HeaderSkeleton />}>
 				<Header locale={locale} channel={channel} nav={chrome.nav} />
 			</Suspense>

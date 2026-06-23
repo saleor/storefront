@@ -147,11 +147,11 @@
 	--skeleton-delay: 300ms;
 }
 
-/* Dismissible announcement bar — no-flash guard.
- * A pre-paint inline script (see `announcement-bar.tsx`) sets this attribute on
- * <html> before first paint when the current announcement was dismissed, so the
- * bar is never painted and the page never shifts. The script also zeroes
- * --announcement-bar-height so downstream chrome math reclaims the space. */
+/* Dismissible announcement bar — hide without layout shift.
+ * Set on <html> by the no-flash inline script (`announcement-bar.tsx`), the dismiss island
+ * (`announcement-bar-dismiss.tsx`) on click, or both. Zeroes --announcement-bar-height so
+ * chrome math reclaims the space. The server also omits the bar when the dismiss cookie
+ * matches (see `announcement-bar-slot.tsx`). */
 html[data-announcement-dismissed] [data-announcement-bar] {
 	display: none;
 }

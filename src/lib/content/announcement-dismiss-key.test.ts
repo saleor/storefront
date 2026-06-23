@@ -1,5 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { resolveAnnouncementDismissKey } from "@/lib/content/announcement-dismiss-key";
+import {
+	isAnnouncementDismissed,
+	resolveAnnouncementDismissKey,
+} from "@/lib/content/announcement-dismiss-key";
+
+describe("isAnnouncementDismissed", () => {
+	const dismissKey = "paper:announcement-dismissed:id:test-campaign";
+
+	it("returns false when cookie is absent", () => {
+		expect(isAnnouncementDismissed(undefined, dismissKey)).toBe(false);
+	});
+
+	it("matches decoded cookie values", () => {
+		expect(isAnnouncementDismissed(encodeURIComponent(dismissKey), dismissKey)).toBe(true);
+	});
+
+	it("returns false for a different dismiss key", () => {
+		expect(isAnnouncementDismissed(dismissKey, "paper:announcement-dismissed:id:other")).toBe(false);
+	});
+});
 
 describe("resolveAnnouncementDismissKey", () => {
 	it("uses content hash when id is empty", () => {

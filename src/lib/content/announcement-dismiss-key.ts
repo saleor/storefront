@@ -2,6 +2,47 @@ import type { AnnouncementBarContent } from "@/lib/content/types";
 
 const DISMISS_PREFIX = "paper:announcement-dismissed";
 
+/**
+ * Cookie that stores the dismiss key of the announcement the shopper closed. The server
+ * reads it (see `announcement-bar-slot.tsx`) to omit a dismissed bar from the initial
+ * HTML — no flash, no inline script. The dismiss island writes it client-side.
+ */
+export const ANNOUNCEMENT_DISMISS_COOKIE = "paper_announcement_dismissed";
+
+const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
+
+export function getAnnouncementDismissCookieOptions() {
+	return {
+		path: "/",
+		maxAge: ONE_YEAR_SECONDS,
+		sameSite: "lax" as const,
+	};
+}
+
+/** `document.cookie` assignment for persisting a dismiss key (client-only). */
+export function formatAnnouncementDismissCookie(dismissKey: string): string {
+	const { path, maxAge, sameSite } = getAnnouncementDismissCookieOptions();
+	return `${ANNOUNCEMENT_DISMISS_COOKIE}=${encodeURIComponent(
+		dismissKey,
+	)}; path=${path}; max-age=${maxAge}; samesite=${sameSite}`;
+}
+
+/**
+ * True when `cookieValue` (the raw value from the dismiss cookie) marks `dismissKey` as
+ * dismissed. Tolerates URI-encoded values so it matches regardless of whether the cookie
+ * runtime decoded them — the keys we compare contain no `%`, so decoding is idempotent.
+ */
+export function isAnnouncementDismissed(cookieValue: string | undefined, dismissKey: string): boolean {
+	if (!cookieValue) {
+		return false;
+	}
+	try {
+		return decodeURIComponent(cookieValue) === dismissKey;
+	} catch {
+		return cookieValue === dismissKey;
+	}
+}
+
 /** FNV-1a 32-bit — deterministic in Node and the browser, no crypto deps. */
 function hashAnnouncementContent(message: string, href: string | null, linkLabel: string | null): string {
 	const payload = `${message.trim()}\0${href ?? ""}\0${linkLabel ?? ""}`;
@@ -16,7 +57,7 @@ function hashAnnouncementContent(message: string, href: string | null, linkLabel
 export type AnnouncementDismissInput = Pick<AnnouncementBarContent, "id" | "message" | "href" | "linkLabel">;
 
 /**
- * `localStorage` key for a dismissed announcement bar.
+ * Dismiss key stored in `ANNOUNCEMENT_DISMISS_COOKIE` when the shopper closes the bar.
  *
  * **Default (empty `id`):** hash of `message`, `href`, and `linkLabel` — pass the
  * **rendered** message (after `{freeShippingThreshold}` interpolation) so the key
@@ -36,4 +77,15 @@ export function resolveAnnouncementDismissKey({
 		return `${DISMISS_PREFIX}:id:${explicitId}`;
 	}
 	return `${DISMISS_PREFIX}:content:${hashAnnouncementContent(message, href, linkLabel)}`;
+}
+
+/**
+ * Inline script for the dismissible bar: if the dismiss cookie matches, hide the bar and
+ * zero `--announcement-bar-height` before first paint. Covers the Suspense fallback path
+ * while `DismissibleAnnouncementBar` streams (server omits the bar once resolved).
+ */
+export function announcementDismissNoFlashScript(dismissKey: string): string {
+	const cookieName = JSON.stringify(ANNOUNCEMENT_DISMISS_COOKIE);
+	const key = JSON.stringify(dismissKey);
+	return `(function(){try{var n=${cookieName},k=${key},p=n+"=",parts=document.cookie.split(";");for(var i=0;i<parts.length;i++){var part=parts[i].trim();if(part.indexOf(p)!==0)continue;var v;try{v=decodeURIComponent(part.slice(p.length))}catch(e){v=part.slice(p.length)}if(v===k){var e=document.documentElement;e.setAttribute("data-announcement-dismissed","");e.style.setProperty("--announcement-bar-height","0px");break}}}catch(e){}})();`;
 }

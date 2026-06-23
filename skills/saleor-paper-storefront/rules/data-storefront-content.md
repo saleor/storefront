@@ -40,7 +40,7 @@ next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 000
 
 ### Announcement bar dismissal identity
 
-When `announcementBar.dismissible` is true, the bar stores dismissal in the visitor's `localStorage`. The key is resolved by `resolveAnnouncementDismissKey()` in `announcement-dismiss-key.ts` (client-safe export from `@/lib/content`):
+When `announcementBar.dismissible` is true, dismissal is stored in the `paper_announcement_dismissed` cookie (value = dismiss key from `resolveAnnouncementDismissKey()`). The server reads it in `DismissibleAnnouncementBar` to omit the bar from HTML; a no-flash inline script covers the Suspense fallback path. Keys are resolved in `announcement-dismiss-key.ts` (client-safe export from `@/lib/content`):
 
 | `announcementBar.id`                                         | Dismissal key                                                                                       | When to use                                                                                                                                                 |
 | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |

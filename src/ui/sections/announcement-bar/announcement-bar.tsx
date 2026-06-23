@@ -1,4 +1,7 @@
-import { resolveAnnouncementDismissKey } from "@/lib/content/announcement-dismiss-key";
+import {
+	announcementDismissNoFlashScript,
+	resolveAnnouncementDismissKey,
+} from "@/lib/content/announcement-dismiss-key";
 import { cn } from "@/lib/utils";
 import { AnnouncementDismissButton } from "./announcement-bar-dismiss";
 
@@ -37,17 +40,6 @@ function AnnouncementContent({
 	return <>{message}</>;
 }
 
-/**
- * Synchronous, render-blocking guard that runs *before the bar paints*: if this
- * announcement was dismissed, hide the bar and zero its height token so there is
- * no flash and no layout shift on cached/PPR HTML. Mirrors the next-themes no-flash
- * technique. The dismiss button applies the same two mutations live.
- */
-function noFlashScript(dismissKey: string): string {
-	const key = JSON.stringify(dismissKey);
-	return `(function(){try{if(localStorage.getItem(${key})==="1"){var e=document.documentElement;e.setAttribute("data-announcement-dismissed","");e.style.setProperty("--announcement-bar-height","0px");}}catch(e){}})();`;
-}
-
 export function AnnouncementBar({
 	id,
 	message,
@@ -72,8 +64,7 @@ export function AnnouncementBar({
 
 		return (
 			<>
-				{ }
-				<script dangerouslySetInnerHTML={{ __html: noFlashScript(dismissKey) }} />
+				<script dangerouslySetInnerHTML={{ __html: announcementDismissNoFlashScript(dismissKey) }} />
 				<div
 					data-announcement-bar=""
 					className={cn(

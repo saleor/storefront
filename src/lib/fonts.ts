@@ -15,7 +15,7 @@ const frauncesDisplay = Fraunces({
 export type RootHtmlFontProps = {
 	lang: string;
 	className: string;
-	/** Pre-paint scripts (announcement dismiss guard) may set attrs/styles on `<html>` before hydration. */
+	/** Announcement dismiss no-flash script may set attrs/styles on `<html>` before hydration. */
 	suppressHydrationWarning: true;
 	"data-typography"?: "editorial";
 };
