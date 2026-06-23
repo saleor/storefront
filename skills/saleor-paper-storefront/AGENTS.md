@@ -23,11 +23,9 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 ## Table of Contents
 
 0. [Architecture](#0-architecture) — **CRITICAL**
-
    - 0.1 [Paper Architecture](#01-paper-architecture)
 
 1. [Data Layer](#1-data-layer) — **CRITICAL**
-
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
    - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
@@ -36,13 +34,11 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 1.6 [Storefront Content Attributes](#16-storefront-content-attributes)
 
 2. [Product Pages](#2-product-pages) — **HIGH**
-
    - 2.1 [Product Detail Page](#21-product-detail-page)
    - 2.2 [Variant Selection](#22-variant-selection)
    - 2.3 [Product Filtering](#23-product-filtering)
 
 3. [Checkout Flow](#3-checkout-flow) — **HIGH**
-
    - 3.1 [Paper Surfaces](#31-paper-surfaces)
    - 3.2 [Checkout Design Principles](#32-checkout-design-principles)
    - 3.3 [Checkout Management](#33-checkout-management)
@@ -50,7 +46,6 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 3.5 [Checkout Components](#35-checkout-components)
 
 4. [Design & Composition](#4-design-composition) — **HIGH**
-
    - 4.1 [UI Design System](#41-ui-design-system)
    - 4.2 [Design Quality Rubric](#42-design-quality-rubric)
    - 4.3 [UI Sections (Marketing Blocks)](#43-ui-sections-marketing-blocks)
@@ -59,14 +54,12 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 4.6 [Design Verification Gates](#46-design-verification-gates)
 
 5. [UI & Channels](#5-ui-channels) — **MEDIUM**
-
    - 5.1 [UI Components](#51-ui-components)
    - 5.2 [Channels & Multi-Currency](#52-channels-multi-currency)
    - 5.3 [Locale & Channel URL Routing](#53-locale-channel-url-routing)
    - 5.4 [next-intl (Code-Owned UI Strings)](#54-next-intl-code-owned-ui-strings)
 
 6. [SEO](#6-seo) — **MEDIUM**
-
    - 6.1 [SEO & Metadata](#61-seo-metadata)
 
 7. [Development](#7-development) — **MEDIUM**
@@ -1241,7 +1234,7 @@ next-intl owns **messages, not routing** — the `[locale]` URL segment (ADR 000
 
 ### Announcement bar dismissal identity
 
-When `announcementBar.dismissible` is true, the bar stores dismissal in the visitor's `localStorage`. The key is resolved by `resolveAnnouncementDismissKey()` in `announcement-dismiss-key.ts` (client-safe export from `@/lib/content`):
+When `announcementBar.dismissible` is true, dismissal is stored in the `paper_announcement_dismissed` cookie (value = dismiss key from `resolveAnnouncementDismissKey()`). The server reads it in `DismissibleAnnouncementBar` to omit the bar from HTML; a no-flash inline script covers the Suspense fallback path. Keys are resolved in `announcement-dismiss-key.ts` (client-safe export from `@/lib/content`):
 
 | `announcementBar.id`                                         | Dismissal key                                                                                       | When to use                                                                                                                                                 |
 | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1775,11 +1768,13 @@ src/ui/components/ui/
 
 The whole shop uses **one** PDP gallery style — a build-time constant in `gallery-layout.ts`, not per-product CMS config. Set it to `"immersive"`, `"standard"`, or `"mosaic"`; shell classes, the dynamic island renderer, Suspense fallbacks, and route skeletons all read the same value.
 
-| Layout                    | Container           | Grid                                 | Gallery                                                        | Attributes accordion           |
-| ------------------------- | ------------------- | ------------------------------------ | -------------------------------------------------------------- | ------------------------------ |
-| **`immersive`** (default) | `container-full`    | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames  | Below images in gallery column |
-| **`mosaic`**              | `container-wide`    | Wide gallery + narrow sticky buy box | `MosaicGallery` — all images in a 2-col 4:5 grid (no carousel) | Under buy box in info column   |
-| **`standard`**            | `container-content` | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                  | Under buy box in info column   |
+| Layout                    | Container              | Grid                                 | Gallery                                                        | Attributes accordion           |
+| ------------------------- | ---------------------- | ------------------------------------ | -------------------------------------------------------------- | ------------------------------ |
+| **`immersive`** (default) | `container-super-wide` | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames  | Below images in gallery column |
+| **`mosaic`**              | `container-content`    | Wide gallery + narrow sticky buy box | `MosaicGallery` — all images in a 2-col 4:5 grid (no carousel) | Under buy box in info column   |
+| **`standard`**            | `container-content`    | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                  | Under buy box in info column   |
+
+**Page width:** `standard` and `mosaic` use `container-content` so PDP body width matches PLP, cart, and search (Cotopaxi-style — one catalog column). Only **`immersive`** breaks wider (`container-super-wide`). Nav, footer, and marketing bands can still be full-bleed via `--container-nav` or section `width` independently.
 
 All three surfaces (renderer, LCP fallback, skeleton) for each layout live in **`gallery-registry.tsx`** — see [Gallery registry](#gallery-registry-canonical-pattern). `VariantGalleryDynamic`, `ProductShell`, and `ProductRouteSkeleton` read the active layout's surfaces from `activeGalleryVariant()`, so route `loading.tsx` never disagrees with the live page.
 
@@ -3691,21 +3686,41 @@ Default Tailwind sizes (`text-sm`, `text-lg`) remain for misc UI (price, breadcr
 
 Page width is a **design decision**. Paper does not assume a centered fixed-width desktop; full-bleed is first-class. Use the canonical container classes instead of bare `max-w-7xl`.
 
-| Class               | Width | Use for                                                                      |
-| ------------------- | ----- | ---------------------------------------------------------------------------- |
-| `container-prose`   | 48rem | Long-form copy, legal, FAQ (readable measure)                                |
-| `container-content` | 80rem | Default storefront body                                                      |
-| `container-wide`    | 96rem | Immersive / editorial layouts                                                |
-| `container-full`    | 100%  | Full-bleed, edge-to-edge                                                     |
-| `container-nav`     | token | Header bar + mega-menu column (`--container-nav`, defaults to content width) |
+| Class                  | Width  | Use for                                                                      |
+| ---------------------- | ------ | ---------------------------------------------------------------------------- |
+| `container-prose`      | 48rem  | Long-form copy, legal, FAQ (readable measure)                                |
+| `container-content`    | 80rem  | Default storefront body                                                      |
+| `container-wide`       | 96rem  | Editorial marketing bands (not default PDP body)                             |
+| `container-super-wide` | 160rem | **Immersive PDP only** — full-bleed up to 2560px, capped on ultrawide        |
+| `container-full`       | 100%   | True edge-to-edge at **every** viewport width (no max)                       |
+| `container-nav`        | token  | Header bar + mega-menu column (`--container-nav`, defaults to content width) |
 
-Each bundles `mx-auto w-full px-4 sm:px-6 lg:px-8`. Width-only utilities: `max-w-content`, `max-w-wide`. **Full-width ≠ full-measure text** — nest a `container-prose` inside `container-full`/`container-wide` so line length stays ~60–80ch.
+Each bundles `mx-auto w-full px-4 sm:px-6 lg:px-8`. Width-only utilities: `max-w-content`, `max-w-wide`, `max-w-super-wide`. **Full-width ≠ full-measure text** — nest a `container-prose` inside wide/full bands so line length stays ~60–80ch.
+
+### Full-bleed nuance (`super-wide` vs `full`)
+
+When a user asks for "full bleed" or "immersive edge-to-edge", **default to `container-super-wide`**, not `container-full`:
+
+| Class                  | Behavior                                                                | When to use                                                                                         |
+| ---------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `container-super-wide` | `width: 100%` up to **160rem (2560px)**, then centers with side margins | Immersive PDP, editorial heroes — full-bleed on normal monitors, capped on ultrawide / very wide 4K |
+| `container-full`       | Always `100%` of the viewport — no max                                  | Rare: landing pages, brand moments that must touch the bezel at any resolution                      |
+
+**Typical viewport widths (CSS px, browser chrome excluded):**
+
+| Range       | Examples                           | `super-wide` vs `full` on immersive PDP                                       |
+| ----------- | ---------------------------------- | ----------------------------------------------------------------------------- |
+| ≤ 2560px    | 1366 laptop, 1920 FHD, 2560 QHD    | **Identical** — both feel full-bleed                                          |
+| 2561–3440px | 3440×1440 ultrawide (21:9)         | `super-wide` caps at 2560px; `full` stretches gallery to ~3000px+             |
+| 3840px+     | 4K 16:9, 5120×1440 super-ultrawide | `super-wide` strongly recommended; `full` makes product imagery absurdly wide |
+
+Adjust `--container-super-wide` in `brand.css` if a brand wants a different cap (e.g. `120rem` / 1920px for a tighter frame). Immersive PDP override: change `PDP_LAYOUT_CLASSES.immersive.main` to `container-full` in `gallery-layout.ts`.
 
 **Nav width is a brand knob.** The header and its mega-menu both use `container-nav`, whose width comes from the `--container-nav` token in `brand.css` (default `var(--container-content)` = the current look). To take the nav edge-to-edge for a brand, set `--container-nav: var(--container-full)` (or `--container-wide`) — bar and dropdown follow, no component edits, fully reversible.
 
 **The body column is one token, too.** Every page body — PDP, PLP, search, cart, CMS pages, collections/categories, the footer, even loading skeletons — uses `container-content` (no more stray `max-w-7xl`). So the default body width is the single `--container-content` token: change it once and every page follows in lockstep. Two ways to go full-bleed:
 
-- **One page, rare case:** swap that page's wrapper to `container-full` (or `container-wide`). Edge-to-edge is first-class, so no escape hatch needed — e.g. a landing page that wants an immersive grid.
+- **One page, rare case:** swap that page's wrapper to `container-super-wide` (immersive default), `container-wide`, or `container-full` (true edge-to-edge at any resolution).
 - **Globally:** widen `--container-content` itself (affects bodies _and_ section defaults, which is usually what you want for a consistent frame).
 
 (The checkout surface keeps its own `max-w-7xl` frame by design — it's a separate surface and must not share storefront layout tokens.)
@@ -4120,7 +4135,7 @@ PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDyn
 
 1. **Static design** (gallery column shell, name, breadcrumbs, new editorial/spec/related bands) lives in `ProductShell` from cached `product` data.
 2. **Variant-dependent UI** stays in the dynamic islands (they read `searchParams.variant`) — don't lift variant state into the shell.
-3. **Layout width / columns**: flip `PDP_GALLERY_LAYOUT` for shop-wide immersive vs standard, or extend `PDP_LAYOUT_CLASSES` for a new ratio. `container-full` + wide gallery column is the default immersive path.
+3. **Layout width / columns**: flip `PDP_GALLERY_LAYOUT` for shop-wide immersive vs standard, or extend `PDP_LAYOUT_CLASSES` for a new ratio. Immersive defaults to `container-super-wide` (full-bleed up to 2560px); use `container-full` in `gallery-layout.ts` for true edge-to-edge at any resolution.
 4. **Add a new PDP section** (related products, reviews, story, spec table): render it in `ProductShell` from cached data, or as its own nested `<Suspense>` island if it needs runtime/searchParams data. Keep the buy box (`VariantSectionDynamic`) and its add-to-cart Server Action intact.
 5. **Preserve LCP**: keep the gallery Suspense fallback (`ImmersiveGalleryFallback` / `ProductGalleryFallback`) with `priority` on the default hero — don't add a heavier hero above the gallery.
 6. **Preserve mobile commerce UX**: keep the sticky add-to-cart bar (`sticky-bar.tsx`); use CSS `order-*` (see `data-caching` §CSS order) when dynamic content must appear above static `h1` while keeping `h1` in the static shell for SEO.
@@ -5016,14 +5031,14 @@ const jsonLd = buildProductJsonLd({
   images: [product.thumbnail?.url],
 });
 
-// In JSX:
-{jsonLd && (
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-  />
-)}
+// In JSX (jsonLdScriptProps escapes `</script>` / U+2028 / U+2029 for inline scripts):
+{jsonLd && <script {...jsonLdScriptProps(jsonLd)} />}
 ```
+
+> **Never** inline `dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}` — plain
+> `JSON.stringify` does not escape `<`, so a CMS-controlled value containing `</script>`
+> breaks out of the script tag (CodeQL "improper code sanitization"). Use `jsonLdScriptProps`,
+> or `serializeForInlineScript` from `@/lib/html/inline-script` for other inline scripts.
 
 ## Dynamic OG Images
 
@@ -5071,11 +5086,7 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      {jsonLd && (
-        <script type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      {jsonLd && <script {...jsonLdScriptProps(jsonLd)} />}
       <ProductContent product={product} />
     </>
   );

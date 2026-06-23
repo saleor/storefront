@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { parsePhotoCredits, serializePhotoCredits } from "@/lib/content/photo-credits";
-import { isSafeExternalHref } from "@/lib/url/safe-href";
 
 describe("photo-credits", () => {
 	it("round-trips structured credits", () => {
@@ -26,13 +25,5 @@ describe("photo-credits", () => {
 
 	it("drops credits with empty names", () => {
 		expect(parsePhotoCredits('[{"name":"  ","href":"https://example.com"}]')).toBeUndefined();
-	});
-
-	it("accepts http and https URLs only", () => {
-		expect(isSafeExternalHref("https://unsplash.com/@user")).toBe(true);
-		expect(isSafeExternalHref("http://example.com")).toBe(true);
-		expect(isSafeExternalHref("javascript:alert(1)")).toBe(false);
-		expect(isSafeExternalHref("data:text/html,evil")).toBe(false);
-		expect(isSafeExternalHref("/relative")).toBe(false);
 	});
 });

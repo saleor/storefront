@@ -12,7 +12,7 @@ import { resolveLocaleFromSlug } from "@/config/locale";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
 import { buildPolicyLabelValues } from "@/lib/content";
 import { getStorefrontContent } from "@/lib/content/server";
-import { buildBrowsePageMetadata, buildProductJsonLd } from "@/lib/seo";
+import { buildBrowsePageMetadata, buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
@@ -204,12 +204,7 @@ async function ProductShell({
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
-			{productJsonLd && (
-				<script
-					type="application/ld+json"
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-				/>
-			)}
+			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
 			<main className={layout.main}>
 				<div className="mb-6 hidden sm:block">

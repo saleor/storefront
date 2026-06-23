@@ -79,13 +79,44 @@ export function resolveAnnouncementDismissKey({
 	return `${DISMISS_PREFIX}:content:${hashAnnouncementContent(message, href, linkLabel)}`;
 }
 
+/** `data-*` attribute carrying the cookie name into {@link ANNOUNCEMENT_NO_FLASH_SCRIPT}. */
+export const ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR = "data-announcement-cookie";
+/** `data-*` attribute carrying the dismiss key into {@link ANNOUNCEMENT_NO_FLASH_SCRIPT}. */
+export const ANNOUNCEMENT_NO_FLASH_KEY_ATTR = "data-announcement-key";
+
 /**
- * Inline script for the dismissible bar: if the dismiss cookie matches, hide the bar and
- * zero `--announcement-bar-height` before first paint. Covers the Suspense fallback path
- * while `DismissibleAnnouncementBar` streams (server omits the bar once resolved).
+ * Static, no-flash inline script for the dismissible bar — the canonical anti-FOUC pattern
+ * (same shape as flash-free dark-mode scripts). If the dismiss cookie matches, it hides the
+ * bar and zeroes `--announcement-bar-height` before first paint, covering the Suspense
+ * fallback window while `DismissibleAnnouncementBar` streams (the server omits the bar once
+ * resolved).
+ *
+ * The script body is a **constant** — it never interpolates data. The per-request cookie
+ * name and dismiss key arrive as `data-*` attributes on the `<script>` element (React escapes
+ * attribute values), read here via `document.currentScript`. No string-built code, so there
+ * is no inline-script sanitization concern.
  */
-export function announcementDismissNoFlashScript(dismissKey: string): string {
-	const cookieName = JSON.stringify(ANNOUNCEMENT_DISMISS_COOKIE);
-	const key = JSON.stringify(dismissKey);
-	return `(function(){try{var n=${cookieName},k=${key},p=n+"=",parts=document.cookie.split(";");for(var i=0;i<parts.length;i++){var part=parts[i].trim();if(part.indexOf(p)!==0)continue;var v;try{v=decodeURIComponent(part.slice(p.length))}catch(e){v=part.slice(p.length)}if(v===k){var e=document.documentElement;e.setAttribute("data-announcement-dismissed","");e.style.setProperty("--announcement-bar-height","0px");break}}}catch(e){}})();`;
-}
+export const ANNOUNCEMENT_NO_FLASH_SCRIPT = `(function(){
+	var el = document.currentScript;
+	if (!el) return;
+	var cookieName = el.getAttribute("${ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR}");
+	var dismissKey = el.getAttribute("${ANNOUNCEMENT_NO_FLASH_KEY_ATTR}");
+	if (!cookieName || !dismissKey) return;
+	try {
+		var prefix = cookieName + "=";
+		var parts = document.cookie.split(";");
+		for (var i = 0; i < parts.length; i++) {
+			var part = parts[i].trim();
+			if (part.indexOf(prefix) !== 0) continue;
+			var raw = part.slice(prefix.length);
+			var value;
+			try { value = decodeURIComponent(raw); } catch (e) { value = raw; }
+			if (value === dismissKey) {
+				var root = document.documentElement;
+				root.setAttribute("data-announcement-dismissed", "");
+				root.style.setProperty("--announcement-bar-height", "0px");
+				break;
+			}
+		}
+	} catch (e) {}
+})();`;

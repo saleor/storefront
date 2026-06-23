@@ -69,14 +69,14 @@ const jsonLd = buildProductJsonLd({
   images: [product.thumbnail?.url],
 });
 
-// In JSX:
-{jsonLd && (
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-  />
-)}
+// In JSX (jsonLdScriptProps escapes `</script>` / U+2028 / U+2029 for inline scripts):
+{jsonLd && <script {...jsonLdScriptProps(jsonLd)} />}
 ```
+
+> **Never** inline `dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}` — plain
+> `JSON.stringify` does not escape `<`, so a CMS-controlled value containing `</script>`
+> breaks out of the script tag (CodeQL "improper code sanitization"). Use `jsonLdScriptProps`,
+> or `serializeForInlineScript` from `@/lib/html/inline-script` for other inline scripts.
 
 ## Dynamic OG Images
 
@@ -124,11 +124,7 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      {jsonLd && (
-        <script type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      {jsonLd && <script {...jsonLdScriptProps(jsonLd)} />}
       <ProductContent product={product} />
     </>
   );

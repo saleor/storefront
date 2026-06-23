@@ -1,5 +1,8 @@
 import {
-	announcementDismissNoFlashScript,
+	ANNOUNCEMENT_DISMISS_COOKIE,
+	ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR,
+	ANNOUNCEMENT_NO_FLASH_KEY_ATTR,
+	ANNOUNCEMENT_NO_FLASH_SCRIPT,
 	resolveAnnouncementDismissKey,
 } from "@/lib/content/announcement-dismiss-key";
 import { sanitizeNavHref } from "@/lib/url/safe-href";
@@ -68,7 +71,13 @@ export function AnnouncementBar({
 
 		return (
 			<>
-				<script dangerouslySetInnerHTML={{ __html: announcementDismissNoFlashScript(dismissKey) }} />
+				<script
+					{...{
+						[ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR]: ANNOUNCEMENT_DISMISS_COOKIE,
+						[ANNOUNCEMENT_NO_FLASH_KEY_ATTR]: dismissKey,
+					}}
+					dangerouslySetInnerHTML={{ __html: ANNOUNCEMENT_NO_FLASH_SCRIPT }}
+				/>
 				<div
 					data-announcement-bar=""
 					className={cn(
