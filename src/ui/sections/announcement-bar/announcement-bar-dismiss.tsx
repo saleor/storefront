@@ -6,10 +6,9 @@ import { formatAnnouncementDismissCookie } from "@/lib/content/announcement-dism
 /**
  * X button for the dismissible announcement bar. The bar is server-rendered; on dismiss
  * this island writes a cookie so the server can omit the bar from the initial HTML on the
- * next load (no flash, no inline script — see `announcement-bar-slot.tsx`), then hides the
- * bar live for the current view. Hiding is driven by the `data-announcement-dismissed`
- * attribute + CSS (see `brand.css`) rather than a React unmount, so the chrome height token
- * collapses to 0 with no layout shift.
+ * next load (see `announcement-bar-slot.tsx`), then hides the bar live for the current view.
+ * Hiding is driven by the `data-announcement-dismissed` attribute + CSS (see `brand.css`)
+ * rather than a React unmount, so the chrome height token collapses to 0 with no layout shift.
  */
 export function AnnouncementDismissButton({ dismissKey }: { dismissKey: string }) {
 	const handleDismiss = () => {

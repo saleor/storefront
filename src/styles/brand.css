@@ -148,10 +148,9 @@
 }
 
 /* Dismissible announcement bar — hide without layout shift.
- * Set on <html> by the no-flash inline script (`announcement-bar.tsx`), the dismiss island
- * (`announcement-bar-dismiss.tsx`) on click, or both. Zeroes --announcement-bar-height so
- * chrome math reclaims the space. The server also omits the bar when the dismiss cookie
- * matches (see `announcement-bar-slot.tsx`). */
+ * Set on <html> by the dismiss island (`announcement-bar-dismiss.tsx`) on click. Zeroes
+ * --announcement-bar-height so chrome math reclaims the space. The server omits the bar
+ * when the dismiss cookie matches (see `announcement-bar-slot.tsx`). */
 html[data-announcement-dismissed] [data-announcement-bar] {
 	display: none;
 }

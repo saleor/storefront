@@ -95,9 +95,8 @@ export function MainChrome({
 				<ScrollToTopOnNavigate />
 			</Suspense>
 			{announcementBar.dismissible ? (
-				// Reading the dismiss cookie is per-request: render the visible bar as the static
-				// fallback (no shift for the common, non-dismissed case) and let the dynamic slot
-				// drop it for shoppers who already closed it. See `announcement-bar-slot.tsx`.
+				// Cookie read is per-request: optimistic fallback (visible bar) avoids shift for
+				// shoppers who never dismissed; the dynamic slot omits it when already dismissed.
 				<Suspense fallback={<AnnouncementBar {...announcementProps} />}>
 					<DismissibleAnnouncementBar {...announcementProps} />
 				</Suspense>

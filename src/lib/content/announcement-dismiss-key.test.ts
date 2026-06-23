@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-	ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR,
-	ANNOUNCEMENT_NO_FLASH_KEY_ATTR,
-	ANNOUNCEMENT_NO_FLASH_SCRIPT,
 	isAnnouncementDismissed,
 	resolveAnnouncementDismissKey,
 } from "@/lib/content/announcement-dismiss-key";
@@ -72,20 +69,5 @@ describe("resolveAnnouncementDismissKey", () => {
 		const withLabel = resolveAnnouncementDismissKey({ ...base, linkLabel: "Shop sale" });
 		const withoutLabel = resolveAnnouncementDismissKey(base);
 		expect(withLabel).not.toBe(withoutLabel);
-	});
-});
-
-describe("ANNOUNCEMENT_NO_FLASH_SCRIPT", () => {
-	it("reads its inputs from data-* attributes, never from interpolated data", () => {
-		// The script body must stay a static constant: per-request values arrive via
-		// attributes read through document.currentScript, so there is no code construction
-		// from (potentially CMS-controlled) data — and no </script> breakout surface.
-		expect(ANNOUNCEMENT_NO_FLASH_SCRIPT).toContain("document.currentScript");
-		expect(ANNOUNCEMENT_NO_FLASH_SCRIPT).toContain(ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR);
-		expect(ANNOUNCEMENT_NO_FLASH_SCRIPT).toContain(ANNOUNCEMENT_NO_FLASH_KEY_ATTR);
-	});
-
-	it("does not embed a concrete dismiss key", () => {
-		expect(ANNOUNCEMENT_NO_FLASH_SCRIPT).not.toContain("paper:announcement-dismissed:");
 	});
 });

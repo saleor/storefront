@@ -15,7 +15,7 @@ const frauncesDisplay = Fraunces({
 export type RootHtmlFontProps = {
 	lang: string;
 	className: string;
-	/** Announcement dismiss no-flash script may set attrs/styles on `<html>` before hydration. */
+	/** Dismiss island may set attrs/styles on `<html>` after click. */
 	suppressHydrationWarning: true;
 	"data-typography"?: "editorial";
 };

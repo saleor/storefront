@@ -1,10 +1,4 @@
-import {
-	ANNOUNCEMENT_DISMISS_COOKIE,
-	ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR,
-	ANNOUNCEMENT_NO_FLASH_KEY_ATTR,
-	ANNOUNCEMENT_NO_FLASH_SCRIPT,
-	resolveAnnouncementDismissKey,
-} from "@/lib/content/announcement-dismiss-key";
+import { resolveAnnouncementDismissKey } from "@/lib/content/announcement-dismiss-key";
 import { sanitizeNavHref } from "@/lib/url/safe-href";
 import { cn } from "@/lib/utils";
 import { NavHrefLink } from "@/ui/atoms/nav-href-link";
@@ -70,27 +64,18 @@ export function AnnouncementBar({
 		});
 
 		return (
-			<>
-				<script
-					{...{
-						[ANNOUNCEMENT_NO_FLASH_COOKIE_ATTR]: ANNOUNCEMENT_DISMISS_COOKIE,
-						[ANNOUNCEMENT_NO_FLASH_KEY_ATTR]: dismissKey,
-					}}
-					dangerouslySetInnerHTML={{ __html: ANNOUNCEMENT_NO_FLASH_SCRIPT }}
-				/>
-				<div
-					data-announcement-bar=""
-					className={cn(
-						"relative flex h-[var(--announcement-bar-height)] items-center justify-center border-b border-border bg-foreground px-10 text-center text-sm text-background",
-						className,
-					)}
-					role="region"
-					aria-label="Store announcement"
-				>
-					<p className="min-w-0 truncate">{content}</p>
-					<AnnouncementDismissButton dismissKey={dismissKey} />
-				</div>
-			</>
+			<div
+				data-announcement-bar=""
+				className={cn(
+					"relative flex h-[var(--announcement-bar-height)] items-center justify-center border-b border-border bg-foreground px-10 text-center text-sm text-background",
+					className,
+				)}
+				role="region"
+				aria-label="Store announcement"
+			>
+				<p className="min-w-0 truncate">{content}</p>
+				<AnnouncementDismissButton dismissKey={dismissKey} />
+			</div>
 		);
 	}
 

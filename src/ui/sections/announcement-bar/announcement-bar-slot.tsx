@@ -8,11 +8,19 @@ import { AnnouncementBar, type AnnouncementBarProps } from "./announcement-bar";
 
 /**
  * Per-request gate for a dismissible announcement bar. Reading the dismiss cookie makes
- * this dynamic, so render it inside a `<Suspense>` whose fallback is the visible bar (see
- * `main-chrome.tsx`): shoppers who never dismissed see no shift, and a previously dismissed
- * bar is omitted from the streamed HTML instead of flashing in and collapsing on the client.
+ * this dynamic — render inside `<Suspense>` in `main-chrome.tsx` so `cookies()` does not
+ * block the layout shell. The fallback is the visible bar (no shift for shoppers who never
+ * dismissed); shoppers who already closed it may see a brief flash until this resolves.
  */
 export async function DismissibleAnnouncementBar(props: AnnouncementBarProps) {
+	if (!props.message.trim()) {
+		return null;
+	}
+
+	if (!props.dismissible) {
+		return <AnnouncementBar {...props} />;
+	}
+
 	const dismissKey = resolveAnnouncementDismissKey({
 		id: props.id,
 		message: props.message,
