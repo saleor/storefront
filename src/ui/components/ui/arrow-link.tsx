@@ -1,8 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
-import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
 import { cn } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 
 export interface ArrowLinkProps {
 	href: string;
@@ -33,17 +32,9 @@ export function ArrowLink({ href, children, className }: ArrowLinkProps) {
 		</>
 	);
 
-	if (isExternalMenuHref(href)) {
-		return (
-			<a href={href} rel="noopener noreferrer" className={classes}>
-				{inner}
-			</a>
-		);
-	}
-
 	return (
-		<LinkWithChannel href={href} prefetch={false} className={classes}>
+		<NavHrefLink href={href} className={classes}>
 			{inner}
-		</LinkWithChannel>
+		</NavHrefLink>
 	);
 }

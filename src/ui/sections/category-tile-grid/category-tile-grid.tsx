@@ -1,9 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
-import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
 import { cn } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 import { Section, type SectionTone, type SectionWidth } from "@/ui/sections/section";
 import { SectionHeader, type SectionHeaderCta } from "@/ui/sections/section-header";
 
@@ -56,17 +55,10 @@ function TileLink({
 	className: string;
 	children: React.ReactNode;
 }) {
-	if (isExternalMenuHref(href)) {
-		return (
-			<a href={href} rel="noopener noreferrer" className={className}>
-				{children}
-			</a>
-		);
-	}
 	return (
-		<LinkWithChannel href={href} prefetch={false} className={className}>
+		<NavHrefLink href={href} className={className}>
 			{children}
-		</LinkWithChannel>
+		</NavHrefLink>
 	);
 }
 

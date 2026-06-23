@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
-import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
 import { cn } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 import { buttonClassName } from "@/ui/components/ui/button";
 
 export interface MediaHeroCta {
@@ -90,17 +89,10 @@ function resolveCopyTone(
 }
 
 function MediaHeroCtaLink({ cta, className }: { cta: MediaHeroCta; className: string }) {
-	if (isExternalMenuHref(cta.href)) {
-		return (
-			<a href={cta.href} className={className} rel="noopener noreferrer">
-				{cta.label}
-			</a>
-		);
-	}
 	return (
-		<LinkWithChannel href={cta.href} prefetch={false} className={className}>
+		<NavHrefLink href={cta.href} className={className}>
 			{cta.label}
-		</LinkWithChannel>
+		</NavHrefLink>
 	);
 }
 

@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
-import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
 import { cn } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 import { buttonClassName } from "@/ui/components/ui/button";
 
 export interface EditorialHeroCta {
@@ -29,18 +28,10 @@ export interface EditorialHeroProps {
 }
 
 function HeroCtaLink({ cta, className }: { cta: EditorialHeroCta; className: string }) {
-	if (isExternalMenuHref(cta.href)) {
-		return (
-			<a href={cta.href} className={className} rel="noopener noreferrer">
-				{cta.label}
-			</a>
-		);
-	}
-
 	return (
-		<LinkWithChannel href={cta.href} prefetch={false} className={className}>
+		<NavHrefLink href={cta.href} className={className}>
 			{cta.label}
-		</LinkWithChannel>
+		</NavHrefLink>
 	);
 }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import type { MenuItem } from "@/lib/menus/get-menu-data";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 
 const defaultFooterLinks = {
 	support: [
@@ -53,13 +54,12 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 	}
 	if (child.url) {
 		return (
-			<Link
+			<NavHrefLink
 				href={child.url}
-				prefetch={false}
 				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.name}
-			</Link>
+			</NavHrefLink>
 		);
 	}
 	return null;

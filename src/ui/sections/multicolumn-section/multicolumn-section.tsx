@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
-import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
 import { cn } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 import { Section, type SectionTone, type SectionWidth } from "@/ui/sections/section";
 import { SectionHeader, type SectionHeaderCta } from "@/ui/sections/section-header";
 
@@ -94,23 +93,12 @@ export function MulticolumnSection({
 				{columns.map((column) => (
 					<li key={column.title} className="flex flex-col gap-4 text-center">
 						{column.href ? (
-							isExternalMenuHref(column.href) ? (
-								<a
-									href={column.href}
-									rel="noopener noreferrer"
-									className="flex flex-col gap-4 no-underline transition-opacity duration-base ease-standard hover:opacity-80 motion-reduce:transition-none"
-								>
-									<ColumnInner column={column} />
-								</a>
-							) : (
-								<LinkWithChannel
-									href={column.href}
-									prefetch={false}
-									className="flex flex-col gap-4 no-underline transition-opacity duration-base ease-standard hover:opacity-80 motion-reduce:transition-none"
-								>
-									<ColumnInner column={column} />
-								</LinkWithChannel>
-							)
+							<NavHrefLink
+								href={column.href}
+								className="flex flex-col gap-4 no-underline transition-opacity duration-base ease-standard hover:opacity-80 motion-reduce:transition-none"
+							>
+								<ColumnInner column={column} />
+							</NavHrefLink>
 						) : (
 							<ColumnInner column={column} />
 						)}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { isSafeExternalHref, parsePhotoCredits, serializePhotoCredits } from "@/lib/content/photo-credits";
+import { parsePhotoCredits, serializePhotoCredits } from "@/lib/content/photo-credits";
+import { isSafeExternalHref } from "@/lib/url/safe-href";
 
 describe("photo-credits", () => {
 	it("round-trips structured credits", () => {

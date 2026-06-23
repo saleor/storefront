@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 import { Section, type SectionTone } from "@/ui/sections/section";
 
 export interface LogoStripItem {
@@ -47,9 +48,9 @@ export function LogoStrip({ heading, logos, tone = "default", className }: LogoS
 					return (
 						<li key={logo.src}>
 							{logo.href ? (
-								<a href={logo.href} rel="noopener noreferrer" className="inline-flex">
+								<NavHrefLink href={logo.href} className="inline-flex">
 									{image}
-								</a>
+								</NavHrefLink>
 							) : (
 								image
 							)}

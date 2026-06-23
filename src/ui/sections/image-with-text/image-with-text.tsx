@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
-import { isExternalMenuHref } from "@/lib/menus/menu-item-utils";
 import { cn } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 import { WavePattern } from "@/ui/components/plp/wave-pattern";
 import { buttonClassName } from "@/ui/components/ui/button";
 import type { SectionTone } from "@/ui/sections/section";
@@ -88,7 +87,7 @@ export function ImageWithText({
 							quality={PRODUCT_IMAGE_QUALITY}
 						/>
 					) : (
-						placeholder ?? <WavePattern className="h-full w-full text-secondary" />
+						(placeholder ?? <WavePattern className="h-full w-full text-secondary" />)
 					)}
 				</div>
 
@@ -125,23 +124,9 @@ export function ImageWithText({
 					) : null}
 					{cta ? (
 						<div className="mt-8">
-							{isExternalMenuHref(cta.href) ? (
-								<a
-									href={cta.href}
-									className={buttonClassName({ asLink: true, size: "lg" })}
-									rel="noopener noreferrer"
-								>
-									{cta.label}
-								</a>
-							) : (
-								<LinkWithChannel
-									href={cta.href}
-									prefetch={false}
-									className={buttonClassName({ asLink: true, size: "lg" })}
-								>
-									{cta.label}
-								</LinkWithChannel>
-							)}
+							<NavHrefLink href={cta.href} className={buttonClassName({ asLink: true, size: "lg" })}>
+								{cta.label}
+							</NavHrefLink>
 						</div>
 					) : null}
 				</div>

@@ -2,7 +2,9 @@ import {
 	announcementDismissNoFlashScript,
 	resolveAnnouncementDismissKey,
 } from "@/lib/content/announcement-dismiss-key";
+import { sanitizeNavHref } from "@/lib/url/safe-href";
 import { cn } from "@/lib/utils";
+import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 import { AnnouncementDismissButton } from "./announcement-bar-dismiss";
 
 export interface AnnouncementBarProps {
@@ -19,22 +21,24 @@ function AnnouncementContent({
 	href,
 	linkLabel,
 }: Pick<AnnouncementBarProps, "message" | "href" | "linkLabel">) {
-	if (href && linkLabel) {
+	const safeHref = href ? sanitizeNavHref(href) : null;
+
+	if (safeHref && linkLabel) {
 		return (
 			<>
 				<span>{message}</span>
 				<span aria-hidden="true"> · </span>
-				<a href={href} className="underline underline-offset-2 hover:no-underline">
+				<NavHrefLink href={safeHref} className="underline underline-offset-2 hover:no-underline">
 					{linkLabel}
-				</a>
+				</NavHrefLink>
 			</>
 		);
 	}
-	if (href) {
+	if (safeHref) {
 		return (
-			<a href={href} className="underline underline-offset-2 hover:no-underline">
+			<NavHrefLink href={safeHref} className="underline underline-offset-2 hover:no-underline">
 				{message}
-			</a>
+			</NavHrefLink>
 		);
 	}
 	return <>{message}</>;
