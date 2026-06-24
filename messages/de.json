@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Startseite",
 		"badges": {
 			"sale": "Sale",
-			"new": "Neu"
+			"new": "Neu",
+			"bestseller": "Bestseller"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — nicht auf Lager",
@@ -50,6 +51,24 @@
 			"outOfStockA11y": "nicht auf Lager",
 			"percentOffA11y": "{percent}% Rabatt",
 			"selectedA11y": "ausgewählt"
+		},
+		"attributes": {
+			"description": "Beschreibung",
+			"productDetails": "Produktdetails",
+			"careInstructions": "Pflegehinweise",
+			"shippingReturns": "Versand & Rückgabe",
+			"shippingBody": "Kostenloser Versand bei Bestellungen über {freeShippingThreshold}. Standardlieferung in 3–5 Werktagen.",
+			"returnsBody": "Kostenlose Rückgabe innerhalb von {returnsWindowDays} Tagen nach dem Kauf. Artikel müssen ungetragen und mit Etiketten versehen sein.",
+			"yes": "Ja",
+			"no": "Nein"
+		},
+		"zoom": {
+			"title": "{productName} — vergrößertes Bild",
+			"imageAlt": "{productName} — Ansicht {index}",
+			"close": "Vergrößertes Bild schließen",
+			"previous": "Vorheriges Bild",
+			"next": "Nächstes Bild",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

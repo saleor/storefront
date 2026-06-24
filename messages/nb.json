@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Hjem",
 		"badges": {
 			"sale": "Salg",
-			"new": "Ny"
+			"new": "Ny",
+			"bestseller": "Bestselger"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — utsolgt",
@@ -50,6 +51,24 @@
 			"outOfStockA11y": "utsolgt",
 			"percentOffA11y": "{percent}% rabatt",
 			"selectedA11y": "valgt"
+		},
+		"attributes": {
+			"description": "Beskrivelse",
+			"productDetails": "Produktdetaljer",
+			"careInstructions": "Vaskeanvisning",
+			"shippingReturns": "Frakt og retur",
+			"shippingBody": "Gratis frakt på bestillinger over {freeShippingThreshold}. Standardlevering på 3–5 virkedager.",
+			"returnsBody": "Gratis retur innen {returnsWindowDays} dager etter kjøp. Varene må være ubrukte med merkelapper.",
+			"yes": "Ja",
+			"no": "Nei"
+		},
+		"zoom": {
+			"title": "{productName} — forstørret bilde",
+			"imageAlt": "{productName} — visning {index}",
+			"close": "Lukk forstørret bilde",
+			"previous": "Forrige bilde",
+			"next": "Neste bilde",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

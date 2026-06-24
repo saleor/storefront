@@ -9,6 +9,7 @@ import {
 	attrText,
 	buildAttributeMap,
 } from "@/lib/content/saleor/attributes";
+import { parsePhotoCredits } from "@/lib/content/photo-credits";
 import { omitEmpty } from "@/lib/content/saleor/omit-empty";
 
 const VALUE_COLUMNS = [
@@ -25,6 +26,7 @@ export function mapHomepagePage(page: StorefrontContentPageFragment | null): Par
 	const homepage = partial.surfaces!.homepage!;
 
 	const hero = omitEmpty({
+		eyebrow: attrText(attrs, A.heroEyebrow),
 		heading: attrText(attrs, A.heroHeading),
 		subheading: attrText(attrs, A.heroSubheading),
 		primaryCtaLabel: attrText(attrs, A.heroCtaLabel),
@@ -41,6 +43,14 @@ export function mapHomepagePage(page: StorefrontContentPageFragment | null): Par
 	});
 	if (Object.keys(featuredCollection).length > 0) {
 		homepage.featuredCollection = featuredCollection;
+	}
+
+	const categories = omitEmpty({
+		heading: attrText(attrs, A.categoriesHeading),
+		eyebrow: attrText(attrs, A.categoriesEyebrow),
+	});
+	if (Object.keys(categories).length > 0) {
+		homepage.categories = categories;
 	}
 
 	const brandStoryHeading = attrText(attrs, A.brandStoryHeading);
@@ -85,6 +95,12 @@ export function mapHomepagePage(page: StorefrontContentPageFragment | null): Par
 			...(editorialParagraph ? { paragraphs: [editorialParagraph] } : {}),
 			imagePosition: position === "left" ? "left" : "right",
 		};
+	}
+
+	const photoCreditsRaw = attrText(attrs, A.photoCredits);
+	const photoCredits = parsePhotoCredits(photoCreditsRaw);
+	if (photoCredits) {
+		homepage.photoCredits = photoCredits;
 	}
 
 	if (Object.keys(homepage).length === 0) {

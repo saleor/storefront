@@ -63,3 +63,6 @@ next-env.d.ts
 
 .idea/
 .pnpm-store
+
+# Internal/marketing docs — keep local, never commit (strategy lives in the brain)
+docs/marketing/

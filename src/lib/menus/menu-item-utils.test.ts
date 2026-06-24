@@ -46,9 +46,20 @@ describe("menu-item-utils", () => {
 		).toBe("/pages/about");
 	});
 
-	it("detects external urls", () => {
+	it("detects safe external urls", () => {
 		expect(isExternalMenuHref("https://saleor.io")).toBe(true);
+		expect(isExternalMenuHref("mailto:hello@example.com")).toBe(true);
 		expect(isExternalMenuHref("/products")).toBe(false);
+		expect(isExternalMenuHref("javascript:alert(1)")).toBe(false);
+	});
+
+	it("drops unsafe custom menu URLs", () => {
+		expect(
+			getMenuItemHref({
+				...baseItem,
+				url: "javascript:alert(1)",
+			}),
+		).toBeNull();
 	});
 
 	it("reads nested children", () => {

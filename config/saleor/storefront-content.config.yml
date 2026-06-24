@@ -47,6 +47,8 @@ contentAttributes:
   - name: Listing description
     inputType: PLAIN_TEXT
   # Storefront — Homepage
+  - name: Hero eyebrow
+    inputType: PLAIN_TEXT
   - name: Hero heading
     inputType: PLAIN_TEXT
   - name: Hero subheading
@@ -62,6 +64,10 @@ contentAttributes:
     entityType: COLLECTION
   - name: Featured limit
     inputType: NUMERIC
+  - name: Categories heading
+    inputType: PLAIN_TEXT
+  - name: Categories eyebrow
+    inputType: PLAIN_TEXT
   - name: Brand story heading
     inputType: PLAIN_TEXT
   - name: Brand story paragraph 1
@@ -93,6 +99,9 @@ contentAttributes:
     inputType: PLAIN_TEXT
   - name: Editorial CTA label
     inputType: PLAIN_TEXT
+  - name: Photo credits
+    inputType: PLAIN_TEXT
+    # JSON array: [{"name":"Artist","href":"https://unsplash.com/@handle"}, ...]
   # Storefront — Cart
   - name: Empty title
     inputType: PLAIN_TEXT
@@ -158,6 +167,7 @@ modelTypes:
   - name: "Storefront — Homepage"
     slug: storefront-homepage
     attributes:
+      - attribute: Hero eyebrow
       - attribute: Hero heading
       - attribute: Hero subheading
       - attribute: Hero CTA label
@@ -165,6 +175,8 @@ modelTypes:
       - attribute: Featured heading
       - attribute: Featured collection
       - attribute: Featured limit
+      - attribute: Categories heading
+      - attribute: Categories eyebrow
       - attribute: Brand story heading
       - attribute: Brand story paragraph 1
       - attribute: Brand story paragraph 2
@@ -180,6 +192,7 @@ modelTypes:
       - attribute: Editorial paragraph 1
       - attribute: Editorial image position
       - attribute: Editorial CTA label
+      - attribute: Photo credits
 
   - name: "Storefront — Cart"
     slug: storefront-cart
@@ -224,7 +237,7 @@ models:
     modelType: Storefront — Chrome
     isPublished: true
     attributes:
-      Announcement ID: welcome-promo
+      Announcement ID: ""
       Announcement message: Free shipping on orders over {freeShippingThreshold}
       Announcement dismissible: true
       Nav all products label: All
@@ -241,12 +254,15 @@ models:
     modelType: Storefront — Homepage
     isPublished: true
     attributes:
+      Hero eyebrow: ""
       Hero heading: Discover our collection
       Hero subheading: Premium products with exceptional quality. Discover our curated collection.
       Hero CTA label: Shop all
       Featured heading: Featured products
       Featured collection: featured-products
       Featured limit: 8
+      Categories heading: Shop by category
+      Categories eyebrow: ""
       Brand story heading: Built for real commerce
       Brand story paragraph 1: Paper is a minimal, production-ready storefront for Saleor — clean as a
         blank page, built to ship.
@@ -264,6 +280,7 @@ models:
       Editorial paragraph 1: Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season.
       Editorial image position: right
       Editorial CTA label: Explore collections
+      Photo credits: "[]"
   - title: Storefront Cart
     slug: storefront-cart
     modelType: Storefront — Cart

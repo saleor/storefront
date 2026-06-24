@@ -18,6 +18,7 @@ export interface ProductCardData {
 	hoverImage?: string | null;
 	href: string;
 	badge?: "Sale" | "New" | null;
+	isBestseller?: boolean;
 	colors?: { name: string; hex: string }[];
 	/** Available sizes for filtering (e.g., ["S", "M", "L"]) */
 	sizes?: string[];

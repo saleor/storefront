@@ -49,6 +49,14 @@ export function mergeStorefrontContent(
 					...base.surfaces.homepage.featuredCollection,
 					...override.surfaces?.homepage?.featuredCollection,
 				},
+				categories: {
+					...base.surfaces.homepage.categories,
+					...override.surfaces?.homepage?.categories,
+				},
+				photoCredits: coalesceArray(
+					override.surfaces?.homepage?.photoCredits,
+					base.surfaces.homepage.photoCredits,
+				),
 				brandStory: {
 					...base.surfaces.homepage.brandStory,
 					...override.surfaces?.homepage?.brandStory,

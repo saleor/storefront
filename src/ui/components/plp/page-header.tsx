@@ -1,10 +1,6 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { Breadcrumbs, type BreadcrumbItem } from "@/ui/components/breadcrumbs";
 
-interface BreadcrumbItem {
-	label: string;
-	href: string;
-}
+export type { BreadcrumbItem };
 
 interface PageHeaderProps {
 	title: string;
@@ -20,25 +16,8 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, breadcrumbs, breadcrumbAriaLabel }: PageHeaderProps) {
 	return (
 		<div className="w-full border-b border-border bg-background">
-			<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-				{/* Breadcrumbs */}
-				<nav
-					aria-label={breadcrumbAriaLabel}
-					className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground"
-				>
-					{breadcrumbs.map((crumb, index) => (
-						<span key={crumb.href} className="flex items-center gap-1.5">
-							{index > 0 && <ChevronRight className="h-3.5 w-3.5" />}
-							{index === breadcrumbs.length - 1 ? (
-								<span className="font-medium text-foreground">{crumb.label}</span>
-							) : (
-								<Link href={crumb.href} className="transition-colors hover:text-foreground">
-									{crumb.label}
-								</Link>
-							)}
-						</span>
-					))}
-				</nav>
+			<div className="container-content py-8">
+				<Breadcrumbs items={breadcrumbs} ariaLabel={breadcrumbAriaLabel} className="mb-4" />
 
 				<h1 className="text-balance text-h1 text-foreground">{title}</h1>
 				{description && <p className="mt-2 max-w-2xl text-pretty text-muted-foreground">{description}</p>}

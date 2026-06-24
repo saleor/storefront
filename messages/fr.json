@@ -41,7 +41,8 @@
 		"breadcrumbHome": "Accueil",
 		"badges": {
 			"sale": "Promo",
-			"new": "Nouveau"
+			"new": "Nouveau",
+			"bestseller": "Best-seller"
 		},
 		"variant": {
 			"outOfStockTitle": "{name} — rupture de stock",
@@ -50,6 +51,24 @@
 			"outOfStockA11y": "rupture de stock",
 			"percentOffA11y": "{percent}% de réduction",
 			"selectedA11y": "sélectionné"
+		},
+		"attributes": {
+			"description": "Description",
+			"productDetails": "Détails du produit",
+			"careInstructions": "Entretien",
+			"shippingReturns": "Livraison et retours",
+			"shippingBody": "Livraison gratuite pour les commandes supérieures à {freeShippingThreshold}. Livraison standard sous 3 à 5 jours ouvrés.",
+			"returnsBody": "Retours gratuits sous {returnsWindowDays} jours après l'achat. Les articles doivent être non portés et avec leurs étiquettes.",
+			"yes": "Oui",
+			"no": "Non"
+		},
+		"zoom": {
+			"title": "{productName} — image agrandie",
+			"imageAlt": "{productName} — vue {index}",
+			"close": "Fermer l'image agrandie",
+			"previous": "Image précédente",
+			"next": "Image suivante",
+			"counter": "{current} / {total}"
 		}
 	},
 	"plp": {

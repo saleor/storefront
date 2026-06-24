@@ -27,6 +27,12 @@ export type StorefrontPolicies = {
 };
 
 export type AnnouncementBarContent = {
+	/**
+	 * Optional campaign slug for dismissal persistence. When empty (default), dismissals
+	 * are keyed by a hash of `message` + `href` + `linkLabel` — copy edits re-show the
+	 * bar. Set `announcement-id` in Saleor (or here in code) to pin dismissal across
+	 * message tweaks. See `resolveAnnouncementDismissKey` in `announcement-dismiss-key.ts`.
+	 */
 	id: string;
 	message: string;
 	href: string | null;
@@ -35,6 +41,8 @@ export type AnnouncementBarContent = {
 };
 
 export type HomepageHeroContent = {
+	/** Short overline above the hero heading. Optional — rendered only when set. */
+	eyebrow?: string;
 	heading: string;
 	subheading: string;
 	primaryCtaLabel: string;
@@ -70,11 +78,31 @@ export type HomepageEditorialContent = {
 	paragraphs: readonly string[];
 	imagePosition: "left" | "right";
 	ctaLabel: string;
+	/** Editorial image URL; falls back to the brand placeholder when unset. */
+	image?: string | null;
+	imageAlt?: string;
+};
+
+/**
+ * Copy for the shop-by-category tiles. The tiles themselves are derived from the
+ * catalog (categories) in the page; only the section heading/eyebrow are editable.
+ */
+export type HomepageCategoriesContent = {
+	heading: string;
+	eyebrow?: string;
+};
+
+export type HomepagePhotoCredit = {
+	name: string;
+	href: string;
 };
 
 export type HomepageContent = {
 	hero: HomepageHeroContent;
 	featuredCollection: HomepageFeaturedCollectionContent;
+	categories: HomepageCategoriesContent;
+	/** Photographer attribution for hero + category lifestyle images. */
+	photoCredits: readonly HomepagePhotoCredit[];
 	brandStory: HomepageBrandStoryContent;
 	values: HomepageValuesContent;
 	editorial: HomepageEditorialContent;

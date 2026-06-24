@@ -22,7 +22,7 @@ export const defaultStorefrontContent = {
 	},
 	chrome: {
 		announcementBar: {
-			id: "welcome-promo",
+			id: "",
 			message: "Free shipping on orders over {freeShippingThreshold}",
 			href: null,
 			linkLabel: null,
@@ -45,6 +45,10 @@ export const defaultStorefrontContent = {
 				collectionSlug: "featured-products",
 				limit: 8,
 			},
+			categories: {
+				heading: "Shop by category",
+			},
+			photoCredits: [],
 			brandStory: {
 				heading: "Built for real commerce",
 				paragraphs: [
@@ -77,6 +81,8 @@ export const defaultStorefrontContent = {
 				],
 				imagePosition: "right",
 				ctaLabel: "Explore collections",
+				image: null,
+				imageAlt: "",
 			},
 		},
 		products: {

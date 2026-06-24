@@ -8,22 +8,30 @@ import xss from "xss";
 
 import { executePublicGraphQL } from "@/lib/graphql";
 import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
-import { buildBrowsePageMetadata, buildProductJsonLd } from "@/lib/seo";
+import { resolveLocaleFromSlug } from "@/config/locale";
+import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
+import { buildPolicyLabelValues } from "@/lib/content";
+import { getStorefrontContent } from "@/lib/content/server";
+import { buildBrowsePageMetadata, buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { withTranslatedProductFields, pickTranslatedName } from "@/lib/saleor-translations";
+import { isBestseller, BESTSELLER_ATTRIBUTE_SLUGS } from "@/lib/catalog/product-flags";
 import { getAttributeValueDisplayName } from "@/ui/components/pdp/variant-selection/utils";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
+import { BestsellerBadge } from "@/ui/components/ui/sale-label";
 import {
 	ProductAttributes,
-	ProductGalleryFallback,
+	activeGalleryVariant,
 	VariantGalleryDynamic,
-	GallerySkeleton,
+	ProductRouteSkeleton,
 	VariantSectionDynamic,
 	VariantSectionSkeleton,
 	VariantSectionError,
 	getDefaultGalleryImages,
+	PDP_GALLERY_LAYOUT,
+	PDP_LAYOUT_CLASSES,
 } from "@/ui/components/pdp";
 
 // ============================================================================
@@ -104,7 +112,7 @@ export default function ProductPage(props: {
 	searchParams: Promise<{ variant?: string }>;
 }) {
 	return (
-		<Suspense fallback={<ProductPageSkeleton />}>
+		<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
 			<ProductShell params={props.params} searchParams={props.searchParams} />
 		</Suspense>
 	);
@@ -123,11 +131,17 @@ async function ProductShell({
 }) {
 	const params = await paramsPromise;
 	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);
-	const [product, tPdp, tNav] = await Promise.all([
+	const [product, tPdp, tNav, content, currency] = await Promise.all([
 		getProductData(params.slug, params.channel, params.locale),
 		getTranslations({ locale: params.locale, namespace: "pdp" }),
 		getTranslations({ locale: params.locale, namespace: "nav" }),
+		getStorefrontContent(params.channel, params.locale),
+		resolveChannelCurrency(params.channel),
 	]);
+	const policyLabels = buildPolicyLabelValues(content.policies, {
+		currency,
+		locale: resolveLocaleFromSlug(params.locale).bcp47,
+	});
 
 	if (!product) {
 		notFound();
@@ -167,40 +181,50 @@ async function ProductShell({
 	const lcpImage = defaultImages[0];
 	// Reserve mobile dots / desktop thumbs in fallback when product has multiple images
 	const showGalleryChrome = defaultImages.length > 1;
+	const showBestsellerBadge = isBestseller(product);
+	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
+	const { Fallback: GalleryFallback } = activeGalleryVariant();
+	const galleryFallback = lcpImage ? (
+		<GalleryFallback
+			src={lcpImage.url}
+			alt={lcpImage.alt ?? product.name}
+			imageCount={defaultImages.length}
+			showChrome={showGalleryChrome}
+		/>
+	) : null;
+
+	const productAttributesNode = (
+		<ProductAttributes
+			descriptionHtml={descriptionHtml}
+			attributes={productAttributes}
+			careInstructions={careInstructions}
+			policyLabels={policyLabels}
+		/>
+	);
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
-			{productJsonLd && (
-				<script
-					type="application/ld+json"
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-				/>
-			)}
+			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
-			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
+			<main className={layout.main}>
 				<div className="mb-6 hidden sm:block">
 					<Breadcrumbs items={breadcrumbs} ariaLabel={tNav("breadcrumbAriaLabel")} />
 				</div>
 
-				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-					<div className="lg:sticky lg:top-24 lg:self-start">
-						<Suspense
-							fallback={
-								lcpImage ? (
-									<ProductGalleryFallback
-										src={lcpImage.url}
-										alt={lcpImage.alt ?? product.name}
-										imageCount={defaultImages.length}
-										showChrome={showGalleryChrome}
-									/>
-								) : null
-							}
-						>
+				<div className={layout.grid}>
+					<div className={layout.galleryColumn}>
+						<Suspense fallback={galleryFallback}>
 							<VariantGalleryDynamic product={product} searchParams={searchParams} />
 						</Suspense>
 					</div>
 
-					<div className="flex flex-col gap-3">
+					<div className={layout.infoColumn}>
+						{showBestsellerBadge && (
+							<div className="order-1 flex items-center gap-2">
+								<BestsellerBadge />
+							</div>
+						)}
+
 						<h1 className="order-2 text-balance text-h1">{product.name}</h1>
 
 						<ErrorBoundary FallbackComponent={VariantSectionError}>
@@ -214,40 +238,14 @@ async function ProductShell({
 							</Suspense>
 						</ErrorBoundary>
 
-						<div className="order-4 mt-6">
-							<ProductAttributes
-								descriptionHtml={descriptionHtml}
-								attributes={productAttributes}
-								careInstructions={careInstructions}
-							/>
-						</div>
+						{layout.attributesPlacement === "info" && (
+							<div className="order-4 mt-6">{productAttributesNode}</div>
+						)}
 					</div>
-				</div>
-			</main>
-		</div>
-	);
-}
 
-// ============================================================================
-// Skeleton
-// ============================================================================
-
-function ProductPageSkeleton() {
-	return (
-		<div className="flex min-h-screen animate-skeleton-delayed flex-col bg-background opacity-0">
-			<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-10">
-				<div className="mb-6 hidden h-4 w-64 animate-pulse rounded bg-secondary sm:block" />
-				<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
-					<GallerySkeleton />
-					<div className="flex flex-col gap-4">
-						<div className="h-8 w-3/4 animate-pulse rounded bg-secondary" />
-						<div className="h-6 w-24 animate-pulse rounded bg-secondary" />
-						<div className="mt-4 space-y-3">
-							<div className="h-10 w-full animate-pulse rounded bg-secondary" />
-							<div className="h-10 w-full animate-pulse rounded bg-secondary" />
-						</div>
-						<div className="mt-4 h-12 w-full animate-pulse rounded bg-secondary" />
-					</div>
+					{layout.attributesPlacement === "gallery" && layout.attributesGalleryBlock && (
+						<div className={layout.attributesGalleryBlock}>{productAttributesNode}</div>
+					)}
 				</div>
 			</main>
 		</div>
@@ -271,7 +269,7 @@ function parseDescription(description: string | null | undefined): string[] | nu
 
 function extractProductAttributes(product: NonNullable<ProductDetailsQuery["product"]>) {
 	const variantAttributeSlugs = ["size", "color", "colour", "variant"];
-	const internalAttributeSlugs = ["care-instructions", "care"];
+	const internalAttributeSlugs = ["care-instructions", "care", ...BESTSELLER_ATTRIBUTE_SLUGS];
 
 	return (product.attributes || [])
 		.filter((attr) => attr.attribute.name)

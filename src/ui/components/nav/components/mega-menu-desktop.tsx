@@ -140,7 +140,7 @@ function MegaMenuPanel({
 
 	return (
 		<div className="w-full">
-			<div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+			<div className="container-nav py-6">
 				<div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-8">
 					<div className="lg:col-span-7 xl:col-span-6">
 						<div className="flex items-start gap-x-8 lg:gap-x-10">
@@ -153,7 +153,7 @@ function MegaMenuPanel({
 								<LinkWithChannel
 									href={item.href}
 									prefetch={false}
-									className="hover:text-foreground/80 text-sm font-medium text-foreground transition-colors"
+									className="text-sm font-medium text-foreground transition-colors hover:text-foreground/80"
 									onClick={onClose}
 								>
 									{formatContentLabel(nav.viewAllLabel, { label: item.label })}

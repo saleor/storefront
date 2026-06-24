@@ -42,7 +42,7 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 | Checkout      | `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`                             | Checkout v2, UX principles, lifecycle, payments, UI               |
 | UI & Channels | `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`                                                                                        | Design tokens, multi-currency, locale URLs, next-intl messages    |
 | SEO           | `seo-metadata`                                                                                                                                        | JSON-LD, OG images, metadata                                      |
-| Development   | `dev-investigation`                                                                                                                                   | Saleor API investigation via generated types and source           |
+| Development   | `dev-local`, `dev-investigation`                                                                                                                      | Mobile/ngrok dev setup; Saleor API investigation                  |
 
 ## Structure
 
@@ -68,6 +68,7 @@ saleor-paper-storefront/
 │   ├── ui-components.md
 │   ├── ui-channels.md
 │   ├── seo-metadata.md
+│   ├── dev-local.md
 │   └── dev-investigation.md
 ├── migrations/         # Fork upgrade prompts (chronological)
 │   ├── SKILL.md        # Orchestrator — read when upgrading a fork

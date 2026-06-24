@@ -1,4 +1,5 @@
 import { type WithContext, type Product } from "schema-dts";
+import { serializeForInlineScript } from "@/lib/html/inline-script";
 import { seoConfig, getBaseUrl } from "./config";
 
 /**
@@ -21,8 +22,8 @@ import { seoConfig, getBaseUrl } from "./config";
  *   inStock: true,
  * });
  *
- * // In your page:
- * <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+ * // In your page (jsonLdScriptProps escapes the payload for an inline <script>):
+ * <script {...jsonLdScriptProps(jsonLd)} />
  */
 export function buildProductJsonLd(options: {
 	name: string;
@@ -116,6 +117,6 @@ export function jsonLdScriptProps(data: object | null) {
 	if (!data) return null;
 	return {
 		type: "application/ld+json",
-		dangerouslySetInnerHTML: { __html: JSON.stringify(data) },
+		dangerouslySetInnerHTML: { __html: serializeForInlineScript(data) },
 	};
 }

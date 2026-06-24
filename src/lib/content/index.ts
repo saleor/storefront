@@ -18,6 +18,7 @@ export {
 	formatPolicyAwareLabel,
 	type PolicyLabelValues,
 } from "@/lib/content/policy-format";
+export { resolveAnnouncementDismissKey } from "@/lib/content/announcement-dismiss-key";
 export type {
 	AnnouncementBarContent,
 	CartContent,

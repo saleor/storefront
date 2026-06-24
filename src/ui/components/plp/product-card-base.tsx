@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { DiscountPercentLabel, NewBadge, SaleBadge } from "@/ui/components/ui/sale-label";
+import { DiscountPercentLabel, NewBadge, SaleBadge, BestsellerBadge } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
@@ -24,7 +24,7 @@ export function ProductCardBase({
 }: ProductCardBaseProps) {
 	return (
 		<article className="group">
-			<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
+			<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-card bg-secondary">
 				<Link
 					href={product.href}
 					prefetch={false}
@@ -56,11 +56,13 @@ export function ProductCardBase({
 					)}
 				</Link>
 
-				{product.badge === "Sale" ? (
-					<SaleBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
-				) : product.badge === "New" ? (
-					<NewBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
-				) : null}
+				{(product.badge === "Sale" || product.badge === "New" || product.isBestseller) && (
+					<div className="pointer-events-none absolute left-3 top-3 z-[1] flex flex-wrap items-center gap-1.5">
+						{product.badge === "Sale" ? <SaleBadge /> : null}
+						{product.isBestseller ? <BestsellerBadge /> : null}
+						{product.badge === "New" ? <NewBadge /> : null}
+					</div>
+				)}
 
 				{imageOverlay ? <div className="absolute inset-0 z-10">{imageOverlay}</div> : null}
 			</div>
@@ -69,7 +71,7 @@ export function ProductCardBase({
 				<div className="space-y-1.5">
 					{product.brand && <p className="text-eyebrow uppercase text-muted-foreground">{product.brand}</p>}
 					<h3
-						className="text-foreground/80 truncate font-medium leading-snug no-underline transition-colors duration-200 md:group-hover:text-foreground"
+						className="truncate font-medium leading-snug text-foreground/80 no-underline transition-colors duration-200 md:group-hover:text-foreground"
 						title={product.name}
 					>
 						{product.name}

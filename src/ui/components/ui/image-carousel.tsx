@@ -2,6 +2,14 @@
 
 import * as React from "react";
 import Image from "next/image";
+import {
+	galleryImageFrameClass,
+	PDP_GALLERY_EMPTY_IMAGE_FRAME_CLASS,
+} from "@/ui/components/shared/gallery-image-frame";
+import {
+	GalleryImageThumbTrigger,
+	GalleryImageZoomTrigger,
+} from "@/ui/components/shared/gallery-image-zoom-trigger";
 import { PDP_MAIN_IMAGE_SIZES, PDP_THUMBNAIL_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import {
@@ -98,7 +106,7 @@ export function ImageCarousel({
 	// Handle empty images (after hooks to satisfy rules of hooks)
 	if (!images.length) {
 		return (
-			<div className="flex aspect-[4/5] w-full items-center justify-center rounded-lg bg-secondary">
+			<div className={PDP_GALLERY_EMPTY_IMAGE_FRAME_CLASS}>
 				<span className="text-muted-foreground">No image available</span>
 			</div>
 		);
@@ -115,25 +123,41 @@ export function ImageCarousel({
 				}}
 				className="group w-full"
 			>
-				<div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
+				<div className={galleryImageFrameClass("aspect-[4/5] w-full")}>
 					<CarouselContent className="ml-0 h-full" viewportClassName="absolute inset-0 h-full w-full">
 						{images.map((image, index) => (
 							<CarouselItem key={image.url} className="h-full pl-0">
-								<div
-									className={cn("relative h-full min-h-0 w-full", onImageClick && "cursor-pointer")}
-									onClick={() => onImageClick?.(index)}
-								>
-									<Image
-										src={image.url}
-										alt={image.alt || `${productName} - View ${index + 1}`}
-										fill
-										className="object-cover"
-										sizes={PDP_MAIN_IMAGE_SIZES}
-										quality={PRODUCT_IMAGE_QUALITY}
-										priority={false}
-										loading={index === 0 ? "eager" : "lazy"}
-									/>
-								</div>
+								{onImageClick ? (
+									<GalleryImageZoomTrigger
+										className="h-full min-h-0 w-full"
+										onClick={() => onImageClick(index)}
+										aria-label={image.alt || `${productName} - View ${index + 1}`}
+									>
+										<Image
+											src={image.url}
+											alt={image.alt || `${productName} - View ${index + 1}`}
+											fill
+											className="object-cover"
+											sizes={PDP_MAIN_IMAGE_SIZES}
+											quality={PRODUCT_IMAGE_QUALITY}
+											priority={false}
+											loading={index === 0 ? "eager" : "lazy"}
+										/>
+									</GalleryImageZoomTrigger>
+								) : (
+									<div className="relative h-full min-h-0 w-full overflow-hidden">
+										<Image
+											src={image.url}
+											alt={image.alt || `${productName} - View ${index + 1}`}
+											fill
+											className="object-cover"
+											sizes={PDP_MAIN_IMAGE_SIZES}
+											quality={PRODUCT_IMAGE_QUALITY}
+											priority={false}
+											loading={index === 0 ? "eager" : "lazy"}
+										/>
+									</div>
+								)}
 							</CarouselItem>
 						))}
 					</CarouselContent>
@@ -144,14 +168,14 @@ export function ImageCarousel({
 							<CarouselPrevious
 								variant="ghost"
 								className={cn(
-									"left-4 z-10 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
+									"left-4 z-10 hidden border border-border bg-background opacity-0 shadow-none transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>
 							<CarouselNext
 								variant="ghost"
 								className={cn(
-									"right-4 z-10 hidden border border-border bg-background opacity-0 shadow-md transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
+									"right-4 z-10 hidden border border-border bg-background opacity-0 shadow-none transition-opacity hover:bg-accent group-hover:opacity-100 md:flex",
 									"disabled:opacity-0",
 								)}
 							/>
@@ -165,29 +189,25 @@ export function ImageCarousel({
 
 			{/* Thumbnail Strip for desktop */}
 			{showThumbnails && images.length > 1 && (
-				<div className="scrollbar-hide hidden gap-2 overflow-x-auto px-1 py-1 md:flex">
+				<div className="scrollbar-hide hidden gap-2 overflow-x-auto px-1 py-1 focus-visible:outline-none md:flex">
 					{images.map((image, index) => (
-						<button
-							type="button"
+						<GalleryImageThumbTrigger
 							key={image.url}
+							selected={selectedIndex === index}
 							onClick={() => scrollToImage(index)}
-							className={cn(
-								"relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md transition-all",
-								selectedIndex === index
-									? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
-									: "opacity-60 hover:opacity-100",
-							)}
+							aria-label={`${productName} - Thumbnail ${index + 1}`}
+							aria-current={selectedIndex === index ? "true" : undefined}
 						>
 							<Image
 								src={image.url}
-								alt={`${productName} - Thumbnail ${index + 1}`}
+								alt=""
 								fill
 								className="object-cover"
 								sizes={PDP_THUMBNAIL_IMAGE_SIZES}
 								quality={PRODUCT_IMAGE_QUALITY}
 								loading="lazy"
 							/>
-						</button>
+						</GalleryImageThumbTrigger>
 					))}
 				</div>
 			)}

@@ -2,7 +2,13 @@
 import createNextIntlPlugin from "next-intl/plugin";
 import { paperCacheLifeProfiles } from "./src/lib/cache-life-profiles.data.mjs";
 
+/** Hostnames for mobile/tunnel dev (ngrok, LAN). See ALLOWED_DEV_ORIGINS in .env.example */
+const allowedDevOrigins = process.env.ALLOWED_DEV_ORIGINS?.split(",")
+	.map((origin) => origin.trim())
+	.filter(Boolean);
+
 const config = {
+	...(allowedDevOrigins?.length ? { allowedDevOrigins } : {}),
 	// Cache Components (Partial Prerendering)
 	// Enables mixing static, cached, and dynamic content in a single route.
 	// See: https://nextjs.org/docs/app/getting-started/cache-components

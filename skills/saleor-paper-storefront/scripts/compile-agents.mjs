@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 21;
+const RULE_COUNT = 29;
 
 const catalog = [
 	{
@@ -66,30 +66,49 @@ const catalog = [
 	},
 	{
 		num: 4,
-		title: "UI & Channels",
-		impact: "MEDIUM",
-		intro: "UI components and channel configuration control the visual layer and multi-currency support.",
+		title: "Design & Composition",
+		impact: "HIGH",
+		intro:
+			"How agents (and hand-coders) mold PDP and homepage at world-class quality without breaking PPR, caching, or mobile: the token design system, a design-quality bar, the marketing-section catalog, page composition within the PPR rails, designing from a prompt or image, and verification gates.",
 		rules: [
-			{ num: "4.1", file: "ui-components.md", title: "UI Components" },
-			{ num: "4.2", file: "ui-channels.md", title: "Channels & Multi-Currency" },
-			{ num: "4.3", file: "ui-locale-routing.md", title: "Locale & Channel URL Routing" },
-			{ num: "4.4", file: "ui-i18n.md", title: "next-intl (Code-Owned UI Strings)" },
+			{ num: "4.1", file: "ui-design-system.md", title: "UI Design System" },
+			{ num: "4.2", file: "design-quality-rubric.md", title: "Design Quality Rubric" },
+			{ num: "4.3", file: "ui-sections.md", title: "UI Sections (Marketing Blocks)" },
+			{ num: "4.4", file: "page-composition.md", title: "Page Composition (PDP & Homepage)" },
+			{ num: "4.5", file: "design-from-image.md", title: "Design From Prompt or Image" },
+			{ num: "4.6", file: "design-verification.md", title: "Design Verification Gates" },
 		],
 	},
 	{
 		num: 5,
+		title: "UI & Channels",
+		impact: "MEDIUM",
+		intro: "UI components and channel configuration control the visual layer and multi-currency support.",
+		rules: [
+			{ num: "5.1", file: "ui-components.md", title: "UI Components" },
+			{ num: "5.2", file: "ui-channels.md", title: "Channels & Multi-Currency" },
+			{ num: "5.3", file: "ui-locale-routing.md", title: "Locale & Channel URL Routing" },
+			{ num: "5.4", file: "ui-i18n.md", title: "next-intl (Code-Owned UI Strings)" },
+		],
+	},
+	{
+		num: 6,
 		title: "SEO",
 		impact: "MEDIUM",
 		intro:
 			"Search engine optimization, structured data, and social sharing metadata help drive organic traffic and improve click-through rates.",
-		rules: [{ num: "5.1", file: "seo-metadata.md", title: "SEO & Metadata" }],
+		rules: [{ num: "6.1", file: "seo-metadata.md", title: "SEO & Metadata" }],
 	},
 	{
-		num: 6,
+		num: 7,
 		title: "Development",
 		impact: "MEDIUM",
-		intro: "Investigation skills help diagnose Saleor API behavior when documentation is unclear.",
-		rules: [{ num: "6.1", file: "dev-investigation.md", title: "Saleor API Investigation" }],
+		intro: "Local dev environment gotchas and Saleor API investigation when documentation is unclear.",
+		rules: [
+			{ num: "7.1", file: "dev-local.md", title: "Local Development & Mobile Testing" },
+			{ num: "7.2", file: "dev-investigation.md", title: "Saleor API Investigation" },
+			{ num: "7.3", file: "third-party-embeds.md", title: "Third-Party Widget Embeds" },
+		],
 	},
 ];
 
@@ -193,9 +212,9 @@ These patterns cause extra renders and make data flow hard to trace.
 
 const header = `# Saleor Paper Storefront
 
-**Version 1.7.0**  
+**Version 1.8.0**  
 Saleor Paper  
-February 2026
+June 2026
 
 > **Note:** This document is mainly for agents and LLMs to follow when maintaining,
 > generating, or refactoring this Saleor storefront codebase. Humans
@@ -209,7 +228,7 @@ February 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 7 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 

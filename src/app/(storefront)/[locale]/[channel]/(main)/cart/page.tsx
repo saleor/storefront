@@ -34,7 +34,7 @@ export async function generateMetadata(props: {
 
 export default function Page(props: { params: Promise<{ locale: string; channel: string }> }) {
 	return (
-		<section className="mx-auto max-w-7xl p-8">
+		<section className="container-content py-8">
 			<Suspense fallback={<CartSkeleton />}>
 				<CartContent params={props.params} />
 			</Suspense>

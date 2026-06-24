@@ -1,4 +1,5 @@
 import type { StorefrontContentPageFragment } from "@/gql/graphql";
+import { sanitizeNavHref } from "@/lib/url/safe-href";
 
 export type AttributeMap = Map<string, string | number | boolean>;
 
@@ -55,7 +56,7 @@ export function attrInt(map: AttributeMap, slug: string): number | undefined {
 
 export function attrOptionalUrl(map: AttributeMap, slug: string): string | null {
 	const text = attrText(map, slug);
-	return text ?? null;
+	return text ? sanitizeNavHref(text) : null;
 }
 
 /** FILE attribute (AssignedFileAttribute). */

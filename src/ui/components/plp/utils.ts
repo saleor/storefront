@@ -6,6 +6,7 @@ import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedName } from "@/lib/saleor-translations";
+import { isBestseller } from "@/lib/catalog/product-flags";
 
 /**
  * Extract colors from product variants
@@ -100,6 +101,7 @@ export function toProductCardData(
 		localeBcp47: resolveLocaleFromSlug(locale).bcp47,
 		href: buildStorefrontPath(locale, channel, `/products/${product.slug}`),
 		badge: isSale ? "Sale" : null,
+		isBestseller: isBestseller(product),
 		colors,
 		sizes,
 		category: product.category

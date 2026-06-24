@@ -63,7 +63,7 @@ export function CategoryPageClient({ products, pageInfo }: CategoryPageClientPro
 				onClearFilters={handleClearFilters}
 			/>
 			<div className="w-full">
-				<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+				<div className="container-content py-8">
 					{filteredProducts.length > 0 ? (
 						<ProductGrid products={filteredProducts} />
 					) : (

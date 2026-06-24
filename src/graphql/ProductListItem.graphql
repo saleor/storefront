@@ -43,10 +43,26 @@ fragment ProductListItem on Product {
 		translation(languageCode: $languageCode) {
 			name
 		}
+		backgroundImage {
+			url
+			alt
+		}
 	}
 	thumbnail(size: 1024, format: WEBP) {
 		url
 		alt
+	}
+	# Bestseller merchandising flag — fetch only the boolean by slug (new attribute API).
+	# Slugs must match PRODUCT_FLAG_SLUGS in src/lib/catalog/product-flags.ts.
+	bestseller: assignedAttribute(slug: "bestseller") {
+		... on AssignedBooleanAttribute {
+			value
+		}
+	}
+	pulseBestseller: assignedAttribute(slug: "pulse-bestseller") {
+		... on AssignedBooleanAttribute {
+			value
+		}
 	}
 	variants {
 		id
@@ -61,6 +77,7 @@ fragment ProductListItem on Product {
 			}
 			values {
 				name
+				slug
 				value
 				translation(languageCode: $languageCode) {
 					name

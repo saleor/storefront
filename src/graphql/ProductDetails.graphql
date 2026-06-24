@@ -12,12 +12,12 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 			seoTitle
 			seoDescription
 		}
-		thumbnail(size: 1024, format: WEBP) {
+		thumbnail(size: 2048, format: WEBP) {
 			url
 			alt
 		}
 		media {
-			url(size: 1024, format: WEBP)
+			url(size: 2048, format: WEBP)
 			alt
 			type
 		}
@@ -29,6 +29,20 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 				name
 			}
 		}
+		# Bestseller merchandising flag — fetch only the boolean by slug (new attribute API).
+		# Slugs must match PRODUCT_FLAG_SLUGS in src/lib/catalog/product-flags.ts.
+		bestseller: assignedAttribute(slug: "bestseller") {
+			... on AssignedBooleanAttribute {
+				value
+			}
+		}
+		pulseBestseller: assignedAttribute(slug: "pulse-bestseller") {
+			... on AssignedBooleanAttribute {
+				value
+			}
+		}
+		# Spec accordion / care copy still read the full (deprecated) attribute list.
+		# TODO: migrate to `assignedAttributes` in a dedicated attribute-API sweep.
 		attributes {
 			values {
 				name

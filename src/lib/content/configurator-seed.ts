@@ -1,5 +1,6 @@
 import { stringify } from "yaml";
 import { STOREFRONT_POLICY_PAGE_SLUG, STOREFRONT_PAGE_TYPES } from "@/lib/content/constants";
+import { serializePhotoCredits } from "@/lib/content/photo-credits";
 import type { StorefrontContent } from "@/lib/content/types";
 
 /** Configurator `models:` entry — attribute keys are contentAttribute display names. */
@@ -22,12 +23,15 @@ const ATTR = {
 	navViewAllLabel: "Nav view all label",
 	listingTitle: "Listing title",
 	listingDescription: "Listing description",
+	heroEyebrow: "Hero eyebrow",
 	heroHeading: "Hero heading",
 	heroSubheading: "Hero subheading",
 	heroCtaLabel: "Hero CTA label",
 	featuredHeading: "Featured heading",
 	featuredCollection: "Featured collection",
 	featuredLimit: "Featured limit",
+	categoriesHeading: "Categories heading",
+	categoriesEyebrow: "Categories eyebrow",
 	brandStoryHeading: "Brand story heading",
 	brandStoryParagraph1: "Brand story paragraph 1",
 	brandStoryParagraph2: "Brand story paragraph 2",
@@ -43,6 +47,7 @@ const ATTR = {
 	editorialParagraph1: "Editorial paragraph 1",
 	editorialImagePosition: "Editorial image position",
 	editorialCtaLabel: "Editorial CTA label",
+	photoCredits: "Photo credits",
 	emptyTitle: "Empty title",
 	emptyBody: "Empty body",
 	emptyCtaLabel: "Empty CTA label",
@@ -114,12 +119,15 @@ export function buildConfiguratorSeedModels(content: StorefrontContent): Configu
 			modelType: "Storefront — Homepage",
 			isPublished: true,
 			attributes: {
+				[ATTR.heroEyebrow]: surfaces.homepage.hero.eyebrow ?? "",
 				[ATTR.heroHeading]: surfaces.homepage.hero.heading,
 				[ATTR.heroSubheading]: surfaces.homepage.hero.subheading,
 				[ATTR.heroCtaLabel]: surfaces.homepage.hero.primaryCtaLabel,
 				[ATTR.featuredHeading]: surfaces.homepage.featuredCollection.heading,
 				[ATTR.featuredCollection]: surfaces.homepage.featuredCollection.collectionSlug,
 				[ATTR.featuredLimit]: surfaces.homepage.featuredCollection.limit,
+				[ATTR.categoriesHeading]: surfaces.homepage.categories.heading,
+				[ATTR.categoriesEyebrow]: surfaces.homepage.categories.eyebrow ?? "",
 				[ATTR.brandStoryHeading]: surfaces.homepage.brandStory.heading,
 				[ATTR.brandStoryParagraph1]: surfaces.homepage.brandStory.paragraphs[0] ?? "",
 				[ATTR.brandStoryParagraph2]: surfaces.homepage.brandStory.paragraphs[1] ?? "",
@@ -135,6 +143,7 @@ export function buildConfiguratorSeedModels(content: StorefrontContent): Configu
 				[ATTR.editorialParagraph1]: surfaces.homepage.editorial.paragraphs[0] ?? "",
 				[ATTR.editorialImagePosition]: surfaces.homepage.editorial.imagePosition,
 				[ATTR.editorialCtaLabel]: surfaces.homepage.editorial.ctaLabel,
+				[ATTR.photoCredits]: serializePhotoCredits(surfaces.homepage.photoCredits),
 			},
 		},
 		{

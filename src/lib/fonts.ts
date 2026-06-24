@@ -15,6 +15,8 @@ const frauncesDisplay = Fraunces({
 export type RootHtmlFontProps = {
 	lang: string;
 	className: string;
+	/** Dismiss island may set attrs/styles on `<html>` after click. */
+	suppressHydrationWarning: true;
 	"data-typography"?: "editorial";
 };
 
@@ -25,6 +27,7 @@ export function getRootHtmlFontProps(htmlLang: string): RootHtmlFontProps {
 	return {
 		lang: htmlLang,
 		className: cn(GeistSans.variable, GeistMono.variable, editorial && frauncesDisplay.variable, "min-h-dvh"),
+		suppressHydrationWarning: true,
 		...(editorial ? { "data-typography": "editorial" as const } : {}),
 	};
 }

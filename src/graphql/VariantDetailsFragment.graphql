@@ -9,6 +9,7 @@ fragment VariantDetails on ProductVariant {
 	selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
 		values {
 			name
+			slug
 			value
 			translation(languageCode: $languageCode) {
 				name
@@ -29,6 +30,7 @@ fragment VariantDetails on ProductVariant {
 	nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {
 		values {
 			name
+			slug
 			value
 			translation(languageCode: $languageCode) {
 				name
@@ -47,7 +49,7 @@ fragment VariantDetails on ProductVariant {
 		}
 	}
 	media {
-		url(size: 1024, format: WEBP)
+		url(size: 2048, format: WEBP)
 		alt
 		type
 	}

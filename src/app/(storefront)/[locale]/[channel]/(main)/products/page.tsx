@@ -147,7 +147,7 @@ async function ProductsContent({
  */
 function ProductsGridSkeleton() {
 	return (
-		<div className="mx-auto max-w-7xl animate-skeleton-delayed px-4 py-8 opacity-0 sm:px-6 lg:px-8">
+		<div className="container-content animate-skeleton-delayed py-8 opacity-0">
 			{/* Matches ProductGrid: grid-cols-2 lg:grid-cols-3 */}
 			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
 				{Array.from({ length: 6 }).map((_, i) => (

@@ -18,7 +18,7 @@ export function FeaturedCollectionSkeleton({
 			aria-busy="true"
 			aria-label="Loading featured products"
 		>
-			<div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
+			<div className="container-content pt-10">
 				{heading ? <div className="mb-6 h-8 w-48 animate-pulse rounded bg-muted" aria-hidden="true" /> : null}
 			</div>
 			<ProductsGridSkeleton className="pt-0" desktopColumns={4} itemCount={limit} />

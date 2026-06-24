@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 // Localized badges live in a client module (next-intl). Re-exported here so existing
 // `@/ui/components/ui/sale-label` import paths keep working.
-export { SaleBadge, NewBadge } from "@/ui/components/ui/product-badges";
+export { SaleBadge, NewBadge, BestsellerBadge } from "@/ui/components/ui/product-badges";
 
 type DiscountPercentLabelProps = {
 	percent: number;

@@ -1,5 +1,6 @@
 import type { MenuItem } from "@/lib/menus/get-menu-data";
 import { pickTranslatedName, pickTranslatedTitle } from "@/lib/saleor-translations";
+import { isSafeExternalHref, isSafeMailtoHref, sanitizeNavHref } from "@/lib/url/safe-href";
 
 export function getMenuItemLabel(item: MenuItem): string | null {
 	if (item.category?.name) return pickTranslatedName(item.category);
@@ -13,7 +14,7 @@ export function getMenuItemHref(item: MenuItem): string | null {
 	if (item.category?.slug) return `/categories/${item.category.slug}`;
 	if (item.collection?.slug) return `/collections/${item.collection.slug}`;
 	if (item.page?.slug) return `/pages/${item.page.slug}`;
-	if (item.url) return item.url;
+	if (item.url) return sanitizeNavHref(item.url);
 	return null;
 }
 
@@ -26,5 +27,5 @@ export function hasMenuChildren(item: MenuItem): boolean {
 }
 
 export function isExternalMenuHref(href: string): boolean {
-	return href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:");
+	return isSafeExternalHref(href) || isSafeMailtoHref(href);
 }

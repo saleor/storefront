@@ -130,9 +130,10 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 				<div
 					ref={ref}
 					onKeyDownCapture={handleKeyDown}
-					className={cn("relative", className)}
+					className={cn("relative select-none", className)}
 					role="region"
 					aria-roledescription="carousel"
+					onDragStart={(e) => e.preventDefault()}
 					{...props}
 				>
 					{children}
@@ -152,7 +153,20 @@ const CarouselContent = React.forwardRef<HTMLDivElement, CarouselContentProps>(
 		const { carouselRef, orientation } = useCarousel();
 
 		return (
-			<div ref={carouselRef} className={cn("overflow-hidden", viewportClassName)}>
+			<div
+				ref={carouselRef}
+				className={cn(
+					"select-none overflow-hidden",
+					// Embla 8 doesn't set touch-action; without this, iOS Safari arbitrates
+					// the gesture itself and cancels Embla's pointer drag (swipe works in
+					// Chrome's device toolbar because that uses mouse pointer events, which
+					// ignore touch-action). pan-y/pan-x lets the page scroll on the cross axis
+					// while Embla owns the drag axis.
+					orientation === "horizontal" ? "touch-pan-y" : "touch-pan-x",
+					viewportClassName,
+				)}
+				onDragStart={(e) => e.preventDefault()}
+			>
 				<div
 					ref={ref}
 					className={cn("flex", orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col", className)}
@@ -174,7 +188,7 @@ const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
 				role="group"
 				aria-roledescription="slide"
 				className={cn(
-					"min-w-0 shrink-0 grow-0 basis-full",
+					"min-w-0 shrink-0 grow-0 basis-full select-none",
 					orientation === "horizontal" ? "pl-4" : "pt-4",
 					className,
 				)}
@@ -262,7 +276,7 @@ const CarouselDots = React.forwardRef<HTMLDivElement, CarouselDotsProps>(
 						onClick={() => scrollTo(index)}
 						className={cn(
 							"h-2 w-2 rounded-full transition-colors",
-							selectedIndex === index ? "bg-foreground" : "hover:bg-muted-foreground/50 bg-border",
+							selectedIndex === index ? "bg-foreground" : "bg-border hover:bg-muted-foreground/50",
 						)}
 						aria-label={`Go to slide ${index + 1}`}
 						aria-current={selectedIndex === index ? "true" : undefined}

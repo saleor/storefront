@@ -1,5 +1,4 @@
-import { ProductGallery } from "./product-gallery";
-import { ProductGalleryShell } from "./product-gallery-shell";
+import { activeGalleryVariant } from "./gallery-registry";
 import { getGalleryImages, resolveSelectedVariantId, type Product } from "./gallery-utils";
 
 interface VariantGalleryDynamicProps {
@@ -11,7 +10,8 @@ interface VariantGalleryDynamicProps {
  * Dynamic gallery island for PDP.
  *
  * Reads searchParams in an isolated Suspense boundary so the product shell
- * (h1, attributes, JSON-LD) can stay in the static prerender cache.
+ * (h1, attributes, JSON-LD) can stay in the static prerender cache. The active
+ * renderer comes from the gallery registry — see `gallery-registry.tsx`.
  */
 export async function VariantGalleryDynamic({ product, searchParams }: VariantGalleryDynamicProps) {
 	const { variant: variantParam } = await searchParams;
@@ -20,13 +20,11 @@ export async function VariantGalleryDynamic({ product, searchParams }: VariantGa
 	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
 	const images = getGalleryImages(product, selectedVariant);
 
-	return <ProductGallery images={images} productName={product.name} />;
+	const { Gallery } = activeGalleryVariant();
+	return <Gallery images={images} productName={product.name} />;
 }
 
 export function GallerySkeleton() {
-	return (
-		<ProductGalleryShell imageCount={1} showChrome={false}>
-			<div className="relative aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
-		</ProductGalleryShell>
-	);
+	const { Skeleton } = activeGalleryVariant();
+	return <Skeleton />;
 }

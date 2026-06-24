@@ -116,7 +116,7 @@ export function FilterBar({
 
 	return (
 		<div className="sticky top-16 z-30 border-b border-border bg-background">
-			<div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+			<div className="container-content py-4">
 				{/* Main Filter Row */}
 				<div className="flex items-center justify-between gap-4">
 					{/* Left: Filters */}
@@ -481,7 +481,7 @@ export function FilterBar({
 								{filter.value}
 								<button
 									onClick={() => onRemoveFilter(filter.key, filter.value)}
-									className="hover:bg-background/50 ml-0.5 rounded-full p-0.5 transition-colors"
+									className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-background/50"
 								>
 									<X className="h-3 w-3" />
 									<span className="sr-only">{t("removeFilter", { value: filter.value })}</span>

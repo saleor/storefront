@@ -26,16 +26,14 @@
  *
  * 3. Product JSON-LD:
  * ```tsx
- * import { buildProductJsonLd } from "@/lib/seo";
+ * import { buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
  *
  * const jsonLd = buildProductJsonLd({
  *   name: product.name,
  *   price: { amount: 29.99, currency: "USD" },
  * });
  *
- * <script type="application/ld+json"
- *   dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
- * />
+ * <script {...jsonLdScriptProps(jsonLd)} />
  * ```
  *
  * ## Configuration
