@@ -4,6 +4,8 @@ Background for the `2026-06-cache-ppr` migration batch. For upgrade steps, use [
 
 ## Next.js 16 mental model
 
+Paper targets **Next.js 16** with `cacheComponents: true`. Cache Components and `"use cache"` are **stable** in 16 (replacing the Next.js 15 `experimental.ppr` / `experimental.dynamicIO` flags). `'use cache: private'` remains experimental — Paper does not use it.
+
 With `cacheComponents: true`, caching is opt-in via `"use cache"`:
 
 | Old (Next 14/15)                         | New (Next 16 + Cache Components)        |
