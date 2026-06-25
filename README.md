@@ -123,7 +123,7 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ## Caching Architecture
 
-Paper uses **Cache Components** (Partial Prerendering) for optimal performance—static shells load instantly while dynamic content streams in. Learn more in the [Next.js documentation](https://nextjs.org/docs/app/api-reference/directives/use-cache) or see [`skills/saleor-paper-storefront/rules/data-caching.md`](skills/saleor-paper-storefront/rules/data-caching.md) for project-specific implementation details.
+Paper uses **Cache Components** ([Next.js 16](https://nextjs.org/docs/app/getting-started/cache-components) — `"use cache"`, `cacheLife`, `cacheTag` behind `cacheComponents: true`) for optimal performance: static shells load instantly while dynamic content streams in. Learn more in the [directive docs](https://nextjs.org/docs/app/api-reference/directives/use-cache) or see [`skills/saleor-paper-storefront/rules/data-caching.md`](skills/saleor-paper-storefront/rules/data-caching.md) for project-specific patterns.
 
 The **display-cached, checkout-live** model ensures fast browsing with accurate checkout:
 

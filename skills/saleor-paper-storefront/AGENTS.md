@@ -254,15 +254,27 @@ Understanding the caching architecture, Cache Components (PPR), and revalidation
 
 Cache Components enable **Partial Prerendering (PPR)** - mixing static, cached, and dynamic content in a single route. The static shell is served instantly from CDN, while dynamic parts stream in via Suspense.
 
-### Current Status: ✅ ENABLED (Experimental)
+### Current Status: ✅ ENABLED (Next.js 16)
 
-> ⚠️ **Note**: Cache Components are still marked **experimental** in Next.js. The patterns are functional but evolving. See [Disabling Cache Components](#disabling-cache-components) if you need to rollback.
+Paper runs **Next.js 16** with [`cacheComponents: true`](../../../next.config.js). In Next.js 16 this is the **stable** Cache Components model — not the old `experimental.ppr` / `experimental.dynamicIO` flags from Next.js 15 canaries.
 
-Cache Components are enabled in `next.config.js`:
+| API                      | Status in Next.js 16                                                                | Paper usage                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `cacheComponents: true`  | Stable config flag; enables PPR + `"use cache"`                                     | `next.config.js`                                                    |
+| `"use cache"`            | Stable ([v16.0.0+](https://nextjs.org/docs/app/api-reference/directives/use-cache)) | Catalog, menus, channels, storefront content                        |
+| `cacheLife` / `cacheTag` | Stable (no `unstable_` prefix)                                                      | Via `applyCacheProfile()` + `src/lib/cache-manifest.ts`             |
+| `"use cache: private"`   | Still experimental                                                                  | **Not used** — Paper passes locale/channel as function args instead |
+
+**Mental model shift from Next.js 15:** with Cache Components, **nothing is cached by default**. Catalog speed is opt-in via `"use cache"` at the data boundary (`src/lib/catalog/`, `src/lib/menus/`, etc.). Transactional paths stay on `cache: "no-cache"` / Server Actions.
+
+**What is still evolving:** upstream Cache Components docs and platform cache handlers (`use cache: remote`, multi-instance `cacheHandlers`). Paper's **page-boundary patterns** (sync shell → Suspense → islands, known divergences in `paper-architecture.md`) are project conventions on top of the stable primitives — treat those as the sharp edges, not the directive itself.
+
+See [Disabling Cache Components](#disabling-cache-components) if you need to roll back.
 
 ```javascript
 const config = {
 	cacheComponents: true,
+	cacheLife: paperCacheLifeProfiles, // named tiers — see src/lib/cache-life-profiles.ts
 };
 ```
 
@@ -802,15 +814,15 @@ const config = {
 
 ### Step 2: Remove Cache Directives
 
-Remove `"use cache"`, `cacheLife()`, and `cacheTag()` from these files:
+Remove `"use cache"` and `applyCacheProfile()` / `cacheLife()` / `cacheTag()` calls from cached data modules (and any inline cached helpers in pages):
 
-| File                                                                         | What to Remove                           |
-| ---------------------------------------------------------------------------- | ---------------------------------------- |
-| `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`    | `getProductData()` cache directives      |
-| `src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/page.tsx`  | `getCategoryData()` cache directives     |
-| `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx` | `getCollectionData()` cache directives   |
-| `src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`                    | `getFeaturedProducts()` cache directives |
-| `src/ui/components/nav/components/nav-links.tsx`                             | Navigation cache directives              |
+| File / directory                                                          | What to remove                                                                                      |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `src/lib/catalog/*.ts`                                                    | `"use cache"` on `getCategoryData`, `getCollectionData`, `getFeaturedProducts`, `getPageData`, etc. |
+| `src/lib/menus/get-menu-data.ts`                                          | Navbar + footer menu caches                                                                         |
+| `src/lib/channels/get-channels-data.ts`                                   | Channel list cache                                                                                  |
+| `src/lib/content/get-storefront-content.ts`                               | Storefront CMS content cache                                                                        |
+| `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx` | Inline `getProductData()` `"use cache"` block                                                       |
 
 ### Step 3: Update Revalidation
 
