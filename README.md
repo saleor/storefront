@@ -401,6 +401,55 @@ STOREFRONT_DISCOVER_CHANNELS=true            # Opt-in: discover ALL active Saleo
 
 The checkout architecture supports Saleor payment apps like [Adyen](https://docs.saleor.io/docs/3.x/developer/app-store/apps/adyen) and [Stripe](https://docs.saleor.io/docs/3.x/developer/app-store/apps/stripe). The heavy lifting is done—integrating your gateway requires minimal work compared to building from scratch.
 
+### How payment config is split
+
+Paper deliberately keeps **secrets out of the storefront**. Stripe keys are never set in the storefront `.env`:
+
+| Where                             | What lives there                                                                     |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| **Saleor Stripe app** (Dashboard) | Stripe **secret key** + **publishable key** + webhook signing secret                 |
+| **Storefront `.env`**             | Feature flags only (`NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS`, …) — no keys               |
+| **Runtime**                       | The storefront receives the publishable key from Saleor's `paymentGatewayInitialize` |
+
+So "set up Stripe" means: configure the Saleor Stripe app with your keys, then flip the feature flags in the storefront.
+
+### Set up Stripe with sandbox (test) keys
+
+You need a [Stripe account](https://dashboard.stripe.com/register) in **Test mode** and the [Saleor Stripe app](https://docs.saleor.io/docs/3.x/developer/app-store/apps/stripe) installed on your Saleor instance.
+
+1. **Grab your Stripe test keys.** In the [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys), toggle **Test mode** (top-right) and copy:
+   - Publishable key — `pk_test_…`
+   - Secret key — `sk_test_…`
+
+   > Test mode is Stripe's sandbox: no real charges, and you pay with [test cards](https://docs.stripe.com/testing) (e.g. `4242 4242 4242 4242`, any future expiry, any CVC).
+
+2. **Install & configure the Saleor Stripe app.** In **Saleor Dashboard → Apps** (or Extensions), install the Stripe payment app and open its configuration. Paste the **test** publishable and secret keys. The app registers the Stripe webhook for you; assign the configuration to the channel(s) you're testing.
+
+3. **Enable Stripe in the storefront.** Add to `.env` (or `.env.local`):
+
+   ```bash
+   NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS=true
+   ENABLE_STRIPE_PAYMENTS=true   # server-side mirror for the transaction guard
+
+   # Optional — wallet buttons (Apple Pay / Google Pay / Link); on by default when Stripe is enabled
+   # NEXT_PUBLIC_ENABLE_STRIPE_EXPRESS_CHECKOUT=false
+   ```
+
+   > In local development (`NODE_ENV === development`) Stripe auto-enables, so these flags are mainly for cloud/staging builds. Publishable keys still come from Saleor at runtime — never put `pk_…` / `sk_…` in the storefront env.
+
+4. **Run a test order.** `pnpm dev`, add a product, go to checkout, and pay with a Stripe [test card](https://docs.stripe.com/testing). Use `4000 0027 6000 3184` to exercise the 3DS redirect flow.
+
+### Test without Stripe (Dummy Payment)
+
+To validate the full checkout flow without any Stripe setup, use the Dummy Payment app (auto-enabled in development):
+
+```bash
+ALLOW_DUMMY_PAYMENT=true
+NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT=true
+```
+
+> **Developer docs:** payment registry, submit patterns, and adding a gateway → [`skills/saleor-paper-storefront/rules/checkout-payment-gateways.md`](skills/saleor-paper-storefront/rules/checkout-payment-gateways.md). All payment env vars are listed in [`.env.example`](.env.example).
+
 ---
 
 ## Customization
