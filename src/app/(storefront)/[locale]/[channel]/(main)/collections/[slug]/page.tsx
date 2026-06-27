@@ -14,6 +14,9 @@ import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/fi
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { CollectionPageClient } from "./client";
 
+/** Cached collection hero + grid shell. `allow-runtime` pairs with hero CTAs (prefetch={true}). */
+export const prefetch = "allow-runtime";
+
 type PageProps = {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{

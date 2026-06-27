@@ -193,7 +193,7 @@ export function CartDrawer({
 
 				{/* Free Shipping Progress */}
 				{lines.length > 0 && freeShippingEnabled && (
-					<div className="bg-secondary/50 border-b border-border px-6 py-4">
+					<div className="border-b border-border bg-secondary/50 px-6 py-4">
 						<div className="mb-2 flex items-center gap-2 text-sm">
 							<Truck className={cn("h-4 w-4", amountToFreeShipping <= 0 && "text-success")} />
 							{amountToFreeShipping > 0 ? (
@@ -386,7 +386,6 @@ export function CartDrawer({
 						<div className="space-y-3 px-6 pb-6">
 							<Link
 								href={checkoutHref}
-								prefetch={false}
 								onClick={(event) => {
 									if (isCartBusy) {
 										event.preventDefault();

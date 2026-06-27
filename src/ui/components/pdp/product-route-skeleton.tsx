@@ -5,11 +5,11 @@ import { VariantSectionSkeleton } from "./variant-section-dynamic";
 
 interface ProductRouteSkeletonProps {
 	/**
-	 * Where the skeleton renders. Drives both the fade delay and the page chrome:
-	 * - `"route"`: route `loading.tsx` — renders inside the layout's `<main>`; longer
-	 *   fade delay to avoid flashing on fast navigations.
-	 * - `"page"`: page-level Suspense fallback — replaces `ProductShell`, so it owns the
-	 *   full-page chrome (`min-h-screen`, `bg-background`) and uses the shorter delay.
+	 * Where the skeleton renders:
+	 * - `"route"`: route `loading.tsx` during client navigations.
+	 * - `"page"`: page-level Suspense fallback while `ProductShell` resolves.
+	 *
+	 * Shown immediately (no fade delay) so 16.3 instant navigations surface a shell on click.
 	 */
 	surface?: "route" | "page";
 }
@@ -49,12 +49,8 @@ function AttributesAccordionSkeleton({ className }: { className?: string }) {
  */
 export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonProps) {
 	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
-	const delayClass = surface === "route" ? "animate-skeleton-delayed-long" : "animate-skeleton-delayed";
 
-	const wrapperClassName =
-		surface === "page"
-			? cn("flex min-h-screen flex-col bg-background", delayClass, "opacity-0")
-			: cn(delayClass, "opacity-0");
+	const wrapperClassName = surface === "page" ? "flex min-h-screen flex-col bg-background" : undefined;
 
 	return (
 		<div role="status" aria-busy="true" aria-label="Loading product" className={wrapperClassName}>

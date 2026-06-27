@@ -22,6 +22,8 @@
 		"generate:all": "pnpm run generate && pnpm run generate:checkout",
 		"test": "vitest",
 		"test:run": "vitest run",
+		"test:e2e": "playwright test",
+		"test:e2e:instant": "playwright test e2e/instant-navigation.spec.ts",
 		"typecheck": "tsc --noEmit",
 		"knip": "knip",
 		"prepare": "husky install",
@@ -57,7 +59,7 @@
 		"graphql-tag": "2.12.7",
 		"lodash-es": "4.18.1",
 		"lucide-react": "0.358.0",
-		"next": "16.2.9",
+		"next": "16.3.0-preview.4",
 		"next-intl": "4.13.0",
 		"react": "^19.2.7",
 		"react-dom": "^19.2.7",
@@ -77,8 +79,10 @@
 		"@graphql-codegen/typescript": "5.0.7",
 		"@graphql-codegen/typescript-operations": "5.0.7",
 		"@graphql-codegen/typescript-urql": "4.0.1",
-		"@next/env": "16.2.9",
+		"@next/env": "16.3.0-preview.4",
+		"@next/playwright": "16.3.0-preview.4",
 		"@parcel/watcher": "2.5.6",
+		"@playwright/test": "1.55.0",
 		"@tailwindcss/container-queries": "0.1.1",
 		"@tailwindcss/forms": "0.5.11",
 		"@tailwindcss/typography": "0.5.20",
@@ -104,15 +108,6 @@
 	},
 	"resolutions": {
 		"graphql": "16.8.1"
-	},
-	"pnpm": {
-		"overrides": {
-			"dset": ">=3.1.4",
-			"micromatch": ">=4.0.8",
-			"@babel/runtime": ">=7.26.10",
-			"@babel/helpers": ">=7.26.10",
-			"brace-expansion@>=2": ">=2.0.2"
-		}
 	},
 	"packageManager": "pnpm@10.28.1",
 	"engines": {

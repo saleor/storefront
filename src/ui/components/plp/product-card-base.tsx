@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { DiscountPercentLabel, NewBadge, SaleBadge, BestsellerBadge } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
@@ -7,6 +6,7 @@ import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
 import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import type { ProductCardData } from "./product-card-data";
+import { ProductCardLink } from "./product-card-link";
 
 export interface ProductCardBaseProps {
 	product: ProductCardData;
@@ -25,12 +25,7 @@ export function ProductCardBase({
 	return (
 		<article className="group">
 			<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-card bg-secondary">
-				<Link
-					href={product.href}
-					prefetch={false}
-					className="absolute inset-0 z-0 block"
-					aria-label={product.name}
-				>
+				<ProductCardLink href={product.href} className="absolute inset-0 z-0 block" aria-label={product.name}>
 					<Image
 						src={product.image}
 						alt={product.imageAlt || product.name}
@@ -54,7 +49,7 @@ export function ProductCardBase({
 							className="object-cover opacity-0 transition-all duration-500 ease-out md:group-hover:scale-105 md:group-hover:opacity-100"
 						/>
 					)}
-				</Link>
+				</ProductCardLink>
 
 				{(product.badge === "Sale" || product.badge === "New" || product.isBestseller) && (
 					<div className="pointer-events-none absolute left-3 top-3 z-[1] flex flex-wrap items-center gap-1.5">
@@ -67,7 +62,7 @@ export function ProductCardBase({
 				{imageOverlay ? <div className="absolute inset-0 z-10">{imageOverlay}</div> : null}
 			</div>
 
-			<Link href={product.href} prefetch={false} className="block no-underline hover:no-underline">
+			<ProductCardLink href={product.href} className="block no-underline hover:no-underline">
 				<div className="space-y-1.5">
 					{product.brand && <p className="text-eyebrow uppercase text-muted-foreground">{product.brand}</p>}
 					<h3
@@ -105,7 +100,7 @@ export function ProductCardBase({
 						)}
 					</div>
 				</div>
-			</Link>
+			</ProductCardLink>
 		</article>
 	);
 }
