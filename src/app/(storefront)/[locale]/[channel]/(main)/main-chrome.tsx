@@ -82,6 +82,7 @@ async function FooterSlot({ params }: { params: BrowseRouteParams }) {
 export function MainChrome({ params, children }: { params: BrowseRouteParams; children: ReactNode }) {
 	return (
 		<>
+			{/* usePathname() is runtime-only in Next 16 — must stream inside Suspense for PPR */}
 			<Suspense fallback={null}>
 				<ScrollToTopOnNavigate />
 			</Suspense>
