@@ -9,7 +9,7 @@ import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { CategoryHero, PlpPageLoading, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
+import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { CategoryPageClient } from "./client";
@@ -44,27 +44,15 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 };
 
 /**
- * Cached hero shell (params only) + dynamic product grid island (searchParams).
- * Sync page → Suspense → `CategoryShell` so PPR prerenders the hero and the route
- * `loading.tsx` can surface a shell on instant navigations. Matches the products
- * listing page pattern — hero is not blocked behind a full-page Suspense.
+ * Hybrid PLP — cached hero rendered eagerly into the PPR static shell, only the
+ * `searchParams`-driven product grid streams behind a `Suspense` island. The hero comes
+ * exclusively from `getCategoryData()` (`"use cache"`), so it prerenders as real content
+ * (no page-level `Suspense`, no hero skeleton on the page itself). Matches the products
+ * listing page pattern. Route `loading.tsx` (`PlpPageLoading`) remains the height-matched
+ * instant-navigation fallback.
  */
-export default function Page(props: PageProps) {
-	return (
-		<Suspense fallback={<PlpPageLoading />}>
-			<CategoryShell params={props.params} searchParams={props.searchParams} />
-		</Suspense>
-	);
-}
-
-async function CategoryShell({
-	params,
-	searchParams,
-}: {
-	params: PageProps["params"];
-	searchParams: PageProps["searchParams"];
-}) {
-	const resolvedParams = await params;
+export default async function Page(props: PageProps) {
+	const resolvedParams = await props.params;
 	const [category, tListing, tNav] = await Promise.all([
 		getCategoryData(resolvedParams.slug, resolvedParams.channel, resolvedParams.locale),
 		getTranslations({ locale: resolvedParams.locale, namespace: "productsListing" }),
@@ -94,6 +82,7 @@ async function CategoryShell({
 
 	return (
 		<>
+			{/* Static shell — cached hero renders immediately, prerendered into the PPR shell */}
 			<CategoryHero
 				title={category.name}
 				description={plainDescription}
@@ -101,8 +90,9 @@ async function CategoryShell({
 				breadcrumbs={breadcrumbs}
 				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
+			{/* Dynamic island — only the searchParams-driven grid streams behind a skeleton */}
 			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CategoryProducts params={params} searchParams={searchParams} />
+				<CategoryProducts params={props.params} searchParams={props.searchParams} />
 			</Suspense>
 		</>
 	);

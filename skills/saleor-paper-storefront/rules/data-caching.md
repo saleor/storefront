@@ -1,6 +1,6 @@
 ---
 name: data-caching
-description: Paper caching decisions: Cache Components (PPR), the sync page → Suspense → cached shell → islands model, cache-manifest.ts as source of truth, webhook revalidation, per-locale cache keys. Use when touching catalog data fetching, ISR, stale content, or revalidation.
+description: Paper caching decisions: Cache Components (PPR), the static/hybrid page-boundary model (cached shell rendered directly; Suspense only for dynamic holes), cache-manifest.ts as source of truth, webhook revalidation, per-locale cache keys. Use when touching catalog data fetching, ISR, stale content, or revalidation.
 ---
 
 # Data Caching
@@ -73,7 +73,7 @@ Named `cacheLife` tiers (configured in `next.config.js`): `catalog` ~5 min (prod
 
 ## The page-boundary model (Paper convention)
 
-The PPR layer stack — **sync page → Suspense → cached shell (params + `"use cache"` only) → dynamic islands (`searchParams`/cookies)** — is the spine of every browse route. It is documented once in [`paper-architecture.md`](paper-architecture.md); PDP specifics are in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
+The PPR layer stack — pick the page shape by **whether the route reads runtime data** (`searchParams`/`cookies`/uncached fetch): a **static page** (no runtime data) is an `async` page that awaits `params` + `"use cache"` data and renders the shell **directly** (no page-level `Suspense`, no skeleton — e.g. homepage); a **hybrid page** renders the cached shell **eagerly** and wraps **only** the dynamic island (`searchParams`/cookies) in `Suspense` (e.g. PLP grid, PDP variant section). A skeleton is a **per-hole** affordance, never a **per-page** default. It is documented once in [`paper-architecture.md`](paper-architecture.md) and [`page-composition.md`](page-composition.md); PDP specifics are in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
 
 - **Catalog fetches live in modules**, not inline in pages long-term: `src/lib/catalog/`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/`.
 - **`executePublicGraphQL`** is safe inside `"use cache"`; **`executeAuthenticatedGraphQL`** is **not** (needs cookies) — keep it out of cached functions.

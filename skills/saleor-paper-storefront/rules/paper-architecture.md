@@ -28,17 +28,17 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 
 ## Architectural pillars
 
-| Pillar              | Decision                                                  | Detail                                                                                                                                                                                                                          |
-| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
-| **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
-| **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
-| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)        | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
-| **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
-| **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
-| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
-| **Copy & i18n**     | Three string systems                                      | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
-| **Channels**        | Explicit storefront allowlist                             | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
+| Pillar              | Decision                                                             | Detail                                                                                                                                                                                                                          |
+| ------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two surfaces**    | One repo, storefront + checkout                                      | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
+| **Freshness split** | Cached browse, live commerce                                         | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
+| **Page boundaries** | Static page renders cached shell directly; hybrid wraps only islands | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
+| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)                   | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
+| **Auth**            | BFF + PPR-safe account routes                                        | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
+| **GraphQL**         | Codegen + server helpers                                             | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
+| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional            | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
+| **Copy & i18n**     | Three string systems                                                 | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
+| **Channels**        | Explicit storefront allowlist                                        | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
 
 ---
 
@@ -62,17 +62,17 @@ Saleor remains the source of truth for prices at checkout; cached PDP prices may
 
 Patterns we **do not** use — regressions to avoid:
 
-| Avoid                                                | Use instead                                         |
-| ---------------------------------------------------- | --------------------------------------------------- |
-| Client-side Saleor GraphQL (urql, Apollo in browser) | Server helpers + Server Actions                     |
-| Browser Saleor SDK for login                         | BFF `/api/auth/*`                                   |
-| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cache-manifest.ts` + webhooks      |
-| `searchParams` / `cookies()` inside `"use cache"`    | Dynamic islands in nested `Suspense`                |
-| Async page components that fetch cached data         | Sync page + inner Suspense boundary                 |
-| `Suspense fallback={null}` on `<main>`               | Route `loading.tsx` + section skeletons             |
-| `router.replace` for checkout step-only changes      | `updateCheckoutQuery()` (shallow history)           |
-| Storefront importing `@/checkout/*`                  | `@paper/session-bridge` for cross-surface URLs only |
-| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `applyCacheProfile` from `cache-manifest.ts`        |
+| Avoid                                                | Use instead                                          |
+| ---------------------------------------------------- | ---------------------------------------------------- |
+| Client-side Saleor GraphQL (urql, Apollo in browser) | Server helpers + Server Actions                      |
+| Browser Saleor SDK for login                         | BFF `/api/auth/*`                                    |
+| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cache-manifest.ts` + webhooks       |
+| `searchParams` / `cookies()` inside `"use cache"`    | Dynamic islands in nested `Suspense`                 |
+| Page-level skeleton on a non-dynamic route           | Render the cached shell directly; no page `Suspense` |
+| `Suspense fallback={null}` on `<main>`               | Route `loading.tsx` + section skeletons              |
+| `router.replace` for checkout step-only changes      | `updateCheckoutQuery()` (shallow history)            |
+| Storefront importing `@/checkout/*`                  | `@paper/session-bridge` for cross-surface URLs only  |
+| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `applyCacheProfile` from `cache-manifest.ts`         |
 
 ---
 
@@ -80,7 +80,7 @@ Patterns we **do not** use — regressions to avoid:
 
 Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
 
-_None currently._ The homepage (`(main)/page.tsx`) and category (`categories/[slug]/page.tsx`) async-page-shell divergences were both reconciled to the canonical sync page → `Suspense` → async shell model; each page's inner `Suspense` fallback is its nav skeleton. There is intentionally **no shared `(main)/loading.tsx`** — a segment-level loading.tsx there renders the homepage skeleton for sibling routes (categories/PDP/…) whenever the `(main)` segment re-suspends on Back navigation, which flashed the homepage skeleton on Back to a category. Per-route `loading.tsx` (e.g. `categories/[slug]/loading.tsx`) + the page inner Suspense cover the cases that matter. Add a row here only when a new, intentional exception is introduced.
+_All browse pages aligned._ The homepage (`(main)/page.tsx`) is **fully static** — an `async` page that awaits only `params` + `"use cache"` data and renders every section (incl. the featured collection) directly into the PPR static shell, with **no page-level `Suspense` and no skeleton**. The **category** (`categories/[slug]/page.tsx`) and **products** (`products/page.tsx`) pages are **hybrid** — `async` pages that render the cached hero eagerly into the static shell and suspend **only** the `searchParams`-driven grid behind `ProductsGridSkeleton`. No browse page wraps its cached shell in a page-level `Suspense`. Route `loading.tsx` files (`PlpPageLoading` for categories/collections, `ProductsLoading` for products) remain as height-matched **instant-navigation** fallbacks — the documented "meaningful partial frame" use, not page-render skeletons. There is intentionally **no shared `(main)/loading.tsx`**. Add a row here only when a new, intentional exception is introduced.
 
 ---
 

@@ -100,17 +100,17 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 
 ## Architectural pillars
 
-| Pillar              | Decision                                                  | Detail                                                                                                                                                                                                                          |
-| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
-| **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
-| **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
-| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)        | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
-| **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
-| **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
-| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
-| **Copy & i18n**     | Three string systems                                      | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
-| **Channels**        | Explicit storefront allowlist                             | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
+| Pillar              | Decision                                                             | Detail                                                                                                                                                                                                                          |
+| ------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two surfaces**    | One repo, storefront + checkout                                      | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
+| **Freshness split** | Cached browse, live commerce                                         | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
+| **Page boundaries** | Static page renders cached shell directly; hybrid wraps only islands | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
+| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)                   | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
+| **Auth**            | BFF + PPR-safe account routes                                        | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
+| **GraphQL**         | Codegen + server helpers                                             | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
+| **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional            | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
+| **Copy & i18n**     | Three string systems                                                 | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
+| **Channels**        | Explicit storefront allowlist                                        | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
 
 ---
 
@@ -134,17 +134,17 @@ Saleor remains the source of truth for prices at checkout; cached PDP prices may
 
 Patterns we **do not** use — regressions to avoid:
 
-| Avoid                                                | Use instead                                         |
-| ---------------------------------------------------- | --------------------------------------------------- |
-| Client-side Saleor GraphQL (urql, Apollo in browser) | Server helpers + Server Actions                     |
-| Browser Saleor SDK for login                         | BFF `/api/auth/*`                                   |
-| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cache-manifest.ts` + webhooks      |
-| `searchParams` / `cookies()` inside `"use cache"`    | Dynamic islands in nested `Suspense`                |
-| Async page components that fetch cached data         | Sync page + inner Suspense boundary                 |
-| `Suspense fallback={null}` on `<main>`               | Route `loading.tsx` + section skeletons             |
-| `router.replace` for checkout step-only changes      | `updateCheckoutQuery()` (shallow history)           |
-| Storefront importing `@/checkout/*`                  | `@paper/session-bridge` for cross-surface URLs only |
-| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `applyCacheProfile` from `cache-manifest.ts`        |
+| Avoid                                                | Use instead                                          |
+| ---------------------------------------------------- | ---------------------------------------------------- |
+| Client-side Saleor GraphQL (urql, Apollo in browser) | Server helpers + Server Actions                      |
+| Browser Saleor SDK for login                         | BFF `/api/auth/*`                                    |
+| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cache-manifest.ts` + webhooks       |
+| `searchParams` / `cookies()` inside `"use cache"`    | Dynamic islands in nested `Suspense`                 |
+| Page-level skeleton on a non-dynamic route           | Render the cached shell directly; no page `Suspense` |
+| `Suspense fallback={null}` on `<main>`               | Route `loading.tsx` + section skeletons              |
+| `router.replace` for checkout step-only changes      | `updateCheckoutQuery()` (shallow history)            |
+| Storefront importing `@/checkout/*`                  | `@paper/session-bridge` for cross-surface URLs only  |
+| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `applyCacheProfile` from `cache-manifest.ts`         |
 
 ---
 
@@ -152,7 +152,7 @@ Patterns we **do not** use — regressions to avoid:
 
 Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
 
-_None currently._ The homepage (`(main)/page.tsx`) and category (`categories/[slug]/page.tsx`) async-page-shell divergences were both reconciled to the canonical sync page → `Suspense` → async shell model; each page's inner `Suspense` fallback is its nav skeleton. There is intentionally **no shared `(main)/loading.tsx`** — a segment-level loading.tsx there renders the homepage skeleton for sibling routes (categories/PDP/…) whenever the `(main)` segment re-suspends on Back navigation, which flashed the homepage skeleton on Back to a category. Per-route `loading.tsx` (e.g. `categories/[slug]/loading.tsx`) + the page inner Suspense cover the cases that matter. Add a row here only when a new, intentional exception is introduced.
+_All browse pages aligned._ The homepage (`(main)/page.tsx`) is **fully static** — an `async` page that awaits only `params` + `"use cache"` data and renders every section (incl. the featured collection) directly into the PPR static shell, with **no page-level `Suspense` and no skeleton**. The **category** (`categories/[slug]/page.tsx`) and **products** (`products/page.tsx`) pages are **hybrid** — `async` pages that render the cached hero eagerly into the static shell and suspend **only** the `searchParams`-driven grid behind `ProductsGridSkeleton`. No browse page wraps its cached shell in a page-level `Suspense`. Route `loading.tsx` files (`PlpPageLoading` for categories/collections, `ProductsLoading` for products) remain as height-matched **instant-navigation** fallbacks — the documented "meaningful partial frame" use, not page-render skeletons. There is intentionally **no shared `(main)/loading.tsx`**. Add a row here only when a new, intentional exception is introduced.
 
 ---
 
@@ -287,7 +287,7 @@ Named `cacheLife` tiers (configured in `next.config.js`): `catalog` ~5 min (prod
 
 ## The page-boundary model (Paper convention)
 
-The PPR layer stack — **sync page → Suspense → cached shell (params + `"use cache"` only) → dynamic islands (`searchParams`/cookies)** — is the spine of every browse route. It is documented once in [`paper-architecture.md`](paper-architecture.md); PDP specifics are in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
+The PPR layer stack — pick the page shape by **whether the route reads runtime data** (`searchParams`/`cookies`/uncached fetch): a **static page** (no runtime data) is an `async` page that awaits `params` + `"use cache"` data and renders the shell **directly** (no page-level `Suspense`, no skeleton — e.g. homepage); a **hybrid page** renders the cached shell **eagerly** and wraps **only** the dynamic island (`searchParams`/cookies) in `Suspense` (e.g. PLP grid, PDP variant section). A skeleton is a **per-hole** affordance, never a **per-page** default. It is documented once in [`paper-architecture.md`](paper-architecture.md) and [`page-composition.md`](page-composition.md); PDP specifics are in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
 
 - **Catalog fetches live in modules**, not inline in pages long-term: `src/lib/catalog/`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/`.
 - **`executePublicGraphQL`** is safe inside `"use cache"`; **`executeAuthenticatedGraphQL`** is **not** (needs cookies) — keep it out of cached functions.
@@ -2658,7 +2658,7 @@ The catalog of reusable full-bleed marketing sections in [`src/ui/sections/`](..
 | `HeroBanner`                | `hero-banner/hero-banner.tsx`               | Top-of-page hero with optional full-bleed background image + CTAs                                             | `heading`, `subheading`, `primaryCta`, `secondaryCta`, `backgroundImage`, `height` (`compact`/`default`/`large`)                                                                                                                                                                                             |
 | `EditorialHero`             | `editorial-hero/editorial-hero.tsx`         | Split hero: confident type on a clean canvas + a large product image on a soft panel (suits studio packshots) | `eyebrow`, `heading`, `subheading`, `primaryCta`, `secondaryCta`, `image`, `imageAlt`, `placeholder`                                                                                                                                                                                                         |
 | `CategoryTileGrid`          | `category-tile-grid/category-tile-grid.tsx` | Large image tiles linking to categories/collections (label overlay for lifestyle, label-below for packshots)  | `heading`, `eyebrow`, `intro`, `cta`, `tiles[]`, `columns` (`2`/`3`/`4`), `imageFit` (`cover`/`contain`), `aspect`, `tone`, `width`                                                                                                                                                                          |
-| `FeaturedCollectionSection` | `featured-collection-section/`              | Product grid from a Saleor collection                                                                         | `heading`, `collectionSlug`, `limit`, `desktopColumns`; server data (`"use cache"`) — wrap in Suspense with `FeaturedCollectionSkeleton`                                                                                                                                                                     |
+| `FeaturedCollectionSection` | `featured-collection-section/`              | Product grid from a Saleor collection                                                                         | `heading`, `collectionSlug`, `limit`, `desktopColumns`; server data (`"use cache"`) — inline into the static shell; wrap in `Suspense` with `FeaturedCollectionSkeleton` only on a page that must stream it                                                                                                  |
 | `ImageWithText`             | `image-with-text/`                          | Editorial split: image one side, copy + CTA the other                                                         | `heading`, `paragraphs`, `image` (or `placeholder`), `imagePosition` (`left`/`right`), `cta`                                                                                                                                                                                                                 |
 | `MulticolumnSection`        | `multicolumn-section/`                      | 2–3 column value props / icons                                                                                | `heading`, `columns[]`, `columnsDesktop` (`2`/`3`)                                                                                                                                                                                                                                                           |
 | `RichTextBlock`             | `rich-text-block/`                          | Centered/left prose band (brand story, intro)                                                                 | `heading`, `paragraphs`, `align` (`left`/`center`), `width` (`narrow`/`default`/`wide`)                                                                                                                                                                                                                      |
@@ -2773,23 +2773,27 @@ How to mold PDP and homepage layouts by editing the page files — adding, remov
 
 ## The one rule that governs everything: the layer model
 
-Every browse page is **sync page → Suspense → cached shell → dynamic islands** (full detail in `data-caching`). Design changes must stay inside the right layer:
+Pick the page shape by **whether the route reads any runtime data** (`searchParams`/`cookies`/uncached fetch). A skeleton is a **per-hole** affordance, never a **per-page** default:
+
+- **Static page (no runtime data)** → `async page` awaits `params` + `"use cache"` data and renders the shell **directly**. **No page-level `Suspense`, no skeleton** — it prerenders as real content. (homepage, CMS pages)
+- **Hybrid page (some runtime data)** → render the cached shell **eagerly**, then wrap **only** the dynamic island in `Suspense` with a small skeleton. (PLP grid via `searchParams`, PDP variant section)
+
+Design changes must stay inside the right layer:
 
 ```
-Page (sync export)                  ← no top-level await of runtime data
-└── Suspense (skeleton)
-    └── Shell (await params + "use cache" data ONLY)   ← STATIC design lives here
-          ├── sections built from cached content (hero, story, value columns…)
-          └── Suspense island(s)                       ← DYNAMIC design lives here
-                searchParams / cookies / client hooks  (variant gallery, featured grid, cart)
+Page (async export)                 ← awaits params + "use cache" data only; no runtime data at top level
+├── cached shell                    ← STATIC design, prerendered into the PPR shell (renders directly)
+│     sections from cached content (hero, story, value columns, featured grid…)
+└── Suspense island(s)              ← DYNAMIC design only; present on hybrid pages, absent on static ones
+      searchParams / cookies / client hooks  (variant gallery/section, filtered grid, cart)
 ```
 
-| Put it in the STATIC shell                        | Put it in a DYNAMIC island (nested Suspense)              |
-| ------------------------------------------------- | --------------------------------------------------------- |
-| Marketing sections from `getStorefrontContent()`  | Anything reading `searchParams` (variant gallery/section) |
-| `h1`, breadcrumbs, JSON-LD, copy, value props     | Anything reading `cookies()` (cart, auth chrome)          |
-| LCP image preload                                 | `cache: "no-cache"` fetches; client routing hooks         |
-| Cached collection grids via `"use cache"` helpers | Featured grid streams behind its skeleton                 |
+| Put it in the STATIC shell                                        | Put it in a DYNAMIC island (nested Suspense)                      |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Marketing sections from `getStorefrontContent()`                  | Anything reading `searchParams` (variant gallery/section)         |
+| `h1`, breadcrumbs, JSON-LD, copy, value props                     | Anything reading `cookies()` (cart, auth chrome)                  |
+| LCP image preload                                                 | `cache: "no-cache"` fetches; client routing hooks                 |
+| Cached collection grids via `"use cache"` helpers (e.g. featured) | `searchParams`-filtered/sorted grids; per-request personalization |
 
 Hard constraints (never violate when redesigning):
 
@@ -2805,21 +2809,20 @@ File: [`src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`](<../../../src/
 The homepage composes typed content (`getStorefrontContent`) into an ordered list of sections. To mold it:
 
 1. **Reorder / add / remove sections** by editing the JSX section list. Pull copy from `content.surfaces.homepage` (extend the content model for new fields — see `data-storefront-content`).
-2. **Keep product data streaming**: `FeaturedCollectionSection` stays inside its `<Suspense fallback={<FeaturedCollectionSkeleton/>}>`. Static editorial sections render directly in the shell.
+2. **Render cached sections directly**: `FeaturedCollectionSection` is `"use cache"`, so it's inlined into the static shell (no `Suspense`, no skeleton) alongside the editorial sections. Wrap a section in `Suspense` only if it reads runtime data — none do today.
 3. **Vary width per section** with the container tokens (a full-bleed `HeroBanner` + a `container-content` story + a `container-wide` editorial band is fine).
 4. **Width is intentional** — a full-width homepage is supported; don't default to centered-narrow.
 
 ```tsx
 // Sketch: reordered homepage with a new full-bleed editorial band.
-// Page is a sync export: <Suspense fallback={<HomepageSkeleton />}><HomepageShell …/></Suspense>.
-// The sketch below is the HomepageShell body — `params` is the destructured promise.
+// The homepage is a static `async` page — NO page-level Suspense. The body awaits
+// `params` + "use cache" content and renders every section (incl. featured) directly.
 return (
   <>
     <HeroBanner heading={hero.heading} backgroundImage={hero.backgroundImage} height="large" primaryCta={…} />
 
-    <Suspense fallback={<FeaturedCollectionSkeleton heading={featured.heading} limit={featured.limit} />}>
-      <FeaturedCollectionLoader params={params} {...featured} />
-    </Suspense>
+    {/* Cached → inlined into the static shell, not streamed behind a skeleton */}
+    <FeaturedCollectionSection locale={locale} channel={channel} {...featured} />
 
     <ImageWithText heading={editorial.heading} paragraphs={editorial.paragraphs} imagePosition="right" cta={…} />
     <MulticolumnSection heading={values.heading} columns={valueColumns} columnsDesktop={values.columnsDesktop} />
@@ -2828,7 +2831,7 @@ return (
 );
 ```
 
-> The homepage follows the canonical sync page → `Suspense` → `HomepageShell` model (the static shell awaits only `params` + `"use cache"` content — never `searchParams`/`cookies`), with a route `loading.tsx` (`HomepageSkeleton`) for instant navigations and the featured collection streaming in its nested `Suspense` island. Keep that constraint when editing.
+> The homepage is **fully static**: an `async` page that awaits only `params` + `"use cache"` content (never `searchParams`/`cookies`) and renders every section — including the featured collection — directly into the PPR static shell. There is **no page-level `Suspense` and no skeleton**. `pnpm build`'s Cache Components check fails if any uncached/runtime access sneaks in outside a `Suspense`, which is the guarantee that `/` stays a real static shell. Add a `Suspense` island only when you introduce a genuinely dynamic section.
 
 ## PDP molding
 
