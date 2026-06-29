@@ -51,11 +51,9 @@ export function Breadcrumbs({ items, ariaLabel, surface = "default", className }
 									aria-hidden="true"
 								/>
 							)}
-							{/* Plain next/link by design: item.href is already locale+channel resolved by callers.
-							    `prefetch={true}` runtime-prefetches the cached shell target (home/category/PLP)
-							    on viewport, mirroring mega-menu/tile/hero CTAs. */}
+							{/* Plain next/link by design: item.href is already locale+channel resolved by callers. */}
 							{showLink ? (
-								<Link href={item.href!} prefetch={true} className={linkClass}>
+								<Link href={item.href!} className={linkClass}>
 									{item.label}
 								</Link>
 							) : (
