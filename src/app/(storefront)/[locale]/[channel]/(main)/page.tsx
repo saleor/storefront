@@ -18,8 +18,10 @@ export const metadata = {
 	description: brandConfig.description,
 };
 
-// Prefetch: default (auto). With global `partialPrefetching`, viewport links already get the
-// homepage App Shell. No link uses `prefetch={true}` to "/", so `allow-runtime` would be inert.
+/** Cached homepage shell. `allow-runtime` pairs with the homepage-bound links (logo, breadcrumb
+ * "Home") that carry `prefetch={true}`, so the real prerendered shell is runtime-prefetched on
+ * viewport instead of fetched on click under global `partialPrefetching`. */
+export const prefetch = "allow-runtime";
 
 /** Prefer footwear/marquee products for the hero; otherwise the first available image. */
 const HERO_SLUG_HINT = /shoe|plimsoll|sneaker|trainer|runner|force|boot/i;

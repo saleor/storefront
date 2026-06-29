@@ -39,4 +39,22 @@ test.describe("instant navigations (Next.js 16.3)", () => {
 			await expect(page.locator("h1").first()).toBeVisible();
 		});
 	});
+
+	test("PDP → homepage (logo) shows hero immediately", async ({ page }) => {
+		const firstProductLink = page.locator('article a[href*="/products/"]').first();
+		await page.goto(`${browsePath}/products`);
+		await expect(firstProductLink).toBeVisible({ timeout: 30_000 });
+		await firstProductLink.click();
+		await expect(page.locator("h1").first()).toBeVisible({ timeout: 30_000 });
+
+		// Logo links to the homepage root for the current channel.
+		const logoLink = page.getByRole("link", { name: "Homepage" }).first();
+		await expect(logoLink).toBeVisible();
+
+		await instant(page, async () => {
+			await logoLink.click();
+			// Homepage hero heading is the shell's h1 — must appear without a server round-trip.
+			await expect(page.locator("h1").first()).toBeVisible();
+		});
+	});
 });
