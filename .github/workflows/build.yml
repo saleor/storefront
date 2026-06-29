@@ -32,6 +32,8 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Bootstrap agent skills
+        run: pnpm skills:bootstrap
       - name: paper doctor (agent setup healthy)
         run: pnpm run doctor:check
       - name: Verify agent docs (frontmatter + AGENTS.md in sync)
