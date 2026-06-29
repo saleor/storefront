@@ -105,6 +105,7 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 | **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
 | **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
 | **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
+| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)        | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) §5; account uses layout-shell gate for auth                                                                                              |
 | **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
 | **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
 | **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
@@ -151,10 +152,38 @@ Patterns we **do not** use — regressions to avoid:
 
 Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
 
-| Divergence                                                                                                                                                                                                         | Why it's safe today                                                                                                                                                                                                                                                                                                                                     | Deferred fix                                                                               |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **Homepage** (`(main)/page.tsx`) and **category** (`categories/[slug]/page.tsx`) use an **async page shell** that awaits cached data at the page top, instead of the canonical sync page → Suspense → async shell. | Both await only `params` + `"use cache"` data (`getStorefrontContent` / `getCategoryData`) — never `searchParams`/`cookies` — so the static shell still prerenders and PPR is intact. Dynamic islands (featured collection, product grid) stay in nested `Suspense`. Build passes.                                                                      | Convert to sync page + inner `<Suspense fallback>` shell when touched.                     |
-| **Homepage has no `loading.tsx`.**                                                                                                                                                                                 | Content is `"use cache"` and reused from the layout's own `getStorefrontContent` fetch (warm per request); stale-while-revalidate avoids blocking on TTL expiry. Only a truly cold cache renders `<main>` empty briefly — per-key, not traffic-amplified. The layout also awaits the same cached content, so the page is not the main cold-start lever. | Add a homepage `loading.tsx` (or sync-shell skeleton) alongside the sync-shell conversion. |
+| Divergence                                                                                                                                                                                                         | Why it's safe today                                                                                                                                                                                                                                                                | Deferred fix                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Homepage** (`(main)/page.tsx`) and **category** (`categories/[slug]/page.tsx`) use an **async page shell** that awaits cached data at the page top, instead of the canonical sync page → Suspense → async shell. | Both await only `params` + `"use cache"` data (`getStorefrontContent` / `getCategoryData`) — never `searchParams`/`cookies` — so the static shell still prerenders and PPR is intact. Dynamic islands (featured collection, product grid) stay in nested `Suspense`. Build passes. | Convert to sync page + inner `<Suspense fallback>` shell when touched. |
+| **Homepage has no `loading.tsx`.**                                                                                                                                                                                 | Homepage sections use `"use cache"`; chrome slots fetch copy independently (deduped per request). Stale-while-revalidate avoids blocking on TTL expiry.                                                                                                                            | Add a homepage `loading.tsx` alongside sync-shell page conversion.     |
+
+---
+
+## Browse layout (canonical chrome islands)
+
+Browse chrome follows the **sync layout + per-slot Suspense** pattern — the layout never `await`s; each chrome region owns its async work in a dedicated island. `<main>{children}</main>` sits **outside** every chrome Suspense boundary so page content streams independently.
+
+1. **Sync `(main)/layout.tsx`** — `StorefrontProviders`, sync `MainChrome`, `CartDrawerSlot` in Suspense.
+2. **Sync `MainChrome`** — composes announcement, header, footer slots; `{children}` in `<main>` with no wrapping Suspense.
+3. **Async slots** (`browse-chrome-slots.tsx`) — each `await params` + `"use cache"` fetch inside its own parent Suspense:
+   - `AnnouncementBarSlot` → `getAnnouncementBarProps` (+ nested Suspense for dismiss cookie)
+   - `HeaderSlot` → `Header` (fetches `getStorefrontContent` for nav labels + menus)
+   - `FooterSlot` → `Footer` (already fetches content + menus)
+   - `CartDrawerSlot` → `getStorefrontContent` + `CartDrawerWrapper` (cookies)
+
+`getStorefrontContent` / `getAnnouncementBarProps` dedupe per request via `"use cache"` — multiple slots do not multiply Saleor traffic.
+
+```
+Sync (main)/layout.tsx
+├── MainChrome (sync)
+│   ├── Suspense → AnnouncementBarSlot
+│   ├── Suspense → HeaderSlot
+│   ├── <main>{children}</main>     ← never inside layout/chrome Suspense
+│   └── Suspense → FooterSlot
+└── Suspense → CartDrawerSlot
+```
+
+**Account layout** uses layout-shell Suspense when the whole segment must await an auth gate before children (`data-auth-routes.md`). That is the auth variant, not the browse default.
 
 ---
 
@@ -180,7 +209,7 @@ Formal architecture decisions beyond day-to-day conventions: [`docs/adr/`](../..
 
 ❌ **Don't add a client data-fetching layer** when Server Components or Server Actions suffice  
 ❌ **Don't bypass the cache manifest** for catalog tags/TTLs  
-❌ **Don't fix PPR build errors by wrapping `<main>` in Suspense** — fix the route segment that owns dynamic work  
+❌ **Don't fix PPR build errors by wrapping only `<main>{children}</main>` in Suspense** — add a layout/page shell that owns the async fetch, with a real skeleton (see § Layout shell Suspense)  
 ❌ **Don't duplicate architecture essays in feature PRs** — extend this file or an ADR if the decision is cross-cutting
 
 ---
@@ -312,10 +341,13 @@ ProductPage (sync export)
         └── Suspense → VariantSectionDynamic (searchParams)
 
 Layout shell
-├── Suspense → Header (cached menu data + dynamic cart/user)
-├── <main>{children}</main>          ← no Suspense wrapper on main
-├── Suspense → Footer (cached menus + channels)
-└── Suspense → CartDrawer (cookies, no-cache)
+├── Sync (main)/layout.tsx — no awaits
+├── MainChrome (sync) → per-chrome Suspense slots in browse-chrome-slots.tsx
+│   ├── Suspense → AnnouncementBarSlot (getAnnouncementBarProps + dismiss cookie)
+│   ├── Suspense → HeaderSlot → Header (getStorefrontContent for nav labels)
+│   ├── <main>{children}</main>          ← not inside any chrome Suspense
+│   └── Suspense → FooterSlot → Footer
+└── Suspense → CartDrawerSlot (cached copy + cookies)
 
 Invalidation: Saleor webhook → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
 ```
@@ -538,7 +570,7 @@ Any component accessing runtime data must be wrapped in Suspense.
 | `cache: "no-cache"` fetches | Always fresh        |
 
 ```tsx
-// Layout: Header/Footer/Cart each in their own Suspense — NOT a wrapper on <main>
+// MainChrome: each chrome region has its own Suspense slot (§5); <main> is never wrapped.
 <main className="flex-1">{props.children}</main>
 
 // Route-level loading UI (preferred for page transitions)
@@ -552,7 +584,63 @@ Any component accessing runtime data must be wrapped in Suspense.
 
 **Do not** use `Suspense fallback={null}` on `<main>` — it prevents route `loading.tsx` from participating and hides useful skeletons.
 
-### 5. Sync Page Shell Pattern (CRITICAL)
+### 5. Layout boundaries (browse chrome + auth gate)
+
+**Browse (default):** sync layout; each chrome region is an async **slot** in its own Suspense boundary. The layout never `await`s — slots `await params` + `"use cache"` data inside Suspense. `<main>{children}</main>` is never wrapped in layout or chrome Suspense.
+
+| Slot         | File                                              | Awaits                                                | Parent fallback                                                  |
+| ------------ | ------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------- |
+| Announcement | `browse-chrome-slots.tsx` → `AnnouncementBarSlot` | `params`, `getAnnouncementBarProps`                   | `AnnouncementBarSkeleton` (+ nested Suspense for dismiss cookie) |
+| Header       | `HeaderSlot` → `Header`                           | `params`, menus + `getStorefrontContent` (nav labels) | `HeaderSkeleton`                                                 |
+| Footer       | `FooterSlot` → `Footer`                           | `params`, menus + `getStorefrontContent`              | `FooterSkeleton`                                                 |
+| Cart drawer  | `CartDrawerSlot`                                  | `params`, `getStorefrontContent`, checkout cookies    | `null`                                                           |
+
+**Account (auth gate):** when the **whole segment** must resolve session before any child renders, use sync layout → Suspense → async `AccountShell` with children inside the shell (`data-auth-routes.md`).
+
+```tsx
+// ✅ Browse layout — sync; chrome streams per island; main is free
+export default function RootLayout({ children, params }: LayoutProps) {
+	return (
+		<StorefrontProviders>
+			<MainChrome params={params}>{children}</MainChrome>
+			<Suspense fallback={null}>
+				<CartDrawerSlot params={params} />
+			</Suspense>
+		</StorefrontProviders>
+	);
+}
+
+// MainChrome (sync) — children in <main> between header/footer Suspense slots only
+```
+
+```tsx
+// ✅ Account layout — auth gate; children inside shell until session resolves
+export default function AccountLayout({ children, params }: LayoutProps) {
+	return (
+		<Suspense fallback={<AccountSkeleton />}>
+			<AccountShell params={params}>{children}</AccountShell>
+		</Suspense>
+	);
+}
+```
+
+```tsx
+// ❌ BAD — Suspense only around <main> to silence a build error; no slot owns the fetch
+export default async function Layout({ children }) {
+	return (
+		<>
+			<Header />
+			<Suspense fallback={null}>
+				<main>{children}</main>
+			</Suspense>
+		</>
+	);
+}
+```
+
+**Key files:** `(main)/layout.tsx`, `main-chrome.tsx`, `browse-chrome-slots.tsx`, `lib/content/get-announcement-bar-props.ts` (+ `buildAnnouncementBarContent` for tests).
+
+### 6. Sync Page Shell Pattern (CRITICAL)
 
 Page components that use `"use cache"` data must be **synchronous** and wrap async content in a **dedicated Suspense boundary**. This prevents cached async work from flowing through the layout boundary, which can cause hydration/reconciliation issues.
 
@@ -583,7 +671,7 @@ All page routes in this project follow this pattern:
 - `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx`
 - `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`
 
-### 6. Public vs Authenticated Queries
+### 7. Public vs Authenticated Queries
 
 Two explicit GraphQL helpers:
 
@@ -607,7 +695,7 @@ const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, {
 });
 ```
 
-### 7. Don't Use `searchParams` Inside `"use cache"`
+### 8. Don't Use `searchParams` Inside `"use cache"`
 
 ```typescript
 // ❌ BAD - searchParams is runtime data
@@ -628,7 +716,7 @@ export async function generateMetadata(props) {
 }
 ```
 
-### 8. CSS Order Pattern for Mixed Static/Dynamic Layouts
+### 9. CSS Order Pattern for Mixed Static/Dynamic Layouts
 
 When you need dynamic content to appear **above** static content visually, use CSS `order`:
 
@@ -790,7 +878,7 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** — Requires cookies  
 ❌ **Don't add fetch-level `revalidate` inside `"use cache"` functions** — `cacheLife` + webhooks handle freshness  
 ❌ **Don't use raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings** — Use `applyCacheProfile(CACHE_PROFILES.*)` from the manifest  
-❌ **Don't wrap `<main>` in Suspense with `fallback={null}`** — Blocks route `loading.tsx` skeletons  
+❌ **Don't wrap only `<main>{children}</main>` in Suspense to silence PPR errors** — use layout shell Suspense that owns the fetch (§5); never `fallback={null}` on chrome  
 ❌ **Don't make page components async when using `"use cache"` data** — Use the sync page shell pattern  
 ❌ **Don't pass `REVALIDATE_SECRET` in query strings** — Use the `Authorization: Bearer` header  
 ❌ **Don't omit `localeSlug` from cached catalog/menu fetches** — All locales would share one cache entry and show the wrong language  
@@ -1085,6 +1173,8 @@ Use this when moving a logged-in area (account, wishlist, etc.) to PPR-safe patt
 
 ## Architecture
 
+Browse and account layouts use different Suspense shapes (`data-caching.md` §5). Browse uses **per-chrome slots**; account uses a **layout-shell auth gate**.
+
 ```
 account/layout.tsx
 └── Suspense fallback={<AccountSkeleton />}
@@ -1093,6 +1183,10 @@ account/layout.tsx
         └── user → AccountProvider
             ├── AccountNav (static client)
             └── {children}  (sync pages + nested Suspense islands)
+
+(main)/layout.tsx
+├── MainChrome (sync) → Suspense per chrome slot; <main>{children}</main> unwrapped
+└── Suspense → CartDrawerSlot
 
 header.tsx
 └── Suspense
@@ -1169,7 +1263,7 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 ❌ **`cookies()` or `getCurrentUser()` in async page components** without a page/layout Suspense boundary  
 ❌ **Browser → Saleor for login or `me`** — use BFF routes and server `getHeaderUser()`  
 ❌ **`connection()` in account layout** — can break PPR with `CartProvider` in parent tree  
-❌ **Blanket `<Suspense>{children}</Suspense>` on main layout** — workaround, not architecture  
+❌ **Blanket `<Suspense fallback={null}>{children}</Suspense>` around `<main>` only** — workaround; use layout shell Suspense that owns the async fetch (`data-caching.md` §5)  
 ❌ **`revalidatePath("/account/addresses", "page")` only** when addresses read `useAccountUser()` from layout  
 ❌ **`fallback={null}`** on account order Suspense — use section skeletons  
 ❌ **`key={pathname}` without `router.refresh()`** on header auth — remounting RSC children does not bust the Router Cache; stale anonymous menus persist until `revalidateStorefrontChrome`  
@@ -1179,28 +1273,30 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 
 ## Related Rules
 
-- `data-caching.md` — three-layer page model, no main Suspense, sync page shell
+- `data-caching.md` — three-layer page model, browse chrome slots (§5), sync page shell
 - `checkout-management.md` — checkout session via RSC + BFF sign-in + `router.refresh()`
 
 ## Files
 
-| File                                                                 | Purpose                                  |
-| -------------------------------------------------------------------- | ---------------------------------------- |
-| `src/app/[channel]/(main)/account/layout.tsx`                        | Suspense + auth gate                     |
-| `src/app/[channel]/(main)/account/get-current-user.ts`               | Cached profile fetch                     |
-| `src/lib/auth/has-auth-session.ts`                                   | Cookie presence check                    |
-| `src/lib/auth/session-auth-state.ts`                                 | JWT failure classification + retry logic |
-| `src/lib/auth/resolve-session-user.ts`                               | `resolveSessionUser()` wrapper           |
-| `src/lib/auth/bff-server.ts`                                         | Server sign-in / sign-out                |
-| `src/lib/auth/get-header-user.ts`                                    | Header `me` fetch                        |
-| `src/app/api/auth/login/route.ts`                                    | BFF login endpoint                       |
-| `src/ui/components/account/account-login.tsx`                        | Signed-out account login                 |
-| `src/ui/components/account/account-context.tsx`                      | Client profile context                   |
-| `src/ui/components/nav/components/user-menu/user-menu-server.tsx`    | Header auth chrome                       |
-| `src/ui/components/nav/components/user-menu/header-auth-refresh.tsx` | Router Cache sync (soft nav + cross-tab) |
-| `src/lib/auth/revalidate-storefront-chrome.ts`                       | Layout + checkout cache bust             |
-| `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                   | Post-login cache bust + hard nav         |
-| `src/app/[channel]/(main)/account/actions.ts`                        | Layout revalidation helper               |
+| File                                                                     | Purpose                                                 |
+| ------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `src/app/(storefront)/[locale]/[channel]/(main)/layout.tsx`              | Sync browse layout                                      |
+| `src/app/(storefront)/[locale]/[channel]/(main)/browse-chrome-slots.tsx` | Async chrome slots (announcement, header, footer, cart) |
+| `src/app/(storefront)/[locale]/[channel]/(main)/account/layout.tsx`      | Account — Suspense + auth gate                          |
+| `src/app/[channel]/(main)/account/get-current-user.ts`                   | Cached profile fetch                                    |
+| `src/lib/auth/has-auth-session.ts`                                       | Cookie presence check                                   |
+| `src/lib/auth/session-auth-state.ts`                                     | JWT failure classification + retry logic                |
+| `src/lib/auth/resolve-session-user.ts`                                   | `resolveSessionUser()` wrapper                          |
+| `src/lib/auth/bff-server.ts`                                             | Server sign-in / sign-out                               |
+| `src/lib/auth/get-header-user.ts`                                        | Header `me` fetch                                       |
+| `src/app/api/auth/login/route.ts`                                        | BFF login endpoint                                      |
+| `src/ui/components/account/account-login.tsx`                            | Signed-out account login                                |
+| `src/ui/components/account/account-context.tsx`                          | Client profile context                                  |
+| `src/ui/components/nav/components/user-menu/user-menu-server.tsx`        | Header auth chrome                                      |
+| `src/ui/components/nav/components/user-menu/header-auth-refresh.tsx`     | Router Cache sync (soft nav + cross-tab)                |
+| `src/lib/auth/revalidate-storefront-chrome.ts`                           | Layout + checkout cache bust                            |
+| `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                       | Post-login cache bust + hard nav                        |
+| `src/app/[channel]/(main)/account/actions.ts`                            | Layout revalidation helper                              |
 
 ---
 
@@ -1253,7 +1349,7 @@ When `announcementBar.dismissible` is true, dismissal is stored in the `paper_an
 | **Empty** (code default)                                     | `paper:announcement-dismissed:content:{hash}` — hash of **rendered** `message`, `href`, `linkLabel` | Default. Merchants edit copy in Dashboard; any message/link change re-shows the bar for visitors who dismissed the old version. No extra field to maintain. |
 | **Non-empty** (`announcement-id` in Saleor or `defaults.ts`) | `paper:announcement-dismissed:id:{id}`                                                              | Campaign slug. Dismissal survives message tweaks until you change `id` (e.g. `summer-sale-2026` → `fall-sale-2026`).                                        |
 
-**Important:** Pass the **interpolated** message into the resolver (after `{freeShippingThreshold}` etc.) — `(main)/layout.tsx` does this before `MainChrome`. Policy threshold changes therefore change the content hash and re-show the bar, which is usually correct.
+**Important:** Pass the **interpolated** message into the dismiss resolver (after `{freeShippingThreshold}` etc.) — `getAnnouncementBarProps()` does this in `AnnouncementBarSlot`. Policy threshold changes therefore change the content hash and re-show the bar, which is usually correct.
 
 Saleor: leave `announcement-id` unset for content-hash behavior; set it only when you need a stable campaign id across copy edits. Configurator seed may include an example id — remove it to opt into content-hash dismissal.
 
@@ -1268,6 +1364,7 @@ Saleor: leave `announcement-id` unset for content-hash behavior; set it only whe
 | Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
 | Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                         |
 | Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
+| Announcement policy copy    | `src/lib/content/get-announcement-bar-props.ts`                       |
 | Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
 | Deep merge                  | `src/lib/content/merge.ts`                                            |
 | Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |
@@ -1307,12 +1404,12 @@ Exact field list lives in `types.ts` / `defaults.ts` — those evolve; merge rul
 
 ## Where Content Is Consumed
 
-| Surface                                        | Loader                                                         |
-| ---------------------------------------------- | -------------------------------------------------------------- |
-| Announcement bar, shared chrome                | `(main)/layout.tsx` → `MainChrome`                             |
-| Homepage sections                              | `(main)/page.tsx`                                              |
-| Cart trust / empty copy                        | Cart drawer (client reads props or context from server parent) |
-| Checkout empty states, trust, marketing opt-in | `checkout-session-loader.tsx` → `CheckoutContentProvider`      |
+| Surface                                        | Loader                                                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Announcement bar, shared chrome                | `browse-chrome-slots.tsx` (`getAnnouncementBarProps`, `Header`, `Footer`, `CartDrawerSlot`) |
+| Homepage sections                              | `(main)/page.tsx`                                                                           |
+| Cart trust / empty copy                        | Cart drawer (client reads props or context from server parent)                              |
+| Checkout empty states, trust, marketing opt-in | `checkout-session-loader.tsx` → `CheckoutContentProvider`                                   |
 
 Checkout resolves **channel from cart cookies** when loading content so copy can match the cart's channel.
 

@@ -119,10 +119,13 @@ ProductPage (sync export)
         └── Suspense → VariantSectionDynamic (searchParams)
 
 Layout shell
-├── Suspense → Header (cached menu data + dynamic cart/user)
-├── <main>{children}</main>          ← no Suspense wrapper on main
-├── Suspense → Footer (cached menus + channels)
-└── Suspense → CartDrawer (cookies, no-cache)
+├── Sync (main)/layout.tsx — no awaits
+├── MainChrome (sync) → per-chrome Suspense slots in browse-chrome-slots.tsx
+│   ├── Suspense → AnnouncementBarSlot (getAnnouncementBarProps + dismiss cookie)
+│   ├── Suspense → HeaderSlot → Header (getStorefrontContent for nav labels)
+│   ├── <main>{children}</main>          ← not inside any chrome Suspense
+│   └── Suspense → FooterSlot → Footer
+└── Suspense → CartDrawerSlot (cached copy + cookies)
 
 Invalidation: Saleor webhook → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
 ```
@@ -345,7 +348,7 @@ Any component accessing runtime data must be wrapped in Suspense.
 | `cache: "no-cache"` fetches | Always fresh        |
 
 ```tsx
-// Layout: Header/Footer/Cart each in their own Suspense — NOT a wrapper on <main>
+// MainChrome: each chrome region has its own Suspense slot (§5); <main> is never wrapped.
 <main className="flex-1">{props.children}</main>
 
 // Route-level loading UI (preferred for page transitions)
@@ -359,7 +362,63 @@ Any component accessing runtime data must be wrapped in Suspense.
 
 **Do not** use `Suspense fallback={null}` on `<main>` — it prevents route `loading.tsx` from participating and hides useful skeletons.
 
-### 5. Sync Page Shell Pattern (CRITICAL)
+### 5. Layout boundaries (browse chrome + auth gate)
+
+**Browse (default):** sync layout; each chrome region is an async **slot** in its own Suspense boundary. The layout never `await`s — slots `await params` + `"use cache"` data inside Suspense. `<main>{children}</main>` is never wrapped in layout or chrome Suspense.
+
+| Slot         | File                                              | Awaits                                                | Parent fallback                                                  |
+| ------------ | ------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------- |
+| Announcement | `browse-chrome-slots.tsx` → `AnnouncementBarSlot` | `params`, `getAnnouncementBarProps`                   | `AnnouncementBarSkeleton` (+ nested Suspense for dismiss cookie) |
+| Header       | `HeaderSlot` → `Header`                           | `params`, menus + `getStorefrontContent` (nav labels) | `HeaderSkeleton`                                                 |
+| Footer       | `FooterSlot` → `Footer`                           | `params`, menus + `getStorefrontContent`              | `FooterSkeleton`                                                 |
+| Cart drawer  | `CartDrawerSlot`                                  | `params`, `getStorefrontContent`, checkout cookies    | `null`                                                           |
+
+**Account (auth gate):** when the **whole segment** must resolve session before any child renders, use sync layout → Suspense → async `AccountShell` with children inside the shell (`data-auth-routes.md`).
+
+```tsx
+// ✅ Browse layout — sync; chrome streams per island; main is free
+export default function RootLayout({ children, params }: LayoutProps) {
+	return (
+		<StorefrontProviders>
+			<MainChrome params={params}>{children}</MainChrome>
+			<Suspense fallback={null}>
+				<CartDrawerSlot params={params} />
+			</Suspense>
+		</StorefrontProviders>
+	);
+}
+
+// MainChrome (sync) — children in <main> between header/footer Suspense slots only
+```
+
+```tsx
+// ✅ Account layout — auth gate; children inside shell until session resolves
+export default function AccountLayout({ children, params }: LayoutProps) {
+	return (
+		<Suspense fallback={<AccountSkeleton />}>
+			<AccountShell params={params}>{children}</AccountShell>
+		</Suspense>
+	);
+}
+```
+
+```tsx
+// ❌ BAD — Suspense only around <main> to silence a build error; no slot owns the fetch
+export default async function Layout({ children }) {
+	return (
+		<>
+			<Header />
+			<Suspense fallback={null}>
+				<main>{children}</main>
+			</Suspense>
+		</>
+	);
+}
+```
+
+**Key files:** `(main)/layout.tsx`, `main-chrome.tsx`, `browse-chrome-slots.tsx`, `lib/content/get-announcement-bar-props.ts` (+ `buildAnnouncementBarContent` for tests).
+
+### 6. Sync Page Shell Pattern (CRITICAL)
 
 Page components that use `"use cache"` data must be **synchronous** and wrap async content in a **dedicated Suspense boundary**. This prevents cached async work from flowing through the layout boundary, which can cause hydration/reconciliation issues.
 
@@ -390,7 +449,7 @@ All page routes in this project follow this pattern:
 - `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx`
 - `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`
 
-### 6. Public vs Authenticated Queries
+### 7. Public vs Authenticated Queries
 
 Two explicit GraphQL helpers:
 
@@ -414,7 +473,7 @@ const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, {
 });
 ```
 
-### 7. Don't Use `searchParams` Inside `"use cache"`
+### 8. Don't Use `searchParams` Inside `"use cache"`
 
 ```typescript
 // ❌ BAD - searchParams is runtime data
@@ -435,7 +494,7 @@ export async function generateMetadata(props) {
 }
 ```
 
-### 8. CSS Order Pattern for Mixed Static/Dynamic Layouts
+### 9. CSS Order Pattern for Mixed Static/Dynamic Layouts
 
 When you need dynamic content to appear **above** static content visually, use CSS `order`:
 
@@ -597,7 +656,7 @@ SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
 ❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** — Requires cookies  
 ❌ **Don't add fetch-level `revalidate` inside `"use cache"` functions** — `cacheLife` + webhooks handle freshness  
 ❌ **Don't use raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings** — Use `applyCacheProfile(CACHE_PROFILES.*)` from the manifest  
-❌ **Don't wrap `<main>` in Suspense with `fallback={null}`** — Blocks route `loading.tsx` skeletons  
+❌ **Don't wrap only `<main>{children}</main>` in Suspense to silence PPR errors** — use layout shell Suspense that owns the fetch (§5); never `fallback={null}` on chrome  
 ❌ **Don't make page components async when using `"use cache"` data** — Use the sync page shell pattern  
 ❌ **Don't pass `REVALIDATE_SECRET` in query strings** — Use the `Authorization: Bearer` header  
 ❌ **Don't omit `localeSlug` from cached catalog/menu fetches** — All locales would share one cache entry and show the wrong language  

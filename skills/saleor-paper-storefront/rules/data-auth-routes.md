@@ -61,6 +61,8 @@ Use this when moving a logged-in area (account, wishlist, etc.) to PPR-safe patt
 
 ## Architecture
 
+Browse and account layouts use different Suspense shapes (`data-caching.md` §5). Browse uses **per-chrome slots**; account uses a **layout-shell auth gate**.
+
 ```
 account/layout.tsx
 └── Suspense fallback={<AccountSkeleton />}
@@ -69,6 +71,10 @@ account/layout.tsx
         └── user → AccountProvider
             ├── AccountNav (static client)
             └── {children}  (sync pages + nested Suspense islands)
+
+(main)/layout.tsx
+├── MainChrome (sync) → Suspense per chrome slot; <main>{children}</main> unwrapped
+└── Suspense → CartDrawerSlot
 
 header.tsx
 └── Suspense
@@ -145,7 +151,7 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 ❌ **`cookies()` or `getCurrentUser()` in async page components** without a page/layout Suspense boundary  
 ❌ **Browser → Saleor for login or `me`** — use BFF routes and server `getHeaderUser()`  
 ❌ **`connection()` in account layout** — can break PPR with `CartProvider` in parent tree  
-❌ **Blanket `<Suspense>{children}</Suspense>` on main layout** — workaround, not architecture  
+❌ **Blanket `<Suspense fallback={null}>{children}</Suspense>` around `<main>` only** — workaround; use layout shell Suspense that owns the async fetch (`data-caching.md` §5)  
 ❌ **`revalidatePath("/account/addresses", "page")` only** when addresses read `useAccountUser()` from layout  
 ❌ **`fallback={null}`** on account order Suspense — use section skeletons  
 ❌ **`key={pathname}` without `router.refresh()`** on header auth — remounting RSC children does not bust the Router Cache; stale anonymous menus persist until `revalidateStorefrontChrome`  
@@ -155,25 +161,27 @@ await syncAuthSurfacesAfterSignIn(channel, router, {
 
 ## Related Rules
 
-- `data-caching.md` — three-layer page model, no main Suspense, sync page shell
+- `data-caching.md` — three-layer page model, browse chrome slots (§5), sync page shell
 - `checkout-management.md` — checkout session via RSC + BFF sign-in + `router.refresh()`
 
 ## Files
 
-| File                                                                 | Purpose                                  |
-| -------------------------------------------------------------------- | ---------------------------------------- |
-| `src/app/[channel]/(main)/account/layout.tsx`                        | Suspense + auth gate                     |
-| `src/app/[channel]/(main)/account/get-current-user.ts`               | Cached profile fetch                     |
-| `src/lib/auth/has-auth-session.ts`                                   | Cookie presence check                    |
-| `src/lib/auth/session-auth-state.ts`                                 | JWT failure classification + retry logic |
-| `src/lib/auth/resolve-session-user.ts`                               | `resolveSessionUser()` wrapper           |
-| `src/lib/auth/bff-server.ts`                                         | Server sign-in / sign-out                |
-| `src/lib/auth/get-header-user.ts`                                    | Header `me` fetch                        |
-| `src/app/api/auth/login/route.ts`                                    | BFF login endpoint                       |
-| `src/ui/components/account/account-login.tsx`                        | Signed-out account login                 |
-| `src/ui/components/account/account-context.tsx`                      | Client profile context                   |
-| `src/ui/components/nav/components/user-menu/user-menu-server.tsx`    | Header auth chrome                       |
-| `src/ui/components/nav/components/user-menu/header-auth-refresh.tsx` | Router Cache sync (soft nav + cross-tab) |
-| `src/lib/auth/revalidate-storefront-chrome.ts`                       | Layout + checkout cache bust             |
-| `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                   | Post-login cache bust + hard nav         |
-| `src/app/[channel]/(main)/account/actions.ts`                        | Layout revalidation helper               |
+| File                                                                     | Purpose                                                 |
+| ------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `src/app/(storefront)/[locale]/[channel]/(main)/layout.tsx`              | Sync browse layout                                      |
+| `src/app/(storefront)/[locale]/[channel]/(main)/browse-chrome-slots.tsx` | Async chrome slots (announcement, header, footer, cart) |
+| `src/app/(storefront)/[locale]/[channel]/(main)/account/layout.tsx`      | Account — Suspense + auth gate                          |
+| `src/app/[channel]/(main)/account/get-current-user.ts`                   | Cached profile fetch                                    |
+| `src/lib/auth/has-auth-session.ts`                                       | Cookie presence check                                   |
+| `src/lib/auth/session-auth-state.ts`                                     | JWT failure classification + retry logic                |
+| `src/lib/auth/resolve-session-user.ts`                                   | `resolveSessionUser()` wrapper                          |
+| `src/lib/auth/bff-server.ts`                                             | Server sign-in / sign-out                               |
+| `src/lib/auth/get-header-user.ts`                                        | Header `me` fetch                                       |
+| `src/app/api/auth/login/route.ts`                                        | BFF login endpoint                                      |
+| `src/ui/components/account/account-login.tsx`                            | Signed-out account login                                |
+| `src/ui/components/account/account-context.tsx`                          | Client profile context                                  |
+| `src/ui/components/nav/components/user-menu/user-menu-server.tsx`        | Header auth chrome                                      |
+| `src/ui/components/nav/components/user-menu/header-auth-refresh.tsx`     | Router Cache sync (soft nav + cross-tab)                |
+| `src/lib/auth/revalidate-storefront-chrome.ts`                           | Layout + checkout cache bust                            |
+| `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                       | Post-login cache bust + hard nav                        |
+| `src/app/[channel]/(main)/account/actions.ts`                            | Layout revalidation helper                              |

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { getNavbarMenuItems } from "@/lib/menus/get-menu-data";
 import { serializeMenuForNav } from "@/lib/menus/serialize-menu-for-nav";
-import type { NavChromeContent } from "@/lib/content/types";
+import { getStorefrontContent } from "@/lib/content/server";
 import { Logo } from "./logo";
 import { NavLinksDesktop } from "./nav/components/nav-links-desktop";
 import { MobileNavLinks } from "./nav/components/mobile-nav-links";
@@ -11,20 +11,14 @@ import { UserMenuContainer } from "./nav/components/user-menu/user-menu-containe
 import { MobileMenu } from "./nav/components/mobile-menu";
 import { SearchBar } from "./nav/components/search-bar";
 
-export async function Header({
-	locale,
-	channel,
-	nav,
-}: {
-	locale: string;
-	channel: string;
-	nav: NavChromeContent;
-}) {
-	const [navItems, tSearchBar, tNavHeader] = await Promise.all([
+export async function Header({ locale, channel }: { locale: string; channel: string }) {
+	const [navItems, content, tSearchBar, tNavHeader] = await Promise.all([
 		getNavbarMenuItems(channel, locale).then((items) => serializeMenuForNav(items ?? [])),
+		getStorefrontContent(channel, locale),
 		getTranslations({ locale, namespace: "search.bar" }),
 		getTranslations({ locale, namespace: "nav.header" }),
 	]);
+	const nav = content.chrome.nav;
 
 	return (
 		<header
