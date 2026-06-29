@@ -32,6 +32,16 @@ import { usePathname } from "next/navigation";
  * `scrollY` is already past the tuck range — the user scrolled intentionally during the
  * skeleton phase and we must not yank them back.
  *
+ * ## Same-commit re-assertion for instant (client-cached) navigation
+ * When the destination's data is already in the client router cache (instant soft nav — the
+ * common case once per-nav `router.refresh()` was removed), the page renders on the *same*
+ * commit as the pathname change with **no** skeleton → content swap. This component's layout
+ * effect runs before the page segment's, so Next's `InnerScrollHandlerNew` tucks the content
+ * one `--chrome-offset` under the sticky header *after* our immediate `reset()` — and there's
+ * no `<main>` mutation for the observer to catch. So we also re-assert once on the next
+ * animation frame (after the commit's layout effects flush, hence after Next's segment scroll),
+ * guarded by the same tuck range so it never fights a real user scroll.
+ *
  * ## Why navigation state lives at module scope
  * In dev, `usePathname()` calls `use(navigationPromises.pathname)` (see next's
  * `navigation.js`), which *suspends* this component mid-navigation. React may tear down
@@ -109,28 +119,47 @@ export function ScrollToTopOnNavigate() {
 		const reset = () => window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 		reset();
 
+		// Re-assert y=0 only within the "tucked under header" range; never yank a user who
+		// scrolled meaningfully into the page, and never override an in-page `#hash` target.
+		// Returns whether it actually re-asserted, so the observer knows when to stop.
+		const reassertIfTucked = (): boolean => {
+			if (window.location.hash) return false;
+			if (window.scrollY > REASSERT_GUARD_PX) return false;
+			reset();
+			return true;
+		};
+
+		// Instant (client-cached) nav: the page renders on this same commit, so Next's segment
+		// scroll tucks it *after* the reset above with no `<main>` mutation to catch. Re-assert
+		// after the commit's layout effects flush (next frame). Harmless for streamed pages —
+		// the skeleton is still showing at y=0, so this is a no-op and the observer takes over.
+		const raf = requestAnimationFrame(() => {
+			reassertIfTucked();
+		});
+
 		// Re-assert once on the first streamed-content swap (see header). The outer `<main>`
 		// from main-chrome hosts the swapping page segment, so a childList/subtree mutation
 		// catches the skeleton → real-content commit that triggers Next's late segment scroll.
 		const main = document.querySelector("main");
-		if (!main) return;
+		if (!main) {
+			return () => cancelAnimationFrame(raf);
+		}
 
 		let reasserted = false;
 		let timeout: number | undefined;
 		const observer = new MutationObserver(() => {
 			if (reasserted) return;
-			if (window.location.hash) return;
-			if (window.scrollY > REASSERT_GUARD_PX) return;
+			if (!reassertIfTucked()) return;
 			reasserted = true;
 			observer.disconnect();
 			if (timeout !== undefined) window.clearTimeout(timeout);
-			reset();
 		});
 		observer.observe(main, { childList: true, subtree: true });
 
 		timeout = window.setTimeout(() => observer.disconnect(), REASSERT_WINDOW_MS);
 
 		return () => {
+			cancelAnimationFrame(raf);
 			observer.disconnect();
 			if (timeout !== undefined) window.clearTimeout(timeout);
 		};
