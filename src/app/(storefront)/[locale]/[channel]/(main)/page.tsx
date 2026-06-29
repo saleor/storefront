@@ -11,6 +11,7 @@ import { CategoryTileGrid, type CategoryTile } from "@/ui/sections/category-tile
 import { EditorialHero } from "@/ui/sections/editorial-hero/editorial-hero";
 import { FeaturedCollectionSection } from "@/ui/sections/featured-collection-section/featured-collection-section";
 import { FeaturedCollectionSkeleton } from "@/ui/sections/featured-collection-section/featured-collection-skeleton";
+import { HomepageSkeleton } from "@/ui/sections/homepage-skeleton";
 import { ImageWithText } from "@/ui/sections/image-with-text/image-with-text";
 import { MediaHero } from "@/ui/sections/media-hero/media-hero";
 import { MulticolumnSection } from "@/ui/sections/multicolumn-section/multicolumn-section";
@@ -60,12 +61,21 @@ function buildCategoryTiles(products: readonly FeaturedProduct[], max = 3): Cate
 }
 
 /**
- * Homepage — async shell that awaits only params + cached content/catalog data
- * (no searchParams/cookies), so PPR stays intact. The featured collection still
- * streams in its own Suspense island.
+ * Homepage — sync page shell. Awaits only `params` + cached content/catalog data inside
+ * `HomepageShell` (no `searchParams`/`cookies`), so PPR stays intact and the route
+ * `loading.tsx` can surface a shell on instant navigations. The featured collection still
+ * streams in its own nested Suspense island.
  */
-export default async function Page(props: { params: Promise<{ locale: string; channel: string }> }) {
-	const { locale, channel } = await props.params;
+export default function Page(props: { params: Promise<{ locale: string; channel: string }> }) {
+	return (
+		<Suspense fallback={<HomepageSkeleton />}>
+			<HomepageShell params={props.params} />
+		</Suspense>
+	);
+}
+
+async function HomepageShell({ params }: { params: Promise<{ locale: string; channel: string }> }) {
+	const { locale, channel } = await params;
 	const content = await getStorefrontContent(channel, locale);
 	const { hero, featuredCollection, categories, brandStory, values, editorial } = content.surfaces.homepage;
 
@@ -106,6 +116,7 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 					subheading={hero.subheading}
 					image={hero.backgroundImage}
 					align="left"
+					height="fold"
 					primaryCta={{ label: hero.primaryCtaLabel, href: "/products" }}
 				/>
 			) : (
@@ -127,7 +138,7 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 				}
 			>
 				<FeaturedCollectionLoader
-					params={props.params}
+					params={params}
 					heading={featuredCollection.heading}
 					collectionSlug={featuredCollection.collectionSlug}
 					limit={featuredCollection.limit}

@@ -44,13 +44,15 @@ The homepage composes typed content (`getStorefrontContent`) into an ordered lis
 4. **Width is intentional** — a full-width homepage is supported; don't default to centered-narrow.
 
 ```tsx
-// Sketch: reordered homepage with a new full-bleed editorial band
+// Sketch: reordered homepage with a new full-bleed editorial band.
+// Page is a sync export: <Suspense fallback={<HomepageSkeleton />}><HomepageShell …/></Suspense>.
+// The sketch below is the HomepageShell body — `params` is the destructured promise.
 return (
   <>
     <HeroBanner heading={hero.heading} backgroundImage={hero.backgroundImage} height="large" primaryCta={…} />
 
     <Suspense fallback={<FeaturedCollectionSkeleton heading={featured.heading} limit={featured.limit} />}>
-      <FeaturedCollectionLoader params={props.params} {...featured} />
+      <FeaturedCollectionLoader params={params} {...featured} />
     </Suspense>
 
     <ImageWithText heading={editorial.heading} paragraphs={editorial.paragraphs} imagePosition="right" cta={…} />
@@ -60,7 +62,7 @@ return (
 );
 ```
 
-> Known divergence: the homepage uses an async page shell that awaits only `params` + cached content (no `searchParams`/`cookies`), so PPR is intact. Keep that constraint when editing; if you convert it to a sync-page shell, add a `loading.tsx` (see `paper-architecture` divergences).
+> The homepage follows the canonical sync page → `Suspense` → `HomepageShell` model (the static shell awaits only `params` + `"use cache"` content — never `searchParams`/`cookies`), with a route `loading.tsx` (`HomepageSkeleton`) for instant navigations and the featured collection streaming in its nested `Suspense` island. Keep that constraint when editing.
 
 ## PDP molding
 

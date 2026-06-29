@@ -9,7 +9,7 @@ import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
+import { CategoryHero, PlpPageLoading, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { CategoryPageClient } from "./client";
@@ -45,14 +45,30 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 
 /**
  * Cached hero shell (params only) + dynamic product grid island (searchParams).
- * Matches the products listing page pattern — hero is not blocked behind a full-page Suspense.
+ * Sync page → Suspense → `CategoryShell` so PPR prerenders the hero and the route
+ * `loading.tsx` can surface a shell on instant navigations. Matches the products
+ * listing page pattern — hero is not blocked behind a full-page Suspense.
  */
-export default async function Page(props: PageProps) {
-	const params = await props.params;
+export default function Page(props: PageProps) {
+	return (
+		<Suspense fallback={<PlpPageLoading />}>
+			<CategoryShell params={props.params} searchParams={props.searchParams} />
+		</Suspense>
+	);
+}
+
+async function CategoryShell({
+	params,
+	searchParams,
+}: {
+	params: PageProps["params"];
+	searchParams: PageProps["searchParams"];
+}) {
+	const resolvedParams = await params;
 	const [category, tListing, tNav] = await Promise.all([
-		getCategoryData(params.slug, params.channel, params.locale),
-		getTranslations({ locale: params.locale, namespace: "productsListing" }),
-		getTranslations({ locale: params.locale, namespace: "nav" }),
+		getCategoryData(resolvedParams.slug, resolvedParams.channel, resolvedParams.locale),
+		getTranslations({ locale: resolvedParams.locale, namespace: "productsListing" }),
+		getTranslations({ locale: resolvedParams.locale, namespace: "nav" }),
 	]);
 
 	if (!category) {
@@ -62,10 +78,17 @@ export default async function Page(props: PageProps) {
 	const plainDescription = parseEditorJSToText(category.description);
 
 	const breadcrumbs = [
-		{ label: tListing("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
+		{
+			label: tListing("breadcrumbHome"),
+			href: buildStorefrontPath(resolvedParams.locale, resolvedParams.channel),
+		},
 		{
 			label: category.name,
-			href: buildStorefrontPath(params.locale, params.channel, `/categories/${params.slug}`),
+			href: buildStorefrontPath(
+				resolvedParams.locale,
+				resolvedParams.channel,
+				`/categories/${resolvedParams.slug}`,
+			),
 		},
 	];
 
@@ -79,7 +102,7 @@ export default async function Page(props: PageProps) {
 				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
 			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CategoryProducts params={props.params} searchParams={props.searchParams} />
+				<CategoryProducts params={params} searchParams={searchParams} />
 			</Suspense>
 		</>
 	);
