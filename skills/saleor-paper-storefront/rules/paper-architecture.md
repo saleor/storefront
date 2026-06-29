@@ -75,7 +75,7 @@ Patterns we **do not** use — regressions to avoid:
 
 Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
 
-_None currently._ The homepage (`(main)/page.tsx`) and category (`categories/[slug]/page.tsx`) async-page-shell divergences were both reconciled to the canonical sync page → `Suspense` → async shell model (homepage also gained a route `loading.tsx`). Add a row here only when a new, intentional exception is introduced.
+_None currently._ The homepage (`(main)/page.tsx`) and category (`categories/[slug]/page.tsx`) async-page-shell divergences were both reconciled to the canonical sync page → `Suspense` → async shell model; each page's inner `Suspense` fallback is its nav skeleton. There is intentionally **no shared `(main)/loading.tsx`** — a segment-level loading.tsx there renders the homepage skeleton for sibling routes (categories/PDP/…) whenever the `(main)` segment re-suspends on Back navigation, which flashed the homepage skeleton on Back to a category. Per-route `loading.tsx` (e.g. `categories/[slug]/loading.tsx`) + the page inner Suspense cover the cases that matter. Add a row here only when a new, intentional exception is introduced.
 
 ---
 
