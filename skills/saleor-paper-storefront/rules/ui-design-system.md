@@ -1,3 +1,8 @@
+---
+name: ui-design-system
+description: The token vocabulary: OKLCH semantic color, typography role tokens, page-width containers, spacing/rhythm, radius/elevation/motion, cva variant matrix. Read before any visual/design work; tokens live in src/styles/brand.css.
+---
+
 # UI Design System
 
 The token vocabulary an agent must use to build on-brand UI: color, typography, spacing/rhythm, page width, radius, elevation, motion, and the primitive variant matrix. This is the machine-readable grounding for any design work — read it before molding PDP, homepage, or any section.
@@ -77,31 +82,14 @@ Each bundles `mx-auto w-full px-4 sm:px-6 lg:px-8`. Width-only utilities: `max-w
 
 ### Full-bleed nuance (`super-wide` vs `full`)
 
-When a user asks for "full bleed" or "immersive edge-to-edge", **default to `container-super-wide`**, not `container-full`:
+For "full bleed" / "immersive edge-to-edge" requests, **default to `container-super-wide`**: it's `100%` up to 160rem (2560px) then centers — full-bleed on every normal monitor, but capped so product imagery doesn't stretch absurdly on ultrawide/4K. Reserve `container-full` (never caps) for rare brand moments that must touch the bezel at any resolution. Tune the cap via `--container-super-wide` in `brand.css`; override immersive PDP via `PDP_LAYOUT_CLASSES.immersive.main` in `gallery-layout.ts`.
 
-| Class                  | Behavior                                                                | When to use                                                                                         |
-| ---------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `container-super-wide` | `width: 100%` up to **160rem (2560px)**, then centers with side margins | Immersive PDP, editorial heroes — full-bleed on normal monitors, capped on ultrawide / very wide 4K |
-| `container-full`       | Always `100%` of the viewport — no max                                  | Rare: landing pages, brand moments that must touch the bezel at any resolution                      |
+**Two width knobs are brand-level, no component edits, reversible:**
 
-**Typical viewport widths (CSS px, browser chrome excluded):**
+- **Nav** — header + mega-menu use `container-nav` (`--container-nav`, default `--container-content`). Set it to `--container-full`/`--container-wide` to take the nav edge-to-edge.
+- **Body** — every page body (PDP, PLP, search, cart, CMS, collections/categories, footer, skeletons) uses `container-content`, so `--container-content` is the single body-width token. Widen it globally for a consistent wider frame, or swap one page's wrapper to a wider container for a one-off.
 
-| Range       | Examples                           | `super-wide` vs `full` on immersive PDP                                       |
-| ----------- | ---------------------------------- | ----------------------------------------------------------------------------- |
-| ≤ 2560px    | 1366 laptop, 1920 FHD, 2560 QHD    | **Identical** — both feel full-bleed                                          |
-| 2561–3440px | 3440×1440 ultrawide (21:9)         | `super-wide` caps at 2560px; `full` stretches gallery to ~3000px+             |
-| 3840px+     | 4K 16:9, 5120×1440 super-ultrawide | `super-wide` strongly recommended; `full` makes product imagery absurdly wide |
-
-Adjust `--container-super-wide` in `brand.css` if a brand wants a different cap (e.g. `120rem` / 1920px for a tighter frame). Immersive PDP override: change `PDP_LAYOUT_CLASSES.immersive.main` to `container-full` in `gallery-layout.ts`.
-
-**Nav width is a brand knob.** The header and its mega-menu both use `container-nav`, whose width comes from the `--container-nav` token in `brand.css` (default `var(--container-content)` = the current look). To take the nav edge-to-edge for a brand, set `--container-nav: var(--container-full)` (or `--container-wide`) — bar and dropdown follow, no component edits, fully reversible.
-
-**The body column is one token, too.** Every page body — PDP, PLP, search, cart, CMS pages, collections/categories, the footer, even loading skeletons — uses `container-content` (no more stray `max-w-7xl`). So the default body width is the single `--container-content` token: change it once and every page follows in lockstep. Two ways to go full-bleed:
-
-- **One page, rare case:** swap that page's wrapper to `container-super-wide` (immersive default), `container-wide`, or `container-full` (true edge-to-edge at any resolution).
-- **Globally:** widen `--container-content` itself (affects bodies _and_ section defaults, which is usually what you want for a consistent frame).
-
-(The checkout surface keeps its own `max-w-7xl` frame by design — it's a separate surface and must not share storefront layout tokens.)
+(The checkout surface keeps its own `max-w-7xl` frame by design — separate surface, must not share storefront layout tokens.)
 
 ```tsx
 <section className="bg-foreground py-section-lg">
@@ -135,19 +123,12 @@ Guard non-trivial motion with `motion-reduce:` / `prefers-reduced-motion`.
 
 ## Expressive layer (opt-in, Tier-2 — define as tokens, never inline)
 
-Some brands _do_ call for richer surfaces — a gradient hero band, a softer elevated hover, a signature motion. That's legitimate **Tier-2 structural** expression. Two rules keep it premium instead of cheap:
+Some brands _do_ call for richer surfaces — a gradient hero band, a softer elevated hover, a signature motion. That's legitimate **Tier-2 structural** expression, governed by two rules:
 
-1. **It lives in `brand.css` as a token**, never as an inline `style`/one-off class. Add e.g. `--gradient-hero`, `--shadow-elevated-brand`, `--ease-signature`, map it in `tailwind.config.cjs`, then use the utility. A rebrand still flows from one place.
-2. **It's opt-in and contained, not a default.** Expressive treatment belongs on the _same_ deliberate surfaces the influence policy already allows a color band (~1 in 3–4 sections; a hero; a feature CTA). The neutral shell and product surfaces stay clean.
+1. **It lives in `brand.css` as a token** (e.g. `--gradient-hero`, `--shadow-elevated-brand`, `--ease-signature`), mapped in `tailwind.config.cjs` — never an inline `style`/one-off, so a rebrand still flows from one place.
+2. **It's opt-in and contained** — on the same deliberate surfaces the influence policy allows a color band (~1 in 3–4 sections; a hero; a feature CTA), never the neutral shell or product surfaces.
 
-```css
-/* brand.css — only if the brand calls for it */
---gradient-hero: linear-gradient(180deg, oklch(var(--secondary)), oklch(var(--background)));
-```
-
-**If you do use a gradient, keep it disciplined:** subtle accent only (never on primary/interactive elements or behind product media); **analogous** hues only (blue→teal, orange→red) — never opposing temperatures (orange→blue, pink→green, red→cyan); **2–3 stops max**, no rainbow ramps.
-
-**Hard nos (these read as dated/cheap in premium commerce):** glow shadows (`--shadow-glow`), neon/`drop-shadow` on text, rainbow or high-contrast gradients on body surfaces, gradients behind product imagery. Aesop/SSENSE/Hermès don't glow — neither do we by default. When unsure, omit it: restraint is the house style (see [`design-quality-rubric`](design-quality-rubric.md)).
+Gradient discipline (if used): subtle accent only, analogous hues, 2–3 stops max — never on interactive elements or behind product media. **Hard nos:** glow shadows, neon/text drop-shadows, rainbow/high-contrast gradients on body surfaces. Restraint is the house style — see [`design-quality-rubric`](design-quality-rubric.md) for the full judgment.
 
 ## Primitive variant matrix (cva)
 

@@ -1,3 +1,8 @@
+---
+name: data-storefront-content
+description: Provider-agnostic marketing/merchandising copy layer (announcement bar, homepage, cart/checkout copy): getStorefrontContent, defaults.ts, merge semantics, CONTENT_PROVIDER. Use when editing editorial copy or wiring new content fields.
+---
+
 # Storefront Content Layer
 
 Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
@@ -115,25 +120,17 @@ Checkout resolves **channel from cart cookies** when loading content so copy can
 
 ## Caching & Freshness
 
-- Profile: `storefront-content` (~menus tier, ~5 min stale).
-- Tag: `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`).
-- **Locale** keys both the cache tag and the `"use cache"` function args. Catalog/menus/CMS use `localeSlug` in function args with slug-scoped tags — see `data-caching.md` § Locale & Caching.
-- **Catalog translations** (products, categories, menus, CMS pages) are wired: GraphQL `languageCode` + `withTranslated*Fields`.
-- **Storefront Models content** uses `StorefrontContentPages.graphql` `translation` on plain-text attributes via `buildAttributeMap`.
-- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — do not point Saleor webhooks directly at the storefront for production. The app subscribes to Saleor events, then `POST`s to Paper's `/api/revalidate` with the same payload shape the storefront handler expects.
-- **Storefront content:** `PAGE_*` on Pages whose slug matches `storefront-*` (e.g. `storefront-homepage`, `storefront-homepage-{channel}`) → `planStorefrontContentRevalidation()` in `cache-manifest.ts` → `revalidateTag(storefront-content:{channel}:{locale})` + homepage paths per channel.
-- **Menus** (nav/footer): `MENU_*` / `MENU_ITEM_*` → separate profiles (`navigation`, `footerMenu`) — same paper-app → storefront path.
-- The `storefront-content` profile is listed in `GET /api/cache-info` so the Dashboard app can offer manual purge alongside catalog entities.
-- Manual (dev / emergency): `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+- Profile `storefront-content` (~menus tier, ~5 min stale); tag `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`). **Locale** keys both the cache tag and the `"use cache"` function args — see `data-caching.md` (Locale & Caching).
+- Catalog translations are wired (`GraphQL languageCode` + `withTranslated*Fields`); storefront Models use `StorefrontContentPages.graphql` `translation` on plain-text attributes via `buildAttributeMap`.
+- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — don't point Saleor webhooks directly at the storefront. `PAGE_*` on `storefront-*` pages → `planStorefrontContentRevalidation()` → `revalidateTag` + homepage paths per channel; `MENU_*` → the separate `navigation`/`footerMenu` profiles, same app→storefront path. The profile is listed in `GET /api/cache-info` for manual purge; emergency bust via `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` + `REVALIDATE_SECRET`. Full architecture: `data-caching.md`.
 
 ```
 Saleor (PAGE_UPDATED on storefront-homepage)
-    → saleor-paper-app (page-changed webhook)
-    → POST /api/revalidate { page: { slug } }
-    → planStorefrontContentRevalidation → revalidateTag + revalidatePath
+  → saleor-paper-app (page-changed webhook) → POST /api/revalidate { page: { slug } }
+  → planStorefrontContentRevalidation → revalidateTag + revalidatePath
 ```
 
-Marketing copy is cached like navigation — cart/checkout **transactional** data stays fresh via `cache: "no-cache"`.
+Marketing copy is cached like navigation; cart/checkout **transactional** data stays fresh via `cache: "no-cache"`. Saleor-side cache/revalidation detail: `data-storefront-content-saleor.md`.
 
 ---
 

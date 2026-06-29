@@ -1,3 +1,8 @@
+---
+name: ui-sections
+description: Catalog of reusable full-bleed marketing sections (HeroBanner, MediaHero, ImageWithText, FeaturedCollectionSection, …) and the section pattern. Use when composing homepage/marketing pages — reuse before building new.
+---
+
 # UI Sections (Marketing Blocks)
 
 The catalog of reusable full-bleed marketing sections in [`src/ui/sections/`](../../../src/ui/sections/) and how to compose, select, and author them. **Reuse these before building anything new** — a hand-rolled hero is a code smell when `HeroBanner` exists.

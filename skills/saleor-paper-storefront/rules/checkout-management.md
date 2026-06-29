@@ -1,383 +1,116 @@
+---
+name: checkout-management
+description: Checkout session lifecycle: cookie/URL id, RSC + client sync, payment completion/transition UX, shallow ?step= URLs, debugging CHECKOUT_NOT_FULLY_PAID. Use when debugging checkout flow, sessions, or payment completion.
+---
+
 # Checkout Management
 
-Understanding checkout session lifecycle, storage, and debugging prevents payment failures, hydration mismatches, and "CHECKOUT_NOT_FULLY_PAID" errors. Use live checkout data for payment amounts and handle stale checkouts gracefully.
+How checkout sessions are created, stored, synced, and completed — and how to debug payment failures, hydration mismatches, and `CHECKOUT_NOT_FULLY_PAID`. Surface layout is in [`paper-surfaces.md`](paper-surfaces.md); payment-app SDK steps in [`checkout-payment-gateways.md`](checkout-payment-gateways.md); auth in [`data-auth-routes.md`](data-auth-routes.md).
 
----
+## Session id, storage, lifecycle
 
-## Overview
+The checkout id (a base64 Saleor global id, e.g. `Checkout:a8c7…`) lives in **two** places:
 
-This skill covers how checkout sessions are created, stored, and managed in the Saleor storefront.
+- **Cookie `checkoutId-{channel}`** (primary; set in `src/lib/checkout.ts` via `saveIdToCookie`, `sameSite: "lax"`, `secure` on https). Persists across refreshes/sessions.
+- **URL `?checkout=`** on `/checkout`.
 
-## Checkout ID Storage
+`findOrCreate({ channel, checkoutId })` creates a new checkout when there's no id or Saleor can't find it (first item into an empty cart, or a completed checkout whose id is now invalid). On `checkoutComplete` success the checkout becomes an Order, the id is invalidated, and the cookie is cleared.
 
-Checkout IDs are stored in **two places**:
+## Auth + data loading (RSC + client sync)
 
-### 1. Cookie (Primary Storage)
+Sign-in uses the same BFF as storefront (`loginWithBff()` → `POST /api/auth/login`); `CheckoutUserProvider` hydrates `me` from the RSC page; after sign-in call `refetchUser()` → `router.refresh()`. Sign-out = `logout()` action + `detachCheckoutCustomer` when needed.
 
-```
-Cookie name: checkoutId-{channel}
-Example: checkoutId-default-channel
-```
+1. **RSC page** (`checkout/page.tsx`) fetches the full checkout (`fetchCheckoutOnServer`), `me`, order, and channel countries; passes `initialCheckout` when `loadState === "ready"`.
+2. **Client** `CheckoutDataProvider` hydrates from `initialCheckout`. RSC updates **merge** via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` **replaces** state. Cart mutations revalidate `/checkout` via `revalidateStorefrontChrome`; use `useRefreshCheckoutRsc()` after auth or address-book changes.
+3. **Mutations** are server actions in `src/app/(checkout)/actions.ts`; adopt-vs-refresh semantics in `checkout-sync.ts`.
 
-The cookie is set in `src/lib/checkout.ts`:
+`useCheckout()` reads from `CheckoutDataProvider` context — **not urql**.
 
-```typescript
-export async function saveIdToCookie(channel: string, checkoutId: string) {
-	const cookieName = `checkoutId-${channel}`;
-	(await cookies()).set(cookieName, checkoutId, {
-		sameSite: "lax",
-		secure: shouldUseHttps,
-	});
-}
-```
+## Payment completion & transition UX
 
-### 2. URL Query Parameter
+Gateway-agnostic infra shared by Dummy/Stripe/future apps — what happens **after** the PSP authorizes through Saleor:
 
 ```
-URL: /checkout?checkout=Q2hlY2tvdXQ6YThjN2Y4YjgtZmU0NS00ZTRkLThhZmItZDdjYWI2YTM5MTdm
+Pay clicked (or 3DS return)
+ → markPaymentCompleting(checkoutId)   [sessionStorage: checkout:payment-completing]
+ → transactionInitialize / process     [provider-specific]
+ → finalizeCheckoutOrder()             [runCheckoutComplete]
+     ├─ failure → clearPaymentCompleting(), show inline error
+     └─ success → navigateToOrderConfirmation(orderId)  [window.location.replace → /checkout/complete?order=]
+ → confirmation page clears completion storage; cookie cleared in runCheckoutComplete after()
 ```
 
-The checkout ID is a base64-encoded Saleor global ID.
+### Routes & transition storage
 
-## Checkout Lifecycle
+| Mechanism                          | Purpose                                                                                           |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                        |
+| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                   |
+| `checkout:payment-completing`      | Keeps `PaymentCompletingScreen` up while `checkoutComplete` runs (no flash back to step 1)        |
+| `?processingPayment=true`          | Stripe 3DS return flag; pairs with `isCheckoutPaymentActive()` when the payment step is unmounted |
+| `?step=contact\|shipping\|payment` | Step deep link; URL is source of truth via `useLiveCheckoutSearchParams()`                        |
+| `updateCheckoutQuery()`            | **Shallow** step URL updates (`pushState`/`replaceState`) — avoids re-running checkout RSC        |
 
-### Creation
+**Critical sequencing gotchas:**
 
-A new checkout is created when:
+- **Don't clear the checkout cookie synchronously on `/checkout?checkout=…` after payment** — the cookie change re-renders the checkout RSC tree and briefly shows `not_found` ("session expired") before navigation. `runCheckoutComplete` clears it in `after()`; the client calls `navigateToOrderConfirmation()`; `RootViews` holds `PaymentCompletingScreen` while `checkout:payment-completing` is set.
+- **Don't call `redirect()` from `runCheckoutComplete`** — `NEXT_REDIRECT` is caught by Stripe payment catch blocks as a false "Payment failed" banner.
+- **Order confirmation needs `window.location.replace`** (hard nav) — `router.replace` from async post-mutation callbacks doesn't reliably unmount checkout.
 
-- User adds first item to an empty cart
-- No valid checkout ID exists in cookie
-- Existing checkout is not found in Saleor
+### Shallow step navigation
 
-```typescript
-// src/lib/checkout.ts
-export async function findOrCreate({ channel, checkoutId }) {
-	if (!checkoutId) {
-		return (await create({ channel })).checkoutCreate?.checkout;
-	}
-	const checkout = await find(checkoutId);
-	return checkout || (await create({ channel })).checkoutCreate?.checkout;
-}
-```
+Step changes use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout-search-params.ts`), not `router.replace`: App Router treats `searchParams` as dynamic input, so a router nav would re-fetch checkout on every step click. Shallow history updates the URL for back/refresh/deep-link without a server round-trip.
 
-### Persistence
+- **Continue** → `history: "push"` (Back walks Contact → Shipping → Payment).
+- **Header stepper / inline Back / Stripe param cleanup** → `replace` (no fake history entries).
 
-The checkout persists across:
+`useLiveCheckoutSearchParams()` (`useSyncExternalStore`) keeps step UI, transition guards, and Stripe-return detection synced with shallow updates and `popstate`; ephemeral Stripe params are merged from `window.location.search`, never stale React `searchParams`. `CheckoutSessionLoader` reads only `?checkout=`/`?order=` — **never `?step=`** — and fetches via `get-checkout-session-data.ts` (`React.cache` per id). Use `router.replace` only for in-checkout `?checkout=` changes (orphaned-checkout recovery).
 
-- Page refreshes
-- Browser sessions (cookie-based)
-- Cart modifications
+### Transition guard, Stripe 3DS, live total
 
-### Completion
+- **`useCheckoutTransition()`** returns `"completing"` when `isCheckoutPaymentActive()` (storage key matches id, or `processingPayment` param) → render `PaymentCompletingScreen` instead of the step flow; else `null`.
+- **`StripeCheckoutReturnHandler`** mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step (which may be unmounted after redirect). Real failures clear Stripe params, exit the processing screen, and show `PaymentError` **inline on the payment step**. Return URL carries `processingPayment`, `paymentIntent`, `paymentIntentClientSecret` (`build-stripe-return-url.ts`).
+- **Live total before charge:** before any `transactionInitialize`, call `updateCheckoutBilling()` → `refreshCheckout()` for a live gross total; if `hasMaterialCheckoutTotalChange(displayed, live)`, show a price-change notice and **block** pay (`checkout-pay-amount.ts`). Saleor re-validates at `checkoutComplete`, but blocking early avoids authorizing the wrong amount.
 
-When `checkoutComplete` mutation succeeds:
+## Debugging
 
-- Checkout is converted to an Order
-- The checkout ID becomes invalid
-- A new checkout should be created for future purchases
+**Stale cart after storefront edit:** cart actions call `revalidateStorefrontChrome` (incl. `revalidatePath("/checkout")`), so the next checkout nav gets fresh `initialCheckout`; in-flow use `refreshCheckout` (full replace).
 
-## Checkout auth (BFF)
+**`CHECKOUT_NOT_FULLY_PAID`** ("authorized amount doesn't cover total") — causes: payment app down (transaction created, authorization failed), stale checkout with accumulated partial transactions, or total changed after transaction init. Steps: check `[Payment] Transaction init result:` logs for `transactionEvent.type`; `AUTHORIZATION_FAILURE` → app down/unreachable (verify in **Dashboard → Apps**: active/healthy, URL reachable, Saleor Cloud status); transaction OK but amount wrong → stale checkout data. Recovery: delete the `checkoutId-{channel}` cookie / drop `?checkout=` / use incognito to force a fresh checkout.
 
-Sign-in during checkout uses the same BFF as storefront (`POST /api/auth/login` via `loginWithBff()`). `CheckoutUserProvider` hydrates `me` from the RSC page; after sign-in, call `refetchUser()` → `router.refresh()` so the server re-fetches the session. Sign-out uses the `logout()` server action + `detachCheckoutCustomer` when needed.
+**Inspecting a checkout:** decode the id with `atob("Q2hlY2tvdXQ6…")` → `Checkout:<uuid>`, then query `checkout(id) { totalPrice, transactions { chargedAmount authorizedAmount } }` in a GraphQL client.
 
-See `data-auth-routes.md` for HttpOnly cookies, header `getHeaderUser()`, and rate limits.
+**Always use live checkout data** (`useCheckout()` / `CheckoutDataProvider`) for payment amounts — never cached PDP prices.
 
-## Data loading (RSC + client sync)
+## Key files
 
-1. **RSC page** (`checkout/page.tsx`) — full checkout (`fetchCheckoutOnServer`), `me`, order, channel countries. Passes `initialCheckout` when `loadState === "ready"`.
-2. **Client** — `CheckoutDataProvider` hydrates from `initialCheckout` (`CheckoutSessionLoader` always pairs `ready` with a snapshot). RSC updates merge via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` replaces state. Cart mutations revalidate `/checkout` via `revalidateStorefrontChrome`. Use `useRefreshCheckoutRsc()` after auth or address-book changes.
-3. **Mutations** — `src/app/(checkout)/actions.ts` server actions; `refreshCheckout` / `adoptCheckoutSnapshot` in `checkout-sync.ts`.
+| File                                                                                                              | Purpose                                                                     |
+| ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `src/lib/checkout.ts`                                                                                             | Checkout create + cookie management (`findOrCreate`, `saveIdToCookie`)      |
+| `src/app/(checkout)/checkout/page.tsx` · `checkout-session-loader.tsx`                                            | RSC entry (routing + `me`); active session loader (`?checkout=` only)       |
+| `src/checkout/lib/server/get-checkout-session-data.ts`                                                            | Per-request cached session fetches                                          |
+| `src/app/(checkout)/actions.ts`                                                                                   | Checkout server actions                                                     |
+| `src/checkout/providers/checkout-data.tsx` · `lib/checkout-sync.ts`                                               | Client state + adopt/refresh semantics                                      |
+| `src/checkout/hooks/use-checkout.ts` · `use-checkout-transition.ts`                                               | Steps context; payment→order guard                                          |
+| `src/checkout/lib/payment/finalize-checkout-order.ts` · `navigate-to-order.ts` · `checkout-payment-completion.ts` | `checkoutComplete` + nav; `markPaymentCompleting`/`isCheckoutPaymentActive` |
+| `src/app/(checkout)/checkout/complete/page.tsx` · `order-confirmation-app.tsx`                                    | Confirmation RSC + client shell                                             |
+| `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx`                                       | Post-redirect completion                                                    |
 
-`useCheckout()` reads from `CheckoutDataProvider` context (not urql).
+## Anti-patterns
 
-## Payment completion and transition UX
+❌ `router.push`/`replace` for order confirmation — use `navigateToOrderConfirmation()`
+❌ Clearing the checkout cookie before leaving `?checkout=` — wait for confirmation
+❌ Mounting redirect completion only inside the payment step — mount at the shell
+❌ Skipping `clearPaymentCompleting()` on failure — the user must be able to retry
+❌ `router.replace` for step changes — use shallow `updateCheckoutQuery({ step })`
+❌ Paying against cached/PDP totals — refresh for a live gross total first
 
-Gateway-agnostic infrastructure shared by Dummy, Stripe, and future payment apps. Provider-specific SDK steps live in `checkout-payment-gateways.md`; this section covers what happens **after** the PSP authorizes payment through Saleor.
+## Appendix: checkout v2 cheat sheet
 
-### Flow
+**Which refresh:** `refreshCheckout()` replaces client state (promo/line change); `adoptCheckoutSnapshot` merges an RSC snapshot without clobbering in-flow edits (on `initialCheckout` change only); `useRefreshCheckoutRsc()` triggers `router.refresh()`; cross-surface cart edits propagate via `revalidateStorefrontChrome` + next nav.
 
-```
-User clicks Pay (or returns from 3DS redirect)
-        │
-        ▼
-markPaymentCompleting(checkoutId)     ← sessionStorage: checkout:payment-completing
-        │
-        ▼
-transactionInitialize / process       ← provider-specific (may already be done)
-        │
-        ▼
-finalizeCheckoutOrder()               ← runCheckoutComplete mutation
-        │
-        ├── failure → clearPaymentCompleting(), show error
-        │
-        └── success → navigateToOrderConfirmation(orderId)
-                      window.location.replace(/checkout/complete?order=…)
-        │
-        ▼
-Order confirmation page (`/checkout/complete`) ← clearPaymentCompleting()
-                                               checkout cookie cleared in runCheckoutComplete
-```
+**URL params:** `checkout` (RSC reads — required), `order` on `/checkout` (RSC → redirect; canonical is `/checkout/complete?order=`), `step` (client only), `processingPayment`/Stripe params (client; merged from live `window.location.search`).
 
-### Routes and transition storage
+**Hooks:** `useCheckout()` (compat API; `refetch` → `refreshCheckout`), `useCheckoutData()` (full context incl. `loadState`/`setCheckout`), `useLiveCheckoutSearchParams()`, `useCheckoutTransition()`, `useRefreshCheckoutRsc()`.
 
-| Mechanism                          | Purpose                                                                                                                                              |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                           |
-| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                                                      |
-| `checkout:payment-completing`      | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                           |
-| `?processingPayment=true`          | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                                    |
-| `window.location.replace`          | Navigates to `/checkout/complete` — hard navigation required; `router.replace` from async post-mutation callbacks does not reliably unmount checkout |
-| `?step=contact\|shipping\|payment` | Checkout step deep link; URL is the source of truth via `useLiveCheckoutSearchParams()`                                                              |
-| `updateCheckoutQuery()`            | Shallow step URL updates (`pushState` on Continue, `replaceState` on stepper) — avoids re-running checkout RSC; merges into the live URL bar         |
-
-**Do not** clear the checkout cookie synchronously on `/checkout?checkout=…` after payment succeeds — Next.js re-renders the checkout RSC tree when the cookie changes, which briefly shows `not_found` ("session expired") before navigation lands. `runCheckoutComplete` clears the cookie in `after()`; the client calls `navigateToOrderConfirmation()`. `RootViews` keeps `PaymentCompletingScreen` up while `checkout:payment-completing` is set. Do **not** call `redirect()` from `runCheckoutComplete` — it throws `NEXT_REDIRECT`, which Stripe payment catch blocks surface as a false "Payment failed" banner.
-
-### Checkout step URL (shallow navigation)
-
-Step changes inside `/checkout` use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout-search-params.ts`), not `router.replace`. App Router treats `searchParams` as dynamic page input — a router navigation would re-fetch checkout on every step click. Shallow history updates the URL for back/refresh/deep links without a server round-trip.
-
-- **Continue (step complete)** — `history: "push"` so browser Back walks Contact → Shipping → Payment.
-- **Header stepper / inline Back** — default `replace` so jumping steps does not stack fake history entries.
-- **Stripe URL cleanup** — default `replace` when clearing `processingPayment` params.
-
-`useLiveCheckoutSearchParams()` (`useSyncExternalStore`) keeps step UI, payment transition guards, and Stripe return detection in sync with shallow updates and `popstate`. Ephemeral Stripe return params are preserved by merging from `window.location.search`, never from stale React `searchParams` alone.
-
-**RSC session boundary:** `CheckoutSessionLoader` (`checkout-session-loader.tsx`) reads only `?checkout=` / `?order=` — never `?step=`. Fetches use `get-checkout-session-data.ts` (`React.cache` per checkout id) so an accidental page re-run dedupes within the request.
-
-Use `router.replace` for **in-checkout** navigations (orphaned checkout recovery changing `?checkout=`). Order confirmation uses `window.location.replace` via `navigateToOrderConfirmation()`.
-
-### Transition guard
-
-`useCheckoutTransition()` (used in `saleor-checkout.tsx`) returns:
-
-| Value          | When                                                                                       |
-| -------------- | ------------------------------------------------------------------------------------------ |
-| `"completing"` | `isCheckoutPaymentActive()` — storage key matches checkout id or `processingPayment` param |
-| `null`         | Normal checkout UI                                                                         |
-
-When `transition === "completing"`, render `PaymentCompletingScreen` instead of the step flow.
-
-### Stripe 3DS / redirect return
-
-`StripeCheckoutReturnHandler` mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step. After redirect, the payment step may be unmounted — shell-level completion avoids losing the return handler. Real failures clear Stripe return URL params, exit the processing screen, and show `PaymentError` **inline on the payment step** (not as a banner above the processing overlay).
-
-Return URL includes `processingPayment`, `paymentIntent`, and `paymentIntentClientSecret` query params (see `build-stripe-return-url.ts`).
-
-### Live total before charge
-
-Before any `transactionInitialize`, payment flows:
-
-1. Call `updateCheckoutBilling()`
-2. `refreshCheckout()` for a live gross total
-3. If `hasMaterialCheckoutTotalChange(displayed, live)` → show price-change notice and **block** pay
-
-Saleor validates amounts at `checkoutComplete`, but blocking early avoids authorizing the wrong amount. See `checkout-pay-amount.ts`.
-
-### Key files
-
-| File                                                                        | Purpose                                            |
-| --------------------------------------------------------------------------- | -------------------------------------------------- |
-| `src/app/(checkout)/checkout/checkout-session-loader.tsx`                   | Active checkout RSC entry (`?checkout=` only)      |
-| `src/checkout/lib/server/get-checkout-session-data.ts`                      | Per-request cached session fetches                 |
-| `src/app/(checkout)/checkout/complete/page.tsx`                             | Order confirmation RSC entry                       |
-| `src/checkout/order-confirmation-app.tsx`                                   | Confirmation client shell                          |
-| `src/checkout/lib/payment/checkout-payment-completion.ts`                   | `markPaymentCompleting`, `isCheckoutPaymentActive` |
-| `src/checkout/lib/payment/finalize-checkout-order.ts`                       | Deduped `checkoutComplete` + navigation            |
-| `src/checkout/lib/payment/navigate-to-order.ts`                             | Nav to `/checkout/complete?order=`                 |
-| `src/checkout/hooks/use-checkout-transition.ts`                             | `completing` guard                                 |
-| `src/checkout/views/saleor-checkout/payment-completing-screen.tsx`          | Full-page "Processing your order" UI               |
-| `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx` | Post-redirect completion                           |
-| `src/checkout/views/order-confirmation/order-confirmation.tsx`              | Clears completion storage on mount                 |
-
-### Anti-patterns
-
-❌ **Don't call `router.push`/`replace` directly for order confirmation** — use `navigateToOrderConfirmation()`  
-❌ **Don't clear checkout cookie before leaving `?checkout=`** — wait for order confirmation  
-❌ **Don't mount redirect completion only inside payment step** — shell survives step unmount  
-❌ **Don't skip `clearPaymentCompleting()` on payment failure** — user must be able to retry
-
-## Common Issues
-
-### Stale cart after editing from storefront
-
-**Problem**: User changes cart on `/{channel}/cart`, returns to checkout — old lines or totals.
-
-**Fix**: Cart server actions call `revalidateStorefrontChrome`, which includes `revalidatePath("/checkout")`, so the next checkout navigation gets a fresh RSC `initialCheckout`. In-flow updates use `refreshCheckout` (full replace).
-
-### Stale Checkout with Failed Transactions
-
-**Problem**: If payment fails multiple times, the checkout accumulates partial transactions. Subsequent payment attempts may fail with:
-
-```
-CHECKOUT_NOT_FULLY_PAID: The authorized amount doesn't cover the checkout's total amount.
-```
-
-**Solutions**:
-
-1. **Clear cookies** - Delete `checkoutId-{channel}` cookie
-2. **Use incognito** - Test in a private browser window
-3. **Remove URL param** - Navigate to checkout without `?checkout=XXX`
-
-### Checkout Amount Mismatch
-
-**Problem**: Checkout total changes after transactions are initialized (e.g., shipping added).
-
-**Solution**: Always use live checkout from `useCheckout()` / `CheckoutDataProvider` before payment — never cached PDP prices.
-
-## Key Files
-
-| File                                                  | Purpose                              |
-| ----------------------------------------------------- | ------------------------------------ |
-| `src/lib/checkout.ts`                                 | Checkout creation, cookie management |
-| `src/app/(checkout)/checkout/page.tsx`                | RSC entry, routing + `me`            |
-| `src/app/(checkout)/actions.ts`                       | Checkout server actions              |
-| `src/checkout/providers/checkout-data.tsx`            | Client cart state + sync             |
-| `src/checkout/lib/checkout-sync.ts`                   | adopt vs refresh semantics           |
-| `src/checkout/hooks/use-checkout.ts`                  | Context hook for steps               |
-| `src/checkout/hooks/use-checkout-transition.ts`       | Payment → order transition guard     |
-| `src/checkout/lib/payment/finalize-checkout-order.ts` | `checkoutComplete` + navigation      |
-| `src/checkout/lib/utils/url.ts`                       | URL query param extraction           |
-
-## Debugging Checkout Issues
-
-### 1. Check Current Checkout ID
-
-```javascript
-// In browser console
-document.cookie.split(";").find((c) => c.includes("checkoutId"));
-```
-
-### 2. Decode Checkout ID
-
-```javascript
-// Base64 decode the checkout ID from URL
-atob("Q2hlY2tvdXQ6YThjN2Y4YjgtZmU0NS00ZTRkLThhZmItZDdjYWI2YTM5MTdm");
-// Returns: "Checkout:a8c7f8b8-fe45-4e4d-8afb-d7cab6a3917f"
-```
-
-### 3. Query Checkout in Saleor
-
-Use GraphQL playground to inspect checkout state:
-
-```graphql
-query {
-	checkout(id: "Q2hlY2tvdXQ6...") {
-		id
-		totalPrice {
-			gross {
-				amount
-				currency
-			}
-		}
-		transactions {
-			id
-			chargedAmount {
-				amount
-			}
-			authorizedAmount {
-				amount
-			}
-		}
-	}
-}
-```
-
-## Payment App Issues
-
-### Transaction Fails with "AUTHORIZATION_FAILURE"
-
-**Symptom**: Transaction is created but fails immediately:
-
-```json
-{
-	"transaction": { "id": "...", "actions": [] },
-	"transactionEvent": {
-		"message": "Failed to delivery request.",
-		"type": "AUTHORIZATION_FAILURE"
-	}
-}
-```
-
-**Cause**: The payment app (e.g., Dummy Gateway, Stripe, Adyen) is not responding.
-
-**Solutions**:
-
-1. Check **Saleor Dashboard → Apps** - is the payment app active/healthy?
-2. Check if the payment app URL is accessible
-3. Restart the payment app if self-hosted
-4. Check Saleor Cloud status if using cloud-hosted apps
-
-### "CHECKOUT_NOT_FULLY_PAID" Error
-
-**Symptom**: `checkoutComplete` fails with:
-
-```
-The authorized amount doesn't cover the checkout's total amount.
-```
-
-**Causes**:
-
-1. **Payment app is down** - transaction was created but authorization failed
-2. **Stale checkout** - previous partial transactions exist
-3. **Amount mismatch** - checkout total changed after transaction init
-
-**Debug steps**:
-
-1. Check `[Payment] Transaction init result:` logs for `transactionEvent.type`
-2. If `AUTHORIZATION_FAILURE` → payment app is down/unreachable
-3. If transaction succeeded but amount is wrong → checkout data is stale
-
-## Best Practices
-
-1. **Always use live checkout data** for payment amounts
-2. **Handle checkout not found** gracefully (create new checkout)
-3. **Clear checkout after completion** to avoid stale data
-4. **Test with fresh checkouts** when debugging payment issues
-5. **Check payment app health** when transactions fail with `AUTHORIZATION_FAILURE`
-
----
-
-## Appendix: Checkout v2 cheat sheet
-
-Quick reference for common tasks. Full surface layout: [`paper-surfaces.md`](paper-surfaces.md).
-
-### When to use which refresh
-
-| Goal                                                   | Mechanism                                                                                            |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| Re-fetch cart after promo / line change in checkout    | `refreshCheckout()` — always replaces client state                                                   |
-| Pick up RSC snapshot after cart edit on storefront     | Automatic via `revalidateAuthSurfaces` + next navigation; or `useRefreshCheckoutRsc()`               |
-| Merge server snapshot without clobbering in-flow edits | `adoptCheckoutSnapshot` (on `initialCheckout` change only)                                           |
-| Update `me` after BFF sign-in                          | `router.refresh()` in checkout; hard nav + `revalidateStorefrontChrome` when returning to storefront |
-| Change checkout step                                   | `updateCheckoutQuery({ step })` — shallow, not `router.replace`                                      |
-| Change `?checkout=` id (orphaned recovery)             | `router.replace` with new checkout id                                                                |
-| After successful payment                               | `navigateToOrderConfirmation()` — `window.location.replace` to `/checkout/complete`                  |
-
-### URL params
-
-| Param                                     | RSC reads?       | Purpose                                                        |
-| ----------------------------------------- | ---------------- | -------------------------------------------------------------- |
-| `checkout`                                | Yes              | Saleor checkout global id (required for active flow)           |
-| `order` on `/checkout`                    | Yes → redirect   | Legacy; canonical confirmation is `/checkout/complete?order=`  |
-| `step`                                    | No (client only) | `contact`, `shipping`, `payment` — shallow history             |
-| `processingPayment`, Stripe return params | Client           | 3DS return; preserved by merging live `window.location.search` |
-
-### Hooks (v2)
-
-| Hook                            | Reads from                                                                      |
-| ------------------------------- | ------------------------------------------------------------------------------- |
-| `useCheckout()`                 | `CheckoutDataProvider` + session id (compat API; `refetch` → `refreshCheckout`) |
-| `useCheckoutData()`             | Full context including `loadState`, `setCheckout`                               |
-| `useLiveCheckoutSearchParams()` | Live URL including shallow step updates                                         |
-| `useCheckoutTransition()`       | `"completing"` during payment → order navigation                                |
-| `useRefreshCheckoutRsc()`       | Triggers `router.refresh()` for RSC `initialCheckout` / `me`                    |
-
-### Session states (`resolveSessionUser`)
-
-| Status          | UI meaning                                                         |
-| --------------- | ------------------------------------------------------------------ |
-| `guest`         | No valid session — show sign-in                                    |
-| `authenticated` | `me` present                                                       |
-| `unavailable`   | Transient failure — do not flash login; optional retry server-side |
-
-Expired JWT maps to **`guest`** via `isDefinitiveAuthFailure` (structured Saleor error codes first, message fallback).
+**Session states** (`resolveSessionUser`): `guest` (show sign-in), `authenticated` (`me` present), `unavailable` (transient — don't flash login). An expired JWT maps to `guest` via `isDefinitiveAuthFailure` (structured Saleor codes first, message fallback).

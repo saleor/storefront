@@ -119,8 +119,21 @@ function anchorId(ruleNum, title) {
 		.replace(/(^-|-$)/g, "")}`;
 }
 
+function stripFrontmatter(content) {
+	if (!content.startsWith("---\n")) {
+		return content;
+	}
+	const end = content.indexOf("\n---", 4);
+	if (end === -1) {
+		return content;
+	}
+	// Drop the closing fence line, then any leading blank lines.
+	const afterFence = content.slice(content.indexOf("\n", end + 1) + 1);
+	return afterFence.replace(/^\n+/, "");
+}
+
 function stripRuleTitle(content) {
-	const lines = content.split("\n");
+	const lines = stripFrontmatter(content).split("\n");
 	if (lines[0]?.startsWith("# ")) {
 		return lines.slice(1).join("\n").replace(/^\n+/, "");
 	}
@@ -216,10 +229,10 @@ const header = `# Saleor Paper Storefront
 Saleor Paper  
 June 2026
 
-> **Note:** This document is mainly for agents and LLMs to follow when maintaining,
-> generating, or refactoring this Saleor storefront codebase. Humans
-> may also find it useful, but guidance here is optimized for automation
-> and consistency by AI-assisted workflows.
+> ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
+> all ${RULE_COUNT} rules (~75k tokens) and exists only for humans reading offline and for
+> single-file skill export. **Agents:** read \`SKILL.md\`, then the **one** \`rules/<task>.md\`
+> whose frontmatter \`description\` matches the task. Never read this compiled file to "get oriented".
 >
 > **Source of truth:** Individual rule files in \`rules/\` are updated first. Regenerate this file with:
 > \`node skills/saleor-paper-storefront/scripts/compile-agents.mjs\`
@@ -243,5 +256,21 @@ ${buildBody().trimEnd()}
 ${footer}
 `;
 
-writeFileSync(outPath, header);
-console.log(`Wrote ${outPath} (${RULE_COUNT} rules)`);
+if (process.argv.includes("--check")) {
+	let current = "";
+	try {
+		current = readFileSync(outPath, "utf8");
+	} catch {
+		// missing file → treated as drift below
+	}
+	if (current !== header) {
+		console.error(
+			`✗ ${outPath} is out of date with rules/.\n  Run: node skills/saleor-paper-storefront/scripts/compile-agents.mjs`,
+		);
+		process.exit(1);
+	}
+	console.log(`✓ AGENTS.md is in sync with ${RULE_COUNT} rules`);
+} else {
+	writeFileSync(outPath, header);
+	console.log(`Wrote ${outPath} (${RULE_COUNT} rules)`);
+}

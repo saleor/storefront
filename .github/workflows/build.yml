@@ -32,6 +32,12 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: paper doctor (agent setup healthy)
+        run: pnpm run doctor:check
+      - name: Verify agent docs (frontmatter + AGENTS.md in sync)
+        run: pnpm run docs:check
+      - name: Design tokens
+        run: pnpm run lint:design-tokens
       - name: Typecheck
         run: pnpm run typecheck
       - name: Test

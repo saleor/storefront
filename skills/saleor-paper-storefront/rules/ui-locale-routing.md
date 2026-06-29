@@ -1,3 +1,8 @@
+---
+name: ui-locale-routing
+description: Locale + channel URL routing /{locale}/{channel}/…: locale config, allowlisted pairs, per-locale cache keys, region picker, GraphQL languageCode. Use when touching locale/market URLs or i18n routing.
+---
+
 # Locale & Channel URL Routing
 
 Browse routes use **two URL prefixes**: locale (language) then channel (market). Checkout is unchanged.

@@ -4,10 +4,10 @@
 Saleor Paper  
 June 2026
 
-> **Note:** This document is mainly for agents and LLMs to follow when maintaining,
-> generating, or refactoring this Saleor storefront codebase. Humans
-> may also find it useful, but guidance here is optimized for automation
-> and consistency by AI-assisted workflows.
+> ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
+> all 29 rules (~75k tokens) and exists only for humans reading offline and for
+> single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
+> whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
 > **Source of truth:** Individual rule files in `rules/` are updated first. Regenerate this file with:
 > `node skills/saleor-paper-storefront/scripts/compile-agents.mjs`
@@ -105,7 +105,7 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 | **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
 | **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
 | **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
-| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)        | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) §5; account uses layout-shell gate for auth                                                                                              |
+| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)        | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
 | **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
 | **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
 | **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
@@ -152,7 +152,7 @@ Patterns we **do not** use — regressions to avoid:
 
 Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
 
-_None currently._ The homepage (`(main)/page.tsx`) and category (`categories/[slug]/page.tsx`) async-page-shell divergences were both reconciled to the canonical sync page → `Suspense` → async shell model (homepage also gained a route `loading.tsx`). Add a row here only when a new, intentional exception is introduced.
+_None currently._ The homepage (`(main)/page.tsx`) and category (`categories/[slug]/page.tsx`) async-page-shell divergences were both reconciled to the canonical sync page → `Suspense` → async shell model; each page's inner `Suspense` fallback is its nav skeleton. There is intentionally **no shared `(main)/loading.tsx`** — a segment-level loading.tsx there renders the homepage skeleton for sibling routes (categories/PDP/…) whenever the `(main)` segment re-suspends on Back navigation, which flashed the homepage skeleton on Back to a category. Per-route `loading.tsx` (e.g. `categories/[slug]/loading.tsx`) + the page inner Suspense cover the cases that matter. Add a row here only when a new, intentional exception is introduced.
 
 ---
 
@@ -219,153 +219,36 @@ The data layer controls caching, GraphQL type generation, and API communication.
 
 ### 1.1 Caching Strategy
 
-Understanding the caching architecture, Cache Components (PPR), and revalidation mechanisms ensures correct data freshness, avoids stale content, and enables targeted cache invalidation when Saleor data changes.
+This rule holds **Paper's caching decisions** — what we cache, the contracts that keep it consistent, and how we invalidate. It is **not** a Next.js tutorial.
 
-> **Reference**: [Next.js Cache Components](https://nextjs.org/docs/app/getting-started/cache-components) — the official documentation for `use cache`, `cacheLife`, `cacheTag`, and Partial Prerendering.
+> **Next.js mechanics live in bundled docs — read them, don't restate them.**
+>
+> - `use cache`, `cacheLife`, `cacheTag`, PPR: `node_modules/next/dist/docs/` (version-matched).
+> - PPR build/prerender errors (the “uncached data outside Suspense” family) come with an actionable **Stream / Cache / Block** fix menu in the dev overlay, terminal, and `next build`. The canonical fixes are at `nextjs.org/docs/messages/blocking-prerender-dynamic`.
+>
+> When the framework already explains a mechanic or emits a fix, link it — don't duplicate it here.
 
 ---
 
-## Data Freshness Model
-
-### The Key Principle
+## The one decision: cached browse, live commerce
 
 > **Display pages are cached for performance. Transactional flows are always real-time.**
 
-| Page/Component                | Data Source                                 | Freshness              | Why                         |
-| ----------------------------- | ------------------------------------------- | ---------------------- | --------------------------- |
-| **PDP (Product Detail)**      | `getProductData()`                          | ⚠️ Cached (5 min TTL)  | Performance - instant loads |
-| **Category/Collection pages** | `getCategoryData()` / `getCollectionData()` | ⚠️ Cached (5 min TTL)  | Performance                 |
-| **Homepage**                  | `getFeaturedProducts()`                     | ⚠️ Cached (5 min TTL)  | Performance                 |
-| **Navigation**                | `NavLinks`                                  | ⚠️ Cached (1 hour TTL) | Rarely changes              |
-| **Cart Drawer**               | `Checkout.find()`                           | ✅ Always fresh        | Uses `cache: "no-cache"`    |
-| **Checkout Page**             | `syncCheckoutFromServer()` + server actions | ✅ Always fresh        | Server actions + RSC        |
-| **Add to Cart action**        | Saleor mutation                             | ✅ Always fresh        | Saleor calculates price     |
+| Surface                                | Data source                                                         | Freshness                              |
+| -------------------------------------- | ------------------------------------------------------------------- | -------------------------------------- |
+| PDP / category / collection / homepage | `getProductData()`, `getCategoryData()`, `getFeaturedProducts()`, … | Cached (~5 min)                        |
+| Navigation / footer menus              | `getNavbarMenuItems()` / `getFooterMenuItems()`                     | Cached (~1 hr)                         |
+| Cart drawer, checkout, add-to-cart     | `Checkout.find()`, server actions, Saleor mutations                 | **Always fresh** (`cache: "no-cache"`) |
 
-### Price Flow Diagram
+**Why a stale PDP price is safe:** Saleor is the source of truth. Cart fetches fresh (`cache: "no-cache"`), `checkoutLinesAdd`/`checkoutComplete` recalculate server-side, and webhooks bust the cache on change. A shopper may see a stale price on the PDP but **cannot check out at it**.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         PRICE FLOW                                  │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│   PDP Display          Cart/Checkout          Payment               │
-│   ────────────         ─────────────          ───────               │
-│                                                                     │
-│   ┌───────────┐        ┌───────────┐         ┌───────────┐         │
-│   │  Cached   │───────▶│  FRESH    │────────▶│  FRESH    │         │
-│   │  $29.99   │  Add   │  $35.99   │  Pay    │  $35.99   │         │
-│   └───────────┘  to    └───────────┘         └───────────┘         │
-│                  Cart                                               │
-│   "use cache"          cache:"no-cache"      Saleor validates       │
-│   5 min TTL            Always from API       at checkout            │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-
-⚠️ User may see different price in cart than on PDP if price changed.
-✅ User CANNOT checkout at stale price - Saleor always uses current price.
-```
-
-### Why This Is Safe
-
-1. **Saleor is the source of truth**: When you call `checkoutLinesAdd`, Saleor calculates the price server-side using current data
-2. **Cart always fetches fresh**: `Checkout.find()` uses `cache: "no-cache"`
-3. **Checkout validates**: `checkoutComplete` will fail if something is wrong
-4. **Webhooks enable instant updates**: When configured, price changes trigger immediate cache invalidation
+Paper runs Next.js 16 with [`cacheComponents: true`](../../../next.config.js) (stable — not the Next 15 `experimental.ppr`/`dynamicIO` flags). **Nothing is cached by default**; catalog speed is opt-in via `"use cache"` at the data boundary (`src/lib/catalog/`, `src/lib/menus/`, `src/lib/channels/`, `src/lib/content/`). Paper does **not** use `"use cache: private"` — locale/channel are passed as function args instead.
 
 ---
 
-## Cache Components Architecture
+## Cache manifest — single source of truth
 
-### What It Is
-
-Cache Components enable **Partial Prerendering (PPR)** - mixing static, cached, and dynamic content in a single route. The static shell is served instantly from CDN, while dynamic parts stream in via Suspense.
-
-### Current Status: ✅ ENABLED (Next.js 16)
-
-Paper runs **Next.js 16** with [`cacheComponents: true`](../../../next.config.js). In Next.js 16 this is the **stable** Cache Components model — not the old `experimental.ppr` / `experimental.dynamicIO` flags from Next.js 15 canaries.
-
-| API                      | Status in Next.js 16                                                                | Paper usage                                                         |
-| ------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `cacheComponents: true`  | Stable config flag; enables PPR + `"use cache"`                                     | `next.config.js`                                                    |
-| `"use cache"`            | Stable ([v16.0.0+](https://nextjs.org/docs/app/api-reference/directives/use-cache)) | Catalog, menus, channels, storefront content                        |
-| `cacheLife` / `cacheTag` | Stable (no `unstable_` prefix)                                                      | Via `applyCacheProfile()` + `src/lib/cache-manifest.ts`             |
-| `"use cache: private"`   | Still experimental                                                                  | **Not used** — Paper passes locale/channel as function args instead |
-
-**Mental model shift from Next.js 15:** with Cache Components, **nothing is cached by default**. Catalog speed is opt-in via `"use cache"` at the data boundary (`src/lib/catalog/`, `src/lib/menus/`, etc.). Transactional paths stay on `cache: "no-cache"` / Server Actions.
-
-**What is still evolving:** upstream Cache Components docs and platform cache handlers (`use cache: remote`, multi-instance `cacheHandlers`). Paper's **page-boundary patterns** (sync shell → Suspense → islands, known divergences in `paper-architecture.md`) are project conventions on top of the stable primitives — treat those as the sharp edges, not the directive itself.
-
-See [Disabling Cache Components](#disabling-cache-components) if you need to roll back.
-
-```javascript
-const config = {
-	cacheComponents: true,
-	cacheLife: paperCacheLifeProfiles, // named tiers — see src/lib/cache-life-profiles.ts
-};
-```
-
-### How It Works
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  STATIC SHELL (Instant from CDN)                                │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  Header skeleton, layout, cached product data            │   │
-│  │  Source: "use cache" functions (getProductData, etc.)    │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  <Suspense fallback={<Skeleton />}>                     │   │
-│  │    Dynamic content (streams in after initial render)     │   │
-│  │    - Variant selection (reads searchParams)              │   │
-│  │    - Logo, NavLinks (use usePathname)                    │   │
-│  │    - Cart count (reads cookies)                          │   │
-│  │  </Suspense>                                             │   │
-│  └─────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Reference Architecture
-
-Target layout for catalog routes with Cache Components enabled:
-
-```
-ProductPage (sync export)
-└── Suspense (page skeleton or route loading.tsx)
-    └── ProductShell (await params + cached data ONLY — never searchParams)
-        ├── breadcrumbs, h1, attributes, JSON-LD, LCP preload
-        ├── Suspense → VariantGalleryDynamic (searchParams)
-        └── Suspense → VariantSectionDynamic (searchParams)
-
-Layout shell
-├── Sync (main)/layout.tsx — no awaits
-├── MainChrome (sync) → per-chrome Suspense slots in browse-chrome-slots.tsx
-│   ├── Suspense → AnnouncementBarSlot (getAnnouncementBarProps + dismiss cookie)
-│   ├── Suspense → HeaderSlot → Header (getStorefrontContent for nav labels)
-│   ├── <main>{children}</main>          ← not inside any chrome Suspense
-│   └── Suspense → FooterSlot → Footer
-└── Suspense → CartDrawerSlot (cached copy + cookies)
-
-Invalidation: Saleor webhook → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
-```
-
-**Key files**
-
-| Purpose             | Location                                |
-| ------------------- | --------------------------------------- |
-| Cache manifest      | `src/lib/cache-manifest.ts`             |
-| Catalog fetches     | `src/lib/catalog/*.ts`                  |
-| Menu fetches        | `src/lib/menus/get-menu-data.ts`        |
-| Channel fetches     | `src/lib/channels/get-channels-data.ts` |
-| Revalidation API    | `src/app/api/revalidate/route.ts`       |
-| Cache introspection | `src/app/api/cache-info/route.ts`       |
-
-### Cache Manifest — Single Source of Truth
-
-All cache profiles are defined in `src/lib/cache-manifest.ts`. This module is imported by:
-
-- **Cached functions** — for `cacheLife()` / `cacheTag()` calls
-- **`/api/cache-info`** — to serve the manifest to the saleor-paper-app (Dashboard)
+All TTLs and tags are defined in **`src/lib/cache-manifest.ts`**. Cached functions read it via `applyCacheProfile()`; `/api/cache-info` serves it to the saleor-paper-app. Change a TTL or tag pattern in **one** place and both behavior and the Dashboard view update.
 
 ```typescript
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
@@ -373,7 +256,7 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
 async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug);
+	applyCacheProfile(CACHE_PROFILES.products, slug); // sets cacheLife tier + cacheTag
 
 	return executePublicGraphQL(ProductDetailsDocument, {
 		variables: { slug, channel, ...graphqlLanguageCodeVariables(localeSlug) },
@@ -381,578 +264,146 @@ async function getProductData(slug: string, channel: string, localeSlug: string)
 }
 ```
 
-To change a TTL or tag pattern, edit `src/lib/cache-manifest.ts`. Both the actual caching behavior and the dashboard app's view of the cache update automatically.
+Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings that drift from the manifest. Do **not** add fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness.
 
-### Tag Registry
+### Tag registry
 
-| Tag Pattern                             | Profile ID           | Used By                                        | Invalidated When            |
+| Tag pattern                             | Profile              | Used by                                        | Invalidated when            |
 | --------------------------------------- | -------------------- | ---------------------------------------------- | --------------------------- |
-| `product:{slug}`                        | `products`           | PDP `getProductData()`                         | Product updated in Saleor   |
+| `product:{slug}`                        | `products`           | `getProductData()`                             | Product updated             |
 | `category:{slug}`                       | `categories`         | `getCategoryData()`                            | Category updated            |
 | `collection:{slug}`                     | `collections`        | `getCollectionData()`, `getFeaturedProducts()` | Collection updated          |
 | `page:{slug}`                           | `pages`              | `getPageData()` (CMS)                          | Page updated                |
-| `navigation:{channel}`                  | `navigation`         | `getNavbarMenuItems()`                         | Navbar menu changed         |
-| `footer-menu:{channel}`                 | `footerMenu`         | `getFooterMenuItems()`                         | Footer menu changed         |
+| `navigation:{channel}`                  | `navigation`         | `getNavbarMenuItems()`                         | Navbar changed              |
+| `footer-menu:{channel}`                 | `footerMenu`         | `getFooterMenuItems()`                         | Footer changed              |
 | `storefront-content:{channel}:{locale}` | `storefront-content` | `getStorefrontContent()`                       | `storefront-*` Page updated |
 | `channels`                              | `channels`           | `getCachedChannelsList()`                      | Channel list changed        |
 
-**Named `cacheLife` tiers** (via `applyCacheProfile`, configured in `next.config.js`):
+Named `cacheLife` tiers (configured in `next.config.js`): `catalog` ~5 min (products/categories/collections/CMS pages), `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
 
-| Profile ID                  | Tier name  | Typical TTL | Used for                          |
-| --------------------------- | ---------- | ----------- | --------------------------------- |
-| `products`                  | `catalog`  | ~5 min      | Products, categories, collections |
-| `pages`                     | `catalog`  | ~5 min      | CMS pages                         |
-| `navigation` / `footerMenu` | `menus`    | ~1 hour     | Nav + footer menus                |
-| `storefront-content`        | `menus`    | ~5 min      | Merchandising copy (Models)       |
-| `channels`                  | `channels` | longer      | Channel metadata list             |
-
-Do **not** add fetch-level `revalidate` on GraphQL calls inside `"use cache"` functions — `cacheLife` + webhooks handle freshness.
-
-### Locale & Caching
-
-Browse routes are `/{locale}/{channel}/…` (see `ui-locale-routing.md`, ADR 0001). Locale affects **what** is cached (translated GraphQL payloads), not **how fast** repeat visits are.
-
-#### Cache keys vs cache tags
-
-| Mechanism                                   | Includes locale?            | Role                                                                 |
-| ------------------------------------------- | --------------------------- | -------------------------------------------------------------------- |
-| **`"use cache"` function arguments**        | ✅ Yes (`localeSlug` param) | Separate cache entry per locale — `/pl/…` and `/en/…` do not collide |
-| **`cacheTag` (invalidation)**               | Usually ❌ for catalog      | One tag per slug/channel; webhook busts all locale variants together |
-| **`storefront-content:{channel}:{locale}`** | ✅ Yes (BCP 47)             | Homepage/marketing copy from Saleor Models                           |
-
-```typescript
-// Separate cache entries — localeSlug is part of the Next.js cache key
-getProductData("hoodie", "default-channel", "en"); // → English translation payload
-getProductData("hoodie", "default-channel", "pl"); // → Polish translation payload
-
-// Single invalidation tag — product update clears both entries
-applyCacheProfile(CACHE_PROFILES.products, slug); // → tag: product:hoodie
-```
-
-**Performance:** After the first visitor per locale, that locale’s PDP/PLP is as fast as before locale routing. Adding `pl` and `de` creates ~N additional cache entries (one per locale × page), not extra work on every request.
-
-**Cold start:** Each locale warms independently on first hit after deploy. English may be warm while Polish is still cold — normal, not a cross-locale penalty.
-
-#### GraphQL `languageCode`
-
-Cached fetches pass `graphqlLanguageCodeVariables(localeSlug)` so Saleor returns `translation { … }` fields for the browse locale. Map URL slugs to Saleor **base** language codes in `src/config/locale.ts` (e.g. `pl` → `PL`, not `PL_PL`) — Dashboard stores translations under `/translations/PL/…`.
-
-Merge translated display fields with `withTranslatedProductFields()` / siblings in `src/lib/saleor-translations.ts` after the fetch.
-
-#### Invalidation fan-out
-
-Catalog tags stay slug-scoped (`product:{slug}`, `category:{slug}`, etc.) because Saleor webhooks do not signal “only PL changed.” On product/category/collection/page updates, `buildPathsForAllLocales()` revalidates every configured locale path:
-
-```
-/en/default-channel/products/hoodie
-/pl/default-channel/products/hoodie
-/de/default-channel/products/hoodie
-```
-
-Menus use channel-scoped tags (`navigation:{channel}`) while `localeSlug` remains in the cached function args — same pattern: per-locale cache entries, one tag clears all languages for that channel.
-
-Storefront content uses explicit per-locale tags (`storefront-content:{channel}:{locale}`) via `buildStorefrontContentCacheTags()`.
-
-#### Mental model
-
-```
-Request: /pl/default-channel/products/foo
-         │
-         ▼
-   getProductData(slug, channel, "pl")     ← locale in cache key
-         │
-         ├─ HIT  → instant (same speed as pre-locale routing)
-         └─ MISS → GraphQL languageCode: PL → cache ~5 min
-                   tag: product:foo         ← shared; invalidates all locales
-```
-
-**Future refinement (optional):** Locale-scoped catalog tags (`product:{slug}:{locale}`) only if you get translation-only invalidation signals. Current design is simpler and correct for generic `PRODUCT_UPDATED` webhooks.
-
-### Cache Introspection Endpoint
-
-`GET /api/cache-info` returns a machine-readable manifest of all profiles. Protected by `REVALIDATE_SECRET` via `Authorization: Bearer` header (timing-safe comparison). Used by the saleor-paper-app to discover what the storefront caches and build its invalidation UI dynamically.
-
-```bash
-curl -H "Authorization: Bearer <REVALIDATE_SECRET>" "https://store.com/api/cache-info"
-# Returns: { version: 1, profiles: [{ id, label, ttlSeconds, cacheProfile, tagPattern, pathPattern }, ...] }
-```
+`GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically.
 
 ---
 
-## Key Patterns
+## The page-boundary model (Paper convention)
 
-### 1. Three-Layer Page Model (CRITICAL)
+The PPR layer stack — **sync page → Suspense → cached shell (params + `"use cache"` only) → dynamic islands (`searchParams`/cookies)** — is the spine of every browse route. It is documented once in [`paper-architecture.md`](paper-architecture.md); PDP specifics are in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
 
-Every catalog route should follow this boundary stack:
+- **Catalog fetches live in modules**, not inline in pages long-term: `src/lib/catalog/`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/`.
+- **`executePublicGraphQL`** is safe inside `"use cache"`; **`executeAuthenticatedGraphQL`** is **not** (needs cookies) — keep it out of cached functions.
+- **Don't re-export server cached helpers from client-mixed barrels** (import catalog/menu modules directly; e.g. `ProductGalleryLcp` directly, not via a mixed `pdp/index.ts`).
+- **CSS `order`** lets dynamic content appear above static `<h1>` while keeping the `h1` in the cached shell for SEO (PDP uses `order-1..4`).
 
-1. **Sync page export** — passes `params` / `searchParams` promises through, no awaits at top level.
-2. **Page-level Suspense** — isolates cached data fetch from the layout; use route `loading.tsx` for outer skeletons.
-3. **Shell** — awaits `params` + `"use cache"` data only. Static UI (h1, breadcrumbs, JSON-LD) lives here.
-4. **Dynamic islands** — nested Suspense per runtime concern (`searchParams`, cookies, client routing hooks).
+### Browse chrome boundaries
 
-```tsx
-// ✅ CORRECT
-export default function Page(props: PageProps) {
-	return (
-		<Suspense fallback={<PageSkeleton />}>
-			<PageShell params={props.params} searchParams={props.searchParams} />
-		</Suspense>
-	);
-}
+The `(main)` layout is **sync**; each chrome region is an async **slot** in its own Suspense boundary. `<main>{children}</main>` is **never** wrapped in layout or chrome Suspense.
 
-async function PageShell({ params, searchParams }) {
-	const { slug, channel, locale } = await params;
-	const product = await getProductData(slug, channel, locale); // "use cache"
-	return (
-		<>
-			<h1>{product.name}</h1>
-			<Suspense fallback={<GallerySkeleton />}>
-				<VariantGalleryDynamic product={product} searchParams={searchParams} />
-			</Suspense>
-		</>
-	);
-}
-```
+| Slot         | File                                              | Awaits                                                                     |
+| ------------ | ------------------------------------------------- | -------------------------------------------------------------------------- |
+| Announcement | `browse-chrome-slots.tsx` → `AnnouncementBarSlot` | `params`, `getAnnouncementBarProps` (+ nested Suspense for dismiss cookie) |
+| Header       | `HeaderSlot` → `Header`                           | `params`, menus + `getStorefrontContent`                                   |
+| Footer       | `FooterSlot` → `Footer`                           | `params`, menus + `getStorefrontContent`                                   |
+| Cart drawer  | `CartDrawerSlot`                                  | `params`, `getStorefrontContent`, checkout cookies                         |
 
-```tsx
-// ❌ BAD — awaiting searchParams in shell collapses the whole page into a dynamic hole
-async function ProductShell({ searchParams, ... }) {
-	const { variant } = await searchParams; // Dynamic!
-	const product = await getProductData(...);
-}
-```
+Account routes use the **auth-gate** variant (sync layout → Suspense → async `AccountShell`, children inside the shell) — see `data-auth-routes.md`. Key files: `(main)/layout.tsx`, `main-chrome.tsx`, `browse-chrome-slots.tsx`.
 
-### 2. Data Layer Conventions
+### PPR pitfalls → let the framework guide the fix
 
-Place `"use cache"` GraphQL fetches in dedicated modules — not inline in page files long-term:
+When you hit an “uncached data accessed outside `<Suspense>`” error, the overlay/terminal gives you **Stream / Cache / Block** with per-rule docs. Paper's defaults for that choice:
 
-| Layer    | Location                         | Examples                                                      |
-| -------- | -------------------------------- | ------------------------------------------------------------- |
-| Catalog  | `src/lib/catalog/`               | `get-featured-products`, `get-category-data`, `get-page-data` |
-| Menus    | `src/lib/menus/get-menu-data.ts` | `getNavbarMenuItems`, `getFooterMenuItems`                    |
-| Channels | `src/lib/channels/`              | `getCachedChannelsList`                                       |
+| Situation                                                                   | Paper choice                                                                     |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Catalog display data (product, category, menus)                             | **Cache** — `"use cache"` + `applyCacheProfile`                                  |
+| `searchParams`/cookies UI (variant gallery, cart badge, user menu)          | **Stream** — nested `<Suspense>` island                                          |
+| Awaiting `searchParams`/`cookies()` in a page shell or inside `"use cache"` | Don't — it collapses the route into a dynamic hole; move the read into an island |
 
-Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — never raw `cacheLife("minutes")` or manual `cacheTag` strings that drift from the manifest.
-
-**Do not** re-export server cached helpers from barrels that also export client components (e.g. import `ProductGalleryLcp` directly, not via a mixed `pdp/index.ts` barrel).
-
-### 3. Page Patterns by Route Type
-
-| Route                                  | Shell (cached)                                          | Dynamic islands                                                               |
-| -------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| **Homepage**                           | Sync `<section>` wrapper                                | `FeaturedProducts` in Suspense → `getFeaturedProducts()`                      |
-| **PLP** (category/collection/products) | Hero/title from `getCategoryData` / `getCollectionData` | Product grid in nested Suspense (filters/sort via `searchParams`)             |
-| **PDP**                                | `ProductShell`: name, attributes, JSON-LD, preload      | `VariantGalleryDynamic` + `VariantSectionDynamic` (separate Suspense)         |
-| **CMS page**                           | Sync page export                                        | `PageContent` in Suspense → `getPageData()`                                   |
-| **Account** (`/account/*`)             | Layout `AccountShell` + `AccountProvider`               | Per-page Suspense for orders; profile via context (see `data-auth-routes.md`) |
-
-See `product-pdp.md` for PDP specifics. PLP routes use `loading.tsx` at the route segment.  
-See `data-auth-routes.md` for migrating other logged-in route trees.
-
-### 4. Suspense Around Dynamic Content
-
-Any component accessing runtime data must be wrapped in Suspense.
-
-**What counts as "dynamic data" (triggers Suspense requirement):**
-
-| Data Access                 | Why It's Dynamic    |
-| --------------------------- | ------------------- |
-| `cookies()`                 | Per-request         |
-| `headers()`                 | Per-request         |
-| `searchParams`              | URL-dependent       |
-| `usePathname()`             | Client-side routing |
-| `useParams()`               | Client-side routing |
-| `Date.now()`                | Time-dependent      |
-| Server Actions              | Form submissions    |
-| `cache: "no-cache"` fetches | Always fresh        |
-
-```tsx
-// MainChrome: each chrome region has its own Suspense slot (§5); <main> is never wrapped.
-<main className="flex-1">{props.children}</main>
-
-// Route-level loading UI (preferred for page transitions)
-// src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/loading.tsx
-
-// Header wraps NavLinks in Suspense (uses usePathname for active state)
-<Suspense fallback={<NavLinksSkeleton />}>
-  <NavLinks channel={channel} />
-</Suspense>
-```
-
-**Do not** use `Suspense fallback={null}` on `<main>` — it prevents route `loading.tsx` from participating and hides useful skeletons.
-
-### 5. Layout boundaries (browse chrome + auth gate)
-
-**Browse (default):** sync layout; each chrome region is an async **slot** in its own Suspense boundary. The layout never `await`s — slots `await params` + `"use cache"` data inside Suspense. `<main>{children}</main>` is never wrapped in layout or chrome Suspense.
-
-| Slot         | File                                              | Awaits                                                | Parent fallback                                                  |
-| ------------ | ------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------- |
-| Announcement | `browse-chrome-slots.tsx` → `AnnouncementBarSlot` | `params`, `getAnnouncementBarProps`                   | `AnnouncementBarSkeleton` (+ nested Suspense for dismiss cookie) |
-| Header       | `HeaderSlot` → `Header`                           | `params`, menus + `getStorefrontContent` (nav labels) | `HeaderSkeleton`                                                 |
-| Footer       | `FooterSlot` → `Footer`                           | `params`, menus + `getStorefrontContent`              | `FooterSkeleton`                                                 |
-| Cart drawer  | `CartDrawerSlot`                                  | `params`, `getStorefrontContent`, checkout cookies    | `null`                                                           |
-
-**Account (auth gate):** when the **whole segment** must resolve session before any child renders, use sync layout → Suspense → async `AccountShell` with children inside the shell (`data-auth-routes.md`).
-
-```tsx
-// ✅ Browse layout — sync; chrome streams per island; main is free
-export default function RootLayout({ children, params }: LayoutProps) {
-	return (
-		<StorefrontProviders>
-			<MainChrome params={params}>{children}</MainChrome>
-			<Suspense fallback={null}>
-				<CartDrawerSlot params={params} />
-			</Suspense>
-		</StorefrontProviders>
-	);
-}
-
-// MainChrome (sync) — children in <main> between header/footer Suspense slots only
-```
-
-```tsx
-// ✅ Account layout — auth gate; children inside shell until session resolves
-export default function AccountLayout({ children, params }: LayoutProps) {
-	return (
-		<Suspense fallback={<AccountSkeleton />}>
-			<AccountShell params={params}>{children}</AccountShell>
-		</Suspense>
-	);
-}
-```
-
-```tsx
-// ❌ BAD — Suspense only around <main> to silence a build error; no slot owns the fetch
-export default async function Layout({ children }) {
-	return (
-		<>
-			<Header />
-			<Suspense fallback={null}>
-				<main>{children}</main>
-			</Suspense>
-		</>
-	);
-}
-```
-
-**Key files:** `(main)/layout.tsx`, `main-chrome.tsx`, `browse-chrome-slots.tsx`, `lib/content/get-announcement-bar-props.ts` (+ `buildAnnouncementBarContent` for tests).
-
-### 6. Sync Page Shell Pattern (CRITICAL)
-
-Page components that use `"use cache"` data must be **synchronous** and wrap async content in a **dedicated Suspense boundary**. This prevents cached async work from flowing through the layout boundary, which can cause hydration/reconciliation issues.
-
-(See [Three-Layer Page Model](#1-three-layer-page-model-critical) above — this is the same rule, repeated here because it is the most common PPR mistake.)
-
-```tsx
-// ✅ CORRECT - Page is sync, async content has its own Suspense
-export default function Page(props: PageProps) {
-	return (
-		<Suspense fallback={<PageSkeleton />}>
-			<PageContent params={props.params} />
-		</Suspense>
-	);
-}
-
-async function PageContent({ params: paramsPromise }) {
-	const params = await paramsPromise;
-	const data = await getCachedData(params.slug, params.channel, params.locale);
-	return <ProductList products={data} channel={params.channel} />;
-}
-```
-
-All page routes in this project follow this pattern:
-
-- `src/app/(storefront)/[locale]/[channel]/(main)/page.tsx` (homepage)
-- `src/app/(storefront)/[locale]/[channel]/(main)/pages/[slug]/page.tsx` (CMS pages)
-- `src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/page.tsx`
-- `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx`
-- `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`
-
-### 7. Public vs Authenticated Queries
-
-Two explicit GraphQL helpers:
-
-- `executePublicGraphQL` - Safe inside `"use cache"` (no cookies needed)
-- `executeAuthenticatedGraphQL` - NOT safe inside `"use cache"` (requires cookies)
-
-```typescript
-import { executePublicGraphQL, executeAuthenticatedGraphQL } from "@/lib/graphql";
-
-// ✅ Public data - safe inside "use cache"
-async function getProductData(slug: string, channel: string, localeSlug: string) {
-	"use cache";
-	return executePublicGraphQL(ProductDetailsDocument, {
-		variables: { slug, channel, ...graphqlLanguageCodeVariables(localeSlug) },
-	});
-}
-
-// ✅ User data - NOT inside "use cache" (requires cookies)
-const { me } = await executeAuthenticatedGraphQL(CurrentUserDocument, {
-	cache: "no-cache",
-});
-```
-
-### 8. Don't Use `searchParams` Inside `"use cache"`
-
-```typescript
-// ❌ BAD - searchParams is runtime data
-export async function generateMetadata(props) {
-	"use cache";
-	const searchParams = await props.searchParams; // Error!
-}
-
-// ✅ GOOD - Only access params (becomes cache key)
-export async function generateMetadata(props) {
-	"use cache";
-	const params = await props.params; // OK
-}
-
-// ✅ GOOD - Access searchParams outside cache scope
-export async function generateMetadata(props) {
-	const searchParams = await props.searchParams; // No "use cache"
-}
-```
-
-### 9. CSS Order Pattern for Mixed Static/Dynamic Layouts
-
-When you need dynamic content to appear **above** static content visually, use CSS `order`:
-
-```tsx
-// PDP: Category (dynamic) appears above Product Name (static)
-<div className="flex flex-col gap-3">
-	{/* Static shell - renders first but order:2 */}
-	<h1 className="order-2">{product.name}</h1>
-
-	{/* Dynamic - streams in, order:1 appears above h1 */}
-	<Suspense fallback={<Skeleton className="order-1" />}>
-		<VariantSection /> {/* Contains order-1 and order-3 elements */}
-	</Suspense>
-
-	{/* Static - order:4 appears last */}
-	<div className="order-4">
-		<ProductAttributes />
-	</div>
-</div>
-```
-
-**Visual result:**
-
-```
-1. Category + Sale badge  (dynamic, order-1)
-2. Product Name           (static, order-2)
-3. Variant selectors      (dynamic, order-3)
-4. Product details        (static, order-4)
-```
-
-This keeps `<h1>` in the static shell for SEO while allowing dynamic content to appear above it.
+Never silence a PPR error by wrapping only `<main>{children}</main>` in Suspense (especially `fallback={null}`) — fix the segment that owns the dynamic work.
 
 ---
 
-## Cache Invalidation
+## Locale & caching
 
-### Automatic via Webhooks (Recommended)
+Browse routes are `/{locale}/{channel}/…` (see `ui-locale-routing.md`). Locale affects **what** is cached, not **how fast** repeat visits are.
 
-**Production path: [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** (`../saleor-paper-app/` when developing both repos locally).
-
-```
-Saleor event → paper-app webhook handler → POST /api/revalidate → storefront cache purge
-```
-
-On install, the app registers managed webhooks (product, category, collection, promotion, page, menu) and proxies payloads to the storefront URL configured in app settings. Merchants get revalidation logs and manual purge in Dashboard; `REVALIDATE_SECRET` is shared between app and storefront.
-
-| Event family                              | paper-app handler       | Storefront effect                                                                             |
-| ----------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------- |
-| `PRODUCT_*`, `CATEGORY_*`, `COLLECTION_*` | `product-changed`, etc. | Catalog tags + paths                                                                          |
-| `PAGE_*`                                  | `page-changed`          | CMS `page:{slug}` **and** `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
-| `MENU_*`, `MENU_ITEM_*`                   | `menu-changed`          | `navigation:{channel}`, `footer-menu:{channel}`                                               |
-
-**Do not** create parallel Saleor webhooks pointing directly at `/api/revalidate` when the Paper app is installed — duplicate deliveries cause redundant work and bypass app logging.
-
-**Direct storefront webhooks** (Saleor Dashboard → `https://your-site.com/api/revalidate`) remain valid for self-hosted setups without the app. Subscribe to the same events and set `SALEOR_WEBHOOK_SECRET` on the storefront.
-
-**What happens on webhook** (via `src/app/api/revalidate/route.ts`):
+| Mechanism                                  | Includes locale? | Role                                                                  |
+| ------------------------------------------ | ---------------- | --------------------------------------------------------------------- |
+| `"use cache"` function args (`localeSlug`) | ✅               | Separate cache entry per language — `/pl/…` and `/en/…` never collide |
+| `cacheTag` (catalog)                       | ❌               | One tag per slug/channel; one webhook busts all locale variants       |
+| `storefront-content:{channel}:{locale}`    | ✅ (BCP 47)      | Marketing copy from Saleor Models                                     |
 
 ```typescript
-// Product update — tag + paths for every locale × storefront channel
-revalidateTag(`product:${slug}`, resolveRevalidateCacheLifeProfile("products"));
-for (const path of buildPathsForAllLocales(CACHE_PROFILES.products, { channel, slug })) {
-	revalidatePath(path); // e.g. /pl/default-channel/products/hoodie
-}
-
-// Menu update — channel-scoped tags (navbar vs footer mapped by menu slug)
-revalidateTag(`navigation:${channel}`, resolveRevalidateCacheLifeProfile("navigation"));
-revalidateTag(`footer-menu:${channel}`, resolveRevalidateCacheLifeProfile("footerMenu"));
+getProductData("hoodie", "default-channel", "en"); // English entry
+getProductData("hoodie", "default-channel", "pl"); // Polish entry
+applyCacheProfile(CACHE_PROFILES.products, slug); // single tag product:hoodie clears both
 ```
 
-Path revalidation uses `getStorefrontChannelSlugs()` and `buildPathsForAllLocales()` so multi-channel, multi-locale deployments invalidate every allowed URL. See `ui-channels.md` for allowlist configuration.
+- Cached fetches pass `graphqlLanguageCodeVariables(localeSlug)`; map URL slugs to Saleor **base** codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge translations with `withTranslatedProductFields()` (`src/lib/saleor-translations.ts`) after the fetch.
+- **Invalidation fan-out:** catalog tags stay slug-scoped; `buildPathsForAllLocales()` revalidates every configured locale path on a generic `PRODUCT_UPDATED`.
+- Adding locales adds ~N cache entries (one per locale × page), not per-request work. Each locale warms independently after deploy.
 
-### Manual Invalidation
+---
 
-All manual invalidation requests use the `Authorization: Bearer` header (timing-safe comparison):
+## Invalidation
+
+**Production path: [saleor-paper-app](https://github.com/saleor/saleor-paper-app).** On install it registers managed webhooks and proxies them to the storefront:
+
+```
+Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
+```
+
+| Event family                              | Storefront effect                                                                      |
+| ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| `PRODUCT_*`, `CATEGORY_*`, `COLLECTION_*` | Catalog tags + paths (all locales via `buildPathsForAllLocales`)                       |
+| `PAGE_*`                                  | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
+| `MENU_*`, `MENU_ITEM_*`                   | `navigation:{channel}`, `footer-menu:{channel}`                                        |
+
+`revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`); paths use `getStorefrontChannelSlugs()` × `buildPathsForAllLocales()`. **Don't** point Saleor webhooks directly at `/api/revalidate` while the app is installed (duplicate deliveries, no logging). Direct webhooks remain valid for self-hosted setups without the app (set `SALEOR_WEBHOOK_SECRET`).
+
+**Manual / emergency** (Bearer header, timing-safe; `?secret=` is deprecated):
 
 ```bash
-# Invalidate a specific product (both tag and path — use a concrete locale path)
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
   "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/en/default-channel/products/blue-hoodie"
-
-# Invalidate just the cached function data (all locale variants for that slug)
-curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=product:blue-hoodie"
-
-# Invalidate navigation for a channel (uses "menus" profile)
-curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=navigation:default-channel"
-
-# Invalidate footer menu for a channel
-curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=footer-menu:default-channel"
 ```
 
-### No Webhooks? TTL Takes Over
+Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
 
-| Data        | Default TTL |
-| ----------- | ----------- |
-| Products    | 5 minutes   |
-| Categories  | 5 minutes   |
-| Collections | 5 minutes   |
-| CMS pages   | 5 minutes   |
-| Navigation  | 1 hour      |
+### Debugging stale content
 
----
-
-## Environment Variables
-
-```env
-# Cache invalidation — use ≥32 character random strings in production
-REVALIDATE_SECRET=your-secret       # Bearer token for manual revalidation & cache-info
-SALEOR_WEBHOOK_SECRET=webhook-hmac  # Saleor webhook HMAC verification
-```
-
-**Security**: Both endpoints use timing-safe comparison and `Authorization: Bearer` header authentication. Query-string `?secret=` still works but logs a deprecation warning — migrate callers to the header.
-
----
-
-## Debugging Stale Content
-
-### Checklist
-
-1. **Is the webhook configured?**
-
-   - Check Saleor Dashboard → Webhooks → Deliveries
-
-2. **Did the webhook fire?**
-
-   - Check server logs for `[Revalidate]` entries
-
-3. **Is the tag correct?**
-
-   - Product slugs must match exactly: `product:blue-hoodie`
-
-4. **Force manual revalidation:**
-
-   ```bash
-   curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-     "https://store.com/api/revalidate?tag=product:my-product"
-   ```
-
-5. **Translation updated but still English on `/pl/…`?**
-
-   - Confirm Saleor has a translation for base language `PL` (Dashboard: `/translations/PL/…`)
-   - Bust cache: `curl -H "Authorization: Bearer …" "…/api/revalidate?tag=product:my-product"`
-   - Restart dev server if you changed `src/config/locale.ts` GraphQL language mapping
-
-6. **Check browser cache:**
-   - Hard refresh: Cmd+Shift+R / Ctrl+Shift+R
+1. Webhook configured + firing? (Dashboard → Webhooks → Deliveries; server logs for `[Revalidate]`).
+2. Tag exact? (`product:blue-hoodie` — slug must match).
+3. Force: `curl … "?tag=product:my-product"`.
+4. Translation still wrong language on `/pl/…`? Confirm a `PL` base translation exists; bust the tag; restart dev if you changed `src/config/locale.ts`.
 
 ---
 
 ## Anti-patterns
 
-❌ **Don't use `cache: "no-cache"` for display pages** — Destroys performance  
-❌ **Don't skip webhook setup in production** — Users see stale prices  
-❌ **Don't access cookies/searchParams inside `"use cache"`** — Will error  
-❌ **Don't await `searchParams` in shell components** — Collapses the whole page into a dynamic hole  
-❌ **Don't use `executeAuthenticatedGraphQL` inside `"use cache"`** — Requires cookies  
-❌ **Don't add fetch-level `revalidate` inside `"use cache"` functions** — `cacheLife` + webhooks handle freshness  
-❌ **Don't use raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings** — Use `applyCacheProfile(CACHE_PROFILES.*)` from the manifest  
-❌ **Don't wrap only `<main>{children}</main>` in Suspense to silence PPR errors** — use layout shell Suspense that owns the fetch (§5); never `fallback={null}` on chrome  
-❌ **Don't make page components async when using `"use cache"` data** — Use the sync page shell pattern  
-❌ **Don't pass `REVALIDATE_SECRET` in query strings** — Use the `Authorization: Bearer` header  
-❌ **Don't omit `localeSlug` from cached catalog/menu fetches** — All locales would share one cache entry and show the wrong language  
-❌ **Don't use regional Saleor codes (`PL_PL`) in `graphqlLanguageCode`** — Dashboard translations use base codes (`PL`); see `src/config/locale.ts`  
-❌ **Don't re-export server cached helpers from client-mixed barrels** — Import catalog/menu modules directly
+❌ `cache: "no-cache"` on display pages — destroys performance
+❌ Skipping webhook setup in production — users see stale prices
+❌ `executeAuthenticatedGraphQL` (or `cookies()`/`searchParams`) inside `"use cache"` — needs runtime data
+❌ Awaiting `searchParams` in a shell — collapses the route into a dynamic hole (move to an island)
+❌ Raw `cacheLife("minutes")` / hand-rolled `cacheTag` — use `applyCacheProfile(CACHE_PROFILES.*)`
+❌ Fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness
+❌ Wrapping only `<main>` in Suspense to silence a PPR error — fix the segment that owns the work
+❌ Omitting `localeSlug` from cached fetches — all locales share one entry, wrong language
+❌ Regional Saleor codes (`PL_PL`) in `graphqlLanguageCode` — Dashboard uses base codes (`PL`)
+❌ Re-exporting server cached helpers from client-mixed barrels
 
 ---
 
-## Disabling Cache Components
+## Key files
 
-If you need to rollback to standard ISR caching:
+| File                                                                                              | Purpose                                               |
+| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `src/lib/cache-manifest.ts`                                                                       | Cache profiles — **single source of truth**           |
+| `src/app/api/revalidate/route.ts`                                                                 | Webhook endpoint + manual revalidation                |
+| `src/app/api/cache-info/route.ts`                                                                 | Manifest introspection for the Dashboard app          |
+| `src/lib/catalog/*.ts`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/get-channels-data.ts` | `"use cache"` data boundaries                         |
+| `src/lib/graphql-locale.ts`, `src/lib/saleor-translations.ts`, `src/config/locale.ts`             | Locale → GraphQL `languageCode` + translation merge   |
+| `src/lib/channel-slugs.ts`                                                                        | Storefront channel allowlist for invalidation fan-out |
 
-### Step 1: Disable in Config
-
-```javascript
-// next.config.js
-const config = {
-	cacheComponents: false, // or comment out entirely
-};
-```
-
-### Step 2: Remove Cache Directives
-
-Remove `"use cache"` and `applyCacheProfile()` / `cacheLife()` / `cacheTag()` calls from cached data modules (and any inline cached helpers in pages):
-
-| File / directory                                                          | What to remove                                                                                      |
-| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `src/lib/catalog/*.ts`                                                    | `"use cache"` on `getCategoryData`, `getCollectionData`, `getFeaturedProducts`, `getPageData`, etc. |
-| `src/lib/menus/get-menu-data.ts`                                          | Navbar + footer menu caches                                                                         |
-| `src/lib/channels/get-channels-data.ts`                                   | Channel list cache                                                                                  |
-| `src/lib/content/get-storefront-content.ts`                               | Storefront CMS content cache                                                                        |
-| `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx` | Inline `getProductData()` `"use cache"` block                                                       |
-
-### Step 3: Update Revalidation
-
-```typescript
-// src/app/api/revalidate/route.ts
-// Change from:
-revalidateTag(`product:${slug}`, "minutes");
-// To:
-revalidateTag(`product:${slug}`); // Remove second argument
-```
-
-### What You Can Keep
-
-- **Suspense boundaries** - Still useful for loading states
-- **CSS order layout** - Pure CSS, no impact
-- **`executeAuthenticatedGraphQL`** - Good separation regardless
-- **ISR via `revalidate` option** - Works as fallback
-
----
-
-## Files Reference
-
-| File                                                                         | Purpose                                                               |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `src/lib/api-auth.ts`                                                        | Shared auth: timing-safe secret verification, Bearer token extraction |
-| `src/lib/cache-manifest.ts`                                                  | Cache profile definitions (single source of truth)                    |
-| `src/lib/graphql-locale.ts`                                                  | `languageCode` GraphQL variables from URL locale slug                 |
-| `src/lib/saleor-translations.ts`                                             | Merge `translation { … }` fields after cached fetches                 |
-| `src/config/locale.ts`                                                       | URL slug → BCP 47, GraphQL language code, `html lang`                 |
-| `src/app/api/cache-info/route.ts`                                            | Cache introspection endpoint for dashboard app                        |
-| `src/app/api/revalidate/route.ts`                                            | Webhook endpoint and manual revalidation                              |
-| `src/lib/catalog/*.ts`                                                       | Catalog `"use cache"` fetches (featured, category, collection, page)  |
-| `src/lib/menus/get-menu-data.ts`                                             | Navbar + footer menu cached fetches                                   |
-| `src/lib/channels/get-channels-data.ts`                                      | Channel list cache                                                    |
-| `src/lib/channel-slugs.ts`                                                   | Storefront channel allowlist resolution                               |
-| `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`    | PDP with ProductShell + dynamic islands                               |
-| `src/app/(storefront)/[locale]/[channel]/(main)/categories/[slug]/page.tsx`  | Category with "use cache"                                             |
-| `src/app/(storefront)/[locale]/[channel]/(main)/collections/[slug]/page.tsx` | Collection with "use cache"                                           |
-| `src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`                    | Homepage with "use cache"                                             |
-| `src/ui/components/nav/components/nav-links.tsx`                             | Navigation with "use cache"                                           |
-| `src/ui/components/footer.tsx`                                               | Footer menu + channels with "use cache"                               |
-| `src/ui/components/pdp/variant-section-dynamic.tsx`                          | Dynamic variant section                                               |
-| `src/ui/components/header.tsx`                                               | Header with Suspense boundaries                                       |
-| `src/lib/checkout.ts`                                                        | Cart operations (always fresh)                                        |
-| `next.config.js`                                                             | `cacheComponents: true`                                               |
+**Rolling back to plain ISR** (rarely needed): set `cacheComponents: false`, remove `"use cache"` + `applyCacheProfile` from the data modules above, and drop the profile argument from `revalidateTag` calls. Suspense boundaries, CSS-order layout, and the public/authenticated GraphQL split stay useful regardless.
 
 ---
 
@@ -1109,129 +560,69 @@ if (!product.defaultVariant) {
 
 ### 1.3 Auth Routes (BFF)
 
-**Impact: CRITICAL** when `cacheComponents: true` and routes read session cookies.
+**CRITICAL** when `cacheComponents: true` and routes read session cookies. Reference implementation: `src/app/[channel]/(main)/account/`. The PPR boundary model and the generic "uncached data outside `<Suspense>`" fix menu live in [`data-caching.md`](data-caching.md); this rule covers what's auth-specific.
 
-Reference implementation: `src/app/[channel]/(main)/account/`.
+> **Fork upgrades:** apply migration `2026-06-account-ppr-auth` in [`../migrations/manifest.json`](../migrations/manifest.json) when catching up from pre–June 2026 Paper.
 
-> **Fork upgrades:** Apply atomic migration `2026-06-account-ppr-auth` in [`../migrations/manifest.json`](../migrations/manifest.json) when catching up from pre–June 2026 Paper (especially after #1201-style layout changes).
-
-## Problem
-
-With Cache Components enabled, any server component that calls `cookies()`, `headers()`, or authenticated GraphQL (`cache: "no-cache"` with session) is **dynamic**. If that runs in an async **page** without a Suspense boundary, production builds fail:
-
-```
-Uncached data was accessed outside of <Suspense>
-```
-
-Do **not** fix this by wrapping `<main>{children}</main>` in Suspense — that hides the issue and blocks route `loading.tsx`. Fix at the **route segment** that owns the dynamic work.
+Anything that calls `cookies()`, `headers()`, or authenticated GraphQL is **dynamic**. In an async **page** without a Suspense boundary it fails the build (`Uncached data was accessed outside of <Suspense>`). Fix at the **route segment that owns the dynamic work** — never by wrapping `<main>{children}</main>` (hides the issue and blocks route `loading.tsx`).
 
 ## BFF auth (session lifecycle)
 
-Login, logout, and password reset go through **Next.js API routes** — not the browser Saleor SDK. Tokens are stored as **HttpOnly** cookies via `getServerAuthClient()` on the server.
+Login, logout, and password reset go through **Next.js API routes**, not the browser Saleor SDK. Tokens are **HttpOnly** cookies set server-side via `getServerAuthClient()`.
 
-| Route                           | Purpose                         |
-| ------------------------------- | ------------------------------- |
-| `POST /api/auth/login`          | `tokenCreate` → Set-Cookie      |
-| `POST /api/auth/register`       | Account registration            |
-| `POST /api/auth/reset-password` | Request reset email             |
-| `POST /api/auth/set-password`   | Reset token → session           |
-| `logout()` server action        | Clear cookies + detach checkout |
+| Route                                            | Purpose                                     |
+| ------------------------------------------------ | ------------------------------------------- |
+| `POST /api/auth/login`                           | `tokenCreate` → Set-Cookie                  |
+| `POST /api/auth/register`                        | Account registration                        |
+| `POST /api/auth/reset-password` / `set-password` | Request reset email / reset token → session |
+| `logout()` server action                         | Clear cookies + detach checkout             |
 
-Client forms call `loginWithBff()` / `setPasswordWithBff()` from `src/lib/auth/bff-client.ts`. Commerce (cart, checkout lines) stays on **server actions** — do not proxy all GraphQL.
-
-**Header user menu:** `UserMenuServer` calls `getHeaderUser()` inside Suspense — same server session as account pages. No client `me` fetch.
+Client forms call `loginWithBff()` / `setPasswordWithBff()` (`src/lib/auth/bff-client.ts`). Commerce (cart, checkout lines) stays on **server actions** — do not proxy all GraphQL. The header user menu (`UserMenuServer`) calls `getHeaderUser()` inside Suspense — same server session as account pages, no client `me` fetch.
 
 ## Keeping header chrome fresh (Router Cache)
 
-HttpOnly cookies are the source of truth, but the **client Router Cache** can reuse a stale RSC payload for the header after session changes. Paper uses three explicit triggers — no client-side retry loops:
+HttpOnly cookies are the source of truth, but the **client Router Cache** can reuse a stale RSC payload for the header after a session change. Paper uses explicit triggers — never client-side retry loops:
 
-| Trigger                           | When                                           | Mechanism                                                                                         |
-| --------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| **Initial load / hard refresh**   | Land on storefront with existing session       | `HeaderAuthRefresh` → `revalidateStorefrontChrome` + `router.refresh()` once on mount             |
-| **In-store soft nav**             | User follows a `<Link>` within `/${channel}`   | `HeaderAuthRefresh` → `router.refresh()` on pathname change                                       |
-| **Cross-tab**                     | User returns after login/logout in another tab | `visibilitychange` → `revalidateStorefrontChromeAction` + `router.refresh()`                      |
-| **Cross-surface / auth boundary** | Login, logout, checkout → storefront           | `revalidateStorefrontChrome` + **hard navigation** (`window.location.assign` or plain `<a href>`) |
+| Trigger                       | When                                 | Mechanism                                                                             |
+| ----------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
+| Initial load / hard refresh   | Land with an existing session        | `HeaderAuthRefresh` → `revalidateStorefrontChrome` + `router.refresh()` once on mount |
+| In-store soft nav             | `<Link>` within `/${channel}`        | `HeaderAuthRefresh` → `router.refresh()` on pathname change                           |
+| Cross-tab                     | Return after login/logout elsewhere  | `visibilitychange` → `revalidateStorefrontChromeAction` + `router.refresh()`          |
+| Cross-surface / auth boundary | Login, logout, checkout → storefront | `revalidateStorefrontChrome` + **hard navigation**                                    |
 
-**Hard navigation** is required when leaving `/checkout` or after login/logout — soft `router.push` / `<Link>` can restore a cached anonymous `UserMenuServer`. Use `syncAuthSurfacesAfterSignIn({ redirectTo })`, `useLogout({ channel })`, `navigateToStorefrontHome()`, or `StorefrontHomeLink` (plain anchor).
+**Hard navigation is required** when leaving `/checkout` or after login/logout — soft `router.push`/`<Link>` can restore a cached anonymous `UserMenuServer`. Use `syncAuthSurfacesAfterSignIn({ redirectTo })`, `useLogout({ channel })`, `navigateToStorefrontHome()`, or `StorefrontHomeLink` (plain anchor). `revalidateStorefrontChrome(channel)` invalidates the `/${channel}` layout (user menu + cart badge) and `/checkout` — call it from server actions (after cart mutations / checkout complete / before a client refresh), not during RSC render.
 
-**`revalidateStorefrontChrome(channel)`** invalidates `/${channel}` layout (user menu + cart badge) and `/checkout`. Call from server actions after cart mutations, checkout complete, or before client refresh — not during RSC render.
+## Account architecture
 
-## Migration Checklist
-
-Use this when moving a logged-in area (account, wishlist, etc.) to PPR-safe patterns:
-
-1. **Layout owns auth gate** — one `Suspense` + async shell; call `hasAuthSession()` / `getCurrentUser()` only inside the shell.
-2. **Sync page exports** — `export default function Page()` returns `<Suspense><AsyncContent /></Suspense>` for pages that fetch orders, etc.
-3. **Profile data from layout** — fetch user once; expose via client `AccountProvider` + `useAccountUser()` for settings/addresses (avoids `cookies()` in every page).
-4. **Nested Suspense for secondary fetches** — e.g. recent orders, order list, order detail (authenticated GraphQL in child async components).
-5. **Login fallback** — use `AccountLogin` (`LoginForm` in Suspense); sign-in posts to `/api/auth/login`.
-6. **Mutations + client context** — if UI reads user from layout context, use `revalidatePath("/account", "layout")` and `router.refresh()` on success (page-only revalidation leaves stale context).
-7. **Verify build** — `STOREFRONT_CHANNELS=aud,default-channel pnpm run build` (CI may not run full build).
-
-## Architecture
-
-Browse and account layouts use different Suspense shapes (`data-caching.md` §5). Browse uses **per-chrome slots**; account uses a **layout-shell auth gate**.
+Browse layouts use per-chrome slots; account uses a **layout-shell auth gate** (one Suspense + async shell; session checks only inside the shell):
 
 ```
 account/layout.tsx
 └── Suspense fallback={<AccountSkeleton />}
     └── AccountShell (async)
-        ├── no session / invalid user → <AccountLogin />  (LoginForm → BFF)
+        ├── no session / invalid user → <AccountLogin />   (LoginForm → BFF)
         └── user → AccountProvider
             ├── AccountNav (static client)
-            └── {children}  (sync pages + nested Suspense islands)
+            └── {children}   (sync pages + nested Suspense islands)
 
-(main)/layout.tsx
-├── MainChrome (sync) → Suspense per chrome slot; <main>{children}</main> unwrapped
-└── Suspense → CartDrawerSlot
-
-header.tsx
-└── Suspense
-    └── HeaderAuthRefresh (client) → router.refresh() on pathname change
-        └── UserMenuServer (async) → cookies() + getHeaderUser() or sign-in link
+header.tsx → Suspense → HeaderAuthRefresh (client; router.refresh on pathname change)
+                          └── UserMenuServer (async; cookies() + getHeaderUser() or sign-in link)
 ```
 
-| Concern            | Location                                  | Notes                                                           |
-| ------------------ | ----------------------------------------- | --------------------------------------------------------------- |
-| Auth cookies check | `has-auth-session.ts`                     | Same lookup as auth SDK (`readAuthCookieValue`)                 |
-| User profile       | `get-current-user.ts`                     | `React.cache()` — deduped per request                           |
-| Header user        | `get-header-user.ts`                      | `getHeaderAuthState()` — guest / authenticated / unavailable    |
-| Session resolution | `resolve-session-user.ts`                 | Classifies `me` fetch; one server retry on transient errors     |
-| Auth failure codes | `session-auth-state.ts`                   | `isDefinitiveAuthFailure` — Saleor JWT codes + message fallback |
-| BFF sign-in        | `bff-server.ts`, `/api/auth/login`        | HttpOnly cookies, rate limited                                  |
-| Client forms       | `bff-client.ts`                           | `loginWithBff`, `setPasswordWithBff`                            |
-| Client profile     | `account-context.tsx`                     | `useAccountUser()` for settings/addresses/overview              |
-| Sign-in UI         | `account-login.tsx`                       | `LoginForm` in Suspense (no SDK provider)                       |
-| Order fetches      | `recent-orders-section.tsx`, orders pages | Inside page-level Suspense                                      |
-
-## Code Patterns
-
-### Layout shell
-
 ```tsx
-export default function AccountLayout({ children }: { children: ReactNode }) {
-	return (
-		<Suspense fallback={<AccountSkeleton />}>
-			<AccountShell>{children}</AccountShell>
-		</Suspense>
-	);
-}
-
+// Layout shell — gate inside the async shell, not the page
 async function AccountShell({ children }: { children: ReactNode }) {
 	if (!(await hasAuthSession())) return <AccountLogin />;
-	const user = await getCurrentUser();
+	const user = await getCurrentUser(); // React.cache — deduped per request
 	if (!user) return <AccountLogin />;
 	return <AccountProvider user={user}>{/* nav + children */}</AccountProvider>;
 }
-```
 
-### Sync page + dynamic island
-
-```tsx
+// Sync page → fetch user once via context, secondary fetches in nested Suspense
 export default function AccountOverviewPage() {
 	return (
 		<div>
-			<AccountOverviewWelcome /> {/* useAccountUser() */}
+			<AccountOverviewWelcome /> {/* useAccountUser() — from layout context */}
 			<Suspense fallback={<RecentOrdersSectionSkeleton />}>
 				<RecentOrdersSection />
 			</Suspense>
@@ -1240,60 +631,35 @@ export default function AccountOverviewPage() {
 }
 ```
 
-### Server actions with layout context
-
-```typescript
-function revalidateAccountLayout() {
-	revalidatePath("/account", "layout");
-}
-```
-
-```tsx
-// Client form after successful BFF login — prefer hard nav over soft push + refresh
-await syncAuthSurfacesAfterSignIn(channel, router, {
-	redirectTo: `/${channel}`,
-});
-```
+**Moving a logged-in area to PPR-safe patterns:** layout owns the auth gate; pages stay sync (`<Suspense><AsyncContent/></Suspense>`); fetch the profile once in the layout and expose via `AccountProvider`/`useAccountUser()` (avoids `cookies()` per page); secondary fetches in nested Suspense; sign-in via `AccountLogin`. When UI reads user from layout context, mutations must `revalidatePath("/account", "layout")` **+** `router.refresh()` (page-only revalidation leaves stale context). Verify with `STOREFRONT_CHANNELS=aud,default-channel pnpm run build`.
 
 ## Anti-patterns
 
-❌ **`cookies()` or `getCurrentUser()` in async page components** without a page/layout Suspense boundary  
-❌ **Browser → Saleor for login or `me`** — use BFF routes and server `getHeaderUser()`  
-❌ **`connection()` in account layout** — can break PPR with `CartProvider` in parent tree  
-❌ **Blanket `<Suspense fallback={null}>{children}</Suspense>` around `<main>` only** — workaround; use layout shell Suspense that owns the async fetch (`data-caching.md` §5)  
-❌ **`revalidatePath("/account/addresses", "page")` only** when addresses read `useAccountUser()` from layout  
-❌ **`fallback={null}`** on account order Suspense — use section skeletons  
-❌ **`key={pathname}` without `router.refresh()`** on header auth — remounting RSC children does not bust the Router Cache; stale anonymous menus persist until `revalidateStorefrontChrome`  
-❌ **Client-side sessionStorage retry / recover gates** on header auth — fix cache boundaries server-side; never loop `router.refresh()` from effects  
-❌ **Treating all `me === null` as signed out** — use `resolveSessionUser` (`guest` / `authenticated` / `unavailable`); only show login link on `guest`  
-❌ **`<Link>` from checkout → storefront** when session may have changed — use plain `<a href>` or `navigateToStorefrontHome()`
+❌ `cookies()` / `getCurrentUser()` in an async page without a page/layout Suspense boundary
+❌ Browser → Saleor for login or `me` — use BFF routes + server `getHeaderUser()`
+❌ `connection()` in the account layout — can break PPR with `CartProvider` in the parent tree
+❌ Wrapping only `<main>` in Suspense as a workaround — use the layout shell that owns the fetch
+❌ `key={pathname}` without `router.refresh()` on header auth — remounting RSC children doesn't bust the Router Cache
+❌ Client-side sessionStorage retry/recover gates or looping `router.refresh()` from effects — fix cache boundaries server-side
+❌ Treating all `me === null` as signed out — use `resolveSessionUser` (`guest`/`authenticated`/`unavailable`); show the login link only on `guest`
+❌ `<Link>` from checkout → storefront when the session may have changed — use a plain `<a href>` / `navigateToStorefrontHome()`
 
-## Related Rules
+## Key files
 
-- `data-caching.md` — three-layer page model, browse chrome slots (§5), sync page shell
-- `checkout-management.md` — checkout session via RSC + BFF sign-in + `router.refresh()`
+| Concern                | File                                                                                                                        | Note                                                            |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Cookie presence        | `src/lib/auth/has-auth-session.ts`                                                                                          | Same lookup as auth SDK (`readAuthCookieValue`)                 |
+| User profile           | `account/get-current-user.ts`                                                                                               | `React.cache()` — deduped per request                           |
+| Header user            | `src/lib/auth/get-header-user.ts`                                                                                           | guest / authenticated / unavailable                             |
+| Session resolution     | `src/lib/auth/resolve-session-user.ts`                                                                                      | Classifies the `me` fetch; one server retry on transient errors |
+| Auth failure codes     | `src/lib/auth/session-auth-state.ts`                                                                                        | `isDefinitiveAuthFailure` — Saleor JWT codes + message fallback |
+| BFF sign-in            | `src/lib/auth/bff-server.ts`, `/api/auth/login/route.ts`                                                                    | HttpOnly cookies, rate limited                                  |
+| Client forms / profile | `bff-client.ts`, `account-context.tsx`                                                                                      | `loginWithBff`; `useAccountUser()`                              |
+| Sign-in UI             | `account-login.tsx`                                                                                                         | `LoginForm` in Suspense (no SDK provider)                       |
+| Chrome refresh         | `user-menu-server.tsx`, `header-auth-refresh.tsx`, `revalidate-storefront-chrome.ts`, `sync-auth-surfaces-after-sign-in.ts` | Header auth chrome + Router Cache sync + post-login hard nav    |
+| Layouts                | `(main)/layout.tsx`, `account/layout.tsx`, `account/actions.ts`                                                             | Browse chrome vs account auth gate; layout revalidation         |
 
-## Files
-
-| File                                                                     | Purpose                                                 |
-| ------------------------------------------------------------------------ | ------------------------------------------------------- |
-| `src/app/(storefront)/[locale]/[channel]/(main)/layout.tsx`              | Sync browse layout                                      |
-| `src/app/(storefront)/[locale]/[channel]/(main)/browse-chrome-slots.tsx` | Async chrome slots (announcement, header, footer, cart) |
-| `src/app/(storefront)/[locale]/[channel]/(main)/account/layout.tsx`      | Account — Suspense + auth gate                          |
-| `src/app/[channel]/(main)/account/get-current-user.ts`                   | Cached profile fetch                                    |
-| `src/lib/auth/has-auth-session.ts`                                       | Cookie presence check                                   |
-| `src/lib/auth/session-auth-state.ts`                                     | JWT failure classification + retry logic                |
-| `src/lib/auth/resolve-session-user.ts`                                   | `resolveSessionUser()` wrapper                          |
-| `src/lib/auth/bff-server.ts`                                             | Server sign-in / sign-out                               |
-| `src/lib/auth/get-header-user.ts`                                        | Header `me` fetch                                       |
-| `src/app/api/auth/login/route.ts`                                        | BFF login endpoint                                      |
-| `src/ui/components/account/account-login.tsx`                            | Signed-out account login                                |
-| `src/ui/components/account/account-context.tsx`                          | Client profile context                                  |
-| `src/ui/components/nav/components/user-menu/user-menu-server.tsx`        | Header auth chrome                                      |
-| `src/ui/components/nav/components/user-menu/header-auth-refresh.tsx`     | Router Cache sync (soft nav + cross-tab)                |
-| `src/lib/auth/revalidate-storefront-chrome.ts`                           | Layout + checkout cache bust                            |
-| `src/lib/auth/sync-auth-surfaces-after-sign-in.ts`                       | Post-login cache bust + hard nav                        |
-| `src/app/[channel]/(main)/account/actions.ts`                            | Layout revalidation helper                              |
+Related: [`data-caching.md`](data-caching.md) (page-boundary model), [`checkout-management.md`](checkout-management.md) (checkout BFF sign-in + `router.refresh()`).
 
 ---
 
@@ -1414,25 +780,17 @@ Checkout resolves **channel from cart cookies** when loading content so copy can
 
 ## Caching & Freshness
 
-- Profile: `storefront-content` (~menus tier, ~5 min stale).
-- Tag: `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`).
-- **Locale** keys both the cache tag and the `"use cache"` function args. Catalog/menus/CMS use `localeSlug` in function args with slug-scoped tags — see `data-caching.md` § Locale & Caching.
-- **Catalog translations** (products, categories, menus, CMS pages) are wired: GraphQL `languageCode` + `withTranslated*Fields`.
-- **Storefront Models content** uses `StorefrontContentPages.graphql` `translation` on plain-text attributes via `buildAttributeMap`.
-- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — do not point Saleor webhooks directly at the storefront for production. The app subscribes to Saleor events, then `POST`s to Paper's `/api/revalidate` with the same payload shape the storefront handler expects.
-- **Storefront content:** `PAGE_*` on Pages whose slug matches `storefront-*` (e.g. `storefront-homepage`, `storefront-homepage-{channel}`) → `planStorefrontContentRevalidation()` in `cache-manifest.ts` → `revalidateTag(storefront-content:{channel}:{locale})` + homepage paths per channel.
-- **Menus** (nav/footer): `MENU_*` / `MENU_ITEM_*` → separate profiles (`navigation`, `footerMenu`) — same paper-app → storefront path.
-- The `storefront-content` profile is listed in `GET /api/cache-info` so the Dashboard app can offer manual purge alongside catalog entities.
-- Manual (dev / emergency): `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+- Profile `storefront-content` (~menus tier, ~5 min stale); tag `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`). **Locale** keys both the cache tag and the `"use cache"` function args — see `data-caching.md` (Locale & Caching).
+- Catalog translations are wired (`GraphQL languageCode` + `withTranslated*Fields`); storefront Models use `StorefrontContentPages.graphql` `translation` on plain-text attributes via `buildAttributeMap`.
+- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — don't point Saleor webhooks directly at the storefront. `PAGE_*` on `storefront-*` pages → `planStorefrontContentRevalidation()` → `revalidateTag` + homepage paths per channel; `MENU_*` → the separate `navigation`/`footerMenu` profiles, same app→storefront path. The profile is listed in `GET /api/cache-info` for manual purge; emergency bust via `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` + `REVALIDATE_SECRET`. Full architecture: `data-caching.md`.
 
 ```
 Saleor (PAGE_UPDATED on storefront-homepage)
-    → saleor-paper-app (page-changed webhook)
-    → POST /api/revalidate { page: { slug } }
-    → planStorefrontContentRevalidation → revalidateTag + revalidatePath
+  → saleor-paper-app (page-changed webhook) → POST /api/revalidate { page: { slug } }
+  → planStorefrontContentRevalidation → revalidateTag + revalidatePath
 ```
 
-Marketing copy is cached like navigation — cart/checkout **transactional** data stays fresh via `cache: "no-cache"`.
+Marketing copy is cached like navigation; cart/checkout **transactional** data stays fresh via `cache: "no-cache"`. Saleor-side cache/revalidation detail: `data-storefront-content-saleor.md`.
 
 ---
 
@@ -1471,77 +829,49 @@ Marketing copy is cached like navigation — cart/checkout **transactional** dat
 
 ### 1.5 Storefront Content (Saleor Models)
 
-Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-type attributes). The storefront maps those Pages into the normalized `StorefrontContent` shape defined in code.
+Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-type attributes) and the storefront maps those Pages into the normalized `StorefrontContent` shape. This rule is the Saleor side — provider behavior, merge, and the code/Saleor scope split are in [`data-storefront-content.md`](data-storefront-content.md); attribute types in [`data-storefront-content-attributes.md`](data-storefront-content-attributes.md).
 
-> **Runtime behavior** (providers, merge, cache): `data-storefront-content.md`  
-> **Deploy & tokens**: `config/saleor/README.md`  
-> **Exact attributes** change over time — treat `src/lib/content/attribute-slugs.ts` and `config/saleor/storefront-content.config.yml` as the live contract, not this doc.
-
----
+> **Live contract:** treat `src/lib/content/attribute-slugs.ts` and `config/saleor/storefront-content.config.yml` as source of truth — exact attributes change over time, this doc doesn't list them.
 
 ## Models as the content surface
 
-**Saleor Models** (PageTypes + Pages) are the dedicated place for merchandising and editorial copy in Paper. Each **PageType** defines a purpose — chrome, homepage, cart, checkout — and the **attributes** on that type give structure to otherwise unstructured text (headings, labels, paragraphs, flags).
+Each **PageType** defines a purpose (chrome, homepage, cart, checkout); the **attributes** on that type structure otherwise-unstructured text (headings, labels, paragraphs, flags).
 
 | Model (PageType)                                                          | Purpose                                                                                                  |
 | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `storefront-policies` (PageType) / `storefront-policy` (global Page slug) | Channel-wide **policy values** (free-shipping threshold, returns window) — `NUMERIC`/`BOOLEAN`, not copy |
-| `storefront-chrome`                                                       | Site-wide chrome (e.g. announcement bar)                                                                 |
+| `storefront-chrome`                                                       | Site-wide chrome (announcement bar)                                                                      |
 | `storefront-homepage`                                                     | Homepage sections                                                                                        |
 | `storefront-cart`                                                         | Cart drawer **editorial** copy (title, free-shipping nudges, empty state, trust)                         |
 | `storefront-checkout`                                                     | Checkout surface copy                                                                                    |
 
-**Editorial only (ADR 0002):** these models hold merchant-editable copy. **Functional UI strings** — cart totals/buttons, item count, `Qty:`/`Variant:` labels, breadcrumbs, `sr-only` a11y labels, PDP/PLP/search/nav/account chrome — are **not** modeled here; they are code-owned via next-intl (`messages/{locale}.json`). When adding an attribute, ask _"would a merchant reword this per shop?"_ — if not, it belongs in `messages/*.json`, not a PageType. See `docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md` and `ui-i18n.md`.
+One PageType per storefront surface; constants in `src/lib/content/constants.ts` (`STOREFRONT_PAGE_TYPES`). Dashboard tabs are typically **Storefront — Chrome / Homepage / …**; slugs use the `storefront-` prefix.
 
-**Policy vs copy:** `storefront-policy` holds the _facts_ (a number/boolean); the other models hold _copy_ that only describes those facts via `{freeShippingThreshold}` / `{returnsWindowDays}` placeholders. One threshold feeds the cart progress math, the announcement bar, and the cart trust signal — change it in one place, everything stays consistent. Override per channel with `storefront-policy-{channelSlug}` (numbers are in the channel currency).
+**Editorial-only (ADR 0002):** these models hold merchant-editable copy. Functional UI strings are code-owned via next-intl — see the scope rule in `data-storefront-content.md` and `ui-i18n.md`. When adding an attribute, ask _"would a merchant reword this per shop?"_ — if not, it belongs in `messages/*.json`.
 
-That is what modeling is for: keep flexible marketing content **structured and editable** through typed attributes, and mappable into a stable `StorefrontContent` contract in code. **Day-to-day copy changes** happen in Dashboard → Models; Configurator is for **commerce-as-code** when the Saleor schema itself needs updating (see below).
+**Policy vs copy:** `storefront-policy` holds the _facts_ (number/boolean); the other models hold _copy_ that references those facts via `{freeShippingThreshold}` / `{returnsWindowDays}` placeholders. One threshold feeds the cart math, the announcement bar, and the cart trust signal — change it once. Override per channel with `storefront-policy-{channelSlug}` (numbers in the channel currency).
 
-**Models are translatable in Saleor** — attribute values on a Page can be translated per language in Dashboard today. Merchandisers can enter translations now; Paper will serve them once the storefront fetch is wired (no Saleor schema change required).
-
-Pages are **not** channel-scoped in Saleor. Per-channel copy is a **convention** — separate Page instances distinguished by slug (see below), resolved in the storefront provider.
-
----
-
-## Conceptual Schema
+**Day-to-day copy changes** happen in Dashboard → Models; **Configurator** is commerce-as-code for when the Saleor schema itself needs updating (below). Models are translatable in Saleor — editors can translate attribute values per language today; Paper serves them once the storefront fetch is wired (no schema change). Pages are **not** channel-scoped in Saleor — per-channel copy is a **convention** via slug (below), resolved in the storefront provider.
 
 ```
-PageType (e.g. storefront-homepage)
+PageType (storefront-homepage)
   └── assigned PAGE_TYPE attributes  (hero heading, CTA label, …)
   └── Page instances (Models in Dashboard)
         └── attribute values per page
 ```
 
-**One PageType per storefront surface** (chrome, homepage, cart, checkout). Constants in `src/lib/content/constants.ts` (`STOREFRONT_PAGE_TYPES`).
+## Slug stack (global vs per-channel copy)
 
-Dashboard tabs are typically named **Storefront — Chrome**, **Storefront — Homepage**, etc. PageType slugs use the `storefront-` prefix.
+Saleor enforces **globally unique page slugs** — there's no native "this page belongs to channel X." Paper simulates per-channel copy with slug naming:
 
----
+| Tier                 | Page slug pattern                                                  | Purpose                       |
+| -------------------- | ------------------------------------------------------------------ | ----------------------------- |
+| **Global**           | Same as PageType slug (`storefront-homepage`)                      | Default copy for all channels |
+| **Channel override** | `{pageTypeSlug}-{channelSlug}` (`storefront-homepage-channel-pln`) | Per-channel copy              |
 
-## Slug Stack (global vs per-channel copy)
+Resolution (`resolve-page.ts`): `storefront-{surface}-{channel}` (override wins) → `storefront-{surface}` (global) → `defaults.ts` (code fallback). The fetch collects **both** candidate slugs per surface, then picks the best match. Editing the global page invalidates all channels; a channel-specific page invalidates that channel only (`resolveStorefrontContentChannelsForPageSlug`).
 
-Saleor enforces **globally unique page slugs** — there is no native “this page belongs to channel X”. Paper simulates per-channel copy with slug naming:
-
-| Tier                 | Page slug pattern                                                       | Purpose                       |
-| -------------------- | ----------------------------------------------------------------------- | ----------------------------- |
-| **Global**           | Same as PageType slug (e.g. `storefront-homepage`)                      | Default copy for all channels |
-| **Channel override** | `{pageTypeSlug}-{channelSlug}` (e.g. `storefront-homepage-channel-pln`) | Per-channel copy              |
-
-**Resolution order** (in `resolve-page.ts`):
-
-```
-1. storefront-{surface}-{channel}   ← channel override wins
-2. storefront-{surface}           ← global fallback
-3. defaults.ts                    ← code fallback (always present)
-```
-
-Fetch collects **both** candidate slugs per surface, then picks the best match.
-
-**Revalidation scope:** editing the global page invalidates all channels; editing a channel-specific page invalidates that channel only (`resolveStorefrontContentChannelsForPageSlug`).
-
----
-
-## Attributes: Names vs Slugs
+## Attributes: names vs slugs
 
 | Layer                  | Uses                                                                       |
 | ---------------------- | -------------------------------------------------------------------------- |
@@ -1549,124 +879,60 @@ Fetch collects **both** candidate slugs per surface, then picks the best match.
 | **Saleor**             | Assigns **slugs** from names (slugify)                                     |
 | **Storefront mappers** | Read by **slug** via `attribute-slugs.ts`                                  |
 
-Configurator resolves attributes by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — run `pnpm content:verify-attribute-slugs`.
+Configurator resolves by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — `pnpm content:verify-attribute-slugs`. Types and catalog references (`SINGLE_REFERENCE`/`REFERENCE`) are in `data-storefront-content-attributes.md`.
 
-**Greenfield bootstrap:** with no storefront models yet, `pnpm configurator:storefront-content:deploy` creates PageTypes, attributes, and seed models from `storefront-content.config.yml`. Copy fields that reference channel policies use `{freeShippingThreshold}` / `{returnsWindowDays}` in seed values — keep those tokens in Dashboard translations too (see YAML comments on those attributes).
-
-**Attribute types:** see `data-storefront-content-attributes.md` — scalar types, catalog **references** (`SINGLE_REFERENCE` / `REFERENCE`), and what Paper wires today.
-
----
+**Greenfield bootstrap:** with no storefront models yet, `pnpm configurator:storefront-content:deploy` creates PageTypes, attributes, and seed models from `storefront-content.config.yml`. Copy fields that reference channel policies use `{freeShippingThreshold}` / `{returnsWindowDays}` in seed values — keep those tokens in Dashboard translations too.
 
 ## Configurator (commerce-as-code, not editorial)
 
-**Saleor Configurator** syncs YAML to Saleor when the **structure** of storefront content changes — new PageTypes, new attributes, seed models, baseline values for new environments. It is **not** the day-to-day editor for merchandisers.
+Saleor Configurator syncs YAML to Saleor when the **structure** of storefront content changes — new PageTypes, attributes, seed models, baseline values for new environments. It is **not** the day-to-day editor.
 
-| Who / when                                                        | Tool                                                        |
-| ----------------------------------------------------------------- | ----------------------------------------------------------- |
-| Merchandiser updating hero text, trust labels, translations       | **Dashboard → Models**                                      |
-| Developer adding a new content field or bootstrapping dev/staging | **Configurator** (`storefront-content.config.yml` + deploy) |
+| Who / when                                                    | Tool                                                        |
+| ------------------------------------------------------------- | ----------------------------------------------------------- |
+| Merchandiser updating hero text, trust labels, translations   | **Dashboard → Models**                                      |
+| Developer adding a content field or bootstrapping dev/staging | **Configurator** (`storefront-content.config.yml` + deploy) |
 
-Seed file: `config/saleor/storefront-content.config.yml`
+Seed file: `config/saleor/storefront-content.config.yml`.
 
 ```bash
 pnpm configurator:storefront-content:validate   # offline schema check
-pnpm configurator:storefront-content:plan       # dry-run remote diff
-pnpm configurator:storefront-content:deploy     # apply (additive for omitted sections)
+pnpm configurator:storefront-content:plan       # dry-run remote diff (may show spurious DELETE noise)
+pnpm configurator:storefront-content:deploy     # apply — additive for omitted sections, never wipes
 ```
 
-**Token split (dev safety):**
+**Token split (dev safety):** `SALEOR_APP_TOKEN` (`.env.local`, narrow — Next.js runtime) vs `SALEOR_CONFIGURATOR_TOKEN` (`.env.configurator.local`, broad — Configurator scripts only). Never expose the configurator token as `NEXT_PUBLIC_*` or import it in app code. After deploy, set `CONTENT_PROVIDER=saleor` and restart dev; ongoing copy work stays in Dashboard. See `config/saleor/README.md`.
 
-| Variable                    | File                      | Used by                           |
-| --------------------------- | ------------------------- | --------------------------------- |
-| `SALEOR_APP_TOKEN`          | `.env.local`              | Next.js runtime (narrow)          |
-| `SALEOR_CONFIGURATOR_TOKEN` | `.env.configurator.local` | Configurator scripts only (broad) |
-
-Never expose configurator token as `NEXT_PUBLIC_*` or import it in app code.
-
-**Plan vs deploy:** `plan` may show spurious DELETE drift for entities not in the partial YAML. `deploy` only creates/updates what's listed — it does not wipe the catalog when sections are omitted. See `config/saleor/README.md` for details.
-
-**After deploy:** set `CONTENT_PROVIDER=saleor`, restart dev server. Ongoing copy work stays in Dashboard — only return to Configurator when the attribute schema or seed models need to change in code.
-
----
-
-## Mapper Pipeline (saleor provider)
+## Mapper pipeline (saleor provider)
 
 ```
 collectStorefrontContentPageSlugs(channel)
-  → GraphQL StorefrontContentPages (by slug list)
-  → indexStorefrontPagesBySlug (skip unpublished)
-  → resolveStorefrontPageForType per surface
-  → mapChromePage | mapHomepagePage | mapCartPage | mapCheckoutPage
+  → GraphQL StorefrontContentPages (by slug list) → indexStorefrontPagesBySlug (skip unpublished)
+  → resolveStorefrontPageForType per surface → mapChromePage | mapHomepagePage | mapCartPage | mapCheckoutPage
   → reduce(mergeStorefrontContent, defaults)
 ```
 
-Each mapper returns a **partial** `StorefrontContent`. Mappers live under `src/lib/content/saleor/mappers/`.
+Each mapper returns a **partial** `StorefrontContent` (under `src/lib/content/saleor/mappers/`). Adding an editable field: (1) `contentAttribute` + model default in YAML → (2) slug constant in `attribute-slugs.ts` → (3) map in the surface mapper via `buildAttributeMap` / `attrText` → (4) add to `types.ts`, `defaults.ts`, and the UI consumer.
 
-When adding a new editable field:
-
-1. Add `contentAttribute` + model default in YAML.
-2. Add slug constant in `attribute-slugs.ts`.
-3. Map in the appropriate surface mapper using `buildAttributeMap` / `attrText`.
-4. Add to `types.ts`, `defaults.ts`, and the UI consumer.
-
----
-
-## Channel Override Recipe
-
-To override homepage copy for channel `channel-pln`:
-
-1. Create (or deploy) a Page with slug `storefront-homepage-channel-pln` under PageType `storefront-homepage`.
-2. Set attribute values on that page.
-3. Request `getStorefrontContent("channel-pln", locale)` — provider resolves the channel page first.
-
-Global page `storefront-homepage` remains the fallback for other channels.
-
----
+**Channel override recipe:** create (or deploy) a Page with slug `storefront-homepage-channel-pln` under PageType `storefront-homepage`, set its attribute values, and `getStorefrontContent("channel-pln", locale)` resolves it first; `storefront-homepage` stays the fallback for other channels.
 
 ## i18n
 
-**Saleor (ready now):** Models support translations — editors can translate attribute values per language on each Page in Dashboard. The content is there when Paper asks for it.
+- `getStorefrontContent(channel, localeSlug)` and the `storefront-content:{channel}:{locale}` cache tag key by locale; `StorefrontContentPages.graphql` passes `languageCode`, and plain-text attributes use `translation(languageCode: …)` in `buildAttributeMap`.
+- **Policy placeholders in translations:** localized strings must keep the same `{freeShippingThreshold}` / `{returnsWindowDays}` tokens as the default language — never bake channel-specific amounts/currencies into Dashboard translations (e.g. `"$75"`, `"30 dni"`). Paper formats money from `policies` + channel currency at render; missing placeholders warn in dev via `formatPolicyAwareLabel`.
 
-**Paper (fetch wired):**
+## Cache & revalidation
 
-- `getStorefrontContent(channel, localeSlug)` and cache tags (`storefront-content:{channel}:{locale}`) key by locale.
-- `StorefrontContentPages.graphql` passes `languageCode`; plain-text attributes use `translation(languageCode: …)` in `buildAttributeMap`.
+Storefront content is cached under `storefront-content:{channel}:{locale}` and freshness is owned by the **saleor-paper-app**, not ad-hoc Saleor → storefront webhooks. When a merchant saves a `storefront-*` Page, Saleor emits `PAGE_UPDATED` → the app's `page-changed` handler → `POST /api/revalidate` → `planStorefrontContentRevalidation()` resolves the slug to channel(s) and purges the tags. Full invalidation architecture: `data-caching.md`.
 
-**Policy placeholders in translations:** localized strings must keep the same `{freeShippingThreshold}` / `{returnsWindowDays}` tokens as the default language — never bake channel-specific amounts or currencies into Dashboard translations (e.g. avoid `"$75"` or `"30 dni"` literals). Paper formats money from `policies` + channel currency at render time. Missing placeholders are warned in development via `formatPolicyAwareLabel`.
+**Agent checklist when adding content fields:** storefront-only if slug conventions and the cache profile stay the same; a new cache profile or tag shape means update `cache-manifest.ts` **and** ensure the app still forwards the right events (or add a webhook definition in `../saleor-paper-app/…/webhook-events.ts`); after app webhook changes, reinstall/sync from the app config UI. Don't point Saleor webhooks straight at `/api/revalidate` while the app is installed — use its managed webhooks so merchants get logs and a single revalidation path.
 
----
+## Anti-patterns
 
-## Cache & Revalidation (saleor-paper-app)
-
-Storefront content is cached (`storefront-content:{channel}:{locale}`). **Freshness is owned by the Paper Saleor app**, not ad-hoc Saleor → storefront webhooks.
-
-| Layer                | Responsibility                                                                                                                               |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Storefront**       | Define profile + tags in `cache-manifest.ts`; implement `planStorefrontContentRevalidation()`; expose `/api/revalidate` + `/api/cache-info`. |
-| **saleor-paper-app** | Register Saleor webhooks on install; forward `PAGE_*` (and `MENU_*` for nav) to the configured storefront URL with `REVALIDATE_SECRET`.      |
-| **Merchant**         | Edit Models in Dashboard; app receives `PAGE_UPDATED` and triggers revalidation automatically.                                               |
-
-When a merchant saves a `storefront-*` Page, Saleor emits `PAGE_UPDATED` → paper-app `page-changed` handler → `POST /api/revalidate` with `{ page: { slug } }` → storefront resolves slug to channel(s) and purges `storefront-content` tags.
-
-**Agent checklist when adding content fields:**
-
-1. Storefront only — no paper-app change if slug conventions and cache profile stay the same.
-2. New cache profile or tag shape — update `cache-manifest.ts` **and** ensure paper-app still forwards the right events (or add a webhook definition in `../saleor-paper-app/src/modules/revalidation/webhook-events.ts`).
-3. After paper-app webhook changes — reinstall or sync webhooks from the app configuration UI.
-
-See `data-caching.md` for the full invalidation architecture and `migrations/atomic/2026-06-menu-webhooks/` for the menu analogue.
-
----
-
-## Anti-Patterns
-
-- Mixing surfaces on one PageType — keep chrome, homepage, cart, and checkout as separate types with their own attribute sets.
-- Reusing slug `default` for pages — Saleor needs unique slugs; use the PageType slug for global singletons.
+- Mixing surfaces on one PageType — keep chrome/homepage/cart/checkout as separate types with their own attribute sets.
+- Reusing the slug `default` for pages — Saleor needs unique slugs; use the PageType slug for global singletons.
 - Putting **slugs** in Configurator model `attributes` keys — use **display names** (Configurator resolves to attributes).
-- Duplicating attribute lists in skills/docs — grep `attribute-slugs.ts` instead.
-- Expecting `plan` delete noise to match `deploy` behavior — trust the README, not the scary diff.
-- Running Configurator deploy to change live copy — edit Models in Dashboard instead; Configurator is for schema and environment bootstrap.
-- Pointing Saleor webhooks straight at `/api/revalidate` while the Paper app is installed — use the app's managed webhooks so merchants get logs, manual purge, and a single revalidation path.
+- Duplicating attribute lists in docs — grep `attribute-slugs.ts` instead.
+- Running Configurator `deploy` to change live copy — edit Models in Dashboard; Configurator is for schema/bootstrap.
 
 ---
 
@@ -1754,147 +1020,66 @@ Product pages are the core shopping experience. PDP layout, variant selection, a
 
 ### 2.1 Product Detail Page
 
-Product Detail Page architecture, image gallery/carousel, caching, and add-to-cart flow. Ensures correct PDP layout, variant-aware gallery, LCP optimization, and resilient error handling.
+PDP architecture, the variant-aware image gallery, and the add-to-cart flow. Variant _selection_ logic is in [`product-variants.md`](product-variants.md); the PPR boundary model and `getProductData` caching are in [`paper-architecture.md`](paper-architecture.md) / [`data-caching.md`](data-caching.md) — this rule covers what's PDP-specific.
 
-> **Sources**: [Next.js Caching](https://nextjs.org/docs/app/building-your-application/caching) · [Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations) · [Suspense](https://react.dev/reference/react/Suspense)
-
-For variant selection logic specifically, see `product-variants.md`.
-
-> **Start here:** Read the [Data Flow](#data-flow) section first - it explains how everything connects.
-
-## Architecture Overview
+## Architecture
 
 ```
 ProductPage (sync export)
-└── Suspense → ProductShell (params + getProductData only — never await searchParams)
-    ├── breadcrumbs, h1, attributes, JSON-LD
-    ├── Suspense → VariantGalleryDynamic (searchParams → variant images; LCP fallback image)
+└── Suspense (ProductRouteSkeleton) → ProductShell (awaits params + getProductData only)
+    ├── breadcrumbs, h1, attributes, JSON-LD          ← static, cached
+    ├── Suspense → VariantGalleryDynamic (searchParams → variant images; LCP fallback)
     └── ErrorBoundary + Suspense → VariantSectionDynamic (searchParams → price, selectors, add-to-cart)
-
-Layout + skeletons: PDP_GALLERY_LAYOUT in gallery-layout.ts (immersive | standard | mosaic)
-Route loading: products/[slug]/loading.tsx → ProductRouteSkeleton (same layout constant)
-
-Data: getProductData() with applyCacheProfile(CACHE_PROFILES.products)  ← catalog tier (~5 min)
 ```
 
-### Key Principles
+Paper-specific invariants:
 
-1. **Product data is cached** — `getProductData()` uses `"use cache"` + cache manifest profile
-2. **Shell stays static** — `ProductShell` awaits `params` only; passes `searchParams` promise through
-3. **Gallery and variant section are separate dynamic islands** — each in its own Suspense boundary
-4. **Gallery shows variant images** — `VariantGalleryDynamic` reads `?variant=` from URL
-5. **Errors are contained** — ErrorBoundary around variant section prevents full page crash
+1. **Shell stays static** — `ProductShell` awaits `params` only and passes the `searchParams` promise through. Reading `searchParams` in the shell or inside `getProductData` collapses the whole PDP into a dynamic hole (see `data-caching.md`).
+2. **Gallery and variant section are separate dynamic islands**, each in its own Suspense boundary, so a slow/failed buy box never blocks imagery.
+3. **The URL (`?variant=`) is the source of truth** for selection — no `useState`. The gallery and buy box re-render from `searchParams`; selection is shareable and refresh-safe.
+4. **Add-to-cart is a Server Action** (`<form action={addToCart}>`) that mutates the checkout and `revalidatePath`s the cart — no API route, no client fetch.
+5. **Errors are contained** — an `ErrorBoundary` (with the client `VariantSectionError` fallback) wraps the variant section so the page still shows images, name, and description on failure.
 
-### Data Flow
-
-**Read this first** - understanding how data flows makes everything else click:
+## File map
 
 ```
-URL: /pl/default-channel/products/blue-shirt?variant=abc123
-                │
-                ▼
-┌───────────────────────────────────────────────────────────────────┐
-│ ProductPage (sync) → Suspense → ProductShell                      │
-│                                                                   │
-│   1. await params → getProductData("blue-shirt", "default-channel", "pl") │
-│      └──► "use cache" + CACHE_PROFILES.products ──► translated product    │
-│                                                                   │
-│   2. Static shell: h1, breadcrumbs, attributes, JSON-LD, preload  │
-│                                                                   │
-│   3. Nested Suspense islands (each awaits searchParams):          │
-│      • VariantGalleryDynamic ──► variant.media for gallery        │
-│      • VariantSectionDynamic ──► price, selectors, add-to-cart      │
-└───────────────────────────────────────────────────────────────────┘
-                │
-                ▼
-┌───────────────────────────────────────────────────────────────────┐
-│ User selects different variant (e.g., "Red")                      │
-│                                                                   │
-│   router.push("?variant=xyz789")                                  │
-│      └──► URL changes                                             │
-│      └──► Page re-renders with new searchParams                   │
-│      └──► Gallery shows red variant images                        │
-│      └──► VariantSection shows red variant selected               │
-└───────────────────────────────────────────────────────────────────┘
-                │
-                ▼
-┌───────────────────────────────────────────────────────────────────┐
-│ User clicks "Add to bag"                                          │
-│                                                                   │
-│   <form action={addToCart}>                                       │
-│      └──► Server Action executes                                  │
-│      └──► Creates/updates checkout                                │
-│      └──► revalidatePath("/cart")                                 │
-│      └──► Cart drawer updates                                     │
-└───────────────────────────────────────────────────────────────────┘
-```
-
-**Why this matters:**
-
-- Product data is **cached** (fast loads)
-- URL is the **source of truth** for variant selection
-- Gallery reacts to URL changes **without client state**
-- Server Actions handle mutations **without API routes**
-
-## File Structure
-
-```
-src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/
-└── page.tsx                          # Main PDP page
-
+src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx   # PDP page + getProductData
 src/ui/components/pdp/
-├── index.ts                          # Public exports (no gallery renderers — see registry)
-├── gallery-layout.ts                 # PDP_GALLERY_LAYOUT + shell class bundles
-├── gallery-registry.tsx              # Canonical layout→renderer/fallback/skeleton map (lazy)
-├── gallery-utils.ts                  # getGalleryImages, resolveSelectedVariantId
-├── product-route-skeleton.tsx          # Shared route loading + page Suspense skeleton
-├── variant-gallery-dynamic.tsx       # Server: searchParams → active registry renderer
-├── product-gallery.tsx               # Client: standard Embla carousel wrapper
-├── product-gallery-fallback.tsx      # Server: standard LCP fallback image
-├── immersive-gallery.tsx             # Client: immersive filmstrip gallery
-├── immersive-gallery-fallback.tsx    # Server: immersive LCP fallback + skeleton
-├── mosaic-gallery.tsx                # Server: editorial image grid (all images)
-├── mosaic-gallery-fallback.tsx       # Server: mosaic LCP fallback + skeleton
-├── variant-section-dynamic.tsx       # Variant selection + add to cart
-├── variant-section-error.tsx         # Error fallback (Client Component)
-├── add-to-cart.tsx                   # Add to cart button
-├── sticky-bar.tsx                    # Mobile sticky add-to-cart
-├── product-attributes.tsx            # Description/details accordion
-└── variant-selection/                # Variant selection system
-    └── ...                           # See product-variants rule
-
-src/ui/components/ui/
-├── carousel.tsx                      # Embla carousel primitives
-└── image-carousel.tsx                # Reusable image carousel (standard gallery)
+├── gallery-layout.ts            # PDP_GALLERY_LAYOUT + shell class bundles + immersive height
+├── gallery-registry.tsx         # layout → { renderer, LCP fallback, skeleton } (the ONLY renderer importer)
+├── gallery-utils.ts             # getGalleryImages, resolveSelectedVariantId
+├── product-route-skeleton.tsx   # shared route loading + page Suspense skeleton
+├── variant-gallery-dynamic.tsx  # Server: searchParams → active registry renderer
+├── product-gallery.tsx / immersive-gallery.tsx / mosaic-gallery.tsx   # renderers (+ *-fallback.tsx)
+├── variant-section-dynamic.tsx  # price, selectors, add-to-cart, badges
+├── variant-section-error.tsx    # "use client" error fallback
+├── add-to-cart.tsx · sticky-bar.tsx · product-attributes.tsx
+└── variant-selection/           # see product-variants.md
+src/ui/components/ui/carousel.tsx, image-carousel.tsx   # Embla primitives + standard gallery
 ```
 
-## Image Gallery
+`index.ts` exports the public surface but **never** the gallery renderers (see [Gallery registry](#gallery-registry)).
+
+## Image gallery
 
 ### Layout modes (`PDP_GALLERY_LAYOUT`)
 
-The whole shop uses **one** PDP gallery style — a build-time constant in `gallery-layout.ts`, not per-product CMS config. Set it to `"immersive"`, `"standard"`, or `"mosaic"`; shell classes, the dynamic island renderer, Suspense fallbacks, and route skeletons all read the same value.
+The whole shop uses **one** PDP gallery style — a build-time constant in `gallery-layout.ts`, not per-product config. Shell classes, the dynamic island renderer, Suspense fallbacks, and route skeletons all read the same value via `activeGalleryVariant()`, so `loading.tsx` can never disagree with the live page.
 
-| Layout                    | Container              | Grid                                 | Gallery                                                        | Attributes accordion           |
-| ------------------------- | ---------------------- | ------------------------------------ | -------------------------------------------------------------- | ------------------------------ |
-| **`immersive`** (default) | `container-super-wide` | Wide gallery + narrow sticky buy box | `ImmersiveGallery` — square filmstrip, viewport-height frames  | Below images in gallery column |
-| **`mosaic`**              | `container-content`    | Wide gallery + narrow sticky buy box | `MosaicGallery` — all images in a 2-col 4:5 grid (no carousel) | Under buy box in info column   |
-| **`standard`**            | `container-content`    | `lg:grid-cols-2`                     | `ProductGallery` — 4:5 hero + thumbnail strip                  | Under buy box in info column   |
+| Layout                    | Container              | Gallery                                                                               | Attributes accordion |
+| ------------------------- | ---------------------- | ------------------------------------------------------------------------------------- | -------------------- |
+| **`immersive`** (default) | `container-super-wide` | `ImmersiveGallery` — square Embla filmstrip, viewport-height frames, controls below   | In gallery column    |
+| **`mosaic`**              | `container-content`    | `MosaicGallery` — all images in a 2-col 4:5 grid, no carousel (pure Server Component) | Under buy box        |
+| **`standard`**            | `container-content`    | `ProductGallery` — 4:5 hero + thumbnail strip (mobile swipe + dots)                   | Under buy box        |
 
-**Page width:** `standard` and `mosaic` use `container-content` so PDP body width matches PLP, cart, and search (Cotopaxi-style — one catalog column). Only **`immersive`** breaks wider (`container-super-wide`). Nav, footer, and marketing bands can still be full-bleed via `--container-nav` or section `width` independently.
+**Page width:** `standard`/`mosaic` use `container-content` so the PDP body matches PLP/cart/search (one catalog column). Only `immersive` breaks wider. Nav/footer/marketing bands set width independently.
 
-All three surfaces (renderer, LCP fallback, skeleton) for each layout live in **`gallery-registry.tsx`** — see [Gallery registry](#gallery-registry-canonical-pattern). `VariantGalleryDynamic`, `ProductShell`, and `ProductRouteSkeleton` read the active layout's surfaces from `activeGalleryVariant()`, so route `loading.tsx` never disagrees with the live page.
+### Gallery registry
 
-### Gallery registry (canonical pattern)
-
-A Paper shop ships exactly **one** gallery layout, picked at build time, but we keep a growing _library_ of layouts in the repo. The registry guarantees the unused ones never reach the browser — and that nobody has to think about it per-layout:
+A shop ships exactly one layout, but the repo keeps a library of them. The registry guarantees only the active one reaches the browser:
 
 ```tsx
 // gallery-registry.tsx — the ONLY file that imports gallery renderers
-const StandardGallery = dynamic(() => import("./product-gallery").then((m) => m.ProductGallery), { loading });
-const ImmersiveGallery = dynamic(() => import("./immersive-gallery").then((m) => m.ImmersiveGallery), {
-	loading,
-});
-
 export const GALLERY_REGISTRY: Record<PdpGalleryLayout, GalleryVariant> = {
 	standard: { Gallery: StandardGallery, Fallback: ProductGalleryFallback, Skeleton: StandardGallerySkeleton },
 	immersive: {
@@ -1902,362 +1087,68 @@ export const GALLERY_REGISTRY: Record<PdpGalleryLayout, GalleryVariant> = {
 		Fallback: ImmersiveGalleryFallback,
 		Skeleton: ImmersiveGallerySkeleton,
 	},
-	mosaic: { Gallery: MosaicGallery, Fallback: MosaicGalleryFallback, Skeleton: MosaicGallerySkeleton }, // Server Component
+	mosaic: { Gallery: MosaicGallery, Fallback: MosaicGalleryFallback, Skeleton: MosaicGallerySkeleton },
 };
-
 export const activeGalleryVariant = () => GALLERY_REGISTRY[PDP_GALLERY_LAYOUT];
 ```
 
-Three things make "only the active layout ships" the default behavior:
+Why only the active layout ships: interactive renderers load via `next/dynamic` (own chunk; Server-Component renderers like mosaic cost zero client JS); the registry is the **only** importer; and the exhaustive `Record<PdpGalleryLayout, …>` makes the compiler force all three surfaces when you add a key.
 
-1. **Interactive renderers load via `next/dynamic`** → each gets its own chunk; only the active layout's JS (incl. Embla) is requested. Server-Component renderers (mosaic) cost zero client JS and are imported directly.
-2. **The registry is the only importer of renderers.** They are NOT re-exported from `index.ts`.
-3. **`Record<PdpGalleryLayout, GalleryVariant>` is exhaustive.** Add a key to the union and the compiler forces you to register all three surfaces.
+**Add a layout:** create `my-gallery.tsx` (+ fallback) → add the key to `PdpGalleryLayout` and classes to `PDP_LAYOUT_CLASSES` → add one `GALLERY_REGISTRY` entry. This is the project-wide build-time-variant pattern — see [Swappable variants of a component](ui-components.md#swappable-variants-of-a-component) for registry vs `cva`.
 
-**Add a layout** (the only files you touch): create `my-gallery.tsx` (+ fallback) → add the key to `PdpGalleryLayout` and classes to `PDP_LAYOUT_CLASSES` in `gallery-layout.ts` → add one entry to `GALLERY_REGISTRY`.
+**Molding it your own way:** the registry is a default, not a cage — import one renderer straight into `VariantGalleryDynamic` if you want. The one thing that silently bloats the bundle: re-exporting _multiple_ `"use client"` renderers through a barrel a Server Component imports (a re-export counts as "used" and defeats cross-boundary tree-shaking). That's the sole reason renderers stay out of `index.ts`; a plain unused `import` is tree-shaken normally.
 
-> This is the project-wide model for build-time-selected variants of a component — see [Swappable variants of a component](ui-components.md#swappable-variants-of-a-component) for when to use it vs. `cva` prop variants.
+### Variant images + LCP
 
-#### Molding it your own way
-
-The registry is a convenient default, **not a cage**. Want to hardcode one gallery and delete the rest? Go ahead — import your renderer straight into `VariantGalleryDynamic` and render it. Importing one renderer and using it ships exactly that renderer; nothing unused, no penalty. There is no lint rule policing this.
-
-The **one** thing that silently bloats the bundle (vs. harmless dead code): re-exporting _multiple_ `"use client"` gallery renderers through a barrel (e.g. `index.ts`) that a Server Component imports. A re-export counts as "used," so it defeats tree-shaking across the client boundary and pulls every re-exported renderer into the bundle even though one renders. That's the sole reason renderers stay out of `index.ts`. A plain unused `import` (no re-export) is tree-shaken normally and costs nothing.
-
-### Features (by layout)
-
-**Mosaic (`MosaicGallery`)** — editorial grid
-
-- Every image rendered at once in a 2-column `aspect-[4/5]` grid — no carousel, the page scrolls through the imagery
-- Narrow sticky buy box (with the description/details accordion) sits beside the grid on desktop; mobile sticky bar keeps add-to-cart reachable while scanning
-- Pure Server Component (no client JS) — first tile eager, rest lazy-loaded
-
-**Immersive (`ImmersiveGallery`)**
-
-- Horizontal Embla filmstrip — square images sized to `100svh - chrome` on desktop
-- Controls **below** the strip: prev/next buttons, pill dots, `n / total` counter
-- Mobile: swipe the filmstrip; same controls below
-
-**Standard (`ProductGallery` / `ImageCarousel`)**
-
-- **Mobile**: Horizontal swipe + dot indicators under the hero
-- **Desktop**: Arrow navigation (hover) + thumbnail strip
-
-**Both**
-
-- **LCP**: server-rendered first image in the gallery Suspense fallback (`ImmersiveGalleryFallback` or `ProductGalleryFallback`) with `priority`, plus eager load on the first streamed carousel frame
-- **Variant-aware**: `VariantGalleryDynamic` resolves images from `searchParams.variant`
-
-### How Variant Images Work
+`VariantGalleryDynamic` reads `searchParams.variant`, resolves images (priority: `variant.media` → `product.media` → thumbnail) via `getGalleryImages`, and renders `activeGalleryVariant().Gallery` — no per-layout branching.
 
 ```tsx
-// variant-gallery-dynamic.tsx — searchParams read here, NOT in ProductShell
 export async function VariantGalleryDynamic({ product, searchParams }) {
 	const { variant: variantParam } = await searchParams;
-	const selectedVariantId = resolveSelectedVariantId(product, variantParam);
-	const selectedVariant = product.variants?.find((v) => v.id === selectedVariantId);
-	const images = getGalleryImages(product, selectedVariant);
-
-	// No per-layout branching — the registry resolves the active renderer.
+	const selectedVariant = product.variants?.find(
+		(v) => v.id === resolveSelectedVariantId(product, variantParam),
+	);
 	const { Gallery } = activeGalleryVariant();
-	return <Gallery images={images} productName={product.name} />;
-}
-// Priority: variant.media → product.media → thumbnail
-```
-
-### LCP Strategy
-
-Keep LCP in the **gallery Suspense fallback**, not a separate hero above the fold:
-
-1. **`ProductShell`** passes the default hero URL into the active layout's `Fallback` (from `activeGalleryVariant()`) as the nested Suspense fallback (real `<Image priority>` at the layout's size — no layout shift when the island streams)
-2. **`ImmersiveGallery`** / **`ProductGallery`** sets eager/`priority` on the first visible carousel image when the island hydrates
-3. Variant-specific images load when the user selects a variant (acceptable trade-off)
-
-### Customizing Gallery
-
-**Switch layout for the whole storefront** — edit `PDP_GALLERY_LAYOUT` in `gallery-layout.ts`.
-
-**Standard gallery chrome** — `image-carousel.tsx` props:
-
-```tsx
-<ImageCarousel
-	images={images}
-	productName="..."
-	showArrows={true} // Desktop arrow buttons
-	showDots={true} // Mobile dot indicators
-	showThumbnails={true} // Desktop thumbnail strip
-	onImageClick={(i) => {}} // For future lightbox
-/>
-```
-
-**Immersive frame height** — `PDP_IMMERSIVE_IMAGE_HEIGHT` in `gallery-layout.ts` (uses `--chrome-offset` + `--pdp-immersive-reserved` from `brand.css`).
-
-### Adding Zoom/Lightbox (Future)
-
-Use the `onImageClick` callback:
-
-```tsx
-<ImageCarousel images={images} onImageClick={(index) => openLightbox(index)} />
-```
-
-## Caching Strategy
-
-### Data Fetching
-
-```tsx
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { withTranslatedProductFields } from "@/lib/saleor-translations";
-
-async function getProductData(slug: string, channel: string, localeSlug: string) {
-	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug);
-
-	const result = await executePublicGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(slug),
-			channel,
-			...graphqlLanguageCodeVariables(localeSlug),
-		},
-	});
-	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
+	return <Gallery images={getGalleryImages(product, selectedVariant)} productName={product.name} />;
 }
 ```
 
-**Note:** `localeSlug` is part of the Next.js cache key (separate entry per language). Tag stays `product:{slug}` — webhooks invalidate all locales. Do not add fetch-level `revalidate` here. See `data-caching.md`.
+**LCP lives in the gallery Suspense fallback, not a separate hero.** `ProductShell` passes the default hero URL into the active layout's `Fallback` (a real `<Image priority>` at the layout's size → no layout shift when the island streams); the renderer then sets eager/`priority` on the first carousel frame when it hydrates. Variant-specific images load on selection (accepted trade-off).
 
-### What's Cached vs Dynamic
+### Knobs
 
-| Part                     | Cached? | Why                                         |
-| ------------------------ | ------- | ------------------------------------------- |
-| Product data             | ✅ Yes  | `"use cache"` in `getProductData()`         |
-| h1, breadcrumbs, JSON-LD | ✅ Yes  | Rendered in `ProductShell` from cached data |
-| Default LCP preload URL  | ✅ Yes  | Derived from cached product media           |
-| Gallery (variant images) | ❌ No   | `VariantGalleryDynamic` reads searchParams  |
-| Variant section (price)  | ❌ No   | `VariantSectionDynamic` reads searchParams  |
+- **Switch layout (whole shop):** `PDP_GALLERY_LAYOUT` in `gallery-layout.ts` — shell, island, fallbacks, and `ProductRouteSkeleton` all follow.
+- **Immersive frame height:** `PDP_IMMERSIVE_IMAGE_HEIGHT` (`--chrome-offset` + `--pdp-immersive-reserved` from `brand.css`).
+- **Standard gallery chrome:** `ImageCarousel` props `showArrows` / `showDots` / `showThumbnails` / `onImageClick` (the last reserved for a future lightbox).
 
-### On-Demand Revalidation
+## Caching (PDP-specific notes)
 
-```bash
-curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
-  "https://store.com/api/revalidate?tag=product:my-product-slug"
-```
+`getProductData()` is a `"use cache"` fetch using `applyCacheProfile(CACHE_PROFILES.products, slug)` + `graphqlLanguageCodeVariables(localeSlug)`, merged with `withTranslatedProductFields()`. `localeSlug` is part of the cache key (per-language entry); the tag stays `product:{slug}` so a webhook busts all locales. Do **not** add fetch-level `revalidate`. Full model: `data-caching.md`.
 
-## Error Handling
+Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic (searchParams): gallery images, variant section/price.
 
-### ErrorBoundary Pattern
+## Add-to-cart
 
-```tsx
-<ErrorBoundary FallbackComponent={VariantSectionError}>
-  <Suspense fallback={<VariantSectionSkeleton />}>
-    <VariantSectionDynamic ... />
-  </Suspense>
-</ErrorBoundary>
-```
+`<form action={addToCart}>` → `"use server"` action finds/creates the checkout, adds the line, `revalidatePath`s the cart; the button uses `useFormStatus()` for the pending state and the drawer updates via revalidation. Wrap fallible work in try/catch and fail gracefully (no crash) rather than letting the action throw to the boundary.
 
-**Why**: If variant section throws, user still sees:
+## Common tasks
 
-- Product images ✅
-- Product name ✅
-- Description ✅
-- "Unable to load options. Try again." message
-
-### Server Action Error Handling
-
-```tsx
-async function addToCart() {
-	"use server";
-	try {
-		// ... checkout logic
-	} catch (error) {
-		console.error("Add to cart failed:", error);
-		// Graceful failure - no crash
-	}
-}
-```
-
-## Add to Cart Flow
-
-```
-User clicks "Add to bag"
-        │
-        ▼
-┌─────────────────────┐
-│ form action={...}   │ ← HTML form submission
-└─────────────────────┘
-        │
-        ▼
-┌─────────────────────┐
-│ addToCart()         │ ← Server Action
-│ "use server"        │
-│                     │
-│ • Find/create cart  │
-│ • Add line item     │
-│ • revalidatePath()  │
-└─────────────────────┘
-        │
-        ▼
-┌─────────────────────┐
-│ useFormStatus()     │ ← Shows "Adding..." state
-│ pending: true       │
-└─────────────────────┘
-        │
-        ▼
-   Cart drawer updates (via revalidation)
-```
-
-## Common Tasks
-
-### Add new product attribute display
-
-1. Check `ProductDetails.graphql` for field
-2. If missing, add and run `pnpm run generate`
-3. Extract in `page.tsx` helper function
-4. Pass to `ProductAttributes` component
-
-### Change gallery thumbnail size (standard layout only)
-
-Edit `image-carousel.tsx`:
-
-```tsx
-<button className="relative h-20 w-20 ...">  {/* Change h-20 w-20 */}
-```
-
-### Switch PDP layout (mosaic ↔ immersive ↔ standard)
-
-Edit `gallery-layout.ts`:
-
-```tsx
-export const PDP_GALLERY_LAYOUT: PdpGalleryLayout = "immersive"; // or "mosaic" | "standard"
-```
-
-Shell, island, Suspense fallbacks, and `ProductRouteSkeleton` / `loading.tsx` follow automatically.
-
-### Change sticky bar scroll threshold
-
-Edit `sticky-bar.tsx`:
-
-```tsx
-const SCROLL_THRESHOLD = 500; // Change this value
-```
-
-### Add product badges (New, Sale, etc.)
-
-Badges are in `VariantSectionDynamic`:
-
-```tsx
-{
-	isOnSale && <Badge variant="destructive">Sale</Badge>;
-}
-```
-
-## GraphQL
-
-### Key Queries
-
-- `ProductDetails.graphql` - Main product query
-- `VariantDetailsFragment.graphql` - Variant data including media
-
-### After GraphQL Changes
-
-```bash
-pnpm run generate  # Regenerate types
-```
-
-## Testing
-
-```bash
-pnpm test src/ui/components/pdp  # Run PDP tests
-```
-
-### Manual Testing Checklist
-
-- [ ] Route `loading.tsx` skeleton matches live layout (no 2-col flash on immersive)
-- [ ] Gallery swipe works on mobile (filmstrip or carousel)
-- [ ] Immersive: arrows + counter below strip; standard: arrows on desktop hover + thumbnails
-- [ ] Variant selection updates URL
-- [ ] Variant images change when variant selected
-- [ ] Add to cart shows pending state
-- [ ] Sticky bar appears after scroll
-- [ ] Error boundary catches failures
-- [ ] Attributes accordion sits in the correct column for the active layout
+- **New attribute display:** add the field to `ProductDetails.graphql` (run `pnpm run generate`), extract in `page.tsx`, pass to `ProductAttributes`.
+- **Sticky bar threshold:** `SCROLL_THRESHOLD` in `sticky-bar.tsx`.
+- **Badges (New/Sale):** rendered in `VariantSectionDynamic`.
+- **Queries:** `ProductDetails.graphql`, `VariantDetailsFragment.graphql` (regenerate after edits).
 
 ## Anti-patterns
 
-❌ **Don't pass Server Component functions to Client Components**
+❌ Reading `searchParams` in `ProductShell` or inside `getProductData` — collapses the PDP into a dynamic hole; pass the promise to islands only.
+❌ `useState` for variant selection — use the `?variant=` URL param (shareable, refresh-safe).
+❌ Passing a Server-Component function as a Client `ErrorBoundary` fallback — keep `VariantSectionError` in its own `"use client"` file.
+❌ Suspense without an `ErrorBoundary` around the variant section — a throw would crash the page instead of degrading.
+❌ Re-exporting gallery renderers from `index.ts` — bloats the bundle across the client boundary.
 
-```tsx
-// ❌ Bad - VariantSectionError defined in Server Component file
-<ErrorBoundary FallbackComponent={VariantSectionError}>
+## Testing
 
-// ✅ Good - VariantSectionError in separate file with "use client"
-// See variant-section-error.tsx
-```
-
-❌ **Don't read searchParams in ProductShell or cached functions**
-
-```tsx
-// ❌ Bad — collapses entire PDP into dynamic hole
-async function ProductShell({ searchParams, ... }) {
-	const { variant } = await searchParams;
-	const product = await getProductData(...);
-}
-
-// ✅ Good — pass searchParams promise to dynamic islands only
-<Suspense fallback={<ImmersiveGalleryFallback src={...} alt={...} />}>
-  <VariantGalleryDynamic product={product} searchParams={searchParams} />
-</Suspense>
-
-// Route + page skeletons share ProductRouteSkeleton (reads PDP_GALLERY_LAYOUT)
-<Suspense fallback={<ProductRouteSkeleton />}>
-  <ProductShell ... />
-</Suspense>
-```
-
-```tsx
-// ❌ Bad — breaks caching
-async function getProductData(slug: string, searchParams: SearchParams) {
-	"use cache";
-	const variant = searchParams.variant;
-}
-```
-
-❌ **Don't use useState for variant selection**
-
-```tsx
-// ❌ Bad - client state, not shareable, lost on refresh
-const [selectedVariant, setSelectedVariant] = useState(null);
-
-// ✅ Good - URL is source of truth
-router.push(`?variant=${variantId}`);
-// Read from searchParams on server
-```
-
-❌ **Don't skip ErrorBoundary around Suspense**
-
-```tsx
-// ❌ Bad - error crashes entire page
-<Suspense fallback={<Skeleton />}>
-  <DynamicComponent />
-</Suspense>
-
-// ✅ Good - error contained, rest of page visible
-<ErrorBoundary FallbackComponent={ErrorFallback}>
-  <Suspense fallback={<Skeleton />}>
-    <DynamicComponent />
-  </Suspense>
-</ErrorBoundary>
-```
-
-❌ **Don't use index as key for images**
-
-```tsx
-// ❌ Bad - breaks React reconciliation when images change
-{images.map((img, index) => <Image key={index} ... />)}
-
-// ✅ Good - stable key
-{images.map((img) => <Image key={img.url} ... />)}
-```
+`pnpm test src/ui/components/pdp`. Manual smoke: `loading.tsx` skeleton matches the live layout (no 2-col flash on immersive), gallery swipe + controls per layout, variant selection updates URL and images, add-to-cart pending state, sticky bar after scroll, error boundary degrades cleanly, attributes accordion in the right column.
 
 ---
 
@@ -2912,387 +1803,115 @@ Do **not** add Places/Loqate to Paper by default: per-session cost, vendor keys,
 
 ### 3.3 Checkout Management
 
-Understanding checkout session lifecycle, storage, and debugging prevents payment failures, hydration mismatches, and "CHECKOUT_NOT_FULLY_PAID" errors. Use live checkout data for payment amounts and handle stale checkouts gracefully.
+How checkout sessions are created, stored, synced, and completed — and how to debug payment failures, hydration mismatches, and `CHECKOUT_NOT_FULLY_PAID`. Surface layout is in [`paper-surfaces.md`](paper-surfaces.md); payment-app SDK steps in [`checkout-payment-gateways.md`](checkout-payment-gateways.md); auth in [`data-auth-routes.md`](data-auth-routes.md).
 
----
+## Session id, storage, lifecycle
 
-## Overview
+The checkout id (a base64 Saleor global id, e.g. `Checkout:a8c7…`) lives in **two** places:
 
-This skill covers how checkout sessions are created, stored, and managed in the Saleor storefront.
+- **Cookie `checkoutId-{channel}`** (primary; set in `src/lib/checkout.ts` via `saveIdToCookie`, `sameSite: "lax"`, `secure` on https). Persists across refreshes/sessions.
+- **URL `?checkout=`** on `/checkout`.
 
-## Checkout ID Storage
+`findOrCreate({ channel, checkoutId })` creates a new checkout when there's no id or Saleor can't find it (first item into an empty cart, or a completed checkout whose id is now invalid). On `checkoutComplete` success the checkout becomes an Order, the id is invalidated, and the cookie is cleared.
 
-Checkout IDs are stored in **two places**:
+## Auth + data loading (RSC + client sync)
 
-### 1. Cookie (Primary Storage)
+Sign-in uses the same BFF as storefront (`loginWithBff()` → `POST /api/auth/login`); `CheckoutUserProvider` hydrates `me` from the RSC page; after sign-in call `refetchUser()` → `router.refresh()`. Sign-out = `logout()` action + `detachCheckoutCustomer` when needed.
 
-```
-Cookie name: checkoutId-{channel}
-Example: checkoutId-default-channel
-```
+1. **RSC page** (`checkout/page.tsx`) fetches the full checkout (`fetchCheckoutOnServer`), `me`, order, and channel countries; passes `initialCheckout` when `loadState === "ready"`.
+2. **Client** `CheckoutDataProvider` hydrates from `initialCheckout`. RSC updates **merge** via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` **replaces** state. Cart mutations revalidate `/checkout` via `revalidateStorefrontChrome`; use `useRefreshCheckoutRsc()` after auth or address-book changes.
+3. **Mutations** are server actions in `src/app/(checkout)/actions.ts`; adopt-vs-refresh semantics in `checkout-sync.ts`.
 
-The cookie is set in `src/lib/checkout.ts`:
+`useCheckout()` reads from `CheckoutDataProvider` context — **not urql**.
 
-```typescript
-export async function saveIdToCookie(channel: string, checkoutId: string) {
-	const cookieName = `checkoutId-${channel}`;
-	(await cookies()).set(cookieName, checkoutId, {
-		sameSite: "lax",
-		secure: shouldUseHttps,
-	});
-}
-```
+## Payment completion & transition UX
 
-### 2. URL Query Parameter
+Gateway-agnostic infra shared by Dummy/Stripe/future apps — what happens **after** the PSP authorizes through Saleor:
 
 ```
-URL: /checkout?checkout=Q2hlY2tvdXQ6YThjN2Y4YjgtZmU0NS00ZTRkLThhZmItZDdjYWI2YTM5MTdm
+Pay clicked (or 3DS return)
+ → markPaymentCompleting(checkoutId)   [sessionStorage: checkout:payment-completing]
+ → transactionInitialize / process     [provider-specific]
+ → finalizeCheckoutOrder()             [runCheckoutComplete]
+     ├─ failure → clearPaymentCompleting(), show inline error
+     └─ success → navigateToOrderConfirmation(orderId)  [window.location.replace → /checkout/complete?order=]
+ → confirmation page clears completion storage; cookie cleared in runCheckoutComplete after()
 ```
 
-The checkout ID is a base64-encoded Saleor global ID.
+### Routes & transition storage
 
-## Checkout Lifecycle
+| Mechanism                          | Purpose                                                                                           |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                        |
+| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                   |
+| `checkout:payment-completing`      | Keeps `PaymentCompletingScreen` up while `checkoutComplete` runs (no flash back to step 1)        |
+| `?processingPayment=true`          | Stripe 3DS return flag; pairs with `isCheckoutPaymentActive()` when the payment step is unmounted |
+| `?step=contact\|shipping\|payment` | Step deep link; URL is source of truth via `useLiveCheckoutSearchParams()`                        |
+| `updateCheckoutQuery()`            | **Shallow** step URL updates (`pushState`/`replaceState`) — avoids re-running checkout RSC        |
 
-### Creation
+**Critical sequencing gotchas:**
 
-A new checkout is created when:
+- **Don't clear the checkout cookie synchronously on `/checkout?checkout=…` after payment** — the cookie change re-renders the checkout RSC tree and briefly shows `not_found` ("session expired") before navigation. `runCheckoutComplete` clears it in `after()`; the client calls `navigateToOrderConfirmation()`; `RootViews` holds `PaymentCompletingScreen` while `checkout:payment-completing` is set.
+- **Don't call `redirect()` from `runCheckoutComplete`** — `NEXT_REDIRECT` is caught by Stripe payment catch blocks as a false "Payment failed" banner.
+- **Order confirmation needs `window.location.replace`** (hard nav) — `router.replace` from async post-mutation callbacks doesn't reliably unmount checkout.
 
-- User adds first item to an empty cart
-- No valid checkout ID exists in cookie
-- Existing checkout is not found in Saleor
+### Shallow step navigation
 
-```typescript
-// src/lib/checkout.ts
-export async function findOrCreate({ channel, checkoutId }) {
-	if (!checkoutId) {
-		return (await create({ channel })).checkoutCreate?.checkout;
-	}
-	const checkout = await find(checkoutId);
-	return checkout || (await create({ channel })).checkoutCreate?.checkout;
-}
-```
+Step changes use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout-search-params.ts`), not `router.replace`: App Router treats `searchParams` as dynamic input, so a router nav would re-fetch checkout on every step click. Shallow history updates the URL for back/refresh/deep-link without a server round-trip.
 
-### Persistence
+- **Continue** → `history: "push"` (Back walks Contact → Shipping → Payment).
+- **Header stepper / inline Back / Stripe param cleanup** → `replace` (no fake history entries).
 
-The checkout persists across:
+`useLiveCheckoutSearchParams()` (`useSyncExternalStore`) keeps step UI, transition guards, and Stripe-return detection synced with shallow updates and `popstate`; ephemeral Stripe params are merged from `window.location.search`, never stale React `searchParams`. `CheckoutSessionLoader` reads only `?checkout=`/`?order=` — **never `?step=`** — and fetches via `get-checkout-session-data.ts` (`React.cache` per id). Use `router.replace` only for in-checkout `?checkout=` changes (orphaned-checkout recovery).
 
-- Page refreshes
-- Browser sessions (cookie-based)
-- Cart modifications
+### Transition guard, Stripe 3DS, live total
 
-### Completion
+- **`useCheckoutTransition()`** returns `"completing"` when `isCheckoutPaymentActive()` (storage key matches id, or `processingPayment` param) → render `PaymentCompletingScreen` instead of the step flow; else `null`.
+- **`StripeCheckoutReturnHandler`** mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step (which may be unmounted after redirect). Real failures clear Stripe params, exit the processing screen, and show `PaymentError` **inline on the payment step**. Return URL carries `processingPayment`, `paymentIntent`, `paymentIntentClientSecret` (`build-stripe-return-url.ts`).
+- **Live total before charge:** before any `transactionInitialize`, call `updateCheckoutBilling()` → `refreshCheckout()` for a live gross total; if `hasMaterialCheckoutTotalChange(displayed, live)`, show a price-change notice and **block** pay (`checkout-pay-amount.ts`). Saleor re-validates at `checkoutComplete`, but blocking early avoids authorizing the wrong amount.
 
-When `checkoutComplete` mutation succeeds:
+## Debugging
 
-- Checkout is converted to an Order
-- The checkout ID becomes invalid
-- A new checkout should be created for future purchases
+**Stale cart after storefront edit:** cart actions call `revalidateStorefrontChrome` (incl. `revalidatePath("/checkout")`), so the next checkout nav gets fresh `initialCheckout`; in-flow use `refreshCheckout` (full replace).
 
-## Checkout auth (BFF)
+**`CHECKOUT_NOT_FULLY_PAID`** ("authorized amount doesn't cover total") — causes: payment app down (transaction created, authorization failed), stale checkout with accumulated partial transactions, or total changed after transaction init. Steps: check `[Payment] Transaction init result:` logs for `transactionEvent.type`; `AUTHORIZATION_FAILURE` → app down/unreachable (verify in **Dashboard → Apps**: active/healthy, URL reachable, Saleor Cloud status); transaction OK but amount wrong → stale checkout data. Recovery: delete the `checkoutId-{channel}` cookie / drop `?checkout=` / use incognito to force a fresh checkout.
 
-Sign-in during checkout uses the same BFF as storefront (`POST /api/auth/login` via `loginWithBff()`). `CheckoutUserProvider` hydrates `me` from the RSC page; after sign-in, call `refetchUser()` → `router.refresh()` so the server re-fetches the session. Sign-out uses the `logout()` server action + `detachCheckoutCustomer` when needed.
+**Inspecting a checkout:** decode the id with `atob("Q2hlY2tvdXQ6…")` → `Checkout:<uuid>`, then query `checkout(id) { totalPrice, transactions { chargedAmount authorizedAmount } }` in a GraphQL client.
 
-See `data-auth-routes.md` for HttpOnly cookies, header `getHeaderUser()`, and rate limits.
+**Always use live checkout data** (`useCheckout()` / `CheckoutDataProvider`) for payment amounts — never cached PDP prices.
 
-## Data loading (RSC + client sync)
+## Key files
 
-1. **RSC page** (`checkout/page.tsx`) — full checkout (`fetchCheckoutOnServer`), `me`, order, channel countries. Passes `initialCheckout` when `loadState === "ready"`.
-2. **Client** — `CheckoutDataProvider` hydrates from `initialCheckout` (`CheckoutSessionLoader` always pairs `ready` with a snapshot). RSC updates merge via `adoptCheckoutSnapshot`; explicit `refreshCheckout()` replaces state. Cart mutations revalidate `/checkout` via `revalidateStorefrontChrome`. Use `useRefreshCheckoutRsc()` after auth or address-book changes.
-3. **Mutations** — `src/app/(checkout)/actions.ts` server actions; `refreshCheckout` / `adoptCheckoutSnapshot` in `checkout-sync.ts`.
+| File                                                                                                              | Purpose                                                                     |
+| ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `src/lib/checkout.ts`                                                                                             | Checkout create + cookie management (`findOrCreate`, `saveIdToCookie`)      |
+| `src/app/(checkout)/checkout/page.tsx` · `checkout-session-loader.tsx`                                            | RSC entry (routing + `me`); active session loader (`?checkout=` only)       |
+| `src/checkout/lib/server/get-checkout-session-data.ts`                                                            | Per-request cached session fetches                                          |
+| `src/app/(checkout)/actions.ts`                                                                                   | Checkout server actions                                                     |
+| `src/checkout/providers/checkout-data.tsx` · `lib/checkout-sync.ts`                                               | Client state + adopt/refresh semantics                                      |
+| `src/checkout/hooks/use-checkout.ts` · `use-checkout-transition.ts`                                               | Steps context; payment→order guard                                          |
+| `src/checkout/lib/payment/finalize-checkout-order.ts` · `navigate-to-order.ts` · `checkout-payment-completion.ts` | `checkoutComplete` + nav; `markPaymentCompleting`/`isCheckoutPaymentActive` |
+| `src/app/(checkout)/checkout/complete/page.tsx` · `order-confirmation-app.tsx`                                    | Confirmation RSC + client shell                                             |
+| `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx`                                       | Post-redirect completion                                                    |
 
-`useCheckout()` reads from `CheckoutDataProvider` context (not urql).
+## Anti-patterns
 
-## Payment completion and transition UX
+❌ `router.push`/`replace` for order confirmation — use `navigateToOrderConfirmation()`
+❌ Clearing the checkout cookie before leaving `?checkout=` — wait for confirmation
+❌ Mounting redirect completion only inside the payment step — mount at the shell
+❌ Skipping `clearPaymentCompleting()` on failure — the user must be able to retry
+❌ `router.replace` for step changes — use shallow `updateCheckoutQuery({ step })`
+❌ Paying against cached/PDP totals — refresh for a live gross total first
 
-Gateway-agnostic infrastructure shared by Dummy, Stripe, and future payment apps. Provider-specific SDK steps live in `checkout-payment-gateways.md`; this section covers what happens **after** the PSP authorizes payment through Saleor.
+## Appendix: checkout v2 cheat sheet
 
-### Flow
+**Which refresh:** `refreshCheckout()` replaces client state (promo/line change); `adoptCheckoutSnapshot` merges an RSC snapshot without clobbering in-flow edits (on `initialCheckout` change only); `useRefreshCheckoutRsc()` triggers `router.refresh()`; cross-surface cart edits propagate via `revalidateStorefrontChrome` + next nav.
 
-```
-User clicks Pay (or returns from 3DS redirect)
-        │
-        ▼
-markPaymentCompleting(checkoutId)     ← sessionStorage: checkout:payment-completing
-        │
-        ▼
-transactionInitialize / process       ← provider-specific (may already be done)
-        │
-        ▼
-finalizeCheckoutOrder()               ← runCheckoutComplete mutation
-        │
-        ├── failure → clearPaymentCompleting(), show error
-        │
-        └── success → navigateToOrderConfirmation(orderId)
-                      window.location.replace(/checkout/complete?order=…)
-        │
-        ▼
-Order confirmation page (`/checkout/complete`) ← clearPaymentCompleting()
-                                               checkout cookie cleared in runCheckoutComplete
-```
+**URL params:** `checkout` (RSC reads — required), `order` on `/checkout` (RSC → redirect; canonical is `/checkout/complete?order=`), `step` (client only), `processingPayment`/Stripe params (client; merged from live `window.location.search`).
 
-### Routes and transition storage
+**Hooks:** `useCheckout()` (compat API; `refetch` → `refreshCheckout`), `useCheckoutData()` (full context incl. `loadState`/`setCheckout`), `useLiveCheckoutSearchParams()`, `useCheckoutTransition()`, `useRefreshCheckoutRsc()`.
 
-| Mechanism                          | Purpose                                                                                                                                              |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                           |
-| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                                                                      |
-| `checkout:payment-completing`      | Keeps checkout on `PaymentCompletingScreen` while `checkoutComplete` runs — avoids flashing back to step 1                                           |
-| `?processingPayment=true`          | Stripe 3DS return URL flag; works with `isCheckoutPaymentActive()` when payment step is unmounted                                                    |
-| `window.location.replace`          | Navigates to `/checkout/complete` — hard navigation required; `router.replace` from async post-mutation callbacks does not reliably unmount checkout |
-| `?step=contact\|shipping\|payment` | Checkout step deep link; URL is the source of truth via `useLiveCheckoutSearchParams()`                                                              |
-| `updateCheckoutQuery()`            | Shallow step URL updates (`pushState` on Continue, `replaceState` on stepper) — avoids re-running checkout RSC; merges into the live URL bar         |
-
-**Do not** clear the checkout cookie synchronously on `/checkout?checkout=…` after payment succeeds — Next.js re-renders the checkout RSC tree when the cookie changes, which briefly shows `not_found` ("session expired") before navigation lands. `runCheckoutComplete` clears the cookie in `after()`; the client calls `navigateToOrderConfirmation()`. `RootViews` keeps `PaymentCompletingScreen` up while `checkout:payment-completing` is set. Do **not** call `redirect()` from `runCheckoutComplete` — it throws `NEXT_REDIRECT`, which Stripe payment catch blocks surface as a false "Payment failed" banner.
-
-### Checkout step URL (shallow navigation)
-
-Step changes inside `/checkout` use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout-search-params.ts`), not `router.replace`. App Router treats `searchParams` as dynamic page input — a router navigation would re-fetch checkout on every step click. Shallow history updates the URL for back/refresh/deep links without a server round-trip.
-
-- **Continue (step complete)** — `history: "push"` so browser Back walks Contact → Shipping → Payment.
-- **Header stepper / inline Back** — default `replace` so jumping steps does not stack fake history entries.
-- **Stripe URL cleanup** — default `replace` when clearing `processingPayment` params.
-
-`useLiveCheckoutSearchParams()` (`useSyncExternalStore`) keeps step UI, payment transition guards, and Stripe return detection in sync with shallow updates and `popstate`. Ephemeral Stripe return params are preserved by merging from `window.location.search`, never from stale React `searchParams` alone.
-
-**RSC session boundary:** `CheckoutSessionLoader` (`checkout-session-loader.tsx`) reads only `?checkout=` / `?order=` — never `?step=`. Fetches use `get-checkout-session-data.ts` (`React.cache` per checkout id) so an accidental page re-run dedupes within the request.
-
-Use `router.replace` for **in-checkout** navigations (orphaned checkout recovery changing `?checkout=`). Order confirmation uses `window.location.replace` via `navigateToOrderConfirmation()`.
-
-### Transition guard
-
-`useCheckoutTransition()` (used in `saleor-checkout.tsx`) returns:
-
-| Value          | When                                                                                       |
-| -------------- | ------------------------------------------------------------------------------------------ |
-| `"completing"` | `isCheckoutPaymentActive()` — storage key matches checkout id or `processingPayment` param |
-| `null`         | Normal checkout UI                                                                         |
-
-When `transition === "completing"`, render `PaymentCompletingScreen` instead of the step flow.
-
-### Stripe 3DS / redirect return
-
-`StripeCheckoutReturnHandler` mounts at the **checkout shell** (`stripe-checkout-completion-host.tsx`), not inside the payment step. After redirect, the payment step may be unmounted — shell-level completion avoids losing the return handler. Real failures clear Stripe return URL params, exit the processing screen, and show `PaymentError` **inline on the payment step** (not as a banner above the processing overlay).
-
-Return URL includes `processingPayment`, `paymentIntent`, and `paymentIntentClientSecret` query params (see `build-stripe-return-url.ts`).
-
-### Live total before charge
-
-Before any `transactionInitialize`, payment flows:
-
-1. Call `updateCheckoutBilling()`
-2. `refreshCheckout()` for a live gross total
-3. If `hasMaterialCheckoutTotalChange(displayed, live)` → show price-change notice and **block** pay
-
-Saleor validates amounts at `checkoutComplete`, but blocking early avoids authorizing the wrong amount. See `checkout-pay-amount.ts`.
-
-### Key files
-
-| File                                                                        | Purpose                                            |
-| --------------------------------------------------------------------------- | -------------------------------------------------- |
-| `src/app/(checkout)/checkout/checkout-session-loader.tsx`                   | Active checkout RSC entry (`?checkout=` only)      |
-| `src/checkout/lib/server/get-checkout-session-data.ts`                      | Per-request cached session fetches                 |
-| `src/app/(checkout)/checkout/complete/page.tsx`                             | Order confirmation RSC entry                       |
-| `src/checkout/order-confirmation-app.tsx`                                   | Confirmation client shell                          |
-| `src/checkout/lib/payment/checkout-payment-completion.ts`                   | `markPaymentCompleting`, `isCheckoutPaymentActive` |
-| `src/checkout/lib/payment/finalize-checkout-order.ts`                       | Deduped `checkoutComplete` + navigation            |
-| `src/checkout/lib/payment/navigate-to-order.ts`                             | Nav to `/checkout/complete?order=`                 |
-| `src/checkout/hooks/use-checkout-transition.ts`                             | `completing` guard                                 |
-| `src/checkout/views/saleor-checkout/payment-completing-screen.tsx`          | Full-page "Processing your order" UI               |
-| `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx` | Post-redirect completion                           |
-| `src/checkout/views/order-confirmation/order-confirmation.tsx`              | Clears completion storage on mount                 |
-
-### Anti-patterns
-
-❌ **Don't call `router.push`/`replace` directly for order confirmation** — use `navigateToOrderConfirmation()`  
-❌ **Don't clear checkout cookie before leaving `?checkout=`** — wait for order confirmation  
-❌ **Don't mount redirect completion only inside payment step** — shell survives step unmount  
-❌ **Don't skip `clearPaymentCompleting()` on payment failure** — user must be able to retry
-
-## Common Issues
-
-### Stale cart after editing from storefront
-
-**Problem**: User changes cart on `/{channel}/cart`, returns to checkout — old lines or totals.
-
-**Fix**: Cart server actions call `revalidateStorefrontChrome`, which includes `revalidatePath("/checkout")`, so the next checkout navigation gets a fresh RSC `initialCheckout`. In-flow updates use `refreshCheckout` (full replace).
-
-### Stale Checkout with Failed Transactions
-
-**Problem**: If payment fails multiple times, the checkout accumulates partial transactions. Subsequent payment attempts may fail with:
-
-```
-CHECKOUT_NOT_FULLY_PAID: The authorized amount doesn't cover the checkout's total amount.
-```
-
-**Solutions**:
-
-1. **Clear cookies** - Delete `checkoutId-{channel}` cookie
-2. **Use incognito** - Test in a private browser window
-3. **Remove URL param** - Navigate to checkout without `?checkout=XXX`
-
-### Checkout Amount Mismatch
-
-**Problem**: Checkout total changes after transactions are initialized (e.g., shipping added).
-
-**Solution**: Always use live checkout from `useCheckout()` / `CheckoutDataProvider` before payment — never cached PDP prices.
-
-## Key Files
-
-| File                                                  | Purpose                              |
-| ----------------------------------------------------- | ------------------------------------ |
-| `src/lib/checkout.ts`                                 | Checkout creation, cookie management |
-| `src/app/(checkout)/checkout/page.tsx`                | RSC entry, routing + `me`            |
-| `src/app/(checkout)/actions.ts`                       | Checkout server actions              |
-| `src/checkout/providers/checkout-data.tsx`            | Client cart state + sync             |
-| `src/checkout/lib/checkout-sync.ts`                   | adopt vs refresh semantics           |
-| `src/checkout/hooks/use-checkout.ts`                  | Context hook for steps               |
-| `src/checkout/hooks/use-checkout-transition.ts`       | Payment → order transition guard     |
-| `src/checkout/lib/payment/finalize-checkout-order.ts` | `checkoutComplete` + navigation      |
-| `src/checkout/lib/utils/url.ts`                       | URL query param extraction           |
-
-## Debugging Checkout Issues
-
-### 1. Check Current Checkout ID
-
-```javascript
-// In browser console
-document.cookie.split(";").find((c) => c.includes("checkoutId"));
-```
-
-### 2. Decode Checkout ID
-
-```javascript
-// Base64 decode the checkout ID from URL
-atob("Q2hlY2tvdXQ6YThjN2Y4YjgtZmU0NS00ZTRkLThhZmItZDdjYWI2YTM5MTdm");
-// Returns: "Checkout:a8c7f8b8-fe45-4e4d-8afb-d7cab6a3917f"
-```
-
-### 3. Query Checkout in Saleor
-
-Use GraphQL playground to inspect checkout state:
-
-```graphql
-query {
-	checkout(id: "Q2hlY2tvdXQ6...") {
-		id
-		totalPrice {
-			gross {
-				amount
-				currency
-			}
-		}
-		transactions {
-			id
-			chargedAmount {
-				amount
-			}
-			authorizedAmount {
-				amount
-			}
-		}
-	}
-}
-```
-
-## Payment App Issues
-
-### Transaction Fails with "AUTHORIZATION_FAILURE"
-
-**Symptom**: Transaction is created but fails immediately:
-
-```json
-{
-	"transaction": { "id": "...", "actions": [] },
-	"transactionEvent": {
-		"message": "Failed to delivery request.",
-		"type": "AUTHORIZATION_FAILURE"
-	}
-}
-```
-
-**Cause**: The payment app (e.g., Dummy Gateway, Stripe, Adyen) is not responding.
-
-**Solutions**:
-
-1. Check **Saleor Dashboard → Apps** - is the payment app active/healthy?
-2. Check if the payment app URL is accessible
-3. Restart the payment app if self-hosted
-4. Check Saleor Cloud status if using cloud-hosted apps
-
-### "CHECKOUT_NOT_FULLY_PAID" Error
-
-**Symptom**: `checkoutComplete` fails with:
-
-```
-The authorized amount doesn't cover the checkout's total amount.
-```
-
-**Causes**:
-
-1. **Payment app is down** - transaction was created but authorization failed
-2. **Stale checkout** - previous partial transactions exist
-3. **Amount mismatch** - checkout total changed after transaction init
-
-**Debug steps**:
-
-1. Check `[Payment] Transaction init result:` logs for `transactionEvent.type`
-2. If `AUTHORIZATION_FAILURE` → payment app is down/unreachable
-3. If transaction succeeded but amount is wrong → checkout data is stale
-
-## Best Practices
-
-1. **Always use live checkout data** for payment amounts
-2. **Handle checkout not found** gracefully (create new checkout)
-3. **Clear checkout after completion** to avoid stale data
-4. **Test with fresh checkouts** when debugging payment issues
-5. **Check payment app health** when transactions fail with `AUTHORIZATION_FAILURE`
-
----
-
-## Appendix: Checkout v2 cheat sheet
-
-Quick reference for common tasks. Full surface layout: [`paper-surfaces.md`](paper-surfaces.md).
-
-### When to use which refresh
-
-| Goal                                                   | Mechanism                                                                                            |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| Re-fetch cart after promo / line change in checkout    | `refreshCheckout()` — always replaces client state                                                   |
-| Pick up RSC snapshot after cart edit on storefront     | Automatic via `revalidateAuthSurfaces` + next navigation; or `useRefreshCheckoutRsc()`               |
-| Merge server snapshot without clobbering in-flow edits | `adoptCheckoutSnapshot` (on `initialCheckout` change only)                                           |
-| Update `me` after BFF sign-in                          | `router.refresh()` in checkout; hard nav + `revalidateStorefrontChrome` when returning to storefront |
-| Change checkout step                                   | `updateCheckoutQuery({ step })` — shallow, not `router.replace`                                      |
-| Change `?checkout=` id (orphaned recovery)             | `router.replace` with new checkout id                                                                |
-| After successful payment                               | `navigateToOrderConfirmation()` — `window.location.replace` to `/checkout/complete`                  |
-
-### URL params
-
-| Param                                     | RSC reads?       | Purpose                                                        |
-| ----------------------------------------- | ---------------- | -------------------------------------------------------------- |
-| `checkout`                                | Yes              | Saleor checkout global id (required for active flow)           |
-| `order` on `/checkout`                    | Yes → redirect   | Legacy; canonical confirmation is `/checkout/complete?order=`  |
-| `step`                                    | No (client only) | `contact`, `shipping`, `payment` — shallow history             |
-| `processingPayment`, Stripe return params | Client           | 3DS return; preserved by merging live `window.location.search` |
-
-### Hooks (v2)
-
-| Hook                            | Reads from                                                                      |
-| ------------------------------- | ------------------------------------------------------------------------------- |
-| `useCheckout()`                 | `CheckoutDataProvider` + session id (compat API; `refetch` → `refreshCheckout`) |
-| `useCheckoutData()`             | Full context including `loadState`, `setCheckout`                               |
-| `useLiveCheckoutSearchParams()` | Live URL including shallow step updates                                         |
-| `useCheckoutTransition()`       | `"completing"` during payment → order navigation                                |
-| `useRefreshCheckoutRsc()`       | Triggers `router.refresh()` for RSC `initialCheckout` / `me`                    |
-
-### Session states (`resolveSessionUser`)
-
-| Status          | UI meaning                                                         |
-| --------------- | ------------------------------------------------------------------ |
-| `guest`         | No valid session — show sign-in                                    |
-| `authenticated` | `me` present                                                       |
-| `unavailable`   | Transient failure — do not flash login; optional retry server-side |
-
-Expired JWT maps to **`guest`** via `isDefinitiveAuthFailure` (structured Saleor error codes first, message fallback).
+**Session states** (`resolveSessionUser`): `guest` (show sign-in), `authenticated` (`me` present), `unavailable` (transient — don't flash login). An expired JWT maps to `guest` via `isDefinitiveAuthFailure` (structured Saleor codes first, message fallback).
 
 ---
 
@@ -3805,31 +2424,14 @@ Each bundles `mx-auto w-full px-4 sm:px-6 lg:px-8`. Width-only utilities: `max-w
 
 ### Full-bleed nuance (`super-wide` vs `full`)
 
-When a user asks for "full bleed" or "immersive edge-to-edge", **default to `container-super-wide`**, not `container-full`:
+For "full bleed" / "immersive edge-to-edge" requests, **default to `container-super-wide`**: it's `100%` up to 160rem (2560px) then centers — full-bleed on every normal monitor, but capped so product imagery doesn't stretch absurdly on ultrawide/4K. Reserve `container-full` (never caps) for rare brand moments that must touch the bezel at any resolution. Tune the cap via `--container-super-wide` in `brand.css`; override immersive PDP via `PDP_LAYOUT_CLASSES.immersive.main` in `gallery-layout.ts`.
 
-| Class                  | Behavior                                                                | When to use                                                                                         |
-| ---------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `container-super-wide` | `width: 100%` up to **160rem (2560px)**, then centers with side margins | Immersive PDP, editorial heroes — full-bleed on normal monitors, capped on ultrawide / very wide 4K |
-| `container-full`       | Always `100%` of the viewport — no max                                  | Rare: landing pages, brand moments that must touch the bezel at any resolution                      |
+**Two width knobs are brand-level, no component edits, reversible:**
 
-**Typical viewport widths (CSS px, browser chrome excluded):**
+- **Nav** — header + mega-menu use `container-nav` (`--container-nav`, default `--container-content`). Set it to `--container-full`/`--container-wide` to take the nav edge-to-edge.
+- **Body** — every page body (PDP, PLP, search, cart, CMS, collections/categories, footer, skeletons) uses `container-content`, so `--container-content` is the single body-width token. Widen it globally for a consistent wider frame, or swap one page's wrapper to a wider container for a one-off.
 
-| Range       | Examples                           | `super-wide` vs `full` on immersive PDP                                       |
-| ----------- | ---------------------------------- | ----------------------------------------------------------------------------- |
-| ≤ 2560px    | 1366 laptop, 1920 FHD, 2560 QHD    | **Identical** — both feel full-bleed                                          |
-| 2561–3440px | 3440×1440 ultrawide (21:9)         | `super-wide` caps at 2560px; `full` stretches gallery to ~3000px+             |
-| 3840px+     | 4K 16:9, 5120×1440 super-ultrawide | `super-wide` strongly recommended; `full` makes product imagery absurdly wide |
-
-Adjust `--container-super-wide` in `brand.css` if a brand wants a different cap (e.g. `120rem` / 1920px for a tighter frame). Immersive PDP override: change `PDP_LAYOUT_CLASSES.immersive.main` to `container-full` in `gallery-layout.ts`.
-
-**Nav width is a brand knob.** The header and its mega-menu both use `container-nav`, whose width comes from the `--container-nav` token in `brand.css` (default `var(--container-content)` = the current look). To take the nav edge-to-edge for a brand, set `--container-nav: var(--container-full)` (or `--container-wide`) — bar and dropdown follow, no component edits, fully reversible.
-
-**The body column is one token, too.** Every page body — PDP, PLP, search, cart, CMS pages, collections/categories, the footer, even loading skeletons — uses `container-content` (no more stray `max-w-7xl`). So the default body width is the single `--container-content` token: change it once and every page follows in lockstep. Two ways to go full-bleed:
-
-- **One page, rare case:** swap that page's wrapper to `container-super-wide` (immersive default), `container-wide`, or `container-full` (true edge-to-edge at any resolution).
-- **Globally:** widen `--container-content` itself (affects bodies _and_ section defaults, which is usually what you want for a consistent frame).
-
-(The checkout surface keeps its own `max-w-7xl` frame by design — it's a separate surface and must not share storefront layout tokens.)
+(The checkout surface keeps its own `max-w-7xl` frame by design — separate surface, must not share storefront layout tokens.)
 
 ```tsx
 <section className="bg-foreground py-section-lg">
@@ -3863,19 +2465,12 @@ Guard non-trivial motion with `motion-reduce:` / `prefers-reduced-motion`.
 
 ## Expressive layer (opt-in, Tier-2 — define as tokens, never inline)
 
-Some brands _do_ call for richer surfaces — a gradient hero band, a softer elevated hover, a signature motion. That's legitimate **Tier-2 structural** expression. Two rules keep it premium instead of cheap:
+Some brands _do_ call for richer surfaces — a gradient hero band, a softer elevated hover, a signature motion. That's legitimate **Tier-2 structural** expression, governed by two rules:
 
-1. **It lives in `brand.css` as a token**, never as an inline `style`/one-off class. Add e.g. `--gradient-hero`, `--shadow-elevated-brand`, `--ease-signature`, map it in `tailwind.config.cjs`, then use the utility. A rebrand still flows from one place.
-2. **It's opt-in and contained, not a default.** Expressive treatment belongs on the _same_ deliberate surfaces the influence policy already allows a color band (~1 in 3–4 sections; a hero; a feature CTA). The neutral shell and product surfaces stay clean.
+1. **It lives in `brand.css` as a token** (e.g. `--gradient-hero`, `--shadow-elevated-brand`, `--ease-signature`), mapped in `tailwind.config.cjs` — never an inline `style`/one-off, so a rebrand still flows from one place.
+2. **It's opt-in and contained** — on the same deliberate surfaces the influence policy allows a color band (~1 in 3–4 sections; a hero; a feature CTA), never the neutral shell or product surfaces.
 
-```css
-/* brand.css — only if the brand calls for it */
---gradient-hero: linear-gradient(180deg, oklch(var(--secondary)), oklch(var(--background)));
-```
-
-**If you do use a gradient, keep it disciplined:** subtle accent only (never on primary/interactive elements or behind product media); **analogous** hues only (blue→teal, orange→red) — never opposing temperatures (orange→blue, pink→green, red→cyan); **2–3 stops max**, no rainbow ramps.
-
-**Hard nos (these read as dated/cheap in premium commerce):** glow shadows (`--shadow-glow`), neon/`drop-shadow` on text, rainbow or high-contrast gradients on body surfaces, gradients behind product imagery. Aesop/SSENSE/Hermès don't glow — neither do we by default. When unsure, omit it: restraint is the house style (see [`design-quality-rubric`](design-quality-rubric.md)).
+Gradient discipline (if used): subtle accent only, analogous hues, 2–3 stops max — never on interactive elements or behind product media. **Hard nos:** glow shadows, neon/text drop-shadows, rainbow/high-contrast gradients on body surfaces. Restraint is the house style — see [`design-quality-rubric`](design-quality-rubric.md) for the full judgment.
 
 ## Primitive variant matrix (cva)
 
@@ -4425,11 +3020,17 @@ The checks to run after molding UI — the "autofixer loop" that keeps generated
 
 ## Hard gate (must pass)
 
-| Gate          | Command                       | Catches                                                                                    |
-| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
-| Design tokens | `pnpm run lint:design-tokens` | Raw hex / `rgb()` / `hsl()` in `src/ui/**/*.tsx` styling — use a `brand.css` token instead |
-| Types         | `pnpm exec tsc --noEmit`      | Type errors (incl. cva `VariantProps`)                                                     |
-| Lint          | `pnpm run lint`               | ESLint / Next rules                                                                        |
+**`pnpm run verify` is the single "am I done?" command** (ADR 0003). It chains the deterministic gates fail-fast, so you run one command instead of assembling the matrix yourself:
+
+| Step in `verify`          | Command                       | Catches                                                                                    |
+| ------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
+| Docs drift                | `pnpm run docs:check`         | Rule missing frontmatter, or compiled `AGENTS.md` stale vs `rules/`                        |
+| Design tokens             | `pnpm run lint:design-tokens` | Raw hex / `rgb()` / `hsl()` in `src/ui/**/*.tsx` styling — use a `brand.css` token instead |
+| Types (auto-runs codegen) | `pnpm run typecheck`          | Type errors (incl. cva `VariantProps`); regenerates GraphQL types first via prehook        |
+| Lint                      | `pnpm run lint`               | ESLint / Next rules                                                                        |
+| Tests                     | `pnpm run test:run`           | Colocated `*.test.ts` regressions                                                          |
+
+For a tight styling inner loop, `pnpm run verify:quick` runs just `lint:design-tokens` + `typecheck`. Iterate until `verify` is green before declaring done. Keep `verify` mirrored with `.github/workflows/build.yml`.
 
 The design-token gate (`scripts/check-design-tokens.mjs`) scans component styling only — color _data_ in `.ts` (swatch maps, fixtures) is excluded. Rare legitimate literal? Add a `design-tokens-allow` comment on that line.
 
@@ -4449,12 +3050,12 @@ For anything user-facing, run the external **`web-design-guidelines`** skill (We
 
 ## When to run what
 
-| Change                                        | Gates                                             |
-| --------------------------------------------- | ------------------------------------------------- |
-| Token / styling tweak                         | `lint:design-tokens` + `tsc` + rubric self-check  |
-| New / moved section                           | above + advisory review + `web-design-guidelines` |
-| Page layout / Suspense change (PDP, homepage) | above + `pnpm run build` (PPR)                    |
-| Anything shipped to users                     | full self-check + all gates + a11y pass           |
+| Change                                        | Gates                                                         |
+| --------------------------------------------- | ------------------------------------------------------------- |
+| Token / styling tweak                         | `pnpm run verify:quick` + rubric self-check                   |
+| New / moved section                           | `pnpm run verify` + advisory review + `web-design-guidelines` |
+| Page layout / Suspense change (PDP, homepage) | `pnpm run verify` + `pnpm run build` (PPR)                    |
+| Anything shipped to users                     | `pnpm run verify` + full self-check + a11y pass               |
 
 ## Anti-patterns
 

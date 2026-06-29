@@ -1,3 +1,8 @@
+---
+name: data-graphql
+description: GraphQL codegen workflow: edit src/graphql/*.graphql or src/checkout/graphql/*.graphql then run pnpm generate / generate:checkout. Use when adding GraphQL fields, hitting missing generated types, permission errors, or the assignedAttribute API.
+---
+
 # Data GraphQL
 
 Modifying GraphQL queries and regenerating types correctly ensures type safety, avoids permission errors, and keeps storefront and checkout data in sync with the Saleor schema.

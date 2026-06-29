@@ -1,3 +1,8 @@
+---
+name: paper-architecture
+description: Canonical Next.js 16 App Router stance for Paper: Server Components by default, Server Actions, Cache Components (PPR), BFF auth, two surfaces. Read first when unfamiliar with the codebase or making cross-cutting architectural changes.
+---
+
 # Paper architecture (canonical Next.js)
 
 North-star for how this storefront is built. Read this before unfamiliar changes; use task rules for implementation detail.
@@ -28,7 +33,7 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 | **Two surfaces**    | One repo, storefront + checkout                           | Route groups, import boundaries, session handoff → [`paper-surfaces.md`](paper-surfaces.md)                                                                                                                                     |
 | **Freshness split** | Cached browse, live commerce                              | PDP/PLP cached per locale; cart/checkout/auth always fresh → [`data-caching.md`](data-caching.md)                                                                                                                               |
 | **Page boundaries** | Sync page → Suspense → shell → islands                    | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
-| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)        | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) §5; account uses layout-shell gate for auth                                                                                              |
+| **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)        | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
 | **Auth**            | BFF + PPR-safe account routes                             | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
 | **GraphQL**         | Codegen + server helpers                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
 | **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |

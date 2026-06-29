@@ -1,3 +1,8 @@
+---
+name: page-composition
+description: Molding PDP/homepage by editing page files within the PPR layer model (static shell vs dynamic islands), width and rhythm. Use when adding, reordering, or re-widthing sections without breaking PPR/caching/LCP.
+---
+
 # Page Composition (PDP & Homepage)
 
 How to mold PDP and homepage layouts by editing the page files — adding, removing, reordering, and re-widthing sections — **without breaking PPR, caching, or LCP**. This is the bridge between "design freely" ([`design-quality-rubric`](design-quality-rubric.md)) and "respect the architecture" ([`paper-architecture`](paper-architecture.md), [`data-caching`](data-caching.md)).
