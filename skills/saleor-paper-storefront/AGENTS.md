@@ -586,9 +586,10 @@ HttpOnly cookies are the source of truth, but the **client Router Cache** can re
 | Trigger                       | When                                 | Mechanism                                                                             |
 | ----------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
 | Initial load / hard refresh   | Land with an existing session        | `HeaderAuthRefresh` → `revalidateStorefrontChrome` + `router.refresh()` once on mount |
-| In-store soft nav             | `<Link>` within `/${channel}`        | `HeaderAuthRefresh` → `router.refresh()` on pathname change                           |
 | Cross-tab                     | Return after login/logout elsewhere  | `visibilitychange` → `revalidateStorefrontChromeAction` + `router.refresh()`          |
 | Cross-surface / auth boundary | Login, logout, checkout → storefront | `revalidateStorefrontChrome` + **hard navigation**                                    |
+
+**Do NOT `router.refresh()` on in-store soft navigation.** The header lives in the shared layout (preserved across sibling navigations), and every session/cart mutation already busts chrome via `revalidateStorefrontChrome` (add-to-cart, cart line edits, login/logout, checkout). A per-pathname refresh forces a server round-trip on every soft nav and defeats instant navigation to prerendered shells — most visibly returning to the homepage, which has no loading skeleton to mask the wait. The one-time initial-mount sync covers the PPR-anonymous-shell case; cross-tab and auth boundaries are covered by their own triggers above.
 
 **Hard navigation is required** when leaving `/checkout` or after login/logout — soft `router.push`/`<Link>` can restore a cached anonymous `UserMenuServer`. Use `syncAuthSurfacesAfterSignIn({ redirectTo })`, `useLogout({ channel })`, `navigateToStorefrontHome()`, or `StorefrontHomeLink` (plain anchor). `revalidateStorefrontChrome(channel)` invalidates the `/${channel}` layout (user menu + cart badge) and `/checkout` — call it from server actions (after cart mutations / checkout complete / before a client refresh), not during RSC render.
 
@@ -605,7 +606,7 @@ account/layout.tsx
             ├── AccountNav (static client)
             └── {children}   (sync pages + nested Suspense islands)
 
-header.tsx → Suspense → HeaderAuthRefresh (client; router.refresh on pathname change)
+header.tsx → Suspense → HeaderAuthRefresh (client; one-time mount sync + cross-tab, NOT per-nav)
                           └── UserMenuServer (async; cookies() + getHeaderUser() or sign-in link)
 ```
 
