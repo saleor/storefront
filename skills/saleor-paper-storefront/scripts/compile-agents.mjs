@@ -246,15 +246,13 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 ---
 
 ${buildToc()}
-
 ---
 
 ${buildBody().trimEnd()}
 
 ---
 
-${footer}
-`;
+${footer}`;
 
 if (process.argv.includes("--check")) {
 	let current = "";
