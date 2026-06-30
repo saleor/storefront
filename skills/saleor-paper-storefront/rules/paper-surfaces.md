@@ -1,3 +1,8 @@
+---
+name: paper-surfaces
+description: The two-surface model (storefront vs checkout): route groups, import boundaries, @paper/session-bridge handoff, checkout entry/data flow. Use when working across the storefront/checkout boundary.
+---
+
 # Paper surfaces (storefront + checkout)
 
 One Next.js project, two product surfaces, one shared handoff package.

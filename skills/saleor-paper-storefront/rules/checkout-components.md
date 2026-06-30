@@ -1,3 +1,8 @@
+---
+name: checkout-components
+description: Reusable checkout UI: contact, shipping-address, payment/billing components and input-attributes autofill. Use when composing or extending checkout step UI.
+---
+
 # Checkout Components
 
 Reusable checkout UI components for contact, address, and payment flows. Composing these components in checkout steps keeps the flow consistent and maintainable.

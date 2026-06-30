@@ -1,3 +1,8 @@
+---
+name: product-filtering
+description: PLP filtering/sorting: server-side categories/price/sort via Saleor, client-side colors/sizes, filter-utils.ts. Use when changing product list filters or sort.
+---
+
 # Product Filtering
 
 Product list filtering and sorting architecture. Ensures correct server-side vs client-side filtering, category resolution, static price ranges, and filter UI behavior.

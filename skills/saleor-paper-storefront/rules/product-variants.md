@@ -1,3 +1,8 @@
+---
+name: product-variants
+description: Variant selection state machine on PDP: selection vs non-selection attributes, swatch renderers, partial selection, URL-driven variant param. Use when changing variant pickers or add-to-cart enablement.
+---
+
 # Variant Selection
 
 Variant and attribute selection on product detail pages. Ensures correct "Add to Cart" button state, option availability, discount badges, and URL-driven selection.

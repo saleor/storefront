@@ -1,3 +1,8 @@
+---
+name: design-verification
+description: Post-design verification gates (autofixer loop). The hard gate is the single `pnpm run verify` command (docs + design-tokens + tsc + lint + tests); PPR/LCP/a11y stay advisory. Use after molding UI to confirm it is Paper-correct, fast, and accessible.
+---
+
 # Design Verification Gates
 
 The checks to run after molding UI — the "autofixer loop" that keeps generated/edited design Paper-correct, fast, and accessible. **Advisory-first by design**: one unambiguous hard gate, everything else is a guided review you fix before finishing. This protects hand-coder DX (no brittle CI walls) while still catching the common mistakes.
@@ -6,11 +11,17 @@ The checks to run after molding UI — the "autofixer loop" that keeps generated
 
 ## Hard gate (must pass)
 
-| Gate          | Command                       | Catches                                                                                    |
-| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
-| Design tokens | `pnpm run lint:design-tokens` | Raw hex / `rgb()` / `hsl()` in `src/ui/**/*.tsx` styling — use a `brand.css` token instead |
-| Types         | `pnpm exec tsc --noEmit`      | Type errors (incl. cva `VariantProps`)                                                     |
-| Lint          | `pnpm run lint`               | ESLint / Next rules                                                                        |
+**`pnpm run verify` is the single "am I done?" command** (ADR 0003). It chains the deterministic gates fail-fast, so you run one command instead of assembling the matrix yourself:
+
+| Step in `verify`          | Command                       | Catches                                                                                    |
+| ------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
+| Docs drift                | `pnpm run docs:check`         | Rule missing frontmatter, or compiled `AGENTS.md` stale vs `rules/`                        |
+| Design tokens             | `pnpm run lint:design-tokens` | Raw hex / `rgb()` / `hsl()` in `src/ui/**/*.tsx` styling — use a `brand.css` token instead |
+| Types (auto-runs codegen) | `pnpm run typecheck`          | Type errors (incl. cva `VariantProps`); regenerates GraphQL types first via prehook        |
+| Lint                      | `pnpm run lint`               | ESLint / Next rules                                                                        |
+| Tests                     | `pnpm run test:run`           | Colocated `*.test.ts` regressions                                                          |
+
+For a tight styling inner loop, `pnpm run verify:quick` runs just `lint:design-tokens` + `typecheck`. Iterate until `verify` is green before declaring done. Keep `verify` mirrored with `.github/workflows/build.yml`.
 
 The design-token gate (`scripts/check-design-tokens.mjs`) scans component styling only — color _data_ in `.ts` (swatch maps, fixtures) is excluded. Rare legitimate literal? Add a `design-tokens-allow` comment on that line.
 
@@ -30,12 +41,12 @@ For anything user-facing, run the external **`web-design-guidelines`** skill (We
 
 ## When to run what
 
-| Change                                        | Gates                                             |
-| --------------------------------------------- | ------------------------------------------------- |
-| Token / styling tweak                         | `lint:design-tokens` + `tsc` + rubric self-check  |
-| New / moved section                           | above + advisory review + `web-design-guidelines` |
-| Page layout / Suspense change (PDP, homepage) | above + `pnpm run build` (PPR)                    |
-| Anything shipped to users                     | full self-check + all gates + a11y pass           |
+| Change                                        | Gates                                                         |
+| --------------------------------------------- | ------------------------------------------------------------- |
+| Token / styling tweak                         | `pnpm run verify:quick` + rubric self-check                   |
+| New / moved section                           | `pnpm run verify` + advisory review + `web-design-guidelines` |
+| Page layout / Suspense change (PDP, homepage) | `pnpm run verify` + `pnpm run build` (PPR)                    |
+| Anything shipped to users                     | `pnpm run verify` + full self-check + a11y pass               |
 
 ## Anti-patterns
 

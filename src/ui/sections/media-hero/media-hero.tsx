@@ -11,7 +11,7 @@ export interface MediaHeroCta {
 }
 
 export type MediaHeroAlign = "center" | "left" | "bottom-left";
-export type MediaHeroHeight = "medium" | "tall" | "full";
+export type MediaHeroHeight = "medium" | "tall" | "full" | "fold";
 export type MediaHeroOverlay = "none" | "scrim" | "gradient";
 /** Optional frosted card behind copy — solid tone on an opaque surface. */
 export type MediaHeroCopySurface = "none" | "panel";
@@ -44,6 +44,11 @@ const heightClassName: Record<MediaHeroHeight, string> = {
 	medium: "min-h-[60vh]",
 	tall: "min-h-[78vh] lg:min-h-[88vh]",
 	full: "min-h-[100svh]",
+	// Fill exactly to the first viewport fold. Subtracts `--chrome-offset` (header +
+	// announcement bar) so the hero bottom aligns with the viewport bottom regardless of
+	// whether the announcement bar is present (its dismiss handler zeroes
+	// `--announcement-bar-height` at runtime). Same calc the PDP immersive gallery uses.
+	fold: "min-h-[calc(100svh-var(--chrome-offset))]",
 };
 
 const alignClassName: Record<MediaHeroAlign, string> = {
@@ -101,6 +106,11 @@ function MediaHeroCtaLink({ cta, className }: { cta: MediaHeroCta; className: st
  * Copy tone (`solid` | `inverse`) is derived from overlay + copySurface — inverse uses
  * `text-background` (near-white) on photo scrims; solid matches EditorialHero on
  * panels / no media.
+ *
+ * `height="fold"` fills exactly to the first viewport fold (`100svh - --chrome-offset`),
+ * so the hero bottom meets the viewport bottom on the homepage. Use `tall`/`full` for
+ * non-fold-locked heights; `full` is unconstrained `100svh` (hero bottom sits below the
+ * fold because it starts under the chrome).
  */
 export function MediaHero({
 	eyebrow,

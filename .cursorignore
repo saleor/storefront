@@ -1,0 +1,6 @@
+# Generated, human/offline-only skill export — ~75k tokens if loaded.
+# Quarantined from agents so it can't be auto-loaded "to get oriented".
+# Agents read skills/saleor-paper-storefront/SKILL.md + one rules/<task>.md instead.
+# Regenerate with: node skills/saleor-paper-storefront/scripts/compile-agents.mjs
+skills/saleor-paper-storefront/AGENTS.md
+.agents/skills/saleor-paper-storefront/AGENTS.md

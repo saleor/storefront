@@ -5,11 +5,11 @@ import { VariantSectionSkeleton } from "./variant-section-dynamic";
 
 interface ProductRouteSkeletonProps {
 	/**
-	 * Where the skeleton renders. Drives both the fade delay and the page chrome:
-	 * - `"route"`: route `loading.tsx` — renders inside the layout's `<main>`; longer
-	 *   fade delay to avoid flashing on fast navigations.
-	 * - `"page"`: page-level Suspense fallback — replaces `ProductShell`, so it owns the
-	 *   full-page chrome (`min-h-screen`, `bg-background`) and uses the shorter delay.
+	 * Where the skeleton renders:
+	 * - `"route"`: route `loading.tsx` during client navigations.
+	 * - `"page"`: page-level Suspense fallback while `ProductShell` resolves.
+	 *
+	 * Shown immediately (no fade delay) so 16.3 instant navigations surface a shell on click.
 	 */
 	surface?: "route" | "page";
 }
@@ -44,21 +44,17 @@ function AttributesAccordionSkeleton({ className }: { className?: string }) {
  * Shared PDP skeleton for route `loading.tsx` and the page-level Suspense fallback.
  * Driven by {@link PDP_GALLERY_LAYOUT} so shell, island, and route loaders stay aligned.
  *
- * Renders its own `<main>` to mirror the live `ProductShell` structure (the layout's
- * outer `<main className="flex-1">` wrapping is a pre-existing, app-wide pattern).
+ * Mirrors the live `ProductShell` structure with a plain `<div>` — the browse layout
+ * (`(main)/layout.tsx`) owns the single `<main>` landmark, so the page must not nest another.
  */
 export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonProps) {
 	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
-	const delayClass = surface === "route" ? "animate-skeleton-delayed-long" : "animate-skeleton-delayed";
 
-	const wrapperClassName =
-		surface === "page"
-			? cn("flex min-h-screen flex-col bg-background", delayClass, "opacity-0")
-			: cn(delayClass, "opacity-0");
+	const wrapperClassName = surface === "page" ? "flex min-h-screen flex-col bg-background" : undefined;
 
 	return (
 		<div role="status" aria-busy="true" aria-label="Loading product" className={wrapperClassName}>
-			<main className={cn(layout.main, surface === "route" && "flex-1")}>
+			<div className={cn(layout.main, surface === "route" && "flex-1")}>
 				<BreadcrumbSkeleton />
 				<div className={layout.grid}>
 					<div className={layout.galleryColumn}>
@@ -81,7 +77,7 @@ export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonP
 						</div>
 					)}
 				</div>
-			</main>
+			</div>
 		</div>
 	);
 }
