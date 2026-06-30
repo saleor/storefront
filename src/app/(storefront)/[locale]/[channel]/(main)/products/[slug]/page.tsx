@@ -210,7 +210,8 @@ async function ProductShell({
 		<div className="flex min-h-screen flex-col bg-background">
 			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
-			<main className={layout.main}>
+			{/* The browse layout (`(main)/layout.tsx`) owns the page's single <main> landmark. */}
+			<div className={layout.main}>
 				<div className="mb-6 hidden sm:block">
 					<Breadcrumbs items={breadcrumbs} ariaLabel={tNav("breadcrumbAriaLabel")} />
 				</div>
@@ -251,7 +252,7 @@ async function ProductShell({
 						<div className={layout.attributesGalleryBlock}>{productAttributesNode}</div>
 					)}
 				</div>
-			</main>
+			</div>
 		</div>
 	);
 }

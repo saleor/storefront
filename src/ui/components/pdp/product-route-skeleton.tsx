@@ -44,8 +44,8 @@ function AttributesAccordionSkeleton({ className }: { className?: string }) {
  * Shared PDP skeleton for route `loading.tsx` and the page-level Suspense fallback.
  * Driven by {@link PDP_GALLERY_LAYOUT} so shell, island, and route loaders stay aligned.
  *
- * Renders its own `<main>` to mirror the live `ProductShell` structure (the layout's
- * outer `<main className="flex-1">` wrapping is a pre-existing, app-wide pattern).
+ * Mirrors the live `ProductShell` structure with a plain `<div>` — the browse layout
+ * (`(main)/layout.tsx`) owns the single `<main>` landmark, so the page must not nest another.
  */
 export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonProps) {
 	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
@@ -54,7 +54,7 @@ export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonP
 
 	return (
 		<div role="status" aria-busy="true" aria-label="Loading product" className={wrapperClassName}>
-			<main className={cn(layout.main, surface === "route" && "flex-1")}>
+			<div className={cn(layout.main, surface === "route" && "flex-1")}>
 				<BreadcrumbSkeleton />
 				<div className={layout.grid}>
 					<div className={layout.galleryColumn}>
@@ -77,7 +77,7 @@ export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonP
 						</div>
 					)}
 				</div>
-			</main>
+			</div>
 		</div>
 	);
 }
