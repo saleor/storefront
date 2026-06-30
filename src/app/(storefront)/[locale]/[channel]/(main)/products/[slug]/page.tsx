@@ -58,6 +58,10 @@ async function getProductData(slug: string, channel: string, localeSlug: string)
 	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
 }
 
+// Prefetch: default (auto). With global `partialPrefetching`, product-card links prefetch only
+// the App Shell. We deliberately do NOT set `allow-runtime` — a per-link runtime prefetch would
+// wake the server for every visible card and stall slow-network clicks until it responds.
+
 // ============================================================================
 // Metadata
 // ============================================================================
@@ -206,7 +210,8 @@ async function ProductShell({
 		<div className="flex min-h-screen flex-col bg-background">
 			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
-			<main className={layout.main}>
+			{/* The browse layout (`(main)/layout.tsx`) owns the page's single <main> landmark. */}
+			<div className={layout.main}>
 				<div className="mb-6 hidden sm:block">
 					<Breadcrumbs items={breadcrumbs} ariaLabel={tNav("breadcrumbAriaLabel")} />
 				</div>
@@ -247,7 +252,7 @@ async function ProductShell({
 						<div className={layout.attributesGalleryBlock}>{productAttributesNode}</div>
 					)}
 				</div>
-			</main>
+			</div>
 		</div>
 	);
 }

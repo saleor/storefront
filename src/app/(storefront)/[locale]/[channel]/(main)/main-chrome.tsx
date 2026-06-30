@@ -1,11 +1,10 @@
 import { type ReactNode, Suspense } from "react";
-import type { StorefrontChromeContent } from "@/lib/content";
 import { Footer } from "@/ui/components/footer";
 import { Header } from "@/ui/components/header";
-import { Logo } from "@/ui/components/shared/logo";
 import { ScrollToTopOnNavigate } from "@/ui/components/shared/scroll-to-top-on-navigate";
-import { AnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar";
-import { DismissibleAnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar-slot";
+import { Logo } from "@/ui/components/shared/logo";
+import { AnnouncementBarSkeleton } from "@/ui/sections/announcement-bar/announcement-bar";
+import { AnnouncementBarSlot, type BrowseRouteParams } from "./browse-chrome-slots";
 
 function HeaderSkeleton() {
 	return (
@@ -54,7 +53,6 @@ function FooterSkeleton() {
 						</div>
 					))}
 				</div>
-				{/* Bottom bar */}
 				<div className="mt-12 flex items-center justify-between border-t border-inverse pt-8">
 					<div className="h-3 w-32 animate-pulse rounded bg-background/20" />
 					<div className="flex gap-6">
@@ -67,49 +65,37 @@ function FooterSkeleton() {
 	);
 }
 
-/** Header + page + footer shell. User menu auth syncs via `HeaderAuthRefresh` (refresh on nav, revalidate when tab refocuses). */
-export function MainChrome({
-	locale,
-	channel,
-	chrome,
-	children,
-}: {
-	locale: string;
-	channel: string;
-	chrome: StorefrontChromeContent;
-	children: ReactNode;
-}) {
-	const { announcementBar } = chrome;
-	const announcementProps = {
-		id: announcementBar.id,
-		message: announcementBar.message,
-		href: announcementBar.href,
-		linkLabel: announcementBar.linkLabel,
-		dismissible: announcementBar.dismissible,
-	};
+async function HeaderSlot({ params }: { params: BrowseRouteParams }) {
+	const { locale, channel } = await params;
+	return <Header locale={locale} channel={channel} />;
+}
 
+async function FooterSlot({ params }: { params: BrowseRouteParams }) {
+	const { locale, channel } = await params;
+	return <Footer locale={locale} channel={channel} />;
+}
+
+/**
+ * Sync browse chrome — header, announcement, and footer each stream in their own
+ * Suspense boundary; `<main>` is never gated on cached copy fetches.
+ */
+export function MainChrome({ params, children }: { params: BrowseRouteParams; children: ReactNode }) {
 	return (
 		<>
-			{/* usePathname() is request-dynamic; isolate it so it doesn't block the static shell prerender. */}
+			{/* usePathname() is runtime-only in Next 16 — must stream inside Suspense for PPR */}
 			<Suspense fallback={null}>
 				<ScrollToTopOnNavigate />
 			</Suspense>
-			{announcementBar.dismissible ? (
-				// Cookie read is per-request: optimistic fallback (visible bar) avoids shift for
-				// shoppers who never dismissed; the dynamic slot omits it when already dismissed.
-				<Suspense fallback={<AnnouncementBar {...announcementProps} />}>
-					<DismissibleAnnouncementBar {...announcementProps} />
-				</Suspense>
-			) : (
-				<AnnouncementBar {...announcementProps} />
-			)}
+			<Suspense fallback={<AnnouncementBarSkeleton />}>
+				<AnnouncementBarSlot params={params} />
+			</Suspense>
 			<Suspense fallback={<HeaderSkeleton />}>
-				<Header locale={locale} channel={channel} nav={chrome.nav} />
+				<HeaderSlot params={params} />
 			</Suspense>
 			<div className="flex min-h-[calc(100dvh-var(--chrome-offset))] flex-col">
 				<main className="flex-1">{children}</main>
 				<Suspense fallback={<FooterSkeleton />}>
-					<Footer locale={locale} channel={channel} />
+					<FooterSlot params={params} />
 				</Suspense>
 			</div>
 		</>

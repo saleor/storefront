@@ -1,3 +1,8 @@
+---
+name: third-party-embeds
+description: Embedding external marketing widgets (reviews/ratings) without breaking Server Components/PPR: next/script in a client leaf, env keys, placement. Use when adding a vendor widget like Yotpo.
+---
+
 # Third-Party Widget Embeds
 
 How to add external marketing widgets (reviews, ratings, social proof loaders) without breaking Paper's Server Component / PPR architecture or performance budget.

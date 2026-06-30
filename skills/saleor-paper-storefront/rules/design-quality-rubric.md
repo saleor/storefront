@@ -1,3 +1,8 @@
+---
+name: design-quality-rubric
+description: The world-class design bar: hierarchy, typography, whitespace, restrained palette, Brand Influence Policy, mobile non-negotiables, pre-finish self-check. Use when designing or reviewing storefront UI quality.
+---
+
 # Design Quality Rubric
 
 The bar for "world-class" when molding storefront surfaces (PDP, homepage, marketing sections). Use this to make design decisions and to self-review before finishing. Pairs with [`ui-design-system`](ui-design-system.md) (the token vocabulary) and [`page-composition`](page-composition.md) (the architecture rails).

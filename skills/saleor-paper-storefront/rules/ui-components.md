@@ -1,3 +1,8 @@
+---
+name: ui-components
+description: Creating/styling components with design tokens and shadcn/Radix primitives, extending cva matrices, the build-time variant registry. Use when building or restyling a UI component.
+---
+
 # UI Components
 
 Create and style UI components with design tokens and shadcn/ui primitives.

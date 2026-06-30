@@ -23,7 +23,6 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 		return (
 			<LinkWithChannel
 				href={`/categories/${child.category.slug}`}
-				prefetch={false}
 				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.category.name}
@@ -34,7 +33,6 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 		return (
 			<LinkWithChannel
 				href={`/collections/${child.collection.slug}`}
-				prefetch={false}
 				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.collection.name}
@@ -45,7 +43,6 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 		return (
 			<LinkWithChannel
 				href={`/pages/${child.page.slug}`}
-				prefetch={false}
 				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{child.page.title}
@@ -76,7 +73,6 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 							<li key={link.href}>
 								<Link
 									href={link.href}
-									prefetch={false}
 									className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 								>
 									{link.label}
@@ -92,7 +88,6 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 							<li key={link.href}>
 								<Link
 									href={link.href}
-									prefetch={false}
 									className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 								>
 									{link.label}

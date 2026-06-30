@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { brandConfig } from "@/config/brand";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
@@ -10,7 +9,6 @@ import { PaperSignEditorialPlaceholder } from "@/ui/components/shared/paper-sign
 import { CategoryTileGrid, type CategoryTile } from "@/ui/sections/category-tile-grid/category-tile-grid";
 import { EditorialHero } from "@/ui/sections/editorial-hero/editorial-hero";
 import { FeaturedCollectionSection } from "@/ui/sections/featured-collection-section/featured-collection-section";
-import { FeaturedCollectionSkeleton } from "@/ui/sections/featured-collection-section/featured-collection-skeleton";
 import { ImageWithText } from "@/ui/sections/image-with-text/image-with-text";
 import { MediaHero } from "@/ui/sections/media-hero/media-hero";
 import { MulticolumnSection } from "@/ui/sections/multicolumn-section/multicolumn-section";
@@ -19,6 +17,9 @@ import { RichTextBlock } from "@/ui/sections/rich-text-block/rich-text-block";
 export const metadata = {
 	description: brandConfig.description,
 };
+
+// Prefetch: default (auto). With global `partialPrefetching`, viewport links already get the
+// homepage App Shell. No link uses `prefetch={true}` to "/", so `allow-runtime` would be inert.
 
 /** Prefer footwear/marquee products for the hero; otherwise the first available image. */
 const HERO_SLUG_HINT = /shoe|plimsoll|sneaker|trainer|runner|force|boot/i;
@@ -57,12 +58,19 @@ function buildCategoryTiles(products: readonly FeaturedProduct[], max = 3): Cate
 }
 
 /**
- * Homepage — async shell that awaits only params + cached content/catalog data
- * (no searchParams/cookies), so PPR stays intact. The featured collection still
- * streams in its own Suspense island.
+ * Homepage — fully static. Every input is cached (`getStorefrontContent`, `getFeaturedProducts`,
+ * `resolveChannelCurrency`) and the route reads no runtime data (no `searchParams` / `cookies`),
+ * so it prerenders into the PPR static shell as real content — no page-level `Suspense`, no
+ * skeleton. The featured collection is cached too, so it is inlined into the shell rather than
+ * streamed behind a fallback.
+ *
+ * There are no dynamic holes here. If one is ever added (e.g. a personalized strip), wrap *only*
+ * that island in its own `Suspense` — never re-wrap the whole page in a page-level skeleton.
+ * The `pnpm build` Cache Components check enforces this: any uncached/runtime access outside a
+ * `Suspense` fails the build, proving `/` stays a real static shell.
  */
-export default async function Page(props: { params: Promise<{ locale: string; channel: string }> }) {
-	const { locale, channel } = await props.params;
+export default async function Page({ params }: { params: Promise<{ locale: string; channel: string }> }) {
+	const { locale, channel } = await params;
 	const content = await getStorefrontContent(channel, locale);
 	const { hero, featuredCollection, categories, brandStory, values, editorial } = content.surfaces.homepage;
 
@@ -103,6 +111,7 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 					subheading={hero.subheading}
 					image={hero.backgroundImage}
 					align="left"
+					height="fold"
 					primaryCta={{ label: hero.primaryCtaLabel, href: "/products" }}
 				/>
 			) : (
@@ -118,18 +127,14 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 				/>
 			)}
 
-			<Suspense
-				fallback={
-					<FeaturedCollectionSkeleton heading={featuredCollection.heading} limit={featuredCollection.limit} />
-				}
-			>
-				<FeaturedCollectionLoader
-					params={props.params}
-					heading={featuredCollection.heading}
-					collectionSlug={featuredCollection.collectionSlug}
-					limit={featuredCollection.limit}
-				/>
-			</Suspense>
+			{/* Cached collection → inlined into the static shell (not streamed behind a skeleton). */}
+			<FeaturedCollectionSection
+				locale={locale}
+				channel={channel}
+				heading={featuredCollection.heading}
+				collectionSlug={featuredCollection.collectionSlug}
+				limit={featuredCollection.limit}
+			/>
 
 			{categoryTiles.length >= 2 ? (
 				<CategoryTileGrid
@@ -168,29 +173,5 @@ export default async function Page(props: { params: Promise<{ locale: string; ch
 				tone="inverse"
 			/>
 		</>
-	);
-}
-
-async function FeaturedCollectionLoader({
-	params,
-	heading,
-	collectionSlug,
-	limit,
-}: {
-	params: Promise<{ locale: string; channel: string }>;
-	heading: string;
-	collectionSlug: string;
-	limit: number;
-}) {
-	const { locale, channel } = await params;
-
-	return (
-		<FeaturedCollectionSection
-			locale={locale}
-			channel={channel}
-			heading={heading}
-			collectionSlug={collectionSlug}
-			limit={limit}
-		/>
 	);
 }

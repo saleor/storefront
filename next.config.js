@@ -14,6 +14,10 @@ const config = {
 	// See: https://nextjs.org/docs/app/getting-started/cache-components
 	cacheComponents: true,
 
+	// Next.js 16.3 — prefetch one reusable loading shell per route (not per link).
+	// See: https://nextjs.org/blog/next-16-3-instant-navigations
+	partialPrefetching: true,
+
 	// Named cacheLife tiers for `"use cache"` — see src/lib/cache-life-profiles.ts
 	cacheLife: paperCacheLifeProfiles,
 

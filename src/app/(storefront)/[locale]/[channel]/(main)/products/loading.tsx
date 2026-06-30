@@ -6,7 +6,7 @@
  */
 export default function ProductsLoading() {
 	return (
-		<main className="container-content flex-1 animate-skeleton-delayed-long py-4 opacity-0 sm:py-6 lg:py-10">
+		<div className="container-content flex-1 animate-skeleton-delayed-long py-4 opacity-0 sm:py-6 lg:py-10">
 			<div className="mb-8">
 				<div className="h-8 w-48 animate-pulse rounded bg-muted" />
 			</div>
@@ -22,6 +22,6 @@ export default function ProductsLoading() {
 					</div>
 				))}
 			</div>
-		</main>
+		</div>
 	);
 }
