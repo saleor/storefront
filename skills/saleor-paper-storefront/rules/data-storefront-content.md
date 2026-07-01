@@ -1,3 +1,8 @@
+---
+name: data-storefront-content
+description: Provider-agnostic marketing/merchandising copy layer (announcement bar, homepage, cart/checkout copy): getStorefrontContent, defaults.ts, merge semantics, CONTENT_PROVIDER. Use when editing editorial copy or wiring new content fields.
+---
+
 # Storefront Content Layer
 
 Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
@@ -47,7 +52,7 @@ When `announcementBar.dismissible` is true, dismissal is stored in the `paper_an
 | **Empty** (code default)                                     | `paper:announcement-dismissed:content:{hash}` — hash of **rendered** `message`, `href`, `linkLabel` | Default. Merchants edit copy in Dashboard; any message/link change re-shows the bar for visitors who dismissed the old version. No extra field to maintain. |
 | **Non-empty** (`announcement-id` in Saleor or `defaults.ts`) | `paper:announcement-dismissed:id:{id}`                                                              | Campaign slug. Dismissal survives message tweaks until you change `id` (e.g. `summer-sale-2026` → `fall-sale-2026`).                                        |
 
-**Important:** Pass the **interpolated** message into the resolver (after `{freeShippingThreshold}` etc.) — `(main)/layout.tsx` does this before `MainChrome`. Policy threshold changes therefore change the content hash and re-show the bar, which is usually correct.
+**Important:** Pass the **interpolated** message into the dismiss resolver (after `{freeShippingThreshold}` etc.) — `getAnnouncementBarProps()` does this in `AnnouncementBarSlot`. Policy threshold changes therefore change the content hash and re-show the bar, which is usually correct.
 
 Saleor: leave `announcement-id` unset for content-hash behavior; set it only when you need a stable campaign id across copy edits. Configurator seed may include an example id — remove it to opt into content-hash dismissal.
 
@@ -62,6 +67,7 @@ Saleor: leave `announcement-id` unset for content-hash behavior; set it only whe
 | Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
 | Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                         |
 | Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
+| Announcement policy copy    | `src/lib/content/get-announcement-bar-props.ts`                       |
 | Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
 | Deep merge                  | `src/lib/content/merge.ts`                                            |
 | Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |
@@ -101,12 +107,12 @@ Exact field list lives in `types.ts` / `defaults.ts` — those evolve; merge rul
 
 ## Where Content Is Consumed
 
-| Surface                                        | Loader                                                         |
-| ---------------------------------------------- | -------------------------------------------------------------- |
-| Announcement bar, shared chrome                | `(main)/layout.tsx` → `MainChrome`                             |
-| Homepage sections                              | `(main)/page.tsx`                                              |
-| Cart trust / empty copy                        | Cart drawer (client reads props or context from server parent) |
-| Checkout empty states, trust, marketing opt-in | `checkout-session-loader.tsx` → `CheckoutContentProvider`      |
+| Surface                                        | Loader                                                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Announcement bar, shared chrome                | `browse-chrome-slots.tsx` (`getAnnouncementBarProps`, `Header`, `Footer`, `CartDrawerSlot`) |
+| Homepage sections                              | `(main)/page.tsx`                                                                           |
+| Cart trust / empty copy                        | Cart drawer (client reads props or context from server parent)                              |
+| Checkout empty states, trust, marketing opt-in | `checkout-session-loader.tsx` → `CheckoutContentProvider`                                   |
 
 Checkout resolves **channel from cart cookies** when loading content so copy can match the cart's channel.
 
@@ -114,25 +120,17 @@ Checkout resolves **channel from cart cookies** when loading content so copy can
 
 ## Caching & Freshness
 
-- Profile: `storefront-content` (~menus tier, ~5 min stale).
-- Tag: `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`).
-- **Locale** keys both the cache tag and the `"use cache"` function args. Catalog/menus/CMS use `localeSlug` in function args with slug-scoped tags — see `data-caching.md` § Locale & Caching.
-- **Catalog translations** (products, categories, menus, CMS pages) are wired: GraphQL `languageCode` + `withTranslated*Fields`.
-- **Storefront Models content** uses `StorefrontContentPages.graphql` `translation` on plain-text attributes via `buildAttributeMap`.
-- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — do not point Saleor webhooks directly at the storefront for production. The app subscribes to Saleor events, then `POST`s to Paper's `/api/revalidate` with the same payload shape the storefront handler expects.
-- **Storefront content:** `PAGE_*` on Pages whose slug matches `storefront-*` (e.g. `storefront-homepage`, `storefront-homepage-{channel}`) → `planStorefrontContentRevalidation()` in `cache-manifest.ts` → `revalidateTag(storefront-content:{channel}:{locale})` + homepage paths per channel.
-- **Menus** (nav/footer): `MENU_*` / `MENU_ITEM_*` → separate profiles (`navigation`, `footerMenu`) — same paper-app → storefront path.
-- The `storefront-content` profile is listed in `GET /api/cache-info` so the Dashboard app can offer manual purge alongside catalog entities.
-- Manual (dev / emergency): `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` with `REVALIDATE_SECRET`.
+- Profile `storefront-content` (~menus tier, ~5 min stale); tag `storefront-content:{channel}:{locale}` (BCP 47 from `getLocaleBcp47List()`). **Locale** keys both the cache tag and the `"use cache"` function args — see `data-caching.md` (Locale & Caching).
+- Catalog translations are wired (`GraphQL languageCode` + `withTranslated*Fields`); storefront Models use `StorefrontContentPages.graphql` `translation` on plain-text attributes via `buildAttributeMap`.
+- **Invalidation goes through [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** — don't point Saleor webhooks directly at the storefront. `PAGE_*` on `storefront-*` pages → `planStorefrontContentRevalidation()` → `revalidateTag` + homepage paths per channel; `MENU_*` → the separate `navigation`/`footerMenu` profiles, same app→storefront path. The profile is listed in `GET /api/cache-info` for manual purge; emergency bust via `GET /api/revalidate?tag=storefront-content:{channel}:{locale}` + `REVALIDATE_SECRET`. Full architecture: `data-caching.md`.
 
 ```
 Saleor (PAGE_UPDATED on storefront-homepage)
-    → saleor-paper-app (page-changed webhook)
-    → POST /api/revalidate { page: { slug } }
-    → planStorefrontContentRevalidation → revalidateTag + revalidatePath
+  → saleor-paper-app (page-changed webhook) → POST /api/revalidate { page: { slug } }
+  → planStorefrontContentRevalidation → revalidateTag + revalidatePath
 ```
 
-Marketing copy is cached like navigation — cart/checkout **transactional** data stays fresh via `cache: "no-cache"`.
+Marketing copy is cached like navigation; cart/checkout **transactional** data stays fresh via `cache: "no-cache"`. Saleor-side cache/revalidation detail: `data-storefront-content-saleor.md`.
 
 ---
 

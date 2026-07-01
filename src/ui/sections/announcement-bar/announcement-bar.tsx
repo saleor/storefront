@@ -41,6 +41,19 @@ function AnnouncementContent({
 	return <>{message}</>;
 }
 
+/** Reserves `--announcement-bar-height` while cached copy streams in. */
+export function AnnouncementBarSkeleton({ className }: { className?: string }) {
+	return (
+		<div
+			aria-hidden="true"
+			className={cn(
+				"h-[var(--announcement-bar-height)] border-b border-border bg-muted motion-safe:animate-pulse",
+				className,
+			)}
+		/>
+	);
+}
+
 export function AnnouncementBar({
 	id,
 	message,

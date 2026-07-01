@@ -1,3 +1,8 @@
+---
+name: page-composition
+description: Molding PDP/homepage by editing page files within the PPR layer model (static shell vs dynamic islands), width and rhythm. Use when adding, reordering, or re-widthing sections without breaking PPR/caching/LCP.
+---
+
 # Page Composition (PDP & Homepage)
 
 How to mold PDP and homepage layouts by editing the page files — adding, removing, reordering, and re-widthing sections — **without breaking PPR, caching, or LCP**. This is the bridge between "design freely" ([`design-quality-rubric`](design-quality-rubric.md)) and "respect the architecture" ([`paper-architecture`](paper-architecture.md), [`data-caching`](data-caching.md)).
@@ -7,23 +12,27 @@ How to mold PDP and homepage layouts by editing the page files — adding, remov
 
 ## The one rule that governs everything: the layer model
 
-Every browse page is **sync page → Suspense → cached shell → dynamic islands** (full detail in `data-caching`). Design changes must stay inside the right layer:
+Pick the page shape by **whether the route reads any runtime data** (`searchParams`/`cookies`/uncached fetch). A skeleton is a **per-hole** affordance, never a **per-page** default:
+
+- **Static page (no runtime data)** → `async page` awaits `params` + `"use cache"` data and renders the shell **directly**. **No page-level `Suspense`, no skeleton** — it prerenders as real content. (homepage, CMS pages)
+- **Hybrid page (some runtime data)** → render the cached shell **eagerly**, then wrap **only** the dynamic island in `Suspense` with a small skeleton. (PLP grid via `searchParams`, PDP variant section)
+
+Design changes must stay inside the right layer:
 
 ```
-Page (sync export)                  ← no top-level await of runtime data
-└── Suspense (skeleton)
-    └── Shell (await params + "use cache" data ONLY)   ← STATIC design lives here
-          ├── sections built from cached content (hero, story, value columns…)
-          └── Suspense island(s)                       ← DYNAMIC design lives here
-                searchParams / cookies / client hooks  (variant gallery, featured grid, cart)
+Page (async export)                 ← awaits params + "use cache" data only; no runtime data at top level
+├── cached shell                    ← STATIC design, prerendered into the PPR shell (renders directly)
+│     sections from cached content (hero, story, value columns, featured grid…)
+└── Suspense island(s)              ← DYNAMIC design only; present on hybrid pages, absent on static ones
+      searchParams / cookies / client hooks  (variant gallery/section, filtered grid, cart)
 ```
 
-| Put it in the STATIC shell                        | Put it in a DYNAMIC island (nested Suspense)              |
-| ------------------------------------------------- | --------------------------------------------------------- |
-| Marketing sections from `getStorefrontContent()`  | Anything reading `searchParams` (variant gallery/section) |
-| `h1`, breadcrumbs, JSON-LD, copy, value props     | Anything reading `cookies()` (cart, auth chrome)          |
-| LCP image preload                                 | `cache: "no-cache"` fetches; client routing hooks         |
-| Cached collection grids via `"use cache"` helpers | Featured grid streams behind its skeleton                 |
+| Put it in the STATIC shell                                        | Put it in a DYNAMIC island (nested Suspense)                      |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Marketing sections from `getStorefrontContent()`                  | Anything reading `searchParams` (variant gallery/section)         |
+| `h1`, breadcrumbs, JSON-LD, copy, value props                     | Anything reading `cookies()` (cart, auth chrome)                  |
+| LCP image preload                                                 | `cache: "no-cache"` fetches; client routing hooks                 |
+| Cached collection grids via `"use cache"` helpers (e.g. featured) | `searchParams`-filtered/sorted grids; per-request personalization |
 
 Hard constraints (never violate when redesigning):
 
@@ -39,19 +48,20 @@ File: [`src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`](<../../../src/
 The homepage composes typed content (`getStorefrontContent`) into an ordered list of sections. To mold it:
 
 1. **Reorder / add / remove sections** by editing the JSX section list. Pull copy from `content.surfaces.homepage` (extend the content model for new fields — see `data-storefront-content`).
-2. **Keep product data streaming**: `FeaturedCollectionSection` stays inside its `<Suspense fallback={<FeaturedCollectionSkeleton/>}>`. Static editorial sections render directly in the shell.
+2. **Render cached sections directly**: `FeaturedCollectionSection` is `"use cache"`, so it's inlined into the static shell (no `Suspense`, no skeleton) alongside the editorial sections. Wrap a section in `Suspense` only if it reads runtime data — none do today.
 3. **Vary width per section** with the container tokens (a full-bleed `HeroBanner` + a `container-content` story + a `container-wide` editorial band is fine).
 4. **Width is intentional** — a full-width homepage is supported; don't default to centered-narrow.
 
 ```tsx
-// Sketch: reordered homepage with a new full-bleed editorial band
+// Sketch: reordered homepage with a new full-bleed editorial band.
+// The homepage is a static `async` page — NO page-level Suspense. The body awaits
+// `params` + "use cache" content and renders every section (incl. featured) directly.
 return (
   <>
     <HeroBanner heading={hero.heading} backgroundImage={hero.backgroundImage} height="large" primaryCta={…} />
 
-    <Suspense fallback={<FeaturedCollectionSkeleton heading={featured.heading} limit={featured.limit} />}>
-      <FeaturedCollectionLoader params={props.params} {...featured} />
-    </Suspense>
+    {/* Cached → inlined into the static shell, not streamed behind a skeleton */}
+    <FeaturedCollectionSection locale={locale} channel={channel} {...featured} />
 
     <ImageWithText heading={editorial.heading} paragraphs={editorial.paragraphs} imagePosition="right" cta={…} />
     <MulticolumnSection heading={values.heading} columns={valueColumns} columnsDesktop={values.columnsDesktop} />
@@ -60,7 +70,7 @@ return (
 );
 ```
 
-> Known divergence: the homepage uses an async page shell that awaits only `params` + cached content (no `searchParams`/`cookies`), so PPR is intact. Keep that constraint when editing; if you convert it to a sync-page shell, add a `loading.tsx` (see `paper-architecture` divergences).
+> The homepage is **fully static**: an `async` page that awaits only `params` + `"use cache"` content (never `searchParams`/`cookies`) and renders every section — including the featured collection — directly into the PPR static shell. There is **no page-level `Suspense` and no skeleton**. `pnpm build`'s Cache Components check fails if any uncached/runtime access sneaks in outside a `Suspense`, which is the guarantee that `/` stays a real static shell. Add a `Suspense` island only when you introduce a genuinely dynamic section.
 
 ## PDP molding
 

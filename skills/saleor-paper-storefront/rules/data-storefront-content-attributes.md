@@ -1,3 +1,8 @@
+---
+name: data-storefront-content-attributes
+description: Choosing Saleor attribute inputTypes for storefront content Models (PLAIN_TEXT, BOOLEAN, NUMERIC, references) and what Paper reads today. Use when adding a content attribute or catalog reference to a Model.
+---
+
 # Storefront Content — Attribute Types
 
 How to choose Saleor attribute `inputType`s on storefront Models, and what Paper reads today.

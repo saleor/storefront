@@ -41,15 +41,19 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 };
 
 /**
- * Cached hero shell (params only) + dynamic product grid island (searchParams).
- * Matches the products listing page pattern — hero is not blocked behind a full-page Suspense.
+ * Hybrid PLP — cached hero rendered eagerly into the PPR static shell, only the
+ * `searchParams`-driven product grid streams behind a `Suspense` island. The hero comes
+ * exclusively from `getCategoryData()` (`"use cache"`), so it prerenders as real content
+ * (no page-level `Suspense`, no hero skeleton on the page itself). Matches the products
+ * listing page pattern. Route `loading.tsx` (`PlpPageLoading`) remains the height-matched
+ * instant-navigation fallback.
  */
 export default async function Page(props: PageProps) {
-	const params = await props.params;
+	const resolvedParams = await props.params;
 	const [category, tListing, tNav] = await Promise.all([
-		getCategoryData(params.slug, params.channel, params.locale),
-		getTranslations({ locale: params.locale, namespace: "productsListing" }),
-		getTranslations({ locale: params.locale, namespace: "nav" }),
+		getCategoryData(resolvedParams.slug, resolvedParams.channel, resolvedParams.locale),
+		getTranslations({ locale: resolvedParams.locale, namespace: "productsListing" }),
+		getTranslations({ locale: resolvedParams.locale, namespace: "nav" }),
 	]);
 
 	if (!category) {
@@ -59,15 +63,23 @@ export default async function Page(props: PageProps) {
 	const plainDescription = parseEditorJSToText(category.description);
 
 	const breadcrumbs = [
-		{ label: tListing("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
+		{
+			label: tListing("breadcrumbHome"),
+			href: buildStorefrontPath(resolvedParams.locale, resolvedParams.channel),
+		},
 		{
 			label: category.name,
-			href: buildStorefrontPath(params.locale, params.channel, `/categories/${params.slug}`),
+			href: buildStorefrontPath(
+				resolvedParams.locale,
+				resolvedParams.channel,
+				`/categories/${resolvedParams.slug}`,
+			),
 		},
 	];
 
 	return (
 		<>
+			{/* Static shell — cached hero renders immediately, prerendered into the PPR shell */}
 			<CategoryHero
 				title={category.name}
 				description={plainDescription}
@@ -75,6 +87,7 @@ export default async function Page(props: PageProps) {
 				breadcrumbs={breadcrumbs}
 				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
+			{/* Dynamic island — only the searchParams-driven grid streams behind a skeleton */}
 			<Suspense fallback={<ProductsGridSkeleton />}>
 				<CategoryProducts params={props.params} searchParams={props.searchParams} />
 			</Suspense>

@@ -1,3 +1,8 @@
+---
+name: checkout-payment-gateways
+description: Adding/changing Saleor payment apps: INTEGRATED_GATEWAYS registry, server- vs client-submit, Stripe + Express Checkout, shared transaction actions. Use when integrating a payment gateway or touching Stripe.
+---
+
 # Checkout Payment Gateways
 
 How to integrate Saleor payment apps in the Paper checkout. Covers the registry architecture, the two payment submit patterns, shared Saleor transaction primitives, and a checklist for wiring a new gateway (e.g. Adyen).

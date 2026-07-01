@@ -1,3 +1,8 @@
+---
+name: design-from-image
+description: Turning a prompt/screenshot/reference into Paper UI by reconfiguring tokens and composing existing sections (not cloning markup). Use when designing from an image or 'make it look like X'.
+---
+
 # Design From Prompt or Image
 
 How to turn a user's prompt, reference screenshot, mockup, or "make it look like X" into Paper UI — by reconfiguring the design system, not bypassing it. This is the generative workflow that ties the design rules together.

@@ -1,3 +1,8 @@
+---
+name: ui-i18n
+description: Code-owned functional UI strings via next-intl (messages/{locale}.json): namespaces, ICU plurals, server vs client usage. Use when adding or translating functional UI strings (not merchant-editable copy).
+---
+
 # next-intl (code-owned UI strings)
 
 Functional storefront strings — buttons, labels, validation, a11y, order status — live in **`messages/{locale}.json`**, not Saleor Models.

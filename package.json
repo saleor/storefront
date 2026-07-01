@@ -22,7 +22,14 @@
 		"generate:all": "pnpm run generate && pnpm run generate:checkout",
 		"test": "vitest",
 		"test:run": "vitest run",
+		"test:e2e": "playwright test",
 		"typecheck": "tsc --noEmit",
+		"verify": "pnpm run docs:check && pnpm run lint:design-tokens && pnpm run typecheck && pnpm run lint && pnpm run test:run",
+		"verify:quick": "pnpm run lint:design-tokens && pnpm run typecheck",
+		"docs:check": "node skills/saleor-paper-storefront/scripts/ensure-rule-frontmatter.mjs --check && node skills/saleor-paper-storefront/scripts/compile-agents.mjs --check",
+		"docs:compile": "node skills/saleor-paper-storefront/scripts/ensure-rule-frontmatter.mjs && node skills/saleor-paper-storefront/scripts/compile-agents.mjs",
+		"doctor": "node scripts/paper-doctor.mjs",
+		"doctor:check": "node scripts/paper-doctor.mjs --check",
 		"knip": "knip",
 		"prepare": "husky install",
 		"configurator:storefront-content:validate": "pnpm dlx @saleor/configurator validate --config config/saleor/storefront-content.config.yml",
@@ -79,6 +86,7 @@
 		"@graphql-codegen/typescript-urql": "4.0.1",
 		"@next/env": "16.2.9",
 		"@parcel/watcher": "2.5.6",
+		"@playwright/test": "1.55.0",
 		"@tailwindcss/container-queries": "0.1.1",
 		"@tailwindcss/forms": "0.5.11",
 		"@tailwindcss/typography": "0.5.20",
@@ -104,15 +112,6 @@
 	},
 	"resolutions": {
 		"graphql": "16.8.1"
-	},
-	"pnpm": {
-		"overrides": {
-			"dset": ">=3.1.4",
-			"micromatch": ">=4.0.8",
-			"@babel/runtime": ">=7.26.10",
-			"@babel/helpers": ">=7.26.10",
-			"brace-expansion@>=2": ">=2.0.2"
-		}
 	},
 	"packageManager": "pnpm@10.28.1",
 	"engines": {

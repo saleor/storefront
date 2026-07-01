@@ -146,6 +146,6 @@ Trigger phrases: "upgrade Paper", "apply Paper migrations", "catch up with upstr
 
 Notable migration: `2026-06-checkout-v2` — **subsystem replacement** (adopt-then-replay, not incremental port); RSC + server actions; requires `2026-06-account-ppr-auth`. See `migrations/references/checkout-v2-overview.md`.
 
-## Full Compiled Document
+## Full Compiled Document (humans / offline only)
 
-For the complete guide with all rules expanded: `AGENTS.md` (regenerate from `rules/` with `node scripts/compile-agents.mjs`)
+`AGENTS.md` concatenates every rule into one ~75k-token file for humans reading offline and for single-file skill export. **Agents must not load it** — read the **one** `rules/<task>.md` whose frontmatter `description` matches your task instead. Regenerate the compiled doc from `rules/` with `node scripts/compile-agents.mjs`.

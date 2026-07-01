@@ -1,3 +1,8 @@
+---
+name: ui-channels
+description: Channels & multi-currency: URL channel segment, STOREFRONT_CHANNELS allowlist, the purchasability/fulfillment model, channel selector. Use when configuring channels or debugging 'product not purchasable'.
+---
+
 # Channels & Multi-Currency
 
 Configure multi-channel and multi-currency support. This storefront supports multiple Saleor channels, each with its own currency. Understanding the underlying fulfillment model helps debug "product not purchasable" issues.
