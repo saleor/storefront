@@ -6,10 +6,8 @@ import { VariantSectionSkeleton } from "./variant-section-dynamic";
 interface ProductRouteSkeletonProps {
 	/**
 	 * Where the skeleton renders:
-	 * - `"route"`: route `loading.tsx` during client navigations.
+	 * - `"route"`: route `loading.tsx` during client navigations (delayed fade-in).
 	 * - `"page"`: page-level Suspense fallback while `ProductShell` resolves.
-	 *
-	 * Shown immediately (no fade delay) so 16.3 instant navigations surface a shell on click.
 	 */
 	surface?: "route" | "page";
 }
@@ -50,7 +48,10 @@ function AttributesAccordionSkeleton({ className }: { className?: string }) {
 export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonProps) {
 	const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
 
-	const wrapperClassName = surface === "page" ? "flex min-h-screen flex-col bg-background" : undefined;
+	const wrapperClassName =
+		surface === "page"
+			? "flex min-h-screen flex-col bg-background"
+			: cn("animate-skeleton-delayed-long", "opacity-0");
 
 	return (
 		<div role="status" aria-busy="true" aria-label="Loading product" className={wrapperClassName}>
