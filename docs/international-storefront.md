@@ -104,7 +104,7 @@ Editorial checkout copy (empty session, trust, marketing opt-in) stays in storef
 ```env
 # Locales (must match LOCALE_DEFINITIONS + messages/*.json)
 NEXT_PUBLIC_DEFAULT_LOCALE=en
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ko
 
 # Optional: restrict which locale can pair with which channel
 # NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl

@@ -3556,7 +3556,7 @@ Rule of thumb: _Would a merchant reword this per shop?_ → CMS. Otherwise → m
 - **Types:** `src/i18n/types.d.ts` augments next-intl from `en.json` (source of truth).
 - **Loader:** `src/i18n/request.ts` — dynamic import by locale filename; keep aligned with `LOCALE_DEFINITIONS`.
 
-Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`.
+Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`, `ko`.
 
 ---
 

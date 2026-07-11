@@ -1,0 +1,592 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, other {상품 #개}}",
+			"subtotal": "소계",
+			"shipping": "배송비",
+			"shippingFree": "무료",
+			"shippingCalculated": "결제 시 계산됨",
+			"total": "합계",
+			"checkout": "결제하기",
+			"continueShopping": "쇼핑 계속하기",
+			"removeItem": "{product} 삭제",
+			"decreaseQuantity": "수량 줄이기",
+			"increaseQuantity": "수량 늘리기"
+		},
+		"page": {
+			"title": "장바구니",
+			"quantity": "수량: {count}",
+			"variant": "옵션: {name}",
+			"yourTotal": "총 결제 금액",
+			"shippingNote": "배송비는 다음 단계에서 계산됩니다",
+			"checkout": "결제하기"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "홈",
+		"breadcrumbProducts": "상품"
+	},
+	"common": {
+		"pagination": {
+			"previous": "이전",
+			"next": "다음"
+		}
+	},
+	"pdp": {
+		"addToBag": "장바구니에 담기",
+		"adding": "담는 중...",
+		"outOfStock": "품절",
+		"selectOptions": "옵션 선택",
+		"free": "무료",
+		"breadcrumbHome": "홈",
+		"badges": {
+			"sale": "세일",
+			"new": "신상품",
+			"bestseller": "베스트셀러"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} - 품절",
+			"willChangeSelections": "{name} - 다른 옵션 선택이 변경됨",
+			"percentOffTitle": "{name} - {percent}% 할인",
+			"outOfStockA11y": "품절",
+			"percentOffA11y": "{percent}% 할인",
+			"selectedA11y": "선택됨"
+		},
+		"attributes": {
+			"description": "상세 설명",
+			"productDetails": "상품 정보",
+			"careInstructions": "세탁 및 관리 방법",
+			"shippingReturns": "배송 및 반품",
+			"shippingBody": "{freeShippingThreshold} 이상 구매 시 무료 배송. 영업일 기준 3~5일 내 배송됩니다.",
+			"returnsBody": "구매 후 {returnsWindowDays}일 이내 무료 반품이 가능합니다. 상품은 미착용 상태여야 하며 태그가 부착되어 있어야 합니다.",
+			"yes": "예",
+			"no": "아니요"
+		},
+		"zoom": {
+			"title": "{productName} — 확대 이미지",
+			"imageAlt": "{productName} — {index}번째 이미지",
+			"close": "확대 이미지 닫기",
+			"previous": "이전 이미지",
+			"next": "다음 이미지",
+			"counter": "{current} / {total}"
+		}
+	},
+	"plp": {
+		"quickAdd": "빠른 담기",
+		"filtersButton": "필터",
+		"filterLabels": {
+			"category": "카테고리",
+			"color": "색상",
+			"size": "사이즈",
+			"price": "가격",
+			"priceRange": "가격대"
+		},
+		"sort": "정렬",
+		"sortOptions": {
+			"featured": "추천순",
+			"newest": "최신순",
+			"price_asc": "낮은 가격순",
+			"price_desc": "높은 가격순",
+			"bestselling": "판매순"
+		},
+		"resultCount": "{count, plural, other {상품 #개}}",
+		"clearAllFilters": "전체 필터 지우기 ({count})",
+		"clearAll": "전체 지우기",
+		"removeFilter": "{value} 필터 삭제"
+	},
+	"search": {
+		"title": "검색",
+		"description": "전체 상품 컬렉션을 검색해보세요.",
+		"bar": {
+			"placeholder": "상품 검색...",
+			"srOnlyLabel": "상품 검색"
+		},
+		"resultsFor": "\"{query}\" 검색 결과",
+		"resultCount": "{count, plural, other {상품 #개 검색됨}}",
+		"noResultsTitle": "\"{query}\"에 대한 검색 결과가 없습니다",
+		"noResultsBody": "검색어와 일치하는 상품을 찾을 수 없습니다. 다른 검색어를 사용하거나 카테고리를 둘러보세요.",
+		"browseAllProducts": "전체 상품 보기",
+		"goToHomepage": "홈으로 이동",
+		"noImage": "이미지 없음",
+		"sort": "정렬",
+		"sortOptions": {
+			"relevance": "관련도순",
+			"price-asc": "낮은 가격순",
+			"price-desc": "높은 가격순",
+			"name": "이름순",
+			"newest": "최신순"
+		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "메인"
+		},
+		"breadcrumbAriaLabel": "이동 경로",
+		"cartButton": "{count, plural, other {장바구니에 상품 #개, 장바구니 보기}}",
+		"mobileMenu": {
+			"open": "메뉴 열기",
+			"title": "탐색 메뉴"
+		},
+		"userMenu": {
+			"open": "사용자 메뉴 열기",
+			"login": "로그인",
+			"myAccount": "내 계정",
+			"myOrders": "내 주문",
+			"logOut": "로그아웃",
+			"unavailableAriaLabel": "계정을 사용할 수 없음",
+			"unavailableTitle": "계정을 불러올 수 없습니다"
+		},
+		"regionPicker": {
+			"ariaLabel": "언어 및 지역",
+			"languageTitle": "언어",
+			"languageDescription": "사이트 문구 및 표시 형식",
+			"marketTitle": "지역",
+			"marketDescription": "통화, 세금 및 배송"
+		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "로그인",
+			"loginDescription": "계정에 로그인하여 주문 내역과 저장된 주소를 확인하세요.",
+			"signupTitle": "계정 만들기",
+			"signupDescription": "새 계정을 만들어 주소와 주문 내역을 저장하세요.",
+			"accountTitle": "내 계정"
+		},
+		"fields": {
+			"email": "이메일",
+			"emailAddress": "이메일 주소",
+			"password": "비밀번호",
+			"firstName": "이름",
+			"lastName": "성",
+			"confirmPassword": "비밀번호 확인",
+			"currentPassword": "현재 비밀번호",
+			"newPassword": "새 비밀번호",
+			"confirmNewPassword": "새 비밀번호 확인",
+			"name": "이름",
+			"companyOptional": "회사명 (선택)",
+			"streetAddress": "도로명 주소",
+			"streetAddress2Optional": "상세 주소, 동/호수 등 (선택)",
+			"city": "시/도",
+			"postalCode": "우편번호",
+			"stateProvince": "주/도",
+			"countryCode": "국가 코드",
+			"phoneOptional": "전화번호 (선택)",
+			"country": "국가",
+			"cityArea": "구/군",
+			"localized": {
+				"province": "주",
+				"district": "구",
+				"state": "주",
+				"zip": "우편번호",
+				"postal": "우편번호",
+				"postTown": "우체국 관할 지역",
+				"prefecture": "현"
+			}
+		},
+		"placeholders": {
+			"email": "you@example.com",
+			"password": "비밀번호를 입력하세요",
+			"firstName": "이름",
+			"lastName": "성",
+			"newPasswordMin": "8자 이상 입력…",
+			"confirmPassword": "비밀번호를 다시 입력하세요",
+			"reenterPassword": "비밀번호를 다시 입력하세요",
+			"countryCode": "KR"
+		},
+		"common": {
+			"cancel": "취소",
+			"save": "저장",
+			"saving": "저장 중…",
+			"edit": "수정",
+			"delete": "삭제",
+			"updated": "업데이트됨",
+			"showPassword": "비밀번호 표시",
+			"hidePassword": "비밀번호 숨기기",
+			"free": "무료",
+			"qty": "수량: {count}",
+			"itemCount": "{count, plural, other {상품 #개}}",
+			"notSet": "설정되지 않음",
+			"change": "변경",
+			"changing": "변경 중…",
+			"sending": "전송 중…"
+		},
+		"errors": {
+			"invalidEmail": "올바른 이메일 주소를 입력해주세요",
+			"invalidEmailFirst": "먼저 올바른 이메일 주소를 입력해주세요",
+			"passwordRequired": "비밀번호를 입력해주세요",
+			"passwordMinLength": "비밀번호는 8자 이상이어야 합니다",
+			"passwordsMismatch": "비밀번호가 일치하지 않습니다",
+			"newPasswordRequired": "새 비밀번호를 입력해주세요",
+			"generic": "오류가 발생했습니다. 다시 시도해주세요.",
+			"signInFailed": "로그인에 실패했습니다. 다시 시도해주세요.",
+			"invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다. 다시 시도해주세요.",
+			"rateLimited": "로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.",
+			"resetLinkFailed": "재설정 링크 전송에 실패했습니다",
+			"accountExists": "이미 이 이메일로 가입된 계정이 있습니다. 로그인해주세요.",
+			"createAccountFailed": "계정 생성에 실패했습니다",
+			"invalidResetToken": "비밀번호 재설정 링크가 만료되었습니다. 새 링크를 요청해주세요.",
+			"setPasswordFailed": "비밀번호 설정에 실패했습니다",
+			"invalidConfirmToken": "확인 링크가 만료되었거나 이미 사용되었습니다. 로그인하거나 다시 가입해주세요.",
+			"confirmFailed": "계정 확인에 실패했습니다",
+			"loadOrdersFailed": "주문 내역을 불러올 수 없습니다. 잠시 후 다시 시도해주세요.",
+			"loadOrderFailed": "이 주문을 불러올 수 없습니다. 다시 시도해주세요.",
+			"loadRecentOrdersFailed": "최근 주문 내역을 불러올 수 없습니다.",
+			"updateProfileFailed": "프로필 업데이트에 실패했습니다",
+			"changePasswordFailed": "비밀번호 변경에 실패했습니다",
+			"createAddressFailed": "주소 추가에 실패했습니다",
+			"updateAddressFailed": "주소 업데이트에 실패했습니다",
+			"deleteAddressFailed": "주소 삭제에 실패했습니다",
+			"setDefaultAddressFailed": "기본 주소 설정에 실패했습니다",
+			"deleteAccountFailed": "계정 삭제 요청에 실패했습니다"
+		},
+		"login": {
+			"title": "다시 오신 것을 환영합니다",
+			"noAccount": "계정이 없으신가요?",
+			"signUp": "회원가입",
+			"forgotPassword": "비밀번호를 잊으셨나요?",
+			"resendResetLink": "재설정 링크 다시 보내기",
+			"submit": "로그인",
+			"submitting": "로그인 중…",
+			"resetSent": "{email} 계정이 존재하는 경우 비밀번호 재설정 링크가 전송되었습니다. 참고: 재설정 링크는 15분에 한 번만 요청할 수 있습니다."
+		},
+		"signup": {
+			"title": "계정 만들기",
+			"hasAccount": "이미 계정이 있으신가요?",
+			"signIn": "로그인",
+			"submit": "계정 만들기",
+			"submitting": "계정 생성 중…",
+			"successTitle": "계정이 생성되었습니다!",
+			"successBody": "계정을 인증하려면 이메일을 확인해주세요.",
+			"goToSignIn": "로그인하러 가기",
+			"terms": "계정을 생성하면 당사의 <terms>서비스 약관</terms> 및 <privacy>개인정보 처리방침</privacy>에 동의하는 것으로 간주됩니다.",
+			"termsLink": "서비스 약관",
+			"privacyLink": "개인정보 처리방침"
+		},
+		"setPassword": {
+			"title": "새 비밀번호 설정",
+			"subtitle": "{email}의 새 비밀번호를 입력하세요",
+			"submit": "비밀번호 업데이트",
+			"submitting": "업데이트 중…",
+			"backToSignIn": "로그인으로 돌아가기",
+			"successTitle": "비밀번호가 업데이트되었습니다!",
+			"successBody": "비밀번호가 성공적으로 재설정되었습니다. 이제 로그인되었습니다.",
+			"redirecting": "스토어로 이동 중…"
+		},
+		"confirm": {
+			"confirmingTitle": "계정을 확인하는 중",
+			"confirmingBody": "{email} 확인 중…",
+			"successTitle": "계정이 확인되었습니다",
+			"successBody": "{email} 계정이 활성화되었습니다. 생성한 비밀번호로 로그인하세요.",
+			"signIn": "로그인",
+			"continueShopping": "쇼핑 계속하기",
+			"errorTitle": "계정을 확인할 수 없습니다",
+			"goToSignIn": "로그인하러 가기"
+		},
+		"nav": {
+			"ariaLabel": "계정",
+			"backToStore": "스토어로 돌아가기",
+			"signOut": "로그아웃",
+			"overview": "개요",
+			"orders": "주문",
+			"addresses": "주소",
+			"settings": "설정"
+		},
+		"overview": {
+			"welcome": "다시 오신 것을 환영합니다, {name}님",
+			"subtitle": "계정 활동 개요입니다.",
+			"recentOrders": "최근 주문",
+			"viewAll": "전체 보기",
+			"noOrdersYet": "아직 주문한 내역이 없습니다."
+		},
+		"orders": {
+			"title": "주문",
+			"count": "{count, plural, =0 {주문 내역 없음} other {주문 #건}}",
+			"empty": "아직 주문한 내역이 없습니다.",
+			"loadMore": "주문 더 보기",
+			"signInRequired": "주문 내역을 확인하려면 로그인하세요.",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "{date}에 주문",
+			"items": "상품 ({count}개)",
+			"subtotal": "소계",
+			"shipping": "배송비",
+			"tax": "세금",
+			"total": "합계",
+			"shippingAddress": "배송지 주소",
+			"billingAddress": "청구지 주소",
+			"paymentMethod": "결제 수단",
+			"paid": "결제 완료",
+			"needHelp": "도움이 필요하신가요?",
+			"signInRequired": "이 주문을 확인하려면 로그인하세요.",
+			"loadFailed": "이 주문을 불러올 수 없습니다. 다시 시도해주세요.",
+			"timeline": "주문 처리 현황"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "처리 중",
+			"UNCONFIRMED": "확인 대기 중",
+			"PARTIALLY_FULFILLED": "부분 배송됨",
+			"FULFILLED": "배송됨"
+		},
+		"fulfillment": {
+			"orderConfirmed": "주문 확인됨",
+			"orderConfirmedDescription": "결제가 확인되어 주문이 접수되었습니다",
+			"FULFILLED": "배송됨",
+			"FULFILLEDDescription": "주문하신 상품이 배송되었습니다",
+			"CANCELED": "처리 취소됨",
+			"CANCELEDDescription": "배송이 취소되었습니다",
+			"REFUNDED": "환불됨",
+			"REFUNDEDDescription": "결제 금액이 환불되었습니다",
+			"REFUNDED_AND_RETURNED": "환불 및 반품 완료",
+			"REFUNDED_AND_RETURNEDDescription": "상품이 반품되어 환불되었습니다",
+			"REPLACED": "교환됨",
+			"REPLACEDDescription": "상품이 교환되었습니다",
+			"RETURNED": "반품됨",
+			"RETURNEDDescription": "상품이 반품되었습니다",
+			"WAITING_FOR_APPROVAL": "승인 대기 중",
+			"WAITING_FOR_APPROVALDescription": "배송 처리가 승인 대기 중입니다",
+			"trackingUpdated": "운송장 정보가 업데이트되었습니다",
+			"trackingNumber": "운송장 번호: {number}",
+			"descriptionWithItems": "{description} ({count, plural, other {상품 #개}})"
+		},
+		"settings": {
+			"title": "설정",
+			"subtitle": "계정 설정을 관리하세요",
+			"memberSince": "{date}부터 회원"
+		},
+		"addresses": {
+			"title": "주소",
+			"subtitle": "저장된 주소를 관리하세요",
+			"empty": "저장된 주소가 아직 없습니다.",
+			"addAddress": "주소 추가",
+			"editAddress": "주소 수정",
+			"addNewAddress": "새 주소 추가",
+			"editAddressDescription": "주소 정보를 업데이트하세요",
+			"addAddressDescription": "계정에 새 주소를 추가하세요",
+			"editAddressAria": "주소 수정",
+			"updateAddress": "주소 업데이트",
+			"deleteAddressAria": "주소 삭제",
+			"defaultShipping": "기본 배송지",
+			"defaultBilling": "기본 청구지",
+			"makeDefaultShipping": "기본 배송지로 설정",
+			"makeDefaultBilling": "기본 청구지로 설정"
+		},
+		"deleteAccount": {
+			"title": "계정 삭제",
+			"description": "계정과 관련된 모든 데이터를 영구적으로 삭제합니다.",
+			"submit": "계정 삭제",
+			"confirm": "예, 계정을 삭제합니다",
+			"confirmBody": "이 작업은 되돌릴 수 없습니다. 계정이 삭제되기 전에 확인 이메일을 받게 됩니다.",
+			"emailSent": "확인 이메일이 전송되었습니다. 계정 삭제를 완료하려면 받은편지함을 확인해주세요."
+		},
+		"changePassword": {
+			"submit": "비밀번호 변경"
+		},
+		"unavailable": {
+			"title": "계정을 불러올 수 없습니다",
+			"body": "스토어를 일시적으로 사용할 수 없습니다. 페이지를 새로고침하거나 잠시 후 다시 시도해주세요."
+		}
+	},
+	"checkout": {
+		"steps": {
+			"information": "정보",
+			"shipping": "배송",
+			"payment": "결제",
+			"stepsAriaLabel": "결제 단계",
+			"secureCheckout": "안전 결제",
+			"complete": "완료",
+			"stepOf": "{total}단계 중 {step}단계"
+		},
+		"actions": {
+			"saving": "저장 중…",
+			"loading": "불러오는 중…",
+			"continueToShipping": "배송 단계로 이동",
+			"continueToPayment": "결제 단계로 이동",
+			"continue": "계속",
+			"continueAsGuest": "비회원으로 계속하기",
+			"preparingGuestCart": "비회원 장바구니 준비 중…",
+			"logIn": "로그인",
+			"returnToInformation": "정보 입력으로 돌아가기",
+			"returnToShipping": "배송 단계로 돌아가기",
+			"payNow": "지금 결제하기",
+			"payTotal": "{total} 결제하기",
+			"completeOrder": "주문 완료",
+			"placingOrder": "주문 접수 중…",
+			"creatingOrder": "주문 생성 중…",
+			"processingPayment": "결제 처리 중…",
+			"continueShopping": "쇼핑 계속하기",
+			"tryAgain": "다시 시도"
+		},
+		"errors": {
+			"sessionExpiredTitle": "결제 세션이 만료되었습니다",
+			"sessionExpiredMessage": "이 장바구니는 더 이상 사용할 수 없습니다. 상품을 다시 담아 새 결제를 시작하세요.",
+			"loadFailedTitle": "결제 정보를 불러올 수 없습니다",
+			"loadFailedMessage": "장바구니를 불러오는 중 문제가 발생했습니다. 다시 시도하거나 스토어에서 새로 결제를 시작해주세요.",
+			"orderNotFoundTitle": "주문을 찾을 수 없습니다",
+			"orderNotFoundMessage": "이 주문을 찾을 수 없습니다. 삭제되었거나 링크가 잘못되었을 수 있습니다.",
+			"emailRequired": "이메일을 입력해주세요",
+			"selectShippingAddress": "배송지 주소를 선택해주세요",
+			"selectShippingMethod": "배송 방법을 선택해주세요",
+			"updateShippingMethodFailed": "배송 방법 업데이트에 실패했습니다",
+			"orphanedCartMessage": "이 장바구니는 아직 로그인된 계정에 연결되어 있습니다. 비회원으로 결제하려면 동일한 상품으로 새 비회원 장바구니를 시작하거나 로그인해주세요.",
+			"orphanedCartBlocked": "이 장바구니는 아직 로그인된 계정에 연결되어 있습니다. 위에서 비회원으로 계속하거나 로그인해주세요.",
+			"discountApplyFailed": "이 할인 코드를 적용할 수 없습니다.",
+			"discountRemoveFailed": "할인 코드 삭제에 실패했습니다.",
+			"invalidValue": "잘못된 값입니다",
+			"updateEmailFailed": "이메일 업데이트에 실패했습니다",
+			"createAccountFailed": "계정 생성에 실패했습니다",
+			"updateAddressFailed": "주소 업데이트에 실패했습니다",
+			"crashTitle": "결제 오류",
+			"crashMessage": "결제 정보를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요."
+		},
+		"contact": {
+			"title": "연락처",
+			"haveAccount": "계정이 있으신가요?",
+			"createAccountLabel": "다음 결제를 더 빠르게 진행하려면 계정을 만드세요",
+			"activationNotice": "결제 완료 후, 로그인하기 전에 계정을 활성화하는 이메일을 받게 됩니다.",
+			"guestCheckout": "비회원 결제",
+			"newCustomer": "처음 방문하셨나요?",
+			"signInTitle": "로그인",
+			"resetPasswordTitle": "비밀번호 재설정",
+			"resetPasswordSubtitle": "계정의 새 비밀번호를 입력하세요",
+			"processing": "처리 중…",
+			"passwordMinPlaceholder": "비밀번호 (최소 8자)",
+			"signedIn": "로그인됨"
+		},
+		"summary": {
+			"title": "주문 요약",
+			"show": "표시",
+			"hide": "숨기기",
+			"toggleOrderSummary": "주문 요약 {action}",
+			"itemCount": "{count, plural, other {상품 #개}}",
+			"subtotal": "소계",
+			"shipping": "배송비",
+			"taxVat": "세금 (부가세)",
+			"discount": "할인",
+			"total": "합계",
+			"includingVat": "부가세 포함",
+			"productFallback": "상품",
+			"contact": "연락처",
+			"shipTo": "배송지",
+			"method": "방법",
+			"delivery": "배송",
+			"digital": "디지털"
+		},
+		"promo": {
+			"placeholder": "할인 코드",
+			"apply": "적용",
+			"applying": "적용 중…",
+			"removeAriaLabel": "할인 코드 삭제"
+		},
+		"shipping": {
+			"methodTitle": "배송 방법",
+			"loadingMethods": "배송 방법을 불러오는 중…",
+			"noAddressYet": "먼저 이전 단계로 돌아가 배송지 주소를 입력해주세요.",
+			"addressTitle": "배송지 주소",
+			"countryRegion": "국가/지역",
+			"selectCountry": "국가 선택",
+			"backToSavedAddresses": "← 저장된 주소로 돌아가기",
+			"emptySavedShipping": "저장된 주소가 아직 없습니다. 아래에 배송지 주소를 입력해주세요.",
+			"selectShippingAddressSheet": "배송지 주소 선택"
+		},
+		"billing": {
+			"title": "청구지 주소",
+			"sameAsShipping": "배송지 주소와 동일",
+			"selectBillingSheet": "청구지 주소 선택",
+			"emptySavedBilling": "저장된 주소가 없습니다.",
+			"backToSavedAddresses": "저장된 주소로 돌아가기"
+		},
+		"addresses": {
+			"selectPrompt": "주소를 선택하세요",
+			"setDefaultShipping": "기본 배송지 주소로 설정",
+			"setDefaultBilling": "기본 청구지 주소로 설정",
+			"defaultBadge": "기본",
+			"emptySaved": "저장된 주소가 아직 없습니다."
+		},
+		"payment": {
+			"totalUpdatedTitle": "주문 총액이 변경되었습니다",
+			"totalUpdatedBody": "총액이 {previous}에서 {next}(으)로 변경되었습니다. 결제를 완료하기 전에 업데이트된 주문 요약을 확인해주세요.",
+			"deliveryInvalidTitle": "배송 방법을 더 이상 사용할 수 없습니다",
+			"deliveryInvalidBody": "주문을 완료하기 전에 배송 단계로 돌아가 유효한 배송 방법을 선택해주세요.",
+			"completingTitle": "주문을 처리하는 중",
+			"completingBody": "결제를 확인하고 주문을 생성하는 중입니다. 보통 몇 초 정도 걸립니다 — 이 페이지를 닫거나 새로고침하지 마세요.",
+			"initFailed": "결제 시스템을 초기화하지 못했습니다.",
+			"unavailable": "결제 시스템을 사용할 수 없습니다. 다시 시도해주세요.",
+			"loadingGateway": "{gateway} 결제 양식을 불러오는 중…",
+			"confirmingPayment": "결제를 확인하는 중…",
+			"securingWithStripe": "Stripe로 결제를 안전하게 처리하고 있습니다. 보통 몇 초 정도 걸립니다.",
+			"doNotClose": "이 페이지를 닫거나 새로고침하지 마세요.",
+			"completeOrderFailed": "주문을 완료할 수 없습니다. 다시 시도해주세요.",
+			"placeOrderFailed": "주문을 접수할 수 없습니다. 다시 시도하거나 고객 지원에 문의해주세요.",
+			"totalsRefreshFailed": "결제 총액을 새로고침할 수 없습니다. 다시 시도해주세요.",
+			"totalUnavailable": "결제 총액을 사용할 수 없습니다. 페이지를 새로고침한 후 다시 시도해주세요.",
+			"currencyUnavailable": "결제 통화를 사용할 수 없습니다. 페이지를 새로고침한 후 다시 시도해주세요.",
+			"validationFailed": "결제 검증에 실패했습니다",
+			"methodRequired": "선택한 결제 수단을 확인할 수 없습니다. 결제 방법을 선택한 후 다시 시도해주세요.",
+			"detailsUnavailable": "결제 정보를 가져올 수 없습니다. 다시 시도해주세요.",
+			"expressReset": "결제가 확인되기 전에 간편 결제 버튼이 초기화되었습니다. 다시 시도해주세요.",
+			"formReset": "카드 확인 전에 결제 양식이 초기화되었습니다. 페이지를 새로고침하지 말고 결제를 다시 시도해주세요.",
+			"totalChanged": "주문 총액이 변경되었습니다. 업데이트된 금액을 확인한 후 다시 시도해주세요.",
+			"bankDeclined": "카드사에서 결제를 거절했습니다. 다시 시도하거나 다른 카드를 사용해주세요.",
+			"sessionExpired": "리디렉션 후 결제 세션이 만료되었습니다. 다시 시도해주세요.",
+			"channelUnresolved": "결제 후 결제 채널을 확인할 수 없습니다. 고객 지원에 문의해주세요.",
+			"unexpectedError": "결제를 완료하는 중 예기치 않은 오류가 발생했습니다.",
+			"stripeConfigFailed": "Stripe 결제 게이트웨이 설정에 실패했습니다",
+			"stripeKeyMissing": "Stripe 공개 키가 없습니다. Saleor 대시보드에서 Stripe 앱 설정을 확인해주세요.",
+			"dummyGateway": "테스트 결제",
+			"failed": "결제 실패",
+			"interruptedBeforeCharge": "결제가 청구되기 전에 중단되었습니다. 안전하게 다시 시도할 수 있습니다.",
+			"interruptedAfterAuthorize": "결제는 완료되었지만 아직 주문이 접수되지 않았습니다. 다시 결제하지 말고 아래의 “주문 완료”를 눌러 마무리하세요.",
+			"verificationUnavailable": "이전 결제 시도를 확인할 수 없습니다. 페이지를 새로고침해주세요 — 확인되기 전까지 다시 결제하지 마세요.",
+			"authorizedTitle": "결제가 승인되었습니다 — 주문을 접수하세요",
+			"authorizedBody": "결제가 승인되었습니다 (주문 처리 시 청구됩니다). 아래를 눌러 주문을 접수하세요 — 결제 시 추가로 청구되지 않습니다.",
+			"freeOrderBody": "주문 총액은 {total}입니다. 결제가 필요하지 않습니다 — 아래에서 확인하여 주문을 접수하세요.",
+			"dummyTestMode": "테스트 모드입니다. 카드 정보가 필요 없습니다 — 결제를 눌러 테스트 주문을 완료하세요.",
+			"stripeLoadTitle": "Stripe를 불러올 수 없습니다"
+		},
+		"confirmation": {
+			"orderNumber": "주문 #{number}",
+			"thankYou": "주문해주셔서 감사합니다!",
+			"confirmedTitle": "주문이 확인되었습니다",
+			"confirmedEmail": "{email}로 확인 이메일을 받으실 수 있습니다",
+			"emailSent": "확인 이메일이 전송되었습니다",
+			"shippingAddress": "배송지 주소",
+			"billingAddress": "청구지 주소",
+			"estimatedDelivery": "예상 배송일"
+		},
+		"server": {
+			"marketingSaveFailed": "마케팅 수신 동의 저장에 실패했습니다",
+			"invalidRedirectUrl": "잘못된 리디렉션 URL입니다",
+			"createAccountFailed": "계정 생성에 실패했습니다",
+			"noSaleorResponse": "Saleor로부터 응답이 없습니다",
+			"shippingMethodsFailed": "배송 방법을 불러오지 못했습니다",
+			"gatewayInitFailed": "결제 게이트웨이 초기화에 실패했습니다",
+			"totalVerifyFailed": "결제 총액을 확인할 수 없습니다. 다시 시도해주세요.",
+			"totalChanged": "결제 총액이 변경되었습니다. 주문을 확인한 후 다시 시도해주세요.",
+			"paymentInitFailed": "결제 초기화에 실패했습니다",
+			"paymentsDisabled": "이 환경에서는 결제가 활성화되어 있지 않습니다.",
+			"paymentProcessFailed": "결제 처리에 실패했습니다",
+			"completeOrderFailed": "주문 완료에 실패했습니다",
+			"orderCreateFailed": "결제는 처리되었지만 주문을 생성할 수 없습니다. 다시 시도하거나 고객 지원에 문의해주세요.",
+			"validationRulesUnavailable": "검증 규칙을 사용할 수 없습니다",
+			"setDefaultAddressFailed": "기본 주소 설정에 실패했습니다",
+			"dummyNotAllowed": "이 환경에서는 테스트 결제를 사용할 수 없습니다.",
+			"stripeNotEnabled": "이 환경에서는 Stripe 결제가 활성화되어 있지 않습니다. 스토어에 NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS=true를 설정하세요."
+		},
+		"gateways": {
+			"noneTitle": "결제 게이트웨이가 설정되지 않았습니다",
+			"noneBody": "결제를 받으려면 Saleor 대시보드에서 결제 앱을 설치하세요 (테스트용 Saleor Dummy Payment 또는 프로덕션용 Stripe/Adyen 등).",
+			"unsupportedTitle": "지원되지 않는 결제 게이트웨이입니다",
+			"unsupportedList": "이 결제는 사용 가능한 결제 게이트웨이를 지원하지 않습니다: {gateways}.",
+			"unsupportedEmpty": "이 결제에 사용할 수 있는 결제 게이트웨이가 없습니다.",
+			"dummyMissingTitle": "이 결제에서는 테스트 결제를 사용할 수 없습니다",
+			"dummyMissingBody": "테스트 결제 앱이 설치되어 있지만 이 결제에서는 사용할 수 없습니다. Saleor 대시보드에서 앱이 활성화되어 있는지, 웹훅이 정상적으로 전달되는지, 결제 통화가 지원되는지(호스팅 앱은 USD) 확인해주세요.",
+			"noGatewayConfigured": "결제 게이트웨이가 설정되지 않았습니다. 고객 지원에 문의하거나 Saleor에서 결제 앱을 설정해주세요.",
+			"stripeUseCardForm": "Stripe 결제는 카드 양식을 통해 처리됩니다. 위의 Stripe 결제 섹션에서 결제를 완료해주세요.",
+			"paymentFailed": "결제 실패",
+			"paymentTryAgain": "결제에 실패했습니다. 다시 시도해주세요.",
+			"paymentWebhookFailed": "결제 앱 웹훅이 실패했습니다. Saleor 대시보드 → 앱 → 테스트 결제 앱에서 웹훅 전달 상태를 확인해주세요.",
+			"paymentInitFailed": "결제를 초기화할 수 없습니다. Saleor에서 결제 앱이 실행 중인지 확인해주세요."
+		}
+	}
+}
