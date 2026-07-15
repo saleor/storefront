@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { AuthFormSection } from "@/ui/components/auth/auth-form-section";
 import { ConfirmAccountMode } from "@/ui/components/auth/confirm-account-mode";
@@ -81,7 +82,7 @@ function LoginSkeleton() {
 						<div className="flex justify-end">
 							<div className="h-4 w-28 animate-pulse rounded bg-secondary" />
 						</div>
-						<div className="bg-foreground/10 h-12 w-full animate-pulse rounded-md" />
+						<div className="h-12 w-full animate-pulse rounded-md bg-foreground/10" />
 					</div>
 				</div>
 			</div>
@@ -90,6 +91,9 @@ function LoginSkeleton() {
 }
 
 async function LoginContent({ locale, channel }: { locale: string; channel: string }) {
+	// Request-dynamic — never serve a cached login redirect from a prior authenticated session.
+	await cookies();
+
 	const result = await fetchAuthenticatedUserIfSession(CurrentUserDocument, {
 		cache: "no-cache",
 	});

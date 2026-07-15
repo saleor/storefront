@@ -38,6 +38,9 @@ function normalizeSearchString(search: string): string {
 type CheckoutQueryGlobalState = {
 	historyEventsPatched: boolean;
 	intendedStepSlug: string | null;
+	querySubscriberCount: number;
+	originalPushState: History["pushState"] | null;
+	originalReplaceState: History["replaceState"] | null;
 };
 
 const GLOBAL_STATE_KEY = "__checkoutQueryState" as const;
@@ -46,8 +49,39 @@ function getGlobalState(): CheckoutQueryGlobalState {
 	const holder = globalThis as typeof globalThis & {
 		[GLOBAL_STATE_KEY]?: CheckoutQueryGlobalState;
 	};
-	holder[GLOBAL_STATE_KEY] ??= { historyEventsPatched: false, intendedStepSlug: null };
+	holder[GLOBAL_STATE_KEY] ??= {
+		historyEventsPatched: false,
+		intendedStepSlug: null,
+		querySubscriberCount: 0,
+		originalPushState: null,
+		originalReplaceState: null,
+	};
 	return holder[GLOBAL_STATE_KEY];
+}
+
+function isCheckoutPathname(pathname = window.location.pathname): boolean {
+	return pathname === "/checkout" || pathname.startsWith("/checkout/");
+}
+
+function parsePathnameFromHistoryUrl(url: string | URL | null | undefined): string | null {
+	if (typeof url !== "string" || !url) {
+		return null;
+	}
+
+	try {
+		return new URL(url, window.location.origin).pathname;
+	} catch {
+		return null;
+	}
+}
+
+function shouldNotifyCheckoutQueryHistory(args: Parameters<History["pushState"]>): boolean {
+	if (isCheckoutPathname()) {
+		return true;
+	}
+
+	const pathname = parsePathnameFromHistoryUrl(args[2]);
+	return pathname !== null && isCheckoutPathname(pathname);
 }
 
 /**
@@ -65,38 +99,66 @@ function installHistoryEventsPatch(): void {
 		return;
 	}
 	const state = getGlobalState();
-	if (state.historyEventsPatched) {
+	if (state.historyEventsPatched || !isCheckoutPathname()) {
 		return;
 	}
 	state.historyEventsPatched = true;
+	state.originalPushState = window.history.pushState.bind(window.history);
+	state.originalReplaceState = window.history.replaceState.bind(window.history);
 
-	const originalPushState = window.history.pushState.bind(window.history);
-	const originalReplaceState = window.history.replaceState.bind(window.history);
+	const notifyAfterCommit = (args: Parameters<History["pushState"]>) => {
+		if (!shouldNotifyCheckoutQueryHistory(args)) {
+			return;
+		}
 
-	const notifyAfterCommit = () => {
 		queueMicrotask(() => {
 			window.dispatchEvent(new Event(CHECKOUT_QUERY_CHANGE));
 		});
 	};
 
 	window.history.pushState = (...args: Parameters<History["pushState"]>) => {
-		originalPushState(...args);
-		notifyAfterCommit();
+		state.originalPushState!(...args);
+		notifyAfterCommit(args);
 	};
 	window.history.replaceState = (...args: Parameters<History["replaceState"]>) => {
-		originalReplaceState(...args);
-		notifyAfterCommit();
+		state.originalReplaceState!(...args);
+		notifyAfterCommit(args);
 	};
 }
 
+function uninstallHistoryEventsPatch(): void {
+	const state = getGlobalState();
+	if (!state.historyEventsPatched || !state.originalPushState || !state.originalReplaceState) {
+		return;
+	}
+
+	window.history.pushState = state.originalPushState;
+	window.history.replaceState = state.originalReplaceState;
+	state.historyEventsPatched = false;
+	state.originalPushState = null;
+	state.originalReplaceState = null;
+}
+
 function subscribeToCheckoutQuery(onStoreChange: () => void): () => void {
+	if (typeof window === "undefined") {
+		return () => {};
+	}
+
+	const state = getGlobalState();
+	state.querySubscriberCount += 1;
 	installHistoryEventsPatch();
+
 	window.addEventListener("popstate", onStoreChange);
 	window.addEventListener(CHECKOUT_QUERY_CHANGE, onStoreChange);
 
 	return () => {
 		window.removeEventListener("popstate", onStoreChange);
 		window.removeEventListener(CHECKOUT_QUERY_CHANGE, onStoreChange);
+		state.querySubscriberCount -= 1;
+		if (state.querySubscriberCount <= 0) {
+			state.querySubscriberCount = 0;
+			uninstallHistoryEventsPatch();
+		}
 	};
 }
 

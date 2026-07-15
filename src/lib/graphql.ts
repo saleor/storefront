@@ -1,3 +1,4 @@
+import { io } from "next/cache";
 import { type TypedDocumentString } from "../gql/graphql";
 
 // ============================================================================
@@ -231,6 +232,11 @@ async function fetchWithRetry(
 			let response: Response;
 
 			if (auth === "session") {
+				// @saleor/auth-sdk checks JWT expiry with `Date.now()` inside `fetchWithAuth`.
+				// Under Cache Components + Partial Prefetching that sync clock read may only
+				// happen in the dynamic stage; `io()` suspends prerenders/prefetch shells here
+				// so the session fetch runs per-request (no-op during real requests).
+				await io();
 				const { getServerAuthClient } = await import("@/lib/auth/server");
 				response = await (await getServerAuthClient()).fetchWithAuth(url, input);
 			} else {

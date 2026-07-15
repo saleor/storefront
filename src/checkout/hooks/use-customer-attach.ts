@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
-import { attachCustomerToCheckout } from "@/app/(checkout)/actions";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import { useUser } from "@/checkout/hooks/use-user";
 import { useCheckout } from "@/checkout/hooks/use-checkout";
 
@@ -29,7 +31,8 @@ export const useCustomerAttach = () => {
 
 		inFlightRef.current = true;
 
-		void attachCustomerToCheckout(checkoutId)
+		void getCheckoutTransport()
+			.attachCustomer(checkoutId)
 			.then((result) => {
 				if (result.ok) {
 					setCheckout(result.checkout);

@@ -30,6 +30,8 @@ export type CheckoutTransport = {
 		billingAddress: AddressInput;
 		saveAddress: boolean;
 	}) => Promise<CheckoutActionResult>;
+	/** `checkoutCustomerAttach` — binds the logged-in user to an anonymous checkout. */
+	attachCustomer: (checkoutId: string) => Promise<CheckoutActionResult>;
 	initializePaymentGateways: (
 		variables: PaymentGatewaysInitializeMutationVariables,
 	) => Promise<PaymentGatewaysInitializeActionResult>;
