@@ -1,5 +1,9 @@
 blockExoticSubdeps: true
 minimumReleaseAge: 1440 # 24h
+minimumReleaseAgeExclude:
+  # Next.js previews are consumed the day they ship on this branch
+  - next
+  - "@next/*"
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - "semver@6.3.1"
@@ -10,4 +14,4 @@ overrides:
   "@babel/runtime": ">=7.26.10"
   "@babel/helpers": ">=7.26.10"
   "brace-expansion@>=2": ">=2.0.2"
-  next: 16.3.0-preview.5
+  next: 16.3.0-preview.6

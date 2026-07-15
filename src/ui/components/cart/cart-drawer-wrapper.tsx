@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+import { io } from "next/cache";
 import { deleteCartLine, updateCartLineQuantity } from "@/app/actions";
 import type { CartContent, StorefrontPolicies } from "@/lib/content";
 import * as Checkout from "@/lib/checkout";
@@ -11,6 +13,9 @@ interface CartDrawerWrapperProps {
 }
 
 export async function CartDrawerWrapper({ channel, localeSlug, cart, policies }: CartDrawerWrapperProps) {
+	await cookies();
+	await io();
+
 	const checkoutId = await Checkout.getIdFromCookies(channel);
 	const checkout = checkoutId ? await Checkout.find(checkoutId, localeSlug) : null;
 
