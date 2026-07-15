@@ -23,7 +23,7 @@ export function UserMenu({ user }: Props) {
 	const t = useTranslations("nav.userMenu");
 
 	return (
-		<DropdownMenu>
+		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger className="focus:outline-hidden relative flex rounded-full bg-secondary text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
 				<span className="sr-only">{t("open")}</span>
 				<UserAvatar user={user} />

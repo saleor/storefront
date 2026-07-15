@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 
 import { logout } from "@/app/actions";
+import { markAuthSurfaceHardNav } from "@/lib/auth/auth-surface-nav";
 import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
@@ -25,6 +26,7 @@ export function useLogout() {
 		}
 
 		if (options?.stayOnPage) {
+			markAuthSurfaceHardNav();
 			window.location.reload();
 			return;
 		}

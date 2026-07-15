@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, type ReactNode } from "react";
+import { startTransition, useEffect, useRef, type ReactNode } from "react";
 
 import { revalidateStorefrontChromeAction } from "@/app/actions";
+import { consumeAuthSurfaceHardNav } from "@/lib/auth/auth-surface-nav";
 
 /**
  * Keeps header auth chrome in sync with HttpOnly session cookies.
@@ -26,8 +27,18 @@ export function HeaderAuthRefresh({ channel, children }: { channel: string; chil
 	useEffect(() => {
 		if (hasSyncedInitialChrome.current) return;
 		hasSyncedInitialChrome.current = true;
+
+		// Login/logout use hard navigation — the document already has fresh auth chrome;
+		// router.refresh() here can restore a stale Router Cache shell (guest after login,
+		// or broken menu after logout).
+		if (consumeAuthSurfaceHardNav()) {
+			return;
+		}
+
 		void revalidateStorefrontChromeAction(channel).then(() => {
-			router.refresh();
+			startTransition(() => {
+				router.refresh();
+			});
 		});
 	}, [channel, router]);
 
@@ -38,7 +49,9 @@ export function HeaderAuthRefresh({ channel, children }: { channel: string; chil
 			}
 
 			void revalidateStorefrontChromeAction(channel).then(() => {
-				router.refresh();
+				startTransition(() => {
+					router.refresh();
+				});
 			});
 		};
 

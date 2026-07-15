@@ -10,6 +10,7 @@ import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { Button } from "@/ui/components/ui/button";
 import { buildCheckoutPriceChangeNotice } from "@/checkout/lib/payment/checkout-pay-amount";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
+import { useLiveCheckoutSearchParams } from "@/checkout/lib/checkout-search-params";
 import { isStripeExpressCheckoutEnabled } from "@/checkout/lib/payment/providers/stripe";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 	const stripe = useStripe();
 	const elements = useElements();
 	const searchParams = useSearchParams();
+	const liveSearchParams = useLiveCheckoutSearchParams(searchParams);
 	const { refreshCheckout } = useCheckoutData();
 	const paymentMessages = useCheckoutPaymentMessages();
 	const tActions = useTranslations("checkout.actions");
@@ -76,7 +78,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 			elements,
 			checkout,
 			billing,
-			searchParams,
+			searchParams: liveSearchParams,
 			refreshCheckout,
 			paymentMethodContext: {
 				surface: "paymentElement",
