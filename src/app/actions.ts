@@ -2,13 +2,14 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { getStaticStorefrontChannelSlugs } from "@/config/channels";
+import { getStorefrontLocaleSlugs } from "@/config/locale";
 import { signOutSession } from "@/lib/auth/bff-server";
 import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
-import { getStorefrontLocaleSlugs } from "@/config/locale";
 import * as Checkout from "@/lib/checkout";
-import { buildStorefrontPath } from "@/lib/storefront-path";
 
 function revalidateCart(channel: string) {
 	for (const locale of getStorefrontLocaleSlugs()) {
@@ -20,6 +21,21 @@ function revalidateCart(channel: string) {
 /** Invalidate cached storefront chrome (header + checkout shell). Server actions only — not during RSC render. */
 export async function revalidateStorefrontChromeAction(channel: string) {
 	revalidateStorefrontChrome(channel);
+}
+
+/**
+ * SDK `signOut` only clears cookies for the current NEXT_PUBLIC_SALEOR_API_URL.
+ * Cookies minted against a previously configured Saleor instance keep matching
+ * `hasAuthSession()`'s marker scan, wedging the header in "unavailable" — sweep
+ * every Saleor auth cookie regardless of API URL.
+ */
+async function clearAllSaleorAuthCookies() {
+	const cookieStore = await cookies();
+	for (const cookie of cookieStore.getAll()) {
+		if (cookie.name.includes("saleor_auth")) {
+			cookieStore.delete(cookie.name);
+		}
+	}
 }
 
 export async function logout() {
@@ -34,6 +50,15 @@ export async function logout() {
 	}
 
 	await signOutSession();
+	await clearAllSaleorAuthCookies();
+
+	for (const channel of getStaticStorefrontChannelSlugs()) {
+		revalidateStorefrontChrome(channel);
+		for (const locale of getStorefrontLocaleSlugs()) {
+			revalidatePath(buildStorefrontPath(locale, channel, "/login"));
+		}
+	}
+
 	revalidatePath("/", "layout");
 	revalidatePath("/checkout");
 }
