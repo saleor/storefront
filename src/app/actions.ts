@@ -39,7 +39,6 @@ async function clearAllSaleorAuthCookies() {
 }
 
 export async function logout() {
-	"use server";
 	const cookieStore = await cookies();
 
 	for (const cookie of cookieStore.getAll()) {

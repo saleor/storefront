@@ -4,7 +4,7 @@ import { UserIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { logout } from "@/app/actions";
+import { useLogout } from "@/lib/auth/use-logout";
 
 /**
  * Session cookies exist but `me` could not be loaded — a wedged session
@@ -14,20 +14,16 @@ import { logout } from "@/app/actions";
  */
 export function UserMenuUnavailable() {
 	const t = useTranslations("nav.userMenu");
+	const logout = useLogout();
 	const [isClearing, setIsClearing] = useState(false);
 
 	return (
 		<button
 			type="button"
 			disabled={isClearing}
-			onClick={async () => {
+			onClick={() => {
 				setIsClearing(true);
-				try {
-					await logout();
-				} catch {
-					// Cookie clear is best-effort; the reload re-evaluates session state regardless.
-				}
-				window.location.reload();
+				void logout({ stayOnPage: true });
 			}}
 			className="inline-flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
 			title={t("unavailableTitle")}
