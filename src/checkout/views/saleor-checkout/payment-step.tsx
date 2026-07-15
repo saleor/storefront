@@ -30,6 +30,7 @@ import { shouldShowPaymentMethodArea } from "@/checkout/lib/payment/should-show-
 import { usesClientPaymentSubmit } from "@/checkout/lib/payment";
 import { consumePaymentCompletionError } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
+import { useSyncCheckoutRouterUrl } from "@/checkout/hooks/use-sync-checkout-router-url";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -44,6 +45,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	onGoToInformation,
 	onPaymentBusyChange,
 }) => {
+	useSyncCheckoutRouterUrl();
+
 	const { user, authenticated } = useUser();
 	const tActions = useTranslations("checkout.actions");
 	const tPayment = useTranslations("checkout.payment");

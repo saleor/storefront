@@ -46,7 +46,8 @@ type ExecuteStripeCheckoutPaymentParams = {
 	elements: StripeElements;
 	checkout: CheckoutFragment;
 	billing: StripeBillingContext;
-	searchParams: ReadonlyURLSearchParams;
+	/** Live URL params (`useLiveCheckoutSearchParams`) — includes shallow `?step=` writes. */
+	searchParams: URLSearchParams | ReadonlyURLSearchParams;
 	refreshCheckout: (options?: { updateState?: boolean }) => Promise<CheckoutFragment | null>;
 	paymentMethodContext: StripeInitializePaymentMethodContext;
 	messages: CheckoutPaymentMessages;

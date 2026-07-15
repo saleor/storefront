@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { type CheckoutPriceChangeNotice } from "@/checkout/lib/payment/checkout-pay-amount";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
+import { useLiveCheckoutSearchParams } from "@/checkout/lib/checkout-search-params";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { executeStripeCheckoutPayment } from "./execute-stripe-checkout-payment";
 import { type StripeBillingContext } from "./stripe-billing-context";
@@ -55,6 +56,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 	const stripe = useStripe();
 	const elements = useElements();
 	const searchParams = useSearchParams();
+	const liveSearchParams = useLiveCheckoutSearchParams(searchParams);
 	const { refreshCheckout } = useCheckoutData();
 	const paymentMessages = useCheckoutPaymentMessages();
 	const [hasWallets, setHasWallets] = useState<boolean | null>(null);
@@ -75,7 +77,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 				elements,
 				checkout,
 				billing,
-				searchParams,
+				searchParams: liveSearchParams,
 				refreshCheckout,
 				paymentMethodContext: {
 					surface: "expressCheckout",
@@ -115,7 +117,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			onPriceChangeNotice,
 			paymentMessages,
 			refreshCheckout,
-			searchParams,
+			liveSearchParams,
 			stripe,
 		],
 	);
@@ -132,8 +134,8 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 				onAvailablePaymentMethodsChange={({ paymentMethods }) => {
 					const available = Boolean(
 						paymentMethods?.applePay?.available ||
-							paymentMethods?.googlePay?.available ||
-							paymentMethods?.link?.available,
+						paymentMethods?.googlePay?.available ||
+						paymentMethods?.link?.available,
 					);
 					setHasWallets(available);
 				}}

@@ -24,6 +24,7 @@
 		"test:run": "vitest run",
 		"test:e2e": "playwright test",
 		"test:e2e:instant": "playwright test e2e/instant-navigation.spec.ts",
+		"test:e2e:checkout": "playwright test e2e/checkout-step-back.spec.ts",
 		"typecheck": "tsc --noEmit",
 		"verify": "pnpm run docs:check && pnpm run lint:design-tokens && pnpm run typecheck && pnpm run lint && pnpm run test:run",
 		"verify:quick": "pnpm run lint:design-tokens && pnpm run typecheck",

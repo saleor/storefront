@@ -18,6 +18,7 @@ import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
 import { RootViews } from "./views/root-views";
 import { CheckoutPaymentHistoryGuard } from "@/checkout/components/checkout-payment-history-guard";
 import { CheckoutSessionCleanup } from "@/checkout/components/checkout-session-cleanup";
+import { CheckoutStepUrlGuard } from "@/checkout/components/checkout-step-url-guard";
 import { StripeCheckoutCompletionHost } from "@/checkout/components/payment/stripe/stripe-checkout-completion-host";
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
 import { CheckoutCrashFallback } from "@/checkout/views/page-not-found";
@@ -58,6 +59,7 @@ export function CheckoutApp({
 			<CheckoutBrowseProvider locale={storefrontLocale}>
 				<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
 					<CheckoutSessionCleanup />
+					<CheckoutStepUrlGuard />
 					<CheckoutPaymentHistoryGuard />
 					<CheckoutUserProvider initialUser={initialUser}>
 						<CheckoutDataProvider
