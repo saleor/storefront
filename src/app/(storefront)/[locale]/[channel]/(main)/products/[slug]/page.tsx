@@ -58,6 +58,10 @@ async function getProductData(slug: string, channel: string, localeSlug: string)
 	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
 }
 
+// Prefetch: default (auto). With global `partialPrefetching`, product-card links prefetch only
+// the App Shell. We deliberately do NOT set `allow-runtime` — a per-link runtime prefetch would
+// wake the server for every visible card and stall slow-network clicks until it responds.
+
 // ============================================================================
 // Metadata
 // ============================================================================

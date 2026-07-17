@@ -56,7 +56,7 @@ function TileLink({
 	children: React.ReactNode;
 }) {
 	return (
-		<NavHrefLink href={href} className={className}>
+		<NavHrefLink href={href} prefetch={true} className={className}>
 			{children}
 		</NavHrefLink>
 	);

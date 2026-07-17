@@ -120,7 +120,9 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 	// Default country: use checkout's address, or first available country from channel
 	const defaultCountry =
-		(shippingAddress?.country?.code as CountryCode) || availableShippingCountries[0] || ("US" as CountryCode);
+		(shippingAddress?.country?.code as CountryCode) ||
+		availableShippingCountries[0]?.code ||
+		("US" as CountryCode);
 
 	// View state - what sub-view are we showing?
 	const [contactView, setContactView] = useState<ContactView>(() => {
@@ -497,7 +499,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	return (
 		<form className="space-y-8" onSubmit={handleSubmit} noValidate>
 			{isOrphaned ? (
-				<div className="bg-muted/40 space-y-3 rounded-lg border border-border p-4">
+				<div className="space-y-3 rounded-lg border border-border bg-muted/40 p-4">
 					<p className="text-sm text-foreground">{tErrors("orphanedCartMessage")}</p>
 					<div className="flex flex-wrap gap-3">
 						<Button

@@ -18,6 +18,9 @@ export const metadata = {
 	description: brandConfig.description,
 };
 
+// Prefetch: default (auto). With global `partialPrefetching`, viewport links already get the
+// homepage App Shell. No link uses `prefetch={true}` to "/", so `allow-runtime` would be inert.
+
 /** Prefer footwear/marquee products for the hero; otherwise the first available image. */
 const HERO_SLUG_HINT = /shoe|plimsoll|sneaker|trainer|runner|force|boot/i;
 

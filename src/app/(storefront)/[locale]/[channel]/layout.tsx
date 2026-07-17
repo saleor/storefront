@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { isStorefrontLocaleSlug } from "@/config/locale";
 import { isAllowedStorefrontChannel } from "@/config/channels";
@@ -30,7 +30,7 @@ export const generateStaticParams = async () => {
 	return channels.map((channel) => ({ channel }));
 };
 
-export default async function ChannelLayout({
+async function ChannelRouteGuard({
 	children,
 	params,
 }: {
@@ -49,4 +49,19 @@ export default async function ChannelLayout({
 	}
 
 	return children;
+}
+
+export default function ChannelLayout({
+	children,
+	params,
+}: {
+	children: ReactNode;
+	params: Promise<{ locale: string; channel: string }>;
+}) {
+	// Params are URL data — keep the read inside Suspense so PDP links share one instant shell.
+	return (
+		<Suspense fallback={children}>
+			<ChannelRouteGuard params={params}>{children}</ChannelRouteGuard>
+		</Suspense>
+	);
 }

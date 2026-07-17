@@ -373,8 +373,24 @@ export function resolveManualRevalidateTag(tag: string, channel?: string | null)
  * Profile timings are defined in src/lib/cache-life-profiles.ts (registered in next.config.js).
  */
 export function applyCacheProfile(profile: CacheProfile, params?: string | CacheTagParams) {
-	(cacheLife as (p: string) => void)(profile.cacheProfile);
+	applyCacheLife(profile.cacheProfile);
 	cacheTag(buildTag(profile, params));
+}
+
+/**
+ * Next 16.3 generates one `cacheLife` overload per profile registered in next.config.js
+ * (no catch-all `string` overload), and a union argument doesn't distribute over overloads.
+ * Exhaustive dispatch keeps each Paper tier compile-checked against the registered profiles.
+ */
+function applyCacheLife(name: PaperCacheLifeProfile): void {
+	switch (name) {
+		case "catalog":
+			return cacheLife("catalog");
+		case "menus":
+			return cacheLife("menus");
+		case "channels":
+			return cacheLife("channels");
+	}
 }
 
 // ============================================================================

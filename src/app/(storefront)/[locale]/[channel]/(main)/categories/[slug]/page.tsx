@@ -14,6 +14,9 @@ import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/fi
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { CategoryPageClient } from "./client";
 
+/** Cached category hero + grid shell. `allow-runtime` pairs with category tiles (prefetch={true}). */
+export const prefetch = "allow-runtime";
+
 type PageProps = {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{

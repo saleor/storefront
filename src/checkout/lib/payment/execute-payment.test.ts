@@ -28,6 +28,7 @@ const completeCheckout = vi.fn<CheckoutTransport["completeCheckout"]>();
 
 const fakeTransport: CheckoutTransport = {
 	fetchCheckout: vi.fn(),
+	attachCustomer: vi.fn(),
 	updateBillingAddress: vi.fn(),
 	initializePaymentGateways: vi.fn(),
 	initializeTransaction,
