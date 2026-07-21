@@ -196,12 +196,20 @@ export function buildBrowsePageMetadata(options: {
 	image?: string | null;
 	locale: string;
 	channel: string;
-	/** Path after locale/channel, e.g. `/products/hoodie` */
+	/** Path after locale/channel for this page, e.g. `/products/hoodie` */
 	pathSuffix: string;
+	/**
+	 * Optional per-locale path suffixes for hreflang (translated catalog slugs).
+	 * Canonical URL still uses `pathSuffix` for the current locale.
+	 */
+	pathSuffixByLocale?: Record<string, string>;
 	openGraph?: Record<string, string>;
 }): Metadata {
 	const url = buildStorefrontPath(options.locale, options.channel, options.pathSuffix);
-	const languages = buildLocaleHreflangAlternates(options.channel, options.pathSuffix);
+	const languages = buildLocaleHreflangAlternates(
+		options.channel,
+		options.pathSuffixByLocale ?? options.pathSuffix,
+	);
 
 	return buildPageMetadata({
 		title: options.title,

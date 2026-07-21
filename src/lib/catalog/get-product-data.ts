@@ -2,6 +2,7 @@ import {
 	ProductDetailsDocument,
 	ProductVariantForPdpDocument,
 	ProductVariantsForPdpDocument,
+	type LanguageCodeEnum,
 	type ProductDetailsQuery,
 	type ProductVariantsForPdpQuery,
 } from "@/gql/graphql";
@@ -11,6 +12,8 @@ import {
 	resolvePdpVariantDeepLink,
 	type PdpVariantDeepLink,
 } from "@/lib/catalog/buy-box-strategy";
+import { resolveByPossiblyTranslatedSlug } from "@/lib/catalog/resolve-by-slug";
+import { tagPrimaryCatalogSlug } from "@/lib/catalog/tag-primary-slug";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
@@ -38,6 +41,8 @@ export type ProductVariantsForPdpResult = {
 /**
  * Cached PDP shell — name, media, pricing, product type, assignedAttributes, variant count probe.
  * Does **not** load variant payloads (keeps the static shell lean under PPR).
+ *
+ * Resolves primary or translated URL slugs (ADR 0004).
  */
 export async function getProductData(
 	slug: string,
@@ -45,22 +50,43 @@ export async function getProductData(
 	localeSlug: string,
 ): Promise<ProductShell | null> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug);
+	const decodedSlug = decodeURIComponent(slug);
+	applyCacheProfile(CACHE_PROFILES.products, decodedSlug);
 
-	const result = await executePublicGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(slug),
-			channel,
-			...graphqlLanguageCodeVariables(localeSlug),
-		},
+	const languageVariables = graphqlLanguageCodeVariables(localeSlug);
+
+	const fetchProduct = async (vars: { slug: string; slugLanguageCode?: LanguageCodeEnum }) => {
+		const result = await executePublicGraphQL(ProductDetailsDocument, {
+			variables: {
+				slug: vars.slug,
+				channel,
+				...languageVariables,
+				...(vars.slugLanguageCode ? { slugLanguageCode: vars.slugLanguageCode } : {}),
+			},
+		});
+
+		if (!result.ok) {
+			console.error(
+				`[getProductData] Failed to fetch product ${vars.slug} for ${channel}:`,
+				result.error.message,
+			);
+			return null;
+		}
+
+		return result.data.product;
+	};
+
+	const product = await resolveByPossiblyTranslatedSlug({
+		localeSlug,
+		urlSlug: decodedSlug,
+		fetchByPrimarySlug: (urlSlug) => fetchProduct({ slug: urlSlug }),
+		fetchByTranslatedSlug: (urlSlug, slugLanguageCode) => fetchProduct({ slug: urlSlug, slugLanguageCode }),
 	});
 
-	if (!result.ok) {
-		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, result.error.message);
-		return null;
-	}
+	if (!product) return null;
 
-	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
+	tagPrimaryCatalogSlug(CACHE_PROFILES.products, decodedSlug, product.slug);
+	return withTranslatedProductFields(product);
 }
 
 /**
@@ -72,6 +98,7 @@ export async function getProductData(
  *
  * Shared by both islands so budget + deep-link behavior cannot diverge.
  * Strategy resolution stays here (dynamic island) — never in the product shell.
+ * Variant list fetch uses the product's **primary** slug (`product.slug`).
  */
 export async function resolvePdpVariants(
 	product: ProductShell,

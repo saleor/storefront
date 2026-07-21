@@ -5,13 +5,17 @@ import { type Metadata } from "next";
 import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
+import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
+import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
+import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CollectionPageClient } from "./client";
 
 type PageProps = {
@@ -36,7 +40,12 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 		description: collection?.seoDescription || plainDescription || collection?.name,
 		locale: params.locale,
 		channel: params.channel,
-		pathSuffix: `/collections/${encodeURIComponent(params.slug)}`,
+		pathSuffix: collection
+			? catalogPathSuffix("collections", collection)
+			: `/collections/${encodeURIComponent(params.slug)}`,
+		pathSuffixByLocale: collection
+			? buildCatalogPathSuffixByLocale("collections", buildLocaleSlugMap(collection))
+			: undefined,
 	});
 };
 
@@ -56,18 +65,35 @@ export default async function Page(props: PageProps) {
 		notFound();
 	}
 
+	if (decodeURIComponent(params.slug) !== pickTranslatedSlug(collection)) {
+		redirectToCanonicalCatalogSlug({
+			locale: params.locale,
+			channel: params.channel,
+			urlSlug: params.slug,
+			kind: "collections",
+			entity: collection,
+			searchParams: await props.searchParams,
+		});
+	}
+
 	const plainDescription = parseEditorJSToText(collection.description);
+	const collectionPath = catalogPathSuffix("collections", collection);
 
 	const breadcrumbs = [
 		{ label: tListing("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
 		{
 			label: collection.name,
-			href: buildStorefrontPath(params.locale, params.channel, `/collections/${params.slug}`),
+			href: buildStorefrontPath(params.locale, params.channel, collectionPath),
 		},
 	];
 
 	return (
 		<>
+			<CatalogIdentityBridge
+				kind="collections"
+				primarySlug={collection.slug}
+				localeSlugs={buildLocaleSlugMap(collection)}
+			/>
 			<CategoryHero
 				title={collection.name}
 				description={plainDescription}
@@ -102,9 +128,14 @@ async function CollectionProducts({
 		sizes: searchParams.sizes,
 	});
 
+	const collection = await getCollectionData(params.slug, params.channel, params.locale);
+	if (!collection) {
+		notFound();
+	}
+
 	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: {
-			slug: params.slug,
+			slug: collection.slug,
 			channel: params.channel,
 			...paginationVariables,
 			sortBy,
