@@ -1,0 +1,89 @@
+# Locale-canonical catalog URL slugs for every Paper-supported language.
+# Alias names are `slug` + Saleor LanguageCodeEnum (EN, PL, …) — keep in sync with
+# LOCALE_DEFINITIONS in src/config/locale.ts when adding languages.
+#
+# Used for hreflang alternates and zero-hop language switching (ADR 0004 phase 2).
+
+fragment ProductLocaleSlugTranslations on Product {
+	slugEN: translation(languageCode: EN) {
+		slug
+	}
+	slugPL: translation(languageCode: PL) {
+		slug
+	}
+	slugDE: translation(languageCode: DE) {
+		slug
+	}
+	slugFR: translation(languageCode: FR) {
+		slug
+	}
+	slugFI: translation(languageCode: FI) {
+		slug
+	}
+	slugNB: translation(languageCode: NB) {
+		slug
+	}
+}
+
+fragment CategoryLocaleSlugTranslations on Category {
+	slugEN: translation(languageCode: EN) {
+		slug
+	}
+	slugPL: translation(languageCode: PL) {
+		slug
+	}
+	slugDE: translation(languageCode: DE) {
+		slug
+	}
+	slugFR: translation(languageCode: FR) {
+		slug
+	}
+	slugFI: translation(languageCode: FI) {
+		slug
+	}
+	slugNB: translation(languageCode: NB) {
+		slug
+	}
+}
+
+fragment CollectionLocaleSlugTranslations on Collection {
+	slugEN: translation(languageCode: EN) {
+		slug
+	}
+	slugPL: translation(languageCode: PL) {
+		slug
+	}
+	slugDE: translation(languageCode: DE) {
+		slug
+	}
+	slugFR: translation(languageCode: FR) {
+		slug
+	}
+	slugFI: translation(languageCode: FI) {
+		slug
+	}
+	slugNB: translation(languageCode: NB) {
+		slug
+	}
+}
+
+fragment PageLocaleSlugTranslations on Page {
+	slugEN: translation(languageCode: EN) {
+		slug
+	}
+	slugPL: translation(languageCode: PL) {
+		slug
+	}
+	slugDE: translation(languageCode: DE) {
+		slug
+	}
+	slugFR: translation(languageCode: FR) {
+		slug
+	}
+	slugFI: translation(languageCode: FI) {
+		slug
+	}
+	slugNB: translation(languageCode: NB) {
+		slug
+	}
+}

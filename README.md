@@ -57,15 +57,16 @@ buildCheckoutPath()                  /checkout/complete?order= (confirmation)
 
 ### 🌍 International by Default
 
-One codebase, many markets. Browse URLs are **`/{locale}/{channel}/…`** — e.g. `/en/us/products/hoodie` (English, US market, USD) and `/fr/fr/products/hoodie` (French, France, EUR) — with legacy `/{channel}/…` paths redirecting automatically. Each locale gets its own cached catalog payload, translated product copy from Saleor, per-channel pricing and currency, and hreflang/canonical metadata.
+One codebase, many markets. Browse URLs are **`/{locale}/{channel}/…`** — e.g. `/en/us/products/hoodie` (English, US market, USD) and `/pl/pl/products/bluza` (Polish, Poland, PLN, with a **translated catalog slug** when set in Saleor) — with legacy `/{channel}/…` paths redirecting automatically. Each locale gets its own cached catalog payload, translated product copy from Saleor, per-channel pricing and currency, and hreflang/canonical metadata (including per-locale product/category handles).
 
-- **Region picker** — header control switches locale and channel together (language + market + currency)
+- **Region picker** — header control switches locale and channel together (language + market + currency), remapping catalog URLs to each language’s canonical slug
 - **Three string systems** — Saleor catalog translations, merchant-editable storefront content (CMS), and code-owned UI via **next-intl** (`messages/{locale}.json`)
 - **Six built-in locales** — `en`, `pl`, `de`, `fr`, `fi`, `nb` (extend via `LOCALE_DEFINITIONS` in `src/config/locale.ts`)
+- **Optional translated URL slugs** — Saleor Dashboard can set per-language handles for products, categories, collections, and pages; Paper resolves, redirects, links, and hreflang accordingly ([ADR 0004](docs/adr/0004-translatable-slugs.md))
 
 **Storefront channels are explicit.** Saleor may have many channels (B2B, wholesale, internal regions); Paper only exposes the slugs you configure via `STOREFRONT_CHANNELS`. Disallowed channel URLs return 404. For a single-channel store, set `NEXT_PUBLIC_DEFAULT_CHANNEL` only—the footer channel selector is hidden automatically.
 
-**Developer docs:** [`docs/international-storefront.md`](docs/international-storefront.md) · ADRs [0001](docs/adr/0001-locale-channel-url-routing.md) / [0002](docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md) · skills [`ui-locale-routing`](skills/saleor-paper-storefront/rules/ui-locale-routing.md) / [`ui-i18n`](skills/saleor-paper-storefront/rules/ui-i18n.md)
+**Developer docs:** [`docs/international-storefront.md`](docs/international-storefront.md) · ADRs [0001](docs/adr/0001-locale-channel-url-routing.md) / [0002](docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md) / [0004](docs/adr/0004-translatable-slugs.md) · skills [`ui-locale-routing`](skills/saleor-paper-storefront/rules/ui-locale-routing.md) / [`ui-i18n`](skills/saleor-paper-storefront/rules/ui-i18n.md)
 
 ### 📱 Product Pages Done Right
 
@@ -103,21 +104,21 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 ## What's in the Box
 
-| Feature                    | Description                                                                                         |
-| -------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Checkout (v2)**          | RSC + server actions, shallow step URLs, payment registry (Stripe/Dummy), `/checkout/complete`      |
-| **Cart**                   | Slide-over drawer with real-time updates, quantity editing                                          |
-| **Product Pages**          | Multi-attribute variants, image gallery, sticky add-to-cart                                         |
-| **Product Listings**       | Category & collection pages with PPR (cached hero + dynamic filters), pagination                    |
-| **International**          | `/{locale}/{channel}/` routing, region picker, Saleor translations, next-intl UI, hreflang SEO      |
-| **Storefront content**     | Merchant-editable copy layer (code or Saleor Models) — homepage, cart trust, checkout editorial     |
-| **Navigation**             | Dynamic menus from Saleor, mobile hamburger, breadcrumbs                                            |
-| **SEO**                    | Per-locale metadata, JSON-LD, Open Graph images, hreflang alternates                                |
-| **Caching**                | Cache Components (PPR), named cacheLife tiers, per-locale catalog cache, webhooks                   |
-| **Saleor Cloud Paper app** | Saleor Cloud only — Dashboard extension for cache invalidation webhooks and _Preview in storefront_ |
-| **Customer Profile**       | Account dashboard, address book, order history, password change, account deletion                   |
-| **Authentication**         | Login, register, password reset, guest checkout                                                     |
-| **API Resilience**         | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully                     |
+| Feature                    | Description                                                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Checkout (v2)**          | RSC + server actions, shallow step URLs, payment registry (Stripe/Dummy), `/checkout/complete`                                 |
+| **Cart**                   | Slide-over drawer with real-time updates, quantity editing                                                                     |
+| **Product Pages**          | Multi-attribute variants, image gallery, sticky add-to-cart                                                                    |
+| **Product Listings**       | Category & collection pages with PPR (cached hero + dynamic filters), pagination                                               |
+| **International**          | `/{locale}/{channel}/` routing, region picker, Saleor translations + optional translated URL slugs, next-intl UI, hreflang SEO |
+| **Storefront content**     | Merchant-editable copy layer (code or Saleor Models) — homepage, cart trust, checkout editorial                                |
+| **Navigation**             | Dynamic menus from Saleor, mobile hamburger, breadcrumbs                                                                       |
+| **SEO**                    | Per-locale metadata, JSON-LD, Open Graph images, hreflang with per-locale catalog handles                                      |
+| **Caching**                | Cache Components (PPR), named cacheLife tiers, per-locale catalog cache, webhooks                                              |
+| **Saleor Cloud Paper app** | Saleor Cloud only — Dashboard extension for cache invalidation webhooks and _Preview in storefront_                            |
+| **Customer Profile**       | Account dashboard, address book, order history, password change, account deletion                                              |
+| **Authentication**         | Login, register, password reset, guest checkout                                                                                |
+| **API Resilience**         | Automatic retries, rate limiting, timeouts—handles flaky connections gracefully                                                |
 
 ---
 

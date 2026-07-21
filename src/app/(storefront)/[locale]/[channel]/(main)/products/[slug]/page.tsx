@@ -6,17 +6,18 @@ import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
-import { executePublicGraphQL } from "@/lib/graphql";
-import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
+import { type ProductDetailsQuery } from "@/gql/graphql";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
+import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
+import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
+import { getProductData } from "@/lib/catalog/get-product-data";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { buildPolicyLabelValues } from "@/lib/content";
 import { getStorefrontContent } from "@/lib/content/server";
 import { buildBrowsePageMetadata, buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
-import { withTranslatedProductFields, pickTranslatedName } from "@/lib/saleor-translations";
+import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller, BESTSELLER_ATTRIBUTE_SLUGS } from "@/lib/catalog/product-flags";
 import { getAttributeValueDisplayName } from "@/ui/components/pdp/variant-selection/utils";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
@@ -33,30 +34,6 @@ import {
 	PDP_GALLERY_LAYOUT,
 	PDP_LAYOUT_CLASSES,
 } from "@/ui/components/pdp";
-
-// ============================================================================
-// Cached Data Fetching
-// ============================================================================
-
-async function getProductData(slug: string, channel: string, localeSlug: string) {
-	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug);
-
-	const result = await executePublicGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(slug),
-			channel,
-			...graphqlLanguageCodeVariables(localeSlug),
-		},
-	});
-
-	if (!result.ok) {
-		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, result.error.message);
-		return null;
-	}
-
-	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
-}
 
 // ============================================================================
 // Metadata
@@ -83,7 +60,8 @@ export async function generateMetadata(props: {
 		image: ogImage,
 		locale: params.locale,
 		channel: params.channel,
-		pathSuffix: `/products/${encodeURIComponent(params.slug)}`,
+		pathSuffix: catalogPathSuffix("products", product),
+		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
 		openGraph:
 			priceAmount && priceCurrency
 				? {
@@ -119,7 +97,8 @@ export default function ProductPage(props: {
 }
 
 /**
- * Static product shell — only reads route params (cacheable / prerenderable).
+ * Product shell — reads route params for the static/PPR path.
+ * Awaits searchParams only when issuing a canonical-slug redirect (rare).
  * Dynamic islands (gallery + variant section) read searchParams in nested Suspense.
  */
 async function ProductShell({
@@ -147,15 +126,34 @@ async function ProductShell({
 		notFound();
 	}
 
+	// Only await searchParams on the rare non-canonical slug path so the common
+	// (already-canonical) PDP shell stays params-only / PPR-static.
+	if (decodeURIComponent(params.slug) !== pickTranslatedSlug(product)) {
+		redirectToCanonicalCatalogSlug({
+			locale: params.locale,
+			channel: params.channel,
+			urlSlug: params.slug,
+			kind: "products",
+			entity: product,
+			searchParams: await searchParams,
+		});
+	}
+
 	const descriptionHtml = parseDescription(product.description);
 	const productAttributes = extractProductAttributes(product);
 	const careInstructions = extractCareInstructions(product);
 	const defaultImages = getDefaultGalleryImages(product);
+	const productPath = catalogPathSuffix("products", product);
 
 	const breadcrumbs = [
 		{ label: tPdp("breadcrumbHome"), href: browse("/") },
 		...(product.category
-			? [{ label: product.category.name, href: browse(`/categories/${product.category.slug}`) }]
+			? [
+					{
+						label: product.category.name,
+						href: browse(catalogPathSuffix("categories", product.category)),
+					},
+				]
 			: []),
 		{ label: product.name },
 	];
@@ -165,7 +163,7 @@ async function ProductShell({
 		description: product.seoDescription || product.name,
 		images: defaultImages.length > 0 ? defaultImages.map((img) => img.url) : undefined,
 		brand: product.category?.name,
-		url: browse(`/products/${product.slug}`),
+		url: browse(productPath),
 		priceRange: product.pricing?.priceRange?.start?.gross
 			? {
 					lowPrice: product.pricing.priceRange.start.gross.amount,
@@ -204,6 +202,11 @@ async function ProductShell({
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
+			<CatalogIdentityBridge
+				kind="products"
+				primarySlug={product.slug}
+				localeSlugs={buildLocaleSlugMap(product)}
+			/>
 			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
 			{/* The browse layout (`(main)/layout.tsx`) owns the page's single <main> landmark. */}

@@ -11,6 +11,7 @@ fragment MenuItem on MenuItem {
 		name
 		translation(languageCode: $languageCode) {
 			name
+			slug
 		}
 	}
 	collection {
@@ -19,6 +20,7 @@ fragment MenuItem on MenuItem {
 		slug
 		translation(languageCode: $languageCode) {
 			name
+			slug
 		}
 	}
 	page {
@@ -27,6 +29,7 @@ fragment MenuItem on MenuItem {
 		slug
 		translation(languageCode: $languageCode) {
 			title
+			slug
 		}
 	}
 	url

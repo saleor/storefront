@@ -11,6 +11,7 @@ import { CheckoutAddLineDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
 import { getTranslations } from "next-intl/server";
+import { pickTranslatedSlug } from "@/lib/saleor-translations";
 
 import { AddToCart } from "./add-to-cart";
 import { VariantSelectionSection } from "./variant-selection";
@@ -168,7 +169,7 @@ export async function VariantSectionDynamic({
 				<VariantSelectionSection
 					variants={variants}
 					selectedVariantId={selectedVariantID}
-					productSlug={product.slug}
+					productSlug={pickTranslatedSlug(product)}
 					channel={channel}
 				/>
 

@@ -5,7 +5,7 @@ import { sortSizes } from "@/lib/sizes";
 import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
 import { buildStorefrontPath } from "@/lib/storefront-path";
-import { pickTranslatedName } from "@/lib/saleor-translations";
+import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller } from "@/lib/catalog/product-flags";
 
 /**
@@ -99,7 +99,7 @@ export function toProductCardData(
 		imageAlt: product.thumbnail?.alt ?? productName,
 		hoverImage: null, // Would need additional media in fragment
 		localeBcp47: resolveLocaleFromSlug(locale).bcp47,
-		href: buildStorefrontPath(locale, channel, `/products/${product.slug}`),
+		href: buildStorefrontPath(locale, channel, `/products/${pickTranslatedSlug(product)}`),
 		badge: isSale ? "Sale" : null,
 		isBestseller: isBestseller(product),
 		colors,
