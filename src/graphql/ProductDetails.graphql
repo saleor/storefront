@@ -1,5 +1,10 @@
-query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageCodeEnum!) {
-	product(slug: $slug, channel: $channel) {
+query ProductDetails(
+	$slug: String!
+	$channel: String!
+	$languageCode: LanguageCodeEnum!
+	$slugLanguageCode: LanguageCodeEnum
+) {
+	product(slug: $slug, channel: $channel, slugLanguageCode: $slugLanguageCode) {
 		id
 		name
 		slug
@@ -11,6 +16,7 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 			description
 			seoTitle
 			seoDescription
+			slug
 		}
 		thumbnail(size: 2048, format: WEBP) {
 			url
@@ -27,6 +33,7 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 			slug
 			translation(languageCode: $languageCode) {
 				name
+				slug
 			}
 		}
 		# Bestseller merchandising flag — fetch only the boolean by slug (new attribute API).

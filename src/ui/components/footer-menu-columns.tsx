@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { MenuItem } from "@/lib/menus/get-menu-data";
+import { getMenuItemHref, getMenuItemLabel } from "@/lib/menus/menu-item-utils";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { NavHrefLink } from "@/ui/atoms/nav-href-link";
 
@@ -19,50 +20,27 @@ const defaultFooterLinks = {
 };
 
 function FooterMenuChildLink({ child }: { child: MenuItem }) {
-	if (child.category) {
+	const href = getMenuItemHref(child);
+	const label = getMenuItemLabel(child);
+	if (!href || !label) return null;
+
+	if (child.category || child.collection || child.page) {
 		return (
 			<LinkWithChannel
-				href={`/categories/${child.category.slug}`}
+				href={href}
 				prefetch={false}
 				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
-				{child.category.name}
+				{label}
 			</LinkWithChannel>
 		);
 	}
-	if (child.collection) {
-		return (
-			<LinkWithChannel
-				href={`/collections/${child.collection.slug}`}
-				prefetch={false}
-				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
-			>
-				{child.collection.name}
-			</LinkWithChannel>
-		);
-	}
-	if (child.page) {
-		return (
-			<LinkWithChannel
-				href={`/pages/${child.page.slug}`}
-				prefetch={false}
-				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
-			>
-				{child.page.title}
-			</LinkWithChannel>
-		);
-	}
-	if (child.url) {
-		return (
-			<NavHrefLink
-				href={child.url}
-				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
-			>
-				{child.name}
-			</NavHrefLink>
-		);
-	}
-	return null;
+
+	return (
+		<NavHrefLink href={href} className="text-sm text-inverse-subtle transition-colors hover:text-inverse">
+			{label}
+		</NavHrefLink>
+	);
 }
 
 export function FooterMenuColumns({ items }: { items: MenuItem[] }) {

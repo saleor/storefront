@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
+import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { getPageData } from "@/lib/catalog/get-page-data";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
@@ -20,14 +21,14 @@ export const generateMetadata = async (props: {
 		description: page?.seoDescription || page?.title,
 		locale: params.locale,
 		channel: params.channel,
-		pathSuffix: `/pages/${encodeURIComponent(params.slug)}`,
+		pathSuffix: page ? catalogPathSuffix("pages", page) : `/pages/${encodeURIComponent(params.slug)}`,
 	});
 };
 
 /**
  * Sync page shell — CMS content streams inside a Suspense island (Cache Components / PPR).
  */
-export default function Page(props: { params: Promise<{ slug: string; locale: string }> }) {
+export default function Page(props: { params: Promise<{ slug: string; locale: string; channel: string }> }) {
 	return (
 		<Suspense fallback={<PageContentSkeleton />}>
 			<PageContent params={props.params} />
@@ -35,13 +36,25 @@ export default function Page(props: { params: Promise<{ slug: string; locale: st
 	);
 }
 
-async function PageContent({ params: paramsPromise }: { params: Promise<{ slug: string; locale: string }> }) {
+async function PageContent({
+	params: paramsPromise,
+}: {
+	params: Promise<{ slug: string; locale: string; channel: string }>;
+}) {
 	const params = await paramsPromise;
 	const page = await getPageData(params.slug, params.locale);
 
 	if (!page) {
 		notFound();
 	}
+
+	redirectToCanonicalCatalogSlug({
+		locale: params.locale,
+		channel: params.channel,
+		urlSlug: params.slug,
+		kind: "pages",
+		entity: page,
+	});
 
 	const { title, content } = page;
 

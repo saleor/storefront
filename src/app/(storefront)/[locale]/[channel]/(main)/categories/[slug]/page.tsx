@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
+import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
@@ -12,6 +13,7 @@ import { buildBrowsePageMetadata } from "@/lib/seo";
 import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
+import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CategoryPageClient } from "./client";
 
 type PageProps = {
@@ -36,7 +38,9 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 		description: category?.seoDescription || plainDescription || category?.name,
 		locale: params.locale,
 		channel: params.channel,
-		pathSuffix: `/categories/${encodeURIComponent(params.slug)}`,
+		pathSuffix: category
+			? catalogPathSuffix("categories", category)
+			: `/categories/${encodeURIComponent(params.slug)}`,
 	});
 };
 
@@ -60,7 +64,19 @@ export default async function Page(props: PageProps) {
 		notFound();
 	}
 
+	if (decodeURIComponent(resolvedParams.slug) !== pickTranslatedSlug(category)) {
+		redirectToCanonicalCatalogSlug({
+			locale: resolvedParams.locale,
+			channel: resolvedParams.channel,
+			urlSlug: resolvedParams.slug,
+			kind: "categories",
+			entity: category,
+			searchParams: await props.searchParams,
+		});
+	}
+
 	const plainDescription = parseEditorJSToText(category.description);
+	const categoryPath = catalogPathSuffix("categories", category);
 
 	const breadcrumbs = [
 		{
@@ -69,11 +85,7 @@ export default async function Page(props: PageProps) {
 		},
 		{
 			label: category.name,
-			href: buildStorefrontPath(
-				resolvedParams.locale,
-				resolvedParams.channel,
-				`/categories/${resolvedParams.slug}`,
-			),
+			href: buildStorefrontPath(resolvedParams.locale, resolvedParams.channel, categoryPath),
 		},
 	];
 
@@ -108,9 +120,15 @@ async function CategoryProducts({
 	const sortBy = buildSortVariables(searchParams.sort);
 	const filter = buildFilterVariables({ priceRange: searchParams.price });
 
+	// Resolve via cached getCategoryData (handles translated URL slugs), then list by primary slug.
+	const category = await getCategoryData(params.slug, params.channel, params.locale);
+	if (!category) {
+		notFound();
+	}
+
 	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: {
-			slug: params.slug,
+			slug: category.slug,
 			channel: params.channel,
 			...paginationVariables,
 			sortBy,

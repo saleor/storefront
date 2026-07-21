@@ -5,6 +5,7 @@ fragment ProductListItem on Product {
 	created
 	translation(languageCode: $languageCode) {
 		name
+		slug
 	}
 	pricing {
 		priceRange {
@@ -42,6 +43,7 @@ fragment ProductListItem on Product {
 		slug
 		translation(languageCode: $languageCode) {
 			name
+			slug
 		}
 		backgroundImage {
 			url

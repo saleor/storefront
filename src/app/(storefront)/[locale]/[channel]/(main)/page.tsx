@@ -5,6 +5,7 @@ import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency"
 import { buildPolicyLabelValues } from "@/lib/content";
 import { formatContentLabel } from "@/lib/content/format-label";
 import { getStorefrontContent } from "@/lib/content/server";
+import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { PaperSignEditorialPlaceholder } from "@/ui/components/shared/paper-sign";
 import { CategoryTileGrid, type CategoryTile } from "@/ui/sections/category-tile-grid/category-tile-grid";
 import { EditorialHero } from "@/ui/sections/editorial-hero/editorial-hero";
@@ -45,7 +46,7 @@ function buildCategoryTiles(products: readonly FeaturedProduct[], max = 3): Cate
 		const imageAlt = category.backgroundImage?.alt || product.thumbnail?.alt || categoryName;
 		tiles.push({
 			title: categoryName,
-			href: `/categories/${category.slug}`,
+			href: `/categories/${pickTranslatedSlug(category)}`,
 			image,
 			imageAlt,
 		});
