@@ -10,7 +10,7 @@ import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
-import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
+import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { CategoryPageClient } from "./client";
 
@@ -106,7 +106,11 @@ async function CategoryProducts({
 
 	const paginationVariables = getPaginatedListVariables({ params: searchParams });
 	const sortBy = buildSortVariables(searchParams.sort);
-	const filter = buildFilterVariables({ priceRange: searchParams.price });
+	const { filter, where } = buildProductListingConstraints({
+		priceRange: searchParams.price,
+		colors: searchParams.colors,
+		sizes: searchParams.sizes,
+	});
 
 	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: {
@@ -115,6 +119,7 @@ async function CategoryProducts({
 			...paginationVariables,
 			sortBy,
 			filter,
+			where,
 			...graphqlLanguageCodeVariables(params.locale),
 		},
 	});

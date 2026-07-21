@@ -100,7 +100,8 @@
 		"resultCount": "{count, plural, one {# tuote} other {# tuotetta}}",
 		"clearAllFilters": "Tyhjennä suodattimet ({count})",
 		"clearAll": "Tyhjennä kaikki",
-		"removeFilter": "Poista suodatin {value}"
+		"removeFilter": "Poista suodatin {value}",
+		"noMatchingFilters": "Mikään tuote ei vastaa suodattimia."
 	},
 	"search": {
 		"title": "Haku",

@@ -100,7 +100,8 @@
 		"resultCount": "{count, plural, one {# produkt} other {# produkter}}",
 		"clearAllFilters": "Fjern alle filtre ({count})",
 		"clearAll": "Fjern alle",
-		"removeFilter": "Fjern filter {value}"
+		"removeFilter": "Fjern filter {value}",
+		"noMatchingFilters": "Ingen produkter samsvarer med filtrene dine."
 	},
 	"search": {
 		"title": "Søk",

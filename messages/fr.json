@@ -100,7 +100,8 @@
 		"resultCount": "{count, plural, one {# produit} other {# produits}}",
 		"clearAllFilters": "Effacer les filtres ({count})",
 		"clearAll": "Tout effacer",
-		"removeFilter": "Retirer le filtre {value}"
+		"removeFilter": "Retirer le filtre {value}",
+		"noMatchingFilters": "Aucun produit ne correspond à vos filtres."
 	},
 	"search": {
 		"title": "Recherche",
