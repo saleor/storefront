@@ -14,6 +14,7 @@ import { getTranslations } from "next-intl/server";
 import { resolvePdpVariants } from "@/lib/catalog/get-product-data";
 
 import { AddToCart } from "./add-to-cart";
+import { NonMatrixBuyBox } from "./non-matrix-buy-box";
 import { VariantSelectionSection } from "./variant-selection";
 import { StickyBar } from "./sticky-bar";
 import { Badge } from "@/ui/components/ui/badge";
@@ -24,7 +25,7 @@ interface VariantSectionDynamicProps {
 	product: Product;
 	channel: string;
 	localeSlug: string;
-	searchParams: Promise<{ variant?: string }>;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }
 
 /**
@@ -32,9 +33,9 @@ interface VariantSectionDynamicProps {
  *
  * Reads searchParams inside a Suspense boundary so the product shell
  * (name, attributes, JSON-LD) stays in the static prerender cache.
- * Variants are resolved here via {@link resolvePdpVariants} (cached) —
- * never inside the shell — so high-cardinality catalogs cannot inflate the
- * static RSC payload. Budget branching also stays in this island.
+ * Variants + buy-box strategy are resolved here via {@link resolvePdpVariants}
+ * — never inside the shell — so high-cardinality catalogs cannot inflate the
+ * static RSC payload or leak strategy branching into the prerender.
  */
 export async function VariantSectionDynamic({
 	product,
@@ -42,17 +43,20 @@ export async function VariantSectionDynamic({
 	localeSlug,
 	searchParams,
 }: VariantSectionDynamicProps) {
-	const { variant: variantParam } = await searchParams;
+	const { variant: variantParam, sku: skuParam } = await searchParams;
 	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
 
 	const [t, content, currency, variantResult] = await Promise.all([
 		getTranslations({ locale: localeSlug, namespace: "pdp" }),
 		getStorefrontContent(channel, localeSlug),
 		resolveChannelCurrency(channel),
-		resolvePdpVariants(product, channel, localeSlug, { variantId: variantParam }),
+		resolvePdpVariants(product, channel, localeSlug, {
+			variantId: variantParam,
+			sku: skuParam,
+		}),
 	]);
 
-	const { variants, totalCount, overBudget } = variantResult;
+	const { variants, totalCount, overBudget, strategy } = variantResult;
 	const productWithVariants: Product = {
 		...product,
 		variants,
@@ -63,9 +67,10 @@ export async function VariantSectionDynamic({
 	const selectedVariantID = resolveSelectedVariantId(productWithVariants, variantParam);
 	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
 
-	const isAvailable = overBudget
-		? Boolean(selectedVariant?.quantityAvailable) || (product.isAvailable ?? false)
-		: variants.some((variant) => variant.quantityAvailable);
+	const isAvailable =
+		strategy !== "matrix"
+			? Boolean(selectedVariant?.quantityAvailable) || (product.isAvailable ?? false)
+			: variants.some((variant) => variant.quantityAvailable);
 
 	// Prefer no-selection over out-of-stock when the URL names a variant we couldn't hydrate.
 	const isAddToCartDisabled = !selectedVariantID || !selectedVariant?.quantityAvailable;
@@ -156,6 +161,23 @@ export async function VariantSectionDynamic({
 		}
 	}
 
+	const buyBox =
+		strategy === "matrix" ? (
+			<VariantSelectionSection
+				variants={variants}
+				selectedVariantId={selectedVariantID}
+				productSlug={product.slug}
+				channel={channel}
+			/>
+		) : (
+			<NonMatrixBuyBox
+				strategy={strategy}
+				selectedVariant={selectedVariant}
+				hint={strategy === "external" ? t("buyBox.externalHint") : t("buyBox.overBudgetHint")}
+				summaryLabel={t("buyBox.selectedSummary")}
+			/>
+		);
+
 	return (
 		<>
 			<div className="order-1 flex items-center gap-2">
@@ -169,19 +191,7 @@ export async function VariantSectionDynamic({
 			</div>
 
 			<form action={addToCart} className="order-3 mt-4 space-y-6">
-				{/* Over-budget: no matrix (partial would be wrong). Deep-linked ?variant= still ATC. */}
-				{overBudget ? (
-					selectedVariant ? null : (
-						<p className="text-sm text-muted-foreground">{t("selectOptions")}</p>
-					)
-				) : (
-					<VariantSelectionSection
-						variants={variants}
-						selectedVariantId={selectedVariantID}
-						productSlug={product.slug}
-						channel={channel}
-					/>
-				)}
+				{buyBox}
 
 				<AddToCart
 					price={price}

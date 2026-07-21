@@ -83,7 +83,7 @@ const parser = edjsHTML();
  */
 export default function ProductPage(props: {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
-	searchParams: Promise<{ variant?: string }>;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }) {
 	return (
 		<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
@@ -102,7 +102,7 @@ async function ProductShell({
 	searchParams,
 }: {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
-	searchParams: Promise<{ variant?: string }>;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }) {
 	const params = await paramsPromise;
 	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);

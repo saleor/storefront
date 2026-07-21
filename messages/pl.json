@@ -37,6 +37,11 @@
 		"adding": "Dodawanie…",
 		"outOfStock": "Brak w magazynie",
 		"selectOptions": "Wybierz opcje",
+		"buyBox": {
+			"overBudgetHint": "Ten produkt ma zbyt wiele opcji, by je tu wypisać. Otwórz bezpośredni link do wariantu, aby kupić.",
+			"externalHint": "Opcje tego produktu wybiera się w osobnym doświadczeniu. Otwórz bezpośredni link do wariantu, aby kupić.",
+			"selectedSummary": "Wybrane opcje"
+		},
 		"free": "ZA DARMO",
 		"breadcrumbHome": "Strona główna",
 		"badges": {

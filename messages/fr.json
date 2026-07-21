@@ -37,6 +37,11 @@
 		"adding": "Ajout…",
 		"outOfStock": "Rupture de stock",
 		"selectOptions": "Choisir les options",
+		"buyBox": {
+			"overBudgetHint": "Ce produit a trop d’options pour les afficher ici. Ouvrez un lien vers une variante précise pour acheter.",
+			"externalHint": "Les options de ce produit se choisissent dans une expérience dédiée. Ouvrez un lien vers une variante précise pour acheter.",
+			"selectedSummary": "Options sélectionnées"
+		},
 		"free": "GRATUIT",
 		"breadcrumbHome": "Accueil",
 		"badges": {

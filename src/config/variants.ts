@@ -26,7 +26,16 @@ export const PDP_VARIANT_CAP = 200;
 export const PLP_VARIANT_SAMPLE = 50;
 
 /** Per-group control ladder thresholds (chips → select → combobox). */
-export const VARIANT_CHIP_MAX_OPTIONS = 1;
+export const VARIANT_CHIP_MAX_OPTIONS = 10;
 /** Swatch groups stay as a chip grid up to this count, then jump to combobox (Select cannot show swatches). */
-export const VARIANT_SWATCH_CHIP_MAX_OPTIONS = 2;
+export const VARIANT_SWATCH_CHIP_MAX_OPTIONS = 12;
 export const VARIANT_NATIVE_SELECT_MAX_OPTIONS = 24;
+
+/**
+ * Product-type slugs that opt into the `external` buy-box strategy (fork extension).
+ * Those PDPs skip the attribute matrix even under {@link PDP_VARIANT_CAP}; deep links
+ * (`?variant=` / `?sku=`) still resolve a single SKU for ATC. Empty by default.
+ *
+ * @example `["match-ticket"]` for a stadium seat-map buy box in a fork.
+ */
+export const EXTERNAL_BUYBOX_PRODUCT_TYPE_SLUGS: readonly string[] = [];

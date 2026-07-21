@@ -6,6 +6,11 @@ import {
 	type ProductVariantsForPdpQuery,
 } from "@/gql/graphql";
 import { PDP_VARIANT_CAP, SALEOR_VARIANT_PAGE_SIZE } from "@/config/variants";
+import {
+	resolveBuyBoxStrategy,
+	resolvePdpVariantDeepLink,
+	type PdpVariantDeepLink,
+} from "@/lib/catalog/buy-box-strategy";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
@@ -22,10 +27,12 @@ export type ProductVariantsForPdpResult = {
 	/** Saleor's total variant count for this product (may exceed what we hydrate). */
 	totalCount: number;
 	/**
-	 * True when totalCount > PDP_VARIANT_CAP — callers must not hydrate the attribute matrix
-	 * with a partial list. Use the over-budget buy-box path instead.
+	 * True when the buy-box strategy is not `matrix` — callers must not hydrate a
+	 * partial attribute matrix. Use deep-link ATC (`?variant=` / `?sku=`) instead.
 	 */
 	overBudget: boolean;
+	/** Resolved page-level buy-box strategy (island-only; never in the shell). */
+	strategy: ReturnType<typeof resolveBuyBoxStrategy>;
 };
 
 /**
@@ -59,36 +66,61 @@ export async function getProductData(
 /**
  * Resolve variants for PDP islands (gallery + buy box).
  *
- * - Under budget: hydrate via paginated `productVariants` (≤ PDP_VARIANT_CAP).
- * - Over budget: skip the matrix; if `variantId` is present, resolve that one SKU for ATC/media.
+ * - `matrix`: hydrate via paginated `productVariants` (≤ PDP_VARIANT_CAP).
+ * - `over_budget` / `external`: skip the matrix; if a deep link (`?variant=` /
+ *   `?sku=`) is present, resolve that one SKU for ATC/media.
  *
  * Shared by both islands so budget + deep-link behavior cannot diverge.
+ * Strategy resolution stays here (dynamic island) — never in the product shell.
  */
 export async function resolvePdpVariants(
 	product: ProductShell,
 	channel: string,
 	localeSlug: string,
-	options?: { variantId?: string },
+	options?: { variantId?: string | null; sku?: string | null },
 ): Promise<ProductVariantsForPdpResult> {
 	const shellTotalCount = product.productVariants?.totalCount ?? null;
-	const overBudget = shellTotalCount != null && shellTotalCount > PDP_VARIANT_CAP;
+	const strategy = resolveBuyBoxStrategy({
+		totalCount: shellTotalCount,
+		productTypeSlug: product.productType?.slug,
+	});
+	const deepLink = resolvePdpVariantDeepLink({
+		variant: options?.variantId,
+		sku: options?.sku,
+	});
 
-	if (overBudget) {
-		const totalCount = shellTotalCount!;
-		const variantId = options?.variantId ? decodeURIComponent(options.variantId) : undefined;
-		if (!variantId) {
-			return { variants: [], totalCount, overBudget: true };
+	if (strategy !== "matrix") {
+		const totalCount = shellTotalCount ?? 0;
+		if (!deepLink) {
+			return { variants: [], totalCount, overBudget: true, strategy };
 		}
 
-		const resolved = await getProductVariantForPdp(variantId, channel, localeSlug, product.id, product.slug);
+		const resolved = await getProductVariantForPdp(deepLink, channel, localeSlug, product.id, product.slug);
 		return {
 			variants: resolved ? [resolved] : [],
 			totalCount,
 			overBudget: true,
+			strategy,
 		};
 	}
 
-	return getProductVariantsForPdp(product.slug, channel, localeSlug);
+	const list = await getProductVariantsForPdp(product.slug, channel, localeSlug);
+	// Shell `totalCount` can lag PRODUCT_* updates — if the list fetch is over cap,
+	// honor deep-link ATC instead of stranding the shopper with an empty buy box.
+	if (list.overBudget) {
+		if (!deepLink) {
+			return { ...list, strategy: "over_budget" };
+		}
+		const resolved = await getProductVariantForPdp(deepLink, channel, localeSlug, product.id, product.slug);
+		return {
+			variants: resolved ? [resolved] : [],
+			totalCount: list.totalCount,
+			overBudget: true,
+			strategy: "over_budget",
+		};
+	}
+
+	return { ...list, strategy: "matrix" };
 }
 
 /**
@@ -127,7 +159,7 @@ export async function getProductVariantsForPdp(
 	const overBudget = totalCount > PDP_VARIANT_CAP;
 
 	if (overBudget) {
-		return { variants: [], totalCount, overBudget: true };
+		return { variants: [], totalCount, overBudget: true, strategy: "over_budget" };
 	}
 
 	const variants = [...firstPage.nodes];
@@ -165,14 +197,16 @@ export async function getProductVariantsForPdp(
 		})),
 		totalCount,
 		overBudget: false,
+		strategy: "matrix" as const,
 	};
 }
 
 /**
- * Cached single-variant lookup for `?variant=` deep links on over-budget products.
+ * Cached single-variant lookup for deep links (`?variant=` / `?sku=`) on
+ * non-matrix buy-box strategies.
  */
 async function getProductVariantForPdp(
-	variantId: string,
+	deepLink: PdpVariantDeepLink,
 	channel: string,
 	localeSlug: string,
 	expectedProductId: string,
@@ -182,16 +216,21 @@ async function getProductVariantForPdp(
 	// Same product:{slug} tag as the shell/list so PRODUCT_* webhooks bust this entry.
 	applyCacheProfile(CACHE_PROFILES.products, productSlug);
 
+	const id = deepLink.kind === "id" ? decodeURIComponent(deepLink.id) : undefined;
+	const sku = deepLink.kind === "sku" ? deepLink.sku : undefined;
+	const cacheKey = deepLink.kind === "id" ? id! : `sku:${sku}`;
+
 	const result = await executePublicGraphQL(ProductVariantForPdpDocument, {
 		variables: {
-			id: variantId,
+			id,
+			sku,
 			channel,
 			...graphqlLanguageCodeVariables(localeSlug),
 		},
 	});
 
 	if (!result.ok) {
-		console.error(`[getProductVariantForPdp] Failed to fetch variant ${variantId}:`, result.error.message);
+		console.error(`[getProductVariantForPdp] Failed to fetch variant ${cacheKey}:`, result.error.message);
 		return null;
 	}
 
@@ -199,7 +238,7 @@ async function getProductVariantForPdp(
 	if (!variant) return null;
 	if (variant.product?.id && variant.product.id !== expectedProductId) {
 		console.warn(
-			`[getProductVariantForPdp] Variant ${variantId} belongs to another product (expected ${expectedProductId})`,
+			`[getProductVariantForPdp] Variant ${cacheKey} belongs to another product (expected ${expectedProductId})`,
 		);
 		return null;
 	}

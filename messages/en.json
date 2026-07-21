@@ -37,6 +37,11 @@
 		"adding": "Adding...",
 		"outOfStock": "Out of stock",
 		"selectOptions": "Select options",
+		"buyBox": {
+			"overBudgetHint": "This product has too many options to list here. Open a specific variant link to buy.",
+			"externalHint": "Options for this product are selected in a custom experience. Open a specific variant link to buy.",
+			"selectedSummary": "Selected options"
+		},
 		"free": "FREE",
 		"breadcrumbHome": "Home",
 		"badges": {

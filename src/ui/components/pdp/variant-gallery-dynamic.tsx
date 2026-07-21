@@ -6,7 +6,7 @@ interface VariantGalleryDynamicProps {
 	product: Product;
 	channel: string;
 	localeSlug: string;
-	searchParams: Promise<{ variant?: string }>;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }
 
 /**
@@ -14,7 +14,7 @@ interface VariantGalleryDynamicProps {
  *
  * Reads searchParams in an isolated Suspense boundary so the product shell
  * (h1, attributes, JSON-LD) can stay in the static prerender cache. Variants
- * are resolved here (cached) so the shell never ships variant payloads.
+ * are fetched here (cached) so the shell never ships variant payloads.
  * The active renderer comes from the gallery registry — see `gallery-registry.tsx`.
  */
 export async function VariantGalleryDynamic({
@@ -23,9 +23,10 @@ export async function VariantGalleryDynamic({
 	localeSlug,
 	searchParams,
 }: VariantGalleryDynamicProps) {
-	const { variant: variantParam } = await searchParams;
+	const { variant: variantParam, sku: skuParam } = await searchParams;
 	const { variants, totalCount, overBudget } = await resolvePdpVariants(product, channel, localeSlug, {
 		variantId: variantParam,
+		sku: skuParam,
 	});
 
 	const productWithVariants: Product = {

@@ -11,10 +11,9 @@ export type Product = ProductShell & {
 	variants?: PdpVariant[] | null;
 	/** Saleor total when known (from shell probe or variants fetch). */
 	variantTotalCount?: number | null;
-	/** True when totalCount exceeds PDP_VARIANT_CAP — matrix must not hydrate. */
+	/** True when buy-box strategy is not `matrix` — attribute matrix must not hydrate. */
 	overVariantBudget?: boolean;
 };
-
 export type Variant = PdpVariant;
 
 export function getGalleryImages(

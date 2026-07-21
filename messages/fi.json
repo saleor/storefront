@@ -37,6 +37,11 @@
 		"adding": "Lisätään…",
 		"outOfStock": "Loppunut varastosta",
 		"selectOptions": "Valitse vaihtoehdot",
+		"buyBox": {
+			"overBudgetHint": "Tässä tuotteessa on liian monta vaihtoehtoa listattavaksi. Avaa suora varianttilinkki ostaaksesi.",
+			"externalHint": "Tämän tuotteen vaihtoehdot valitaan erillisessä kokemuksessa. Avaa suora varianttilinkki ostaaksesi.",
+			"selectedSummary": "Valitut vaihtoehdot"
+		},
 		"free": "ILMAINEN",
 		"breadcrumbHome": "Etusivu",
 		"badges": {

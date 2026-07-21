@@ -1,7 +1,8 @@
-# Single-variant resolution for deep links (`?variant=`) — especially over-budget PDPs
-# that must not hydrate the full matrix.
-query ProductVariantForPdp($id: ID!, $channel: String!, $languageCode: LanguageCodeEnum!) {
-	productVariant(id: $id, channel: $channel) {
+# Single-variant resolution for deep links (`?variant=` / `?sku=`) — especially
+# over-budget / external buy-box strategies that must not hydrate the full matrix.
+# Pass exactly one of `$id` or `$sku` (Saleor rejects both / neither).
+query ProductVariantForPdp($id: ID, $sku: String, $channel: String!, $languageCode: LanguageCodeEnum!) {
+	productVariant(id: $id, sku: $sku, channel: $channel) {
 		...VariantDetails
 		product {
 			id
