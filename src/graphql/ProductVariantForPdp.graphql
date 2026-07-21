@@ -1,0 +1,11 @@
+# Single-variant resolution for deep links (`?variant=`) — especially over-budget PDPs
+# that must not hydrate the full matrix.
+query ProductVariantForPdp($id: ID!, $channel: String!, $languageCode: LanguageCodeEnum!) {
+	productVariant(id: $id, channel: $channel) {
+		...VariantDetails
+		product {
+			id
+			slug
+		}
+	}
+}

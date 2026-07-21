@@ -1,7 +1,21 @@
-import { type ProductDetailsQuery } from "@/gql/graphql";
+import type { ProductShell, PdpVariant } from "@/lib/catalog/get-product-data";
 
-export type Product = NonNullable<ProductDetailsQuery["product"]>;
-export type Variant = NonNullable<Product["variants"]>[number];
+/**
+ * PDP product shape: shell fields from ProductDetails, plus variants merged by
+ * dynamic islands via {@link getProductVariantsForPdp}.
+ *
+ * The static shell never awaits variants — islands attach them so the prerender
+ * payload stays lean (PPR).
+ */
+export type Product = ProductShell & {
+	variants?: PdpVariant[] | null;
+	/** Saleor total when known (from shell probe or variants fetch). */
+	variantTotalCount?: number | null;
+	/** True when totalCount exceeds PDP_VARIANT_CAP — matrix must not hydrate. */
+	overVariantBudget?: boolean;
+};
+
+export type Variant = PdpVariant;
 
 export function getGalleryImages(
 	product: Product,
@@ -27,11 +41,9 @@ export function getGalleryImages(
 	return [];
 }
 
-/** Default gallery images for the static shell (no searchParams). */
+/** Default gallery images for the static shell (no searchParams, no variant payloads). */
 export function getDefaultGalleryImages(product: Product): ReturnType<typeof getGalleryImages> {
-	const variants = product.variants ?? [];
-	const defaultVariant = variants.length === 1 ? variants[0] : null;
-	return getGalleryImages(product, defaultVariant);
+	return getGalleryImages(product, null);
 }
 
 export function resolveSelectedVariantId(
@@ -39,5 +51,9 @@ export function resolveSelectedVariantId(
 	variantParam: string | undefined,
 ): string | undefined {
 	const variants = product.variants ?? [];
-	return variantParam || (variants.length === 1 ? variants[0].id : undefined);
+	if (variantParam) return variantParam;
+	if (variants.length === 1) return variants[0]?.id;
+	const total = product.variantTotalCount ?? product.productVariants?.totalCount ?? null;
+	if (total === 1 && variants[0]?.id) return variants[0].id;
+	return undefined;
 }

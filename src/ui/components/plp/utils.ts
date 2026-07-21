@@ -8,15 +8,21 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedName } from "@/lib/saleor-translations";
 import { isBestseller } from "@/lib/catalog/product-flags";
 
+type ListVariantNode = NonNullable<
+	NonNullable<ProductListItemFragment["productVariants"]>["edges"][number]
+>["node"];
+
+function listVariantNodes(product: ProductListItemFragment): ListVariantNode[] {
+	return product.productVariants?.edges.map((edge) => edge.node) ?? [];
+}
+
 /**
- * Extract colors from product variants
+ * Extract colors from the capped PLP variant sample.
  */
-function extractColorsFromVariants(
-	variants: ProductListItemFragment["variants"],
-): { name: string; hex: string }[] {
+function extractColorsFromVariants(variants: ListVariantNode[]): { name: string; hex: string }[] {
 	const colorSet = new Map<string, string>();
 
-	variants?.forEach((variant) => {
+	variants.forEach((variant) => {
 		variant.selectionAttributes?.forEach((attr) => {
 			if (isColorAttribute(attr.attribute?.slug ?? "")) {
 				attr.values?.forEach((value) => {
@@ -34,12 +40,12 @@ function extractColorsFromVariants(
 }
 
 /**
- * Extract sizes from product variants
+ * Extract sizes from the capped PLP variant sample.
  */
-function extractSizesFromVariants(variants: ProductListItemFragment["variants"]): string[] {
+function extractSizesFromVariants(variants: ListVariantNode[]): string[] {
 	const sizeSet = new Set<string>();
 
-	variants?.forEach((variant) => {
+	variants.forEach((variant) => {
 		variant.selectionAttributes?.forEach((attr) => {
 			if (isSizeAttribute(attr.attribute?.slug ?? "")) {
 				attr.values?.forEach((value) => {
@@ -78,9 +84,11 @@ export function toProductCardData(
 			? calculateDiscountPercent(startAmount, undiscountedStartAmount)
 			: null;
 
-	// Extract colors and sizes from variants
-	const colors = extractColorsFromVariants(product.variants);
-	const sizes = extractSizesFromVariants(product.variants);
+	const variantSample = listVariantNodes(product);
+	const variantTotalCount = product.productVariants?.totalCount ?? variantSample.length;
+	// Extract colors and sizes from the capped sample (not exhaustive when truncated)
+	const colors = extractColorsFromVariants(variantSample);
+	const sizes = extractSizesFromVariants(variantSample);
 
 	const productName = pickTranslatedName(product);
 	const categoryName = product.category ? pickTranslatedName(product.category) : null;
@@ -108,7 +116,7 @@ export function toProductCardData(
 			? { id: product.category.id, name: categoryName ?? product.category.name, slug: product.category.slug }
 			: null,
 		createdAt: product.created,
-		hasVariants: (product.variants?.length ?? 0) > 1,
+		hasVariants: variantTotalCount > 1,
 	};
 }
 

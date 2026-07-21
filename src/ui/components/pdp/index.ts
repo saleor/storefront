@@ -35,4 +35,10 @@ export { ProductRouteSkeleton } from "./product-route-skeleton";
 export { VariantGalleryDynamic, GallerySkeleton } from "./variant-gallery-dynamic";
 export { VariantSectionDynamic, VariantSectionSkeleton } from "./variant-section-dynamic";
 export { VariantSectionError } from "./variant-section-error";
-export { getGalleryImages, getDefaultGalleryImages, resolveSelectedVariantId } from "./gallery-utils";
+export {
+	getGalleryImages,
+	getDefaultGalleryImages,
+	resolveSelectedVariantId,
+	type Product,
+	type Variant,
+} from "./gallery-utils";

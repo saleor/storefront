@@ -6,6 +6,7 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 		description
 		seoTitle
 		seoDescription
+		isAvailable
 		translation(languageCode: $languageCode) {
 			name
 			description
@@ -29,6 +30,13 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 				name
 			}
 		}
+		productType {
+			slug
+		}
+		# Cheap probe for JSON-LD + budget branching (no variant payloads).
+		productVariants(first: 1) {
+			totalCount
+		}
 		# Bestseller merchandising flag — fetch only the boolean by slug (new attribute API).
 		# Slugs must match PRODUCT_FLAG_SLUGS in src/lib/catalog/product-flags.ts.
 		bestseller: assignedAttribute(slug: "bestseller") {
@@ -41,15 +49,8 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 				value
 			}
 		}
-		# Spec accordion / care copy still read the full (deprecated) attribute list.
-		# TODO: migrate to `assignedAttributes` in a dedicated attribute-API sweep.
-		attributes {
-			values {
-				name
-				translation(languageCode: $languageCode) {
-					name
-				}
-			}
+		# Spec accordion / care copy — typed assignedAttributes (not the deprecated list).
+		assignedAttributes(limit: 50) {
 			attribute {
 				name
 				slug
@@ -57,9 +58,30 @@ query ProductDetails($slug: String!, $channel: String!, $languageCode: LanguageC
 					name
 				}
 			}
-		}
-		variants {
-			...VariantDetails
+			... on AssignedPlainTextAttribute {
+				plainText: value
+				plainTextTranslation: translation(languageCode: $languageCode)
+			}
+			... on AssignedBooleanAttribute {
+				boolean: value
+			}
+			... on AssignedNumericAttribute {
+				numeric: value
+			}
+			... on AssignedSingleChoiceAttribute {
+				choice: value {
+					name
+					slug
+					translation(languageCode: $languageCode)
+				}
+			}
+			... on AssignedMultiChoiceAttribute {
+				choices: value {
+					name
+					slug
+					translation(languageCode: $languageCode)
+				}
+			}
 		}
 		pricing {
 			priceRange {
