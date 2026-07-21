@@ -50,7 +50,10 @@
 			"percentOffTitle": "{name} — {percent}% alennus",
 			"outOfStockA11y": "loppunut varastosta",
 			"percentOffA11y": "{percent}% alennus",
-			"selectedA11y": "valittu"
+			"selectedA11y": "valittu",
+			"chooseOption": "Valitse {label}",
+			"searchOptions": "Hae: {label}",
+			"noMatchingOptions": "Ei vastaavia vaihtoehtoja"
 		},
 		"attributes": {
 			"description": "Kuvaus",

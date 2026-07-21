@@ -102,6 +102,26 @@ export function VariantSelectionSection({
 		[variants, optimisticSelections, attributeGroups],
 	);
 
+	// Repair: URL can hold a complete attribute combo without `?variant=` (legacy links,
+	// or a control that painted a value without writing params). Only read committed
+	// URL selections — never optimistic — so this cannot race handleSelect's push.
+	useEffect(() => {
+		const urlMatch = findMatchingVariant(variants as SaleorVariant[], currentSelections, attributeGroups);
+		if (!urlMatch) return;
+		if (searchParams.get("variant") === urlMatch) return;
+
+		const params = new URLSearchParams();
+		for (const [slug, value] of Object.entries(currentSelections)) {
+			if (value) params.set(slug, value);
+		}
+		params.set("variant", urlMatch);
+
+		startTransition(() => {
+			const path = `${buildStorefrontPath(locale, channel, `/products/${productSlug}`)}?${params.toString()}`;
+			router.replace(path, { scroll: false });
+		});
+	}, [attributeGroups, channel, currentSelections, locale, productSlug, router, searchParams, variants]);
+
 	const optionalAttributes = useMemo(
 		() => extractOptionalAttributes(variants, currentVariantId),
 		[variants, currentVariantId],

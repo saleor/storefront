@@ -50,7 +50,10 @@
 			"percentOffTitle": "{name} — {percent}% rabatt",
 			"outOfStockA11y": "utsolgt",
 			"percentOffA11y": "{percent}% rabatt",
-			"selectedA11y": "valgt"
+			"selectedA11y": "valgt",
+			"chooseOption": "Velg {label}",
+			"searchOptions": "Søk i {label}",
+			"noMatchingOptions": "Ingen treff"
 		},
 		"attributes": {
 			"description": "Beskrivelse",

@@ -1,7 +1,7 @@
 /**
  * Variant / attribute-picker budgets for high-cardinality catalogs.
  *
- * Single source of truth for PDP/PLP caps and (future) per-group control thresholds.
+ * Single source of truth for PDP/PLP caps and per-group control thresholds.
  * Override in a fork by editing this file — do not scatter magic numbers in queries/UI.
  *
  * Stock freshness: PDP variant payloads (incl. `quantityAvailable`) use the same
@@ -25,6 +25,8 @@ export const PDP_VARIANT_CAP = 200;
 /** Variants sampled on PLP cards for swatches / client facet hints. */
 export const PLP_VARIANT_SAMPLE = 50;
 
-/** Per-group control ladder (Workstream 2 — used once group renderers ship). */
-export const VARIANT_CHIP_MAX_OPTIONS = 10;
+/** Per-group control ladder thresholds (chips → select → combobox). */
+export const VARIANT_CHIP_MAX_OPTIONS = 1;
+/** Swatch groups stay as a chip grid up to this count, then jump to combobox (Select cannot show swatches). */
+export const VARIANT_SWATCH_CHIP_MAX_OPTIONS = 2;
 export const VARIANT_NATIVE_SELECT_MAX_OPTIONS = 24;

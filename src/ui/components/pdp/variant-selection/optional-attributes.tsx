@@ -52,9 +52,9 @@ export function extractOptionalAttributes(
 	variants: VariantWithAttributes[],
 	selectedVariantId?: string,
 ): VariantAttribute[] {
-	// Find the selected variant, or fall back to first if none selected
-	const variant = selectedVariantId ? variants.find((v) => v.id === selectedVariantId) : variants[0];
+	if (!selectedVariantId) return [];
 
+	const variant = variants.find((v) => v.id === selectedVariantId);
 	if (!variant?.nonSelectionAttributes) {
 		return [];
 	}

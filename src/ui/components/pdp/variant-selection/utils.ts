@@ -84,7 +84,7 @@ export function normalizeAttributeValueId(name: string): string {
  */
 export function getAttributeValueSelectionId(value: SaleorAttributeValue): string {
 	const slug = value.slug?.trim();
-	if (slug) return slug.toLowerCase();
+	if (slug) return normalizeAttributeValueId(slug);
 	const name = value.name?.trim();
 	return name ? normalizeAttributeValueId(name) : "";
 }
@@ -114,9 +114,10 @@ export function variantMatchesSelections(
 		);
 		if (!attr) return false;
 
-		const hasMatchingValue = attr.values.some(
-			(v) => getAttributeValueSelectionId(v) === normalizeAttributeValueId(selectedValue),
-		);
+		const hasMatchingValue = attr.values.some((v) => {
+			const valueId = getAttributeValueSelectionId(v);
+			return valueId === selectedValue || valueId === normalizeAttributeValueId(selectedValue);
+		});
 		if (!hasMatchingValue) return false;
 	}
 

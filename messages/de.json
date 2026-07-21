@@ -50,7 +50,10 @@
 			"percentOffTitle": "{name} — {percent}% Rabatt",
 			"outOfStockA11y": "nicht auf Lager",
 			"percentOffA11y": "{percent}% Rabatt",
-			"selectedA11y": "ausgewählt"
+			"selectedA11y": "ausgewählt",
+			"chooseOption": "{label} wählen",
+			"searchOptions": "{label} suchen",
+			"noMatchingOptions": "Keine passenden Optionen"
 		},
 		"attributes": {
 			"description": "Beschreibung",
