@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
+import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getPageData } from "@/lib/catalog/get-page-data";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
@@ -62,6 +63,7 @@ async function PageContent({
 
 	return (
 		<div className="container-content py-8 pb-16">
+			<CatalogIdentityBridge kind="pages" primarySlug={page.slug} />
 			<h1 className="mb-6 text-balance text-h1">{title}</h1>
 			{contentHtml && (
 				<div className="prose">

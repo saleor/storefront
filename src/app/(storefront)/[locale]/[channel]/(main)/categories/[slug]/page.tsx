@@ -6,6 +6,7 @@ import { ProductListByCategoryDocument } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
+import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
@@ -91,6 +92,7 @@ export default async function Page(props: PageProps) {
 
 	return (
 		<>
+			<CatalogIdentityBridge kind="categories" primarySlug={category.slug} />
 			{/* Static shell — cached hero renders immediately, prerendered into the PPR shell */}
 			<CategoryHero
 				title={category.name}

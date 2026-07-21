@@ -1,8 +1,9 @@
 import { permanentRedirect } from "next/navigation";
+import type { CatalogSlugKind } from "@/lib/catalog/catalog-identity";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
-export type CatalogSlugKind = "products" | "categories" | "collections" | "pages";
+export type { CatalogSlugKind };
 
 type SluggedEntity = {
 	slug: string;

@@ -34,14 +34,16 @@ Support translated slugs as an **opt-in merchant capability**. When a translatio
 4. **Cache tags** — always tag with the **primary** slug (webhook identity). When the URL slug differs, also tag with the URL slug so either form invalidates.
 5. **Link generation** — cards, menus, breadcrumbs, JSON-LD, and metadata path suffixes use `pickTranslatedSlug`.
 6. **Filters / search** — keep using primary slugs (API limitation).
+7. **Language switch** — region picker rewrites catalog detail suffixes to the **primary** slug (via `CatalogIdentityBridge`), preserves query string, then the target locale’s server resolve + rule 3 308 to that locale’s canonical slug. Never keep a foreign-language handle in the path.
 
 ### Phased delivery
 
-| Phase | Scope                                                                                        | Status      |
-| ----- | -------------------------------------------------------------------------------------------- | ----------- |
-| **1** | Resolve + fallback + dual cache tags + canonical redirect + link fields on catalog/menus/PLP | This branch |
-| **2** | Per-locale hreflang / sitemap path suffixes (needs all locale slugs in one metadata fetch)   | Follow-up   |
-| **3** | `TRANSLATION_*` webhook handling in `/api/revalidate`                                        | Follow-up   |
+| Phase  | Scope                                                                                        | Status      |
+| ------ | -------------------------------------------------------------------------------------------- | ----------- |
+| **1**  | Resolve + fallback + dual cache tags + canonical redirect + link fields on catalog/menus/PLP | Shipped     |
+| **1b** | Language switch via primary slug + query preserve (`CatalogIdentityBridge`)                  | This change |
+| **2**  | Per-locale hreflang / sitemap path suffixes (needs all locale slugs in one metadata fetch)   | Follow-up   |
+| **3**  | `TRANSLATION_*` webhook handling in `/api/revalidate`                                        | Follow-up   |
 
 ### Merge note (Next.js 16.3 preview)
 

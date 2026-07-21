@@ -10,6 +10,7 @@ import { type ProductDetailsQuery } from "@/gql/graphql";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
+import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getProductData } from "@/lib/catalog/get-product-data";
 import { buildPolicyLabelValues } from "@/lib/content";
 import { getStorefrontContent } from "@/lib/content/server";
@@ -199,6 +200,7 @@ async function ProductShell({
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
+			<CatalogIdentityBridge kind="products" primarySlug={product.slug} />
 			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
 			{/* The browse layout (`(main)/layout.tsx`) owns the page's single <main> landmark. */}

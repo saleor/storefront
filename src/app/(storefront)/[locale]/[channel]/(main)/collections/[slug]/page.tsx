@@ -6,6 +6,7 @@ import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } fr
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
+import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
@@ -84,6 +85,7 @@ export default async function Page(props: PageProps) {
 
 	return (
 		<>
+			<CatalogIdentityBridge kind="collections" primarySlug={collection.slug} />
 			<CategoryHero
 				title={collection.name}
 				description={plainDescription}
