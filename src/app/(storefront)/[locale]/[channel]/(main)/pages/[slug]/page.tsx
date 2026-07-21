@@ -6,6 +6,7 @@ import xss from "xss";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getPageData } from "@/lib/catalog/get-page-data";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
 
@@ -23,6 +24,7 @@ export const generateMetadata = async (props: {
 		locale: params.locale,
 		channel: params.channel,
 		pathSuffix: page ? catalogPathSuffix("pages", page) : `/pages/${encodeURIComponent(params.slug)}`,
+		pathSuffixByLocale: page ? buildCatalogPathSuffixByLocale("pages", buildLocaleSlugMap(page)) : undefined,
 	});
 };
 
@@ -63,7 +65,7 @@ async function PageContent({
 
 	return (
 		<div className="container-content py-8 pb-16">
-			<CatalogIdentityBridge kind="pages" primarySlug={page.slug} />
+			<CatalogIdentityBridge kind="pages" primarySlug={page.slug} localeSlugs={buildLocaleSlugMap(page)} />
 			<h1 className="mb-6 text-balance text-h1">{title}</h1>
 			{contentHtml && (
 				<div className="prose">

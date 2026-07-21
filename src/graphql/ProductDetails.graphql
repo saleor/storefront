@@ -18,6 +18,7 @@ query ProductDetails(
 			seoDescription
 			slug
 		}
+		...ProductLocaleSlugTranslations
 		thumbnail(size: 2048, format: WEBP) {
 			url
 			alt

@@ -8,6 +8,7 @@ import { executePublicGraphQL } from "@/lib/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
@@ -42,6 +43,9 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 		pathSuffix: category
 			? catalogPathSuffix("categories", category)
 			: `/categories/${encodeURIComponent(params.slug)}`,
+		pathSuffixByLocale: category
+			? buildCatalogPathSuffixByLocale("categories", buildLocaleSlugMap(category))
+			: undefined,
 	});
 };
 
@@ -92,7 +96,11 @@ export default async function Page(props: PageProps) {
 
 	return (
 		<>
-			<CatalogIdentityBridge kind="categories" primarySlug={category.slug} />
+			<CatalogIdentityBridge
+				kind="categories"
+				primarySlug={category.slug}
+				localeSlugs={buildLocaleSlugMap(category)}
+			/>
 			{/* Static shell — cached hero renders immediately, prerendered into the PPR shell */}
 			<CategoryHero
 				title={category.name}

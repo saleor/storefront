@@ -26,17 +26,22 @@ export function useCatalogIdentity(): CatalogIdentity | null {
 }
 
 /**
- * Registers the current catalog detail page's primary slug for locale switching.
+ * Registers the current catalog detail page for locale switching (primary + per-locale slugs).
  * Render once in product/category/collection/page shells.
  */
-export function CatalogIdentityBridge({ kind, primarySlug }: CatalogIdentity) {
+export function CatalogIdentityBridge({ kind, primarySlug, localeSlugs }: CatalogIdentity) {
 	const setIdentity = useContext(CatalogIdentityContext)?.setIdentity;
+	const localeSlugsKey = localeSlugs ? JSON.stringify(localeSlugs) : "";
 
 	useEffect(() => {
 		if (!setIdentity) return;
-		setIdentity({ kind, primarySlug });
+		setIdentity({
+			kind,
+			primarySlug,
+			localeSlugs: localeSlugsKey ? (JSON.parse(localeSlugsKey) as Record<string, string>) : undefined,
+		});
 		return () => setIdentity(null);
-	}, [setIdentity, kind, primarySlug]);
+	}, [setIdentity, kind, primarySlug, localeSlugsKey]);
 
 	return null;
 }

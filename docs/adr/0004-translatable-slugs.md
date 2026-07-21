@@ -1,6 +1,6 @@
 # ADR 0004: Saleor translatable catalog slugs
 
-**Status:** Accepted (phase 1 in progress)  
+**Status:** Accepted (phases 1–2 shipped)  
 **Date:** 2026-07-21  
 **Deciders:** Paper storefront team  
 **Related:** [0001 Locale and channel URL routing](./0001-locale-channel-url-routing.md)
@@ -34,15 +34,15 @@ Support translated slugs as an **opt-in merchant capability**. When a translatio
 4. **Cache tags** — always tag with the **primary** slug (webhook identity). When the URL slug differs, also tag with the URL slug so either form invalidates.
 5. **Link generation** — cards, menus, breadcrumbs, JSON-LD, and metadata path suffixes use `pickTranslatedSlug`.
 6. **Filters / search** — keep using primary slugs (API limitation).
-7. **Language switch** — region picker rewrites catalog detail suffixes to the **primary** slug (via `CatalogIdentityBridge`), preserves query string, then the target locale’s server resolve + rule 3 308 to that locale’s canonical slug. Never keep a foreign-language handle in the path.
+7. **Language switch** — region picker rewrites catalog detail suffixes using the **target locale’s canonical slug** from `localeSlugs` when available (zero hop); otherwise the **primary** slug with server 308. Preserves query string. Never keep a foreign-language handle in the path.
 
 ### Phased delivery
 
 | Phase  | Scope                                                                                        | Status      |
 | ------ | -------------------------------------------------------------------------------------------- | ----------- |
 | **1**  | Resolve + fallback + dual cache tags + canonical redirect + link fields on catalog/menus/PLP | Shipped     |
-| **1b** | Language switch via primary slug + query preserve (`CatalogIdentityBridge`)                  | This change |
-| **2**  | Per-locale hreflang / sitemap path suffixes (needs all locale slugs in one metadata fetch)   | Follow-up   |
+| **1b** | Language switch via primary slug + query preserve (`CatalogIdentityBridge`)                  | Shipped     |
+| **2**  | Per-locale hreflang path suffixes + zero-hop language switch from locale slug map            | This change |
 | **3**  | `TRANSLATION_*` webhook handling in `/api/revalidate`                                        | Follow-up   |
 
 ### Merge note (Next.js 16.3 preview)
@@ -62,5 +62,5 @@ This work targets `main` and should cherry-pick/merge cleanly into `feat/nextjs-
 
 - Non-default locales (and the default locale when a translation slug exists) may issue **two** GraphQL lookups on cold primary-slug URLs (then redirect). After links emit translated slugs, the common path is one lookup.
 - Merchants who never set translation slugs see no URL change.
-- Until phase 2, `hreflang` alternates may still share one path suffix across locales (canonical URL for the current locale is correct).
+- hreflang alternates use per-locale path suffixes from `*LocaleSlugTranslations` aliases (`buildLocaleSlugMap`). Language switch prefers those slugs for a zero-hop navigation; primary-slug + 308 remains the fallback.
 - Until phase 3, editing only a translation slug may leave stale cache until TTL or a product/category update webhook.

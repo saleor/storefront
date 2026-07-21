@@ -9,15 +9,24 @@ export type CatalogIdentity = {
 	kind: CatalogSlugKind;
 	/** Saleor primary slug — stable across locales (cache / webhook identity). */
 	primarySlug: string;
+	/**
+	 * Optional map of locale → canonical URL slug for zero-hop language switches.
+	 * When missing, falls back to primarySlug (server 308s to the locale canonical).
+	 */
+	localeSlugs?: Record<string, string>;
 };
 
 const CATALOG_DETAIL_SUFFIX = /^\/(products|categories|collections|pages)\/([^/]+)(\/.*)?$/;
 
 /**
- * When switching language, rewrite a translated URL slug to the primary slug so the
- * target locale can resolve + 308 to its own canonical slug (never 404).
+ * Rewrite a catalog detail suffix for a language switch.
+ * Prefers the target locale's translated slug when {@link CatalogIdentity.localeSlugs} is set.
  */
-export function rewriteCatalogSuffixWithPrimarySlug(suffix: string, identity: CatalogIdentity): string {
+export function rewriteCatalogSuffixForLocaleSwitch(
+	suffix: string,
+	identity: CatalogIdentity,
+	targetLocale: string,
+): string {
 	const match = suffix.match(CATALOG_DETAIL_SUFFIX);
 	if (!match) return suffix;
 
@@ -25,7 +34,13 @@ export function rewriteCatalogSuffixWithPrimarySlug(suffix: string, identity: Ca
 	const rest = match[3] ?? "";
 	if (kind !== identity.kind) return suffix;
 
-	return `/${kind}/${encodeURIComponent(identity.primarySlug)}${rest}`;
+	const slug = identity.localeSlugs?.[targetLocale] ?? identity.primarySlug;
+	return `/${kind}/${encodeURIComponent(slug)}${rest}`;
+}
+
+/** @deprecated Prefer {@link rewriteCatalogSuffixForLocaleSwitch} */
+export function rewriteCatalogSuffixWithPrimarySlug(suffix: string, identity: CatalogIdentity): string {
+	return rewriteCatalogSuffixForLocaleSwitch(suffix, identity, "");
 }
 
 export function appendSearchParams(

@@ -1,32 +1,39 @@
 import { describe, expect, it } from "vitest";
-import { appendSearchParams, rewriteCatalogSuffixWithPrimarySlug } from "./catalog-identity";
+import { appendSearchParams, rewriteCatalogSuffixForLocaleSwitch } from "./catalog-identity";
 
-describe("rewriteCatalogSuffixWithPrimarySlug", () => {
-	it("replaces a translated product slug with the primary slug", () => {
+describe("rewriteCatalogSuffixForLocaleSwitch", () => {
+	it("uses the target locale slug when localeSlugs is provided", () => {
 		expect(
-			rewriteCatalogSuffixWithPrimarySlug("/products/bluza", {
-				kind: "products",
-				primarySlug: "hoodie",
-			}),
+			rewriteCatalogSuffixForLocaleSwitch(
+				"/products/bluza",
+				{
+					kind: "products",
+					primarySlug: "hoodie",
+					localeSlugs: { en: "hoodie", pl: "bluza", de: "kapuzenpullover" },
+				},
+				"de",
+			),
+		).toBe("/products/kapuzenpullover");
+	});
+
+	it("falls back to primary slug when the target locale is missing", () => {
+		expect(
+			rewriteCatalogSuffixForLocaleSwitch(
+				"/products/bluza",
+				{ kind: "products", primarySlug: "hoodie" },
+				"en",
+			),
 		).toBe("/products/hoodie");
 	});
 
 	it("leaves non-matching kinds unchanged", () => {
 		expect(
-			rewriteCatalogSuffixWithPrimarySlug("/categories/bluza", {
-				kind: "products",
-				primarySlug: "hoodie",
-			}),
+			rewriteCatalogSuffixForLocaleSwitch(
+				"/categories/bluza",
+				{ kind: "products", primarySlug: "hoodie" },
+				"en",
+			),
 		).toBe("/categories/bluza");
-	});
-
-	it("leaves list paths unchanged", () => {
-		expect(
-			rewriteCatalogSuffixWithPrimarySlug("/products", {
-				kind: "products",
-				primarySlug: "hoodie",
-			}),
-		).toBe("/products");
 	});
 });
 

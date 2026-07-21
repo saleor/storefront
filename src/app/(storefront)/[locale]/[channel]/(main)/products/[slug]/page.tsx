@@ -12,6 +12,7 @@ import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency"
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getProductData } from "@/lib/catalog/get-product-data";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { buildPolicyLabelValues } from "@/lib/content";
 import { getStorefrontContent } from "@/lib/content/server";
 import { buildBrowsePageMetadata, buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
@@ -60,6 +61,7 @@ export async function generateMetadata(props: {
 		locale: params.locale,
 		channel: params.channel,
 		pathSuffix: catalogPathSuffix("products", product),
+		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
 		openGraph:
 			priceAmount && priceCurrency
 				? {
@@ -200,7 +202,11 @@ async function ProductShell({
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
-			<CatalogIdentityBridge kind="products" primarySlug={product.slug} />
+			<CatalogIdentityBridge
+				kind="products"
+				primarySlug={product.slug}
+				localeSlugs={buildLocaleSlugMap(product)}
+			/>
 			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
 			{/* The browse layout (`(main)/layout.tsx`) owns the page's single <main> landmark. */}

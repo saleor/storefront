@@ -8,6 +8,7 @@ import { executePublicGraphQL } from "@/lib/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
@@ -42,6 +43,9 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 		pathSuffix: collection
 			? catalogPathSuffix("collections", collection)
 			: `/collections/${encodeURIComponent(params.slug)}`,
+		pathSuffixByLocale: collection
+			? buildCatalogPathSuffixByLocale("collections", buildLocaleSlugMap(collection))
+			: undefined,
 	});
 };
 
@@ -85,7 +89,11 @@ export default async function Page(props: PageProps) {
 
 	return (
 		<>
-			<CatalogIdentityBridge kind="collections" primarySlug={collection.slug} />
+			<CatalogIdentityBridge
+				kind="collections"
+				primarySlug={collection.slug}
+				localeSlugs={buildLocaleSlugMap(collection)}
+			/>
 			<CategoryHero
 				title={collection.name}
 				description={plainDescription}

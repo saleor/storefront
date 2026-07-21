@@ -13,5 +13,6 @@ query PageGetBySlug($slug: String!, $languageCode: LanguageCodeEnum!, $slugLangu
 			content
 			slug
 		}
+		...PageLocaleSlugTranslations
 	}
 }
