@@ -38,6 +38,21 @@ export function rewriteCatalogSuffixForLocaleSwitch(
 	return `/${kind}/${encodeURIComponent(slug)}${rest}`;
 }
 
+/**
+ * When catalog identity is not registered yet (footer ready, detail shell still streaming),
+ * do not keep a foreign-language handle — that 404s on Saleor. Drop to a safe suffix:
+ * products listing when on a PDP; otherwise browse home.
+ */
+export function safeLocaleSwitchSuffixWithoutIdentity(suffix: string): string {
+	const match = suffix.match(CATALOG_DETAIL_SUFFIX);
+	if (!match) return suffix;
+
+	const kind = match[1] as CatalogSlugKind;
+	// Only `/products` has an index route under (main)/.
+	if (kind === "products") return "/products";
+	return "";
+}
+
 /** @deprecated Prefer {@link rewriteCatalogSuffixForLocaleSwitch} */
 export function rewriteCatalogSuffixWithPrimarySlug(suffix: string, identity: CatalogIdentity): string {
 	return rewriteCatalogSuffixForLocaleSwitch(suffix, identity, "");

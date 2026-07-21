@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useLayoutEffect, useMemo, useState, type ReactNode } from "react";
 import type { CatalogIdentity } from "@/lib/catalog/catalog-identity";
 
 type CatalogIdentityContextValue = {
@@ -27,13 +27,13 @@ export function useCatalogIdentity(): CatalogIdentity | null {
 
 /**
  * Registers the current catalog detail page for locale switching (primary + per-locale slugs).
- * Render once in product/category/collection/page shells.
+ * Uses layout effect so identity is available before paint (footer picker can run in parallel).
  */
 export function CatalogIdentityBridge({ kind, primarySlug, localeSlugs }: CatalogIdentity) {
 	const setIdentity = useContext(CatalogIdentityContext)?.setIdentity;
 	const localeSlugsKey = localeSlugs ? JSON.stringify(localeSlugs) : "";
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (!setIdentity) return;
 		setIdentity({
 			kind,

@@ -4,7 +4,11 @@ import { useParams, usePathname, useRouter, useSearchParams } from "next/navigat
 import { isLocaleSlug, isStorefrontLocaleSlug } from "@/config/locale";
 import { getPairedChannelForLocale } from "@/config/locale-channel";
 import { useCatalogIdentity } from "@/lib/catalog/catalog-identity-bridge";
-import { appendSearchParams, rewriteCatalogSuffixForLocaleSwitch } from "@/lib/catalog/catalog-identity";
+import {
+	appendSearchParams,
+	rewriteCatalogSuffixForLocaleSwitch,
+	safeLocaleSwitchSuffixWithoutIdentity,
+} from "@/lib/catalog/catalog-identity";
 import { hasCartCookieForChannel } from "@/lib/cart-channel-cookie";
 import { writeBrowseLocaleCookieClient } from "@/lib/browse-locale";
 import {
@@ -16,7 +20,9 @@ import {
 /**
  * Navigate browse URLs while preserving the path suffix (ADR 0001).
  * On catalog detail pages, swap to the target locale's canonical slug when known
- * (ADR 0004 phase 2), else the primary slug (server 308s).
+ * (ADR 0004 phase 2), else the primary slug (server 308s). If identity is not
+ * registered yet (chrome streamed before the detail shell), drop the foreign
+ * handle instead of 404ing.
  */
 export function useStorefrontRegionNavigation() {
 	const router = useRouter();
@@ -47,15 +53,19 @@ export function useStorefrontRegionNavigation() {
 
 		const parsed = parseStorefrontPathname(pathname);
 		let suffix = parsed?.suffix ?? "";
-		if (catalogIdentity && parsed) {
-			suffix = rewriteCatalogSuffixForLocaleSwitch(suffix, catalogIdentity, newLocale);
+		if (parsed) {
+			suffix = catalogIdentity
+				? rewriteCatalogSuffixForLocaleSwitch(suffix, catalogIdentity, newLocale)
+				: safeLocaleSwitchSuffixWithoutIdentity(suffix);
 		}
 
 		const path = parsed
 			? buildStorefrontPath(newLocale, targetChannel, suffix)
 			: buildStorefrontPath(newLocale, targetChannel);
 
-		router.push(appendSearchParams(path, searchParams));
+		// Drop query when we abandoned a detail URL (listing/home has no variant/filters meaning).
+		const keepQuery = Boolean(catalogIdentity) || suffix === (parsed?.suffix ?? "");
+		router.push(appendSearchParams(path, keepQuery ? searchParams : undefined));
 	}
 
 	function navigateToChannel(newChannel: string) {

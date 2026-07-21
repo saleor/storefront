@@ -62,5 +62,6 @@ This work targets `main` and should cherry-pick/merge cleanly into `feat/nextjs-
 
 - Non-default locales (and the default locale when a translation slug exists) may issue **two** GraphQL lookups on cold primary-slug URLs (then redirect). After links emit translated slugs, the common path is one lookup.
 - Merchants who never set translation slugs see no URL change.
-- hreflang alternates use per-locale path suffixes from `*LocaleSlugTranslations` aliases (`buildLocaleSlugMap`). Language switch prefers those slugs for a zero-hop navigation; primary-slug + 308 remains the fallback.
+- hreflang alternates use per-locale path suffixes from `*LocaleSlugTranslations` aliases (`buildLocaleSlugMap`). Language switch prefers those slugs for a zero-hop navigation; primary-slug + 308 remains the fallback. If identity is not registered yet (chrome before detail shell), language switch drops the foreign handle to `/products` or home instead of 404ing.
+- Webhook `revalidatePath` fan-out still uses the **primary** slug; dual `cacheTag` (URL + primary) covers `"use cache"` data. Explicit path revalidation of every translated URL waits on phase 3 (paper-app can forward locale slug maps) or TTL.
 - Until phase 3 (paper-app `TRANSLATION_*` forwarding), editing only a translation slug may leave stale cache until TTL or a product/category update webhook.
