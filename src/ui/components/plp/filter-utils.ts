@@ -163,7 +163,7 @@ export function extractSizeOptions(products: ProductCardData[], selectedSizes?: 
 		if (!map.has(size)) map.set(size, 0);
 	});
 
-	// Sort sizes in logical order
+	// Sort sizes with semantic clothing order + natural numeric fallback
 	return Array.from(map.entries())
 		.map(([name, count]) => ({ name, count }))
 		.sort((a, b) => compareSizes(a.name, b.name));

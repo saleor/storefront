@@ -1,8 +1,9 @@
 /**
- * Size ordering utilities for product variants.
+ * Option / size ordering for product variants and PLP facets.
  *
- * Standard clothing sizes in logical order.
- * Used by product filtering and variant selection.
+ * - Known clothing size tokens (S, M, L, …) use semantic order.
+ * - Everything else uses numeric-aware natural sort so "10" sorts after "2",
+ *   "10mm" after "2mm", "Row 10" after "Row 2".
  */
 
 /**
@@ -24,32 +25,43 @@ export const SIZE_ORDER: Record<string, number> = {
 	"5XL": 10,
 };
 
+const NATURAL_COMPARE = { numeric: true, sensitivity: "base" } as const;
+
 /**
- * Get the sort order for a size.
- * Falls back to parsing as number, then alphabetical (100).
+ * Compare attribute option labels for display order.
+ * Prefer semantic clothing sizes when both sides are known tokens; otherwise natural sort.
  */
-export function getSizeOrder(size: string): number {
-	return SIZE_ORDER[size.toUpperCase()] ?? (parseInt(size) || 100);
+export function compareOptionLabels(a: string, b: string): number {
+	const aOrder = SIZE_ORDER[a.trim().toUpperCase()];
+	const bOrder = SIZE_ORDER[b.trim().toUpperCase()];
+	if (aOrder != null && bOrder != null) {
+		return aOrder - bOrder;
+	}
+	return a.localeCompare(b, undefined, NATURAL_COMPARE);
 }
 
 /**
- * Compare two sizes for sorting.
- * Use with Array.sort(): sizes.sort(compareSizes)
+ * @deprecated Prefer {@link compareOptionLabels}. Kept as an alias for size-named call sites.
  */
 export function compareSizes(a: string, b: string): number {
-	return getSizeOrder(a) - getSizeOrder(b);
+	return compareOptionLabels(a, b);
 }
 
 /**
- * Sort an array of sizes in logical order.
+ * Sort an array of size / option labels in logical order.
  */
 export function sortSizes<T extends string>(sizes: T[]): T[] {
-	return [...sizes].sort(compareSizes);
+	return [...sizes].sort(compareOptionLabels);
 }
 
 /**
- * Sort objects with a size property.
+ * Sort objects with a display `name` (size chips, attribute options, PLP facets).
  */
+export function sortByOptionLabel<T extends { name: string }>(items: T[]): T[] {
+	return [...items].sort((a, b) => compareOptionLabels(a.name, b.name));
+}
+
+/** @deprecated Prefer {@link sortByOptionLabel}. */
 export function sortBySizeProperty<T extends { name: string }>(items: T[]): T[] {
-	return [...items].sort((a, b) => compareSizes(a.name, b.name));
+	return sortByOptionLabel(items);
 }

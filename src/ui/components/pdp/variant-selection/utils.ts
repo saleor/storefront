@@ -6,17 +6,10 @@
  */
 
 import type { VariantOption, AttributeGroup } from "./types";
-import {
-	getSwatchData,
-	isColorAttribute,
-	isSizeAttribute,
-	isSwatchInputType,
-	shouldRenderAsSwatch,
-	COLOR_NAME_TO_HEX,
-} from "@/lib/colors";
+import { getSwatchData, shouldRenderAsSwatch, COLOR_NAME_TO_HEX } from "@/lib/colors";
 import { getMaxDiscountInfo as getMaxDiscountInfoBase } from "@/lib/pricing";
 import { pickTranslatedName } from "@/lib/saleor-translations";
-import { sortBySizeProperty } from "@/lib/sizes";
+import { sortByOptionLabel } from "@/lib/sizes";
 
 // Re-export for backwards compatibility
 export { COLOR_NAME_TO_HEX };
@@ -195,12 +188,11 @@ export function getInteractiveAttributeGroups(attributeGroups: AttributeGroup[])
  * `getImplicitSelections()` when resolving the variant.
  */
 export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeGroup[] {
-	// Map: attributeSlug -> { name, inputType, values: Map<valueName, swatch data> }
+	// Map: attributeSlug -> { name, values: Map<valueId, swatch data> }
 	const attributeMap = new Map<
 		string,
 		{
 			name: string;
-			inputType?: string | null;
 			values: Map<
 				string,
 				{ variantIds: Set<string>; displayName: string; colorHex?: string; swatchImageUrl?: string }
@@ -217,7 +209,6 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 			if (!attributeMap.has(slug)) {
 				attributeMap.set(slug, {
 					name,
-					inputType: attr.attribute.inputType,
 					values: new Map(),
 				});
 			}
@@ -276,34 +267,16 @@ export function groupVariantsByAttributes(variants: SaleorVariant[]): AttributeG
 			});
 		}
 
-		// Sort size options in logical order (S, M, L, XL, etc.)
-		const sortedOptions = isSizeAttribute(slug) ? sortBySizeProperty(options) : options;
+		// Natural / size-aware option order (Row 10 after Row 2; S before L)
+		const sortedOptions = sortByOptionLabel(options);
 
 		groups.push({ slug, name: data.name, options: sortedOptions });
 	}
 
-	// Sort: swatch/color attributes first, then size, then others
-	groups.sort((a, b) => {
-		const aData = attributeMap.get(a.slug);
-		const bData = attributeMap.get(b.slug);
-		const aIsSwatch =
-			isSwatchInputType(aData?.inputType) ||
-			isColorAttribute(a.slug) ||
-			a.options.some((o) => o.colorHex || o.swatchImageUrl);
-		const bIsSwatch =
-			isSwatchInputType(bData?.inputType) ||
-			isColorAttribute(b.slug) ||
-			b.options.some((o) => o.colorHex || o.swatchImageUrl);
-		const aIsSize = isSizeAttribute(a.slug);
-		const bIsSize = isSizeAttribute(b.slug);
-
-		if (aIsSwatch && !bIsSwatch) return -1;
-		if (!aIsSwatch && bIsSwatch) return 1;
-		if (aIsSize && !bIsSize) return -1;
-		if (!aIsSize && bIsSize) return 1;
-		return 0;
-	});
-
+	// Preserve first-seen attribute order from variants — Saleor returns
+	// selectionAttributes in product-type assignment order (verified on 3.x).
+	// Do not re-sort with a fashion swatch-first heuristic; that overrides merchant order
+	// (e.g. shoe-size → color becomes color → shoe-size).
 	return groups;
 }
 

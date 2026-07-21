@@ -7,6 +7,7 @@ import {
 	getAdjustedSelections,
 	getOptionsForAttribute,
 	getUnavailableAttributeInfo,
+	type SaleorVariant,
 } from "./utils";
 import {
 	tshirtVariants,
@@ -206,11 +207,65 @@ describe("groupVariantsByAttributes", () => {
 		expect(sOption?.hasDiscount).toBe(true);
 	});
 
-	it("sorts color attributes first, then size", () => {
+	it("preserves product-type attribute order (first-seen on variants), not fashion swatch-first", () => {
 		const groups = groupVariantsByAttributes(tshirtVariants);
 
+		// tshirt fixtures list color before size on each variant
 		expect(groups[0]?.slug).toBe("color");
 		expect(groups[1]?.slug).toBe("size");
+	});
+
+	it("does not reorder size ahead of color when the API lists size first", () => {
+		const sizeThenColor: SaleorVariant[] = [
+			{
+				id: "shoe-1",
+				name: "42 / Black",
+				quantityAvailable: 1,
+				selectionAttributes: [
+					{ attribute: { slug: "shoe-size", name: "Shoe size" }, values: [{ name: "42" }] },
+					{ attribute: { slug: "color", name: "Color" }, values: [{ name: "Black", value: "#000" }] },
+				],
+			},
+			{
+				id: "shoe-2",
+				name: "39 / White",
+				quantityAvailable: 1,
+				selectionAttributes: [
+					{ attribute: { slug: "shoe-size", name: "Shoe size" }, values: [{ name: "39" }] },
+					{ attribute: { slug: "color", name: "Color" }, values: [{ name: "White", value: "#fff" }] },
+				],
+			},
+		];
+
+		const groups = groupVariantsByAttributes(sizeThenColor);
+		expect(groups.map((g) => g.slug)).toEqual(["shoe-size", "color"]);
+		expect(groups[0]?.options.map((o) => o.name)).toEqual(["39", "42"]);
+	});
+
+	it("naturally sorts numeric option values (Row 10 after Row 2)", () => {
+		const rowSeat: SaleorVariant[] = [
+			{
+				id: "a",
+				name: "Row 10",
+				quantityAvailable: 1,
+				selectionAttributes: [{ attribute: { slug: "row", name: "Row" }, values: [{ name: "10" }] }],
+			},
+			{
+				id: "b",
+				name: "Row 2",
+				quantityAvailable: 1,
+				selectionAttributes: [{ attribute: { slug: "row", name: "Row" }, values: [{ name: "2" }] }],
+			},
+			{
+				id: "c",
+				name: "Row 1",
+				quantityAvailable: 1,
+				selectionAttributes: [{ attribute: { slug: "row", name: "Row" }, values: [{ name: "1" }] }],
+			},
+		];
+
+		const groups = groupVariantsByAttributes(rowSeat);
+		expect(groups[0]?.options.map((o) => o.name)).toEqual(["1", "2", "10"]);
 	});
 
 	it("extracts hex from SWATCH color attributes", () => {
