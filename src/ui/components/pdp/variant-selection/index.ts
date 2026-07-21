@@ -68,8 +68,10 @@ export {
 	getOptionsForAttribute,
 	getAdjustedSelections,
 	getUnavailableAttributeInfo,
+	buildVariantSelectionIndex,
 	COLOR_NAME_TO_HEX,
 	type SaleorVariant,
+	type VariantSelectionIndex,
 } from "./utils";
 export { resolveVariantGroupControl, type VariantGroupControl } from "./resolve-group-control";
 
