@@ -41,10 +41,10 @@ How Paper serves **multiple languages and markets** from one deployment. Start h
 
 Browse: `/{locale}/{channel}/{path}`
 
-| Segment   | Role                                      | Examples                           |
-| --------- | ----------------------------------------- | ---------------------------------- |
-| `locale`  | Language, `html lang`, Intl, GraphQL lang | `en`, `pl`, `de`, `fr`, `fi`, `nb` |
-| `channel` | Saleor market — currency, stock, shipping | `us`, `uk`, `pl`                   |
+| Segment   | Role                                      | Examples                                 |
+| --------- | ----------------------------------------- | ---------------------------------------- |
+| `locale`  | Language, `html lang`, Intl, GraphQL lang | `en`, `pl`, `de`, `fr`, `fi`, `nb`, `ko` |
+| `channel` | Saleor market — currency, stock, shipping | `us`, `uk`, `pl`                         |
 
 ```
 /en/us/products/hoodie     English UI, US market (USD)
