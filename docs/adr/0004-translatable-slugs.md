@@ -38,12 +38,12 @@ Support translated slugs as an **opt-in merchant capability**. When a translatio
 
 ### Phased delivery
 
-| Phase  | Scope                                                                                        | Status      |
-| ------ | -------------------------------------------------------------------------------------------- | ----------- |
-| **1**  | Resolve + fallback + dual cache tags + canonical redirect + link fields on catalog/menus/PLP | Shipped     |
-| **1b** | Language switch via primary slug + query preserve (`CatalogIdentityBridge`)                  | Shipped     |
-| **2**  | Per-locale hreflang path suffixes + zero-hop language switch from locale slug map            | This change |
-| **3**  | `TRANSLATION_*` webhook handling in `/api/revalidate`                                        | Follow-up   |
+| Phase  | Scope                                                                                        | Status                                                                                                                                                                                                                   |
+| ------ | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1**  | Resolve + fallback + dual cache tags + canonical redirect + link fields on catalog/menus/PLP | Shipped                                                                                                                                                                                                                  |
+| **1b** | Language switch via primary slug + query preserve (`CatalogIdentityBridge`)                  | Shipped                                                                                                                                                                                                                  |
+| **2**  | Per-locale hreflang path suffixes + zero-hop language switch from locale slug map            | Shipped                                                                                                                                                                                                                  |
+| **3**  | `TRANSLATION_*` webhook → invalidate catalog caches                                          | Follow-up — **primarily [saleor-paper-app](https://github.com/saleor/saleor-paper-app)** (subscribe + map to parent primary slug + forward to `/api/revalidate`). Storefront only if payload shape needs a thin adapter. |
 
 ### Merge note (Next.js 16.3 preview)
 
@@ -63,4 +63,4 @@ This work targets `main` and should cherry-pick/merge cleanly into `feat/nextjs-
 - Non-default locales (and the default locale when a translation slug exists) may issue **two** GraphQL lookups on cold primary-slug URLs (then redirect). After links emit translated slugs, the common path is one lookup.
 - Merchants who never set translation slugs see no URL change.
 - hreflang alternates use per-locale path suffixes from `*LocaleSlugTranslations` aliases (`buildLocaleSlugMap`). Language switch prefers those slugs for a zero-hop navigation; primary-slug + 308 remains the fallback.
-- Until phase 3, editing only a translation slug may leave stale cache until TTL or a product/category update webhook.
+- Until phase 3 (paper-app `TRANSLATION_*` forwarding), editing only a translation slug may leave stale cache until TTL or a product/category update webhook.
