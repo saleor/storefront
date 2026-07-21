@@ -9,6 +9,7 @@
  * busted by PRODUCT_* webhooks). Cart/checkout always re-fetch live; a shopper
  * may see a stale stock count on the PDP but cannot check out against it.
  *
+ * @see skills/saleor-paper-storefront/rules/product-high-cardinality.md
  * @see skills/saleor-paper-storefront/rules/product-pdp.md
  * @see skills/saleor-paper-storefront/rules/data-caching.md
  */

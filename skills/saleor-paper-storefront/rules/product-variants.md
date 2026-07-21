@@ -1,11 +1,13 @@
 ---
 name: product-variants
-description: Variant selection state machine on PDP: selection vs non-selection attributes, swatch renderers, partial selection, URL-driven variant param. Use when changing variant pickers or add-to-cart enablement.
+description: Variant selection state machine on PDP: selection vs non-selection attributes, control ladder, selection-index, merchant order, URL-driven variant param. Use when changing variant pickers or add-to-cart enablement.
 ---
 
 # Variant Selection
 
 Variant and attribute selection on product detail pages. Ensures correct "Add to Cart" button state, option availability, discount badges, and URL-driven selection.
+
+For caps, buy-box strategies, and over-budget deep links, see [`product-high-cardinality.md`](product-high-cardinality.md).
 
 > **Source**: [Saleor Docs - Attributes](https://docs.saleor.io/developer/attributes/overview) - How product/variant attributes work
 
@@ -77,28 +79,41 @@ See [variant-selector-ui.md](../references/variant-selector-ui.md) for border/st
 src/ui/components/pdp/variant-selection/
 ├── index.ts
 ├── types.ts
-├── utils.ts
+├── saleor-variant.ts              # Shared Saleor variant shapes + value IDs
+├── selection-index.ts             # Once-built Map/Set indexes + *FromIndex helpers
+├── utils.ts                       # Public API (delegates to index; rebuilds per call)
+├── resolve-group-control.ts       # chips | select | combobox ladder
 ├── variant-selector.tsx
-├── variant-selection-section.tsx
+├── variant-selection-section.tsx  # Builds index once via useMemo
 ├── optional-attributes.tsx
 └── renderers/
-    ├── color-swatch-option.tsx      # Hex swatch circles
-    ├── image-swatch-pill-option.tsx # Image swatch pills
-    ├── button-option.tsx            # Size/text buttons
-    └── index.ts                     # defaultRenderers registry
+    ├── color-swatch-option.tsx
+    ├── image-swatch-pill-option.tsx
+    ├── button-option.tsx
+    └── index.ts
 ```
 
-## Key Functions in `utils.ts`
+Thresholds: `src/config/variants.ts`. Select/combobox are lazy-loaded so the chips path stays lean.
 
-| Function                        | Purpose                                        |
-| ------------------------------- | ---------------------------------------------- |
-| `groupVariantsByAttributes()`   | Extract unique attribute values from variants  |
-| `findMatchingVariant()`         | Find variant matching ALL selected attributes  |
-| `hasCompatibleVariant()`        | Any variant matches partial selections         |
-| `getOptionsForAttribute()`      | Options with availability + compatibility info |
-| `getAdjustedSelections()`       | Partial accumulation + conflict auto-clear     |
-| `getUnavailableAttributeInfo()` | Detect dead-end selections                     |
-| `normalizeAttributeValueId()`   | Value name → URL option id                     |
+## Merchant order + natural sort
+
+- **Group order** = first-seen order from Saleor's `selectionAttributes` (product-type assignment). Do not re-sort groups with a swatch-first heuristic.
+- **Option values** = `sortByOptionLabel` / `compareOptionLabels` (natural / size-aware).
+
+## Key Functions
+
+Prefer building `buildVariantSelectionIndex(variants)` once and calling `*FromIndex` in UI hot paths.
+
+| Function / area                     | Purpose                                    |
+| ----------------------------------- | ------------------------------------------ |
+| `buildVariantSelectionIndex()`      | Groups + Maps/Sets for O(1)-ish lookups    |
+| `findMatchingVariantFromIndex()`    | Complete selection → variant id            |
+| `getOptionsForAttributeFromIndex()` | Availability + compatibility per option    |
+| `getAdjustedSelectionsFromIndex()`  | Partial accumulation + conflict auto-clear |
+| `groupVariantsByAttributes()`       | Public wrapper → `index.groups`            |
+| `resolveVariantGroupControl()`      | Per-group chips / select / combobox        |
+
+Compat wrappers in `utils.ts` still exist for tests; they rebuild the index each call.
 
 For detailed function signatures, see [../references/variant-utils-reference.md](../references/variant-utils-reference.md).
 
@@ -134,6 +149,8 @@ Multi-attribute example (demo audiobooks): Medium + Audio quality + Instant Deli
 ```
 
 The `variant` param is only set when ALL attributes are selected and a match exists.
+
+Over-cap / external buy boxes also honor `?sku=` (see [`product-high-cardinality.md`](product-high-cardinality.md)); when both are present, `variant` wins.
 
 ## Discount Badges
 
@@ -184,6 +201,7 @@ For the full state diagram and transition rules, see [../references/variant-stat
 
 ```bash
 pnpm test src/ui/components/pdp/variant-selection/utils.test.ts
+pnpm test src/ui/components/pdp/variant-selection/selection-index.test.ts
 ```
 
 Fixture `audiobookVariants` in `__fixtures__/variants.ts` covers 3-attribute partial selection.
@@ -196,4 +214,6 @@ Fixture `audiobookVariants` in `__fixtures__/variants.ts` covers 3-attribute par
 ❌ **Don't assume single attribute** - Products can have multiple (incl. BOOLEAN selection attrs)  
 ❌ **Don't use `0` in boolean checks for prices** - Use `typeof === "number"`  
 ❌ **Don't make non-selection attributes interactive** - They're display-only (badges, not toggles)  
-❌ **Don't use `border-border` on compatible button/pill options** - Use `border-gray-400`
+❌ **Don't use `border-border` on compatible button/pill options** - Use `border-gray-400`  
+❌ **Don't re-sort attribute groups** away from merchant/API order  
+❌ **Don't rebuild the selection index on every click** in the picker — memoize once

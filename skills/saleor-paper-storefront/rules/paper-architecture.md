@@ -114,17 +114,18 @@ Sync (main)/layout.tsx
 
 ## Where to read next
 
-| If you are…                        | Start with                                                                                                       |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
-| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                            |
-| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
-| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
-| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
-| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
-| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
-| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)      |
-| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
+| If you are…                        | Start with                                                                                                                                     |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                                                       |
+| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                                                          |
+| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md), [`product-high-cardinality.md`](product-high-cardinality.md) |
+| Touching PLP filters / facets      | [`product-filtering.md`](product-filtering.md), [`product-high-cardinality.md`](product-high-cardinality.md)                                   |
+| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                                                           |
+| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                                                  |
+| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                                                   |
+| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md)                               |
+| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)                                    |
+| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                                                |
 
 Formal architecture decisions beyond day-to-day conventions: [`docs/adr/`](../../../docs/adr/).
 
