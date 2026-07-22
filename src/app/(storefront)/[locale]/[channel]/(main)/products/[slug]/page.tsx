@@ -6,19 +6,19 @@ import { ErrorBoundary } from "react-error-boundary";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
-import { executePublicGraphQL } from "@/lib/graphql";
-import { ProductDetailsDocument, type ProductDetailsQuery } from "@/gql/graphql";
+import { type ProductDetailsQuery } from "@/gql/graphql";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
+import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
+import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
+import { getProductData } from "@/lib/catalog/get-product-data";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { buildPolicyLabelValues } from "@/lib/content";
 import { getStorefrontContent } from "@/lib/content/server";
 import { buildBrowsePageMetadata, buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
-import { withTranslatedProductFields, pickTranslatedName } from "@/lib/saleor-translations";
+import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller, BESTSELLER_ATTRIBUTE_SLUGS } from "@/lib/catalog/product-flags";
-import { getAttributeValueDisplayName } from "@/ui/components/pdp/variant-selection/utils";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import { BestsellerBadge } from "@/ui/components/ui/sale-label";
 import {
@@ -32,31 +32,8 @@ import {
 	getDefaultGalleryImages,
 	PDP_GALLERY_LAYOUT,
 	PDP_LAYOUT_CLASSES,
+	type Product,
 } from "@/ui/components/pdp";
-
-// ============================================================================
-// Cached Data Fetching
-// ============================================================================
-
-async function getProductData(slug: string, channel: string, localeSlug: string) {
-	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug);
-
-	const result = await executePublicGraphQL(ProductDetailsDocument, {
-		variables: {
-			slug: decodeURIComponent(slug),
-			channel,
-			...graphqlLanguageCodeVariables(localeSlug),
-		},
-	});
-
-	if (!result.ok) {
-		console.error(`[getProductData] Failed to fetch product ${slug} for ${channel}:`, result.error.message);
-		return null;
-	}
-
-	return result.data.product ? withTranslatedProductFields(result.data.product) : null;
-}
 
 // ============================================================================
 // Metadata
@@ -83,7 +60,8 @@ export async function generateMetadata(props: {
 		image: ogImage,
 		locale: params.locale,
 		channel: params.channel,
-		pathSuffix: `/products/${encodeURIComponent(params.slug)}`,
+		pathSuffix: catalogPathSuffix("products", product),
+		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
 		openGraph:
 			priceAmount && priceCurrency
 				? {
@@ -109,7 +87,7 @@ const parser = edjsHTML();
  */
 export default function ProductPage(props: {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
-	searchParams: Promise<{ variant?: string }>;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }) {
 	return (
 		<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
@@ -119,15 +97,17 @@ export default function ProductPage(props: {
 }
 
 /**
- * Static product shell — only reads route params (cacheable / prerenderable).
- * Dynamic islands (gallery + variant section) read searchParams in nested Suspense.
+ * Product shell — reads route params for the static/PPR path.
+ * Awaits searchParams only when issuing a canonical-slug redirect (rare).
+ * Dynamic islands (gallery + variant section) read searchParams and fetch variants
+ * in nested Suspense — variant payloads never enter this shell's RSC tree.
  */
 async function ProductShell({
 	params: paramsPromise,
 	searchParams,
 }: {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
-	searchParams: Promise<{ variant?: string }>;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }) {
 	const params = await paramsPromise;
 	const browse = (suffix: string) => buildStorefrontPath(params.locale, params.channel, suffix);
@@ -147,15 +127,34 @@ async function ProductShell({
 		notFound();
 	}
 
+	// Only await searchParams on the rare non-canonical slug path so the common
+	// (already-canonical) PDP shell stays params-only / PPR-static.
+	if (decodeURIComponent(params.slug) !== pickTranslatedSlug(product)) {
+		redirectToCanonicalCatalogSlug({
+			locale: params.locale,
+			channel: params.channel,
+			urlSlug: params.slug,
+			kind: "products",
+			entity: product,
+			searchParams: await searchParams,
+		});
+	}
+
 	const descriptionHtml = parseDescription(product.description);
 	const productAttributes = extractProductAttributes(product);
 	const careInstructions = extractCareInstructions(product);
 	const defaultImages = getDefaultGalleryImages(product);
+	const productPath = catalogPathSuffix("products", product);
 
 	const breadcrumbs = [
 		{ label: tPdp("breadcrumbHome"), href: browse("/") },
 		...(product.category
-			? [{ label: product.category.name, href: browse(`/categories/${product.category.slug}`) }]
+			? [
+					{
+						label: product.category.name,
+						href: browse(catalogPathSuffix("categories", product.category)),
+					},
+				]
 			: []),
 		{ label: product.name },
 	];
@@ -165,7 +164,7 @@ async function ProductShell({
 		description: product.seoDescription || product.name,
 		images: defaultImages.length > 0 ? defaultImages.map((img) => img.url) : undefined,
 		brand: product.category?.name,
-		url: browse(`/products/${product.slug}`),
+		url: browse(productPath),
 		priceRange: product.pricing?.priceRange?.start?.gross
 			? {
 					lowPrice: product.pricing.priceRange.start.gross.amount,
@@ -174,8 +173,8 @@ async function ProductShell({
 					currency: product.pricing.priceRange.start.gross.currency,
 				}
 			: null,
-		inStock: product.variants?.some((v) => v.quantityAvailable) ?? false,
-		variantCount: product.variants?.length ?? 0,
+		inStock: product.isAvailable ?? false,
+		variantCount: product.productVariants?.totalCount ?? 0,
 	});
 
 	const lcpImage = defaultImages[0];
@@ -204,6 +203,11 @@ async function ProductShell({
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
+			<CatalogIdentityBridge
+				kind="products"
+				primarySlug={product.slug}
+				localeSlugs={buildLocaleSlugMap(product)}
+			/>
 			{productJsonLd && <script {...jsonLdScriptProps(productJsonLd)} />}
 
 			{/* The browse layout (`(main)/layout.tsx`) owns the page's single <main> landmark. */}
@@ -215,7 +219,12 @@ async function ProductShell({
 				<div className={layout.grid}>
 					<div className={layout.galleryColumn}>
 						<Suspense fallback={galleryFallback}>
-							<VariantGalleryDynamic product={product} searchParams={searchParams} />
+							<VariantGalleryDynamic
+								product={product}
+								channel={params.channel}
+								localeSlug={params.locale}
+								searchParams={searchParams}
+							/>
 						</Suspense>
 					</div>
 
@@ -268,42 +277,67 @@ function parseDescription(description: string | null | undefined): string[] | nu
 	}
 }
 
-function extractProductAttributes(product: NonNullable<ProductDetailsQuery["product"]>) {
+type AssignedAttribute = NonNullable<
+	NonNullable<ProductDetailsQuery["product"]>["assignedAttributes"]
+>[number];
+
+function extractProductAttributes(product: ProductShellForAttrs) {
 	const variantAttributeSlugs = ["size", "color", "colour", "variant"];
 	const internalAttributeSlugs = ["care-instructions", "care", ...BESTSELLER_ATTRIBUTE_SLUGS];
 
-	return (product.attributes || [])
+	return (product.assignedAttributes || [])
 		.filter((attr) => attr.attribute.name)
 		.filter((attr) => !variantAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
 		.filter((attr) => !internalAttributeSlugs.includes((attr.attribute.slug ?? "").toLowerCase()))
-		.map((attr) => ({
-			name: pickTranslatedName({
+		.map((attr) => {
+			const name = pickTranslatedName({
 				name: attr.attribute.name!,
 				translation: attr.attribute.translation,
-			}),
-			value:
-				attr.values.length === 1
-					? getAttributeValueDisplayName(attr.values[0] ?? { name: "" })
-					: attr.values.map((v) => getAttributeValueDisplayName(v)).filter(Boolean),
-		}))
-		.filter((attr) => {
+			});
+			const value = assignedAttributeDisplayValue(attr);
+			return { name, value };
+		})
+		.filter((attr): attr is { name: string; value: string | boolean | string[] } => {
+			if (attr.value === null || attr.value === undefined) return false;
 			if (Array.isArray(attr.value)) return attr.value.length > 0;
+			if (typeof attr.value === "boolean") return true;
 			return attr.value !== "";
 		});
 }
 
-function extractCareInstructions(product: NonNullable<ProductDetailsQuery["product"]>): string | null {
-	const careAttr = (product.attributes || []).find(
+function extractCareInstructions(product: ProductShellForAttrs): string | null {
+	const careAttr = (product.assignedAttributes || []).find(
 		(attr) =>
 			attr.attribute.slug === "care-instructions" ||
 			attr.attribute.slug === "care" ||
 			(attr.attribute.name ?? "").toLowerCase().includes("care"),
 	);
 
-	return (
-		careAttr?.values
-			.map((v) => getAttributeValueDisplayName(v))
-			.filter(Boolean)
-			.join(". ") || null
-	);
+	if (!careAttr) return null;
+	const value = assignedAttributeDisplayValue(careAttr);
+	if (value === null || value === undefined) return null;
+	if (Array.isArray(value)) return value.filter(Boolean).join(". ") || null;
+	if (typeof value === "boolean") return null;
+	return value || null;
 }
+
+function assignedAttributeDisplayValue(attr: AssignedAttribute): string | string[] | boolean | null {
+	if ("plainText" in attr && (attr.plainText != null || attr.plainTextTranslation != null)) {
+		return (attr.plainTextTranslation || attr.plainText || "").trim() || null;
+	}
+	if ("boolean" in attr && typeof attr.boolean === "boolean") {
+		return attr.boolean;
+	}
+	if ("numeric" in attr && attr.numeric != null) {
+		return String(attr.numeric);
+	}
+	if ("choice" in attr && attr.choice) {
+		return attr.choice.translation?.trim() || attr.choice.name?.trim() || null;
+	}
+	if ("choices" in attr && Array.isArray(attr.choices)) {
+		return attr.choices.map((c) => c.translation?.trim() || c.name?.trim() || "").filter(Boolean);
+	}
+	return null;
+}
+
+type ProductShellForAttrs = Pick<Product, "assignedAttributes">;

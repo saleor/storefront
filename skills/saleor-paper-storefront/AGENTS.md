@@ -5,7 +5,7 @@ Saleor Paper
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 29 rules (~75k tokens) and exists only for humans reading offline and for
+> all 30 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 29 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 30 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -36,7 +36,8 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 2. [Product Pages](#2-product-pages) — **HIGH**
    - 2.1 [Product Detail Page](#21-product-detail-page)
    - 2.2 [Variant Selection](#22-variant-selection)
-   - 2.3 [Product Filtering](#23-product-filtering)
+   - 2.3 [High-Cardinality Attributes](#23-high-cardinality-attributes)
+   - 2.4 [Product Filtering](#24-product-filtering)
 
 3. [Checkout Flow](#3-checkout-flow) — **HIGH**
    - 3.1 [Paper Surfaces](#31-paper-surfaces)
@@ -186,17 +187,18 @@ Sync (main)/layout.tsx
 
 ## Where to read next
 
-| If you are…                        | Start with                                                                                                       |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
-| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                            |
-| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
-| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
-| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
-| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
-| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
-| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)      |
-| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
+| If you are…                        | Start with                                                                                                                                     |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                                                       |
+| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                                                          |
+| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md), [`product-high-cardinality.md`](product-high-cardinality.md) |
+| Touching PLP filters / facets      | [`product-filtering.md`](product-filtering.md), [`product-high-cardinality.md`](product-high-cardinality.md)                                   |
+| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                                                           |
+| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                                                  |
+| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                                                   |
+| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md)                               |
+| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)                                    |
+| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                                                |
 
 Formal architecture decisions beyond day-to-day conventions: [`docs/adr/`](../../../docs/adr/).
 
@@ -1021,7 +1023,7 @@ Product pages are the core shopping experience. PDP layout, variant selection, a
 
 ### 2.1 Product Detail Page
 
-PDP architecture, the variant-aware image gallery, and the add-to-cart flow. Variant _selection_ logic is in [`product-variants.md`](product-variants.md); the PPR boundary model and `getProductData` caching are in [`paper-architecture.md`](paper-architecture.md) / [`data-caching.md`](data-caching.md) — this rule covers what's PDP-specific.
+PDP architecture, the variant-aware image gallery, and the add-to-cart flow. Variant _selection_ logic is in [`product-variants.md`](product-variants.md); caps, buy-box strategies, and over-budget deep links are in [`product-high-cardinality.md`](product-high-cardinality.md); the PPR boundary model and `getProductData` caching are in [`paper-architecture.md`](paper-architecture.md) / [`data-caching.md`](data-caching.md) — this rule covers what's PDP-specific.
 
 ## Architecture
 
@@ -1157,6 +1159,8 @@ Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic
 
 Variant and attribute selection on product detail pages. Ensures correct "Add to Cart" button state, option availability, discount badges, and URL-driven selection.
 
+For caps, buy-box strategies, and over-budget deep links, see [`product-high-cardinality.md`](product-high-cardinality.md).
+
 > **Source**: [Saleor Docs - Attributes](https://docs.saleor.io/developer/attributes/overview) - How product/variant attributes work
 
 > **UI & renderers:** For border states, swatch pills, sizing, and renderer routing, see
@@ -1227,28 +1231,41 @@ See [variant-selector-ui.md](../references/variant-selector-ui.md) for border/st
 src/ui/components/pdp/variant-selection/
 ├── index.ts
 ├── types.ts
-├── utils.ts
+├── saleor-variant.ts              # Shared Saleor variant shapes + value IDs
+├── selection-index.ts             # Once-built Map/Set indexes + *FromIndex helpers
+├── utils.ts                       # Public API (delegates to index; rebuilds per call)
+├── resolve-group-control.ts       # chips | select | combobox ladder
 ├── variant-selector.tsx
-├── variant-selection-section.tsx
+├── variant-selection-section.tsx  # Builds index once via useMemo
 ├── optional-attributes.tsx
 └── renderers/
-    ├── color-swatch-option.tsx      # Hex swatch circles
-    ├── image-swatch-pill-option.tsx # Image swatch pills
-    ├── button-option.tsx            # Size/text buttons
-    └── index.ts                     # defaultRenderers registry
+    ├── color-swatch-option.tsx
+    ├── image-swatch-pill-option.tsx
+    ├── button-option.tsx
+    └── index.ts
 ```
 
-## Key Functions in `utils.ts`
+Thresholds: `src/config/variants.ts`. Select/combobox are lazy-loaded so the chips path stays lean.
 
-| Function                        | Purpose                                        |
-| ------------------------------- | ---------------------------------------------- |
-| `groupVariantsByAttributes()`   | Extract unique attribute values from variants  |
-| `findMatchingVariant()`         | Find variant matching ALL selected attributes  |
-| `hasCompatibleVariant()`        | Any variant matches partial selections         |
-| `getOptionsForAttribute()`      | Options with availability + compatibility info |
-| `getAdjustedSelections()`       | Partial accumulation + conflict auto-clear     |
-| `getUnavailableAttributeInfo()` | Detect dead-end selections                     |
-| `normalizeAttributeValueId()`   | Value name → URL option id                     |
+## Merchant order + natural sort
+
+- **Group order** = first-seen order from Saleor's `selectionAttributes` (product-type assignment). Do not re-sort groups with a swatch-first heuristic.
+- **Option values** = `sortByOptionLabel` / `compareOptionLabels` (natural / size-aware).
+
+## Key Functions
+
+Prefer building `buildVariantSelectionIndex(variants)` once and calling `*FromIndex` in UI hot paths.
+
+| Function / area                     | Purpose                                    |
+| ----------------------------------- | ------------------------------------------ |
+| `buildVariantSelectionIndex()`      | Groups + Maps/Sets for O(1)-ish lookups    |
+| `findMatchingVariantFromIndex()`    | Complete selection → variant id            |
+| `getOptionsForAttributeFromIndex()` | Availability + compatibility per option    |
+| `getAdjustedSelectionsFromIndex()`  | Partial accumulation + conflict auto-clear |
+| `groupVariantsByAttributes()`       | Public wrapper → `index.groups`            |
+| `resolveVariantGroupControl()`      | Per-group chips / select / combobox        |
+
+Compat wrappers in `utils.ts` still exist for tests; they rebuild the index each call.
 
 For detailed function signatures, see [../references/variant-utils-reference.md](../references/variant-utils-reference.md).
 
@@ -1284,6 +1301,8 @@ Multi-attribute example (demo audiobooks): Medium + Audio quality + Instant Deli
 ```
 
 The `variant` param is only set when ALL attributes are selected and a match exists.
+
+Over-cap / external buy boxes also honor `?sku=` (see [`product-high-cardinality.md`](product-high-cardinality.md)); when both are present, `variant` wins.
 
 ## Discount Badges
 
@@ -1334,6 +1353,7 @@ For the full state diagram and transition rules, see [../references/variant-stat
 
 ```bash
 pnpm test src/ui/components/pdp/variant-selection/utils.test.ts
+pnpm test src/ui/components/pdp/variant-selection/selection-index.test.ts
 ```
 
 Fixture `audiobookVariants` in `__fixtures__/variants.ts` covers 3-attribute partial selection.
@@ -1346,150 +1366,236 @@ Fixture `audiobookVariants` in `__fixtures__/variants.ts` covers 3-attribute par
 ❌ **Don't assume single attribute** - Products can have multiple (incl. BOOLEAN selection attrs)  
 ❌ **Don't use `0` in boolean checks for prices** - Use `typeof === "number"`  
 ❌ **Don't make non-selection attributes interactive** - They're display-only (badges, not toggles)  
-❌ **Don't use `border-border` on compatible button/pill options** - Use `border-gray-400`
+❌ **Don't use `border-border` on compatible button/pill options** - Use `border-gray-400`  
+❌ **Don't re-sort attribute groups** away from merchant/API order  
+❌ **Don't rebuild the selection index on every click** in the picker — memoize once
 
 ---
 
-### 2.3 Product Filtering
+### 2.3 High-Cardinality Attributes
 
-Product list filtering and sorting architecture. Ensures correct server-side vs client-side filtering, category resolution, static price ranges, and filter UI behavior.
+Paper treats large option matrices as a first-class shape: **degrade by attribute-group shape**, never fetch unpaginated variant lists, and keep LCP on the static PDP shell.
 
-> **Source**: [Saleor API - ProductFilterInput](https://docs.saleor.io/api-reference/products/inputs/product-filter-input) - Available server-side filter options
+Budgets and thresholds live in one fork override point: `src/config/variants.ts` (+ `src/config/facets.ts` for PLP).
 
-## Filter Architecture
+## Caps (do not scatter magic numbers)
 
-| Filter         | Processing     | Why                                           |
-| -------------- | -------------- | --------------------------------------------- |
-| **Categories** | ✅ Server-side | Uses Saleor's `ProductFilterInput.categories` |
-| **Price**      | ✅ Server-side | Uses Saleor's `ProductFilterInput.price`      |
-| **Sort**       | ✅ Server-side | Uses Saleor's `ProductOrder`                  |
-| **Colors**     | ❌ Client-side | Saleor needs attribute IDs                    |
-| **Sizes**      | ❌ Client-side | Same as colors                                |
+| Constant                            | Default | Role                                                                     |
+| ----------------------------------- | ------- | ------------------------------------------------------------------------ |
+| `SALEOR_VARIANT_PAGE_SIZE`          | 100     | Saleor `productVariants(first:)` page size                               |
+| `PDP_VARIANT_CAP`                   | 200     | Max variants hydrated for the matrix picker                              |
+| `PLP_VARIANT_SAMPLE`                | 50      | Card swatches / facet **option hints** only (not filter truth)           |
+| `VARIANT_CHIP_MAX_OPTIONS`          | 10      | Text/numeric groups stay chips                                           |
+| `VARIANT_SWATCH_CHIP_MAX_OPTIONS`   | 12      | Swatch groups stay chip grid; then combobox (Select can't show swatches) |
+| `VARIANT_NATIVE_SELECT_MAX_OPTIONS` | 24      | Text groups: select, then combobox                                       |
 
-## Key Files
+**Stock freshness:** PDP variant payloads (incl. `quantityAvailable`) use the same `product:{slug}` + `catalog` cache profile as the product shell (~5 min TTL, PRODUCT\_\* webhooks). Cart/checkout always re-fetch live.
 
-| File                                           | Purpose                                |
-| ---------------------------------------------- | -------------------------------------- |
-| `src/ui/components/plp/filter-utils.ts`        | All filter utilities (server + client) |
-| `src/ui/components/plp/filter-bar.tsx`         | Filter UI (dropdowns, mobile sheet)    |
-| `src/ui/components/plp/use-product-filters.ts` | Hook consolidating filter logic        |
+## Data layer (never the firehose)
 
-## Server-Side Filtering
+- **Product shell** (`ProductDetails`): no unpaginated `Product.variants`. Probe with `productVariants(first: 1) { totalCount }` + `productType`.
+- **Matrix path**: paginated `ProductVariantsForPdp` only inside dynamic islands, and only when `totalCount ≤ PDP_VARIANT_CAP`.
+- **Lint**: `src/graphql/*.graphql` must not use deprecated `variants {` — enforced in `verify`.
+- **PLP cards**: `productVariants(first:)` capped at `PLP_VARIANT_SAMPLE` for swatches; keep the GraphQL `first` arg in sync with that constant.
 
-Category slugs in URL are resolved to IDs:
+## Buy-box strategies (`src/lib/catalog/buy-box-strategy.ts`)
 
-```typescript
-// In page.tsx (server component)
-import { resolveCategorySlugsToIds, buildFilterVariables } from "@/ui/components/plp/filter-utils";
+Resolve **only inside dynamic islands** — never in the static shell (PPR / LCP).
 
-const categorySlugs = searchParams.categories?.split(",") || [];
-const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
-const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+| Strategy      | When                                                      | Buy box                                            |
+| ------------- | --------------------------------------------------------- | -------------------------------------------------- |
+| `matrix`      | `totalCount ≤ PDP_VARIANT_CAP` (default)                  | Attribute picker + selection index                 |
+| `over_budget` | `totalCount > PDP_VARIANT_CAP`                            | No matrix; ATC via deep link only                  |
+| `external`    | Product-type slug in `EXTERNAL_BUYBOX_PRODUCT_TYPE_SLUGS` | Fork picker (seat map, CPQ, …); same deep-link ATC |
 
-const filter = buildFilterVariables({
-	priceRange: searchParams.price,
-	categoryIds,
-});
+`guided` (stepped `attribute.choices`) is **deferred**.
 
-// Pass to GraphQL query
-const { products } = await executePublicGraphQL(ProductListDocument, {
-	variables: { channel, filter },
-});
-```
+### Deep-link contract (public)
 
-## Client-Side Filtering
+- `?variant=<Saleor global id>` — preferred
+- `?sku=<variant sku>` — when the id is unknown (feeds, email, POS)
+- When both present, **`variant` wins**
+- Resolved buy box: selection summary + ATC enabled **without** loading sibling variants
 
-Colors and sizes are filtered after fetch:
+## Per-group control ladder
 
-```typescript
-import { filterProducts, extractColorOptions } from "@/ui/components/plp/filter-utils";
+Each attribute group picks its own control (`resolveVariantGroupControl`):
 
-// Extract available options
-const colorOptions = extractColorOptions(products, selectedColors);
+| Shape                 | Control                        |
+| --------------------- | ------------------------------ |
+| Swatches, ≤12 options | Chip / swatch grid             |
+| Swatches, >12         | Lazy combobox (swatch leading) |
+| Text/numeric, ≤10     | Chips                          |
+| Text/numeric, 11–24   | Lazy `<Select>`                |
+| Text/numeric, ≥25     | Lazy searchable combobox       |
 
-// Apply filters
-const filtered = filterProducts(products, {
-	colors: selectedColors,
-	sizes: selectedSizes,
-});
-```
+Select/combobox load via `next/dynamic` (`ssr: false`) so the common chips path stays lean.
 
-## Using the Hook
+## Merchant order + natural sort
 
-The `useProductFilters` hook consolidates all filter logic:
+- Preserve Saleor's `selectionAttributes` order (product-type assignment order). **Do not** re-sort groups with a fashion “swatch first” heuristic.
+- Sort option **values** with `compareOptionLabels` / `sortByOptionLabel` (S before L; Row 10 after Row 2).
 
-```tsx
-"use client";
-import { useProductFilters } from "@/ui/components/plp/use-product-filters";
+## Selection-index performance
 
-function ProductsClient({ products, resolvedCategories }) {
-	const {
-		filteredProducts,
-		colorOptions,
-		sizeOptions,
-		selectedColors,
-		handleColorToggle,
-		handleSortChange,
-		activeFilters,
-	} = useProductFilters({
-		products,
-		resolvedCategories,
-		enableCategoryFilter: true,
-	});
+Hot paths live in `selection-index.ts`. Build **once** per product payload (`useMemo` in `VariantSelectionSection`):
 
-	return (
-		<FilterBar
-			colorOptions={colorOptions}
-			selectedColors={selectedColors}
-			onColorToggle={handleColorToggle}
-			// ...
-		/>
-	);
-}
-```
+- `variantById`
+- `variantsByAttrValue` (attr → value → variant ids)
+- `variantBySelectionKey` (complete fingerprint → variant id)
+- Cached `groupSlugs` + `implicitSelections`
 
-## Static Price Ranges
+Public wrappers in `utils.ts` rebuild an index per call (compat/tests). The picker must use `*FromIndex` helpers.
 
-Price ranges are static to avoid UI flicker when filtering:
+## PLP facets (server-side)
 
-```typescript
-import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils";
+See [`product-filtering.md`](product-filtering.md). Facets are configured in `src/config/facets.ts` (`PLP_FACETS`). Colors/sizes are presets — not hardcoded Saleor special cases. Listing filters OR attribute slug **aliases** (`size` | `shoe-size` | …) via `ProductWhereInput` (Saleor forbids combining `filter` + `where`).
 
-// Returns: [
-//   { label: "Under $50", value: "0-50", count: 0 },
-//   { label: "$50 - $100", value: "50-100", count: 0 },
-//   ...
-// ]
-```
+## Quick-add / over-cap
 
-## Examples
+- `hasVariants` still gates one-click add when multiple variants exist.
+- `isOverVariantCap` (`variantTotalCount > PDP_VARIANT_CAP`): never open a variant sheet from PLP — route to the PDP.
 
-### Adding a New Server-Side Filter
+## Perf gates (testable invariants)
 
-1. Update `buildFilterVariables` in `filter-utils.ts`:
+1. Strategy / `searchParams` / uncached variant fetches stay **inside** Suspense islands — gate with `pnpm run build` on PPR-sensitive changes.
+2. Facet toggles use `useOptimistic` + `useTransition` so chips acknowledge instantly while RSC results stream.
+3. Unfiltered first-load PLP remains static-friendly; filtered views are soft navigations (combinatorial cache dilution is expected).
+4. Common-path PDP client bundle: chips path must not pull Select/cmdk.
 
-```typescript
-export function buildFilterVariables(params: {
-	priceRange?: string | null;
-	categoryIds?: string[];
-	inStock?: boolean; // New filter
-}): ProductFilterInput | undefined {
-	// ... existing code ...
+## Ceilings (product guidance)
 
-	if (params.inStock) {
-		filter.stockAvailability = "IN_STOCK";
-		hasFilter = true;
-	}
-}
-```
+| Scale                        | Approach                                         |
+| ---------------------------- | ------------------------------------------------ |
+| Matrix ≤ `PDP_VARIANT_CAP`   | Full attribute picker                            |
+| SKU lookup / deep link ~2–3k | `over_budget` / external + `?variant=` / `?sku=` |
+| Beyond that                  | Split products, or keep inventory outside Saleor |
 
-2. Parse from URL in page.tsx and pass to the function.
+Dashboard bulk ops / Configurator: prefer commerce-as-code and paginated APIs; never teach the storefront to dump all variants into RSC payloads.
 
 ## Anti-patterns
 
-❌ **Don't filter categories client-side** - Use server-side with IDs  
-❌ **Don't generate dynamic price ranges** - Use static ranges  
-❌ **Don't hide selected filters** - Always show so users can deselect
+❌ Fetching deprecated unpaginated `Product.variants`  
+❌ Resolving buy-box strategy or reading `?variant=` in the static shell  
+❌ Shipping a **partial** attribute matrix when over cap  
+❌ Client-only color/size filtering against the PLP sample (sample ≠ truth)  
+❌ Filtering only the primary attribute slug when aliases exist (`size` without `shoe-size`)  
+❌ Rebuilding the selection index on every click in the picker
+
+---
+
+### 2.4 Product Filtering
+
+Product list filtering and sorting. Attribute facets (colors/sizes/…) are **server-side** via Saleor; the PLP variant sample is only for card swatches and option-list hints.
+
+> **Source**: [Saleor API - ProductFilterInput](https://docs.saleor.io/api-reference/products/inputs/product-filter-input) / `ProductWhereInput`  
+> **High-cardinality context**: [`product-high-cardinality.md`](product-high-cardinality.md)
+
+## Filter Architecture
+
+| Filter         | Processing     | Mechanism                                                                |
+| -------------- | -------------- | ------------------------------------------------------------------------ |
+| **Categories** | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
+| **Price**      | ✅ Server-side | `filter.price` or `where.price.range`                                    |
+| **Sort**       | ✅ Server-side | `ProductOrder`                                                           |
+| **Colors**     | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
+| **Sizes**      | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
+
+Saleor allows **only one** of `filter` or `where` per products query. When any attribute facet is selected, Paper puts the whole constraint set into `where` so aliases can OR correctly.
+
+> The old claim “Saleor needs attribute IDs” is **false** for modern schemas — `AttributeInput` filters by attribute slug + value slugs.
+
+## Facet config (`src/config/facets.ts`)
+
+```ts
+export const PLP_FACETS = [
+	{ param: "colors", attributeSlug: "color", attributeAliases: ["colour"], control: "swatch" },
+	{
+		param: "sizes",
+		attributeSlug: "size",
+		attributeAliases: ["shoe-size", "clothing-size"],
+		control: "chip",
+	},
+] as const;
+```
+
+- **URL tokens** = normalized **value slugs** (`?sizes=43`, not display names).
+- Forks add/reorder facets here — colors/sizes are presets, not GraphQL special cases.
+- Option chips in the filter bar are still derived from the **current page sample** (`PLP_VARIANT_SAMPLE`); that list can be incomplete. Matching itself is exhaustive against all variants.
+
+## Key Files
+
+| File                                           | Purpose                                             |
+| ---------------------------------------------- | --------------------------------------------------- |
+| `src/config/facets.ts`                         | Which attributes are facets + slug aliases          |
+| `src/ui/components/plp/filter-utils.ts`        | `buildProductListingConstraints`, option extractors |
+| `src/ui/components/plp/filter-utils.server.ts` | `resolveCategorySlugsToIds`                         |
+| `src/ui/components/plp/use-product-filters.ts` | URL sync, optimistic chips, `useTransition`         |
+| `src/ui/components/plp/filter-bar.tsx`         | Filter UI                                           |
+
+## Building listing constraints
+
+```typescript
+import { buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
+import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+
+const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
+const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+
+const { filter, where } = buildProductListingConstraints({
+	priceRange: searchParams.price,
+	categoryIds,
+	colors: searchParams.colors,
+	sizes: searchParams.sizes,
+});
+
+// Pass exactly one of filter / where (the other is undefined)
+await executePublicGraphQL(ProductListPaginatedDocument, {
+	variables: { channel, sortBy, filter, where, ... },
+});
+```
+
+`buildFilterVariables` remains for **category/price only** — do not hang attribute facets on it (single-slug `filter.attributes` cannot OR `shoe-size`).
+
+## Client UX (not client matching)
+
+```tsx
+const {
+	filteredProducts, // server-already-filtered page
+	colorOptions,
+	selectedColors,
+	isPending,
+	resultCount, // prefers server totalCount
+	handleColorToggle,
+} = useProductFilters({ products, totalCount, enableCategoryFilter: true });
+```
+
+- Toggles write sorted slug lists to the URL and use `useOptimistic` + `useTransition`.
+- Do **not** re-apply `filterProducts` for colors/sizes on the live PLP (kept only for tests / hybrid experiments).
+
+## Static Price Ranges
+
+Price ranges are static to avoid UI flicker:
+
+```typescript
+import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils";
+```
+
+## Adding a New Attribute Facet
+
+1. Add a row to `PLP_FACETS` (`param`, `attributeSlug`, `attributeAliases`, `control`).
+2. Ensure listing pages pass `searchParams[param]` into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map).
+3. Wire FilterBar / `useProductFilters` for that param if it needs a dedicated control.
+4. Prefer value **slugs** in the URL.
+
+## Anti-patterns
+
+❌ **Don't filter categories client-side** — resolve slugs → IDs server-side  
+❌ **Don't generate dynamic price ranges** — use static ranges  
+❌ **Don't hide selected filters** — always show so users can deselect  
+❌ **Don't treat the PLP variant sample as filter truth** — sample is for swatches/hints  
+❌ **Don't filter only `size` when sneakers use `shoe-size`** — configure aliases  
+❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination
 
 ---
 
@@ -1864,6 +1970,14 @@ Step changes use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout
 - **Header stepper / inline Back / Stripe param cleanup** → `replace` (no fake history entries).
 
 `useLiveCheckoutSearchParams()` (`useSyncExternalStore`) keeps step UI, transition guards, and Stripe-return detection synced with shallow updates and `popstate`; ephemeral Stripe params are merged from `window.location.search`, never stale React `searchParams`. `CheckoutSessionLoader` reads only `?checkout=`/`?order=` — **never `?step=`** — and fetches via `get-checkout-session-data.ts` (`React.cache` per id). Use `router.replace` only for in-checkout `?checkout=` changes (orphaned-checkout recovery).
+
+**Self-healing step URL (`CheckoutStepUrlGuard`):** the App Router never sees shallow `?step=` writes, so any router-level URL restore (server-action revalidation — `X-Action-Revalidated: 1` — or RSC refresh) silently `replaceState`s the canonical URL back **without** the step param, rewinding checkout to Contact. Mid-payment this tore down `stripe.confirmPayment()` and left orphaned "Payment started / method: None" PaymentIntents. Two defenses, both required:
+
+- `checkout-search-params.ts` patches `history.pushState`/`replaceState` (installed on first live-URL subscription) so **every** URL write notifies subscribers — the router's silent restores included. The patched dispatch is **deferred to a microtask**: the App Router commits URL writes inside `useInsertionEffect`, where a synchronous dispatch schedules React updates ("useInsertionEffect must not schedule updates") and the guard's heal gets dropped. Patch flag and step intent live on **`globalThis`, not module scope** — dev HMR can keep two live copies of the module in one tab, and split state makes the guard fight the Back button with a stale intent. `updateCheckoutQuery({ step })` records the shopper's **step intent**; `CheckoutStepUrlGuard` (mounted in `CheckoutApp`) re-asserts the intended step whenever a history write drops it. Browser Back/Forward updates intent via `popstate` instead of fighting the shopper. The heal runs **one macrotask after** the change (`setTimeout 0`): on browser Back, Next's popstate handler (registered before checkout hydrates) flushes its traversal synchronously _inside its own listener_, which runs the guard's effect while the intent is still the pre-Back step — a synchronous or microtask heal would clobber the traversal, and `adoptIntentFromUrl` (later in the listener chain) would adopt the clobbered URL, trapping the shopper on the old step.
+- **Step UI renders from intent, not the raw URL** (`useCheckoutStepFromUrl` overlays `useCheckoutStepIntent()` on the live query). A revalidation clobber can flash a stale `?step=` before the guard heals it; URL-driven UI would remount the flashed step — payment remounts re-init Stripe and fire gateway actions whose revalidations restore the stale URL again, a self-sustaining payment ⇄ shipping loop. Intent-driven UI never flashes, so the loop can't start. `writeCheckoutQueryHistory` also downgrades a `push` of the current URL to `replace` so double-fired Continues can't duplicate history entries.
+- `useSyncCheckoutRouterUrl()` on the payment step aligns the router's canonical URL once on arrival (`router.replace` — one RSC re-run, acceptable on the money step) so revalidations during pay restore the _same_ URL and never remount Stripe Elements mid-confirm. It **re-syncs on unmount when `?step=` diverged** (Back to shipping): without it the canonical URL stays `?step=payment` and every shipping-step server action bounces the shopper back to payment. The unmount sync skips when the pathname changed, so it never fights the payment-success `window.location.replace`.
+
+**Regression e2e:** `pnpm test:e2e:checkout` (`e2e/checkout-step-back.spec.ts`) — browser Back from simulated shallow step history; catches popstate vs guard heal ordering. Requires a running server (`PLAYWRIGHT_BASE_URL` or `pnpm start` on `:3020`).
 
 ### Transition guard, Stripe 3DS, live total
 
@@ -3470,6 +3584,8 @@ Browse performance is unchanged after locale routing — locale is part of the *
 
 **GraphQL:** Map URL slugs to Saleor **base** language codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge `translation { … }` fields after fetch (`src/lib/saleor-translations.ts`).
 
+**Translatable catalog slugs (Saleor 3.21+):** Product / category / collection / page URLs may use `translation.slug` per locale. Resolve with `slugLanguageCode` then primary fallback for **every** locale (`src/lib/catalog/resolve-by-slug.ts`); build links with `pickTranslatedSlug`; keep `entity.slug` as cache/webhook identity. Fetch all locale handles via `*LocaleSlugTranslations` aliases (`buildLocaleSlugMap`) for hreflang and zero-hop language switching. See `docs/adr/0004-translatable-slugs.md`.
+
 **Invalidation:** Product update → `revalidateTag("product:{slug}")` → busts EN/PL/DE cached entries → `revalidatePath` for every `/{locale}/{channel}/products/{slug}`.
 
 Full detail: `data-caching.md` § Locale & Caching.
@@ -3512,7 +3628,10 @@ Run **301** from old URLs for at least one release.
 ❌ **Putting locale after channel** (`/uk/en/…`) — conflicts with this ADR  
 ❌ **Implementing `[locale]` routes** before ADR helpers and redirect plan exist  
 ❌ **Hardcoding `EN_US` / `PL_PL` in `graphqlLanguageCode`** — Dashboard translations use base codes (`EN`, `PL`); see `src/config/locale.ts`  
-❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language
+❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language  
+❌ **Overwriting `entity.slug` with the translation** — Breaks cache tags / webhooks; use `pickTranslatedSlug` for URLs only  
+❌ **Assuming Saleor falls back between primary and translated slug lookups** — Client must try both (`resolveByPossiblyTranslatedSlug`)  
+❌ **Keeping a translated slug when switching locale** — Foreign-language handles 404; rewrite to primary slug via `CatalogIdentityBridge`
 
 ---
 
@@ -3810,19 +3929,23 @@ export default async function ProductPage({ params }) {
 
 Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`).
 
-- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates (same channel, each configured locale).
-- `generateMetadata` `pathSuffix` is the path after locale/channel, e.g. `/products/${slug}`.
+- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates.
+- `generateMetadata` `pathSuffix` is the path after locale/channel for **this** locale, e.g. `/products/${pickTranslatedSlug(product)}`.
+- For translated catalog slugs (ADR 0004), also pass `pathSuffixByLocale` from `buildCatalogPathSuffixByLocale` / `buildLocaleSlugMap` so each `hreflang` points at that language’s handle.
 - `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment — no client patching.
 
 ```typescript
 import { buildBrowsePageMetadata } from "@/lib/seo";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
+import { catalogPathSuffix } from "@/lib/catalog/canonical-slug";
 
 return buildBrowsePageMetadata({
 	title: category.name,
 	description: category.seoDescription,
 	locale: params.locale,
 	channel: params.channel,
-	pathSuffix: `/categories/${params.slug}`,
+	pathSuffix: catalogPathSuffix("categories", category),
+	pathSuffixByLocale: buildCatalogPathSuffixByLocale("categories", buildLocaleSlugMap(category)),
 });
 ```
 

@@ -3,6 +3,7 @@
 import type { useRouter } from "next/navigation";
 
 import { revalidateStorefrontChromeAction } from "@/app/actions";
+import { markAuthSurfaceHardNav } from "@/lib/auth/auth-surface-nav";
 import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
@@ -30,6 +31,7 @@ export async function syncAuthSurfacesAfterSignIn(
 	if (options?.redirectTo) {
 		// Hard navigation: avoids router.refresh() racing on the login page and guarantees
 		// cookies + invalidated layout are picked up on the destination.
+		markAuthSurfaceHardNav();
 		window.location.assign(options.redirectTo);
 		return;
 	}
@@ -51,5 +53,6 @@ export function navigateToStorefrontHome(channel: string, locale?: string) {
 	}
 
 	const resolvedLocale = resolveBrowseLocaleSlugWithFallback(locale);
+	markAuthSurfaceHardNav();
 	window.location.assign(buildStorefrontPath(resolvedLocale, channel));
 }

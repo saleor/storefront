@@ -37,6 +37,11 @@
 		"adding": "Dodawanie…",
 		"outOfStock": "Brak w magazynie",
 		"selectOptions": "Wybierz opcje",
+		"buyBox": {
+			"overBudgetHint": "Ten produkt ma zbyt wiele opcji, by je tu wypisać. Otwórz bezpośredni link do wariantu, aby kupić.",
+			"externalHint": "Opcje tego produktu wybiera się w osobnym doświadczeniu. Otwórz bezpośredni link do wariantu, aby kupić.",
+			"selectedSummary": "Wybrane opcje"
+		},
 		"free": "ZA DARMO",
 		"breadcrumbHome": "Strona główna",
 		"badges": {
@@ -50,7 +55,10 @@
 			"percentOffTitle": "{name} — {percent}% taniej",
 			"outOfStockA11y": "brak w magazynie",
 			"percentOffA11y": "{percent}% taniej",
-			"selectedA11y": "wybrane"
+			"selectedA11y": "wybrane",
+			"chooseOption": "Wybierz: {label}",
+			"searchOptions": "Szukaj: {label}",
+			"noMatchingOptions": "Brak pasujących opcji"
 		},
 		"attributes": {
 			"description": "Opis",
@@ -92,7 +100,8 @@
 		"resultCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
 		"clearAllFilters": "Wyczyść filtry ({count})",
 		"clearAll": "Wyczyść wszystko",
-		"removeFilter": "Usuń filtr {value}"
+		"removeFilter": "Usuń filtr {value}",
+		"noMatchingFilters": "Żadne produkty nie pasują do wybranych filtrów."
 	},
 	"search": {
 		"title": "Szukaj",

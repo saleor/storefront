@@ -4,6 +4,14 @@ import type { ProductCardData } from "../product-card-data";
  * Test fixtures for filter-utils tests.
  */
 
+function sizes(...names: string[]): { name: string; slug: string }[] {
+	return names.map((name) => ({ name, slug: name.toLowerCase() }));
+}
+
+function color(name: string, hex: string): { name: string; slug: string; hex: string } {
+	return { name, slug: name.toLowerCase(), hex };
+}
+
 export const sampleProducts: ProductCardData[] = [
 	{
 		id: "prod-1",
@@ -14,8 +22,8 @@ export const sampleProducts: ProductCardData[] = [
 		image: "/img/1.jpg",
 		href: "/products/black-tshirt",
 		category: { id: "cat-1", name: "T-Shirts", slug: "t-shirts" },
-		colors: [{ name: "Black", hex: "#000000" }],
-		sizes: ["S", "M", "L"],
+		colors: [color("Black", "#000000")],
+		sizes: sizes("S", "M", "L"),
 		createdAt: "2024-01-15T10:00:00Z",
 	},
 	{
@@ -27,8 +35,8 @@ export const sampleProducts: ProductCardData[] = [
 		image: "/img/2.jpg",
 		href: "/products/white-tshirt",
 		category: { id: "cat-1", name: "T-Shirts", slug: "t-shirts" },
-		colors: [{ name: "White", hex: "#FFFFFF" }],
-		sizes: ["S", "M", "L", "XL"],
+		colors: [color("White", "#FFFFFF")],
+		sizes: sizes("S", "M", "L", "XL"),
 		createdAt: "2024-01-10T10:00:00Z",
 	},
 	{
@@ -40,8 +48,8 @@ export const sampleProducts: ProductCardData[] = [
 		image: "/img/3.jpg",
 		href: "/products/blue-jeans",
 		category: { id: "cat-2", name: "Jeans", slug: "jeans" },
-		colors: [{ name: "Blue", hex: "#0000FF" }],
-		sizes: ["28", "30", "32", "34"],
+		colors: [color("Blue", "#0000FF")],
+		sizes: sizes("28", "30", "32", "34"),
 		createdAt: "2024-02-01T10:00:00Z",
 	},
 	{
@@ -53,8 +61,8 @@ export const sampleProducts: ProductCardData[] = [
 		image: "/img/4.jpg",
 		href: "/products/red-sneakers",
 		category: { id: "cat-3", name: "Sneakers", slug: "sneakers" },
-		colors: [{ name: "Red", hex: "#FF0000" }],
-		sizes: ["8", "9", "10", "11"],
+		colors: [color("Red", "#FF0000")],
+		sizes: sizes("8", "9", "10", "11"),
 		createdAt: "2024-02-15T10:00:00Z",
 	},
 	{
@@ -66,11 +74,8 @@ export const sampleProducts: ProductCardData[] = [
 		image: "/img/5.jpg",
 		href: "/products/multi-hoodie",
 		category: { id: "cat-4", name: "Hoodies", slug: "hoodies" },
-		colors: [
-			{ name: "Black", hex: "#000000" },
-			{ name: "White", hex: "#FFFFFF" },
-		],
-		sizes: ["S", "M", "L", "XL", "XXL"],
+		colors: [color("Black", "#000000"), color("White", "#FFFFFF")],
+		sizes: sizes("S", "M", "L", "XL", "XXL"),
 		createdAt: "2024-03-01T10:00:00Z",
 	},
 ];
@@ -78,28 +83,27 @@ export const sampleProducts: ProductCardData[] = [
 // Products without categories (edge case)
 export const productsWithoutCategories: ProductCardData[] = [
 	{
-		id: "prod-no-cat",
-		name: "Mystery Item",
-		slug: "mystery",
-		price: 19.99,
+		id: "prod-x",
+		name: "Uncategorized",
+		slug: "uncategorized",
+		price: 10,
 		currency: "USD",
 		image: "/img/x.jpg",
-		href: "/products/mystery",
-		colors: [],
-		sizes: [],
+		href: "/products/uncategorized",
+		colors: [color("Black", "#000000")],
+		sizes: sizes("M"),
 	},
 ];
 
-// Products with standard sizes for sort testing
 export const productsWithStandardSizes: ProductCardData[] = [
 	{
-		id: "size-1",
-		name: "Size Test 1",
-		slug: "size-1",
-		price: 10,
+		id: "prod-size",
+		name: "Sized Tee",
+		slug: "sized-tee",
+		price: 20,
 		currency: "USD",
-		image: "/img/s1.jpg",
-		href: "/products/size-1",
-		sizes: ["XL", "S", "XXL", "M", "L", "XS"],
+		image: "/img/s.jpg",
+		href: "/products/sized-tee",
+		sizes: sizes("XXL", "S", "M", "XL", "XS", "L"),
 	},
 ];

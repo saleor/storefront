@@ -34,4 +34,16 @@ describe("readAuthCookieValue", () => {
 		const value = readAuthCookieValue(store([{ name, value: encoded }]), accessKey, apiUrl);
 		expect(value).toBe("a+b=c");
 	});
+
+	it("ignores cookies minted by a different Saleor instance", () => {
+		const otherInstanceKey = ["https://old-instance.saleor.cloud/graphql/", "saleor_auth_access_token"].join(
+			"+",
+		);
+		const value = readAuthCookieValue(
+			store([{ name: encodeCookieName(otherInstanceKey), value: "stale-token" }]),
+			accessKey,
+			apiUrl,
+		);
+		expect(value).toBeNull();
+	});
 });

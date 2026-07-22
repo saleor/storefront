@@ -1,61 +1,79 @@
 import type { ProductListItemFragment } from "@/gql/graphql";
 import type { ProductCardData } from "./product-card-data";
 import { getColorHex, isColorAttribute, isSizeAttribute } from "@/lib/colors";
-import { sortSizes } from "@/lib/sizes";
+import { sortByOptionLabel } from "@/lib/sizes";
 import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
+import { PDP_VARIANT_CAP } from "@/config/variants";
+import { normalizeFacetValueSlug } from "@/config/facets";
 import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
 import { buildStorefrontPath } from "@/lib/storefront-path";
-import { pickTranslatedName } from "@/lib/saleor-translations";
+import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller } from "@/lib/catalog/product-flags";
 
+type ListVariantNode = NonNullable<
+	NonNullable<ProductListItemFragment["productVariants"]>["edges"][number]
+>["node"];
+
+function listVariantNodes(product: ProductListItemFragment): ListVariantNode[] {
+	return product.productVariants?.edges.map((edge) => edge.node) ?? [];
+}
+
+function attributeValueSlug(value: { name?: string | null; slug?: string | null }): string {
+	const slug = value.slug?.trim();
+	if (slug) return normalizeFacetValueSlug(slug);
+	const name = value.name?.trim();
+	return name ? normalizeFacetValueSlug(name) : "";
+}
+
 /**
- * Extract colors from product variants
+ * Extract colors from the capped PLP variant sample.
  */
 function extractColorsFromVariants(
-	variants: ProductListItemFragment["variants"],
-): { name: string; hex: string }[] {
-	const colorSet = new Map<string, string>();
+	variants: ListVariantNode[],
+): { name: string; slug: string; hex: string }[] {
+	const colorSet = new Map<string, { name: string; hex: string }>();
 
-	variants?.forEach((variant) => {
+	variants.forEach((variant) => {
 		variant.selectionAttributes?.forEach((attr) => {
 			if (isColorAttribute(attr.attribute?.slug ?? "")) {
 				attr.values?.forEach((value) => {
+					const slug = attributeValueSlug(value);
 					const colorName = value.name;
-					if (colorName && !colorSet.has(colorName)) {
-						const hex = getColorHex(value) ?? "#6b7280"; // Default gray if no match
-						colorSet.set(colorName, hex);
-					}
+					if (!slug || !colorName || colorSet.has(slug)) return;
+					const hex = getColorHex(value) ?? "#6b7280";
+					colorSet.set(slug, { name: colorName, hex });
 				});
 			}
 		});
 	});
 
-	return Array.from(colorSet.entries()).map(([name, hex]) => ({ name, hex }));
+	return Array.from(colorSet.entries()).map(([slug, { name, hex }]) => ({ name, slug, hex }));
 }
 
 /**
- * Extract sizes from product variants
+ * Extract sizes from the capped PLP variant sample.
  */
-function extractSizesFromVariants(variants: ProductListItemFragment["variants"]): string[] {
-	const sizeSet = new Set<string>();
+function extractSizesFromVariants(variants: ListVariantNode[]): { name: string; slug: string }[] {
+	const sizeSet = new Map<string, string>();
 
-	variants?.forEach((variant) => {
+	variants.forEach((variant) => {
 		variant.selectionAttributes?.forEach((attr) => {
 			if (isSizeAttribute(attr.attribute?.slug ?? "")) {
 				attr.values?.forEach((value) => {
-					if (value.name) {
-						sizeSet.add(value.name);
-					}
+					const slug = attributeValueSlug(value);
+					const name = value.name;
+					if (!slug || !name || sizeSet.has(slug)) return;
+					sizeSet.set(slug, name);
 				});
 			}
 		});
 	});
 
-	// Sort sizes in logical order (S, M, L, XL or numeric)
-	return sortSizes(Array.from(sizeSet));
+	const options = Array.from(sizeSet.entries()).map(([slug, name]) => ({ name, slug }));
+	return sortByOptionLabel(options);
 }
 
-/** Map a Saleor list item to {@link ProductCardData} for cards and client filters. */
+/** Map a Saleor list item to {@link ProductCardData} for cards and filters. */
 export function toProductCardData(
 	product: ProductListItemFragment,
 	locale: string,
@@ -67,7 +85,6 @@ export function toProductCardData(
 	const startAmount = startPrice?.amount ?? 0;
 	const stopAmount = stopPrice?.amount;
 
-	// Use centralized pricing logic to detect if ANY variant is on sale
 	const isSale = hasDiscountInPriceRange(
 		product.pricing?.priceRange,
 		product.pricing?.priceRangeUndiscounted,
@@ -78,9 +95,11 @@ export function toProductCardData(
 			? calculateDiscountPercent(startAmount, undiscountedStartAmount)
 			: null;
 
-	// Extract colors and sizes from variants
-	const colors = extractColorsFromVariants(product.variants);
-	const sizes = extractSizesFromVariants(product.variants);
+	const variantSample = listVariantNodes(product);
+	const variantSampleSize = variantSample.length;
+	const variantTotalCount = product.productVariants?.totalCount ?? variantSampleSize;
+	const colors = extractColorsFromVariants(variantSample);
+	const sizes = extractSizesFromVariants(variantSample);
 
 	const productName = pickTranslatedName(product);
 	const categoryName = product.category ? pickTranslatedName(product.category) : null;
@@ -97,9 +116,9 @@ export function toProductCardData(
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
 		imageAlt: product.thumbnail?.alt ?? productName,
-		hoverImage: null, // Would need additional media in fragment
+		hoverImage: null,
 		localeBcp47: resolveLocaleFromSlug(locale).bcp47,
-		href: buildStorefrontPath(locale, channel, `/products/${product.slug}`),
+		href: buildStorefrontPath(locale, channel, `/products/${pickTranslatedSlug(product)}`),
 		badge: isSale ? "Sale" : null,
 		isBestseller: isBestseller(product),
 		colors,
@@ -108,7 +127,10 @@ export function toProductCardData(
 			? { id: product.category.id, name: categoryName ?? product.category.name, slug: product.category.slug }
 			: null,
 		createdAt: product.created,
-		hasVariants: (product.variants?.length ?? 0) > 1,
+		hasVariants: variantTotalCount > 1,
+		variantTotalCount,
+		variantSampleSize,
+		isOverVariantCap: variantTotalCount > PDP_VARIANT_CAP,
 	};
 }
 

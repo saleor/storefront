@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-29 rules across 8 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
+30 rules across 8 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
 design & composition (token system, design quality, section catalog, page composition, design-from-image, verification),
 components, UI patterns, locale routing, i18n, and SEO.
 
@@ -31,7 +31,7 @@ components, UI patterns, locale routing, i18n, and SEO.
 
 Reference these guidelines when:
 
-- Working on product detail pages (PDP), variant selection, or filtering
+- Working on product detail pages (PDP), variant selection, high-cardinality catalogs, or filtering
 - Modifying checkout flow or payment integration
 - Editing GraphQL queries or regenerating types
 - Debugging caching, stale content, or revalidation
@@ -77,9 +77,10 @@ Reference these guidelines when:
 ### 2. Product Pages (HIGH)
 
 - `product-pdp` - ProductShell + dynamic islands, gallery, LCP preload, add-to-cart
-- `product-variants` - Variant selection state machine, swatch renderers, partial selection
+- `product-variants` - Variant selection state machine, control ladder, selection-index, partial selection
+- `product-high-cardinality` - Caps, buy-box strategies, `?variant=`/`?sku=`, PLP facets alias OR
 - `references/variant-selector-ui.md` - Border states, pill/circle sizing, renderer routing (read before editing renderers)
-- `product-filtering` - Server vs client filtering, category slug resolution
+- `product-filtering` - Server-side categories/price/sort + `PLP_FACETS` / `ProductWhereInput`
 
 ### 3. Checkout Flow (HIGH)
 

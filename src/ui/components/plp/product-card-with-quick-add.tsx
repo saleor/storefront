@@ -16,7 +16,8 @@ interface ProductCardWithQuickAddProps {
 
 /**
  * Client wrapper for PLP cards with quick-add. Skips the overlay when the product
- * has multiple variants (user must pick options on the PDP).
+ * has multiple variants or is over the PDP variant cap (shopper must use the PDP —
+ * never open a variant sheet for over-cap matrices).
  */
 export function ProductCardWithQuickAdd({
 	product,
@@ -25,7 +26,7 @@ export function ProductCardWithQuickAdd({
 	forceShowQuickAdd = false,
 	previewAlwaysVisibleOverlay = false,
 }: ProductCardWithQuickAddProps) {
-	const showQuickAdd = forceShowQuickAdd || !product.hasVariants;
+	const showQuickAdd = !product.isOverVariantCap && (forceShowQuickAdd || !product.hasVariants);
 
 	return (
 		<ProductCardBase

@@ -21,6 +21,7 @@ import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import {
 	clearPaymentCompleting,
 	markPaymentCompleting,
+	stashPaymentCompletionError,
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { navigateToOrderConfirmation } from "@/checkout/lib/payment/navigate-to-order";
 import { useCheckoutGatewayMessages } from "@/checkout/hooks/use-checkout-gateway-messages";
@@ -160,6 +161,10 @@ export function useCheckoutPayment({
 					}
 					if (!payResult.errorKey && !payResult.fieldErrors) {
 						nextErrors.payment = payResult.error;
+					}
+					const paymentMessage = nextErrors.payment;
+					if (paymentMessage) {
+						stashPaymentCompletionError(paymentMessage);
 					}
 					setErrors(nextErrors);
 					return;

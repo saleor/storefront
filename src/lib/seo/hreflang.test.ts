@@ -30,4 +30,22 @@ describe("buildLocaleHreflangAlternates", () => {
 			"x-default": "/en/default-channel/products/hoodie",
 		});
 	});
+
+	it("uses per-locale path suffixes for translated catalog slugs", () => {
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,pl");
+		vi.stubEnv("NEXT_PUBLIC_DEFAULT_LOCALE", "en");
+		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");
+		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel");
+
+		expect(
+			buildLocaleHreflangAlternates("default-channel", {
+				en: "/products/hoodie",
+				pl: "/products/bluza",
+			}),
+		).toEqual({
+			en: "/en/default-channel/products/hoodie",
+			pl: "/pl/default-channel/products/bluza",
+			"x-default": "/en/default-channel/products/hoodie",
+		});
+	});
 });

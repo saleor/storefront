@@ -12,6 +12,11 @@ export function storageKeyMarker(storageKey: string): string {
 /**
  * Read a Saleor auth storage value from request cookies.
  * Tries the exact encoded SDK key first, then scans by API URL prefix and marker.
+ *
+ * Deliberately never matches cookies from a *different* Saleor instance: a token
+ * minted by a previously configured NEXT_PUBLIC_SALEOR_API_URL would make
+ * `hasAuthSession()` report a session that the current API always rejects,
+ * wedging the header user menu in the "unavailable" state.
  */
 export function readAuthCookieValue(
 	cookieStore: CookieStore,
@@ -26,13 +31,9 @@ export function readAuthCookieValue(
 
 	const apiPrefix = encodeCookieName(saleorApiUrl);
 	const marker = storageKeyMarker(storageKey);
-	const all = cookieStore.getAll();
 
-	const forApi = all.find((cookie) => cookie.name.startsWith(apiPrefix) && cookie.name.includes(marker));
-	if (forApi?.value) {
-		return decodeCookieValue(forApi.value);
-	}
-
-	const any = all.find((cookie) => cookie.name.includes(marker) && cookie.value);
-	return any?.value ? decodeCookieValue(any.value) : null;
+	const forApi = cookieStore
+		.getAll()
+		.find((cookie) => cookie.name.startsWith(apiPrefix) && cookie.name.includes(marker));
+	return forApi?.value ? decodeCookieValue(forApi.value) : null;
 }

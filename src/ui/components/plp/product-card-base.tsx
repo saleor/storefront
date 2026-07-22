@@ -77,19 +77,35 @@ export function ProductCardBase({
 						{product.name}
 					</h3>
 
-					{product.colors && product.colors.length > 1 && (
+					{product.colors && product.colors.length > 0 && (
 						<div className="flex items-center gap-1.5 pt-1">
 							{product.colors.slice(0, 4).map((color) => (
 								<span
-									key={color.name}
+									key={color.slug || color.name}
 									className="h-4 w-4 rounded-full border border-border"
 									style={{ backgroundColor: color.hex }}
 									title={color.name}
 								/>
 							))}
-							{product.colors.length > 4 && (
-								<span className="ml-0.5 text-xs text-muted-foreground">+{product.colors.length - 4}</span>
-							)}
+							{(() => {
+								const overflowDots = Math.max(0, product.colors.length - 4);
+								const sampleSize = product.variantSampleSize ?? 0;
+								const total = product.variantTotalCount ?? sampleSize;
+								const sampleTruncated = total > sampleSize && sampleSize > 0;
+								// Never treat leftover *variants* as extra *colors* — that produced
+								// misleading "+150" next to three swatches on high-cardinality SKUs.
+								if (overflowDots > 0) {
+									return <span className="ml-0.5 text-xs text-muted-foreground">+{overflowDots}</span>;
+								}
+								if (sampleTruncated) {
+									return (
+										<span className="ml-0.5 text-xs text-muted-foreground" title={`+${total - sampleSize}`}>
+											+
+										</span>
+									);
+								}
+								return null;
+							})()}
 						</div>
 					)}
 
