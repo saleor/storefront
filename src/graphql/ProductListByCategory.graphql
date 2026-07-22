@@ -7,6 +7,7 @@ query ProductListByCategory(
 	$after: String
 	$sortBy: ProductOrder
 	$filter: ProductFilterInput
+	$where: ProductWhereInput
 ) {
 	category(slug: $slug, slugLanguageCode: $slugLanguageCode) {
 		id
@@ -27,7 +28,14 @@ query ProductListByCategory(
 			url
 			alt
 		}
-		products(first: $first, after: $after, channel: $channel, sortBy: $sortBy, filter: $filter) {
+		products(
+			first: $first
+			after: $after
+			channel: $channel
+			sortBy: $sortBy
+			filter: $filter
+			where: $where
+		) {
 			edges {
 				node {
 					...ProductListItem

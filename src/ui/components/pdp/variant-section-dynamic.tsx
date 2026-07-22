@@ -11,9 +11,11 @@ import { CheckoutAddLineDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
 import { getTranslations } from "next-intl/server";
+import { resolvePdpVariants } from "@/lib/catalog/get-product-data";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 
 import { AddToCart } from "./add-to-cart";
+import { NonMatrixBuyBox } from "./non-matrix-buy-box";
 import { VariantSelectionSection } from "./variant-selection";
 import { StickyBar } from "./sticky-bar";
 import { Badge } from "@/ui/components/ui/badge";
@@ -24,7 +26,7 @@ interface VariantSectionDynamicProps {
 	product: Product;
 	channel: string;
 	localeSlug: string;
-	searchParams: Promise<{ variant?: string }>;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }
 
 /**
@@ -32,7 +34,9 @@ interface VariantSectionDynamicProps {
  *
  * Reads searchParams inside a Suspense boundary so the product shell
  * (name, attributes, JSON-LD) stays in the static prerender cache.
- * Product data is passed from the shell and backed by getProductData() "use cache".
+ * Variants + buy-box strategy are resolved here via {@link resolvePdpVariants}
+ * — never inside the shell — so high-cardinality catalogs cannot inflate the
+ * static RSC payload or leak strategy branching into the prerender.
  */
 export async function VariantSectionDynamic({
 	product,
@@ -40,29 +44,43 @@ export async function VariantSectionDynamic({
 	localeSlug,
 	searchParams,
 }: VariantSectionDynamicProps) {
-	const { variant: variantParam } = await searchParams;
+	const { variant: variantParam, sku: skuParam } = await searchParams;
 	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
-	const [t, content, currency] = await Promise.all([
+
+	const [t, content, currency, variantResult] = await Promise.all([
 		getTranslations({ locale: localeSlug, namespace: "pdp" }),
 		getStorefrontContent(channel, localeSlug),
 		resolveChannelCurrency(channel),
+		resolvePdpVariants(product, channel, localeSlug, {
+			variantId: variantParam,
+			sku: skuParam,
+		}),
 	]);
-	const variants = product.variants || [];
-	const selectedVariantID = resolveSelectedVariantId(product, variantParam);
+
+	const { variants, totalCount, overBudget, strategy } = variantResult;
+	const productWithVariants: Product = {
+		...product,
+		variants,
+		variantTotalCount: totalCount,
+		overVariantBudget: overBudget,
+	};
+
+	const selectedVariantID = resolveSelectedVariantId(productWithVariants, variantParam);
 	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
 
-	// Check availability
-	const isAvailable = variants.some((variant) => variant.quantityAvailable);
+	const isAvailable =
+		strategy !== "matrix"
+			? Boolean(selectedVariant?.quantityAvailable) || (product.isAvailable ?? false)
+			: variants.some((variant) => variant.quantityAvailable);
 
-	// Determine add-to-cart button state
+	// Prefer no-selection over out-of-stock when the URL names a variant we couldn't hydrate.
 	const isAddToCartDisabled = !selectedVariantID || !selectedVariant?.quantityAvailable;
-	const disabledReason = !selectedVariantID
+	const disabledReason = !selectedVariant
 		? ("no-selection" as const)
-		: !selectedVariant?.quantityAvailable
+		: !selectedVariant.quantityAvailable
 			? ("out-of-stock" as const)
 			: undefined;
 
-	// Format prices
 	const price = selectedVariant?.pricing?.price?.gross
 		? selectedVariant.pricing.price.gross.amount === 0
 			? t("free")
@@ -79,7 +97,6 @@ export async function VariantSectionDynamic({
 				intlLocale,
 			) || "";
 
-	// Calculate discount/sale information
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
 	const undiscountedPrice = selectedVariant?.pricing?.priceUndiscounted?.gross?.amount;
 	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, undiscountedPrice);
@@ -104,12 +121,10 @@ export async function VariantSectionDynamic({
 			: null;
 	const secureCheckoutLabel = content.surfaces.checkout.trust.secureCheckout;
 
-	// Server action for adding to cart
 	async function addToCart() {
 		"use server";
 
 		if (!selectedVariantID) {
-			// Silently return - button should be disabled if no variant selected
 			return;
 		}
 
@@ -121,7 +136,6 @@ export async function VariantSectionDynamic({
 			});
 
 			if (!checkout) {
-				// Log error server-side, UI will show via ErrorBoundary if needed
 				console.error("Add to cart: Failed to create checkout");
 				return;
 			}
@@ -144,15 +158,29 @@ export async function VariantSectionDynamic({
 			revalidateStorefrontBrowsePath(channel, "/cart");
 			revalidateStorefrontChrome(channel);
 		} catch (error) {
-			// Log error server-side - the UI feedback comes from cart drawer/badge update
-			// For explicit error UI, would need useActionState (separate enhancement)
 			console.error("Add to cart failed:", error);
 		}
 	}
 
+	const buyBox =
+		strategy === "matrix" ? (
+			<VariantSelectionSection
+				variants={variants}
+				selectedVariantId={selectedVariantID}
+				productSlug={pickTranslatedSlug(product)}
+				channel={channel}
+			/>
+		) : (
+			<NonMatrixBuyBox
+				strategy={strategy}
+				selectedVariant={selectedVariant}
+				hint={strategy === "external" ? t("buyBox.externalHint") : t("buyBox.overBudgetHint")}
+				summaryLabel={t("buyBox.selectedSummary")}
+			/>
+		);
+
 	return (
 		<>
-			{/* Category + Sale/Stock badges row - order:1 so it appears ABOVE the h1 */}
 			<div className="order-1 flex items-center gap-2">
 				{product.category && <span className="text-sm text-muted-foreground">{product.category.name}</span>}
 				{isOnSale && <SaleBadge />}
@@ -163,17 +191,9 @@ export async function VariantSectionDynamic({
 				)}
 			</div>
 
-			{/* Rest of variant section - order:3 so it appears BELOW the h1 */}
 			<form action={addToCart} className="order-3 mt-4 space-y-6">
-				{/* Variant Selectors */}
-				<VariantSelectionSection
-					variants={variants}
-					selectedVariantId={selectedVariantID}
-					productSlug={pickTranslatedSlug(product)}
-					channel={channel}
-				/>
+				{buyBox}
 
-				{/* Add to Cart */}
 				<AddToCart
 					price={price}
 					compareAtPrice={compareAtPrice}
@@ -184,7 +204,6 @@ export async function VariantSectionDynamic({
 					freeShippingTrustLabel={freeShippingTrustLabel}
 				/>
 
-				{/* Sticky Add to Cart Bar (Mobile) */}
 				<StickyBar productName={product.name} price={price} show={!isAddToCartDisabled} />
 			</form>
 		</>
@@ -200,12 +219,9 @@ export async function VariantSectionDynamic({
 export function VariantSectionSkeleton() {
 	return (
 		<>
-			{/* Category skeleton - order:1, delayed visibility */}
 			<div className="order-1 h-4 w-20 animate-pulse animate-skeleton-delayed rounded bg-muted opacity-0" />
 
-			{/* Variant section skeleton - order:3, delayed visibility */}
 			<div className="order-3 mt-4 animate-pulse animate-skeleton-delayed space-y-6 opacity-0">
-				{/* Variant selector skeleton */}
 				<div className="space-y-4">
 					<div className="h-4 w-16 rounded bg-muted" />
 					<div className="flex gap-2">
@@ -215,10 +231,8 @@ export function VariantSectionSkeleton() {
 					</div>
 				</div>
 
-				{/* Price skeleton */}
 				<div className="h-8 w-24 rounded bg-muted" />
 
-				{/* Add to cart button skeleton */}
 				<div className="h-12 w-full rounded bg-muted" />
 			</div>
 		</>

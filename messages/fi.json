@@ -37,6 +37,11 @@
 		"adding": "Lisätään…",
 		"outOfStock": "Loppunut varastosta",
 		"selectOptions": "Valitse vaihtoehdot",
+		"buyBox": {
+			"overBudgetHint": "Tässä tuotteessa on liian monta vaihtoehtoa listattavaksi. Avaa suora varianttilinkki ostaaksesi.",
+			"externalHint": "Tämän tuotteen vaihtoehdot valitaan erillisessä kokemuksessa. Avaa suora varianttilinkki ostaaksesi.",
+			"selectedSummary": "Valitut vaihtoehdot"
+		},
 		"free": "ILMAINEN",
 		"breadcrumbHome": "Etusivu",
 		"badges": {
@@ -50,7 +55,10 @@
 			"percentOffTitle": "{name} — {percent}% alennus",
 			"outOfStockA11y": "loppunut varastosta",
 			"percentOffA11y": "{percent}% alennus",
-			"selectedA11y": "valittu"
+			"selectedA11y": "valittu",
+			"chooseOption": "Valitse {label}",
+			"searchOptions": "Hae: {label}",
+			"noMatchingOptions": "Ei vastaavia vaihtoehtoja"
 		},
 		"attributes": {
 			"description": "Kuvaus",
@@ -92,7 +100,8 @@
 		"resultCount": "{count, plural, one {# tuote} other {# tuotetta}}",
 		"clearAllFilters": "Tyhjennä suodattimet ({count})",
 		"clearAll": "Tyhjennä kaikki",
-		"removeFilter": "Poista suodatin {value}"
+		"removeFilter": "Poista suodatin {value}",
+		"noMatchingFilters": "Mikään tuote ei vastaa suodattimia."
 	},
 	"search": {
 		"title": "Haku",

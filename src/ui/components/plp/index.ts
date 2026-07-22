@@ -15,9 +15,11 @@ export {
 } from "./filter-bar";
 export { WavePattern } from "./wave-pattern";
 export { toProductCardData, transformToProductCard, formatPrice } from "./utils";
+export { PlpEmptyFilterResults } from "./plp-empty-filter-results";
 export {
 	// Server-side filter helpers (resolveCategorySlugsToIds is in filter-utils.server.ts)
 	buildFilterVariables,
+	buildProductListingConstraints,
 	buildSortVariables,
 	// Client-side filter helpers
 	extractCategoryOptions,
@@ -31,5 +33,6 @@ export {
 	STATIC_PRICE_RANGES_WITH_COUNT,
 	// Types
 	type CategoryOption,
+	type ProductListingConstraints,
 } from "./filter-utils";
 export { useProductFilters } from "./use-product-filters";

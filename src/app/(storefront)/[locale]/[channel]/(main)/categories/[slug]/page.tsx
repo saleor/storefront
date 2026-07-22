@@ -13,7 +13,7 @@ import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
-import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
+import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CategoryPageClient } from "./client";
@@ -128,7 +128,11 @@ async function CategoryProducts({
 
 	const paginationVariables = getPaginatedListVariables({ params: searchParams });
 	const sortBy = buildSortVariables(searchParams.sort);
-	const filter = buildFilterVariables({ priceRange: searchParams.price });
+	const { filter, where } = buildProductListingConstraints({
+		priceRange: searchParams.price,
+		colors: searchParams.colors,
+		sizes: searchParams.sizes,
+	});
 
 	// Resolve via cached getCategoryData (handles translated URL slugs), then list by primary slug.
 	const category = await getCategoryData(params.slug, params.channel, params.locale);
@@ -143,6 +147,7 @@ async function CategoryProducts({
 			...paginationVariables,
 			sortBy,
 			filter,
+			where,
 			...graphqlLanguageCodeVariables(params.locale),
 		},
 	});

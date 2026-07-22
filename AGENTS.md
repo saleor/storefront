@@ -16,7 +16,7 @@ Paper rules are **authoritative on architecture**: Server Components by default,
 
 - **Architecture:** `paper-architecture`
 - **Data:** `data-caching`, `data-graphql`, `data-auth-routes`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes`
-- **Product:** `product-pdp`, `product-variants`, `product-filtering`
+- **Product:** `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`
 - **Checkout:** `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
 - **Design:** `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `design-from-image`, `design-verification`
 - **UI & channels:** `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`

@@ -13,7 +13,7 @@ import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
-import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
+import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CollectionPageClient } from "./client";
@@ -122,7 +122,11 @@ async function CollectionProducts({
 		field: ProductOrderField.Collection,
 		direction: OrderDirection.Asc,
 	};
-	const filter = buildFilterVariables({ priceRange: searchParams.price });
+	const { filter, where } = buildProductListingConstraints({
+		priceRange: searchParams.price,
+		colors: searchParams.colors,
+		sizes: searchParams.sizes,
+	});
 
 	const collection = await getCollectionData(params.slug, params.channel, params.locale);
 	if (!collection) {
@@ -136,6 +140,7 @@ async function CollectionProducts({
 			...paginationVariables,
 			sortBy,
 			filter,
+			where,
 			...graphqlLanguageCodeVariables(params.locale),
 		},
 	});

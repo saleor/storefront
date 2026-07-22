@@ -45,7 +45,7 @@ export function ImageSwatchPillOption({ option, isSelected, onSelect, isPending 
 						isSelected
 							? "border-foreground bg-foreground text-background"
 							: isIncompatible
-								? "border-border text-muted-foreground hover:border-muted-foreground/40"
+								? "border-border/70 text-muted-foreground/55 hover:border-muted-foreground/40 hover:text-muted-foreground/70"
 								: "border-input bg-background text-foreground hover:border-foreground",
 						isOutOfStock && "cursor-not-allowed opacity-60",
 					)}

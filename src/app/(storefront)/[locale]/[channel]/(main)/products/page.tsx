@@ -9,7 +9,7 @@ import { getPaginatedListVariables } from "@/lib/utils";
 import { buildBrowsePageMetadata } from "@/lib/seo";
 import { getStorefrontContent } from "@/lib/content/server";
 import { CategoryHero, toProductCardData } from "@/ui/components/plp";
-import { buildSortVariables, buildFilterVariables } from "@/ui/components/plp/filter-utils";
+import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
 import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { ProductsPageClient } from "./products-client";
@@ -101,9 +101,11 @@ async function ProductsContent({
 	const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
 	const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
 
-	const filter = buildFilterVariables({
+	const { filter, where } = buildProductListingConstraints({
 		priceRange: searchParams.price,
 		categoryIds,
+		colors: searchParams.colors,
+		sizes: searchParams.sizes,
 	});
 
 	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
@@ -112,6 +114,7 @@ async function ProductsContent({
 			channel: params.channel,
 			sortBy,
 			filter,
+			where,
 			...graphqlLanguageCodeVariables(params.locale),
 		},
 	});

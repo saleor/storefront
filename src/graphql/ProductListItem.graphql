@@ -66,26 +66,33 @@ fragment ProductListItem on Product {
 			value
 		}
 	}
-	variants {
-		id
-		selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
-			attribute {
-				slug
-				name
-				inputType
-				translation(languageCode: $languageCode) {
-					name
-				}
-			}
-			values {
-				name
-				slug
-				value
-				translation(languageCode: $languageCode) {
-					name
-				}
-				file {
-					url
+	# Cap sample for swatches / client facet hints — never the deprecated unpaginated list.
+	# Keep `first` in sync with PLP_VARIANT_SAMPLE in src/config/variants.ts.
+	productVariants(first: 50) {
+		totalCount
+		edges {
+			node {
+				id
+				selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
+					attribute {
+						slug
+						name
+						inputType
+						translation(languageCode: $languageCode) {
+							name
+						}
+					}
+					values {
+						name
+						slug
+						value
+						translation(languageCode: $languageCode) {
+							name
+						}
+						file {
+							url
+						}
+					}
 				}
 			}
 		}

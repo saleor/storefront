@@ -40,7 +40,12 @@ type FilterLabelKey = "category" | "color" | "size" | "price";
 export type { FilterLabelKey };
 
 export interface FilterOption {
+	/** Display label */
 	name: string;
+	/**
+	 * URL / Saleor value slug. Falls back to `name` when omitted (legacy callers).
+	 */
+	value?: string;
 	count: number;
 	hex?: string; // For colors
 }
@@ -55,7 +60,14 @@ export interface CategoryFilterOption {
 export interface ActiveFilter {
 	key: FilterLabelKey;
 	label: string;
+	/** Identity used when removing the chip (slug for color/size). */
 	value: string;
+	/** Pretty label shown in the chip; defaults to `value`. */
+	displayValue?: string;
+}
+
+function optionValue(option: FilterOption): string {
+	return option.value ?? option.name;
 }
 
 interface FilterBarProps {
@@ -184,11 +196,12 @@ export function FilterBar({
 													</h3>
 													<div className="space-y-3">
 														{colorOptions.map((color) => {
-															const isSelected = selectedColors.includes(color.name);
+															const value = optionValue(color);
+															const isSelected = selectedColors.includes(value);
 															return (
 																<button
-																	key={color.name}
-																	onClick={() => onColorToggle(color.name)}
+																	key={value}
+																	onClick={() => onColorToggle(value)}
 																	className="flex w-full items-center gap-3 text-left"
 																>
 																	<span
@@ -223,11 +236,12 @@ export function FilterBar({
 													</h3>
 													<div className="flex flex-wrap gap-2">
 														{sizeOptions.map((size) => {
-															const isSelected = selectedSizes.includes(size.name);
+															const value = optionValue(size);
+															const isSelected = selectedSizes.includes(value);
 															return (
 																<button
-																	key={size.name}
-																	onClick={() => onSizeToggle(size.name)}
+																	key={value}
+																	onClick={() => onSizeToggle(value)}
 																	className={`rounded-md border px-4 py-2 text-sm transition-colors ${
 																		isSelected
 																			? "border-foreground bg-foreground text-background"
@@ -348,22 +362,25 @@ export function FilterBar({
 								<DropdownMenuContent align="start" className="w-56">
 									<DropdownMenuLabel>{filterLabel("color")}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
-									{colorOptions.map((color) => (
-										<DropdownMenuCheckboxItem
-											key={color.name}
-											checked={selectedColors.includes(color.name)}
-											onCheckedChange={() => onColorToggle(color.name)}
-										>
-											{color.hex && (
-												<span
-													className="mr-2 h-4 w-4 shrink-0 rounded-full border border-border"
-													style={{ backgroundColor: color.hex }}
-												/>
-											)}
-											<span className="flex-1">{color.name}</span>
-											<span className="text-xs text-muted-foreground">({color.count})</span>
-										</DropdownMenuCheckboxItem>
-									))}
+									{colorOptions.map((color) => {
+										const value = optionValue(color);
+										return (
+											<DropdownMenuCheckboxItem
+												key={value}
+												checked={selectedColors.includes(value)}
+												onCheckedChange={() => onColorToggle(value)}
+											>
+												{color.hex && (
+													<span
+														className="mr-2 h-4 w-4 shrink-0 rounded-full border border-border"
+														style={{ backgroundColor: color.hex }}
+													/>
+												)}
+												<span className="flex-1">{color.name}</span>
+												<span className="text-xs text-muted-foreground">({color.count})</span>
+											</DropdownMenuCheckboxItem>
+										);
+									})}
 								</DropdownMenuContent>
 							</DropdownMenu>
 						)}
@@ -389,16 +406,19 @@ export function FilterBar({
 								<DropdownMenuContent align="start" className="w-48">
 									<DropdownMenuLabel>{filterLabel("size")}</DropdownMenuLabel>
 									<DropdownMenuSeparator />
-									{sizeOptions.map((size) => (
-										<DropdownMenuCheckboxItem
-											key={size.name}
-											checked={selectedSizes.includes(size.name)}
-											onCheckedChange={() => onSizeToggle(size.name)}
-										>
-											<span className="flex-1">{size.name}</span>
-											<span className="text-xs text-muted-foreground">({size.count})</span>
-										</DropdownMenuCheckboxItem>
-									))}
+									{sizeOptions.map((size) => {
+										const value = optionValue(size);
+										return (
+											<DropdownMenuCheckboxItem
+												key={value}
+												checked={selectedSizes.includes(value)}
+												onCheckedChange={() => onSizeToggle(value)}
+											>
+												<span className="flex-1">{size.name}</span>
+												<span className="text-xs text-muted-foreground">({size.count})</span>
+											</DropdownMenuCheckboxItem>
+										);
+									})}
 								</DropdownMenuContent>
 							</DropdownMenu>
 						)}
@@ -478,13 +498,15 @@ export function FilterBar({
 								className="shrink-0 gap-1.5 pr-1.5"
 							>
 								<span className="text-xs text-muted-foreground">{filterLabel(filter.key)}:</span>
-								{filter.value}
+								{filter.displayValue ?? filter.value}
 								<button
 									onClick={() => onRemoveFilter(filter.key, filter.value)}
 									className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-background/50"
 								>
 									<X className="h-3 w-3" />
-									<span className="sr-only">{t("removeFilter", { value: filter.value })}</span>
+									<span className="sr-only">
+										{t("removeFilter", { value: filter.displayValue ?? filter.value })}
+									</span>
 								</button>
 							</Badge>
 						))}
