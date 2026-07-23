@@ -556,7 +556,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "마케팅 수신 동의 저장에 실패했습니다",
-			"invalidRedirectUrl": "잘못된 리디렉션 URL입니다",
+			"invalidRedirectUrl": "잘못된 리디렉션 URL입니다. 자세한 내용은 서버 로그를 확인하세요.",
 			"createAccountFailed": "계정 생성에 실패했습니다",
 			"noSaleorResponse": "Saleor로부터 응답이 없습니다",
 			"shippingMethodsFailed": "배송 방법을 불러오지 못했습니다",

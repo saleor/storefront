@@ -565,7 +565,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Kunne ikke lagre markedsføringspreferanse",
-			"invalidRedirectUrl": "Ugyldig omdirigerings-URL",
+			"invalidRedirectUrl": "Ugyldig omdirigerings-URL. Se serverloggene for mer informasjon.",
 			"createAccountFailed": "Kunne ikke opprette konto",
 			"noSaleorResponse": "Ingen respons fra Saleor",
 			"shippingMethodsFailed": "Kunne ikke laste fraktmetoder",
