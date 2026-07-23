@@ -1,0 +1,52 @@
+# Korean storefront model translations (Saleor LanguageCodeEnum: KO)
+languageCode: KO
+
+pages:
+  storefront-chrome:
+    announcement-message: "{freeShippingThreshold} 이상 무료 배송"
+    nav-all-products-label: "전체"
+    nav-view-all-label: "{label} 모두 보기"
+
+  storefront-products:
+    listing-title: "모든 상품"
+    listing-description: "엄선된 프리미엄 상품 컬렉션을 만나보세요."
+
+  storefront-homepage:
+    hero-heading: "컬렉션을 만나보세요"
+    hero-subheading: "뛰어난 품질의 프리미엄 상품. 정성껏 고른 셀렉션을 살펴보세요."
+    hero-cta-label: "전체 보기"
+    featured-heading: "추천 상품"
+    brand-story-heading: "실제 커머스를 위해 설계되었습니다"
+    brand-story-paragraph-1: "Paper는 Saleor를 위한 미니멀하고 프로덕션 준비된 스토어프론트입니다 — 백지처럼 깔끔하고, 바로 배포할 수 있습니다."
+    brand-story-paragraph-2: "코드에서 섹션을 맞춤 설정하고, 카탈로그를 연결한 뒤, 검증된 장바구니·결제·상품 페이지를 그대로 활용하세요."
+    values-heading: "우리와 함께하는 이유"
+    values-column-1-title: "엄선된 품질"
+    values-column-1-text: "모든 상품은 유행이 아니라 장인정신과 내구성을 기준으로 고릅니다."
+    values-column-2-title: "빠른 배송"
+    values-column-2-text: "주문은 지역 창고에서 출고되며, 결제부터 배송까지 추적할 수 있습니다."
+    values-column-3-title: "간편한 반품"
+    values-column-3-text: "{returnsWindowDays}일 이내 부담 없는 반품. 판매하는 상품에 책임을 집니다."
+    editorial-heading: "오래 쓸 수 있도록 설계"
+    editorial-paragraph-1: "신중히 고른 소재와 시대를 초월한 실루엣 — 시즌이 지나도 손이 가는 아이템."
+    editorial-cta-label: "컬렉션 둘러보기"
+
+  storefront-cart:
+    empty-title: "장바구니가 비어 있습니다"
+    empty-body: "아직 담은 상품이 없습니다."
+    empty-cta-label: "쇼핑 시작하기"
+    trust-free-shipping-prefix: "무료 배송 · 최소"
+    trust-returns-label: "{returnsWindowDays}일 반품"
+    drawer-title: "장바구니"
+    drawer-add-for-free-shipping: "무료 배송까지 {amount} 남았습니다"
+    drawer-free-shipping-qualified: "무료 배송 적용!"
+
+  storefront-checkout:
+    empty-cart-title: "장바구니가 비어 있습니다"
+    empty-cart-body: "아직 담은 상품이 없습니다."
+    empty-cart-start-label: "쇼핑 시작하기"
+    empty-cart-go-back-label: "뒤로"
+    empty-session-title: "장바구니가 비어 있습니다"
+    empty-session-message: "상품을 담은 뒤 돌아와 결제를 완료하세요."
+    marketing-opt-in-label: "이메일로 혜택 받기"
+    trust-secure-checkout: "안전한 결제"
+    trust-stripe-processor: "결제는 Stripe에서 처리됩니다"
