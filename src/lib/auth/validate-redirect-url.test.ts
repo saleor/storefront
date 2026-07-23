@@ -7,6 +7,15 @@ const ORIGINAL_STOREFRONT_URL = process.env.NEXT_PUBLIC_STOREFRONT_URL;
 const ORIGINAL_CHECKOUT_URL = process.env.NEXT_PUBLIC_CHECKOUT_URL;
 const ORIGINAL_ALLOWED_EXTRA_ORIGINS = process.env.ALLOWED_EXTRA_ORIGINS;
 
+function setNodeEnv(value: string) {
+	Object.defineProperty(process.env, "NODE_ENV", {
+		configurable: true,
+		enumerable: true,
+		value,
+		writable: true,
+	});
+}
+
 function restoreEnv(name: string, value: string | undefined) {
 	if (value === undefined) {
 		delete process.env[name];
@@ -17,7 +26,7 @@ function restoreEnv(name: string, value: string | undefined) {
 
 describe("isAllowedRedirectUrl", () => {
 	beforeEach(() => {
-		process.env["NODE_ENV"] = "production";
+		setNodeEnv("production");
 		delete process.env.NEXT_PUBLIC_STOREFRONT_URL;
 		delete process.env.NEXT_PUBLIC_CHECKOUT_URL;
 		delete process.env.ALLOWED_EXTRA_ORIGINS;
@@ -62,7 +71,7 @@ describe("isAllowedRedirectUrl", () => {
 	});
 
 	it("accepts explicitly configured extra origins", () => {
-		process.env.ALLOWED_EXTRA_ORIGINS = "https://preview.example.com,checkout-preview.example.com";
+		process.env.ALLOWED_EXTRA_ORIGINS = "https://preview.example.com,https://checkout-preview.example.com";
 
 		expect(isAllowedRedirectUrl("https://preview.example.com/login", null)).toBe(true);
 		expect(isAllowedRedirectUrl("https://checkout-preview.example.com/checkout", null)).toBe(true);
@@ -70,7 +79,7 @@ describe("isAllowedRedirectUrl", () => {
 	});
 
 	it("accepts loopback request origins outside production", () => {
-		process.env["NODE_ENV"] = "development";
+		setNodeEnv("development");
 
 		expect(isAllowedRedirectUrl("http://localhost:3000/login", "http://localhost:3000")).toBe(true);
 		expect(isAllowedRedirectUrl("http://127.0.0.1:3000/login", "http://127.0.0.1:3000")).toBe(true);
@@ -84,7 +93,7 @@ describe("isAllowedRedirectUrl", () => {
 	});
 
 	it("rejects arbitrary request origins outside production", () => {
-		process.env["NODE_ENV"] = "development";
+		setNodeEnv("development");
 
 		expect(isAllowedRedirectUrl("https://shop.example.com/reset", "https://shop.example.com")).toBe(false);
 	});
