@@ -61,7 +61,7 @@ One codebase, many markets. Browse URLs are **`/{locale}/{channel}/…`** — e.
 
 - **Region picker** — header control switches locale and channel together (language + market + currency), remapping catalog URLs to each language’s canonical slug
 - **Three string systems** — Saleor catalog translations, merchant-editable storefront content (CMS), and code-owned UI via **next-intl** (`messages/{locale}.json`)
-- **Six built-in locales** — `en`, `pl`, `de`, `fr`, `fi`, `nb` (extend via `LOCALE_DEFINITIONS` in `src/config/locale.ts`)
+- **Seven built-in locales** — `en`, `pl`, `de`, `fr`, `fi`, `nb`, `ko` (extend via `LOCALE_DEFINITIONS` in `src/config/locale.ts`)
 - **Optional translated URL slugs** — Saleor Dashboard can set per-language handles for products, categories, collections, and pages; Paper resolves, redirects, links, and hreflang accordingly ([ADR 0004](docs/adr/0004-translatable-slugs.md))
 
 **Storefront channels are explicit.** Saleor may have many channels (B2B, wholesale, internal regions); Paper only exposes the slugs you configure via `STOREFRONT_CHANNELS`. Disallowed channel URLs return 404. For a single-channel store, set `NEXT_PUBLIC_DEFAULT_CHANNEL` only—the footer channel selector is hidden automatically.
@@ -296,7 +296,7 @@ NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel  # Your Saleor channel slug
 ```bash
 STOREFRONT_CHANNELS=us,uk,eu
 NEXT_PUBLIC_DEFAULT_CHANNEL=us
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja  # URL locale slugs
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko  # URL locale slugs
 SALEOR_APP_TOKEN=...  # Server-side only — footer currency selector metadata
 ```
 
@@ -382,7 +382,7 @@ STOREFRONT_CHANNELS=us,uk,eu               # Comma-separated allowlist — route
 # Optional
 NEXT_PUBLIC_STOREFRONT_URL=                  # Canonical URLs and OG images
 NEXT_PUBLIC_DEFAULT_LOCALE=en                # Default URL locale slug
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja  # Enabled locale slugs
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko  # Enabled locale slugs
 REVALIDATE_SECRET=                           # Manual cache invalidation (GET /api/revalidate)
 SALEOR_WEBHOOK_SECRET=                       # Webhook HMAC verification
 SALEOR_APP_TOKEN=                            # Server-side: footer channel metadata (never exposed to client)

@@ -169,4 +169,4 @@ All requests (reads, permission probe, and writes) share one throttled client so
 
 ## Supported locales
 
-Match `NEXT_PUBLIC_STOREFRONT_LOCALES`: `pl`, `de`, `fr`, `fi`, `nb`, `ja`. English lives in Saleor as the default — do not add `languageCode: EN` fixtures.
+Match `NEXT_PUBLIC_STOREFRONT_LOCALES`: `pl`, `de`, `fr`, `fi`, `nb`, `ja`, `ko`. English lives in Saleor as the default — do not add `languageCode: EN` fixtures.

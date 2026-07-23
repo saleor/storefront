@@ -33,7 +33,7 @@ Rule of thumb: _Would a merchant reword this per shop?_ → CMS. Otherwise → m
 - **Types:** `src/i18n/types.d.ts` augments next-intl from `en.json` (source of truth).
 - **Loader:** `src/i18n/request.ts` — dynamic import by locale filename; keep aligned with `LOCALE_DEFINITIONS`.
 
-Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`, `ja`.
+Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`, `ja`, `ko`.
 
 ---
 
@@ -120,7 +120,7 @@ Client-side validation should use the same `account.errors.*` keys before callin
 ## Adding strings
 
 1. Add key to `messages/en.json` (correct namespace).
-2. Mirror in all locale files (`pl`, `de`, `fr`, `fi`, `nb`, `ja`, …).
+2. Mirror in all locale files (`pl`, `de`, `fr`, `fi`, `nb`, `ja`, `ko`, …).
 3. Wire component with `getTranslations` / `useTranslations`.
 4. Run `pnpm exec tsc --noEmit` — missing keys fail typecheck.
 

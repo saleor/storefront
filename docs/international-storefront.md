@@ -43,10 +43,10 @@ How Paper serves **multiple languages and markets** from one deployment. Start h
 
 Browse: `/{locale}/{channel}/{path}`
 
-| Segment   | Role                                      | Examples                           |
-| --------- | ----------------------------------------- | ---------------------------------- |
-| `locale`  | Language, `html lang`, Intl, GraphQL lang | `en`, `pl`, `de`, `fr`, `fi`, `nb` |
-| `channel` | Saleor market — currency, stock, shipping | `us`, `uk`, `pl`                   |
+| Segment   | Role                                      | Examples                                 |
+| --------- | ----------------------------------------- | ---------------------------------------- |
+| `locale`  | Language, `html lang`, Intl, GraphQL lang | `en`, `pl`, `de`, `fr`, `fi`, `nb`, `ko` |
+| `channel` | Saleor market — currency, stock, shipping | `us`, `uk`, `pl`                         |
 
 ```
 /en/us/products/hoodie     English UI, US market (USD)
@@ -88,6 +88,7 @@ Defined in `src/config/locale.ts` (`LOCALE_DEFINITIONS`):
 | `fi` | `FI`                      |                              |
 | `nb` | `NB`                      | Bokmål — slug `nb`, not `no` |
 | `ja` | `JA`                      |                              |
+| `ko` | `KO`                      |                              |
 
 Enable a subset per deployment with `NEXT_PUBLIC_STOREFRONT_LOCALES` (comma-separated). Each enabled locale needs `messages/{slug}.json`.
 
@@ -120,7 +121,7 @@ Editorial checkout copy (empty session, trust, marketing opt-in) stays in storef
 ```env
 # Locales (must match LOCALE_DEFINITIONS + messages/*.json)
 NEXT_PUBLIC_DEFAULT_LOCALE=en
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko
 
 # Optional: restrict which locale can pair with which channel
 # NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl
