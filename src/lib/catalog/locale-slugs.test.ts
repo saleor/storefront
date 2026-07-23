@@ -21,6 +21,22 @@ describe("buildLocaleSlugMap", () => {
 			pl: "bluza",
 		});
 	});
+
+	it("resolves JA via slugJA alias from LOCALE_DEFINITIONS graphqlLanguageCode", () => {
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,ja");
+		vi.stubEnv("NEXT_PUBLIC_DEFAULT_LOCALE", "en");
+
+		expect(
+			buildLocaleSlugMap({
+				slug: "kimono",
+				slugEN: { slug: null },
+				slugJA: { slug: "kimono-jp" },
+			}),
+		).toEqual({
+			en: "kimono",
+			ja: "kimono-jp",
+		});
+	});
 });
 
 describe("buildCatalogPathSuffixByLocale", () => {

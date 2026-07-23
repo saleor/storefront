@@ -62,6 +62,12 @@ export const LOCALE_DEFINITIONS = {
 		htmlLang: "nb",
 		ogLocale: "nb_NO",
 	},
+	ja: {
+		bcp47: "ja-JP",
+		graphqlLanguageCode: "JA",
+		htmlLang: "ja",
+		ogLocale: "ja_JP",
+	},
 } as const satisfies Record<string, LocaleDefinition>;
 
 function parseEnvLocaleList(raw: string | undefined): LocaleSlug[] | null {

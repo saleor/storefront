@@ -38,5 +38,6 @@ describe("getGraphqlLanguageCode", () => {
 		expect(getGraphqlLanguageCode("fr")).toBe("FR");
 		expect(getGraphqlLanguageCode("fi")).toBe("FI");
 		expect(getGraphqlLanguageCode("nb")).toBe("NB");
+		expect(getGraphqlLanguageCode("ja")).toBe("JA");
 	});
 });

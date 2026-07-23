@@ -14,6 +14,7 @@ export type LocaleSlugTranslationFields = {
 	slugFR?: { slug?: string | null } | null;
 	slugFI?: { slug?: string | null } | null;
 	slugNB?: { slug?: string | null } | null;
+	slugJA?: { slug?: string | null } | null;
 };
 
 function slugAliasForLocale(locale: LocaleSlug): keyof LocaleSlugTranslationFields {
