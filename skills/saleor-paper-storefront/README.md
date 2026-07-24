@@ -32,17 +32,17 @@ npx skills add saleor/agent-skills --skill saleor-storefront
 
 ## What's Included
 
-30 rules across 8 categories covering the full storefront:
+31 rules across 8 categories covering the full storefront:
 
-| Category      | Rules                                                                                                                                                 | Topics                                                            |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Architecture  | `paper-architecture`                                                                                                                                  | Canonical Next.js stance, pillar index, deliberate non-goals      |
-| Data Layer    | `data-caching`, `data-auth-routes`, `data-graphql`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes` | Cache, auth, GraphQL, merchandising copy, Models, attribute types |
-| Product Pages | `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`                                                                    | PDP architecture, variant selection, high-cardinality caps/facets |
-| Checkout      | `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`                             | Checkout v2, UX principles, lifecycle, payments, UI               |
-| UI & Channels | `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`                                                                                        | Design tokens, multi-currency, locale URLs, next-intl messages    |
-| SEO           | `seo-metadata`                                                                                                                                        | JSON-LD, OG images, metadata                                      |
-| Development   | `dev-local`, `dev-investigation`                                                                                                                      | Mobile/ngrok dev setup; Saleor API investigation                  |
+| Category      | Rules                                                                                                                                                                           | Topics                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Architecture  | `paper-architecture`                                                                                                                                                            | Canonical Next.js stance, pillar index, deliberate non-goals      |
+| Data Layer    | `data-caching`, `data-auth-routes`, `data-redirect-security`, `data-graphql`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes` | Cache, auth, GraphQL, merchandising copy, Models, attribute types |
+| Product Pages | `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`                                                                                              | PDP architecture, variant selection, high-cardinality caps/facets |
+| Checkout      | `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`                                                       | Checkout v2, UX principles, lifecycle, payments, UI               |
+| UI & Channels | `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`                                                                                                                  | Design tokens, multi-currency, locale URLs, next-intl messages    |
+| SEO           | `seo-metadata`                                                                                                                                                                  | JSON-LD, OG images, metadata                                      |
+| Development   | `dev-local`, `dev-investigation`                                                                                                                                                | Mobile/ngrok dev setup; Saleor API investigation                  |
 
 ## Structure
 

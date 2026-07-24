@@ -5,7 +5,7 @@ Saleor Paper
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 30 rules (~75k tokens) and exists only for humans reading offline and for
+> all 31 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 30 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 31 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -29,9 +29,10 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
    - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
-   - 1.4 [Storefront Content Layer](#14-storefront-content-layer)
-   - 1.5 [Storefront Content (Saleor Models)](#15-storefront-content-saleor-models)
-   - 1.6 [Storefront Content Attributes](#16-storefront-content-attributes)
+   - 1.4 [Redirect URL Security](#14-redirect-url-security)
+   - 1.5 [Storefront Content Layer](#15-storefront-content-layer)
+   - 1.6 [Storefront Content (Saleor Models)](#16-storefront-content-saleor-models)
+   - 1.7 [Storefront Content Attributes](#17-storefront-content-attributes)
 
 2. [Product Pages](#2-product-pages) — **HIGH**
    - 2.1 [Product Detail Page](#21-product-detail-page)
@@ -666,7 +667,56 @@ Related: [`data-caching.md`](data-caching.md) (page-boundary model), [`checkout-
 
 ---
 
-### 1.4 Storefront Content Layer
+### 1.4 Redirect URL Security
+
+Redirect URLs are security-sensitive everywhere. Any code path that accepts, builds, validates, stores, forwards, or follows a redirect URL must treat the destination origin as attacker-controlled until it has passed the shared allowlist check.
+
+## Rule
+
+Production redirect allowlists must come from explicit configuration, not request metadata.
+
+The allowed origin sources are documented in `docs/configuration/allowed-origins.md`; do NOT copy that list into other code; always reuse `isAllowedRedirectUrl()` for redirect destination checks. Do not duplicate its parsing, normalization, environment handling, or development fallback logic in route handlers, Server Actions, components, or tests.
+
+## Never Trust These For Production Allowlisting
+
+Do not allow these values to introduce a production redirect origin:
+
+- `Host`
+- `X-Forwarded-Host`
+- `X-Forwarded-Proto`
+- `Origin`
+- `Referer`
+- `request.nextUrl.origin`
+- `headers().get(...)`
+- helper output derived from request headers, including `getRequestOrigin()`
+
+## Saleor Boundary
+
+Saleor also validates these redirect URLs with [`ALLOWED_CLIENT_HOSTS`]. Keep storefront allowlists aligned with Saleor config, but do not rely on Saleor as the only guard. The storefront check should reject invalid redirect origins before forwarding the mutation.
+
+[`ALLOWED_CLIENT_HOSTS`]: https://docs.saleor.io/setup/configuration#allowed_client_hosts
+
+## Required Tests
+
+When changing redirect validation, auth routes, or checkout auth actions, add or keep tests that prove:
+
+- A redirect URL matching only `request.nextUrl.origin` or `getRequestOrigin()` is rejected in production.
+- Spoofed `Host` or `X-Forwarded-*` derived origins do not become allowed production origins.
+- Configured storefront, checkout, and extra origins are accepted.
+- Loopback request origins are accepted only outside production.
+- Foreign origins, subdomain tricks, non-http schemes, protocol-relative URLs, and malformed URLs are rejected.
+
+## Anti-patterns
+
+- Do not use `allowed.push(request.nextUrl.origin)`
+- Do not use `allowed.push(await getRequestOrigin())`
+- Do not treat `Origin` as a redirect allowlist source.
+- Do not fix failing tests by broadening the allowlist to request headers.
+- Do not add preview or deployment hosts implicitly unless the helper already supports that exact env source.
+
+---
+
+### 1.5 Storefront Content Layer
 
 Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
 
@@ -830,7 +880,7 @@ Marketing copy is cached like navigation; cart/checkout **transactional** data s
 
 ---
 
-### 1.5 Storefront Content (Saleor Models)
+### 1.6 Storefront Content (Saleor Models)
 
 Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-type attributes) and the storefront maps those Pages into the normalized `StorefrontContent` shape. This rule is the Saleor side — provider behavior, merge, and the code/Saleor scope split are in [`data-storefront-content.md`](data-storefront-content.md); attribute types in [`data-storefront-content-attributes.md`](data-storefront-content-attributes.md).
 
@@ -939,7 +989,7 @@ Storefront content is cached under `storefront-content:{channel}:{locale}` and f
 
 ---
 
-### 1.6 Storefront Content Attributes
+### 1.7 Storefront Content Attributes
 
 How to choose Saleor attribute `inputType`s on storefront Models, and what Paper reads today.
 

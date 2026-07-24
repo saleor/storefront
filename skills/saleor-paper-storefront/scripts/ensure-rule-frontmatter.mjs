@@ -40,6 +40,8 @@ const DESCRIPTIONS = {
 		"GraphQL codegen workflow: edit src/graphql/*.graphql or src/checkout/graphql/*.graphql then run pnpm generate / generate:checkout. Use when adding GraphQL fields, hitting missing generated types, permission errors, or the assignedAttribute API.",
 	"data-auth-routes.md":
 		"BFF auth and PPR-safe account routes: /api/auth/*, HttpOnly cookies, resolveSessionUser, header chrome refresh. Use when touching login/session, account pages, or fixing 'uncached data outside Suspense' on routes that read cookies.",
+	"data-redirect-security.md":
+		"Redirect URL security for auth emails and checkout/account flows: isAllowedRedirectUrl, redirectUrl, password reset, account confirmation, Host/Origin/X-Forwarded spoofing, NEXT_PUBLIC_STOREFRONT_URL, ALLOWED_EXTRA_ORIGINS, Saleor ALLOWED_CLIENT_HOSTS. Use when touching redirect allowlists or URLs sent to Saleor mutations.",
 	"data-storefront-content.md":
 		"Provider-agnostic marketing/merchandising copy layer (announcement bar, homepage, cart/checkout copy): getStorefrontContent, defaults.ts, merge semantics, CONTENT_PROVIDER. Use when editing editorial copy or wiring new content fields.",
 	"data-storefront-content-saleor.md":
