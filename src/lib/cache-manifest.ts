@@ -1,15 +1,16 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { getStaticStorefrontChannelSlugs } from "@/config/channels";
 import { getDefaultLocaleSlug, getLocaleBcp47List, getStorefrontLocaleSlugs } from "@/config/locale";
-import {
-	isStorefrontContentPageSlug,
-	resolveStorefrontContentChannelsForPageSlug,
-} from "@/lib/content/constants";
 import {
 	DEFAULT_PAPER_CACHE_LIFE_PROFILE,
 	type PaperCacheLifeProfile,
 	paperCacheLifeProfileDocs,
 	resolveRevalidateCacheLifeProfile,
 } from "@/lib/cache-life-profiles";
+import {
+	isStorefrontContentPageSlug,
+	resolveStorefrontContentChannelsForPageSlug,
+} from "@/lib/content/constants";
 
 // ============================================================================
 // Cache Profile Definitions — single source of truth
@@ -438,7 +439,7 @@ export function buildPathsForAllLocales(
 // Manifest for /api/cache-info
 // ============================================================================
 
-const MANIFEST_VERSION = 3;
+const MANIFEST_VERSION = 4;
 
 export function buildManifest() {
 	return {
@@ -451,5 +452,9 @@ export function buildManifest() {
 			tagPattern: p.tagPattern,
 			pathPattern: p.pathPattern,
 		})),
+		locales: [...getStorefrontLocaleSlugs()],
+		defaultLocale: getDefaultLocaleSlug(),
+		channels: getStaticStorefrontChannelSlugs(),
+		menuSlugs: Object.keys(STOREFRONT_MENU_SLUGS),
 	};
 }
