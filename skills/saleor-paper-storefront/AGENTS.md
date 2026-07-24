@@ -271,17 +271,19 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 
 ### Tag registry
 
-| Tag pattern                             | Profile              | Used by                                        | Invalidated when            |
-| --------------------------------------- | -------------------- | ---------------------------------------------- | --------------------------- |
-| `product:{slug}`                        | `products`           | `getProductData()`                             | Product updated             |
-| `category:{slug}`                       | `categories`         | `getCategoryData()`                            | Category updated            |
-| `collection:{slug}`                     | `collections`        | `getCollectionData()`, `getFeaturedProducts()` | Collection updated          |
-| `page:{slug}`                           | `pages`              | `getPageData()` (CMS)                          | Page updated                |
-| `navigation:{channel}`                  | `navigation`         | `getNavbarMenuItems()`                         | Navbar changed              |
-| `footer-menu:{channel}`                 | `footerMenu`         | `getFooterMenuItems()`                         | Footer changed              |
-| `storefront-content:{channel}:{locale}` | `storefront-content` | `getStorefrontContent()`                       | `storefront-*` Page updated |
-| `channels`                              | `channels`           | `getCachedChannelsList()`                      | Channel list changed        |
+| Tag pattern                                         | Profile              | Used by                                                   | Invalidated when                  |
+| --------------------------------------------------- | -------------------- | --------------------------------------------------------- | --------------------------------- |
+| `product:{slug}`                                    | `products`           | `getProductData()`                                        | Product updated                   |
+| `category:{slug}`                                   | `categories`         | `getCategoryData()`                                       | Category updated                  |
+| `collection:{slug}`                                 | `collections`        | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                |
+| `page:{slug}`                                       | `pages`              | `getPageData()` (CMS)                                     | Page updated                      |
+| `products` / `categories` / `collections` / `pages` | same (sharedTag)     | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions |
+| `navigation:{channel}`                              | `navigation`         | `getNavbarMenuItems()`                                    | Navbar changed                    |
+| `footer-menu:{channel}`                             | `footerMenu`         | `getFooterMenuItems()`                                    | Footer changed                    |
+| `storefront-content:{channel}:{locale}`             | `storefront-content` | `getStorefrontContent()`                                  | `storefront-*` Page updated       |
+| `channels`                                          | `channels`           | `getCachedChannelsList()`                                 | Channel list changed              |
 
+Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
 Named `cacheLife` tiers (configured in `next.config.js`): `catalog` ~5 min (products/categories/collections/CMS pages), `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
 
 `GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically.
@@ -365,8 +367,13 @@ Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag + r
 **Manual / emergency** (Bearer header, timing-safe; `?secret=` is deprecated):
 
 ```bash
+# One product
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
   "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/en/default-channel/products/blue-hoodie"
+
+# Full purge (path layout + shared/enumerable tags — what paper-app "Revalidate all" calls)
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?all=1"
 ```
 
 Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).

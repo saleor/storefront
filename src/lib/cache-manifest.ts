@@ -37,6 +37,12 @@ export interface CacheProfile {
 	readonly tagPattern: string;
 	/** Path pattern — use {channel} and {slug} as placeholders, or null for non-path caches */
 	readonly pathPattern: string | null;
+	/**
+	 * Catch-all tag applied alongside the entity tag (slug-scoped profiles).
+	 * Full purge (`?all=1`) revalidates this so every product/category/… entry
+	 * is busted without enumerating slugs.
+	 */
+	readonly sharedTag?: string;
 }
 
 export type CacheTagParams = {
@@ -53,6 +59,7 @@ const profiles = {
 		cacheProfile: "catalog",
 		tagPattern: "product:{slug}",
 		pathPattern: "/{locale}/{channel}/products/{slug}",
+		sharedTag: "products",
 	},
 	categories: {
 		id: "categories",
@@ -60,6 +67,7 @@ const profiles = {
 		cacheProfile: "catalog",
 		tagPattern: "category:{slug}",
 		pathPattern: "/{locale}/{channel}/categories/{slug}",
+		sharedTag: "categories",
 	},
 	collections: {
 		id: "collections",
@@ -67,6 +75,7 @@ const profiles = {
 		cacheProfile: "catalog",
 		tagPattern: "collection:{slug}",
 		pathPattern: "/{locale}/{channel}/collections/{slug}",
+		sharedTag: "collections",
 	},
 	pages: {
 		id: "pages",
@@ -74,6 +83,7 @@ const profiles = {
 		cacheProfile: "catalog",
 		tagPattern: "page:{slug}",
 		pathPattern: "/{locale}/{channel}/pages/{slug}",
+		sharedTag: "pages",
 	},
 	navigation: {
 		id: "navigation",
@@ -107,7 +117,7 @@ const profiles = {
 
 export const CACHE_PROFILES = profiles;
 
-export const CACHE_PROFILE_LIST = Object.values(profiles);
+export const CACHE_PROFILE_LIST: readonly CacheProfile[] = Object.values(profiles);
 
 /** Saleor menu slugs used by cached layout components — keep in sync with saleor-paper-app storefront-menus.ts */
 export const NAVBAR_MENU_SLUG = "navbar" as const;
@@ -293,13 +303,80 @@ export function isGlobalTagProfile(profile: CacheProfile): boolean {
 	return !tagPatternHasPlaceholders(profile.tagPattern);
 }
 
-/** Profiles tagged per channel only (e.g. navigation:{channel}, footer-menu:{channel}). */
+/**
+ * Profiles tagged per channel only (e.g. navigation:{channel}, footer-menu:{channel}).
+ * Excludes channel+locale profiles (storefront-content) and slug-scoped catalog tags.
+ */
 export function isChannelScopedTagProfile(profile: CacheProfile): boolean {
-	return profile.tagPattern.includes("{channel}") && !profile.tagPattern.includes("{slug}");
+	return (
+		profile.tagPattern.includes("{channel}") &&
+		!profile.tagPattern.includes("{slug}") &&
+		!profile.tagPattern.includes("{locale}")
+	);
+}
+
+/** Profiles tagged per channel × locale (e.g. storefront-content:{channel}:{locale}). */
+export function isChannelLocaleScopedTagProfile(profile: CacheProfile): boolean {
+	return (
+		profile.tagPattern.includes("{channel}") &&
+		profile.tagPattern.includes("{locale}") &&
+		!profile.tagPattern.includes("{slug}")
+	);
 }
 
 export function getChannelScopedTagProfiles(): CacheProfile[] {
 	return CACHE_PROFILE_LIST.filter(isChannelScopedTagProfile);
+}
+
+export function getChannelLocaleScopedTagProfiles(): CacheProfile[] {
+	return CACHE_PROFILE_LIST.filter(isChannelLocaleScopedTagProfile);
+}
+
+/**
+ * Enumerable tags for a full purge (`?all=1`).
+ *
+ * Covers global, channel-scoped, channel×locale, and shared catalog tags
+ * (`products`, `categories`, …). Per-slug tags are not enumerated — shared
+ * tags bust every `"use cache"` entry that carries them.
+ */
+export function planFullPurgeTagEntries(
+	channels: readonly string[],
+): Array<{ tag: string; profile: CacheLifeProfile }> {
+	const entries: Array<{ tag: string; profile: CacheLifeProfile }> = [];
+
+	for (const profile of CACHE_PROFILE_LIST) {
+		if (profile.sharedTag) {
+			entries.push({ tag: profile.sharedTag, profile: profile.cacheProfile });
+		}
+
+		if (isGlobalTagProfile(profile)) {
+			entries.push({ tag: buildTag(profile), profile: profile.cacheProfile });
+			continue;
+		}
+
+		if (isChannelScopedTagProfile(profile)) {
+			for (const channel of channels) {
+				entries.push({
+					tag: buildTag(profile, { channel }),
+					profile: profile.cacheProfile,
+				});
+			}
+			continue;
+		}
+
+		if (isChannelLocaleScopedTagProfile(profile)) {
+			for (const channel of channels) {
+				for (const locale of getLocaleBcp47List()) {
+					entries.push({
+						tag: buildTag(profile, { channel, locale }),
+						profile: profile.cacheProfile,
+					});
+				}
+			}
+		}
+	}
+
+	return entries;
 }
 
 function tagPatternToRegExp(pattern: string): RegExp {
@@ -322,6 +399,7 @@ export function resolveCacheLifeProfileForTag(tag: string): CacheLifeProfile {
 
 function resolveCacheLifeProfileForTagFromManifest(tag: string): CacheLifeProfile {
 	for (const profile of CACHE_PROFILE_LIST) {
+		if (profile.sharedTag === tag) return profile.cacheProfile;
 		if (isGlobalTagProfile(profile)) {
 			if (tag === profile.tagPattern) return profile.cacheProfile;
 			continue;
@@ -370,12 +448,18 @@ export function resolveManualRevalidateTag(tag: string, channel?: string | null)
 /**
  * Apply cacheLife + cacheTag for a profile inside a "use cache" function body.
  * Pass `slug` and/or `channel` when the profile's tagPattern contains placeholders.
+ * Slug-scoped profiles also receive `sharedTag` so full purge can bust the whole set.
  *
  * Profile timings are defined in src/lib/cache-life-profiles.ts (registered in next.config.js).
  */
 export function applyCacheProfile(profile: CacheProfile, params?: string | CacheTagParams) {
 	(cacheLife as (p: string) => void)(profile.cacheProfile);
-	cacheTag(buildTag(profile, params));
+	const entityTag = buildTag(profile, params);
+	if (profile.sharedTag) {
+		cacheTag(entityTag, profile.sharedTag);
+	} else {
+		cacheTag(entityTag);
+	}
 }
 
 // ============================================================================
@@ -439,7 +523,7 @@ export function buildPathsForAllLocales(
 // Manifest for /api/cache-info
 // ============================================================================
 
-const MANIFEST_VERSION = 4;
+const MANIFEST_VERSION = 5;
 
 export function buildManifest() {
 	return {
@@ -451,6 +535,7 @@ export function buildManifest() {
 			cacheProfile: p.cacheProfile,
 			tagPattern: p.tagPattern,
 			pathPattern: p.pathPattern,
+			...(p.sharedTag ? { sharedTag: p.sharedTag } : {}),
 		})),
 		locales: [...getStorefrontLocaleSlugs()],
 		defaultLocale: getDefaultLocaleSlug(),

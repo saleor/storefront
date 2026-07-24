@@ -1,15 +1,19 @@
 import { describe, it, expect } from "vitest";
 import {
 	CACHE_PROFILES,
+	CACHE_PROFILE_LIST,
 	buildTag,
 	resolveCacheLifeProfileForTag,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
 	resolveCacheProfileForMenuSlug,
 	isKnownStorefrontMenuSlug,
+	isChannelLocaleScopedTagProfile,
+	isChannelScopedTagProfile,
 	extractMenuSlugFromWebhookPayload,
 	extractPageSlugFromWebhookPayload,
 	buildMenuRevalidationTags,
+	planFullPurgeTagEntries,
 	planMenuRevalidation,
 	planPageRevalidation,
 	planStorefrontContentRevalidation,
@@ -193,5 +197,59 @@ describe("storefront content revalidation helpers", () => {
 			tags: [{ tag: "storefront-content:us:en-US", profile: "menus" }],
 			paths: ["/en/us"],
 		});
+	});
+});
+
+describe("full purge tag planning", () => {
+	it("treats storefront-content as channel×locale, not channel-only", () => {
+		expect(isChannelScopedTagProfile(CACHE_PROFILES.storefrontContent)).toBe(false);
+		expect(isChannelLocaleScopedTagProfile(CACHE_PROFILES.storefrontContent)).toBe(true);
+		expect(isChannelScopedTagProfile(CACHE_PROFILES.navigation)).toBe(true);
+		expect(isChannelLocaleScopedTagProfile(CACHE_PROFILES.navigation)).toBe(false);
+	});
+
+	it("expands enumerable tags without throwing on locale placeholders", () => {
+		const tags = planFullPurgeTagEntries(["us", "uk"]).map((e) => e.tag);
+
+		expect(tags).toContain("channels");
+		expect(tags).toContain("navigation:us");
+		expect(tags).toContain("navigation:uk");
+		expect(tags).toContain("footer-menu:us");
+		expect(tags).toContain("footer-menu:uk");
+		expect(tags).toContain("storefront-content:us:en-US");
+		expect(tags).toContain("storefront-content:uk:en-US");
+		expect(tags).toContain("products");
+		expect(tags).toContain("categories");
+		expect(tags).toContain("collections");
+		expect(tags).toContain("pages");
+		expect(tags.some((t) => t.includes("{locale}"))).toBe(false);
+		expect(tags.some((t) => t.startsWith("product:"))).toBe(false);
+	});
+
+	it("includes shared catalog tags even when no channels are configured", () => {
+		expect(planFullPurgeTagEntries([]).map((e) => e.tag)).toEqual([
+			"products",
+			"categories",
+			"collections",
+			"pages",
+			"channels",
+		]);
+	});
+});
+
+describe("shared catalog tags", () => {
+	it("defines sharedTag on every slug-scoped catalog profile", () => {
+		expect(CACHE_PROFILES.products.sharedTag).toBe("products");
+		expect(CACHE_PROFILES.categories.sharedTag).toBe("categories");
+		expect(CACHE_PROFILES.collections.sharedTag).toBe("collections");
+		expect(CACHE_PROFILES.pages.sharedTag).toBe("pages");
+		expect(CACHE_PROFILE_LIST.filter((p) => p.id === "navigation")[0]?.sharedTag).toBeUndefined();
+	});
+
+	it("maps shared tags to the catalog cacheLife tier", () => {
+		expect(resolveCacheLifeProfileForTag("products")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("categories")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("collections")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("pages")).toBe("catalog");
 	});
 });
