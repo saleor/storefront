@@ -15,7 +15,12 @@ import { getProductData } from "@/lib/catalog/get-product-data";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { buildPolicyLabelValues } from "@/lib/content";
 import { getStorefrontContent } from "@/lib/content/server";
-import { buildBrowsePageMetadata, buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
+import {
+	buildBrowsePageMetadata,
+	buildProductJsonLd,
+	jsonLdScriptProps,
+	resolveSeoDescription,
+} from "@/lib/seo";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller, BESTSELLER_ATTRIBUTE_SLUGS } from "@/lib/catalog/product-flags";
@@ -49,10 +54,14 @@ export async function generateMetadata(props: {
 		return { title: "Product Not Found" };
 	}
 
-	const description = product.seoDescription || product.name;
+	// Translated description (Editor.js → plain text) so meta/OG never collapse to the
+	// bare product name when the merchant left seoDescription empty.
+	const description = resolveSeoDescription({
+		seoDescription: product.seoDescription,
+		body: product.description,
+		fallbackName: product.name,
+	});
 	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
-	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
-	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
 
 	return buildBrowsePageMetadata({
 		title: product.seoTitle || product.name,
@@ -62,13 +71,9 @@ export async function generateMetadata(props: {
 		channel: params.channel,
 		pathSuffix: catalogPathSuffix("products", product),
 		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
-		openGraph:
-			priceAmount && priceCurrency
-				? {
-						"product:price:amount": String(priceAmount),
-						"product:price:currency": priceCurrency,
-					}
-				: undefined,
+		// Omit openGraph.type — Next rejects `product` (E237). Sync page shell hoists
+		// <meta property="og:type" content="product" /> outside Suspense instead.
+		ogType: "product",
 	});
 }
 
@@ -84,15 +89,23 @@ const parser = edjsHTML();
 /**
  * Sync page entry — Suspense while params resolve and cached product data loads.
  * searchParams is passed through without being awaited here or in the shell.
+ *
+ * `og:type` is a React-hoisted head tag on this sync shell (not inside Suspense /
+ * ProductShell): Next's metadata API rejects `product` (E237) and drops the whole
+ * head if set via `openGraph.type`. Keeping the tag outside Suspense means HTML-limited
+ * crawlers still see it when `generateMetadata` finishes ahead of the product shell.
  */
 export default function ProductPage(props: {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string; sku?: string }>;
 }) {
 	return (
-		<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
-			<ProductShell params={props.params} searchParams={props.searchParams} />
-		</Suspense>
+		<>
+			<meta property="og:type" content="product" />
+			<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
+				<ProductShell params={props.params} searchParams={props.searchParams} />
+			</Suspense>
+		</>
 	);
 }
 
@@ -161,7 +174,11 @@ async function ProductShell({
 
 	const productJsonLd = buildProductJsonLd({
 		name: product.name,
-		description: product.seoDescription || product.name,
+		description: resolveSeoDescription({
+			seoDescription: product.seoDescription,
+			body: product.description,
+			fallbackName: product.name,
+		}),
 		images: defaultImages.length > 0 ? defaultImages.map((img) => img.url) : undefined,
 		brand: product.category?.name,
 		url: browse(productPath),

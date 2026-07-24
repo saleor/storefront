@@ -140,7 +140,10 @@ export default async function ProductPage({ params }) {
 
 Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`).
 
-- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates.
+- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates, plus `og:locale` (from the URL locale's `ogLocale`) and `og:locale:alternate` for the other configured locales.
+- Non-browse pages inherit `og:locale` from the storefront locale layout's `generateMetadata` — never hardcode a locale in OG tags.
+- Meta/OG/JSON-LD descriptions fall back `seoDescription` → translated plain-text description (`parseEditorJSToText`) → name. Don't let them collapse to the bare entity name.
+- PDPs use `ogType: "product"`: Next's metadata API **rejects** OG types outside its union at runtime (E237 — drops the page's whole metadata). The helper therefore omits `openGraph.type`, and the **sync** product page export (outside `Suspense`) renders a React-hoisted `<meta property="og:type" content="product">`. Do **not** put that tag inside `ProductShell` / Suspense (crawlers can miss it), and never smuggle `type` through the OpenGraph passthrough (`buildPageMetadata` strips it). Prefer `resolveSeoDescription()` for meta/OG/JSON-LD copy.
 - `generateMetadata` `pathSuffix` is the path after locale/channel for **this** locale, e.g. `/products/${pickTranslatedSlug(product)}`.
 - For translated catalog slugs (ADR 0004), also pass `pathSuffixByLocale` from `buildCatalogPathSuffixByLocale` / `buildLocaleSlugMap` so each `hreflang` points at that language’s handle.
 - `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment — no client patching.

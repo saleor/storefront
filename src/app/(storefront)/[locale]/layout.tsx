@@ -1,5 +1,6 @@
 import "../../globals.css";
 import { type ReactNode } from "react";
+import { type Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -14,7 +15,26 @@ import {
 import { PersistBrowseLocaleCookie } from "@/ui/components/persist-browse-locale-cookie";
 import { getRootHtmlFontProps } from "@/lib/fonts";
 
-export const metadata = rootMetadata;
+/**
+ * Root defaults + `og:locale` derived from the URL locale segment. Params-only, so it
+ * stays static under PPR. Browse pages that build their own OpenGraph block
+ * (`buildBrowsePageMetadata`) replace this wholesale; everything else (login, account,
+ * cart, …) inherits a locale-correct default instead of a hardcoded `en_US`.
+ */
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+	const { locale } = await params;
+	const definition = resolveLocaleFromSlug(isStorefrontLocaleSlug(locale) ? locale : getDefaultLocaleSlug());
+
+	if (!rootMetadata.openGraph) return rootMetadata;
+	return {
+		...rootMetadata,
+		openGraph: { ...rootMetadata.openGraph, locale: definition.ogLocale },
+	};
+}
 
 export function generateStaticParams() {
 	const pairs = getConfiguredLocaleChannelPairs();

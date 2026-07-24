@@ -56,7 +56,13 @@
 export { seoConfig, getBaseUrl, getMetadataBase } from "./config";
 
 // Metadata helpers
-export { rootMetadata, buildPageMetadata, buildBrowsePageMetadata, truncateText } from "./metadata";
+export {
+	rootMetadata,
+	buildPageMetadata,
+	buildBrowsePageMetadata,
+	resolveSeoDescription,
+	truncateText,
+} from "./metadata";
 export { buildLocaleHreflangAlternates } from "./hreflang";
 
 // JSON-LD structured data
