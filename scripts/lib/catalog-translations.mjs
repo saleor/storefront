@@ -393,7 +393,7 @@ export function loadCatalogSourceSnapshot() {
 }
 
 /** Entity translation fields compared/written per category, collection, and product. */
-export const ENTITY_TRANSLATION_FIELDS = ["name", "description", "seoTitle", "seoDescription"];
+export const ENTITY_TRANSLATION_FIELDS = ["name", "description", "seoTitle", "seoDescription", "slug"];
 
 /** Semantic (plain-text) equality — descriptions are stored as EditorJS, so compare flattened text. */
 function fieldsEqual(existingPlain, desiredPlain) {

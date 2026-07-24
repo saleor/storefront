@@ -1,6 +1,9 @@
 import { type Metadata } from "next";
 import { seoConfig, getMetadataBase } from "./config";
 import { buildLocaleHreflangAlternates } from "./hreflang";
+import { getLocaleDefinition, getStorefrontLocaleSlugs, type LocaleSlug } from "@/config/locale";
+import { getConfiguredLocaleChannelPairs } from "@/config/locale-channel";
+import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 /**
@@ -24,12 +27,13 @@ export const rootMetadata: Metadata = {
 	// Base URL for resolving relative URLs
 	metadataBase: getMetadataBase(),
 
-	// OpenGraph defaults
+	// OpenGraph defaults. No static `og:locale` here — the storefront locale layout
+	// (`(storefront)/[locale]/layout.tsx`) derives it from the URL segment, and browse
+	// pages set it via `buildBrowsePageMetadata`.
 	...(seoConfig.enableOpenGraph && {
 		openGraph: {
 			type: "website",
 			siteName: seoConfig.siteName,
-			locale: seoConfig.locale,
 			images: [
 				{
 					url: "/opengraph-image.png",
@@ -115,6 +119,24 @@ export function truncateText(text: string, maxLength: number): string {
 }
 
 /**
+ * Catalog / CMS SEO description: prefer the dedicated SEO field, then plain text from
+ * the translated Editor.js body, then the entity name. Shared by metadata + JSON-LD so
+ * those surfaces cannot drift.
+ */
+export function resolveSeoDescription(options: {
+	seoDescription?: string | null;
+	/** Editor.js JSON or plain text — run through {@link parseEditorJSToText} */
+	body?: string | null;
+	fallbackName: string;
+}): string {
+	const fromSeo = options.seoDescription?.trim();
+	if (fromSeo) return fromSeo;
+	const fromBody = parseEditorJSToText(options.body)?.trim();
+	if (fromBody) return fromBody;
+	return options.fallbackName;
+}
+
+/**
  * Build page metadata with OpenGraph and Twitter cards
  *
  * @example
@@ -133,16 +155,44 @@ export function buildPageMetadata(options: {
 	description?: string;
 	image?: string | null;
 	url?: string;
-	/** hreflang map — keys are BCP 47 / `x-default` */
+	/** hreflang map — keys are language-only, BCP 47 region form, or `x-default` */
 	languages?: Record<string, string>;
+	/** `og:locale` (e.g. `ja_JP`) — set from the URL locale on browse pages */
+	ogLocale?: string;
+	/** `og:locale:alternate` — other locales this page is published in */
+	ogAlternateLocale?: string[];
+	/**
+	 * `og:type`. Next's metadata API rejects OG protocol types outside its union
+	 * (e.g. `product`) at runtime and drops the page's entire metadata — so for
+	 * `product` we omit the tag here and the PDP shell hoists
+	 * `<meta property="og:type" content="product">` only after the product resolves
+	 * (never on the 404 path).
+	 */
+	ogType?: "website" | "product";
 	/** Additional OpenGraph properties */
 	openGraph?: Record<string, string>;
 }): Metadata {
-	const { title, description, image, url, languages, openGraph: extraOg } = options;
+	const {
+		title,
+		description,
+		image,
+		url,
+		languages,
+		ogLocale,
+		ogAlternateLocale,
+		ogType = "website",
+		openGraph: extraOg,
+	} = options;
 
 	// Truncate for optimal display
 	const truncatedTitle = truncateText(title, 60);
 	const truncatedDescription = description ? truncateText(description, 155) : undefined;
+
+	// Never let callers smuggle `type: "product"` (or any unknown type) through the
+	// OpenGraph passthrough — Next throws E237 and drops the page's entire metadata.
+	const { type: _forbiddenOgType, ...safeExtraOg } = (extraOg ?? {}) as Record<string, string> & {
+		type?: string;
+	};
 
 	return {
 		title: truncatedTitle,
@@ -159,10 +209,12 @@ export function buildPageMetadata(options: {
 		// OpenGraph
 		...(seoConfig.enableOpenGraph && {
 			openGraph: {
-				type: "website",
+				...(ogType === "website" && { type: "website" }),
 				title: truncatedTitle,
 				description: truncatedDescription,
 				url,
+				...(ogLocale && { locale: ogLocale }),
+				...(ogAlternateLocale && ogAlternateLocale.length > 0 && { alternateLocale: ogAlternateLocale }),
 				images: image
 					? [
 							{
@@ -173,7 +225,7 @@ export function buildPageMetadata(options: {
 							},
 						]
 					: undefined,
-				...extraOg,
+				...safeExtraOg,
 			},
 		}),
 
@@ -203,6 +255,8 @@ export function buildBrowsePageMetadata(options: {
 	 * Canonical URL still uses `pathSuffix` for the current locale.
 	 */
 	pathSuffixByLocale?: Record<string, string>;
+	/** See {@link buildPageMetadata} — `product` omits og:type (PDP shell hoists after resolve). */
+	ogType?: "website" | "product";
 	openGraph?: Record<string, string>;
 }): Metadata {
 	const url = buildStorefrontPath(options.locale, options.channel, options.pathSuffix);
@@ -211,12 +265,36 @@ export function buildBrowsePageMetadata(options: {
 		options.pathSuffixByLocale ?? options.pathSuffix,
 	);
 
+	const ogLocale = getLocaleDefinition(options.locale)?.ogLocale;
+	const ogAlternateLocale = getBrowseOgAlternateLocales(options.locale);
+
 	return buildPageMetadata({
 		title: options.title,
 		description: options.description,
 		image: options.image,
 		url,
 		languages,
+		ogLocale,
+		ogAlternateLocale,
+		ogType: options.ogType,
 		openGraph: options.openGraph,
 	});
+}
+
+/**
+ * Locales advertised as `og:locale:alternate`.
+ * When a locale×channel matrix is configured, only locales that appear in the matrix
+ * (same set as hreflang) — never every `STOREFRONT_LOCALES` entry, which may include
+ * languages with no valid browse URL.
+ */
+function getBrowseOgAlternateLocales(currentLocale: string): string[] {
+	const pairs = getConfiguredLocaleChannelPairs();
+	const slugs: readonly LocaleSlug[] = pairs
+		? [...new Set(pairs.map((pair) => pair.locale))]
+		: getStorefrontLocaleSlugs();
+
+	return slugs
+		.filter((slug) => slug !== currentLocale)
+		.map((slug) => getLocaleDefinition(slug)?.ogLocale)
+		.filter((value): value is string => Boolean(value));
 }

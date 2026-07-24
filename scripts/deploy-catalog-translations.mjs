@@ -296,6 +296,7 @@ const EXISTING_CATEGORY_TRANSLATIONS = /* GraphQL */ `
 						description
 						seoTitle
 						seoDescription
+						slug
 					}
 				}
 			}
@@ -318,6 +319,7 @@ const EXISTING_COLLECTION_TRANSLATIONS = /* GraphQL */ `
 						description
 						seoTitle
 						seoDescription
+						slug
 					}
 				}
 			}
@@ -340,6 +342,7 @@ const EXISTING_PRODUCT_TRANSLATIONS = /* GraphQL */ `
 						description
 						seoTitle
 						seoDescription
+						slug
 					}
 					attributes {
 						attribute {
@@ -404,6 +407,7 @@ async function loadEntityTranslations(query, languageCode, variables = {}) {
 					description: editorJsToPlain(translation.description),
 					seoTitle: translation.seoTitle ?? null,
 					seoDescription: translation.seoDescription ?? null,
+					slug: translation.slug ?? null,
 				});
 			}
 		}

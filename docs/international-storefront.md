@@ -56,7 +56,7 @@ Browse: `/{locale}/{channel}/{path}`
 
 Checkout stays at `/checkout` — locale and channel sync from browse via cookies (see ADR 0001).
 
-**Region picker** (header/footer): swap language or market; on catalog detail pages, remap to that locale’s canonical product/category/page slug (ADR 0004). Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS` restricts valid pairs.
+**Region picker** (header/footer): swap language or market; on catalog detail pages, remap to that locale’s canonical product/category/page slug (ADR 0004). Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS` is a **hard locale↔market matrix** (not just SEO): invalid pairs 404, language switch navigates to the paired channel, the picker filters languages per market, and hreflang keys become region-aware (`ja-JP`). When unset, any allowlisted locale × channel is valid and language switch keeps the current channel.
 
 **Structural path segments** (`/products/`, `/categories/`, …) stay English in code — only Saleor entity slugs are translatable. Legacy `/{channel}/…` URLs **308** to `/{defaultLocale}/{channel}/…` via middleware.
 
@@ -120,11 +120,13 @@ Editorial checkout copy (empty session, trust, marketing opt-in) stays in storef
 
 ```env
 # Locales (must match LOCALE_DEFINITIONS + messages/*.json)
+# Also drives hreflang x-default (same URL as root redirect / invalid-locale fallback).
 NEXT_PUBLIC_DEFAULT_LOCALE=en
 NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko
 
-# Optional: restrict which locale can pair with which channel
-# NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl
+# Optional: hard locale↔market matrix (404 invalid pairs; language switch jumps channel;
+# hreflang keys become region-aware ja-JP / en-US). When unset, any locale × channel is OK.
+# NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:default-channel,ja:japan,pl:channel-pln
 
 # Channels (markets) — unchanged from multi-channel docs
 STOREFRONT_CHANNELS=us,uk,pl
@@ -144,8 +146,11 @@ Configurator ops: [`config/saleor/README.md`](../config/saleor/README.md).
 - **Cache keys** include `localeSlug` — separate cached GraphQL payload per language, same TTL.
 - **Cache tags** stay slug-scoped (`product:{slug}`); webhooks fan out paths across locales via `buildPathsForAllLocales()`.
 - **Storefront content** tag: `storefront-content:{channel}:{locale}` (BCP 47).
-- **Canonical + hreflang** on browse pages — `buildBrowsePageMetadata()`; catalog detail pages pass `pathSuffixByLocale` so each language’s alternate uses its own handle.
-- **`<html lang>`** set server-side from URL locale.
+- **Canonical + hreflang** on browse pages — `buildBrowsePageMetadata()`; catalog detail pages pass `pathSuffixByLocale` so each language’s alternate uses its own handle. hreflang keys are language-only unless `LOCALE_CHANNELS` is set (then `bcp47`, e.g. `ja-JP`).
+- **`x-default`** = `NEXT_PUBLIC_DEFAULT_LOCALE` (+ paired/default channel). No separate SEO env.
+- **`og:locale`** from the URL locale (`LOCALE_DEFINITIONS.ogLocale`); descriptions via `resolveSeoDescription()`.
+- **`<html lang>`** set server-side from URL locale (`htmlLang`, language-only).
+- **Audit caveat:** browser DevTools may show doubled head tags after hydration (Next streaming metadata); bot/curl HTML is authoritative for crawlers.
 
 Details: [`data-caching.md`](../skills/saleor-paper-storefront/rules/data-caching.md) § Locale · [`seo-metadata.md`](../skills/saleor-paper-storefront/rules/seo-metadata.md).
 
@@ -165,14 +170,16 @@ Details: [`data-caching.md`](../skills/saleor-paper-storefront/rules/data-cachin
 
 ## Backlog (known gaps)
 
-| Item                                 | Notes                                                                 |
-| ------------------------------------ | --------------------------------------------------------------------- |
-| Checkout contact/auth/address/Stripe | Done — server-action fallbacks + gateway alerts remain                |
-| `not-found` / global error pages     | English                                                               |
-| PLP price filter labels              | Hardcoded USD ranges                                                  |
-| GraphQL error `message` pass-through | Some account/auth API errors stay API language                        |
-| `TRANSLATION_*` cache invalidation   | Primarily saleor-paper-app (ADR 0004 phase 3)                         |
-| Localized `/products/` path segments | Not planned — structural segments stay English; entity slugs optional |
+| Item                                 | Notes                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Checkout contact/auth/address/Stripe | Done — server-action fallbacks + gateway alerts remain                                                                                                                                                                                                                                                     |
+| `not-found` / global error pages     | English                                                                                                                                                                                                                                                                                                    |
+| PLP price filter labels              | Hardcoded USD ranges                                                                                                                                                                                                                                                                                       |
+| GraphQL error `message` pass-through | Some account/auth API errors stay API language                                                                                                                                                                                                                                                             |
+| `TRANSLATION_*` cache invalidation   | Primarily saleor-paper-app (ADR 0004 phase 3)                                                                                                                                                                                                                                                              |
+| Localized `/products/` path segments | Not planned — structural segments stay English; entity slugs optional                                                                                                                                                                                                                                      |
+| `sitemap.ts` / `robots.ts`           | **Not shipped on purpose for naive dumps.** URL cardinality ≈ catalog × locales × channels; Google ≤50k URLs/file. When implementing: Next `generateSitemaps` index + cursor-paginated chunks, respect `LOCALE_CHANNELS`, cache hard — see `seo-metadata.md` § Sitemap & robots. Prefer `robots.ts` first. |
+| Hardcoded a11y strings               | Gallery / logo / dismiss / Size prefix / market-switch confirm still EN in places                                                                                                                                                                                                                          |
 
 ---
 
