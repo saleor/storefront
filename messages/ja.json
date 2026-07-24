@@ -1,0 +1,601 @@
+{
+	"cart": {
+		"drawer": {
+			"itemCount": "{count, plural, other {# 点}}",
+			"subtotal": "小計",
+			"shipping": "送料",
+			"shippingFree": "無料",
+			"shippingCalculated": "チェックアウト時に計算",
+			"total": "合計",
+			"checkout": "レジへ進む",
+			"continueShopping": "買い物を続ける",
+			"removeItem": "{product}を削除",
+			"decreaseQuantity": "数量を減らす",
+			"increaseQuantity": "数量を増やす"
+		},
+		"page": {
+			"title": "ショッピングカート",
+			"quantity": "数量: {count}",
+			"variant": "バリエーション: {name}",
+			"yourTotal": "合計金額",
+			"shippingNote": "送料は次のステップで計算されます",
+			"checkout": "レジへ進む"
+		}
+	},
+	"productsListing": {
+		"breadcrumbHome": "ホーム",
+		"breadcrumbProducts": "商品"
+	},
+	"common": {
+		"pagination": {
+			"previous": "前へ",
+			"next": "次へ"
+		}
+	},
+	"pdp": {
+		"addToBag": "バッグに追加",
+		"adding": "追加中…",
+		"outOfStock": "在庫切れ",
+		"selectOptions": "オプションを選択",
+		"buyBox": {
+			"overBudgetHint": "この商品の選択肢が多すぎて一覧表示できません。購入するには特定のバリエーションのリンクを開いてください。",
+			"externalHint": "この商品のオプションは専用の体験で選択します。購入するには特定のバリエーションのリンクを開いてください。",
+			"selectedSummary": "選択中のオプション"
+		},
+		"free": "無料",
+		"breadcrumbHome": "ホーム",
+		"badges": {
+			"sale": "セール",
+			"new": "新着",
+			"bestseller": "ベストセラー"
+		},
+		"variant": {
+			"outOfStockTitle": "{name} - 在庫切れ",
+			"willChangeSelections": "{name} - 他の選択が変更されます",
+			"percentOffTitle": "{name} - {percent}%オフ",
+			"outOfStockA11y": "在庫切れ",
+			"percentOffA11y": "{percent}%オフ",
+			"selectedA11y": "選択中",
+			"chooseOption": "{label}を選択",
+			"searchOptions": "{label}を検索",
+			"noMatchingOptions": "一致するオプションがありません"
+		},
+		"attributes": {
+			"description": "商品説明",
+			"productDetails": "商品詳細",
+			"careInstructions": "お手入れ方法",
+			"shippingReturns": "配送と返品",
+			"shippingBody": "{freeShippingThreshold}以上のご注文で送料無料。通常配送は3〜5営業日です。",
+			"returnsBody": "ご購入から{returnsWindowDays}日以内は返品無料。タグ付き・未使用の商品に限ります。",
+			"yes": "はい",
+			"no": "いいえ"
+		},
+		"zoom": {
+			"title": "{productName} — 拡大画像",
+			"imageAlt": "{productName} — 画像 {index}",
+			"close": "拡大画像を閉じる",
+			"previous": "前の画像",
+			"next": "次の画像",
+			"counter": "{current} / {total}"
+		}
+	},
+	"plp": {
+		"quickAdd": "クイック追加",
+		"filtersButton": "フィルター",
+		"filterLabels": {
+			"category": "カテゴリー",
+			"color": "カラー",
+			"size": "サイズ",
+			"price": "価格",
+			"priceRange": "価格帯"
+		},
+		"sort": "並び替え",
+		"sortOptions": {
+			"featured": "おすすめ",
+			"newest": "新着順",
+			"price_asc": "価格：安い順",
+			"price_desc": "価格：高い順",
+			"bestselling": "売れ筋"
+		},
+		"resultCount": "{count, plural, other {# 件の商品}}",
+		"clearAllFilters": "すべてのフィルターをクリア（{count}）",
+		"clearAll": "すべてクリア",
+		"removeFilter": "{value}フィルターを削除",
+		"noMatchingFilters": "条件に一致する商品がありません。"
+	},
+	"search": {
+		"title": "検索",
+		"description": "全商品コレクションを検索します。",
+		"bar": {
+			"placeholder": "商品を検索…",
+			"srOnlyLabel": "商品を検索"
+		},
+		"resultsFor": "「{query}」の検索結果",
+		"resultCount": "{count, plural, other {# 件の商品が見つかりました}}",
+		"noResultsTitle": "「{query}」の結果はありません",
+		"noResultsBody": "検索条件に一致する商品が見つかりませんでした。別のキーワードを試すか、カテゴリーからご覧ください。",
+		"browseAllProducts": "すべての商品を見る",
+		"goToHomepage": "ホームへ",
+		"noImage": "画像なし",
+		"sort": "並び替え",
+		"sortOptions": {
+			"relevance": "関連度",
+			"price-asc": "価格：安い順",
+			"price-desc": "価格：高い順",
+			"name": "名前",
+			"newest": "新着順"
+		}
+	},
+	"nav": {
+		"header": {
+			"mainAriaLabel": "メイン"
+		},
+		"breadcrumbAriaLabel": "パンくずリスト",
+		"cartButton": "{count, plural, other {カート内 # 点、バッグを見る}}",
+		"mobileMenu": {
+			"open": "メニューを開く",
+			"title": "ナビゲーションメニュー"
+		},
+		"userMenu": {
+			"open": "ユーザーメニューを開く",
+			"login": "ログイン",
+			"myAccount": "マイアカウント",
+			"myOrders": "注文履歴",
+			"logOut": "ログアウト",
+			"unavailableAriaLabel": "アカウントを利用できません",
+			"unavailableTitle": "アカウントを読み込めませんでした"
+		},
+		"regionPicker": {
+			"ariaLabel": "言語とマーケット",
+			"languageTitle": "言語",
+			"languageDescription": "サイトの文言と表示形式",
+			"marketTitle": "マーケット",
+			"marketDescription": "通貨・税・配送"
+		}
+	},
+	"account": {
+		"metadata": {
+			"loginTitle": "サインイン",
+			"loginDescription": "アカウントにサインインして、注文履歴や保存済み住所にアクセスします。",
+			"signupTitle": "アカウント作成",
+			"signupDescription": "新しいアカウントを作成して、住所と注文履歴を保存します。",
+			"accountTitle": "マイアカウント"
+		},
+		"fields": {
+			"email": "メール",
+			"emailAddress": "メールアドレス",
+			"password": "パスワード",
+			"firstName": "名",
+			"lastName": "姓",
+			"confirmPassword": "パスワード（確認）",
+			"currentPassword": "現在のパスワード",
+			"newPassword": "新しいパスワード",
+			"confirmNewPassword": "新しいパスワード（確認）",
+			"name": "名前",
+			"companyOptional": "会社名（任意）",
+			"streetAddress": "住所",
+			"streetAddress2Optional": "建物名・部屋番号など（任意）",
+			"city": "市区町村",
+			"postalCode": "郵便番号",
+			"stateProvince": "都道府県 / 州",
+			"countryCode": "国コード",
+			"phoneOptional": "電話番号（任意）",
+			"country": "国",
+			"cityArea": "エリア",
+			"localized": {
+				"province": "都道府県",
+				"district": "区",
+				"state": "州",
+				"zip": "郵便番号",
+				"postal": "郵便番号",
+				"postTown": "郵便区",
+				"prefecture": "都道府県"
+			}
+		},
+		"placeholders": {
+			"email": "you@example.com",
+			"password": "パスワードを入力",
+			"firstName": "名",
+			"lastName": "姓",
+			"newPasswordMin": "8文字以上…",
+			"confirmPassword": "パスワードを再入力",
+			"reenterPassword": "パスワードを再入力",
+			"countryCode": "JP"
+		},
+		"common": {
+			"cancel": "キャンセル",
+			"save": "保存",
+			"saving": "保存中…",
+			"edit": "編集",
+			"delete": "削除",
+			"updated": "更新しました",
+			"showPassword": "パスワードを表示",
+			"hidePassword": "パスワードを隠す",
+			"free": "無料",
+			"qty": "数量: {count}",
+			"itemCount": "{count, plural, other {# 点}}",
+			"notSet": "未設定",
+			"change": "変更",
+			"changing": "変更中…",
+			"sending": "送信中…"
+		},
+		"errors": {
+			"invalidEmail": "有効なメールアドレスを入力してください",
+			"invalidEmailFirst": "先に有効なメールアドレスを入力してください",
+			"passwordRequired": "パスワードを入力してください",
+			"passwordMinLength": "パスワードは8文字以上にしてください",
+			"passwordsMismatch": "パスワードが一致しません",
+			"newPasswordRequired": "新しいパスワードを入力してください",
+			"generic": "エラーが発生しました。もう一度お試しください。",
+			"signInFailed": "サインインに失敗しました。もう一度お試しください。",
+			"invalidCredentials": "メールアドレスまたはパスワードが正しくありません。",
+			"rateLimited": "サインインの試行回数が多すぎます。しばらくしてからお試しください。",
+			"resetLinkFailed": "リセットリンクの送信に失敗しました",
+			"accountExists": "このメールアドレスのアカウントは既に存在します。サインインしてください。",
+			"createAccountFailed": "アカウントの作成に失敗しました",
+			"invalidResetToken": "このパスワードリセットリンクは期限切れです。新しいリンクをリクエストしてください。",
+			"setPasswordFailed": "パスワードの設定に失敗しました",
+			"invalidConfirmToken": "この確認リンクは期限切れか、既に使用されています。サインインするか、再度登録してください。",
+			"confirmFailed": "アカウントの確認に失敗しました",
+			"loadOrdersFailed": "注文を読み込めませんでした。しばらくしてからもう一度お試しください。",
+			"loadOrderFailed": "この注文を読み込めませんでした。もう一度お試しください。",
+			"loadRecentOrdersFailed": "最近の注文を読み込めませんでした。",
+			"updateProfileFailed": "プロフィールの更新に失敗しました",
+			"changePasswordFailed": "パスワードの変更に失敗しました",
+			"createAddressFailed": "住所の作成に失敗しました",
+			"updateAddressFailed": "住所の更新に失敗しました",
+			"deleteAddressFailed": "住所の削除に失敗しました",
+			"setDefaultAddressFailed": "既定の住所の設定に失敗しました",
+			"deleteAccountFailed": "アカウント削除のリクエストに失敗しました"
+		},
+		"login": {
+			"title": "おかえりなさい",
+			"noAccount": "アカウントをお持ちでないですか？",
+			"signUp": "新規登録",
+			"forgotPassword": "パスワードをお忘れですか？",
+			"resendResetLink": "リセットリンクを再送信",
+			"submit": "サインイン",
+			"submitting": "サインイン中…",
+			"resetSent": "{email} のアカウントが存在する場合、パスワードリセットリンクを送信しました。注：リセットリンクのリクエストは15分に1回までです。"
+		},
+		"signup": {
+			"title": "アカウントを作成",
+			"hasAccount": "すでにアカウントをお持ちですか？",
+			"signIn": "サインイン",
+			"submit": "アカウント作成",
+			"submitting": "作成中…",
+			"successTitle": "アカウントを作成しました！",
+			"successBody": "アカウント確認のため、メールをご確認ください。",
+			"goToSignIn": "サインインへ",
+			"terms": "アカウントを作成すると、<terms>利用規約</terms>および<privacy>プライバシーポリシー</privacy>に同意したものとみなされます。",
+			"termsLink": "利用規約",
+			"privacyLink": "プライバシーポリシー"
+		},
+		"setPassword": {
+			"title": "新しいパスワードを設定",
+			"subtitle": "{email} の新しいパスワードを入力してください",
+			"submit": "パスワードを更新",
+			"submitting": "更新中…",
+			"backToSignIn": "サインインに戻る",
+			"successTitle": "パスワードを更新しました！",
+			"successBody": "パスワードがリセットされました。サインイン済みです。",
+			"redirecting": "ストアへ移動しています…"
+		},
+		"confirm": {
+			"confirmingTitle": "アカウントを確認しています",
+			"confirmingBody": "{email} を確認中…",
+			"successTitle": "アカウントを確認しました",
+			"successBody": "{email} のアカウントが有効になりました。作成したパスワードでサインインしてください。",
+			"signIn": "サインイン",
+			"continueShopping": "買い物を続ける",
+			"errorTitle": "アカウントを確認できませんでした",
+			"goToSignIn": "サインインへ"
+		},
+		"nav": {
+			"ariaLabel": "アカウント",
+			"backToStore": "ストアに戻る",
+			"signOut": "サインアウト",
+			"overview": "概要",
+			"orders": "注文",
+			"addresses": "住所",
+			"settings": "設定"
+		},
+		"overview": {
+			"welcome": "おかえりなさい、{name} さん",
+			"subtitle": "アカウント活動の概要です。",
+			"recentOrders": "最近の注文",
+			"viewAll": "すべて見る",
+			"noOrdersYet": "まだ注文がありません。"
+		},
+		"orders": {
+			"title": "注文",
+			"count": "{count, plural, =0 {まだ注文がありません} other {# 件の注文}}",
+			"empty": "まだ注文がありません。",
+			"loadMore": "さらに注文を読み込む",
+			"signInRequired": "注文を見るにはサインインしてください。",
+			"orderNumber": "ORD-{number}"
+		},
+		"orderDetail": {
+			"placedOn": "{date} に注文",
+			"items": "商品（{count}）",
+			"subtotal": "小計",
+			"shipping": "送料",
+			"tax": "税",
+			"total": "合計",
+			"shippingAddress": "配送先住所",
+			"billingAddress": "請求先住所",
+			"paymentMethod": "お支払い方法",
+			"paid": "支払済み",
+			"needHelp": "お困りですか？",
+			"signInRequired": "この注文を見るにはサインインしてください。",
+			"loadFailed": "この注文を読み込めませんでした。もう一度お試しください。",
+			"timeline": "注文タイムライン"
+		},
+		"orderStatus": {
+			"UNFULFILLED": "処理中",
+			"UNCONFIRMED": "確認待ち",
+			"PARTIALLY_FULFILLED": "一部発送済み",
+			"FULFILLED": "発送済み"
+		},
+		"fulfillment": {
+			"orderConfirmed": "注文確定",
+			"orderConfirmedDescription": "支払いが確認され、注文が確定しました",
+			"FULFILLED": "発送済み",
+			"FULFILLEDDescription": "ご注文商品を発送しました",
+			"CANCELED": "フルフィルメント取消",
+			"CANCELEDDescription": "発送が取り消されました",
+			"REFUNDED": "返金済み",
+			"REFUNDEDDescription": "支払いが返金されました",
+			"REFUNDED_AND_RETURNED": "返金・返品済み",
+			"REFUNDED_AND_RETURNEDDescription": "商品が返品され、返金されました",
+			"REPLACED": "交換済み",
+			"REPLACEDDescription": "商品が交換されました",
+			"RETURNED": "返品済み",
+			"RETURNEDDescription": "商品が返品されました",
+			"WAITING_FOR_APPROVAL": "承認待ち",
+			"WAITING_FOR_APPROVALDescription": "フルフィルメントは承認待ちです",
+			"trackingUpdated": "追跡情報が更新されました",
+			"trackingNumber": "追跡番号: {number}",
+			"descriptionWithItems": "{description}（{count, plural, other {# 点}}）"
+		},
+		"settings": {
+			"title": "設定",
+			"subtitle": "アカウント設定を管理",
+			"memberSince": "{date} からメンバー"
+		},
+		"addresses": {
+			"title": "住所",
+			"subtitle": "保存済みの住所を管理",
+			"empty": "保存済みの住所はまだありません。",
+			"addAddress": "住所を追加",
+			"editAddress": "住所を編集",
+			"addNewAddress": "新しい住所を追加",
+			"editAddressDescription": "住所の詳細を更新",
+			"addAddressDescription": "アカウントに新しい住所を追加",
+			"editAddressAria": "住所を編集",
+			"updateAddress": "住所を更新",
+			"deleteAddressAria": "住所を削除",
+			"defaultShipping": "既定の配送先",
+			"defaultBilling": "既定の請求先",
+			"makeDefaultShipping": "既定の配送先にする",
+			"makeDefaultBilling": "既定の請求先にする"
+		},
+		"deleteAccount": {
+			"title": "アカウント削除",
+			"description": "アカウントと関連データを完全に削除します。",
+			"submit": "アカウントを削除",
+			"confirm": "はい、アカウントを削除します",
+			"confirmBody": "この操作は取り消せません。アカウント削除前に確認メールが届きます。",
+			"emailSent": "確認メールを送信しました。受信トレイを確認してアカウント削除を完了してください。"
+		},
+		"changePassword": {
+			"submit": "パスワードを変更"
+		},
+		"unavailable": {
+			"title": "アカウントを読み込めません",
+			"body": "ストアは一時的に利用できません。ページを更新するか、しばらくしてからお試しください。"
+		}
+	},
+	"checkout": {
+		"steps": {
+			"information": "情報",
+			"shipping": "配送",
+			"payment": "お支払い",
+			"stepsAriaLabel": "チェックアウト手順",
+			"secureCheckout": "安全なチェックアウト",
+			"complete": "完了",
+			"stepOf": "ステップ {step} / {total}"
+		},
+		"actions": {
+			"saving": "保存中…",
+			"loading": "読み込み中…",
+			"continueToShipping": "配送へ進む",
+			"continueToPayment": "お支払いへ進む",
+			"continue": "続ける",
+			"continueAsGuest": "ゲストとして続ける",
+			"preparingGuestCart": "ゲストカートを準備中…",
+			"logIn": "ログイン",
+			"returnToInformation": "情報に戻る",
+			"returnToShipping": "配送に戻る",
+			"payNow": "今すぐ支払う",
+			"payTotal": "{total} を支払う",
+			"completeOrder": "注文を確定",
+			"placingOrder": "注文を確定中…",
+			"creatingOrder": "注文を作成中…",
+			"processingPayment": "支払いを処理中…",
+			"continueShopping": "買い物を続ける",
+			"tryAgain": "再試行"
+		},
+		"errors": {
+			"sessionExpiredTitle": "チェックアウトセッションの期限切れ",
+			"sessionExpiredMessage": "このカートは利用できなくなりました。商品を再度追加して新しいチェックアウトを開始してください。",
+			"loadFailedTitle": "チェックアウトを読み込めませんでした",
+			"loadFailedMessage": "カートの読み込みに問題がありました。再試行するか、ストアから新しいチェックアウトを開始してください。",
+			"orderNotFoundTitle": "注文が見つかりません",
+			"orderNotFoundMessage": "この注文が見つかりませんでした。削除されたか、リンクが無効な可能性があります。",
+			"emailRequired": "メールアドレスは必須です",
+			"selectShippingAddress": "配送先住所を選択してください",
+			"selectShippingMethod": "配送方法を選択してください",
+			"updateShippingMethodFailed": "配送方法の更新に失敗しました",
+			"orphanedCartMessage": "このカートはサインイン中のアカウントに紐づいています。ゲストとしてチェックアウトするには、同じ商品で新しい匿名カートを開始するか、ログインしてください。",
+			"orphanedCartBlocked": "このカートはサインイン中のアカウントに紐づいています。上でゲストとして続けるか、ログインしてください。",
+			"discountApplyFailed": "この割引コードは適用できませんでした。",
+			"discountRemoveFailed": "割引コードの削除に失敗しました。",
+			"invalidValue": "無効な値です",
+			"updateEmailFailed": "メールの更新に失敗しました",
+			"createAccountFailed": "アカウントの作成に失敗しました",
+			"updateAddressFailed": "住所の更新に失敗しました",
+			"crashTitle": "チェックアウトエラー",
+			"crashMessage": "チェックアウトの読み込み中に問題が発生しました。もう一度お試しください。"
+		},
+		"contact": {
+			"title": "連絡先",
+			"haveAccount": "アカウントをお持ちですか？",
+			"createAccountLabel": "次回のためにアカウントを作成する",
+			"activationNotice": "チェックアウト後、サインイン前にアカウント有効化のメールが届きます。",
+			"guestCheckout": "ゲストチェックアウト",
+			"newCustomer": "初めてのご利用ですか？",
+			"signInTitle": "サインイン",
+			"resetPasswordTitle": "パスワードをリセット",
+			"resetPasswordSubtitle": "アカウントの新しいパスワードを入力してください",
+			"processing": "処理中…",
+			"passwordMinPlaceholder": "パスワード（8文字以上）",
+			"signedIn": "サインイン済み"
+		},
+		"summary": {
+			"title": "注文内容",
+			"show": "表示",
+			"hide": "非表示",
+			"toggleOrderSummary": "注文内容を{action}",
+			"itemCount": "{count, plural, other {# 点}}",
+			"subtotal": "小計",
+			"shipping": "送料",
+			"taxVat": "税（VAT）",
+			"discount": "割引",
+			"total": "合計",
+			"includingVat": "税込",
+			"productFallback": "商品",
+			"contact": "連絡先",
+			"shipTo": "お届け先",
+			"method": "方法",
+			"delivery": "配送",
+			"digital": "デジタル"
+		},
+		"promo": {
+			"placeholder": "割引コード",
+			"apply": "適用",
+			"applying": "適用中…",
+			"removeAriaLabel": "割引コードを削除"
+		},
+		"shipping": {
+			"methodTitle": "配送方法",
+			"loadingMethods": "配送方法を読み込み中…",
+			"noAddressYet": "戻って先に配送先住所を入力してください。",
+			"addressTitle": "配送先住所",
+			"countryRegion": "国 / 地域",
+			"selectCountry": "国を選択",
+			"backToSavedAddresses": "← 保存済み住所に戻る",
+			"emptySavedShipping": "保存済みの住所はまだありません。下に配送先住所を入力してください。",
+			"selectShippingAddressSheet": "配送先住所を選択"
+		},
+		"billing": {
+			"title": "請求先住所",
+			"sameAsShipping": "配送先住所と同じ",
+			"selectBillingSheet": "請求先住所を選択",
+			"emptySavedBilling": "利用できる保存済み住所がありません。",
+			"backToSavedAddresses": "保存済み住所に戻る"
+		},
+		"addresses": {
+			"selectPrompt": "住所を選択",
+			"setDefaultShipping": "既定の配送先住所に設定",
+			"setDefaultBilling": "既定の請求先住所に設定",
+			"defaultBadge": "既定",
+			"emptySaved": "保存済みの住所はまだありません。"
+		},
+		"payment": {
+			"totalUpdatedTitle": "注文合計が更新されました",
+			"totalUpdatedBody": "合計が {previous} から {next} に変更されました。お支払い前に更新された注文内容をご確認ください。",
+			"deliveryInvalidTitle": "配送方法が利用できなくなりました",
+			"deliveryInvalidBody": "配送ステップに戻り、有効な配送方法を選択してから注文を完了してください。",
+			"completingTitle": "ご注文を処理中です",
+			"completingBody": "お支払いを確認し、注文を作成しています。通常は数秒で完了します — このページを閉じたり更新したりしないでください。",
+			"initFailed": "決済システムの初期化に失敗しました。",
+			"unavailable": "決済システムを利用できません。もう一度お試しください。",
+			"loadingGateway": "{gateway} の支払いフォームを読み込み中…",
+			"confirmingPayment": "お支払いを確認中…",
+			"securingWithStripe": "Stripeでお支払いを保護しています。通常は数秒かかります。",
+			"doNotClose": "このページを閉じたり更新したりしないでください。",
+			"completeOrderFailed": "注文を完了できませんでした。もう一度お試しください。",
+			"placeOrderFailed": "注文を確定できませんでした。再試行するか、サポートにお問い合わせください。",
+			"totalsRefreshFailed": "チェックアウト合計を更新できませんでした。もう一度お試しください。",
+			"totalUnavailable": "チェックアウト合計を取得できません。ページを更新してもう一度お試しください。",
+			"currencyUnavailable": "チェックアウト通貨を取得できません。ページを更新してもう一度お試しください。",
+			"validationFailed": "支払いの検証に失敗しました",
+			"methodRequired": "選択されたお支払い方法を特定できませんでした。お支払いオプションを選び、もう一度お試しください。",
+			"detailsUnavailable": "支払い詳細を取得できませんでした。もう一度お試しください。",
+			"expressReset": "お支払い確認前にエクスプレスチェックアウトがリセットされました。もう一度お試しください。",
+			"formReset": "カード確認前に支払いフォームがリセットされました。ページを更新せずにもう一度「支払う」を試してください。",
+			"totalChanged": "注文合計が変更されました。更新後の金額を確認してもう一度お試しください。",
+			"bankDeclined": "銀行により支払いが拒否されました。再試行するか、別のカードをご利用ください。",
+			"sessionExpired": "リダイレクト後に支払いセッションが期限切れになりました。もう一度お試しください。",
+			"channelUnresolved": "支払い後にチェックアウトチャネルを解決できませんでした。サポートにお問い合わせください。",
+			"unexpectedError": "お支払い完了中に予期しないエラーが発生しました。",
+			"stripeConfigFailed": "Stripeゲートウェイの設定に失敗しました",
+			"stripeKeyMissing": "Stripe公開可能キーがありません。SaleorダッシュボードのStripeアプリ設定を確認してください。",
+			"dummyGateway": "ダミー決済",
+			"failed": "支払いに失敗しました",
+			"interruptedBeforeCharge": "課金前に支払いが中断されました。安全にもう一度お試しいただけます。",
+			"interruptedAfterAuthorize": "お支払いは完了しましたが、注文はまだ確定していません。再度支払わないでください — 下の「注文を確定」で完了してください。",
+			"verificationUnavailable": "前回のお支払い試行を確認できませんでした。ページを更新してください — 確認されるまで再度支払わないでください。",
+			"authorizedTitle": "支払い承認済み — 注文を確定してください",
+			"authorizedBody": "お支払いは承認されています（キャプチャは出荷時）。下をタップして注文を確定してください — チェックアウトで再度課金されることはありません。",
+			"freeOrderBody": "ご注文合計は {total} です。お支払いは不要です — 下で確定して注文してください。",
+			"dummyTestMode": "テストモードです。カード情報は不要です — 「支払う」でテスト注文を完了します。",
+			"stripeLoadTitle": "Stripeを読み込めませんでした"
+		},
+		"confirmation": {
+			"orderNumber": "注文番号 #{number}",
+			"thankYou": "ご注文ありがとうございました！",
+			"confirmedTitle": "ご注文が確定しました",
+			"confirmedEmail": "{email} に確認メールをお送りします",
+			"emailSent": "確認メールを送信しました",
+			"shippingAddress": "配送先住所",
+			"billingAddress": "請求先住所",
+			"estimatedDelivery": "お届け予定"
+		},
+		"server": {
+			"marketingSaveFailed": "マーケティング設定の保存に失敗しました",
+			"invalidRedirectUrl": "無効なリダイレクトURLです",
+			"createAccountFailed": "アカウントの作成に失敗しました",
+			"noSaleorResponse": "Saleorからの応答がありません",
+			"shippingMethodsFailed": "配送方法の読み込みに失敗しました",
+			"gatewayInitFailed": "決済ゲートウェイの初期化に失敗しました",
+			"totalVerifyFailed": "チェックアウト合計を確認できませんでした。もう一度お試しください。",
+			"totalChanged": "チェックアウト合計が変更されました。注文内容を確認してもう一度お試しください。",
+			"paymentInitFailed": "支払いの初期化に失敗しました",
+			"paymentsDisabled": "この環境では支払いが有効になっていません。",
+			"paymentProcessFailed": "支払い処理に失敗しました",
+			"completeOrderFailed": "注文の完了に失敗しました",
+			"orderCreateFailed": "支払いは処理されましたが、注文を作成できませんでした。再試行するか、サポートにお問い合わせください。",
+			"validationRulesUnavailable": "検証ルールを利用できません",
+			"setDefaultAddressFailed": "既定の住所の設定に失敗しました",
+			"dummyNotAllowed": "この環境ではテスト決済を利用できません。",
+			"stripeNotEnabled": "この環境ではStripe決済が有効になっていません。ストアフロントで NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS=true を設定してください。"
+		},
+		"gateways": {
+			"noneTitle": "決済ゲートウェイが設定されていません",
+			"noneBody": "支払いを受け付けるには、Saleorダッシュボードから決済アプリ（テスト用のSaleor Dummy Payment、または本番用のStripe/Adyenなど）をインストールしてください。",
+			"unsupportedTitle": "サポートされていない決済ゲートウェイ",
+			"unsupportedList": "このチェックアウトは利用可能な決済ゲートウェイをサポートしていません: {gateways}。",
+			"unsupportedEmpty": "このチェックアウトで利用できるサポート済み決済ゲートウェイがありません。",
+			"dummyMissingTitle": "このチェックアウトでダミー決済を利用できません",
+			"dummyMissingBody": "Dummy Payment Appはインストールされていますが、このチェックアウトでは利用できません。Saleorダッシュボードでアプリが有効か、Webhookが正常か、チェックアウト通貨が対応しているか（ホスト型アプリはUSD）を確認してください。",
+			"noGatewayConfigured": "決済ゲートウェイが設定されていません。サポートに連絡するか、Saleorで決済アプリを設定してください。",
+			"stripeUseCardForm": "Stripe決済はカードフォームで処理されます。上のStripe支払いセクションでお支払いを完了してください。",
+			"paymentFailed": "支払いに失敗しました",
+			"paymentTryAgain": "支払いに失敗しました。もう一度お試しください。",
+			"paymentWebhookFailed": "決済アプリのWebhookが失敗しました。Saleorダッシュボード → Apps → Dummy Payment App でWebhook配信が成功しているか確認してください。",
+			"paymentInitFailed": "支払いを初期化できませんでした。Saleorで決済アプリが稼働しているか確認してください。"
+		}
+	}
+}

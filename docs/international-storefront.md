@@ -87,6 +87,8 @@ Defined in `src/config/locale.ts` (`LOCALE_DEFINITIONS`):
 | `fr` | `FR`                      |                              |
 | `fi` | `FI`                      |                              |
 | `nb` | `NB`                      | Bokmål — slug `nb`, not `no` |
+| `ja` | `JA`                      |                              |
+| `ko` | `KO`                      |                              |
 
 Enable a subset per deployment with `NEXT_PUBLIC_STOREFRONT_LOCALES` (comma-separated). Each enabled locale needs `messages/{slug}.json`.
 
@@ -119,7 +121,7 @@ Editorial checkout copy (empty session, trust, marketing opt-in) stays in storef
 ```env
 # Locales (must match LOCALE_DEFINITIONS + messages/*.json)
 NEXT_PUBLIC_DEFAULT_LOCALE=en
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ko
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko
 
 # Optional: restrict which locale can pair with which channel
 # NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl

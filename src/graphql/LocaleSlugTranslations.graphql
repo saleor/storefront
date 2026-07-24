@@ -23,6 +23,12 @@ fragment ProductLocaleSlugTranslations on Product {
 	slugNB: translation(languageCode: NB) {
 		slug
 	}
+	slugJA: translation(languageCode: JA) {
+		slug
+	}
+	slugKO: translation(languageCode: KO) {
+		slug
+	}
 }
 
 fragment CategoryLocaleSlugTranslations on Category {
@@ -42,6 +48,12 @@ fragment CategoryLocaleSlugTranslations on Category {
 		slug
 	}
 	slugNB: translation(languageCode: NB) {
+		slug
+	}
+	slugJA: translation(languageCode: JA) {
+		slug
+	}
+	slugKO: translation(languageCode: KO) {
 		slug
 	}
 }
@@ -65,6 +77,12 @@ fragment CollectionLocaleSlugTranslations on Collection {
 	slugNB: translation(languageCode: NB) {
 		slug
 	}
+	slugJA: translation(languageCode: JA) {
+		slug
+	}
+	slugKO: translation(languageCode: KO) {
+		slug
+	}
 }
 
 fragment PageLocaleSlugTranslations on Page {
@@ -84,6 +102,12 @@ fragment PageLocaleSlugTranslations on Page {
 		slug
 	}
 	slugNB: translation(languageCode: NB) {
+		slug
+	}
+	slugJA: translation(languageCode: JA) {
+		slug
+	}
+	slugKO: translation(languageCode: KO) {
 		slug
 	}
 }

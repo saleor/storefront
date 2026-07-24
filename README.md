@@ -296,7 +296,7 @@ NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel  # Your Saleor channel slug
 ```bash
 STOREFRONT_CHANNELS=us,uk,eu
 NEXT_PUBLIC_DEFAULT_CHANNEL=us
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ko  # URL locale slugs
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko  # URL locale slugs
 SALEOR_APP_TOKEN=...  # Server-side only — footer currency selector metadata
 ```
 
@@ -384,7 +384,7 @@ NEXT_PUBLIC_STOREFRONT_URL=http://localhost:3000/    # Canonical URLs, OG images
 NEXT_PUBLIC_CHECKOUT_URL=                            # Optional checkout origin and redirect allowlist
 ALLOWED_EXTRA_ORIGINS=                               # Optional extra redirect origins - see ./docs/configuration/allowed-origins.md
 NEXT_PUBLIC_DEFAULT_LOCALE=en                        # Default URL locale slug
-NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ko  # Enabled locale slugs
+NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko  # Enabled locale slugs
 REVALIDATE_SECRET=                                   # Manual cache invalidation (GET /api/revalidate)
 SALEOR_WEBHOOK_SECRET=                               # Webhook HMAC verification
 SALEOR_APP_TOKEN=                                    # Server-side: footer channel metadata (never exposed to client)

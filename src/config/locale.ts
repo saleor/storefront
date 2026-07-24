@@ -62,6 +62,12 @@ export const LOCALE_DEFINITIONS = {
 		htmlLang: "nb",
 		ogLocale: "nb_NO",
 	},
+	ja: {
+		bcp47: "ja-JP",
+		graphqlLanguageCode: "JA",
+		htmlLang: "ja",
+		ogLocale: "ja_JP",
+	},
 	ko: {
 		bcp47: "ko-KR",
 		graphqlLanguageCode: "KO",

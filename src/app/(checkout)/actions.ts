@@ -280,8 +280,8 @@ export async function registerCheckoutAccount(input: {
 		const { server: t } = await getCheckoutServerTranslations();
 		console.warn(
 			"Received an invalid redirection URL for password reset. " +
-			"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +
-			"see https://github.com/saleor/saleor-docs/blob/-/docs/configuration/allowed-origins.md",
+				"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +
+				"see https://github.com/saleor/saleor-docs/blob/-/docs/configuration/allowed-origins.md",
 			{ redirectUrl: input.redirectUrl },
 		);
 		return { ok: false, error: t("invalidRedirectUrl") };
@@ -685,8 +685,8 @@ export async function requestCheckoutPasswordReset(input: {
 		const { server: t } = await getCheckoutServerTranslations();
 		console.warn(
 			"Received an invalid redirection URL for password reset. " +
-			"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +
-			"see https://github.com/saleor/saleor-docs/blob/-/docs/configuration/allowed-origins.md",
+				"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +
+				"see https://github.com/saleor/saleor-docs/blob/-/docs/configuration/allowed-origins.md",
 			{ redirectUrl: input.redirectUrl },
 		);
 		return { ok: false, error: t("invalidRedirectUrl") };

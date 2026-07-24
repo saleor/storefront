@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
 	if (!isAllowedRedirectUrl(redirectUrl, request.nextUrl.origin)) {
 		console.warn(
 			"Received an invalid redirection URL for password reset. " +
-			"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +
-			"see https://github.com/saleor/saleor-docs/blob/-/docs/configuration/allowed-origins.md",
+				"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +
+				"see https://github.com/saleor/saleor-docs/blob/-/docs/configuration/allowed-origins.md",
 			{ redirectUrl },
 		);
 		return NextResponse.json(
