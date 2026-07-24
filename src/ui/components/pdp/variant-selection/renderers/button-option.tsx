@@ -59,7 +59,7 @@ export function ButtonOption({
 					aria-disabled={isOutOfStock || isPending}
 					style={{ minWidth }}
 					className={cn(
-						"h-12 rounded-lg border px-4 text-sm font-medium transition-all",
+						"inline-flex h-12 items-center justify-center rounded-lg border px-4 text-sm font-medium transition-all",
 						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 						isSelected
 							? "border-foreground bg-foreground text-background"
