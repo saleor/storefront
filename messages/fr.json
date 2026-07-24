@@ -565,7 +565,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Échec de l'enregistrement de la préférence marketing",
-			"invalidRedirectUrl": "URL de redirection non valide",
+			"invalidRedirectUrl": "URL de redirection non valide. Consultez les journaux du serveur pour plus d'informations.",
 			"createAccountFailed": "Échec de la création du compte",
 			"noSaleorResponse": "Aucune réponse de Saleor",
 			"shippingMethodsFailed": "Échec du chargement des modes de livraison",

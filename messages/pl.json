@@ -565,7 +565,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Nie udało się zapisać zgody marketingowej",
-			"invalidRedirectUrl": "Nieprawidłowy adres przekierowania",
+			"invalidRedirectUrl": "Nieprawidłowy adres przekierowania. Więcej informacji można znaleźć w logach serwera.",
 			"createAccountFailed": "Nie udało się utworzyć konta",
 			"noSaleorResponse": "Brak odpowiedzi z Saleor",
 			"shippingMethodsFailed": "Nie udało się wczytać metod dostawy",

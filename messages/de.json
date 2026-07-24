@@ -565,7 +565,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Marketing-Einstellung konnte nicht gespeichert werden",
-			"invalidRedirectUrl": "Ungültige Weiterleitungs-URL",
+			"invalidRedirectUrl": "Ungültige Weiterleitungs-URL. Weitere Informationen finden Sie in den Serverprotokollen.",
 			"createAccountFailed": "Konto konnte nicht erstellt werden",
 			"noSaleorResponse": "Keine Antwort von Saleor",
 			"shippingMethodsFailed": "Versandarten konnten nicht geladen werden",

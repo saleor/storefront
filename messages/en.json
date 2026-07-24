@@ -565,7 +565,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Failed to save marketing preference",
-			"invalidRedirectUrl": "Invalid redirect URL",
+			"invalidRedirectUrl": "Invalid redirect URL. See server logs for more information.",
 			"createAccountFailed": "Failed to create account",
 			"noSaleorResponse": "No response from Saleor",
 			"shippingMethodsFailed": "Failed to load shipping methods",
