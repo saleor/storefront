@@ -65,7 +65,8 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes (market switch warns when cart cookie exists).
 6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
 7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
-8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid. Must be `NEXT_PUBLIC_` — both the server (404 guard, hreflang) and the client picker/nav read it. See `src/config/locale-channel.ts`.
+8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,ja:japan`. When set: invalid pairs 404; language switch navigates to the paired channel; region picker filters locales per market; hreflang keys use `bcp47` (`ja-JP`). When unset: any allowed locale × channel is valid, language switch keeps the current channel, hreflang keys stay language-only (`ja`). Must be `NEXT_PUBLIC_` — server (404 guard, hreflang) and client picker/nav share it. See `src/config/locale-channel.ts`, `seo-metadata.md`.
+9. **`x-default`** — same as `NEXT_PUBLIC_DEFAULT_LOCALE` (+ that locale’s channel). Intentionally not a separate env.
 
 ---
 

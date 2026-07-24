@@ -71,8 +71,9 @@ export async function generateMetadata(props: {
 		channel: params.channel,
 		pathSuffix: catalogPathSuffix("products", product),
 		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
-		// Omit openGraph.type — Next rejects `product` (E237). Sync page shell hoists
-		// <meta property="og:type" content="product" /> outside Suspense instead.
+		// Omit openGraph.type — Next rejects `product` (E237). ProductShell hoists
+		// <meta property="og:type" content="product" /> only after the product resolves
+		// (never on the 404 path).
 		ogType: "product",
 	});
 }
@@ -89,23 +90,15 @@ const parser = edjsHTML();
 /**
  * Sync page entry — Suspense while params resolve and cached product data loads.
  * searchParams is passed through without being awaited here or in the shell.
- *
- * `og:type` is a React-hoisted head tag on this sync shell (not inside Suspense /
- * ProductShell): Next's metadata API rejects `product` (E237) and drops the whole
- * head if set via `openGraph.type`. Keeping the tag outside Suspense means HTML-limited
- * crawlers still see it when `generateMetadata` finishes ahead of the product shell.
  */
 export default function ProductPage(props: {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{ variant?: string; sku?: string }>;
 }) {
 	return (
-		<>
-			<meta property="og:type" content="product" />
-			<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
-				<ProductShell params={props.params} searchParams={props.searchParams} />
-			</Suspense>
-		</>
+		<Suspense fallback={<ProductRouteSkeleton surface="page" />}>
+			<ProductShell params={props.params} searchParams={props.searchParams} />
+		</Suspense>
 	);
 }
 
@@ -220,6 +213,9 @@ async function ProductShell({
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
+			{/* Next rejects openGraph.type "product" (E237). Hoist after the product
+			    exists so missing-slug 404s never advertise og:type=product. */}
+			<meta property="og:type" content="product" />
 			<CatalogIdentityBridge
 				kind="products"
 				primarySlug={product.slug}

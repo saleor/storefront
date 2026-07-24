@@ -25,6 +25,25 @@ describe("buildBrowsePageMetadata OpenGraph locale", () => {
 		expect(og.alternateLocale).toEqual(["en_US", "pl_PL"]);
 	});
 
+	it("limits og:locale:alternate to locales in the locale×channel matrix", () => {
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,ja,pl,de");
+		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");
+		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel,japan");
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS", "en:default-channel,ja:japan");
+
+		const metadata = buildBrowsePageMetadata({
+			title: "プリムソール",
+			locale: "ja",
+			channel: "japan",
+			pathSuffix: "/products/purimusoru",
+		});
+
+		const og = metadata.openGraph as OgRecord;
+		expect(og.locale).toBe("ja_JP");
+		// pl/de are in STOREFRONT_LOCALES but not in the matrix — must not appear.
+		expect(og.alternateLocale).toEqual(["en_US"]);
+	});
+
 	it("omits og:locale for unknown locale slugs", () => {
 		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en");
 		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");

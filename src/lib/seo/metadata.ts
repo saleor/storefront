@@ -1,7 +1,8 @@
 import { type Metadata } from "next";
 import { seoConfig, getMetadataBase } from "./config";
 import { buildLocaleHreflangAlternates } from "./hreflang";
-import { getLocaleDefinition, getStorefrontLocaleSlugs } from "@/config/locale";
+import { getLocaleDefinition, getStorefrontLocaleSlugs, type LocaleSlug } from "@/config/locale";
+import { getConfiguredLocaleChannelPairs } from "@/config/locale-channel";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
@@ -154,7 +155,7 @@ export function buildPageMetadata(options: {
 	description?: string;
 	image?: string | null;
 	url?: string;
-	/** hreflang map — keys are BCP 47 / `x-default` */
+	/** hreflang map — keys are language-only, BCP 47 region form, or `x-default` */
 	languages?: Record<string, string>;
 	/** `og:locale` (e.g. `ja_JP`) — set from the URL locale on browse pages */
 	ogLocale?: string;
@@ -163,8 +164,9 @@ export function buildPageMetadata(options: {
 	/**
 	 * `og:type`. Next's metadata API rejects OG protocol types outside its union
 	 * (e.g. `product`) at runtime and drops the page's entire metadata — so for
-	 * `product` we omit the tag here and the PDP renders a hoisted
-	 * `<meta property="og:type" content="product">` instead.
+	 * `product` we omit the tag here and the PDP shell hoists
+	 * `<meta property="og:type" content="product">` only after the product resolves
+	 * (never on the 404 path).
 	 */
 	ogType?: "website" | "product";
 	/** Additional OpenGraph properties */
@@ -253,7 +255,7 @@ export function buildBrowsePageMetadata(options: {
 	 * Canonical URL still uses `pathSuffix` for the current locale.
 	 */
 	pathSuffixByLocale?: Record<string, string>;
-	/** See {@link buildPageMetadata} — `product` omits og:type (page renders a hoisted tag). */
+	/** See {@link buildPageMetadata} — `product` omits og:type (PDP shell hoists after resolve). */
 	ogType?: "website" | "product";
 	openGraph?: Record<string, string>;
 }): Metadata {
@@ -264,10 +266,7 @@ export function buildBrowsePageMetadata(options: {
 	);
 
 	const ogLocale = getLocaleDefinition(options.locale)?.ogLocale;
-	const ogAlternateLocale = getStorefrontLocaleSlugs()
-		.filter((slug) => slug !== options.locale)
-		.map((slug) => getLocaleDefinition(slug)?.ogLocale)
-		.filter((value): value is string => Boolean(value));
+	const ogAlternateLocale = getBrowseOgAlternateLocales(options.locale);
 
 	return buildPageMetadata({
 		title: options.title,
@@ -280,4 +279,22 @@ export function buildBrowsePageMetadata(options: {
 		ogType: options.ogType,
 		openGraph: options.openGraph,
 	});
+}
+
+/**
+ * Locales advertised as `og:locale:alternate`.
+ * When a locale×channel matrix is configured, only locales that appear in the matrix
+ * (same set as hreflang) — never every `STOREFRONT_LOCALES` entry, which may include
+ * languages with no valid browse URL.
+ */
+function getBrowseOgAlternateLocales(currentLocale: string): string[] {
+	const pairs = getConfiguredLocaleChannelPairs();
+	const slugs: readonly LocaleSlug[] = pairs
+		? [...new Set(pairs.map((pair) => pair.locale))]
+		: getStorefrontLocaleSlugs();
+
+	return slugs
+		.filter((slug) => slug !== currentLocale)
+		.map((slug) => getLocaleDefinition(slug)?.ogLocale)
+		.filter((value): value is string => Boolean(value));
 }

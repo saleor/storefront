@@ -3567,7 +3567,8 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes (market switch warns when cart cookie exists).
 6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
 7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
-8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid. Must be `NEXT_PUBLIC_` — both the server (404 guard, hreflang) and the client picker/nav read it. See `src/config/locale-channel.ts`.
+8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,ja:japan`. When set: invalid pairs 404; language switch navigates to the paired channel; region picker filters locales per market; hreflang keys use `bcp47` (`ja-JP`). When unset: any allowed locale × channel is valid, language switch keeps the current channel, hreflang keys stay language-only (`ja`). Must be `NEXT_PUBLIC_` — server (404 guard, hreflang) and client picker/nav share it. See `src/config/locale-channel.ts`, `seo-metadata.md`.
+9. **`x-default`** — same as `NEXT_PUBLIC_DEFAULT_LOCALE` (+ that locale’s channel). Intentionally not a separate env.
 
 ---
 
@@ -3821,31 +3822,50 @@ export const seoConfig = {
 
 ```
 src/lib/seo/
-├── index.ts      # Public exports
-├── config.ts     # Configuration
-├── metadata.ts   # Page metadata helpers
-└── json-ld.ts    # Structured data helpers
+├── index.ts           # Public exports
+├── config.ts          # Configuration (no static og:locale)
+├── metadata.ts        # Page metadata helpers + resolveSeoDescription
+├── metadata.test.ts
+├── hreflang.ts        # Locale/channel hreflang + x-default
+├── hreflang.test.ts
+├── json-ld.ts         # Structured data helpers
+└── og-brand-colors.ts
 ```
 
-## Root Layout Metadata
+## Root / locale layout metadata
+
+`rootMetadata` holds site-wide defaults (title template, icons, robots, OG siteName/images) **without** a hardcoded `og:locale`.
+
+The storefront locale layout (`(storefront)/[locale]/layout.tsx`) exports params-only `generateMetadata` that sets `openGraph.locale` from the URL locale’s `ogLocale` (`ja` → `ja_JP`). Browse pages that call `buildBrowsePageMetadata` replace the OpenGraph block wholesale (and set locale + alternates themselves). Non-browse pages (login, account, cart) inherit the layout locale.
 
 ```typescript
-// src/app/layout.tsx
-import { rootMetadata } from "@/lib/seo";
-export const metadata = rootMetadata;
+// src/app/(storefront)/[locale]/layout.tsx — params-only, PPR-safe
+export async function generateMetadata({ params }): Promise<Metadata> {
+	const { locale } = await params;
+	const definition = resolveLocaleFromSlug(/* … */);
+	return { ...rootMetadata, openGraph: { ...rootMetadata.openGraph, locale: definition.ogLocale } };
+}
 ```
 
 ## Page Metadata
 
 ```typescript
-import { buildPageMetadata } from "@/lib/seo";
+import { buildBrowsePageMetadata, resolveSeoDescription } from "@/lib/seo";
 
-export async function generateMetadata() {
-	return buildPageMetadata({
-		title: "Page Title",
-		description: "Page description",
-		image: "/og-image.jpg",
-		url: "/page-path",
+export async function generateMetadata({ params }) {
+	const product = await getProductData(/* … */);
+	return buildBrowsePageMetadata({
+		title: product.seoTitle || product.name,
+		description: resolveSeoDescription({
+			seoDescription: product.seoDescription,
+			body: product.description,
+			fallbackName: product.name,
+		}),
+		locale: params.locale,
+		channel: params.channel,
+		pathSuffix: catalogPathSuffix("products", product),
+		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
+		ogType: "product", // omits openGraph.type — see PDP og:type below
 	});
 }
 ```
@@ -3893,58 +3913,32 @@ buildPageMetadata({
 
 ### Complete Product Page SEO
 
-```typescript
-// src/app/[channel]/(main)/products/[slug]/page.tsx
-
-export async function generateMetadata({ params }) {
-  const product = await fetchProduct(params.slug);
-
-  return buildPageMetadata({
-    title: product.name,
-    description: product.seoDescription || product.description,
-    image: product.thumbnail?.url,
-    url: `/${params.channel}/products/${params.slug}`,
-  });
-}
-
-export default async function ProductPage({ params }) {
-  const product = await fetchProduct(params.slug);
-
-  const jsonLd = buildProductJsonLd({
-    name: product.name,
-    price: product.pricing?.priceRange?.start?.gross,
-    inStock: product.isAvailable,
-  });
-
-  return (
-    <>
-      {jsonLd && <script {...jsonLdScriptProps(jsonLd)} />}
-      <ProductContent product={product} />
-    </>
-  );
-}
-```
+Use `buildBrowsePageMetadata` + `resolveSeoDescription` + JSON-LD (see International URLs and Product JSON-LD above). The live PDP is `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx` — `ProductShell` hoists `og:type=product` after the product resolves; `generateMetadata` sets `ogType: "product"` so Next never receives an invalid `openGraph.type`.
 
 ## International URLs
 
 Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`).
 
-- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates, plus `og:locale` (from the URL locale's `ogLocale`) and `og:locale:alternate` for the other configured locales.
+- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates, plus `og:locale` (from the URL locale's `ogLocale`) and `og:locale:alternate` for other **reachable** locales (matrix locales when `LOCALE_CHANNELS` is set; otherwise all `STOREFRONT_LOCALES`).
 - Non-browse pages inherit `og:locale` from the storefront locale layout's `generateMetadata` — never hardcode a locale in OG tags.
-- Meta/OG/JSON-LD descriptions fall back `seoDescription` → translated plain-text description (`parseEditorJSToText`) → name. Don't let them collapse to the bare entity name.
-- PDPs use `ogType: "product"`: Next's metadata API **rejects** OG types outside its union at runtime (E237 — drops the page's whole metadata). The helper therefore omits `openGraph.type`, and the **sync** product page export (outside `Suspense`) renders a React-hoisted `<meta property="og:type" content="product">`. Do **not** put that tag inside `ProductShell` / Suspense (crawlers can miss it), and never smuggle `type` through the OpenGraph passthrough (`buildPageMetadata` strips it). Prefer `resolveSeoDescription()` for meta/OG/JSON-LD copy.
+- Meta/OG/JSON-LD descriptions: use `resolveSeoDescription()` — `seoDescription` → translated Editor.js plain text → name. Don't let them collapse to the bare entity name.
+- **PDP `og:type=product`:** Next's metadata API **rejects** OG types outside its union at runtime (**E237** — throws and drops the page's whole metadata). `ogType: "product"` therefore omits `openGraph.type`, and `ProductShell` hoists `<meta property="og:type" content="product">` **only after the product resolves** (never on the missing-slug `notFound()` path — a sync-shell tag would advertise `product` on 404s). Trade-off: the tag sits behind the page `Suspense` boundary; bot UAs that wait on `generateMetadata` still get the rest of OG, and cached shells resolve quickly. Do **not** use `metadata.other: { "og:type": "product" }` — Next renders that as `name=`, not `property=`.
 - `generateMetadata` `pathSuffix` is the path after locale/channel for **this** locale, e.g. `/products/${pickTranslatedSlug(product)}`.
 - For translated catalog slugs (ADR 0004), also pass `pathSuffixByLocale` from `buildCatalogPathSuffixByLocale` / `buildLocaleSlugMap` so each `hreflang` points at that language’s handle.
-- `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment — no client patching.
+- `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment (`htmlLang`, language-only) — no client patching.
 
 ```typescript
-import { buildBrowsePageMetadata } from "@/lib/seo";
+import { buildBrowsePageMetadata, resolveSeoDescription } from "@/lib/seo";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { catalogPathSuffix } from "@/lib/catalog/canonical-slug";
 
 return buildBrowsePageMetadata({
 	title: category.name,
-	description: category.seoDescription,
+	description: resolveSeoDescription({
+		seoDescription: category.seoDescription,
+		body: category.description,
+		fallbackName: category.name,
+	}),
 	locale: params.locale,
 	channel: params.channel,
 	pathSuffix: catalogPathSuffix("categories", category),
@@ -3952,22 +3946,52 @@ return buildBrowsePageMetadata({
 });
 ```
 
-Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
+### hreflang keys and `x-default`
+
+`buildLocaleHreflangAlternates()` (used by `buildBrowsePageMetadata`):
+
+| Config                                      | hreflang keys                                | URLs                                             |
+| ------------------------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| No `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS` | Language-only (`ja`, `en`) from `htmlLang`   | Each locale keeps the **current** page’s channel |
+| Pairs set (`ja:japan,en:default,…`)         | Region-aware (`ja-JP`, `en-US`) from `bcp47` | Each locale uses its **paired** channel          |
+
+**`x-default`** points at `NEXT_PUBLIC_DEFAULT_LOCALE` + that locale’s paired/default channel — same knob as the root redirect and invalid-locale fallback. Paper intentionally does **not** add a separate `x-default` env; change the demo/default locale if the fallback URL is wrong.
+
+### Locale×channel pairs (SEO + navigation)
+
+Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` (see `src/config/locale-channel.ts`):
+
+1. Invalid pairs → `notFound()`
+2. Language switch navigates to the paired channel (Japanese → `japan`, etc.)
+3. Region picker filters languages per market
+4. hreflang becomes region-aware (table above)
+
+When unset, any allowlisted locale × channel is valid and language switch **keeps** the current channel.
+
+## Known Next.js / audit findings
+
+- **Streaming metadata “duplicates”:** For normal browser UAs, Next may stream metadata into `<body>` then also place copies in `<head>` after hydration — DevTools can show 2× canonical / 18× hreflang. Bot UAs get blocking `<head>` metadata (`htmlLimitedBots`). Not a Paper double-`generateMetadata` bug; soft locale/market navigations can make leftovers more visible. Prefer curl/bot UA or settled head counts when auditing.
+- **E237 `Invalid OpenGraph type: product`:** Closed OG type union in Next’s Metadata API; unknown types throw and abort the metadata RSC payload. Workaround: omit `openGraph.type` + sync-shell hoisted `<meta property="og:type" content="product">`.
 
 ## Disabling SEO
 
 To remove SEO features entirely:
 
 1. Delete `src/lib/seo/` folder
-2. Remove `rootMetadata` import from layout
+2. Remove `rootMetadata` / locale `generateMetadata` from layouts
 3. Remove `buildPageMetadata`/`buildProductJsonLd` from pages
 4. Delete `src/app/api/og/`
 
 ## Anti-patterns
 
-❌ **Don't hardcode metadata** - Use the helpers  
-❌ **Don't skip JSON-LD on product pages** - Important for search  
-❌ **Don't forget `noIndexPaths`** - Exclude checkout, cart
+❌ **Don't hardcode metadata** — Use the helpers  
+❌ **Don't skip JSON-LD on product pages** — Important for search  
+❌ **Don't forget `noIndexPaths`** — Exclude checkout, cart  
+❌ **Don't set `openGraph.type: "product"`** — Triggers Next E237 and drops all page metadata  
+❌ **Don't hoist PDP `og:type` on the sync shell before the product resolves** — 404 URLs would advertise `product`  
+❌ **Don't hardcode `og:locale` to `en_US`** — Derive from the URL locale  
+❌ **Don't list unpaired locales in `og:locale:alternate`** — When `LOCALE_CHANNELS` is set, alternate locales must match the matrix (same as hreflang)  
+❌ **Don't treat DevTools double tags as a Paper SEO bug** — Check streaming metadata / bot UA first
 
 ---
 
