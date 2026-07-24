@@ -565,7 +565,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Markkinointiasetuksen tallennus epäonnistui",
-			"invalidRedirectUrl": "Virheellinen uudelleenohjauksen URL",
+			"invalidRedirectUrl": "Virheellinen uudelleenohjauksen URL. Katso lisätietoja palvelimen lokitiedoista.",
 			"createAccountFailed": "Tilin luonti epäonnistui",
 			"noSaleorResponse": "Ei vastausta Saleorilta",
 			"shippingMethodsFailed": "Toimitustapojen lataus epäonnistui",

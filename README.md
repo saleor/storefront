@@ -374,20 +374,22 @@ Symlinks the project skill into `.agents/skills/`, then runs `npx skills experim
 ```env
 # Required
 NEXT_PUBLIC_SALEOR_API_URL=https://your-instance.saleor.cloud/graphql/
-NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel  # Fallback channel; root "/" redirects here
+NEXT_PUBLIC_DEFAULT_CHANNEL=default-channel          # Fallback channel; root "/" redirects here
 
 # Multi-channel (recommended)
-STOREFRONT_CHANNELS=us,uk,eu               # Comma-separated allowlist — routes, revalidation, footer
+STOREFRONT_CHANNELS=us,uk,eu                         # Comma-separated allowlist — routes, revalidation, footer
 
 # Optional
-NEXT_PUBLIC_STOREFRONT_URL=                  # Canonical URLs and OG images
-NEXT_PUBLIC_DEFAULT_LOCALE=en                # Default URL locale slug
+NEXT_PUBLIC_STOREFRONT_URL=http://localhost:3000/    # Canonical URLs, OG images, and redirect allowlist
+NEXT_PUBLIC_CHECKOUT_URL=                            # Optional checkout origin and redirect allowlist
+ALLOWED_EXTRA_ORIGINS=                               # Optional extra redirect origins - see ./docs/configuration/allowed-origins.md
+NEXT_PUBLIC_DEFAULT_LOCALE=en                        # Default URL locale slug
 NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko  # Enabled locale slugs
-REVALIDATE_SECRET=                           # Manual cache invalidation (GET /api/revalidate)
-SALEOR_WEBHOOK_SECRET=                       # Webhook HMAC verification
-SALEOR_APP_TOKEN=                            # Server-side: footer channel metadata (never exposed to client)
-STOREFRONT_DISCOVER_CHANNELS=true            # Opt-in: discover ALL active Saleor channels from API
-                                             # (not recommended when Saleor has many channels; prefer STOREFRONT_CHANNELS)
+REVALIDATE_SECRET=                                   # Manual cache invalidation (GET /api/revalidate)
+SALEOR_WEBHOOK_SECRET=                               # Webhook HMAC verification
+SALEOR_APP_TOKEN=                                    # Server-side: footer channel metadata (never exposed to client)
+STOREFRONT_DISCOVER_CHANNELS=true                    # Opt-in: discover ALL active Saleor channels from API
+                                                     # (not recommended when Saleor has many channels; prefer STOREFRONT_CHANNELS)
 ```
 
 **Channel resolution order** (`getStorefrontChannelSlugs`):
