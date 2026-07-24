@@ -3593,18 +3593,18 @@ Full detail: `data-caching.md` § Locale & Caching.
 
 ## Implementation map (when migration starts)
 
-| Concern         | Location (planned)                                                                        |
-| --------------- | ----------------------------------------------------------------------------------------- |
-| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                               |
-| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                   |
-| Channel guard   | move/extend current `[channel]/layout.tsx`                                                |
-| Links           | replace `LinkWithChannel` → locale-aware helper                                           |
-| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                       |
-| Middleware      | root redirect, optional `Accept-Language`, preference cookie                              |
-| GraphQL         | pass `languageCode` on public queries                                                     |
-| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired |
-| Picker          | header market + language UI (footer channel select retired or secondary)                  |
-| SEO             | `hreflang`, canonical, sitemap per locale×channel                                         |
+| Concern         | Location (planned)                                                                                   |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                                          |
+| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                              |
+| Channel guard   | move/extend current `[channel]/layout.tsx`                                                           |
+| Links           | replace `LinkWithChannel` → locale-aware helper                                                      |
+| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                                  |
+| Middleware      | root redirect, optional `Accept-Language`, preference cookie                                         |
+| GraphQL         | pass `languageCode` on public queries                                                                |
+| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired            |
+| Picker          | header market + language UI (footer channel select retired or secondary)                             |
+| SEO             | `hreflang`, canonical; sitemap only via chunked `generateSitemaps` (see `seo-metadata.md` § Sitemap) |
 
 ---
 
@@ -3971,7 +3971,33 @@ When unset, any allowlisted locale × channel is valid and language switch **kee
 ## Known Next.js / audit findings
 
 - **Streaming metadata “duplicates”:** For normal browser UAs, Next may stream metadata into `<body>` then also place copies in `<head>` after hydration — DevTools can show 2× canonical / 18× hreflang. Bot UAs get blocking `<head>` metadata (`htmlLimitedBots`). Not a Paper double-`generateMetadata` bug; soft locale/market navigations can make leftovers more visible. Prefer curl/bot UA or settled head counts when auditing.
-- **E237 `Invalid OpenGraph type: product`:** Closed OG type union in Next’s Metadata API; unknown types throw and abort the metadata RSC payload. Workaround: omit `openGraph.type` + sync-shell hoisted `<meta property="og:type" content="product">`.
+- **E237 `Invalid OpenGraph type: product`:** Closed OG type union in Next’s Metadata API; unknown types throw and abort the metadata RSC payload. Workaround: omit `openGraph.type` + hoist `<meta property="og:type" content="product">` in `ProductShell` only after the product resolves (never on 404).
+
+## Sitemap & robots (do not ship naive)
+
+Paper has **no** `sitemap.ts` / `robots.ts` yet (middleware already reserves `sitemap.xml` / `robots.txt`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
+
+**Why a single `sitemap.ts` dump fails at scale**
+
+- URL cardinality ≈ products × locales × channels (plus categories / collections / pages). 10k SKUs × 8 locales × 5 channels ≈ 400k product URLs alone.
+- Protocol / Google limits: **≤50k URLs and ≤50MB per sitemap file**.
+- Live Saleor GraphQL walks of the full catalog risk timeouts, serverless memory, and slow TTFB.
+- Translated slugs (ADR 0004) mean each locale may need its own handle — you cannot stamp one primary-slug list across languages.
+
+**Required shape when implementing**
+
+1. **Sitemap index + chunks** via Next [`generateSitemaps`](https://nextjs.org/docs/app/api-reference/functions/generate-sitemaps) (`/sitemap.xml` → `/sitemap/0.xml`, …), ~≤40–50k URLs each.
+2. **Paginate Saleor with cursors** (`first` / `after`) per chunk — never load the full catalog into memory.
+3. **Chunk by stable dimensions** (e.g. `{channel}:{locale}:{entity}:{page}` or at least `{channel}:{page}`), not one global product offset.
+4. **Respect `LOCALE_CHANNELS`:** when set, emit only paired locale×channel URLs (same set as hreflang). When unset, avoid a blind full cross-product — prefer channel-scoped chunks; on-page hreflang already advertises language alternates.
+5. **Cache aggressively** (long CDN/`Cache-Control`); invalidate via existing PRODUCT\_\* / catalog webhook tags. Mega catalogs may need a background export / blob rather than GraphQL-at-request.
+6. Ship **`robots.ts` first** (disallow `noIndexPaths`, eventually `Sitemap:` → index URL), then chunked sitemaps.
+
+| Catalog size              | Approach                                                            |
+| ------------------------- | ------------------------------------------------------------------- |
+| Demo / ≲5k SKUs × few L×C | Few chunks; on-demand GraphQL OK                                    |
+| Mid (tens of k)           | `generateSitemaps` + cursor pagination per channel                  |
+| Huge (100k+)              | Precompute / background pipeline; storefront serves cached XML only |
 
 ## Disabling SEO
 
@@ -3991,7 +4017,8 @@ To remove SEO features entirely:
 ❌ **Don't hoist PDP `og:type` on the sync shell before the product resolves** — 404 URLs would advertise `product`  
 ❌ **Don't hardcode `og:locale` to `en_US`** — Derive from the URL locale  
 ❌ **Don't list unpaired locales in `og:locale:alternate`** — When `LOCALE_CHANNELS` is set, alternate locales must match the matrix (same as hreflang)  
-❌ **Don't treat DevTools double tags as a Paper SEO bug** — Check streaming metadata / bot UA first
+❌ **Don't treat DevTools double tags as a Paper SEO bug** — Check streaming metadata / bot UA first  
+❌ **Don't add a monolithic `sitemap.ts` that loads every product×locale×channel** — Use index + chunks; see Sitemap & robots above
 
 ---
 

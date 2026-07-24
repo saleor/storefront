@@ -91,18 +91,18 @@ Full detail: `data-caching.md` § Locale & Caching.
 
 ## Implementation map (when migration starts)
 
-| Concern         | Location (planned)                                                                        |
-| --------------- | ----------------------------------------------------------------------------------------- |
-| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                               |
-| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                   |
-| Channel guard   | move/extend current `[channel]/layout.tsx`                                                |
-| Links           | replace `LinkWithChannel` → locale-aware helper                                           |
-| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                       |
-| Middleware      | root redirect, optional `Accept-Language`, preference cookie                              |
-| GraphQL         | pass `languageCode` on public queries                                                     |
-| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired |
-| Picker          | header market + language UI (footer channel select retired or secondary)                  |
-| SEO             | `hreflang`, canonical, sitemap per locale×channel                                         |
+| Concern         | Location (planned)                                                                                   |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                                          |
+| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                              |
+| Channel guard   | move/extend current `[channel]/layout.tsx`                                                           |
+| Links           | replace `LinkWithChannel` → locale-aware helper                                                      |
+| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                                  |
+| Middleware      | root redirect, optional `Accept-Language`, preference cookie                                         |
+| GraphQL         | pass `languageCode` on public queries                                                                |
+| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired            |
+| Picker          | header market + language UI (footer channel select retired or secondary)                             |
+| SEO             | `hreflang`, canonical; sitemap only via chunked `generateSitemaps` (see `seo-metadata.md` § Sitemap) |
 
 ---
 

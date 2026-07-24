@@ -170,16 +170,16 @@ Details: [`data-caching.md`](../skills/saleor-paper-storefront/rules/data-cachin
 
 ## Backlog (known gaps)
 
-| Item                                 | Notes                                                                             |
-| ------------------------------------ | --------------------------------------------------------------------------------- |
-| Checkout contact/auth/address/Stripe | Done — server-action fallbacks + gateway alerts remain                            |
-| `not-found` / global error pages     | English                                                                           |
-| PLP price filter labels              | Hardcoded USD ranges                                                              |
-| GraphQL error `message` pass-through | Some account/auth API errors stay API language                                    |
-| `TRANSLATION_*` cache invalidation   | Primarily saleor-paper-app (ADR 0004 phase 3)                                     |
-| Localized `/products/` path segments | Not planned — structural segments stay English; entity slugs optional             |
-| `sitemap.ts` / `robots.ts`           | Not shipped — locale×channel + translated-slug alternates still open              |
-| Hardcoded a11y strings               | Gallery / logo / dismiss / Size prefix / market-switch confirm still EN in places |
+| Item                                 | Notes                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Checkout contact/auth/address/Stripe | Done — server-action fallbacks + gateway alerts remain                                                                                                                                                                                                                                                     |
+| `not-found` / global error pages     | English                                                                                                                                                                                                                                                                                                    |
+| PLP price filter labels              | Hardcoded USD ranges                                                                                                                                                                                                                                                                                       |
+| GraphQL error `message` pass-through | Some account/auth API errors stay API language                                                                                                                                                                                                                                                             |
+| `TRANSLATION_*` cache invalidation   | Primarily saleor-paper-app (ADR 0004 phase 3)                                                                                                                                                                                                                                                              |
+| Localized `/products/` path segments | Not planned — structural segments stay English; entity slugs optional                                                                                                                                                                                                                                      |
+| `sitemap.ts` / `robots.ts`           | **Not shipped on purpose for naive dumps.** URL cardinality ≈ catalog × locales × channels; Google ≤50k URLs/file. When implementing: Next `generateSitemaps` index + cursor-paginated chunks, respect `LOCALE_CHANNELS`, cache hard — see `seo-metadata.md` § Sitemap & robots. Prefer `robots.ts` first. |
+| Hardcoded a11y strings               | Gallery / logo / dismiss / Size prefix / market-switch confirm still EN in places                                                                                                                                                                                                                          |
 
 ---
 

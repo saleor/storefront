@@ -49,7 +49,7 @@
  * 1. Delete this module (`src/lib/seo/`)
  * 2. Remove imports from layout.tsx and page files
  * 3. Delete `src/app/api/og/route.tsx` (dynamic OG images)
- * 4. Optionally simplify `src/app/robots.ts`
+ * 4. Optionally add `src/app/robots.ts` / chunked sitemaps (see `seo-metadata.md` § Sitemap — never a monolithic dump)
  */
 
 // Configuration
