@@ -3,10 +3,12 @@ import {
 	CACHE_PROFILES,
 	CACHE_PROFILE_LIST,
 	buildTag,
+	buildStorefrontManifestIdentity,
 	resolveCacheLifeProfileForTag,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
 	resolveCacheProfileForMenuSlug,
+	resolveStorefrontManifestEnvironment,
 	isKnownStorefrontMenuSlug,
 	isChannelLocaleScopedTagProfile,
 	isChannelScopedTagProfile,
@@ -251,5 +253,57 @@ describe("shared catalog tags", () => {
 		expect(resolveCacheLifeProfileForTag("categories")).toBe("catalog");
 		expect(resolveCacheLifeProfileForTag("collections")).toBe("catalog");
 		expect(resolveCacheLifeProfileForTag("pages")).toBe("catalog");
+	});
+});
+
+describe("manifest v6 identity", () => {
+	it("resolves environment from explicit override, then Vercel, then NODE_ENV", () => {
+		expect(
+			resolveStorefrontManifestEnvironment({
+				PAPER_STOREFRONT_ENVIRONMENT: "staging",
+				VERCEL_ENV: "production",
+			}),
+		).toBe("staging");
+		expect(resolveStorefrontManifestEnvironment({ VERCEL_ENV: "preview" })).toBe("preview");
+		expect(resolveStorefrontManifestEnvironment({ NODE_ENV: "development" })).toBe("development");
+	});
+
+	it("does not fall through when an explicit environment override is invalid", () => {
+		expect(
+			resolveStorefrontManifestEnvironment({
+				PAPER_STOREFRONT_ENVIRONMENT: "prod",
+				VERCEL_ENV: "production",
+			}),
+		).toBeUndefined();
+	});
+
+	it("builds identity from Saleor URL and deploy metadata", () => {
+		expect(
+			buildStorefrontManifestIdentity({
+				NEXT_PUBLIC_SALEOR_API_URL: "https://demo.saleor.cloud/graphql/",
+				VERCEL_ENV: "production",
+				VERCEL_DEPLOYMENT_ID: "dpl_abc",
+				VERCEL_GIT_COMMIT_SHA: "deadbeef",
+				VERCEL_GIT_COMMIT_REF: "main",
+			}),
+		).toEqual({
+			saleorApiUrl: "https://demo.saleor.cloud/graphql/",
+			environment: "production",
+			buildId: "dpl_abc",
+			commit: "deadbeef",
+			branch: "main",
+		});
+	});
+
+	it("canonicalizes Saleor API URL with a trailing slash", () => {
+		expect(
+			buildStorefrontManifestIdentity({
+				NEXT_PUBLIC_SALEOR_API_URL: "https://demo.saleor.cloud/graphql",
+			}),
+		).toEqual({ saleorApiUrl: "https://demo.saleor.cloud/graphql/" });
+	});
+
+	it("omits identity when Saleor URL is unset", () => {
+		expect(buildStorefrontManifestIdentity({})).toBeUndefined();
 	});
 });

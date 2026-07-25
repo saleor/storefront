@@ -523,9 +523,90 @@ export function buildPathsForAllLocales(
 // Manifest for /api/cache-info
 // ============================================================================
 
-const MANIFEST_VERSION = 5;
+const MANIFEST_VERSION = 6;
+
+const STOREFRONT_MANIFEST_ENVIRONMENTS = ["production", "preview", "development", "staging"] as const;
+
+/** Manifest v6+ — which Saleor backend this deploy talks to (Paper handshake). */
+export type StorefrontManifestEnvironment = (typeof STOREFRONT_MANIFEST_ENVIRONMENTS)[number];
+
+export interface StorefrontManifestIdentity {
+	saleorApiUrl: string;
+	environment?: StorefrontManifestEnvironment;
+	buildId?: string;
+	commit?: string;
+	branch?: string;
+}
+
+function isStorefrontManifestEnvironment(value: string): value is StorefrontManifestEnvironment {
+	return (STOREFRONT_MANIFEST_ENVIRONMENTS as readonly string[]).includes(value);
+}
+
+/**
+ * Map deploy hints to Paper's environment ladder.
+ * Prefer explicit `PAPER_STOREFRONT_ENVIRONMENT`, then Vercel, then NODE_ENV.
+ *
+ * An explicit but invalid override does **not** fall through — reporting the
+ * wrong ladder rung is worse for the Paper handshake than omitting it.
+ */
+export function resolveStorefrontManifestEnvironment(
+	env: NodeJS.ProcessEnv = process.env,
+): StorefrontManifestEnvironment | undefined {
+	const rawExplicit = env.PAPER_STOREFRONT_ENVIRONMENT?.trim();
+	if (rawExplicit) {
+		const explicit = rawExplicit.toLowerCase();
+		if (isStorefrontManifestEnvironment(explicit)) return explicit;
+		console.warn(
+			`[cache-manifest] Ignoring invalid PAPER_STOREFRONT_ENVIRONMENT="${rawExplicit}". ` +
+				`Expected ${STOREFRONT_MANIFEST_ENVIRONMENTS.join("|")}.`,
+		);
+		return undefined;
+	}
+
+	const vercel = env.VERCEL_ENV?.trim().toLowerCase();
+	// Vercel only emits production|preview|development — never staging.
+	if (vercel === "production" || vercel === "preview" || vercel === "development") {
+		return vercel;
+	}
+
+	if (env.NODE_ENV === "development") return "development";
+	if (env.NODE_ENV === "production") return "production";
+	return undefined;
+}
+
+/** Canonicalize Saleor GraphQL URL for handshake equality (trailing slash). */
+export function normalizeSaleorApiUrlForManifest(url: string): string {
+	return url.endsWith("/") ? url : `${url}/`;
+}
+
+/** Build the v6 identity block from env — omitted when Saleor URL is unset. */
+export function buildStorefrontManifestIdentity(
+	env: NodeJS.ProcessEnv = process.env,
+): StorefrontManifestIdentity | undefined {
+	const rawSaleorApiUrl = env.NEXT_PUBLIC_SALEOR_API_URL?.trim();
+	if (!rawSaleorApiUrl) return undefined;
+
+	const identity: StorefrontManifestIdentity = {
+		saleorApiUrl: normalizeSaleorApiUrlForManifest(rawSaleorApiUrl),
+	};
+	const environment = resolveStorefrontManifestEnvironment(env);
+	if (environment) identity.environment = environment;
+
+	const buildId = env.VERCEL_DEPLOYMENT_ID?.trim();
+	if (buildId) identity.buildId = buildId;
+
+	const commit = env.VERCEL_GIT_COMMIT_SHA?.trim();
+	if (commit) identity.commit = commit;
+
+	const branch = env.VERCEL_GIT_COMMIT_REF?.trim();
+	if (branch) identity.branch = branch;
+
+	return identity;
+}
 
 export function buildManifest() {
+	const identity = buildStorefrontManifestIdentity();
+
 	return {
 		version: MANIFEST_VERSION,
 		cacheLifeTiers: paperCacheLifeProfileDocs,
@@ -541,5 +622,6 @@ export function buildManifest() {
 		defaultLocale: getDefaultLocaleSlug(),
 		channels: getStaticStorefrontChannelSlugs(),
 		menuSlugs: Object.keys(STOREFRONT_MENU_SLUGS),
+		...(identity ? { identity } : {}),
 	};
 }
