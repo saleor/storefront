@@ -7,7 +7,7 @@ import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getPageData } from "@/lib/catalog/get-page-data";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
-import { buildBrowsePageMetadata } from "@/lib/seo";
+import { buildBrowsePageMetadata, resolveSeoDescription } from "@/lib/seo";
 import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
 
 const parser = edjsHTML();
@@ -20,7 +20,13 @@ export const generateMetadata = async (props: {
 
 	return buildBrowsePageMetadata({
 		title: page?.seoTitle || page?.title || "Page",
-		description: page?.seoDescription || page?.title,
+		description: page
+			? resolveSeoDescription({
+					seoDescription: page.seoDescription,
+					body: page.content,
+					fallbackName: page.title,
+				})
+			: undefined,
 		locale: params.locale,
 		channel: params.channel,
 		pathSuffix: page ? catalogPathSuffix("pages", page) : `/pages/${encodeURIComponent(params.slug)}`,

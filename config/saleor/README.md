@@ -99,6 +99,8 @@ config/saleor/fixtures/translations/
   fr.yaml
   fi.yaml
   nb.yaml   # Norwegian Bokmål — Saleor enum NB
+  ja.yaml
+  ko.yaml
 ```
 
 Each file maps `page slug → attribute slug → translated plain text`. Policy placeholders (`{freeShippingThreshold}`, `{returnsWindowDays}`, `{amount}`, `{label}`) must be preserved. Apply with `pnpm configurator:storefront-content:translations` (GraphQL `attributeValueTranslate` — not supported by Configurator itself).
