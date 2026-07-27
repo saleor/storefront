@@ -6,7 +6,7 @@ describe("buildLocaleHreflangAlternates", () => {
 		vi.unstubAllEnvs();
 	});
 
-	it("builds per-locale URLs for a fixed channel", () => {
+	it("builds language-only hreflang keys when locale×channel pairs are unset", () => {
 		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,pl");
 		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");
 		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel");
@@ -18,15 +18,16 @@ describe("buildLocaleHreflangAlternates", () => {
 		});
 	});
 
-	it("uses paired channels when NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS is configured", () => {
-		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,pl");
+	it("uses paired channels and region-aware keys when LOCALE_CHANNELS is configured", () => {
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALES", "en,pl,ja");
 		vi.stubEnv("NEXT_PUBLIC_DEFAULT_CHANNEL", "default-channel");
-		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel,channel-pln");
-		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS", "en:default-channel,pl:channel-pln");
+		vi.stubEnv("STOREFRONT_CHANNELS", "default-channel,channel-pln,japan");
+		vi.stubEnv("NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS", "en:default-channel,pl:channel-pln,ja:japan");
 
 		expect(buildLocaleHreflangAlternates("default-channel", "/products/hoodie")).toEqual({
-			en: "/en/default-channel/products/hoodie",
-			pl: "/pl/channel-pln/products/hoodie",
+			"en-US": "/en/default-channel/products/hoodie",
+			"pl-PL": "/pl/channel-pln/products/hoodie",
+			"ja-JP": "/ja/japan/products/hoodie",
 			"x-default": "/en/default-channel/products/hoodie",
 		});
 	});

@@ -15,7 +15,12 @@ import { getProductData } from "@/lib/catalog/get-product-data";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { buildPolicyLabelValues } from "@/lib/content";
 import { getStorefrontContent } from "@/lib/content/server";
-import { buildBrowsePageMetadata, buildProductJsonLd, jsonLdScriptProps } from "@/lib/seo";
+import {
+	buildBrowsePageMetadata,
+	buildProductJsonLd,
+	jsonLdScriptProps,
+	resolveSeoDescription,
+} from "@/lib/seo";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller, BESTSELLER_ATTRIBUTE_SLUGS } from "@/lib/catalog/product-flags";
@@ -49,10 +54,14 @@ export async function generateMetadata(props: {
 		return { title: "Product Not Found" };
 	}
 
-	const description = product.seoDescription || product.name;
+	// Translated description (Editor.js → plain text) so meta/OG never collapse to the
+	// bare product name when the merchant left seoDescription empty.
+	const description = resolveSeoDescription({
+		seoDescription: product.seoDescription,
+		body: product.description,
+		fallbackName: product.name,
+	});
 	const ogImage = product.media?.[0]?.url || product.thumbnail?.url;
-	const priceAmount = product.pricing?.priceRange?.start?.gross?.amount;
-	const priceCurrency = product.pricing?.priceRange?.start?.gross?.currency;
 
 	return buildBrowsePageMetadata({
 		title: product.seoTitle || product.name,
@@ -62,13 +71,10 @@ export async function generateMetadata(props: {
 		channel: params.channel,
 		pathSuffix: catalogPathSuffix("products", product),
 		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
-		openGraph:
-			priceAmount && priceCurrency
-				? {
-						"product:price:amount": String(priceAmount),
-						"product:price:currency": priceCurrency,
-					}
-				: undefined,
+		// Omit openGraph.type — Next rejects `product` (E237). ProductShell hoists
+		// <meta property="og:type" content="product" /> only after the product resolves
+		// (never on the 404 path).
+		ogType: "product",
 	});
 }
 
@@ -161,7 +167,11 @@ async function ProductShell({
 
 	const productJsonLd = buildProductJsonLd({
 		name: product.name,
-		description: product.seoDescription || product.name,
+		description: resolveSeoDescription({
+			seoDescription: product.seoDescription,
+			body: product.description,
+			fallbackName: product.name,
+		}),
 		images: defaultImages.length > 0 ? defaultImages.map((img) => img.url) : undefined,
 		brand: product.category?.name,
 		url: browse(productPath),
@@ -203,6 +213,9 @@ async function ProductShell({
 
 	return (
 		<div className="flex min-h-screen flex-col bg-background">
+			{/* Next rejects openGraph.type "product" (E237). Hoist after the product
+			    exists so missing-slug 404s never advertise og:type=product. */}
+			<meta property="og:type" content="product" />
 			<CatalogIdentityBridge
 				kind="products"
 				primarySlug={product.slug}

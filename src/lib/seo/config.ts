@@ -10,7 +10,6 @@
  */
 
 import { brandConfig } from "@/config/brand";
-import { localeConfig } from "@/config/locale";
 
 export const seoConfig = {
 	/** Site name used in titles and OG tags */
@@ -18,9 +17,6 @@ export const seoConfig = {
 
 	/** Default site description */
 	description: brandConfig.tagline,
-
-	/** Default locale for OG tags */
-	locale: localeConfig.ogLocale,
 
 	/** Twitter/X handle (without @) - set to null to disable */
 	twitterHandle: brandConfig.social.twitter,

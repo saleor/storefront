@@ -44,6 +44,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env.local.*
 # Demo credential dumps (e.g. .env.local.demo) — never commit
 .env*.demo
 
