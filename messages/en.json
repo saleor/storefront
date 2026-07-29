@@ -282,14 +282,17 @@
 			"redirecting": "Redirecting you to the store…"
 		},
 		"confirm": {
-			"confirmingTitle": "Confirming your account",
-			"confirmingBody": "Verifying {email}…",
 			"successTitle": "Account confirmed",
-			"successBody": "Your account for {email} is active. Sign in with the password you created.",
+			"successBody": "Your account for {email} is active.",
 			"signIn": "Sign in",
 			"continueShopping": "Continue shopping",
 			"errorTitle": "Couldn't confirm account",
-			"goToSignIn": "Go to sign in"
+			"goToSignIn": "Go to sign in",
+			"title": "Confirm your account",
+			"body": "Enter the password for {email} to finish confirming your account.",
+			"submit": "Confirm account",
+			"submitting": "Confirming…",
+			"tryAgain": "Try again"
 		},
 		"nav": {
 			"ariaLabel": "Account",

@@ -282,14 +282,17 @@
 			"redirecting": "Ohjataan kauppaan…"
 		},
 		"confirm": {
-			"confirmingTitle": "Vahvistetaan tiliä",
-			"confirmingBody": "Vahvistetaan {email}…",
 			"successTitle": "Tili vahvistettu",
-			"successBody": "Tilisi osoitteelle {email} on aktiivinen. Kirjaudu sisään luomallasi salasanalla.",
+			"successBody": "Tilisi osoitteelle {email} on aktiivinen.",
 			"signIn": "Kirjaudu sisään",
 			"continueShopping": "Jatka ostoksia",
-			"errorTitle": "Tilin vahvistaminen epäonnistui",
-			"goToSignIn": "Siirry kirjautumiseen"
+			"errorTitle": "Tiliä ei voitu vahvistaa",
+			"goToSignIn": "Siirry kirjautumiseen",
+			"title": "Vahvista tilisi",
+			"body": "Viimeistele tilisi vahvistus antamalla salasanasi osoitteelle {email}.",
+			"submit": "Vahvista tili",
+			"submitting": "Vahvistetaan…",
+			"tryAgain": "Yritä uudelleen"
 		},
 		"nav": {
 			"ariaLabel": "Tili",

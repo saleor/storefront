@@ -282,14 +282,17 @@
 			"redirecting": "ストアへ移動しています…"
 		},
 		"confirm": {
-			"confirmingTitle": "アカウントを確認しています",
-			"confirmingBody": "{email} を確認中…",
 			"successTitle": "アカウントを確認しました",
-			"successBody": "{email} のアカウントが有効になりました。作成したパスワードでサインインしてください。",
+			"successBody": "{email} のアカウントが有効になりました。",
 			"signIn": "サインイン",
 			"continueShopping": "買い物を続ける",
 			"errorTitle": "アカウントを確認できませんでした",
-			"goToSignIn": "サインインへ"
+			"goToSignIn": "サインインへ",
+			"title": "アカウントを確認",
+			"body": "{email} のパスワードを入力して、アカウント確認を完了してください。",
+			"submit": "アカウントを確認",
+			"submitting": "確認中…",
+			"tryAgain": "再試行"
 		},
 		"nav": {
 			"ariaLabel": "アカウント",
