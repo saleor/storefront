@@ -282,14 +282,17 @@
 			"redirecting": "Przekierowujemy do sklepu…"
 		},
 		"confirm": {
-			"confirmingTitle": "Potwierdzanie konta",
-			"confirmingBody": "Weryfikacja {email}…",
 			"successTitle": "Konto potwierdzone",
-			"successBody": "Twoje konto dla {email} jest aktywne. Zaloguj się hasłem, które utworzyłeś.",
+			"successBody": "Twoje konto dla {email} jest aktywne.",
 			"signIn": "Zaloguj się",
 			"continueShopping": "Kontynuuj zakupy",
 			"errorTitle": "Nie udało się potwierdzić konta",
-			"goToSignIn": "Przejdź do logowania"
+			"goToSignIn": "Przejdź do logowania",
+			"title": "Potwierdź konto",
+			"body": "Wpisz hasło dla {email}, aby dokończyć potwierdzanie konta.",
+			"submit": "Potwierdź konto",
+			"submitting": "Potwierdzanie…",
+			"tryAgain": "Spróbuj ponownie"
 		},
 		"nav": {
 			"ariaLabel": "Konto",

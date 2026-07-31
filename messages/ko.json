@@ -273,14 +273,17 @@
 			"redirecting": "스토어로 이동 중…"
 		},
 		"confirm": {
-			"confirmingTitle": "계정을 확인하는 중",
-			"confirmingBody": "{email} 확인 중…",
 			"successTitle": "계정이 확인되었습니다",
-			"successBody": "{email} 계정이 활성화되었습니다. 생성한 비밀번호로 로그인하세요.",
+			"successBody": "{email} 계정이 활성화되었습니다.",
 			"signIn": "로그인",
 			"continueShopping": "쇼핑 계속하기",
 			"errorTitle": "계정을 확인할 수 없습니다",
-			"goToSignIn": "로그인하러 가기"
+			"goToSignIn": "로그인으로 이동",
+			"title": "계정 확인",
+			"body": "{email}의 비밀번호를 입력해 계정 확인을 완료하세요.",
+			"submit": "계정 확인",
+			"submitting": "확인 중…",
+			"tryAgain": "다시 시도"
 		},
 		"nav": {
 			"ariaLabel": "계정",

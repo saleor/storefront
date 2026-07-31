@@ -282,14 +282,17 @@
 			"redirecting": "Redirection vers la boutique…"
 		},
 		"confirm": {
-			"confirmingTitle": "Confirmation de votre compte",
-			"confirmingBody": "Vérification de {email}…",
 			"successTitle": "Compte confirmé",
-			"successBody": "Votre compte pour {email} est actif. Connectez-vous avec le mot de passe que vous avez créé.",
+			"successBody": "Votre compte pour {email} est actif.",
 			"signIn": "Se connecter",
-			"continueShopping": "Continuer mes achats",
+			"continueShopping": "Continuer vos achats",
 			"errorTitle": "Impossible de confirmer le compte",
-			"goToSignIn": "Aller à la connexion"
+			"goToSignIn": "Aller à la connexion",
+			"title": "Confirmer votre compte",
+			"body": "Saisissez le mot de passe de {email} pour terminer la confirmation de votre compte.",
+			"submit": "Confirmer le compte",
+			"submitting": "Confirmation…",
+			"tryAgain": "Réessayer"
 		},
 		"nav": {
 			"ariaLabel": "Compte",

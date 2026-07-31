@@ -5,8 +5,8 @@ import type { AuthApiError } from "./auth-api-types";
 import { executeRawGraphQL } from "@/lib/graphql";
 
 const CONFIRM_ACCOUNT_MUTATION = `
-  mutation ConfirmAccount($email: String!, $token: String!) {
-    confirmAccount(email: $email, token: $token) {
+  mutation ConfirmAccount($email: String!, $token: String!, $password: String!) {
+    confirmAccount(email: $email, token: $token, password: $password) {
       user {
         id
         email
@@ -33,10 +33,11 @@ type ConfirmAccountResult = {
 export async function confirmAccountWithToken(
 	email: string,
 	token: string,
+	password: string,
 ): Promise<{ ok: true } | { ok: false; errors: AuthApiError[] }> {
 	const result = await executeRawGraphQL<ConfirmAccountResult>({
 		query: CONFIRM_ACCOUNT_MUTATION,
-		variables: { email, token },
+		variables: { email, token, password },
 	});
 
 	if (!result.ok) {

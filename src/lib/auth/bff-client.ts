@@ -33,11 +33,15 @@ export async function loginWithBff(email: string, password: string): Promise<Aut
 	return data;
 }
 
-export async function confirmAccountWithBff(email: string, token: string): Promise<AuthApiResponse> {
+export async function confirmAccountWithBff(
+	email: string,
+	token: string,
+	password: string,
+): Promise<AuthApiResponse> {
 	const response = await fetch("/api/auth/confirm-account", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ email, token }),
+		body: JSON.stringify({ email, token, password }),
 		credentials: "same-origin",
 	});
 

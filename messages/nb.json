@@ -282,14 +282,17 @@
 			"redirecting": "Omdirigerer deg til butikken…"
 		},
 		"confirm": {
-			"confirmingTitle": "Bekrefter kontoen din",
-			"confirmingBody": "Verifiserer {email}…",
 			"successTitle": "Konto bekreftet",
-			"successBody": "Kontoen din for {email} er aktiv. Logg inn med passordet du opprettet.",
+			"successBody": "Kontoen din for {email} er aktiv.",
 			"signIn": "Logg inn",
 			"continueShopping": "Fortsett å handle",
 			"errorTitle": "Kunne ikke bekrefte konto",
-			"goToSignIn": "Gå til innlogging"
+			"goToSignIn": "Gå til innlogging",
+			"title": "Bekreft kontoen din",
+			"body": "Skriv inn passordet for {email} for å fullføre bekreftelsen av kontoen.",
+			"submit": "Bekreft konto",
+			"submitting": "Bekrefter…",
+			"tryAgain": "Prøv igjen"
 		},
 		"nav": {
 			"ariaLabel": "Konto",
