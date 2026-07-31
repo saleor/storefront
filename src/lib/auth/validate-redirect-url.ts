@@ -1,5 +1,3 @@
-import { headers } from "next/headers";
-
 /**
  * Server-side allowlist for `redirectUrl` values forwarded to Saleor
  * (account confirmation and password reset emails). Clients send
@@ -56,10 +54,10 @@ function isLoopbackOrigin(origin: string): boolean {
 
 /**
  * True when `redirectUrl` is http(s) and its origin matches a configured
- * storefront/checkout/extra origin. In development, loopback request origins
+ * storefront/checkout/extra origin. In development, loopback redirect origins
  * are also accepted for local auth flows.
  */
-export function isAllowedRedirectUrl(redirectUrl: string, requestOrigin?: string | null): boolean {
+export function isAllowedRedirectUrl(redirectUrl: string): boolean {
 	let parsed: URL;
 	try {
 		parsed = new URL(redirectUrl);
@@ -74,31 +72,11 @@ export function isAllowedRedirectUrl(redirectUrl: string, requestOrigin?: string
 	const allowed = configuredOrigins();
 
 	// When in development mode, allows redirecting to localhost
-	// IMPORTANT: this only uses requestOrigin when not in production,
-	//            and uses an allow-list (doesn't allow everything/anything),
+	// IMPORTANT: this only allows loopback origins when not in production.
 	//            This shouldn't be changed as this could allow spoofing.
-	if (process.env.NODE_ENV !== "production" && requestOrigin && isLoopbackOrigin(requestOrigin)) {
-		allowed.push(requestOrigin);
+	if (process.env.NODE_ENV !== "production" && isLoopbackOrigin(parsed.origin)) {
+		allowed.push(parsed.origin);
 	}
 
 	return allowed.includes(parsed.origin);
-}
-
-/**
- * Origin of the current request as the server sees it (proxy-aware).
- * Works in both route handlers and server actions.
- */
-export async function getRequestOrigin(): Promise<string | null> {
-	const headerStore = await headers();
-	const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
-
-	if (!host) {
-		return null;
-	}
-
-	const forwardedProto = headerStore.get("x-forwarded-proto")?.split(",")[0]?.trim();
-	const isLocalHost = host.startsWith("localhost") || host.startsWith("127.");
-	const proto = forwardedProto || (isLocalHost ? "http" : "https");
-
-	return `${proto}://${host}`;
 }

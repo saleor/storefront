@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 	}
 
 	// Reset emails embed this URL — only this deployment's surfaces are allowed.
-	if (!isAllowedRedirectUrl(redirectUrl, request.nextUrl.origin)) {
+	if (!isAllowedRedirectUrl(redirectUrl)) {
 		console.warn(
 			"Received an invalid redirection URL for password reset. " +
 				"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +

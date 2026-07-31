@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 	}
 
 	// Confirmation emails embed this URL — only this deployment's surfaces are allowed.
-	if (redirectUrl && !isAllowedRedirectUrl(redirectUrl, request.nextUrl.origin)) {
+	if (redirectUrl && !isAllowedRedirectUrl(redirectUrl)) {
 		console.warn(
 			"Received an invalid redirection URL for password reset. " +
 				"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +

@@ -88,7 +88,7 @@ import { getCheckoutServerTranslations } from "@/checkout/lib/server/get-checkou
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { checkoutGraphqlLanguageCode } from "@/lib/checkout-locale";
-import { getRequestOrigin, isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
+import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { executeAuthenticatedGraphQL, executePublicGraphQL, executeRawGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
 import { saveCheckoutId } from "@/app/actions";
@@ -276,7 +276,7 @@ export async function registerCheckoutAccount(input: {
 	redirectUrl: string;
 }): Promise<SimpleActionResult> {
 	// Confirmation emails embed this URL — reject foreign origins (phishing vector).
-	if (!isAllowedRedirectUrl(input.redirectUrl, await getRequestOrigin())) {
+	if (!isAllowedRedirectUrl(input.redirectUrl)) {
 		const { server: t } = await getCheckoutServerTranslations();
 		console.warn(
 			"Received an invalid redirection URL for password reset. " +
@@ -681,7 +681,7 @@ export async function requestCheckoutPasswordReset(input: {
 	redirectUrl: string;
 }): Promise<SimpleActionResult> {
 	// Reset emails embed this URL — reject foreign origins (phishing vector).
-	if (!isAllowedRedirectUrl(input.redirectUrl, await getRequestOrigin())) {
+	if (!isAllowedRedirectUrl(input.redirectUrl)) {
 		const { server: t } = await getCheckoutServerTranslations();
 		console.warn(
 			"Received an invalid redirection URL for password reset. " +
