@@ -5,17 +5,19 @@ import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import {
 	CACHE_PROFILES,
 	buildTag,
-	buildPath,
+	buildPathsForAllLocales,
 	extractMenuSlugFromWebhookPayload,
 	extractPageSlugFromWebhookPayload,
-	isGlobalTagProfile,
-	getChannelScopedTagProfiles,
+	planFullPurgeTagEntries,
 	planMenuRevalidation,
 	planPageRevalidation,
+	planStorefrontContentRevalidation,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
 	type CacheProfile,
 } from "@/lib/cache-manifest";
+import { getStorefrontLocaleSlugs } from "@/config/locale";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { revalidateTags } from "@/lib/revalidate-tags";
 import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
@@ -117,8 +119,15 @@ function revalidateProfile(
 ) {
 	tagEntries.push({ tag: buildTag(profile, { slug, channel }), profile: profile.cacheProfile });
 
-	const path = buildPath(profile, channel, slug);
-	if (path) {
+	for (const path of buildPathsForAllLocales(profile, { channel, slug })) {
+		revalidatePath(path);
+		paths.push(path);
+	}
+}
+
+function revalidateProductListing(channel: string, paths: string[]) {
+	for (const locale of getStorefrontLocaleSlugs()) {
+		const path = buildStorefrontPath(locale, channel, "/products");
 		revalidatePath(path);
 		paths.push(path);
 	}
@@ -207,6 +216,21 @@ export async function POST(request: NextRequest) {
 				revalidatedPaths.push(path);
 			}
 
+			const storefrontPlan = planStorefrontContentRevalidation(
+				plan.slug,
+				storefrontChannels,
+				DefaultChannelSlug,
+			);
+			if (storefrontPlan.action === "revalidate") {
+				tagEntries.push(...storefrontPlan.tags);
+				for (const path of storefrontPlan.paths) {
+					if (!revalidatedPaths.includes(path)) {
+						revalidatePath(path);
+						revalidatedPaths.push(path);
+					}
+				}
+			}
+
 			const revalidatedTags = await revalidateTags(tagEntries);
 			console.log("[Revalidate] Success:", {
 				type,
@@ -230,8 +254,7 @@ export async function POST(request: NextRequest) {
 				if (slug) {
 					revalidateProfile(CACHE_PROFILES.products, targetChannel, slug, tagEntries, revalidatedPaths);
 				}
-				revalidatePath(`/${targetChannel}/products`);
-				revalidatedPaths.push(`/${targetChannel}/products`);
+				revalidateProductListing(targetChannel, revalidatedPaths);
 
 				if (categorySlug) {
 					revalidateProfile(
@@ -257,8 +280,7 @@ export async function POST(request: NextRequest) {
 				break;
 
 			default:
-				revalidatePath(`/${targetChannel}/products`);
-				revalidatedPaths.push(`/${targetChannel}/products`);
+				revalidateProductListing(targetChannel, revalidatedPaths);
 		}
 
 		const revalidatedTags = await revalidateTags(tagEntries);
@@ -325,70 +347,56 @@ export async function GET(request: NextRequest) {
 		return Response.json({ error: "Provide path, tag, and/or all parameter" }, { status: 400 });
 	}
 
-	const revalidatedPaths: string[] = [];
-	const revalidatedTags: string[] = [];
+	try {
+		const revalidatedPaths: string[] = [];
+		const revalidatedTags: string[] = [];
 
-	if (all === "1" || all === "true") {
-		revalidatePath("/", "layout");
-		revalidatedPaths.push("/ (all routes)");
+		if (all === "1" || all === "true") {
+			revalidatePath("/", "layout");
+			revalidatedPaths.push("/ (all routes)");
 
-		const tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }> = [];
-
-		for (const p of Object.values(CACHE_PROFILES)) {
-			if (isGlobalTagProfile(p)) {
-				tagEntries.push({ tag: buildTag(p), profile: p.cacheProfile });
+			const channelSlugs = await getStorefrontChannelSlugs();
+			const tagEntries = planFullPurgeTagEntries(channelSlugs);
+			if (channelSlugs.length === 0) {
+				console.warn(
+					"[Revalidate] Full purge: no channel slugs resolved — channel/locale-scoped tags skipped. " +
+						"Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
+				);
 			}
-		}
 
-		const channelTagProfiles = getChannelScopedTagProfiles();
-		const channelSlugs = await getStorefrontChannelSlugs();
-		if (channelSlugs.length === 0 && channelTagProfiles.length > 0) {
-			console.warn(
-				"[Revalidate] Full purge: no channel slugs resolved — channel-scoped tags skipped. " +
-					"Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
+			revalidatedTags.push(...(await revalidateTags(tagEntries)));
+
+			console.log(
+				"[Revalidate] Full purge:",
+				'revalidatePath("/", "layout") + shared/enumerable tags:',
+				revalidatedTags.join(", ") || "(none)",
 			);
 		}
-		for (const p of channelTagProfiles) {
-			for (const channel of channelSlugs) {
-				tagEntries.push({ tag: buildTag(p, { channel }), profile: p.cacheProfile });
-			}
+
+		if (path) {
+			console.log(
+				`[Revalidate] Path: revalidatePath("${path.replace(/[\r\n]/g, "")}") — invalidates this specific route`,
+			);
+			revalidatePath(path);
+			revalidatedPaths.push(path);
 		}
 
-		revalidatedTags.push(...(await revalidateTags(tagEntries)));
+		if (tagParam) {
+			const tag = resolveManualRevalidateTag(tagParam, channelParam);
+			const profile = resolveRevalidateProfileForTag(tag, profileOverride);
+			console.log(
+				`[Revalidate] Tag: revalidateTag("${tag.replace(
+					/[\r\n]/g,
+					"",
+				)}", "${profile}") — invalidates "use cache" entries with this tag`,
+			);
+			revalidatedTags.push(...(await revalidateTags([{ tag, profile }])));
+		}
 
-		const slugProfiles = Object.values(CACHE_PROFILES)
-			.filter((p) => p.tagPattern.includes("{slug}"))
-			.map((p) => p.id);
-
-		console.log(
-			"[Revalidate] Full purge:",
-			'revalidatePath("/", "layout") invalidates all routes (including slug-based:',
-			slugProfiles.join(", ") + ").",
-			"Also revalidated tags:",
-			revalidatedTags.join(", ") || "(none)",
-		);
+		console.log("[Revalidate] Done:", { paths: revalidatedPaths, tags: revalidatedTags });
+		return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
+	} catch (error) {
+		console.error("[Revalidate] Error:", error);
+		return Response.json({ error: "Revalidation failed" }, { status: 500 });
 	}
-
-	if (path) {
-		console.log(
-			`[Revalidate] Path: revalidatePath("${path.replace(/[\r\n]/g, "")}") — invalidates this specific route`,
-		);
-		revalidatePath(path);
-		revalidatedPaths.push(path);
-	}
-
-	if (tagParam) {
-		const tag = resolveManualRevalidateTag(tagParam, channelParam);
-		const profile = resolveRevalidateProfileForTag(tag, profileOverride);
-		console.log(
-			`[Revalidate] Tag: revalidateTag("${tag.replace(
-				/[\r\n]/g,
-				"",
-			)}", "${profile}") — invalidates "use cache" entries with this tag`,
-		);
-		revalidatedTags.push(...(await revalidateTags([{ tag, profile }])));
-	}
-
-	console.log("[Revalidate] Done:", { paths: revalidatedPaths, tags: revalidatedTags });
-	return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
 }

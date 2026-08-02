@@ -38,7 +38,7 @@ export function ProductGalleryShell({
 						<div
 							key={index}
 							className={cn(
-								"relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-secondary",
+								"relative isolate h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-secondary",
 								index === 0 ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "opacity-60",
 							)}
 						/>

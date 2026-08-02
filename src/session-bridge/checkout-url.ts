@@ -1,6 +1,8 @@
 export type BuildCheckoutPathOptions = {
 	checkoutId: string;
 	step?: string;
+	/** Browse locale slug from `/{locale}/{channel}/…` — synced to checkout via `?locale=`. */
+	browseLocale?: string;
 };
 
 export type BuildOrderConfirmationPathOptions = {
@@ -12,17 +14,22 @@ const urlQueryKeys = {
 	checkout: "checkout",
 	order: "order",
 	step: "step",
+	locale: "locale",
 } as const;
 
 /**
  * Relative checkout path (same-origin Paper deploy).
  */
-export function buildCheckoutPath({ checkoutId, step }: BuildCheckoutPathOptions): string {
+export function buildCheckoutPath({ checkoutId, step, browseLocale }: BuildCheckoutPathOptions): string {
 	const params = new URLSearchParams();
 	params.set(urlQueryKeys.checkout, checkoutId);
 
 	if (step) {
 		params.set(urlQueryKeys.step, step);
+	}
+
+	if (browseLocale) {
+		params.set(urlQueryKeys.locale, browseLocale);
 	}
 
 	return `/checkout?${params.toString()}`;

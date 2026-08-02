@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 import {
 	parseStripeGatewayConfig,
 	STRIPE_GATEWAY_ID,
@@ -16,6 +17,7 @@ type StripeGatewayConfigState =
 
 export function useStripeGatewayConfig(checkout: CheckoutFragment): StripeGatewayConfigState {
 	const [state, setState] = useState<StripeGatewayConfigState>({ status: "loading" });
+	const paymentMessages = useCheckoutPaymentMessages();
 
 	const loadConfig = useCallback(
 		async (options?: { background?: boolean }) => {
@@ -46,7 +48,7 @@ export function useStripeGatewayConfig(checkout: CheckoutFragment): StripeGatewa
 			const stripeConfig = result.data.gatewayConfigs?.find((config) => config.id === STRIPE_GATEWAY_ID);
 			const configErrors = stripeConfig?.errors;
 			if (configErrors?.length) {
-				const message = configErrors[0]?.message ?? "Stripe gateway configuration failed";
+				const message = configErrors[0]?.message ?? paymentMessages.stripeConfigFailed;
 				setState((previous) => {
 					if (options?.background && previous.status === "ready") {
 						return previous;
@@ -59,8 +61,7 @@ export function useStripeGatewayConfig(checkout: CheckoutFragment): StripeGatewa
 
 			const parsed = parseStripeGatewayConfig(stripeConfig?.data);
 			if (!parsed?.stripePublishableKey) {
-				const message =
-					"Stripe publishable key is missing. Check Stripe app configuration in Saleor Dashboard.";
+				const message = paymentMessages.stripeKeyMissing;
 				setState((previous) => {
 					if (options?.background && previous.status === "ready") {
 						return previous;
@@ -73,7 +74,7 @@ export function useStripeGatewayConfig(checkout: CheckoutFragment): StripeGatewa
 
 			setState({ status: "ready", config: parsed });
 		},
-		[checkout.id],
+		[checkout.id, paymentMessages.stripeConfigFailed, paymentMessages.stripeKeyMissing],
 	);
 
 	const previousBillingCountry = useRef(checkout.billingAddress?.country?.code);

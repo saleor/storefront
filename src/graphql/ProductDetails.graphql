@@ -1,17 +1,31 @@
-query ProductDetails($slug: String!, $channel: String!) {
-	product(slug: $slug, channel: $channel) {
+query ProductDetails(
+	$slug: String!
+	$channel: String!
+	$languageCode: LanguageCodeEnum!
+	$slugLanguageCode: LanguageCodeEnum
+) {
+	product(slug: $slug, channel: $channel, slugLanguageCode: $slugLanguageCode) {
 		id
 		name
 		slug
 		description
 		seoTitle
 		seoDescription
-		thumbnail(size: 1024, format: WEBP) {
+		isAvailable
+		translation(languageCode: $languageCode) {
+			name
+			description
+			seoTitle
+			seoDescription
+			slug
+		}
+		...ProductLocaleSlugTranslations
+		thumbnail(size: 2048, format: WEBP) {
 			url
 			alt
 		}
 		media {
-			url(size: 1024, format: WEBP)
+			url(size: 2048, format: WEBP)
 			alt
 			type
 		}
@@ -19,18 +33,63 @@ query ProductDetails($slug: String!, $channel: String!) {
 			id
 			name
 			slug
-		}
-		attributes {
-			values {
-				name
-			}
-			attribute {
+			translation(languageCode: $languageCode) {
 				name
 				slug
 			}
 		}
-		variants {
-			...VariantDetails
+		productType {
+			slug
+		}
+		# Cheap probe for JSON-LD + budget branching (no variant payloads).
+		productVariants(first: 1) {
+			totalCount
+		}
+		# Bestseller merchandising flag — fetch only the boolean by slug (new attribute API).
+		# Slugs must match PRODUCT_FLAG_SLUGS in src/lib/catalog/product-flags.ts.
+		bestseller: assignedAttribute(slug: "bestseller") {
+			... on AssignedBooleanAttribute {
+				value
+			}
+		}
+		pulseBestseller: assignedAttribute(slug: "pulse-bestseller") {
+			... on AssignedBooleanAttribute {
+				value
+			}
+		}
+		# Spec accordion / care copy — typed assignedAttributes (not the deprecated list).
+		assignedAttributes(limit: 50) {
+			attribute {
+				name
+				slug
+				translation(languageCode: $languageCode) {
+					name
+				}
+			}
+			... on AssignedPlainTextAttribute {
+				plainText: value
+				plainTextTranslation: translation(languageCode: $languageCode)
+			}
+			... on AssignedBooleanAttribute {
+				boolean: value
+			}
+			... on AssignedNumericAttribute {
+				numeric: value
+			}
+			... on AssignedSingleChoiceAttribute {
+				choice: value {
+					name
+					slug
+					translation(languageCode: $languageCode)
+				}
+			}
+			... on AssignedMultiChoiceAttribute {
+				choices: value {
+					name
+					slug
+					translation(languageCode: $languageCode)
+				}
+			}
 		}
 		pricing {
 			priceRange {

@@ -1,0 +1,25 @@
+# Paginated PDP variants via productVariants (never the deprecated Product.variants list).
+# Callers page up to PDP_VARIANT_CAP; over-budget products must not hydrate a partial matrix.
+query ProductVariantsForPdp(
+	$slug: String!
+	$channel: String!
+	$languageCode: LanguageCodeEnum!
+	$first: Int!
+	$after: String
+) {
+	product(slug: $slug, channel: $channel) {
+		id
+		productVariants(first: $first, after: $after) {
+			totalCount
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+			edges {
+				node {
+					...VariantDetails
+				}
+			}
+		}
+	}
+}

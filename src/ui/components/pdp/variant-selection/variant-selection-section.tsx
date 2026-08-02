@@ -1,20 +1,20 @@
 "use client";
 
 import { useCallback, useMemo, useEffect, useTransition, useOptimistic } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import type { VariantSelectionSectionProps } from "./types";
 import { VariantSelector } from "./variant-selector";
 import { VariantNameSelector } from "./variant-name-selector";
+import { getInteractiveAttributeGroups, type SaleorVariant } from "./utils";
 import {
-	groupVariantsByAttributes,
-	getInteractiveAttributeGroups,
-	findMatchingVariant,
-	getSelectionsFromVariant,
-	getOptionsForAttribute,
-	getAdjustedSelections,
-	getUnavailableAttributeInfo,
-	type SaleorVariant,
-} from "./utils";
+	buildVariantSelectionIndex,
+	findMatchingVariantFromIndex,
+	getAdjustedSelectionsFromIndex,
+	getOptionsForAttributeFromIndex,
+	getSelectionsFromVariantFromIndex,
+	getUnavailableAttributeInfoFromIndex,
+} from "./selection-index";
 import { defaultRenderers } from "./renderers";
 import type { RendererRegistry } from "./types";
 import { VariantAttributeBadges, extractOptionalAttributes } from "./optional-attributes";
@@ -29,8 +29,8 @@ import { VariantAttributeBadges, extractOptionalAttributes } from "./optional-at
  *
  * ## How it works
  *
- * 1. Groups variants by their attributes (Color, Size, etc.)
- * 2. Shows a selector for each attribute
+ * 1. Builds a selection index once (groups + Map/Set lookups)
+ * 2. Shows a selector for each interactive attribute
  * 3. Tracks selections in URL params (e.g., ?color=black&size=m)
  * 4. When all attributes selected, finds and sets the variant param
  * 5. Updates availability based on other selections (e.g., "XL" grayed out if not available in Black)
@@ -58,10 +58,12 @@ export function VariantSelectionSection({
 	children,
 }: VariantSelectionSectionProps) {
 	const router = useRouter();
+	const { locale } = useParams<{ locale: string; channel: string }>();
 	const searchParams = useSearchParams();
 	const [isPending, startTransition] = useTransition();
 
-	const attributeGroups = useMemo(() => groupVariantsByAttributes(variants as SaleorVariant[]), [variants]);
+	const selectionIndex = useMemo(() => buildVariantSelectionIndex(variants as SaleorVariant[]), [variants]);
+	const attributeGroups = selectionIndex.groups;
 	const interactiveGroups = useMemo(() => getInteractiveAttributeGroups(attributeGroups), [attributeGroups]);
 	const rendererRegistry = useMemo(
 		() => ({ ...defaultRenderers, ...customRenderers }) as RendererRegistry,
@@ -80,11 +82,11 @@ export function VariantSelectionSection({
 		}
 
 		if (Object.keys(selections).length === 0 && selectedVariantId) {
-			return getSelectionsFromVariant(variants as SaleorVariant[], selectedVariantId);
+			return getSelectionsFromVariantFromIndex(selectionIndex, selectedVariantId);
 		}
 
 		return selections;
-	}, [attributeGroups, searchParams, selectedVariantId, variants]);
+	}, [attributeGroups, searchParams, selectedVariantId, selectionIndex]);
 
 	// Optimistic selections: immediately reflect user clicks while navigation is pending.
 	// Without this, selections only update after the server round-trip completes
@@ -96,9 +98,29 @@ export function VariantSelectionSection({
 
 	// Compute the matching variant from optimistic selections
 	const currentVariantId = useMemo(
-		() => findMatchingVariant(variants as SaleorVariant[], optimisticSelections, attributeGroups),
-		[variants, optimisticSelections, attributeGroups],
+		() => findMatchingVariantFromIndex(selectionIndex, optimisticSelections),
+		[selectionIndex, optimisticSelections],
 	);
+
+	// Repair: URL can hold a complete attribute combo without `?variant=` (legacy links,
+	// or a control that painted a value without writing params). Only read committed
+	// URL selections — never optimistic — so this cannot race handleSelect's push.
+	useEffect(() => {
+		const urlMatch = findMatchingVariantFromIndex(selectionIndex, currentSelections);
+		if (!urlMatch) return;
+		if (searchParams.get("variant") === urlMatch) return;
+
+		const params = new URLSearchParams();
+		for (const [slug, value] of Object.entries(currentSelections)) {
+			if (value) params.set(slug, value);
+		}
+		params.set("variant", urlMatch);
+
+		startTransition(() => {
+			const path = `${buildStorefrontPath(locale, channel, `/products/${productSlug}`)}?${params.toString()}`;
+			router.replace(path, { scroll: false });
+		});
+	}, [channel, currentSelections, locale, productSlug, router, searchParams, selectionIndex]);
 
 	const optionalAttributes = useMemo(
 		() => extractOptionalAttributes(variants, currentVariantId),
@@ -108,12 +130,11 @@ export function VariantSelectionSection({
 	// Handle selection change with smart adjustment + optimistic UI
 	const handleSelect = useCallback(
 		(attributeSlug: string, optionId: string) => {
-			const newSelections = getAdjustedSelections(
-				variants as SaleorVariant[],
+			const newSelections = getAdjustedSelectionsFromIndex(
+				selectionIndex,
 				optimisticSelections,
 				attributeSlug,
 				optionId,
-				attributeGroups,
 			);
 
 			const params = new URLSearchParams();
@@ -121,25 +142,26 @@ export function VariantSelectionSection({
 				if (value) params.set(slug, value);
 			}
 
-			const matchingVariantId = findMatchingVariant(
-				variants as SaleorVariant[],
-				newSelections,
-				attributeGroups,
-			);
+			const matchingVariantId = findMatchingVariantFromIndex(selectionIndex, newSelections);
 			if (matchingVariantId) {
 				params.set("variant", matchingVariantId);
 			}
 
 			startTransition(() => {
 				setOptimisticSelections(newSelections);
-				router.push(`/${channel}/products/${productSlug}?${params.toString()}`, { scroll: false });
+				const path = `${buildStorefrontPath(
+					locale,
+					channel,
+					`/products/${productSlug}`,
+				)}?${params.toString()}`;
+				router.push(path, { scroll: false });
 			});
 		},
 		[
 			optimisticSelections,
-			variants,
-			attributeGroups,
+			selectionIndex,
 			channel,
+			locale,
 			productSlug,
 			router,
 			startTransition,
@@ -149,8 +171,8 @@ export function VariantSelectionSection({
 
 	// Check if any attribute group is completely unavailable
 	const unavailableInfo = useMemo(
-		() => getUnavailableAttributeInfo(variants as SaleorVariant[], attributeGroups, optimisticSelections),
-		[variants, attributeGroups, optimisticSelections],
+		() => getUnavailableAttributeInfoFromIndex(selectionIndex, optimisticSelections),
+		[selectionIndex, optimisticSelections],
 	);
 
 	useEffect(() => {
@@ -168,10 +190,15 @@ export function VariantSelectionSection({
 		(variantId: string) => {
 			startTransition(() => {
 				setOptimisticVariantId(variantId);
-				router.push(`/${channel}/products/${productSlug}?variant=${variantId}`, { scroll: false });
+				const path = `${buildStorefrontPath(
+					locale,
+					channel,
+					`/products/${productSlug}`,
+				)}?variant=${variantId}`;
+				router.push(path, { scroll: false });
 			});
 		},
-		[channel, productSlug, router, startTransition, setOptimisticVariantId],
+		[channel, locale, productSlug, router, startTransition, setOptimisticVariantId],
 	);
 
 	if (children) {
@@ -199,12 +226,7 @@ export function VariantSelectionSection({
 	return (
 		<div className="space-y-6 py-2">
 			{interactiveGroups.map((group) => {
-				const options = getOptionsForAttribute(
-					variants as SaleorVariant[],
-					attributeGroups,
-					optimisticSelections,
-					group.slug,
-				);
+				const options = getOptionsForAttributeFromIndex(selectionIndex, optimisticSelections, group.slug);
 
 				const isUnavailable = unavailableInfo?.slug === group.slug;
 				const unavailableMessage = isUnavailable

@@ -7,6 +7,7 @@ vi.mock("@/lib/graphql", () => ({
 
 import {
 	buildFilterVariables,
+	buildProductListingConstraints,
 	buildSortVariables,
 	extractCategoryOptions,
 	extractColorOptions,
@@ -62,6 +63,42 @@ describe("buildFilterVariables", () => {
 		});
 	});
 
+	it("builds attribute filters from color/size facet params via where OR", () => {
+		// buildFilterVariables no longer accepts facets — use listing constraints
+		const result = buildProductListingConstraints({
+			colors: "Black,white",
+			sizes: ["m", "L"],
+		});
+		expect(result.filter).toBeUndefined();
+		expect(result.where).toEqual({
+			AND: [
+				{
+					OR: [
+						{ attributes: [{ slug: "color", values: ["black", "white"] }] },
+						{ attributes: [{ slug: "colour", values: ["black", "white"] }] },
+					],
+				},
+				{
+					OR: [
+						{ attributes: [{ slug: "size", values: ["l", "m"] }] },
+						{ attributes: [{ slug: "shoe-size", values: ["l", "m"] }] },
+						{ attributes: [{ slug: "clothing-size", values: ["l", "m"] }] },
+					],
+				},
+			],
+		});
+	});
+
+	it("sorts facet value slugs for stable cache keys", () => {
+		const result = buildProductListingConstraints({ colors: ["zebra", "amber"] });
+		expect(result.where).toEqual({
+			OR: [
+				{ attributes: [{ slug: "color", values: ["amber", "zebra"] }] },
+				{ attributes: [{ slug: "colour", values: ["amber", "zebra"] }] },
+			],
+		});
+	});
+
 	it("ignores null priceRange", () => {
 		const result = buildFilterVariables({ priceRange: null });
 		expect(result).toBeUndefined();
@@ -70,6 +107,57 @@ describe("buildFilterVariables", () => {
 	it("ignores empty categoryIds array", () => {
 		const result = buildFilterVariables({ categoryIds: [] });
 		expect(result).toBeUndefined();
+	});
+});
+
+// =============================================================================
+// buildProductListingConstraints (filter XOR where)
+// =============================================================================
+describe("buildProductListingConstraints", () => {
+	it("uses filter for price/categories without attribute facets", () => {
+		const result = buildProductListingConstraints({
+			categoryIds: ["cat-1"],
+			priceRange: "50-100",
+		});
+		expect(result).toEqual({
+			filter: {
+				categories: ["cat-1"],
+				price: { gte: 50, lte: 100 },
+			},
+		});
+		expect(result.where).toBeUndefined();
+	});
+
+	it("uses where with OR across size aliases (shoe-size)", () => {
+		const result = buildProductListingConstraints({ sizes: "43" });
+		expect(result.filter).toBeUndefined();
+		expect(result.where).toEqual({
+			OR: [
+				{ attributes: [{ slug: "size", values: ["43"] }] },
+				{ attributes: [{ slug: "shoe-size", values: ["43"] }] },
+				{ attributes: [{ slug: "clothing-size", values: ["43"] }] },
+			],
+		});
+	});
+
+	it("ANDs price into where when facets are selected", () => {
+		const result = buildProductListingConstraints({
+			priceRange: "0-200",
+			sizes: ["43"],
+		});
+		expect(result.filter).toBeUndefined();
+		expect(result.where).toEqual({
+			AND: [
+				{ price: { range: { gte: 0, lte: 200 } } },
+				{
+					OR: [
+						{ attributes: [{ slug: "size", values: ["43"] }] },
+						{ attributes: [{ slug: "shoe-size", values: ["43"] }] },
+						{ attributes: [{ slug: "clothing-size", values: ["43"] }] },
+					],
+				},
+			],
+		});
 	});
 });
 
@@ -187,8 +275,16 @@ describe("extractColorOptions", () => {
 	it("always includes selected colors even with count 0", () => {
 		const result = extractColorOptions(sampleProducts, ["Purple", "Green"]);
 
-		expect(result.find((c) => c.name === "Purple")).toEqual({ name: "Purple", count: 0 });
-		expect(result.find((c) => c.name === "Green")).toEqual({ name: "Green", count: 0 });
+		expect(result.find((c) => c.value === "purple")).toEqual({
+			name: "Purple",
+			value: "purple",
+			count: 0,
+		});
+		expect(result.find((c) => c.value === "green")).toEqual({
+			name: "Green",
+			value: "green",
+			count: 0,
+		});
 	});
 
 	it("preserves selected colors that exist in products", () => {
@@ -222,7 +318,11 @@ describe("extractSizeOptions", () => {
 	it("always includes selected sizes even with count 0", () => {
 		const result = extractSizeOptions(sampleProducts, ["XXXL"]);
 
-		expect(result.find((s) => s.name === "XXXL")).toEqual({ name: "XXXL", count: 0 });
+		expect(result.find((s) => s.value === "xxxl")).toEqual({
+			name: "XXXL",
+			value: "xxxl",
+			count: 0,
+		});
 	});
 
 	it("handles numeric sizes (jeans, shoes)", () => {
@@ -341,11 +441,14 @@ describe("buildActiveFilters", () => {
 	});
 
 	it("builds color filters", () => {
-		const result = buildActiveFilters({ colors: ["Black", "White"] });
+		const result = buildActiveFilters({
+			colors: ["Black", "White"],
+			colorLabels: { black: "Black", white: "White" },
+		});
 
 		expect(result).toEqual([
-			{ key: "color", label: "Color", value: "Black" },
-			{ key: "color", label: "Color", value: "White" },
+			{ key: "color", label: "Color", value: "black", displayValue: "Black" },
+			{ key: "color", label: "Color", value: "white", displayValue: "White" },
 		]);
 	});
 
@@ -353,8 +456,8 @@ describe("buildActiveFilters", () => {
 		const result = buildActiveFilters({ sizes: ["S", "M"] });
 
 		expect(result).toEqual([
-			{ key: "size", label: "Size", value: "S" },
-			{ key: "size", label: "Size", value: "M" },
+			{ key: "size", label: "Size", value: "s", displayValue: "S" },
+			{ key: "size", label: "Size", value: "m", displayValue: "M" },
 		]);
 	});
 

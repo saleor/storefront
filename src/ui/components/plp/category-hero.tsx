@@ -1,22 +1,26 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { cn } from "@/lib/utils";
+import { Breadcrumbs, type BreadcrumbItem } from "@/ui/components/breadcrumbs";
 import { WavePattern } from "./wave-pattern";
 
-interface BreadcrumbItem {
-	label: string;
-	href: string;
-}
+export type { BreadcrumbItem };
 
 interface CategoryHeroProps {
 	title: string;
 	description?: string | null;
 	backgroundImage?: string | null;
 	breadcrumbs: BreadcrumbItem[];
+	breadcrumbAriaLabel: string;
 }
 
-export function CategoryHero({ title, description, backgroundImage, breadcrumbs }: CategoryHeroProps) {
+export function CategoryHero({
+	title,
+	description,
+	backgroundImage,
+	breadcrumbs,
+	breadcrumbAriaLabel,
+}: CategoryHeroProps) {
 	const hasImage = !!backgroundImage;
 
 	return (
@@ -34,54 +38,31 @@ export function CategoryHero({ title, description, backgroundImage, breadcrumbs 
 							quality={PRODUCT_IMAGE_QUALITY}
 							priority
 						/>
-						<div className="from-foreground/70 via-foreground/40 absolute inset-0 bg-gradient-to-r to-transparent" />
+						<div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/40 to-transparent" />
 					</>
 				) : (
 					<WavePattern className="h-full w-full" />
 				)}
 			</div>
 
-			{/* Content - text colors adapt based on background */}
-			<div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-10 sm:px-6 lg:px-8">
-				{/* Breadcrumbs */}
-				<nav
-					className={`mb-4 flex items-center gap-1.5 text-sm ${
-						hasImage ? "text-background/70" : "text-muted-foreground"
-					}`}
-				>
-					{breadcrumbs.map((crumb, index) => (
-						<span key={crumb.href} className="flex items-center gap-1.5">
-							{index > 0 && <ChevronRight className="h-3.5 w-3.5" />}
-							{index === breadcrumbs.length - 1 ? (
-								<span className={`font-medium ${hasImage ? "text-background" : "text-foreground"}`}>
-									{crumb.label}
-								</span>
-							) : (
-								<Link
-									href={crumb.href}
-									className={`transition-colors ${
-										hasImage ? "hover:text-background" : "hover:text-foreground"
-									}`}
-								>
-									{crumb.label}
-								</Link>
-							)}
-						</span>
-					))}
-				</nav>
+			{/* Content */}
+			<div className="container-content relative flex h-full flex-col justify-end pb-10">
+				<Breadcrumbs
+					items={breadcrumbs}
+					ariaLabel={breadcrumbAriaLabel}
+					surface={hasImage ? "pill" : "default"}
+					className="mb-4"
+				/>
 
-				<h1
-					className={`text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl ${
-						hasImage ? "text-background" : "text-foreground"
-					}`}
-				>
+				<h1 className={cn("text-balance text-h1", hasImage ? "text-background" : "text-foreground")}>
 					{title}
 				</h1>
 				{description && (
 					<p
-						className={`mt-3 max-w-lg text-base md:text-lg ${
-							hasImage ? "text-background/80" : "text-muted-foreground"
-						}`}
+						className={cn(
+							"mt-5 max-w-lg text-pretty text-lead",
+							hasImage ? "text-background" : "text-muted-foreground",
+						)}
 					>
 						{description}
 					</p>

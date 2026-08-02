@@ -26,7 +26,12 @@ describe("confirmAccountWithToken", () => {
 			},
 		});
 
-		await expect(confirmAccountWithToken("user@example.com", "token")).resolves.toEqual({ ok: true });
+		await expect(confirmAccountWithToken("user@example.com", "token", "secret")).resolves.toEqual({ ok: true });
+		expect(executeRawGraphQL).toHaveBeenCalledWith(
+			expect.objectContaining({
+				variables: { email: "user@example.com", token: "token", password: "secret" },
+			}),
+		);
 	});
 
 	it("maps Saleor validation errors", async () => {
@@ -40,7 +45,7 @@ describe("confirmAccountWithToken", () => {
 			},
 		});
 
-		await expect(confirmAccountWithToken("user@example.com", "bad")).resolves.toEqual({
+		await expect(confirmAccountWithToken("user@example.com", "bad", "secret")).resolves.toEqual({
 			ok: false,
 			errors: [{ message: "Invalid token", code: "INVALID_TOKEN" }],
 		});

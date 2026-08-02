@@ -1,0 +1,52 @@
+# Japanese storefront model translations (Saleor LanguageCodeEnum: JA)
+languageCode: JA
+
+pages:
+  storefront-chrome:
+    announcement-message: "{freeShippingThreshold}以上で送料無料"
+    nav-all-products-label: "すべて"
+    nav-view-all-label: "{label}をすべて見る"
+
+  storefront-products:
+    listing-title: "すべての商品"
+    listing-description: "厳選されたプレミアム商品のコレクションをご覧ください。"
+
+  storefront-homepage:
+    hero-heading: "コレクションを見る"
+    hero-subheading: "卓越した品質のプレミアム商品。丁寧に選んだセレクションをお楽しみください。"
+    hero-cta-label: "すべて見る"
+    featured-heading: "おすすめ商品"
+    brand-story-heading: "実際のコマースのために設計"
+    brand-story-paragraph-1: "PaperはSaleor向けのミニマルで本番運用可能なストアフロントです — 白紙のように清潔で、すぐにデプロイできます。"
+    brand-story-paragraph-2: "コードでセクションをカスタマイズし、カタログをつなぎ、実績のあるカート・チェックアウト・商品ページをそのまま活用できます。"
+    values-heading: "選ばれる理由"
+    values-column-1-title: "厳選された品質"
+    values-column-1-text: "どの商品も流行ではなく、職人技と耐久性を基準に選びます。"
+    values-column-2-title: "スピーディーな配送"
+    values-column-2-text: "ご注文は地域倉庫から発送され、決済から配送まで追跡できます。"
+    values-column-3-title: "かんたん返品"
+    values-column-3-text: "{returnsWindowDays}日以内の負担の少ない返品。販売する商品に責任を持ちます。"
+    editorial-heading: "長く使えるように設計"
+    editorial-paragraph-1: "吟味した素材と時代を超えるシルエット — シーズンを超えて手に取れるアイテム。"
+    editorial-cta-label: "コレクションを見る"
+
+  storefront-cart:
+    empty-title: "カートは空です"
+    empty-body: "まだ商品が追加されていません。"
+    empty-cta-label: "ショッピングを始める"
+    trust-free-shipping-prefix: "送料無料 · 最低"
+    trust-returns-label: "{returnsWindowDays}日返品"
+    drawer-title: "カート"
+    drawer-add-for-free-shipping: "送料無料まであと {amount}"
+    drawer-free-shipping-qualified: "送料無料が適用されます！"
+
+  storefront-checkout:
+    empty-cart-title: "カートは空です"
+    empty-cart-body: "まだ商品が追加されていません。"
+    empty-cart-start-label: "ショッピングを始める"
+    empty-cart-go-back-label: "戻る"
+    empty-session-title: "カートは空です"
+    empty-session-message: "商品を追加してから、戻って決済を完了してください。"
+    marketing-opt-in-label: "お得な情報をメールで受け取る"
+    trust-secure-checkout: "安全な決済"
+    trust-stripe-processor: "決済はStripeで処理されます"

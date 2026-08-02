@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type FC } from "react";
+import { useState, useCallback, useMemo, type FC } from "react";
 import { Truck, Clock, Leaf, ChevronLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,10 +9,15 @@ import { type CheckoutFragment } from "@/checkout/graphql";
 import type { DeliveryOption, ServerCheckout } from "@/checkout/lib/checkout-types";
 import { hasDeliveryProblem } from "@/checkout/lib/delivery-problems";
 import { resolveSelectedDeliveryId } from "@/checkout/lib/shipping-deliveries";
-import { CheckoutSummaryContext, buildShippingSummaryRows } from "./checkout-summary-context";
+import {
+	CheckoutSummaryContext,
+	buildShippingSummaryRows,
+	useCheckoutSummaryLabels,
+} from "./checkout-summary-context";
 import { formatShippingPrice } from "@/checkout/lib/utils/money";
 import { MobileStickyAction } from "./mobile-sticky-action";
-import { getStepNumber } from "./flow";
+import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
+import { useTranslations } from "next-intl";
 
 interface ShippingStepProps {
 	checkout: CheckoutFragment;
@@ -29,6 +34,14 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	onBack,
 	onComplete,
 }) => {
+	const t = useTranslations("checkout");
+	const tActions = useTranslations("checkout.actions");
+	const shippingStep = useCheckoutStepNumber("SHIPPING", true);
+	const summaryLabels = useCheckoutSummaryLabels();
+	const summaryRows = useMemo(
+		() => buildShippingSummaryRows(checkout, summaryLabels),
+		[checkout, summaryLabels],
+	);
 	const hasShippingAddress = !!checkout.shippingAddress;
 	const savedDeliveryId = checkout.delivery?.id;
 
@@ -41,15 +54,13 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 		hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid") &&
 		selectedMethod === savedDeliveryId;
 
-	const summaryRows = buildShippingSummaryRows(checkout);
-
 	const handleSubmit = useCallback(
 		async (event?: React.FormEvent) => {
 			event?.preventDefault();
 			if (isSubmitting) return;
 
 			if (!selectedMethod) {
-				setError("Please select a shipping method");
+				setError(t("errors.selectShippingMethod"));
 				(document.querySelector('input[name="shipping"]') as HTMLElement | null)?.focus();
 				return;
 			}
@@ -61,7 +72,9 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 				if (selectedMethod !== savedDeliveryId) {
 					const result = await updateCheckoutDeliveryMethod(checkout.id, selectedMethod);
 					if (!result.ok) {
-						setError(result.error ?? result.fieldErrors?.[0]?.message ?? "Failed to update shipping method");
+						setError(
+							result.error ?? result.fieldErrors?.[0]?.message ?? t("errors.updateShippingMethodFailed"),
+						);
 						setIsSubmitting(false);
 						return;
 					}
@@ -74,12 +87,16 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 				setIsSubmitting(false);
 			}
 		},
-		[selectedMethod, savedDeliveryId, onComplete, checkout, isSubmitting],
+		[selectedMethod, savedDeliveryId, onComplete, checkout, isSubmitting, t],
 	);
 
 	const showSpinner = isLoadingDeliveries && !isSubmitting && deliveries.length === 0;
 	const canContinue = !isSubmitting && deliveries.length > 0 && !!selectedMethod && !showSpinner;
-	const buttonText = isSubmitting ? "Saving..." : showSpinner ? "Loading..." : "Continue to payment";
+	const buttonText = isSubmitting
+		? tActions("saving")
+		: showSpinner
+			? tActions("loading")
+			: tActions("continueToPayment");
 
 	return (
 		<form className="space-y-8" onSubmit={handleSubmit}>
@@ -95,20 +112,20 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 			) : null}
 
 			<section className="space-y-4">
-				<h2 className="text-lg font-semibold">Shipping method</h2>
+				<h2 className="text-lg font-semibold">{t("shipping.methodTitle")}</h2>
 
 				{error ? <p className="text-sm text-destructive">{error}</p> : null}
 
 				{showSpinner ? (
 					<div className="flex items-center gap-3 rounded-lg border border-border p-4">
 						<div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
-						<p className="text-sm text-muted-foreground">Loading shipping methods...</p>
+						<p className="text-sm text-muted-foreground">{t("shipping.loadingMethods")}</p>
 					</div>
 				) : deliveries.length === 0 ? (
 					<div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
 						<p className="text-sm text-amber-800">
 							{!hasShippingAddress
-								? "Please go back and enter your shipping address first."
+								? t("shipping.noAddressYet")
 								: `No shipping methods available for ${
 										checkout.shippingAddress?.country?.country || "your address"
 									}. Please check your address or contact support.`}
@@ -194,7 +211,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 					className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
 				>
 					<ChevronLeft className="h-4 w-4" />
-					Return to information
+					{tActions("returnToInformation")}
 				</button>
 				<Button type="submit" disabled={!canContinue} className="hidden h-12 px-8 md:flex">
 					{buttonText}
@@ -202,12 +219,12 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 			</div>
 
 			<MobileStickyAction
-				step={getStepNumber("SHIPPING", true)}
+				step={shippingStep}
 				isShippingRequired={true}
 				type="submit"
 				isLoading={showSpinner || isSubmitting}
 				disabled={!canContinue}
-				loadingText={isSubmitting ? "Saving..." : "Loading..."}
+				loadingText={isSubmitting ? tActions("saving") : tActions("loading")}
 			/>
 		</form>
 	);

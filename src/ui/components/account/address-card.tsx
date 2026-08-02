@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { type AddressDetailsFragment } from "@/gql/graphql";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +21,8 @@ export function AccountAddressCard({
 	children,
 	footer,
 }: Props) {
+	const t = useTranslations("account.addresses");
+
 	return (
 		<div className={cn("flex h-full flex-col rounded-lg border p-4", className)}>
 			<div className="flex flex-1 items-start justify-between gap-4">
@@ -28,12 +33,12 @@ export function AccountAddressCard({
 						</span>
 						{isDefaultShipping && (
 							<span className="rounded bg-secondary px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-								Default shipping
+								{t("defaultShipping")}
 							</span>
 						)}
 						{isDefaultBilling && (
 							<span className="rounded bg-secondary px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-								Default billing
+								{t("defaultBilling")}
 							</span>
 						)}
 					</div>

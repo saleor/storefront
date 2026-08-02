@@ -1,0 +1,52 @@
+# German storefront model translations (Saleor LanguageCodeEnum: DE)
+languageCode: DE
+
+pages:
+  storefront-chrome:
+    announcement-message: "Kostenloser Versand ab {freeShippingThreshold}"
+    nav-all-products-label: "Alle"
+    nav-view-all-label: "Alle {label} anzeigen"
+
+  storefront-products:
+    listing-title: "Alle Produkte"
+    listing-description: "Entdecken Sie unsere vollständige Kollektion an Premium-Produkten."
+
+  storefront-homepage:
+    hero-heading: "Entdecken Sie unsere Kollektion"
+    hero-subheading: "Premium-Produkte von außergewöhnlicher Qualität. Entdecken Sie unsere kuratierte Auswahl."
+    hero-cta-label: "Alles shoppen"
+    featured-heading: "Empfohlene Produkte"
+    brand-story-heading: "Für echten Handel gebaut"
+    brand-story-paragraph-1: "Paper ist ein minimaler, produktionsreifer Storefront für Saleor — sauber wie eine leere Seite, bereit zum Start."
+    brand-story-paragraph-2: "Passen Sie Bereiche im Code an, verbinden Sie Ihren Katalog und nutzen Sie erprobte Warenkorb-, Checkout- und Produktseiten."
+    values-heading: "Warum bei uns einkaufen"
+    values-column-1-title: "Kuratierte Qualität"
+    values-column-1-text: "Jedes Produkt wird wegen Handwerk und Langlebigkeit ausgewählt — nicht wegen Trends."
+    values-column-2-title: "Schnelle Abwicklung"
+    values-column-2-text: "Bestellungen werden aus regionalen Lagern mit Sendungsverfolgung vom Checkout bis zur Lieferung versendet."
+    values-column-3-title: "Einfache Rückgaben"
+    values-column-3-text: "Unkomplizierte Rückgaben innerhalb von {returnsWindowDays} Tagen. Wir stehen hinter dem, was wir verkaufen."
+    editorial-heading: "Für die Ewigkeit gemacht"
+    editorial-paragraph-1: "Durchdachte Materialien und zeitlose Silhouetten — Stücke, die Sie Saison für Saison tragen."
+    editorial-cta-label: "Kollektionen entdecken"
+
+  storefront-cart:
+    empty-title: "Ihre Tasche ist leer"
+    empty-body: "Noch keine Artikel hinzugefügt."
+    empty-cta-label: "Einkauf starten"
+    trust-free-shipping-prefix: "Kostenlose Lieferung ab"
+    trust-returns-label: "{returnsWindowDays}-Tage-Rückgabe"
+    drawer-title: "Ihre Tasche"
+    drawer-add-for-free-shipping: "Noch {amount} bis zum kostenlosen Versand"
+    drawer-free-shipping-qualified: "Kostenloser Versand!"
+
+  storefront-checkout:
+    empty-cart-title: "Ihr Warenkorb ist leer"
+    empty-cart-body: "Noch keine Artikel hinzugefügt."
+    empty-cart-start-label: "Einkauf starten"
+    empty-cart-go-back-label: "Zurück"
+    empty-session-title: "Ihr Warenkorb ist leer"
+    empty-session-message: "Artikel hinzufügen und hier zurückkehren."
+    marketing-opt-in-label: "Angebote per E-Mail"
+    trust-secure-checkout: "Sicherer Checkout"
+    trust-stripe-processor: "Zahlungen via Stripe"

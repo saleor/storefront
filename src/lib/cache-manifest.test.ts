@@ -1,17 +1,24 @@
 import { describe, it, expect } from "vitest";
 import {
 	CACHE_PROFILES,
+	CACHE_PROFILE_LIST,
 	buildTag,
+	buildStorefrontManifestIdentity,
 	resolveCacheLifeProfileForTag,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
 	resolveCacheProfileForMenuSlug,
+	resolveStorefrontManifestEnvironment,
 	isKnownStorefrontMenuSlug,
+	isChannelLocaleScopedTagProfile,
+	isChannelScopedTagProfile,
 	extractMenuSlugFromWebhookPayload,
 	extractPageSlugFromWebhookPayload,
 	buildMenuRevalidationTags,
+	planFullPurgeTagEntries,
 	planMenuRevalidation,
 	planPageRevalidation,
+	planStorefrontContentRevalidation,
 } from "./cache-manifest";
 import { PAPER_CACHE_LIFE_PROFILE_NAMES, paperCacheLifeProfiles } from "./cache-life-profiles";
 
@@ -41,6 +48,7 @@ describe("resolveCacheLifeProfileForTag", () => {
 		expect(resolveCacheLifeProfileForTag("footer-menu:us")).toBe("menus");
 		expect(resolveCacheLifeProfileForTag("product:blue-shirt")).toBe("catalog");
 		expect(resolveCacheLifeProfileForTag("page:about-us")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("storefront-content:default-channel:en-US")).toBe("menus");
 		expect(resolveCacheLifeProfileForTag("channels")).toBe("channels");
 	});
 
@@ -146,7 +154,7 @@ describe("page revalidation helpers", () => {
 			slug: "about-us",
 			tag: "page:about-us",
 			profile: "catalog",
-			paths: ["/us/pages/about-us", "/uk/pages/about-us"],
+			paths: ["/en/us/pages/about-us", "/en/uk/pages/about-us"],
 		});
 		expect(planPageRevalidation(undefined, ["us"])).toEqual({
 			action: "skip",
@@ -157,11 +165,145 @@ describe("page revalidation helpers", () => {
 			slug: "about-us",
 			tag: "page:about-us",
 			profile: "catalog",
-			paths: ["/default-channel/pages/about-us"],
+			paths: ["/en/default-channel/pages/about-us"],
 		});
 		expect(planPageRevalidation("about-us", [], null)).toEqual({
 			action: "error",
 			reason: "no_channels",
 		});
+	});
+});
+
+describe("storefront content revalidation helpers", () => {
+	it("skips non-storefront editorial page slugs", () => {
+		expect(planStorefrontContentRevalidation("about-us", ["us"])).toEqual({
+			action: "skip",
+			reason: "not_storefront_singleton",
+		});
+	});
+
+	it("revalidates all channels for global PageType slug", () => {
+		expect(planStorefrontContentRevalidation("storefront-homepage", ["us", "uk"], null)).toEqual({
+			action: "revalidate",
+			tags: [
+				{ tag: "storefront-content:us:en-US", profile: "menus" },
+				{ tag: "storefront-content:uk:en-US", profile: "menus" },
+			],
+			paths: ["/en/us", "/en/uk"],
+		});
+	});
+
+	it("revalidates a single channel for {pageType}-{channel} slug", () => {
+		expect(planStorefrontContentRevalidation("storefront-homepage-us", ["us", "uk"], null)).toEqual({
+			action: "revalidate",
+			tags: [{ tag: "storefront-content:us:en-US", profile: "menus" }],
+			paths: ["/en/us"],
+		});
+	});
+});
+
+describe("full purge tag planning", () => {
+	it("treats storefront-content as channel×locale, not channel-only", () => {
+		expect(isChannelScopedTagProfile(CACHE_PROFILES.storefrontContent)).toBe(false);
+		expect(isChannelLocaleScopedTagProfile(CACHE_PROFILES.storefrontContent)).toBe(true);
+		expect(isChannelScopedTagProfile(CACHE_PROFILES.navigation)).toBe(true);
+		expect(isChannelLocaleScopedTagProfile(CACHE_PROFILES.navigation)).toBe(false);
+	});
+
+	it("expands enumerable tags without throwing on locale placeholders", () => {
+		const tags = planFullPurgeTagEntries(["us", "uk"]).map((e) => e.tag);
+
+		expect(tags).toContain("channels");
+		expect(tags).toContain("navigation:us");
+		expect(tags).toContain("navigation:uk");
+		expect(tags).toContain("footer-menu:us");
+		expect(tags).toContain("footer-menu:uk");
+		expect(tags).toContain("storefront-content:us:en-US");
+		expect(tags).toContain("storefront-content:uk:en-US");
+		expect(tags).toContain("products");
+		expect(tags).toContain("categories");
+		expect(tags).toContain("collections");
+		expect(tags).toContain("pages");
+		expect(tags.some((t) => t.includes("{locale}"))).toBe(false);
+		expect(tags.some((t) => t.startsWith("product:"))).toBe(false);
+	});
+
+	it("includes shared catalog tags even when no channels are configured", () => {
+		expect(planFullPurgeTagEntries([]).map((e) => e.tag)).toEqual([
+			"products",
+			"categories",
+			"collections",
+			"pages",
+			"channels",
+		]);
+	});
+});
+
+describe("shared catalog tags", () => {
+	it("defines sharedTag on every slug-scoped catalog profile", () => {
+		expect(CACHE_PROFILES.products.sharedTag).toBe("products");
+		expect(CACHE_PROFILES.categories.sharedTag).toBe("categories");
+		expect(CACHE_PROFILES.collections.sharedTag).toBe("collections");
+		expect(CACHE_PROFILES.pages.sharedTag).toBe("pages");
+		expect(CACHE_PROFILE_LIST.filter((p) => p.id === "navigation")[0]?.sharedTag).toBeUndefined();
+	});
+
+	it("maps shared tags to the catalog cacheLife tier", () => {
+		expect(resolveCacheLifeProfileForTag("products")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("categories")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("collections")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("pages")).toBe("catalog");
+	});
+});
+
+describe("manifest v6 identity", () => {
+	it("resolves environment from explicit override, then Vercel, then NODE_ENV", () => {
+		expect(
+			resolveStorefrontManifestEnvironment({
+				PAPER_STOREFRONT_ENVIRONMENT: "staging",
+				VERCEL_ENV: "production",
+			}),
+		).toBe("staging");
+		expect(resolveStorefrontManifestEnvironment({ VERCEL_ENV: "preview" })).toBe("preview");
+		expect(resolveStorefrontManifestEnvironment({ NODE_ENV: "development" })).toBe("development");
+	});
+
+	it("does not fall through when an explicit environment override is invalid", () => {
+		expect(
+			resolveStorefrontManifestEnvironment({
+				PAPER_STOREFRONT_ENVIRONMENT: "prod",
+				VERCEL_ENV: "production",
+			}),
+		).toBeUndefined();
+	});
+
+	it("builds identity from Saleor URL and deploy metadata", () => {
+		expect(
+			buildStorefrontManifestIdentity({
+				NEXT_PUBLIC_SALEOR_API_URL: "https://demo.saleor.cloud/graphql/",
+				VERCEL_ENV: "production",
+				VERCEL_DEPLOYMENT_ID: "dpl_abc",
+				VERCEL_GIT_COMMIT_SHA: "deadbeef",
+				VERCEL_GIT_COMMIT_REF: "main",
+			}),
+		).toEqual({
+			saleorApiUrl: "https://demo.saleor.cloud/graphql/",
+			environment: "production",
+			buildId: "dpl_abc",
+			commit: "deadbeef",
+			branch: "main",
+		});
+	});
+
+	it("canonicalizes Saleor API URL with a trailing slash", () => {
+		expect(
+			buildStorefrontManifestIdentity({
+				NEXT_PUBLIC_SALEOR_API_URL: "https://demo.saleor.cloud/graphql",
+			}),
+		).toEqual({ saleorApiUrl: "https://demo.saleor.cloud/graphql/" });
+	});
+
+	it("omits identity when Saleor URL is unset", () => {
+		expect(buildStorefrontManifestIdentity({})).toBeUndefined();
 	});
 });

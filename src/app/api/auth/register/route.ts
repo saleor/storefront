@@ -61,9 +61,17 @@ export async function POST(request: NextRequest) {
 	}
 
 	// Confirmation emails embed this URL — only this deployment's surfaces are allowed.
-	if (redirectUrl && !isAllowedRedirectUrl(redirectUrl, request.nextUrl.origin)) {
+	if (redirectUrl && !isAllowedRedirectUrl(redirectUrl)) {
+		console.warn(
+			"Received an invalid redirection URL for password reset. " +
+				"Make sure to configure NEXT_PUBLIC_STOREFRONT_URL, " +
+				"see https://github.com/saleor/saleor-docs/blob/-/docs/configuration/allowed-origins.md",
+			{ redirectUrl },
+		);
 		return NextResponse.json(
-			{ errors: [{ message: "Invalid redirect URL", code: "INVALID" }] },
+			{
+				errors: [{ message: "Invalid redirect URL. See server logs for more information.", code: "INVALID" }],
+			},
 			{ status: 400 },
 		);
 	}

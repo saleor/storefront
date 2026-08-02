@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
+import { useVariantOptionLabels } from "@/ui/components/pdp/use-variant-option-labels";
 import type { OptionRendererProps } from "../types";
 
 export interface ButtonOptionProps extends OptionRendererProps {
@@ -32,55 +33,59 @@ export function ButtonOption({
 	const isOutOfStock = !option.available;
 	const isIncompatible = option.existsWithCurrentSelection === false && !isSelected;
 	const hasDiscount = option.discountPercent && !isOutOfStock;
+	const labels = useVariantOptionLabels();
 
-	// Build accessible label with context
 	const accessibleParts = [
 		labelPrefix ? `${labelPrefix} ${option.name}` : option.name,
-		isOutOfStock && "out of stock",
-		hasDiscount && `${option.discountPercent}% off`,
+		isOutOfStock && labels.outOfStockA11y(),
+		hasDiscount && labels.percentOffA11y(option.discountPercent!),
 	].filter(Boolean);
 
 	return (
 		<div
 			className={cn(
-				"relative transition-opacity duration-150",
+				"relative p-1",
+				hasDiscount && "pb-2",
+				"transition-opacity duration-150",
 				isPending && "pointer-events-none opacity-60",
 			)}
 			style={{ transitionDelay: isPending ? "100ms" : "0ms" }}
 		>
-			<button
-				type="button"
-				onClick={() => onSelect(option.id)}
-				disabled={isOutOfStock || isPending}
-				aria-disabled={isOutOfStock || isPending}
-				style={{ minWidth }}
-				className={cn(
-					"h-12 rounded-lg border px-4 text-sm font-medium transition-all",
-					"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-					isSelected
-						? "border-foreground bg-foreground text-background"
-						: isIncompatible
-							? "hover:border-muted-foreground/40 border-border text-muted-foreground"
-							: "border-input bg-background text-foreground hover:border-foreground",
-					isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
-				)}
-				title={
-					isOutOfStock
-						? `${option.name} - Out of stock`
-						: isIncompatible
-							? `${option.name} - Will change other selections`
-							: option.discountPercent
-								? `${option.name} - ${option.discountPercent}% off`
-								: undefined
-				}
-				aria-label={accessibleParts.join(", ")}
-				aria-pressed={isSelected}
-			>
-				{option.name}
-			</button>
-			{hasDiscount && option.discountPercent ? (
-				<DiscountPercentLabel percent={option.discountPercent} size="pill" />
-			) : null}
+			<div className="relative w-fit">
+				<button
+					type="button"
+					onClick={() => onSelect(option.id)}
+					disabled={isOutOfStock || isPending}
+					aria-disabled={isOutOfStock || isPending}
+					style={{ minWidth }}
+					className={cn(
+						"inline-flex h-12 items-center justify-center rounded-lg border px-4 text-sm font-medium transition-all",
+						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+						isSelected
+							? "border-foreground bg-foreground text-background"
+							: isIncompatible
+								? "border-border/70 text-muted-foreground/55 hover:border-muted-foreground/40 hover:text-muted-foreground/70"
+								: "border-input bg-background text-foreground hover:border-foreground",
+						isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
+					)}
+					title={
+						isOutOfStock
+							? labels.outOfStockTitle(option.name)
+							: isIncompatible
+								? labels.willChangeSelections(option.name)
+								: option.discountPercent
+									? labels.percentOffTitle(option.name, option.discountPercent)
+									: undefined
+					}
+					aria-label={accessibleParts.join(", ")}
+					aria-pressed={isSelected}
+				>
+					{option.name}
+				</button>
+				{hasDiscount && option.discountPercent ? (
+					<DiscountPercentLabel percent={option.discountPercent} size="pill" />
+				) : null}
+			</div>
 		</div>
 	);
 }

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { useFormStatus } from "react-dom";
+import { useTranslations } from "next-intl";
 import { ShoppingBag } from "lucide-react";
 import { throttle } from "lodash-es";
 import { Button } from "@/ui/components/ui/button";
@@ -35,20 +36,17 @@ interface StickyBarProps {
 
 function StickyAddButton() {
 	const { pending } = useFormStatus();
+	const t = useTranslations("pdp");
 
 	return (
 		<Button
 			type="submit"
 			size="lg"
 			disabled={pending}
-			className={cn(
-				"min-w-[130px] shrink-0",
-				// Override transition to prevent flash on state change
-				"transition-none disabled:opacity-100",
-			)}
+			className={cn("min-w-[130px] shrink-0", "transition-none disabled:opacity-100")}
 		>
 			<ShoppingBag className="h-4 w-4" />
-			{pending ? "Adding..." : "Add to bag"}
+			{pending ? t("adding") : t("addToBag")}
 		</Button>
 	);
 }
@@ -60,7 +58,6 @@ export function StickyBar({ productName, price, show = false }: StickyBarProps) 
 		getServerScrollSnapshot,
 	);
 
-	// Only show if both conditions are met
 	const isVisible = show && scrolledPastThreshold;
 
 	return (
@@ -70,7 +67,7 @@ export function StickyBar({ productName, price, show = false }: StickyBarProps) 
 				isVisible ? "translate-y-0" : "translate-y-full",
 			)}
 		>
-			<div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
+			<div className="container-content flex items-center justify-between gap-4 py-3">
 				<div className="min-w-0 flex-1">
 					<p className="truncate font-medium">{productName}</p>
 					<p className="text-sm text-muted-foreground">{price}</p>

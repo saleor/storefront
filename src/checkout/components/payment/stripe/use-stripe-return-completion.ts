@@ -7,10 +7,9 @@ import {
 	clearPaymentCompleting,
 	isPaymentCompletingOrphaned,
 	markPaymentCompleting,
-	PAYMENT_INTERRUPTED_MESSAGE,
-	PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE,
 	stashPaymentCompletionError,
 } from "@/checkout/lib/payment/checkout-payment-completion";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 import { isCheckoutReadyToComplete } from "@/checkout/lib/payment/checkout-payment-status";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
 import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
@@ -40,6 +39,7 @@ export function useStripeReturnCompletion({
 	onError,
 }: UseStripeReturnCompletionParams) {
 	const searchParams = useSearchParams();
+	const paymentMessages = useCheckoutPaymentMessages();
 	const isProcessingRef = useRef(false);
 	/** Dedupes effect re-runs while Next `searchParams` still reflects the pre-clear return URL. */
 	const returnAttemptRef = useRef<string | null>(null);
@@ -62,10 +62,7 @@ export function useStripeReturnCompletion({
 			returnAttemptRef.current = attemptId;
 
 			if (redirectStatus === "failed") {
-				reportStripeReturnFailure(
-					"Your bank declined the payment. Please try again or use a different card.",
-					onError,
-				);
+				reportStripeReturnFailure(paymentMessages.bankDeclined, onError);
 				return;
 			}
 
@@ -74,7 +71,7 @@ export function useStripeReturnCompletion({
 			const transactionId = transactionIdFromStorage ?? transactionIdFromQuery;
 
 			if (!transactionId) {
-				reportStripeReturnFailure("Payment session expired after redirect. Please try again.", onError);
+				reportStripeReturnFailure(paymentMessages.sessionExpired, onError);
 				return;
 			}
 
@@ -107,10 +104,7 @@ export function useStripeReturnCompletion({
 					}
 
 					if (!resolvedChannelSlug) {
-						reportStripeReturnFailure(
-							"Could not resolve checkout channel after payment. Please contact support.",
-							onError,
-						);
+						reportStripeReturnFailure(paymentMessages.channelUnresolved, onError);
 						return;
 					}
 
@@ -127,7 +121,7 @@ export function useStripeReturnCompletion({
 				} catch (error) {
 					rethrowNextInternalError(error);
 					console.error("Stripe redirect completion failed:", error);
-					reportStripeReturnFailure("An unexpected error occurred while completing your payment.", onError);
+					reportStripeReturnFailure(paymentMessages.unexpectedError, onError);
 				} finally {
 					if (!keepProcessingLock) {
 						isProcessingRef.current = false;
@@ -185,15 +179,15 @@ export function useStripeReturnCompletion({
 				if (!syncResult.ok || !syncResult.checkout) {
 					// Cannot verify: keep the transaction id so the next load retries, exit the
 					// completing screen, and warn against paying again.
-					stashPaymentCompletionError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
+					stashPaymentCompletionError(paymentMessages.verificationUnavailable);
 					clearPaymentCompleting();
-					onError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
+					onError(paymentMessages.verificationUnavailable);
 					return;
 				}
 
 				if (!isCheckoutReadyToComplete(syncResult.checkout)) {
 					// The interrupted attempt never produced an authorization — safe to pay fresh.
-					reportStripeReturnFailure(PAYMENT_INTERRUPTED_MESSAGE, onError);
+					reportStripeReturnFailure(paymentMessages.interruptedBeforeCharge, onError);
 					return;
 				}
 
@@ -209,9 +203,9 @@ export function useStripeReturnCompletion({
 			} catch (error) {
 				rethrowNextInternalError(error);
 				console.error("Resuming interrupted payment failed:", error);
-				stashPaymentCompletionError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
+				stashPaymentCompletionError(paymentMessages.verificationUnavailable);
 				clearPaymentCompleting();
-				onError(PAYMENT_VERIFICATION_UNAVAILABLE_MESSAGE);
+				onError(paymentMessages.verificationUnavailable);
 			} finally {
 				if (!keepProcessingLock) {
 					isProcessingRef.current = false;
@@ -220,5 +214,5 @@ export function useStripeReturnCompletion({
 		};
 
 		void resumeAfterReload();
-	}, [channelSlug, checkoutId, onError, searchParams]);
+	}, [channelSlug, checkoutId, onError, paymentMessages, searchParams]);
 }

@@ -21,8 +21,11 @@ import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import {
 	clearPaymentCompleting,
 	markPaymentCompleting,
+	stashPaymentCompletionError,
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { navigateToOrderConfirmation } from "@/checkout/lib/payment/navigate-to-order";
+import { useCheckoutGatewayMessages } from "@/checkout/hooks/use-checkout-gateway-messages";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 
 type UseCheckoutPaymentParams = {
 	checkout: CheckoutFragment;
@@ -44,6 +47,8 @@ export function useCheckoutPayment({
 	authenticated,
 }: UseCheckoutPaymentParams) {
 	const { refreshCheckout } = useCheckoutData();
+	const paymentMessages = useCheckoutPaymentMessages();
+	const gatewayMessages = useCheckoutGatewayMessages();
 
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
@@ -108,7 +113,7 @@ export function useCheckoutPayment({
 				const liveCheckout = await refreshCheckout();
 				if (!liveCheckout) {
 					setErrors({
-						payment: "Could not refresh checkout totals. Please try again.",
+						payment: paymentMessages.totalsRefreshFailed,
 					});
 					return;
 				}
@@ -116,7 +121,7 @@ export function useCheckoutPayment({
 				const payAmount = getCheckoutPayAmount(liveCheckout);
 				if (payAmount === null) {
 					setErrors({
-						payment: "Checkout total is unavailable. Please refresh the page and try again.",
+						payment: paymentMessages.totalUnavailable,
 					});
 					return;
 				}
@@ -124,7 +129,7 @@ export function useCheckoutPayment({
 				const currency = getCheckoutPayCurrency(liveCheckout);
 				if (!currency) {
 					setErrors({
-						payment: "Checkout currency is unavailable. Please refresh the page and try again.",
+						payment: paymentMessages.currencyUnavailable,
 					});
 					return;
 				}
@@ -137,10 +142,14 @@ export function useCheckoutPayment({
 				setPriceChangeNotice(null);
 				markPaymentCompleting(liveCheckout.id);
 
-				const payResult = await executePayment(provider, {
-					checkoutId: liveCheckout.id,
-					amount: payAmount,
-				});
+				const payResult = await executePayment(
+					provider,
+					{
+						checkoutId: liveCheckout.id,
+						amount: payAmount,
+					},
+					gatewayMessages,
+				);
 
 				if (!payResult.ok) {
 					const nextErrors: Record<string, string> = {};
@@ -152,6 +161,10 @@ export function useCheckoutPayment({
 					}
 					if (!payResult.errorKey && !payResult.fieldErrors) {
 						nextErrors.payment = payResult.error;
+					}
+					const paymentMessage = nextErrors.payment;
+					if (paymentMessage) {
+						stashPaymentCompletionError(paymentMessage);
 					}
 					setErrors(nextErrors);
 					return;
@@ -177,6 +190,8 @@ export function useCheckoutPayment({
 			authenticated,
 			provider,
 			refreshCheckout,
+			paymentMessages,
+			gatewayMessages,
 		],
 	);
 

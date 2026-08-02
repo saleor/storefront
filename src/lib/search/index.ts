@@ -13,3 +13,9 @@ export * from "./types";
 
 // Export Saleor implementation (swap this for other providers)
 export { searchProducts } from "./saleor-provider";
+export {
+	SEARCH_SORT_VALUES,
+	isSearchSortValue,
+	parseSearchSortParam,
+	type SearchSortBy,
+} from "./sort-options";

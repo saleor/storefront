@@ -11,18 +11,33 @@ export interface CheckoutStep {
 	slug: string;
 }
 
+export type CheckoutStepLabels = {
+	information: string;
+	shipping: string;
+	payment: string;
+};
+
+const defaultStepLabels: CheckoutStepLabels = {
+	information: "Information",
+	shipping: "Shipping",
+	payment: "Payment",
+};
+
 /**
  * Single source of truth for SaleorCheckout flow steps.
  * Handles conditional steps (like shipping) based on checkout state.
  */
-export const getCheckoutSteps = (isShippingRequired: boolean): CheckoutStep[] => {
-	const steps: Omit<CheckoutStep, "index">[] = [{ id: "INFO", label: "Information", slug: "contact" }];
+export const getCheckoutSteps = (
+	isShippingRequired: boolean,
+	labels: CheckoutStepLabels = defaultStepLabels,
+): CheckoutStep[] => {
+	const steps: Omit<CheckoutStep, "index">[] = [{ id: "INFO", label: labels.information, slug: "contact" }];
 
 	if (isShippingRequired) {
-		steps.push({ id: "SHIPPING", label: "Shipping", slug: "shipping" });
+		steps.push({ id: "SHIPPING", label: labels.shipping, slug: "shipping" });
 	}
 
-	steps.push({ id: "PAYMENT", label: "Payment", slug: "payment" });
+	steps.push({ id: "PAYMENT", label: labels.payment, slug: "payment" });
 
 	// Add 1-based indices
 	return steps.map((step, i) => ({
@@ -34,8 +49,12 @@ export const getCheckoutSteps = (isShippingRequired: boolean): CheckoutStep[] =>
 /**
  * Get the step number for a specific step type.
  */
-export const getStepNumber = (type: CheckoutStepType, isShippingRequired: boolean): number => {
-	const steps = getCheckoutSteps(isShippingRequired);
+export const getStepNumber = (
+	type: CheckoutStepType,
+	isShippingRequired: boolean,
+	labels: CheckoutStepLabels = defaultStepLabels,
+): number => {
+	const steps = getCheckoutSteps(isShippingRequired, labels);
 	const step = steps.find((s) => s.id === type);
 	return step ? step.index : -1;
 };
@@ -43,16 +62,24 @@ export const getStepNumber = (type: CheckoutStepType, isShippingRequired: boolea
 /**
  * Get the step definition for a given step number.
  */
-export const getStepByNumber = (number: number, isShippingRequired: boolean): CheckoutStep | undefined => {
-	const steps = getCheckoutSteps(isShippingRequired);
+export const getStepByNumber = (
+	number: number,
+	isShippingRequired: boolean,
+	labels: CheckoutStepLabels = defaultStepLabels,
+): CheckoutStep | undefined => {
+	const steps = getCheckoutSteps(isShippingRequired, labels);
 	return steps.find((s) => s.index === number);
 };
 
 /**
  * Get step definition from semantic slug (e.g., "shipping").
  */
-export const getStepBySlug = (slug: string, isShippingRequired: boolean): CheckoutStep | undefined => {
-	const steps = getCheckoutSteps(isShippingRequired);
+export const getStepBySlug = (
+	slug: string,
+	isShippingRequired: boolean,
+	labels: CheckoutStepLabels = defaultStepLabels,
+): CheckoutStep | undefined => {
+	const steps = getCheckoutSteps(isShippingRequired, labels);
 	return steps.find((s) => s.slug === slug);
 };
 
@@ -63,8 +90,9 @@ export const getStepBySlug = (slug: string, isShippingRequired: boolean): Checko
 export const getCurrentStepFromParams = (
 	searchParams: ReadonlyURLSearchParams | URLSearchParams,
 	isShippingRequired: boolean,
+	labels: CheckoutStepLabels = defaultStepLabels,
 ): CheckoutStep => {
-	const steps = getCheckoutSteps(isShippingRequired);
+	const steps = getCheckoutSteps(isShippingRequired, labels);
 
 	// Returning from Stripe 3DS — finish on payment even if step param was dropped.
 	if (searchParams.get("processingPayment") === "true") {

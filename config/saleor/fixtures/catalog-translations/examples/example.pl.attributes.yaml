@@ -1,0 +1,9 @@
+# Polish attribute translations — fictional template only (Saleor LanguageCodeEnum: PL)
+languageCode: PL
+
+attributes:
+  example-attribute:
+    name: "Przykładowy atrybut"
+    values:
+      example-value-a: "Przykładowa wartość A"
+      example-value-b: "Przykładowa wartość B"

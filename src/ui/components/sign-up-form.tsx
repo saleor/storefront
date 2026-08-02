@@ -3,15 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
 import { buildAccountConfirmationRedirectUrl } from "@/lib/auth/account-confirmation-url";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { cn } from "@/lib/utils";
 
 export function SignUpForm() {
-	const params = useParams<{ channel: string }>();
+	const t = useTranslations("account");
+	const params = useParams<{ locale: string; channel: string }>();
 
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
@@ -29,26 +32,24 @@ export function SignUpForm() {
 		e.preventDefault();
 		setError("");
 
-		// Validation
 		if (!email || !validateEmail(email)) {
-			setError("Please enter a valid email address");
+			setError(t("errors.invalidEmail"));
 			return;
 		}
 
 		if (password.length < 8) {
-			setError("Password must be at least 8 characters");
+			setError(t("errors.passwordMinLength"));
 			return;
 		}
 
 		if (password !== confirmPassword) {
-			setError("Passwords do not match");
+			setError(t("errors.passwordsMismatch"));
 			return;
 		}
 
 		setIsSubmitting(true);
 
 		try {
-			// Call Saleor accountRegister mutation
 			const response = await fetch("/api/auth/register", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -58,7 +59,11 @@ export function SignUpForm() {
 					firstName,
 					lastName,
 					channel: params.channel,
-					redirectUrl: buildAccountConfirmationRedirectUrl(window.location.origin, params.channel),
+					redirectUrl: buildAccountConfirmationRedirectUrl(
+						window.location.origin,
+						params.locale,
+						params.channel,
+					),
 				}),
 			});
 
@@ -70,17 +75,16 @@ export function SignUpForm() {
 			if (data.errors?.length) {
 				const err = data.errors[0];
 				if (err.code === "UNIQUE") {
-					setError("An account with this email already exists. Please sign in instead.");
+					setError(t("errors.accountExists"));
 				} else {
-					setError(err.message || "Failed to create account");
+					setError(t("errors.createAccountFailed"));
 				}
 				return;
 			}
 
-			// Success - show confirmation message
 			setSuccess(true);
 		} catch {
-			setError("An error occurred. Please try again.");
+			setError(t("errors.generic"));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -102,13 +106,13 @@ export function SignUpForm() {
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
 							</svg>
 						</div>
-						<h2 className="text-xl font-semibold">Account Created!</h2>
-						<p className="mt-2 text-muted-foreground">Please check your email to verify your account.</p>
+						<h2 className="text-xl font-semibold">{t("signup.successTitle")}</h2>
+						<p className="mt-2 text-muted-foreground">{t("signup.successBody")}</p>
 						<Link
-							href={`/${params.channel}/login`}
+							href={buildStorefrontPath(params.locale, params.channel, "/login")}
 							className="mt-6 inline-block text-sm font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
-							Go to Sign In
+							{t("signup.goToSignIn")}
 						</Link>
 					</div>
 				</div>
@@ -120,14 +124,14 @@ export function SignUpForm() {
 		<div className="mx-auto mt-16 w-full max-w-md">
 			<div className="rounded-lg border border-border bg-card p-8 shadow-sm">
 				<div className="mb-6 text-center">
-					<h1 className="text-2xl font-semibold">Create an Account</h1>
+					<h1 className="text-balance text-h1">{t("signup.title")}</h1>
 					<p className="mt-2 text-sm text-muted-foreground">
-						Already have an account?{" "}
+						{t("signup.hasAccount")}{" "}
 						<Link
-							href={`/${params.channel}/login`}
+							href={buildStorefrontPath(params.locale, params.channel, "/login")}
 							className="font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
-							Sign in
+							{t("signup.signIn")}
 						</Link>
 					</p>
 				</div>
@@ -139,18 +143,17 @@ export function SignUpForm() {
 						</div>
 					)}
 
-					{/* Name fields */}
 					<div className="grid grid-cols-2 gap-4">
 						<div className="space-y-1.5">
 							<Label htmlFor="firstName" className="text-sm font-medium">
-								First name
+								{t("fields.firstName")}
 							</Label>
 							<div className="relative">
 								<User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 								<Input
 									id="firstName"
 									type="text"
-									placeholder="First name"
+									placeholder={t("placeholders.firstName")}
 									autoComplete="given-name"
 									value={firstName}
 									onChange={(e) => setFirstName(e.target.value)}
@@ -160,12 +163,12 @@ export function SignUpForm() {
 						</div>
 						<div className="space-y-1.5">
 							<Label htmlFor="lastName" className="text-sm font-medium">
-								Last name
+								{t("fields.lastName")}
 							</Label>
 							<Input
 								id="lastName"
 								type="text"
-								placeholder="Last name"
+								placeholder={t("placeholders.lastName")}
 								autoComplete="family-name"
 								value={lastName}
 								onChange={(e) => setLastName(e.target.value)}
@@ -174,17 +177,16 @@ export function SignUpForm() {
 						</div>
 					</div>
 
-					{/* Email */}
 					<div className="space-y-1.5">
 						<Label htmlFor="email" className="text-sm font-medium">
-							Email address
+							{t("fields.emailAddress")}
 						</Label>
 						<div className="relative">
 							<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								id="email"
 								type="email"
-								placeholder="you@example.com"
+								placeholder={t("placeholders.email")}
 								autoComplete="email"
 								spellCheck={false}
 								value={email}
@@ -195,17 +197,16 @@ export function SignUpForm() {
 						</div>
 					</div>
 
-					{/* Password */}
 					<div className="space-y-1.5">
 						<Label htmlFor="password" className="text-sm font-medium">
-							Password
+							{t("fields.password")}
 						</Label>
 						<div className="relative">
 							<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								id="password"
 								type={showPassword ? "text" : "password"}
-								placeholder="Minimum 8 characters…"
+								placeholder={t("placeholders.newPasswordMin")}
 								autoComplete="new-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
@@ -216,7 +217,7 @@ export function SignUpForm() {
 							<button
 								type="button"
 								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? "Hide password" : "Show password"}
+								aria-label={showPassword ? t("common.hidePassword") : t("common.showPassword")}
 								className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
 							>
 								{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -224,17 +225,16 @@ export function SignUpForm() {
 						</div>
 					</div>
 
-					{/* Confirm Password */}
 					<div className="space-y-1.5">
 						<Label htmlFor="confirmPassword" className="text-sm font-medium">
-							Confirm password
+							{t("fields.confirmPassword")}
 						</Label>
 						<div className="relative">
 							<Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 							<Input
 								id="confirmPassword"
 								type={showPassword ? "text" : "password"}
-								placeholder="Re-enter your password"
+								placeholder={t("placeholders.reenterPassword")}
 								autoComplete="new-password"
 								value={confirmPassword}
 								onChange={(e) => setConfirmPassword(e.target.value)}
@@ -246,23 +246,27 @@ export function SignUpForm() {
 							/>
 						</div>
 						{confirmPassword && password !== confirmPassword && (
-							<p className="text-sm text-destructive">Passwords do not match</p>
+							<p className="text-sm text-destructive">{t("errors.passwordsMismatch")}</p>
 						)}
 					</div>
 
 					<Button type="submit" disabled={isSubmitting} className="h-12 w-full text-base font-semibold">
-						{isSubmitting ? "Creating account…" : "Create Account"}
+						{isSubmitting ? t("signup.submitting") : t("signup.submit")}
 					</Button>
 
 					<p className="text-center text-xs text-muted-foreground">
-						By creating an account, you agree to our{" "}
-						<Link href="#" className="underline hover:no-underline">
-							Terms of Service
-						</Link>{" "}
-						and{" "}
-						<Link href="#" className="underline hover:no-underline">
-							Privacy Policy
-						</Link>
+						{t.rich("signup.terms", {
+							terms: (chunks) => (
+								<Link href="#" className="underline hover:no-underline">
+									{chunks}
+								</Link>
+							),
+							privacy: (chunks) => (
+								<Link href="#" className="underline hover:no-underline">
+									{chunks}
+								</Link>
+							),
+						})}
 					</p>
 				</form>
 			</div>

@@ -7,7 +7,7 @@ type CheckoutPageShellProps = {
 	step?: number;
 	onStepClick?: (step: number) => void;
 	isShippingRequired?: boolean;
-	/** When set, header logo hard-navigates to `/{channel}` (avoids stale storefront Router Cache). */
+	/** When set, header logo hard-navigates to `/{locale}/{channel}` (avoids stale storefront Router Cache). */
 	storefrontChannel?: string | null;
 };
 

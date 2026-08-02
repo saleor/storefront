@@ -8,6 +8,15 @@ fragment OrderLineFragment on OrderLine {
 	quantity
 	variant {
 		name
+		translation(languageCode: $languageCode) {
+			name
+		}
+		product {
+			name
+			translation(languageCode: $languageCode) {
+				name
+			}
+		}
 		attributes(variantSelection: ALL) {
 			values {
 				name

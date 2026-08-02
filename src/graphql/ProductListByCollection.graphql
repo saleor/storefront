@@ -1,23 +1,34 @@
 query ProductListByCollection(
 	$slug: String!
 	$channel: String!
+	$languageCode: LanguageCodeEnum!
+	$slugLanguageCode: LanguageCodeEnum
 	$first: Int
 	$after: String
 	$sortBy: ProductOrder
 	$filter: ProductFilterInput
+	$where: ProductWhereInput
 ) {
-	collection(slug: $slug, channel: $channel) {
+	collection(slug: $slug, channel: $channel, slugLanguageCode: $slugLanguageCode) {
 		id
 		name
 		slug
 		description
 		seoDescription
 		seoTitle
+		translation(languageCode: $languageCode) {
+			name
+			description
+			seoDescription
+			seoTitle
+			slug
+		}
+		...CollectionLocaleSlugTranslations
 		backgroundImage {
 			url
 			alt
 		}
-		products(first: $first, after: $after, sortBy: $sortBy, filter: $filter) {
+		products(first: $first, after: $after, sortBy: $sortBy, filter: $filter, where: $where) {
 			edges {
 				node {
 					...ProductListItem

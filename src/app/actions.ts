@@ -2,14 +2,19 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { getStaticStorefrontChannelSlugs } from "@/config/channels";
+import { getStorefrontLocaleSlugs } from "@/config/locale";
 import { signOutSession } from "@/lib/auth/bff-server";
 import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
 function revalidateCart(channel: string) {
-	revalidatePath(`/${channel}/cart`);
+	for (const locale of getStorefrontLocaleSlugs()) {
+		revalidatePath(buildStorefrontPath(locale, channel, "/cart"));
+	}
 	revalidateStorefrontChrome(channel);
 }
 
@@ -18,8 +23,22 @@ export async function revalidateStorefrontChromeAction(channel: string) {
 	revalidateStorefrontChrome(channel);
 }
 
+/**
+ * SDK `signOut` only clears cookies for the current NEXT_PUBLIC_SALEOR_API_URL.
+ * Cookies minted against a previously configured Saleor instance keep matching
+ * `hasAuthSession()`'s marker scan, wedging the header in "unavailable" — sweep
+ * every Saleor auth cookie regardless of API URL.
+ */
+async function clearAllSaleorAuthCookies() {
+	const cookieStore = await cookies();
+	for (const cookie of cookieStore.getAll()) {
+		if (cookie.name.includes("saleor_auth")) {
+			cookieStore.delete(cookie.name);
+		}
+	}
+}
+
 export async function logout() {
-	"use server";
 	const cookieStore = await cookies();
 
 	for (const cookie of cookieStore.getAll()) {
@@ -30,6 +49,15 @@ export async function logout() {
 	}
 
 	await signOutSession();
+	await clearAllSaleorAuthCookies();
+
+	for (const channel of getStaticStorefrontChannelSlugs()) {
+		revalidateStorefrontChrome(channel);
+		for (const locale of getStorefrontLocaleSlugs()) {
+			revalidatePath(buildStorefrontPath(locale, channel, "/login"));
+		}
+	}
+
 	revalidatePath("/", "layout");
 	revalidatePath("/checkout");
 }
@@ -46,8 +74,10 @@ export async function saveCheckoutId(channel: string, checkoutId: string) {
 export async function clearCheckout(channel: string) {
 	"use server";
 	await Checkout.clearCheckoutCookie(channel);
-	revalidatePath(`/${channel}/cart`);
-	revalidatePath(`/${channel}`, "layout");
+	for (const locale of getStorefrontLocaleSlugs()) {
+		revalidatePath(buildStorefrontPath(locale, channel, "/cart"));
+	}
+	revalidateStorefrontChrome(channel);
 }
 
 export async function deleteCartLine(checkoutId: string, lineId: string, channel: string) {

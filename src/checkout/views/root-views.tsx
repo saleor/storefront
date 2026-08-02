@@ -3,10 +3,13 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { DefaultChannelSlug } from "@/app/config";
+import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import {
 	getEmailAndTokenFromSearchParams,
 	isAccountConfirmationLink,
 } from "@/lib/auth/account-confirmation-url";
+import { useTranslations } from "next-intl";
 import { ConfirmAccountMode } from "@/ui/components/auth/confirm-account-mode";
 import { useCheckoutTransition } from "@/checkout/hooks/use-checkout-transition";
 import type { CheckoutLoadState } from "@/checkout/providers/checkout-data";
@@ -19,6 +22,7 @@ import {
 	PaymentCompletingScreen,
 } from "@/checkout/views/saleor-checkout";
 import { EmptyCartPage } from "@/checkout/views/empty-cart-page";
+import { useCheckoutContent } from "@/lib/content";
 
 function shouldPrioritizeAccountConfirmation(
 	searchParams: URLSearchParams,
@@ -37,6 +41,9 @@ function shouldPrioritizeAccountConfirmation(
 }
 
 export const RootViews = () => {
+	const { emptySession } = useCheckoutContent();
+	const t = useTranslations("checkout.errors");
+	const storefrontLocale = useCheckoutBrowseLocale();
 	const searchParams = useSearchParams();
 	const { loadState, checkout } = useCheckoutData();
 	const transition = useCheckoutTransition();
@@ -50,15 +57,16 @@ export const RootViews = () => {
 
 	if (accountCredentials && shouldPrioritizeAccountConfirmation(searchParams, loadState)) {
 		const channel = checkout?.channel.slug ?? DefaultChannelSlug ?? "default-channel";
-		const signInHref = `/${channel}/login`;
+		const signInHref = buildStorefrontPath(storefrontLocale, channel, "/login");
 
 		return (
 			<ConfirmAccountMode
 				email={accountCredentials.email}
 				token={accountCredentials.token}
+				locale={storefrontLocale}
 				channel={channel}
 				signInHref={signInHref}
-				continueShoppingHref={`/${channel}`}
+				continueShoppingHref={buildStorefrontPath(storefrontLocale, channel)}
 				onConfirmed={() => {
 					const cleaned = createQueryString(searchParams, {
 						accountConfirm: null,
@@ -72,30 +80,15 @@ export const RootViews = () => {
 	}
 
 	if (loadState === "none") {
-		return (
-			<PageNotFound
-				title="Your cart is empty"
-				message="Add items from the store, then return here to complete your purchase."
-			/>
-		);
+		return <PageNotFound title={emptySession.title} message={emptySession.message} />;
 	}
 
 	if (loadState === "not_found") {
-		return (
-			<PageNotFound
-				title="Checkout session expired"
-				message="This cart is no longer available. Add items again to start a new checkout."
-			/>
-		);
+		return <PageNotFound title={t("sessionExpiredTitle")} message={t("sessionExpiredMessage")} />;
 	}
 
 	if (loadState === "error") {
-		return (
-			<PageNotFound
-				title="Couldn't load checkout"
-				message="We had trouble loading your cart. Please try again or start a new checkout from the store."
-			/>
-		);
+		return <PageNotFound title={t("loadFailedTitle")} message={t("loadFailedMessage")} />;
 	}
 
 	if (loadState === "empty") {

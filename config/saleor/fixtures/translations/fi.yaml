@@ -1,0 +1,52 @@
+# Finnish storefront model translations (Saleor LanguageCodeEnum: FI)
+languageCode: FI
+
+pages:
+  storefront-chrome:
+    announcement-message: "Ilmainen toimitus yli {freeShippingThreshold}"
+    nav-all-products-label: "Kaikki"
+    nav-view-all-label: "Näytä kaikki {label}"
+
+  storefront-products:
+    listing-title: "Kaikki tuotteet"
+    listing-description: "Tutustu koko premium-tuotevalikoimaamme."
+
+  storefront-homepage:
+    hero-heading: "Tutustu kokoelmaamme"
+    hero-subheading: "Premium-tuotteita poikkeuksellisella laadulla. Tutustu huolellisesti kuratoituun valikoimaamme."
+    hero-cta-label: "Osta kaikki"
+    featured-heading: "Suositellut tuotteet"
+    brand-story-heading: "Rakennettu oikeaa kauppaa varten"
+    brand-story-paragraph-1: "Paper on minimalistinen, tuotantovalmis myymälä Saleorille — puhdas kuin tyhjä sivu, valmis julkaistavaksi."
+    brand-story-paragraph-2: "Mukauta osioita koodissa, yhdistä katalogisi ja pidä ostoskori-, kassa- ja tuotesivut testattuina valmiina."
+    values-heading: "Miksi ostaa meiltä"
+    values-column-1-title: "Kuratoitu laatu"
+    values-column-1-text: "Jokainen tuote valitaan käsityön ja kestävyyden perusteella — ei trendien perässä."
+    values-column-2-title: "Nopea toimitus"
+    values-column-2-text: "Tilaukset lähtevät alueellisista varastoista seurannalla kassalta toimitukseen."
+    values-column-3-title: "Helppopalautukset"
+    values-column-3-text: "Vaivattomat palautukset {returnsWindowDays} päivän sisällä. Seisomme myymiemme tuotteiden takana."
+    editorial-heading: "Suunniteltu kestämään"
+    editorial-paragraph-1: "Harkitut materiaalit ja ajattomat siluetit — kappaleita, joihin palaat kausi toisensa jälkeen."
+    editorial-cta-label: "Tutustu kokoelmiin"
+
+  storefront-cart:
+    empty-title: "Ostoskorisi on tyhjä"
+    empty-body: "Et ole vielä lisännyt mitään."
+    empty-cta-label: "Aloita ostokset"
+    trust-free-shipping-prefix: "Ilmainen toimitus yli"
+    trust-returns-label: "{returnsWindowDays} päivän palautusoikeus"
+    drawer-title: "Ostoskorisi"
+    drawer-add-for-free-shipping: "Vielä {amount} ilmaiseen toimitukseen"
+    drawer-free-shipping-qualified: "Ilmainen toimitus!"
+
+  storefront-checkout:
+    empty-cart-title: "Ostoskorisi on tyhjä"
+    empty-cart-body: "Et ole vielä lisännyt mitään."
+    empty-cart-start-label: "Aloita ostokset"
+    empty-cart-go-back-label: "Takaisin"
+    empty-session-title: "Ostoskorisi on tyhjä"
+    empty-session-message: "Lisää tuotteita ja palaa viimeistelemään."
+    marketing-opt-in-label: "Tarjoukset sähköpostitse"
+    trust-secure-checkout: "Turvallinen kassa"
+    trust-stripe-processor: "Maksut käsitellään Stripen kautta"

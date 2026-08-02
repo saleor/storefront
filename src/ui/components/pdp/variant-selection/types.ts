@@ -112,12 +112,12 @@ export interface VariantSelectionSectionProps {
 		/** Attributes used for variant selection (color, size, etc.) */
 		selectionAttributes: Array<{
 			attribute: { slug?: string | null; name?: string | null };
-			values: Array<{ name?: string | null; value?: string | null }>;
+			values: Array<{ name?: string | null; slug?: string | null; value?: string | null }>;
 		}>;
 		/** Non-selection attributes (material, brand, etc.) - displayed elsewhere */
 		nonSelectionAttributes?: Array<{
 			attribute: { slug?: string | null; name?: string | null };
-			values: Array<{ name?: string | null; value?: string | null }>;
+			values: Array<{ name?: string | null; slug?: string | null; value?: string | null }>;
 		}>;
 		/** Pricing info for discount detection */
 		pricing?: {

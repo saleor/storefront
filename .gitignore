@@ -21,10 +21,21 @@ src/checkout/graphql/generated/
 # production
 /build
 
+# Local catalog translation work (real slugs — never commit)
+config/saleor/fixtures/catalog-translations/locales/*
+!config/saleor/fixtures/catalog-translations/locales/.gitkeep
+
+# Local-only dev scripts (see scripts/local/README.md)
+scripts/local/*
+!scripts/local/README.md
+
 # misc
 .DS_Store
 *.pem
 .agents/
+
+# Saleor Configurator deploy reports (generated per deploy, env-specific)
+.configurator/reports/
 
 # debug
 npm-debug.log*
@@ -33,6 +44,9 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env.local.*
+# Demo credential dumps (e.g. .env.local.demo) — never commit
+.env*.demo
 
 # vercel
 .vercel
@@ -52,3 +66,6 @@ next-env.d.ts
 
 .idea/
 .pnpm-store
+
+# Internal/marketing docs — keep local, never commit (strategy lives in the brain)
+docs/marketing/

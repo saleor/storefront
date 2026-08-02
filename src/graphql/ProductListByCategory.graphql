@@ -1,23 +1,41 @@
 query ProductListByCategory(
 	$slug: String!
 	$channel: String!
+	$languageCode: LanguageCodeEnum!
+	$slugLanguageCode: LanguageCodeEnum
 	$first: Int
 	$after: String
 	$sortBy: ProductOrder
 	$filter: ProductFilterInput
+	$where: ProductWhereInput
 ) {
-	category(slug: $slug) {
+	category(slug: $slug, slugLanguageCode: $slugLanguageCode) {
 		id
 		name
 		slug
 		description
 		seoDescription
 		seoTitle
+		translation(languageCode: $languageCode) {
+			name
+			description
+			seoDescription
+			seoTitle
+			slug
+		}
+		...CategoryLocaleSlugTranslations
 		backgroundImage {
 			url
 			alt
 		}
-		products(first: $first, after: $after, channel: $channel, sortBy: $sortBy, filter: $filter) {
+		products(
+			first: $first
+			after: $after
+			channel: $channel
+			sortBy: $sortBy
+			filter: $filter
+			where: $where
+		) {
 			edges {
 				node {
 					...ProductListItem

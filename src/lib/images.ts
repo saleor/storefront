@@ -4,11 +4,11 @@
  */
 
 /**
- * Homepage grid: 1 col → 2 col (sm) → 3 col (lg).
- * Accounts for page padding (p-8) so the optimizer does not overshoot vs layout width.
+ * Homepage featured collection grid: 2 col → 4 col (lg).
+ * Pair with ProductGrid desktopColumns={4}.
  */
-export const HOMEPAGE_IMAGE_SIZES =
-	"(max-width: 640px) calc(100vw - 4rem), (max-width: 1024px) calc(50vw - 2rem), calc((min(100vw, 80rem) - 4rem) / 3)";
+export const FEATURED_COLLECTION_IMAGE_SIZES =
+	"(max-width: 1024px) calc((100vw - 3rem) / 2), calc((min(100vw, 80rem) - 4rem - 4.5rem) / 4)";
 
 /**
  * PLP / collection / category grid: 2 col → 3 col (lg).
@@ -22,6 +22,20 @@ export const PLP_HERO_IMAGE_SIZES = "100vw";
 
 /** PDP main gallery: full width on mobile, half viewport on desktop split layout */
 export const PDP_MAIN_IMAGE_SIZES = "(max-width: 768px) 100vw, 50vw";
+
+/**
+ * PDP immersive gallery: full-width square on mobile, height-driven square that
+ * fills the viewport (≈ 60% width) on desktop. Width follows the fixed height,
+ * so request a generously sized variant on large screens.
+ */
+export const PDP_IMMERSIVE_IMAGE_SIZES = "(max-width: 1024px) 100vw, 60vw";
+
+/**
+ * PDP mosaic gallery: all images tiled in a 2-column grid.
+ * Each tile is ~half the gallery column — half viewport on mobile, ~30vw on the
+ * wide editorial column on desktop.
+ */
+export const PDP_MOSAIC_IMAGE_SIZES = "(max-width: 1024px) 50vw, 30vw";
 
 /** PDP desktop thumbnail strip */
 export const PDP_THUMBNAIL_IMAGE_SIZES = "80px";

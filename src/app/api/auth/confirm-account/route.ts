@@ -6,6 +6,7 @@ import { confirmAccountWithToken } from "@/lib/auth/confirm-account";
 interface ConfirmAccountRequest {
 	email: string;
 	token: string;
+	password: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -27,16 +28,16 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const { email, token } = body;
+	const { email, token, password } = body;
 
-	if (!email || !token) {
+	if (!email || !token || !password) {
 		return NextResponse.json(
-			{ errors: [{ message: "Email and token are required", code: "REQUIRED" }] },
+			{ errors: [{ message: "Email, token, and password are required", code: "REQUIRED" }] },
 			{ status: 400 },
 		);
 	}
 
-	const result = await confirmAccountWithToken(email, token);
+	const result = await confirmAccountWithToken(email, token, password);
 
 	if (!result.ok) {
 		return NextResponse.json({ errors: result.errors }, { status: httpStatusForAuthErrors(result.errors) });

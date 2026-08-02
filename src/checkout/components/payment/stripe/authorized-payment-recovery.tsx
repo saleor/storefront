@@ -2,6 +2,7 @@
 
 import { useState, type FC } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { AlertTriangle } from "lucide-react";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { isCheckoutReadyToComplete } from "@/checkout/lib/payment/checkout-payment-status";
@@ -11,6 +12,7 @@ import {
 } from "@/checkout/lib/payment/checkout-payment-completion";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
 import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { Button } from "@/ui/components/ui/button";
 
@@ -22,9 +24,10 @@ type AuthorizedPaymentRecoveryProps = {
 /** Fallback when authorizeStatus is FULL but checkoutComplete did not run. */
 export const AuthorizedPaymentRecovery: FC<AuthorizedPaymentRecoveryProps> = ({ checkout, onError }) => {
 	const searchParams = useSearchParams();
+	const paymentMessages = useCheckoutPaymentMessages();
+	const tActions = useTranslations("checkout.actions");
 	const [isCompleting, setIsCompleting] = useState(false);
 
-	// Hide during automatic Stripe completion — only for manual recovery after a stuck authorize.
 	if (isCheckoutPaymentActive(searchParams)) {
 		return null;
 	}
@@ -47,7 +50,7 @@ export const AuthorizedPaymentRecovery: FC<AuthorizedPaymentRecoveryProps> = ({ 
 		} catch (error) {
 			rethrowNextInternalError(error);
 			console.error("Failed to complete authorized checkout:", error);
-			onError("Could not place your order. Please try again or contact support.");
+			onError(paymentMessages.placeOrderFailed);
 			setIsCompleting(false);
 		}
 	};
@@ -57,11 +60,8 @@ export const AuthorizedPaymentRecovery: FC<AuthorizedPaymentRecoveryProps> = ({ 
 			<AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
 			<div className="flex-1 space-y-3">
 				<div>
-					<p className="font-medium text-amber-900">Payment authorized — place your order</p>
-					<p className="mt-1 text-sm text-amber-800">
-						Your payment is authorized (capture happens when we fulfill the order). Tap below to place your
-						order — you will not be charged again at checkout.
-					</p>
+					<p className="font-medium text-amber-900">{paymentMessages.authorizedTitle}</p>
+					<p className="mt-1 text-sm text-amber-800">{paymentMessages.authorizedBody}</p>
 				</div>
 				<Button
 					type="button"
@@ -72,10 +72,10 @@ export const AuthorizedPaymentRecovery: FC<AuthorizedPaymentRecoveryProps> = ({ 
 					{isCompleting ? (
 						<span className="flex items-center gap-2">
 							<LoadingSpinner />
-							Completing order…
+							{tActions("creatingOrder")}
 						</span>
 					) : (
-						"Complete order"
+						tActions("completeOrder")
 					)}
 				</Button>
 			</div>

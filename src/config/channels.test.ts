@@ -96,13 +96,13 @@ describe("storefront channel config", () => {
 
 	it("builds channel selector options from active storefront channels only", () => {
 		const channels = [
-			{ id: "1", slug: "us", isActive: true, currencyCode: "USD" },
-			{ id: "2", slug: "internal-b2b", isActive: true, currencyCode: "USD" },
-			{ id: "3", slug: "uk", isActive: false, currencyCode: "GBP" },
+			{ id: "1", name: "United States", slug: "us", isActive: true, currencyCode: "USD" },
+			{ id: "2", name: "Internal B2B", slug: "internal-b2b", isActive: true, currencyCode: "USD" },
+			{ id: "3", name: "United Kingdom", slug: "uk", isActive: false, currencyCode: "GBP" },
 		];
 
 		expect(toChannelSelectOptions(channels, ["us", "uk"])).toEqual([
-			{ id: "1", slug: "us", currencyCode: "USD" },
+			{ id: "1", name: "United States", slug: "us", currencyCode: "USD" },
 		]);
 	});
 

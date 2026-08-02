@@ -1,4 +1,4 @@
-query CurrentUserOrderList {
+query CurrentUserOrderList($languageCode: LanguageCodeEnum!) {
 	me {
 		...UserDetails
 		orders(first: 10) {

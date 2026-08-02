@@ -2,6 +2,7 @@
 
 import { type FC } from "react";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { type AddressFragment } from "@/checkout/graphql";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,9 @@ export const AddressCard: FC<AddressCardProps> = ({
 	className,
 	disabled = false,
 }) => {
+	const tAddresses = useTranslations("checkout.addresses");
+	const tCommon = useTranslations("account.common");
+
 	const handleChangeClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onChangeClick?.();
@@ -65,7 +69,7 @@ export const AddressCard: FC<AddressCardProps> = ({
 					</span>
 					{isDefault && (
 						<span className="w-fit rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-							Default
+							{tAddresses("defaultBadge")}
 						</span>
 					)}
 				</div>
@@ -96,7 +100,7 @@ export const AddressCard: FC<AddressCardProps> = ({
 					onClick={handleChangeClick}
 					className="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 				>
-					Change
+					{tCommon("change")}
 					<ChevronRight className="h-4 w-4" />
 				</button>
 			)}

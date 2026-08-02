@@ -1,8 +1,11 @@
-import { FulfillmentStatus, type OrderFullDetailsFragment } from "@/gql/graphql";
+import { type OrderFullDetailsFragment } from "@/gql/graphql";
+import { getTranslations } from "next-intl/server";
+import { resolveLocaleFromSlug } from "@/config/locale";
 import { formatDate } from "@/lib/utils";
 
 type Props = {
 	order: OrderFullDetailsFragment;
+	localeSlug: string;
 };
 
 type TimelineEvent = {
@@ -12,51 +15,32 @@ type TimelineEvent = {
 	isCurrent: boolean;
 };
 
-const fulfillmentLabels: Record<FulfillmentStatus, { label: string; description: string }> = {
-	[FulfillmentStatus.Fulfilled]: { label: "Shipped", description: "Your order has been shipped" },
-	[FulfillmentStatus.Canceled]: {
-		label: "Fulfillment cancelled",
-		description: "Shipment was cancelled",
-	},
-	[FulfillmentStatus.Refunded]: { label: "Refunded", description: "Payment has been refunded" },
-	[FulfillmentStatus.RefundedAndReturned]: {
-		label: "Refunded & Returned",
-		description: "Items returned and refunded",
-	},
-	[FulfillmentStatus.Replaced]: {
-		label: "Replaced",
-		description: "Items have been replaced",
-	},
-	[FulfillmentStatus.Returned]: { label: "Returned", description: "Items have been returned" },
-	[FulfillmentStatus.WaitingForApproval]: {
-		label: "Awaiting approval",
-		description: "Fulfillment is pending approval",
-	},
-};
+export async function OrderTimeline({ order, localeSlug }: Props) {
+	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
+	const t = await getTranslations({ locale: localeSlug, namespace: "account.fulfillment" });
+	const tDetail = await getTranslations({ locale: localeSlug, namespace: "account.orderDetail" });
 
-function buildTimeline(order: OrderFullDetailsFragment): TimelineEvent[] {
 	const events: TimelineEvent[] = [];
 
 	events.push({
-		label: "Order confirmed",
-		description: "Payment confirmed and order placed",
+		label: t("orderConfirmed"),
+		description: t("orderConfirmedDescription"),
 		date: new Date(order.created),
 		isCurrent: false,
 	});
 
 	for (const fulfillment of order.fulfillments) {
-		const config = fulfillmentLabels[fulfillment.status] ?? {
-			label: fulfillment.status,
-			description: "",
-		};
+		const statusKey = fulfillment.status;
+		const label = t(statusKey);
+		const baseDescription = t(`${statusKey}Description`);
 		const itemCount = fulfillment.lines?.reduce((sum, l) => sum + l.quantity, 0) ?? 0;
 		const description =
 			itemCount > 0
-				? `${config.description} (${itemCount} item${itemCount === 1 ? "" : "s"})`
-				: config.description;
+				? t("descriptionWithItems", { description: baseDescription, count: itemCount })
+				: baseDescription;
 
 		events.push({
-			label: config.label,
+			label,
 			description,
 			date: new Date(fulfillment.created),
 			isCurrent: false,
@@ -64,8 +48,8 @@ function buildTimeline(order: OrderFullDetailsFragment): TimelineEvent[] {
 
 		if (fulfillment.trackingNumber) {
 			events.push({
-				label: "Tracking updated",
-				description: `Tracking number: ${fulfillment.trackingNumber}`,
+				label: t("trackingUpdated"),
+				description: t("trackingNumber", { number: fulfillment.trackingNumber }),
 				date: new Date(fulfillment.created),
 				isCurrent: false,
 			});
@@ -78,18 +62,12 @@ function buildTimeline(order: OrderFullDetailsFragment): TimelineEvent[] {
 		events[0].isCurrent = true;
 	}
 
-	return events;
-}
-
-export function OrderTimeline({ order }: Props) {
-	const events = buildTimeline(order);
-
 	if (events.length === 0) return null;
 
 	return (
 		<div className="rounded-xl border">
 			<div className="border-b px-5 py-4">
-				<h2 className="text-sm font-semibold">Order Timeline</h2>
+				<h2 className="text-sm font-semibold">{tDetail("timeline")}</h2>
 			</div>
 			<div className="px-5 py-4">
 				<ol className="relative ml-3 border-l border-border">
@@ -111,7 +89,9 @@ export function OrderTimeline({ order }: Props) {
 								<p className="mt-0.5 text-[13px] text-muted-foreground">{event.description}</p>
 							)}
 							<p className="mt-0.5 text-[13px] text-muted-foreground">
-								<time dateTime={event.date.toISOString()}>{formatDate(event.date)}</time>
+								<time dateTime={event.date.toISOString()}>
+									{formatDate(event.date, undefined, intlLocale)}
+								</time>
 							</p>
 						</li>
 					))}

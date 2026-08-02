@@ -3,13 +3,15 @@
 import { useEffect } from "react";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { navigateToStorefrontHome } from "@/lib/auth";
+import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
 import { CheckCircle, Mail, MapPin, Package, CreditCard } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { useOrder } from "@/checkout/hooks/use-order";
 import { OrderSummary } from "@/checkout/views/saleor-checkout/order-summary";
 import { OrderConfirmationPageShell } from "./order-confirmation-page-shell";
 import { PageNotFound } from "@/checkout/views/page-not-found";
-import { localeConfig } from "@/config/locale";
+import { useTranslations } from "next-intl";
+import { getLocaleDefinition } from "@/config/locale";
 
 /** Format address for display */
 function formatAddress(address: {
@@ -28,6 +30,11 @@ function formatAddress(address: {
  */
 export const OrderConfirmation = () => {
 	const { order } = useOrder();
+	const storefrontLocale = useCheckoutBrowseLocale();
+	const t = useTranslations("checkout.confirmation");
+	const tErrors = useTranslations("checkout.errors");
+	const tActions = useTranslations("checkout.actions");
+	const localeBcp47 = getLocaleDefinition(storefrontLocale)?.bcp47 ?? "en-US";
 
 	useEffect(() => {
 		if (!order?.id) {
@@ -38,19 +45,14 @@ export const OrderConfirmation = () => {
 	}, [order?.id]);
 
 	if (!order) {
-		return (
-			<PageNotFound
-				title="Order not found"
-				message="We couldn't find this order. It may have been removed or the link is invalid."
-			/>
-		);
+		return <PageNotFound title={tErrors("orderNotFoundTitle")} message={tErrors("orderNotFoundMessage")} />;
 	}
 
 	const channel = order.channel?.slug ?? "";
 
 	const estimatedDelivery = new Date();
 	estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
-	const formattedDelivery = estimatedDelivery.toLocaleDateString(localeConfig.default, {
+	const formattedDelivery = estimatedDelivery.toLocaleDateString(localeBcp47, {
 		weekday: "long",
 		month: "long",
 		day: "numeric",
@@ -75,24 +77,22 @@ export const OrderConfirmation = () => {
 										</div>
 									</div>
 									<div>
-										<p className="text-muted-foreground">Order #{order.number}</p>
-										<h1 className="mt-1 text-2xl font-semibold">Thank you for your order!</h1>
+										<p className="text-muted-foreground">{t("orderNumber", { number: order.number })}</p>
+										<h1 className="mt-1 text-balance text-h1">{t("thankYou")}</h1>
 									</div>
 								</div>
 
 								<div className="overflow-hidden rounded-lg border border-border">
 									<div className="bg-secondary/50 border-b border-border p-4">
-										<h2 className="font-semibold">Your order is confirmed</h2>
-										<p className="mt-1 text-sm text-muted-foreground">
-											You&apos;ll receive a confirmation email at {email}
-										</p>
+										<h2 className="font-semibold">{t("confirmedTitle")}</h2>
+										<p className="mt-1 text-sm text-muted-foreground">{t("confirmedEmail", { email })}</p>
 									</div>
 
 									<div className="space-y-4 p-4">
 										<div className="flex items-start gap-3">
 											<Mail className="mt-0.5 h-5 w-5 text-muted-foreground" />
 											<div>
-												<p className="text-sm font-medium">Confirmation email sent</p>
+												<p className="text-sm font-medium">{t("emailSent")}</p>
 												<p className="text-sm text-muted-foreground">{email}</p>
 											</div>
 										</div>
@@ -100,7 +100,7 @@ export const OrderConfirmation = () => {
 											<div className="flex items-start gap-3">
 												<MapPin className="mt-0.5 h-5 w-5 text-muted-foreground" />
 												<div>
-													<p className="text-sm font-medium">Shipping address</p>
+													<p className="text-sm font-medium">{t("shippingAddress")}</p>
 													<p className="text-sm text-muted-foreground">{formatAddress(shippingAddress)}</p>
 												</div>
 											</div>
@@ -109,7 +109,7 @@ export const OrderConfirmation = () => {
 											<div className="flex items-start gap-3">
 												<CreditCard className="mt-0.5 h-5 w-5 text-muted-foreground" />
 												<div>
-													<p className="text-sm font-medium">Billing address</p>
+													<p className="text-sm font-medium">{t("billingAddress")}</p>
 													<p className="text-sm text-muted-foreground">{formatAddress(billingAddress)}</p>
 												</div>
 											</div>
@@ -117,7 +117,7 @@ export const OrderConfirmation = () => {
 										<div className="flex items-start gap-3">
 											<Package className="mt-0.5 h-5 w-5 text-muted-foreground" />
 											<div>
-												<p className="text-sm font-medium">Estimated delivery</p>
+												<p className="text-sm font-medium">{t("estimatedDelivery")}</p>
 												<p className="text-sm text-muted-foreground">{formattedDelivery}</p>
 											</div>
 										</div>
@@ -128,9 +128,9 @@ export const OrderConfirmation = () => {
 									<Button
 										type="button"
 										className="min-w-[200px] px-8"
-										onClick={() => navigateToStorefrontHome(channel)}
+										onClick={() => navigateToStorefrontHome(channel, storefrontLocale)}
 									>
-										Continue shopping
+										{tActions("continueShopping")}
 									</Button>
 								</div>
 							</div>

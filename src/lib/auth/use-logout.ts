@@ -3,10 +3,14 @@
 import { useCallback } from "react";
 
 import { logout } from "@/app/actions";
+import { markAuthSurfaceHardNav } from "@/lib/auth/auth-surface-nav";
+import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 export type LogoutOptions = {
+	locale?: string;
 	channel?: string;
-	/** Override post-logout destination. Defaults to `/${channel}` or `/`. */
+	/** Override post-logout destination. Defaults to canonical browse home or `/`. */
 	redirectTo?: string;
 	/** Reload the current URL (e.g. checkout in-flow sign-out). */
 	stayOnPage?: boolean;
@@ -22,11 +26,22 @@ export function useLogout() {
 		}
 
 		if (options?.stayOnPage) {
+			markAuthSurfaceHardNav();
 			window.location.reload();
 			return;
 		}
 
-		const target = options?.redirectTo ?? (options?.channel ? `/${options.channel}` : "/");
-		window.location.assign(target);
+		if (options?.redirectTo) {
+			window.location.assign(options.redirectTo);
+			return;
+		}
+
+		if (options?.channel) {
+			const locale = resolveBrowseLocaleSlugWithFallback(options.locale);
+			window.location.assign(buildStorefrontPath(locale, options.channel));
+			return;
+		}
+
+		window.location.assign("/");
 	}, []);
 }

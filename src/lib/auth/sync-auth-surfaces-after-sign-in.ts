@@ -3,6 +3,9 @@
 import type { useRouter } from "next/navigation";
 
 import { revalidateStorefrontChromeAction } from "@/app/actions";
+import { markAuthSurfaceHardNav } from "@/lib/auth/auth-surface-nav";
+import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 
 type Router = ReturnType<typeof useRouter>;
 
@@ -28,6 +31,7 @@ export async function syncAuthSurfacesAfterSignIn(
 	if (options?.redirectTo) {
 		// Hard navigation: avoids router.refresh() racing on the login page and guarantees
 		// cookies + invalidated layout are picked up on the destination.
+		markAuthSurfaceHardNav();
 		window.location.assign(options.redirectTo);
 		return;
 	}
@@ -42,6 +46,13 @@ export async function syncAuthSurfacesAfterSignIn(
  * Use after checkout (or any `/checkout` surface) so the header picks up HttpOnly session cookies —
  * soft `router.push` can restore a cached anonymous `UserMenuServer` shell.
  */
-export function navigateToStorefrontHome(channel: string) {
-	window.location.assign(channel ? `/${channel}` : "/");
+export function navigateToStorefrontHome(channel: string, locale?: string) {
+	if (!channel) {
+		window.location.assign("/");
+		return;
+	}
+
+	const resolvedLocale = resolveBrowseLocaleSlugWithFallback(locale);
+	markAuthSurfaceHardNav();
+	window.location.assign(buildStorefrontPath(resolvedLocale, channel));
 }

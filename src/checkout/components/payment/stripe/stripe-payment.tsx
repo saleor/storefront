@@ -18,6 +18,7 @@ import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { FreeOrderCheckout } from "./free-order-checkout";
 import { StripePaymentForm, type StripeBillingContext } from "./stripe-payment-form";
 import { useStripeGatewayConfig } from "./use-stripe-gateway-config";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 
 type StripePaymentProps = {
 	checkout: CheckoutFragment;
@@ -71,6 +72,7 @@ const StripePaidPayment: FC<StripePaymentProps> = ({
 	onPaymentActivityChange,
 }) => {
 	const { refreshCheckout } = useCheckoutData();
+	const paymentMessages = useCheckoutPaymentMessages();
 	const gatewayState = useStripeGatewayConfig(checkout);
 	const [stripePromise, setStripePromise] = useState<Stripe | null>(null);
 	const [lockedElementsOptions, setLockedElementsOptions] = useState<StripeElementsOptions | null>(null);
@@ -150,20 +152,20 @@ const StripePaidPayment: FC<StripePaymentProps> = ({
 			.catch((error) => {
 				console.error("Failed to initialize Stripe:", error);
 				if (isMounted) {
-					onPaymentError("Failed to initialize payment system.");
+					onPaymentError(paymentMessages.initFailed);
 				}
 			});
 
 		return () => {
 			isMounted = false;
 		};
-	}, [gatewayState, onPaymentError]);
+	}, [gatewayState, onPaymentError, paymentMessages.initFailed]);
 
 	if (gatewayState.status === "loading" || (gatewayState.status === "ready" && !stripePromise)) {
 		return (
 			<div className="bg-muted/30 flex items-center gap-3 rounded-lg border border-border p-6 text-sm text-muted-foreground">
 				<LoadingSpinner />
-				Loading {gatewayName ?? "Stripe"} payment form...
+				{paymentMessages.loadingGateway(gatewayName ?? "Stripe")}
 			</div>
 		);
 	}
@@ -173,7 +175,7 @@ const StripePaidPayment: FC<StripePaymentProps> = ({
 			<div className="border-destructive/30 bg-destructive/5 flex items-start gap-3 rounded-lg border p-4">
 				<AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
 				<div>
-					<p className="font-medium text-destructive">Could not load Stripe</p>
+					<p className="font-medium text-destructive">{paymentMessages.stripeLoadTitle}</p>
 					<p className="mt-1 text-sm text-muted-foreground">{gatewayState.message}</p>
 				</div>
 			</div>

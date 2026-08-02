@@ -6,7 +6,7 @@ import { UserMenu } from "./user-menu";
 import { UserMenuLoginLink } from "./user-menu-login-link";
 import { UserMenuUnavailable } from "./user-menu-unavailable";
 
-export async function UserMenuServer({ channel }: { channel: string }) {
+export async function UserMenuServer({ locale, channel }: { locale: string; channel: string }) {
 	// Request-dynamic under PPR — never serve a prerendered anonymous menu when cookies exist.
 	await cookies();
 
@@ -18,6 +18,6 @@ export async function UserMenuServer({ channel }: { channel: string }) {
 		case "unavailable":
 			return <UserMenuUnavailable />;
 		case "guest":
-			return <UserMenuLoginLink channel={channel} />;
+			return <UserMenuLoginLink locale={locale} channel={channel} />;
 	}
 }

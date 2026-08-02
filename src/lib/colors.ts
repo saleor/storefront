@@ -11,6 +11,8 @@
  * - Filter bar (color filter options)
  */
 
+import { isPlpColorFacetSlug, isPlpSizeFacetSlug } from "@/config/facets";
+
 /**
  * Common color name to hex mappings.
  * Used as fallback when Saleor attributes don't have hex values.
@@ -150,16 +152,16 @@ export function shouldRenderAsSwatch(
 
 /**
  * Check if an attribute slug is a color attribute.
+ * Alias list lives in {@link PLP_FACETS} (`src/config/facets.ts`).
  */
 export function isColorAttribute(slug: string): boolean {
-	const normalizedSlug = slug.toLowerCase();
-	return normalizedSlug === "color" || normalizedSlug === "colour";
+	return isPlpColorFacetSlug(slug);
 }
 
 /**
  * Check if an attribute slug is a size attribute.
+ * Alias list lives in {@link PLP_FACETS} (`src/config/facets.ts`).
  */
 export function isSizeAttribute(slug: string): boolean {
-	const normalizedSlug = slug.toLowerCase();
-	return normalizedSlug === "size" || normalizedSlug === "shoe-size" || normalizedSlug === "clothing-size";
+	return isPlpSizeFacetSlug(slug);
 }

@@ -1,3 +1,8 @@
+---
+name: dev-investigation
+description: Investigating Saleor API behavior via generated types (src/gql/graphql.ts) and Saleor source. Use when unsure about a field, enum, nullability, or storefront auto-filtering behavior.
+---
+
 # Saleor API Investigation
 
 Investigate Saleor API behavior by checking source code when documentation is unclear or you need to understand exact data models.

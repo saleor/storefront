@@ -1,32 +1,49 @@
-import { ProductGallery } from "./product-gallery";
-import { ProductGalleryShell } from "./product-gallery-shell";
+import { resolvePdpVariants } from "@/lib/catalog/get-product-data";
+import { activeGalleryVariant } from "./gallery-registry";
 import { getGalleryImages, resolveSelectedVariantId, type Product } from "./gallery-utils";
 
 interface VariantGalleryDynamicProps {
 	product: Product;
-	searchParams: Promise<{ variant?: string }>;
+	channel: string;
+	localeSlug: string;
+	searchParams: Promise<{ variant?: string; sku?: string }>;
 }
 
 /**
  * Dynamic gallery island for PDP.
  *
  * Reads searchParams in an isolated Suspense boundary so the product shell
- * (h1, attributes, JSON-LD) can stay in the static prerender cache.
+ * (h1, attributes, JSON-LD) can stay in the static prerender cache. Variants
+ * are fetched here (cached) so the shell never ships variant payloads.
+ * The active renderer comes from the gallery registry — see `gallery-registry.tsx`.
  */
-export async function VariantGalleryDynamic({ product, searchParams }: VariantGalleryDynamicProps) {
-	const { variant: variantParam } = await searchParams;
-	const variants = product.variants ?? [];
-	const selectedVariantId = resolveSelectedVariantId(product, variantParam);
-	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
-	const images = getGalleryImages(product, selectedVariant);
+export async function VariantGalleryDynamic({
+	product,
+	channel,
+	localeSlug,
+	searchParams,
+}: VariantGalleryDynamicProps) {
+	const { variant: variantParam, sku: skuParam } = await searchParams;
+	const { variants, totalCount, overBudget } = await resolvePdpVariants(product, channel, localeSlug, {
+		variantId: variantParam,
+		sku: skuParam,
+	});
 
-	return <ProductGallery images={images} productName={product.name} />;
+	const productWithVariants: Product = {
+		...product,
+		variants,
+		variantTotalCount: totalCount,
+		overVariantBudget: overBudget,
+	};
+	const selectedVariantId = resolveSelectedVariantId(productWithVariants, variantParam);
+	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
+	const images = getGalleryImages(productWithVariants, selectedVariant);
+
+	const { Gallery } = activeGalleryVariant();
+	return <Gallery images={images} productName={product.name} />;
 }
 
 export function GallerySkeleton() {
-	return (
-		<ProductGalleryShell imageCount={1} showChrome={false}>
-			<div className="relative aspect-[4/5] w-full animate-pulse rounded-lg bg-muted" />
-		</ProductGalleryShell>
-	);
+	const { Skeleton } = activeGalleryVariant();
+	return <Skeleton />;
 }

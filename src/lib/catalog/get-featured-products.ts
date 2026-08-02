@@ -1,21 +1,28 @@
 import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
 
 /**
- * Featured products for the homepage (featured-products collection).
+ * Products from a collection for the homepage featured section.
  * Returns [] on failure so callers always render — empty array is cached until revalidation.
  */
-export async function getFeaturedProducts(channel: string) {
+export async function getFeaturedProducts(
+	channel: string,
+	localeSlug: string,
+	limit = 12,
+	collectionSlug = "featured-products",
+) {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.collections, "featured-products");
+	applyCacheProfile(CACHE_PROFILES.collections, collectionSlug);
 
 	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: {
-			slug: "featured-products",
+			slug: collectionSlug,
 			channel,
-			first: 12,
+			first: limit,
 			sortBy: { field: ProductOrderField.Collection, direction: OrderDirection.Asc },
+			...graphqlLanguageCodeVariables(localeSlug),
 		},
 	});
 

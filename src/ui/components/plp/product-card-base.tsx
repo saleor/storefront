@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/ui/components/ui/badge";
-import { DiscountPercentLabel, SaleBadge } from "@/ui/components/ui/sale-label";
+import { DiscountPercentLabel, NewBadge, SaleBadge, BestsellerBadge } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
@@ -25,7 +24,7 @@ export function ProductCardBase({
 }: ProductCardBaseProps) {
 	return (
 		<article className="group">
-			<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-xl bg-secondary">
+			<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-card bg-secondary">
 				<Link
 					href={product.href}
 					prefetch={false}
@@ -57,43 +56,64 @@ export function ProductCardBase({
 					)}
 				</Link>
 
-				{product.badge === "Sale" ? (
-					<SaleBadge className="pointer-events-none absolute left-3 top-3 z-[1]" />
-				) : product.badge === "New" ? (
-					<Badge className="pointer-events-none absolute left-3 top-3 z-[1]">New</Badge>
-				) : null}
+				{(product.badge === "Sale" || product.badge === "New" || product.isBestseller) && (
+					<div className="pointer-events-none absolute left-3 top-3 z-[1] flex flex-wrap items-center gap-1.5">
+						{product.badge === "Sale" ? <SaleBadge /> : null}
+						{product.isBestseller ? <BestsellerBadge /> : null}
+						{product.badge === "New" ? <NewBadge /> : null}
+					</div>
+				)}
 
 				{imageOverlay ? <div className="absolute inset-0 z-10">{imageOverlay}</div> : null}
 			</div>
 
-			<Link href={product.href} prefetch={false} className="block">
+			<Link href={product.href} prefetch={false} className="block no-underline hover:no-underline">
 				<div className="space-y-1.5">
-					{product.brand && <p className="text-xs tracking-wide text-muted-foreground">{product.brand}</p>}
-					<h3 className="line-clamp-2 font-medium leading-snug underline-offset-2 md:group-hover:underline">
+					{product.brand && <p className="text-eyebrow uppercase text-muted-foreground">{product.brand}</p>}
+					<h3
+						className="truncate font-medium leading-snug text-foreground/80 no-underline transition-colors duration-200 md:group-hover:text-foreground"
+						title={product.name}
+					>
 						{product.name}
 					</h3>
 
-					{product.colors && product.colors.length > 1 && (
+					{product.colors && product.colors.length > 0 && (
 						<div className="flex items-center gap-1.5 pt-1">
 							{product.colors.slice(0, 4).map((color) => (
 								<span
-									key={color.name}
+									key={color.slug || color.name}
 									className="h-4 w-4 rounded-full border border-border"
 									style={{ backgroundColor: color.hex }}
 									title={color.name}
 								/>
 							))}
-							{product.colors.length > 4 && (
-								<span className="ml-0.5 text-xs text-muted-foreground">+{product.colors.length - 4}</span>
-							)}
+							{(() => {
+								const overflowDots = Math.max(0, product.colors.length - 4);
+								const sampleSize = product.variantSampleSize ?? 0;
+								const total = product.variantTotalCount ?? sampleSize;
+								const sampleTruncated = total > sampleSize && sampleSize > 0;
+								// Never treat leftover *variants* as extra *colors* — that produced
+								// misleading "+150" next to three swatches on high-cardinality SKUs.
+								if (overflowDots > 0) {
+									return <span className="ml-0.5 text-xs text-muted-foreground">+{overflowDots}</span>;
+								}
+								if (sampleTruncated) {
+									return (
+										<span className="ml-0.5 text-xs text-muted-foreground" title={`+${total - sampleSize}`}>
+											+
+										</span>
+									);
+								}
+								return null;
+							})()}
 						</div>
 					)}
 
 					<div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 pt-0.5">
-						<span className="font-semibold">{formatProductPrice(product)}</span>
+						<span className="font-semibold tabular-nums">{formatProductPrice(product)}</span>
 						{product.compareAtPrice != null && (
-							<span className="text-sm text-muted-foreground line-through">
-								{formatPrice(product.compareAtPrice, product.currency)}
+							<span className="text-sm tabular-nums text-muted-foreground line-through">
+								{formatPrice(product.compareAtPrice, product.currency, product.localeBcp47)}
 							</span>
 						)}
 						{product.discountPercent != null && product.discountPercent > 0 && (

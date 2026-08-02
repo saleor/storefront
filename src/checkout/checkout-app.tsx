@@ -6,13 +6,19 @@ import { ErrorBoundary } from "react-error-boundary";
 import { nextCheckoutTransport } from "@/app/(checkout)/checkout-transport";
 import type { CheckoutUser, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
 import { setCheckoutTransport } from "@/checkout/lib/checkout-transport";
+import { CheckoutContentProvider, type CheckoutContent } from "@/lib/content";
 import { CheckoutDataProvider, type CheckoutLoadState } from "@/checkout/providers/checkout-data";
 import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
+import { CheckoutBrowseProvider } from "@/checkout/providers/checkout-browse";
 import { CheckoutSessionProvider } from "@/checkout/providers/checkout-session";
 import { CheckoutPaymentReturnErrorProvider } from "@/checkout/providers/checkout-payment-return-error";
+import type { LocaleSlug } from "@/config/locale";
+import type { CheckoutMessages } from "@/i18n/load-messages";
+import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
 import { RootViews } from "./views/root-views";
 import { CheckoutPaymentHistoryGuard } from "@/checkout/components/checkout-payment-history-guard";
 import { CheckoutSessionCleanup } from "@/checkout/components/checkout-session-cleanup";
+import { CheckoutStepUrlGuard } from "@/checkout/components/checkout-step-url-guard";
 import { StripeCheckoutCompletionHost } from "@/checkout/components/payment/stripe/stripe-checkout-completion-host";
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
 import { CheckoutCrashFallback } from "@/checkout/views/page-not-found";
@@ -29,6 +35,9 @@ type CheckoutAppProps = {
 	initialCheckout: ServerCheckout | null;
 	initialUser: CheckoutUser | null;
 	shippingCountries: ShippingCountries;
+	checkoutContent: CheckoutContent;
+	storefrontLocale: LocaleSlug;
+	messages: CheckoutMessages;
 };
 
 /**
@@ -41,31 +50,41 @@ export function CheckoutApp({
 	initialCheckout,
 	initialUser,
 	shippingCountries,
+	checkoutContent,
+	storefrontLocale,
+	messages,
 }: CheckoutAppProps) {
 	return (
-		<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
-			<CheckoutSessionCleanup />
-			<CheckoutPaymentHistoryGuard />
-			<CheckoutUserProvider initialUser={initialUser}>
-				<CheckoutDataProvider
-					key={checkoutId ?? "none"}
-					checkoutId={checkoutId}
-					loadState={loadState}
-					initialCheckout={initialCheckout}
-					shippingCountries={shippingCountries}
-				>
-					<CheckoutPaymentReturnErrorProvider>
-						<Suspense fallback={null}>
-							<StripeCheckoutCompletionHost />
-						</Suspense>
-						<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
-							<Suspense fallback={<CheckoutLoadingFallback />}>
-								<RootViews />
-							</Suspense>
-						</ErrorBoundary>
-					</CheckoutPaymentReturnErrorProvider>
-				</CheckoutDataProvider>
-			</CheckoutUserProvider>
-		</CheckoutSessionProvider>
+		<CheckoutIntlProvider locale={storefrontLocale} messages={messages}>
+			<CheckoutBrowseProvider locale={storefrontLocale}>
+				<CheckoutSessionProvider checkoutId={checkoutId} orderId={null}>
+					<CheckoutSessionCleanup />
+					<CheckoutStepUrlGuard />
+					<CheckoutPaymentHistoryGuard />
+					<CheckoutUserProvider initialUser={initialUser}>
+						<CheckoutDataProvider
+							key={checkoutId ?? "none"}
+							checkoutId={checkoutId}
+							loadState={loadState}
+							initialCheckout={initialCheckout}
+							shippingCountries={shippingCountries}
+						>
+							<CheckoutContentProvider content={checkoutContent}>
+								<CheckoutPaymentReturnErrorProvider>
+									<Suspense fallback={null}>
+										<StripeCheckoutCompletionHost />
+									</Suspense>
+									<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
+										<Suspense fallback={<CheckoutLoadingFallback />}>
+											<RootViews />
+										</Suspense>
+									</ErrorBoundary>
+								</CheckoutPaymentReturnErrorProvider>
+							</CheckoutContentProvider>
+						</CheckoutDataProvider>
+					</CheckoutUserProvider>
+				</CheckoutSessionProvider>
+			</CheckoutBrowseProvider>
+		</CheckoutIntlProvider>
 	);
 }

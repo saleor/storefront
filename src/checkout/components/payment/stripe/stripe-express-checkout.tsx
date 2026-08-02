@@ -10,9 +10,11 @@ import { useSearchParams } from "next/navigation";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { type CheckoutPriceChangeNotice } from "@/checkout/lib/payment/checkout-pay-amount";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
+import { useLiveCheckoutSearchParams } from "@/checkout/lib/checkout-search-params";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { executeStripeCheckoutPayment } from "./execute-stripe-checkout-payment";
 import { type StripeBillingContext } from "./stripe-billing-context";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 
 const expressCheckoutOptions: StripeExpressCheckoutElementOptions = {
 	buttonType: {
@@ -54,7 +56,9 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 	const stripe = useStripe();
 	const elements = useElements();
 	const searchParams = useSearchParams();
+	const liveSearchParams = useLiveCheckoutSearchParams(searchParams);
 	const { refreshCheckout } = useCheckoutData();
+	const paymentMessages = useCheckoutPaymentMessages();
 	const [hasWallets, setHasWallets] = useState<boolean | null>(null);
 
 	const handleConfirm = useCallback(
@@ -63,7 +67,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			onPaymentActivityChange?.(true);
 
 			if (!stripe || !elements) {
-				event.paymentFailed({ message: "Payment system is not available. Please try again." });
+				event.paymentFailed({ message: paymentMessages.unavailable });
 				onPaymentActivityChange?.(false);
 				return;
 			}
@@ -73,12 +77,13 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 				elements,
 				checkout,
 				billing,
-				searchParams,
+				searchParams: liveSearchParams,
 				refreshCheckout,
 				paymentMethodContext: {
 					surface: "expressCheckout",
 					expressPaymentType: event.expressPaymentType,
 				},
+				messages: paymentMessages,
 			});
 
 			if (!result.ok) {
@@ -93,7 +98,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 
 				if (result.kind === "price_change") {
 					onPriceChangeNotice(result.notice);
-					event.paymentFailed({ message: "Order total changed. Review the updated amount and try again." });
+					event.paymentFailed({ message: paymentMessages.totalChanged });
 					return;
 				}
 
@@ -110,8 +115,9 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			onError,
 			onPaymentActivityChange,
 			onPriceChangeNotice,
+			paymentMessages,
 			refreshCheckout,
-			searchParams,
+			liveSearchParams,
 			stripe,
 		],
 	);
@@ -128,8 +134,8 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 				onAvailablePaymentMethodsChange={({ paymentMethods }) => {
 					const available = Boolean(
 						paymentMethods?.applePay?.available ||
-							paymentMethods?.googlePay?.available ||
-							paymentMethods?.link?.available,
+						paymentMethods?.googlePay?.available ||
+						paymentMethods?.link?.available,
 					);
 					setHasWallets(available);
 				}}

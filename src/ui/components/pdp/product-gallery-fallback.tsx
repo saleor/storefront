@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { PDP_MAIN_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { GalleryImageFrame } from "@/ui/components/shared/gallery-image-frame";
 import { ProductGalleryShell } from "./product-gallery-shell";
 
 interface ProductGalleryFallbackProps {
@@ -17,7 +18,7 @@ interface ProductGalleryFallbackProps {
 export function ProductGalleryFallback({ src, alt, imageCount, showChrome }: ProductGalleryFallbackProps) {
 	return (
 		<ProductGalleryShell imageCount={imageCount} showChrome={showChrome}>
-			<div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-secondary">
+			<GalleryImageFrame className="aspect-[4/5] w-full">
 				<Image
 					src={src}
 					alt={alt}
@@ -27,7 +28,7 @@ export function ProductGalleryFallback({ src, alt, imageCount, showChrome }: Pro
 					quality={PRODUCT_IMAGE_QUALITY}
 					priority
 				/>
-			</div>
+			</GalleryImageFrame>
 		</ProductGalleryShell>
 	);
 }

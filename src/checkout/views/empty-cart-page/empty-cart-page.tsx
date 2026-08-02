@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { ShoppingCart, ArrowLeft, ShoppingBag } from "lucide-react";
 import { CheckoutPageShell } from "@/checkout/views/saleor-checkout/checkout-page-shell";
+import { useCheckoutContent } from "@/lib/content";
 import { buttonClassName } from "@/ui/components/ui/button";
 
 export const EmptyCartPage = () => {
+	const { emptyCart } = useCheckoutContent();
+
 	return (
 		<CheckoutPageShell>
 			<main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -15,10 +18,8 @@ export const EmptyCartPage = () => {
 							<ShoppingCart className="h-8 w-8 text-muted-foreground" />
 						</div>
 
-						<h1 className="mb-2 text-xl font-semibold text-foreground">Your cart is empty</h1>
-						<p className="mb-8 text-muted-foreground">
-							Looks like you haven&apos;t added anything to your cart yet.
-						</p>
+						<h1 className="mb-2 text-xl font-semibold text-foreground">{emptyCart.title}</h1>
+						<p className="mb-8 text-muted-foreground">{emptyCart.body}</p>
 
 						<div className="flex flex-col gap-3">
 							<Link
@@ -26,14 +27,14 @@ export const EmptyCartPage = () => {
 								className={buttonClassName({ asLink: true, size: "lg", className: "h-12 w-full" })}
 							>
 								<ShoppingBag className="h-4 w-4" />
-								Start Shopping
+								{emptyCart.startShoppingLabel}
 							</Link>
 							<button
 								onClick={() => history.back()}
 								className="flex items-center justify-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
 							>
 								<ArrowLeft className="h-4 w-4" />
-								Go back
+								{emptyCart.goBackLabel}
 							</button>
 						</div>
 					</div>

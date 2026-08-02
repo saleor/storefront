@@ -5,6 +5,7 @@ import { cache } from "react";
 import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-user";
 import { fetchChannelCountriesOnServer } from "@/checkout/lib/server/fetch-channel-countries";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
+import type { LocaleSlug } from "@/config/locale";
 
 /**
  * Per-request cached checkout session fetches keyed by checkout id / channel — not `?step=`.
@@ -12,7 +13,9 @@ import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
  */
 export const getCheckoutSessionUser = cache(() => fetchCheckoutUserOnServer());
 
-export const getCheckoutSessionCheckout = cache((checkoutId: string) => fetchCheckoutOnServer(checkoutId));
+export const getCheckoutSessionCheckout = cache((checkoutId: string, localeSlug: LocaleSlug) =>
+	fetchCheckoutOnServer(checkoutId, localeSlug),
+);
 
 export const getCheckoutSessionCountries = cache((channelSlug: string) =>
 	fetchChannelCountriesOnServer(channelSlug),

@@ -3,10 +3,17 @@ fragment VariantDetails on ProductVariant {
 	name
 	sku
 	quantityAvailable
+	translation(languageCode: $languageCode) {
+		name
+	}
 	selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
 		values {
 			name
+			slug
 			value
+			translation(languageCode: $languageCode) {
+				name
+			}
 			file {
 				url
 			}
@@ -15,12 +22,19 @@ fragment VariantDetails on ProductVariant {
 			name
 			slug
 			inputType
+			translation(languageCode: $languageCode) {
+				name
+			}
 		}
 	}
 	nonSelectionAttributes: attributes(variantSelection: NOT_VARIANT_SELECTION) {
 		values {
 			name
+			slug
 			value
+			translation(languageCode: $languageCode) {
+				name
+			}
 			file {
 				url
 			}
@@ -29,10 +43,13 @@ fragment VariantDetails on ProductVariant {
 			name
 			slug
 			inputType
+			translation(languageCode: $languageCode) {
+				name
+			}
 		}
 	}
 	media {
-		url(size: 1024, format: WEBP)
+		url(size: 2048, format: WEBP)
 		alt
 		type
 	}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Shirt, Leaf, Droplets, Ruler, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
 	Accordion,
 	AccordionItemWithContext,
@@ -8,6 +9,7 @@ import {
 	AccordionContent,
 } from "@/ui/components/ui/accordion";
 import { Badge } from "@/ui/components/ui/badge";
+import type { PolicyLabelValues } from "@/lib/content/policy-format";
 import { type ReactNode } from "react";
 
 interface Attribute {
@@ -23,9 +25,10 @@ interface ProductAttributesProps {
 	descriptionHtml?: string[] | null;
 	attributes?: Attribute[];
 	careInstructions?: string | null;
+	policyLabels: PolicyLabelValues;
 }
 
-// Map attribute names to icons
+// Map attribute names to icons (English defaults; icons are decorative only)
 const attributeIcons: Record<string, ReactNode> = {
 	Material: <Shirt className="h-4 w-4" />,
 	"Made with Recycled Fibers": <Leaf className="h-4 w-4" />,
@@ -34,27 +37,30 @@ const attributeIcons: Record<string, ReactNode> = {
 	"Key Features": <Sparkles className="h-4 w-4" />,
 };
 
-function formatValue(value: string | boolean | string[]): ReactNode {
-	if (typeof value === "boolean") return value ? "Yes" : "No";
-	if (Array.isArray(value)) {
-		return (
-			<div className="flex flex-wrap justify-end gap-1">
-				{value.map((v) => (
-					<Badge key={v} variant="secondary" className="font-normal">
-						{v}
-					</Badge>
-				))}
-			</div>
-		);
-	}
-	return value;
-}
-
 export function ProductAttributes({
 	descriptionHtml,
 	attributes = [],
 	careInstructions,
+	policyLabels,
 }: ProductAttributesProps) {
+	const t = useTranslations("pdp.attributes");
+
+	const formatValue = (value: string | boolean | string[]): ReactNode => {
+		if (typeof value === "boolean") return value ? t("yes") : t("no");
+		if (Array.isArray(value)) {
+			return (
+				<div className="flex flex-wrap justify-end gap-1">
+					{value.map((v) => (
+						<Badge key={v} variant="secondary" className="font-normal">
+							{v}
+						</Badge>
+					))}
+				</div>
+			);
+		}
+		return value;
+	};
+
 	// Filter out variant attributes that are shown elsewhere (Size, Color)
 	const displayAttributes = attributes.filter((attr) => !["Size", "Color"].includes(attr.name));
 
@@ -63,7 +69,7 @@ export function ProductAttributes({
 			{descriptionHtml && descriptionHtml.length > 0 && (
 				<AccordionItemWithContext value="description" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Description
+						{t("description")}
 					</AccordionTrigger>
 					<AccordionContent>
 						<div className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-foreground prose-strong:text-foreground">
@@ -78,7 +84,7 @@ export function ProductAttributes({
 			{displayAttributes.length > 0 && (
 				<AccordionItemWithContext value="details" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Product Details
+						{t("productDetails")}
 					</AccordionTrigger>
 					<AccordionContent>
 						<div className="grid gap-3">
@@ -99,7 +105,7 @@ export function ProductAttributes({
 			{careInstructions && (
 				<AccordionItemWithContext value="care" className="border-border">
 					<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-						Care Instructions
+						{t("careInstructions")}
 					</AccordionTrigger>
 					<AccordionContent className="leading-relaxed text-muted-foreground">
 						{careInstructions}
@@ -109,11 +115,11 @@ export function ProductAttributes({
 
 			<AccordionItemWithContext value="shipping" className="border-border">
 				<AccordionTrigger className="py-4 text-sm font-medium hover:no-underline">
-					Shipping & Returns
+					{t("shippingReturns")}
 				</AccordionTrigger>
 				<AccordionContent className="leading-relaxed text-muted-foreground">
-					<p className="mb-2">Free shipping on orders over €100. Standard delivery 3-5 business days.</p>
-					<p>Free returns within 30 days of purchase. Items must be unworn with tags attached.</p>
+					<p className="mb-2">{t("shippingBody", policyLabels)}</p>
+					<p>{t("returnsBody", policyLabels)}</p>
 				</AccordionContent>
 			</AccordionItemWithContext>
 		</Accordion>
