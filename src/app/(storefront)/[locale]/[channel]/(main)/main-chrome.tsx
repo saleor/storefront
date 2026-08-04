@@ -1,9 +1,7 @@
 import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/footer";
 import { BrowseHeaderFrame } from "./browse-header-frame";
-import { ScrollToTopOnNavigate } from "@/ui/components/shared/scroll-to-top-on-navigate";
-import { AnnouncementBarSkeleton } from "@/ui/sections/announcement-bar/announcement-bar";
-import { AnnouncementBarSlot, type BrowseRouteParams } from "./browse-chrome-slots";
+import { type BrowseRouteParams } from "./browse-chrome-slots";
 
 function FooterSkeleton() {
 	return (
@@ -46,19 +44,13 @@ async function FooterSlot({ params }: { params: BrowseRouteParams }) {
 }
 
 /**
- * Sync browse chrome — header, announcement, and footer each stream in their own
- * Suspense boundary; `<main>` is never gated on cached copy fetches.
+ * Sync browse chrome below the announcement bar — header and footer each stream in
+ * their own Suspense boundary; `<main>` is never gated on cached copy fetches.
+ * Announcement + scroll restore live in `(main)/layout.tsx` outside client providers.
  */
 export function MainChrome({ params, children }: { params: BrowseRouteParams; children: ReactNode }) {
 	return (
 		<>
-			{/* usePathname() is runtime-only in Next 16 — must stream inside Suspense for PPR */}
-			<Suspense fallback={null}>
-				<ScrollToTopOnNavigate />
-			</Suspense>
-			<Suspense fallback={<AnnouncementBarSkeleton />}>
-				<AnnouncementBarSlot params={params} />
-			</Suspense>
 			<BrowseHeaderFrame params={params} />
 			<div className="flex min-h-[calc(100dvh-var(--chrome-offset))] flex-col">
 				<main className="flex-1">{children}</main>

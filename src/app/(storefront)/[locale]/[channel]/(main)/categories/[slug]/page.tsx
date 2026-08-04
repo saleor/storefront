@@ -18,8 +18,8 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CategoryPageClient } from "./client";
 
-/** Cached category hero + grid shell. `allow-runtime` pairs with category tiles (prefetch={true}). */
-export const prefetch = "allow-runtime";
+// Prefetch: default (auto) under global `partialPrefetching`. Category tiles use
+// `prefetch={true}` so the hero + grid shell resolve at runtime with the link's params.
 
 type PageProps = {
 	params: Promise<{ locale: string; slug: string; channel: string }>;

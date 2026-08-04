@@ -41,7 +41,7 @@ import {
 } from "@/ui/components/pdp";
 
 // Prefetch: default (auto). With global `partialPrefetching`, product-card links prefetch only
-// the App Shell. We deliberately do NOT set `allow-runtime` — a per-link runtime prefetch would
+// the App Shell. Do not use `prefetch={true}` on PLP cards — a per-link runtime prefetch would
 // wake the server for every visible card and stall slow-network clicks until it responds.
 
 // ============================================================================

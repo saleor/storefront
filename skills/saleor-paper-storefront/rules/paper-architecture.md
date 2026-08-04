@@ -80,7 +80,7 @@ Patterns we **do not** use — regressions to avoid:
 
 Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
 
-_All browse pages aligned._ The homepage (`(main)/page.tsx`) is **fully static** — an `async` page that awaits only `params` + `"use cache"` data and renders every section (incl. the featured collection) directly into the PPR static shell, with **no page-level `Suspense` and no skeleton**. The **category** (`categories/[slug]/page.tsx`) and **products** (`products/page.tsx`) pages are **hybrid** — `async` pages that render the cached hero eagerly into the static shell and suspend **only** the `searchParams`-driven grid behind `ProductsGridSkeleton`. No browse page wraps its cached shell in a page-level `Suspense`. Route `loading.tsx` files (`PlpPageLoading` for categories/collections, `ProductsLoading` for products) remain as height-matched **instant-navigation** fallbacks — the documented "meaningful partial frame" use, not page-render skeletons. There is intentionally **no shared `(main)/loading.tsx`**. Add a row here only when a new, intentional exception is introduced.
+_Browse pages aligned under Partial Prefetching._ The homepage (`(main)/page.tsx`) is a **sync shell** that wraps `HomePageContent` (awaits `params` + `"use cache"` data, including the featured collection) in page-level `Suspense` with a fold-height fallback — required so locale/channel URL data stays out of the shared instant App Shell. Direct loads still prerender full HTML per `generateStaticParams`. The **category** (`categories/[slug]/page.tsx`) and **products** (`products/page.tsx`) pages are **hybrid** — `async` pages that render the cached hero eagerly into the static shell and suspend **only** the `searchParams`-driven grid behind `ProductsGridSkeleton`. Route `loading.tsx` files (`PlpPageLoading` for categories/collections, `ProductsLoading` for products) remain as height-matched **instant-navigation** fallbacks — the documented "meaningful partial frame" use, not page-render skeletons. There is intentionally **no shared `(main)/loading.tsx`**. Add a row here only when a new, intentional exception is introduced.
 
 ---
 
@@ -88,25 +88,29 @@ _All browse pages aligned._ The homepage (`(main)/page.tsx`) is **fully static**
 
 Browse chrome follows the **sync layout + per-slot Suspense** pattern — the layout never `await`s; each chrome region owns its async work in a dedicated island. `<main>{children}</main>` sits **outside** every chrome Suspense boundary so page content streams independently.
 
-1. **Sync `(main)/layout.tsx`** — `StorefrontProviders`, sync `MainChrome`, `CartDrawerSlot` in Suspense.
-2. **Sync `MainChrome`** — composes announcement, header, footer slots; `{children}` in `<main>` with no wrapping Suspense.
+1. **Sync `(main)/layout.tsx`** — announcement + scroll-restore Suspense **outside** client providers; `StorefrontProviders` wraps header/footer/cart (cart context) + `{children}`.
+2. **Sync `MainChrome`** — header frame + footer slot; `{children}` in `<main>` with no wrapping Suspense.
 3. **Async slots** (`browse-chrome-slots.tsx`) — each `await params` + `"use cache"` fetch inside its own parent Suspense:
    - `AnnouncementBarSlot` → `getAnnouncementBarProps` (+ nested Suspense for dismiss cookie)
-   - `HeaderSlot` → `Header` (fetches `getStorefrontContent` for nav labels + menus)
-   - `FooterSlot` → `Footer` (already fetches content + menus)
+   - Header nav/search/actions/mobile → per-slot Suspense in `BrowseHeaderFrame`
+   - `FooterSlot` → `Footer`
    - `CartDrawerSlot` → `getStorefrontContent` + `CartDrawerWrapper` (cookies)
 
 `getStorefrontContent` / `getAnnouncementBarProps` dedupe per request via `"use cache"` — multiple slots do not multiply Saleor traffic.
 
 ```
 Sync (main)/layout.tsx
-├── MainChrome (sync)
-│   ├── Suspense → AnnouncementBarSlot
-│   ├── Suspense → HeaderSlot
-│   ├── <main>{children}</main>     ← never inside layout/chrome Suspense
-│   └── Suspense → FooterSlot
-└── Suspense → CartDrawerSlot
+├── Suspense → ScrollToTopOnNavigate
+├── Suspense → AnnouncementBarSlot          ← outside StorefrontProviders
+└── StorefrontProviders
+    ├── MainChrome (sync)
+    │   ├── BrowseHeaderFrame (per-slot Suspense)
+    │   ├── <main>{children}</main>         ← never inside layout/chrome Suspense
+    │   └── Suspense → FooterSlot
+    └── Suspense → CartDrawerSlot
 ```
+
+Channel allowlist: `[channel]/layout.tsx` wraps `{children}` in `ChannelRouteGuard` behind `Suspense fallback={null}` (never `fallback={children}`).
 
 **Account layout** uses layout-shell Suspense when the whole segment must await an auth gate before children (`data-auth-routes.md`). That is the auth variant, not the browse default.
 

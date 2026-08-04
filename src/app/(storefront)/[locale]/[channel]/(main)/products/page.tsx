@@ -14,8 +14,8 @@ import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.serv
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { ProductsPageClient } from "./products-client";
 
-/** Cached PLP shell. `allow-runtime` lets the mega-menu "All products" link (prefetch={true}) prefetch the grid shell with searchParams. */
-export const prefetch = "allow-runtime";
+// Prefetch: default (auto) under global `partialPrefetching`. Mega-menu "All products"
+// uses `prefetch={true}` so the grid shell resolves at runtime with searchParams.
 
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;

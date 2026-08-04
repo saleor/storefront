@@ -18,8 +18,8 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CollectionPageClient } from "./client";
 
-/** Cached collection hero + grid shell. `allow-runtime` pairs with hero CTAs (prefetch={true}). */
-export const prefetch = "allow-runtime";
+// Prefetch: default (auto) under global `partialPrefetching` — App Shell only until a
+// caller opts in with `prefetch={true}` (no collection-destination links do today).
 
 type PageProps = {
 	params: Promise<{ locale: string; slug: string; channel: string }>;

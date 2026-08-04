@@ -30,6 +30,15 @@ export const generateStaticParams = async () => {
 	return channels.map((channel) => ({ channel }));
 };
 
+/**
+ * Validate locale/channel, then render children.
+ *
+ * Must wrap `{children}` so invalid routes never fetch/render before `notFound()`.
+ * Must NOT use `fallback={children}` — that re-renders the browse tree as the Suspense
+ * fallback while this guard awaits `params`, and instant-shell validation then treats
+ * nested chrome `await params` as outside Suspense. `fallback={null}` keeps the params
+ * read inside the boundary without leaking children into the fallback slot.
+ */
 async function ChannelRouteGuard({
 	children,
 	params,
@@ -58,9 +67,8 @@ export default function ChannelLayout({
 	children: ReactNode;
 	params: Promise<{ locale: string; channel: string }>;
 }) {
-	// Params are URL data — keep the read inside Suspense so PDP links share one instant shell.
 	return (
-		<Suspense fallback={children}>
+		<Suspense fallback={null}>
 			<ChannelRouteGuard params={params}>{children}</ChannelRouteGuard>
 		</Suspense>
 	);
