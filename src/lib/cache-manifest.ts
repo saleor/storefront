@@ -550,7 +550,7 @@ function isStorefrontManifestEnvironment(value: string): value is StorefrontMani
  * wrong ladder rung is worse for the Paper handshake than omitting it.
  */
 export function resolveStorefrontManifestEnvironment(
-	env: NodeJS.ProcessEnv = process.env,
+	env: Partial<NodeJS.ProcessEnv> = process.env,
 ): StorefrontManifestEnvironment | undefined {
 	const rawExplicit = env.PAPER_STOREFRONT_ENVIRONMENT?.trim();
 	if (rawExplicit) {
@@ -581,7 +581,7 @@ export function normalizeSaleorApiUrlForManifest(url: string): string {
 
 /** Build the v6 identity block from env — omitted when Saleor URL is unset. */
 export function buildStorefrontManifestIdentity(
-	env: NodeJS.ProcessEnv = process.env,
+	env: Partial<NodeJS.ProcessEnv> = process.env,
 ): StorefrontManifestIdentity | undefined {
 	const rawSaleorApiUrl = env.NEXT_PUBLIC_SALEOR_API_URL?.trim();
 	if (!rawSaleorApiUrl) return undefined;
