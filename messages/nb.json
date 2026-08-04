@@ -37,6 +37,11 @@
 		"adding": "Legger til…",
 		"outOfStock": "Utsolgt",
 		"selectOptions": "Velg alternativer",
+		"buyBox": {
+			"overBudgetHint": "Dette produktet har for mange alternativer til å listes her. Åpne en direkte variantlenke for å kjøpe.",
+			"externalHint": "Alternativene for dette produktet velges i en egen opplevelse. Åpne en direkte variantlenke for å kjøpe.",
+			"selectedSummary": "Valgte alternativer"
+		},
 		"free": "GRATIS",
 		"breadcrumbHome": "Hjem",
 		"badges": {
@@ -50,7 +55,10 @@
 			"percentOffTitle": "{name} — {percent}% rabatt",
 			"outOfStockA11y": "utsolgt",
 			"percentOffA11y": "{percent}% rabatt",
-			"selectedA11y": "valgt"
+			"selectedA11y": "valgt",
+			"chooseOption": "Velg {label}",
+			"searchOptions": "Søk i {label}",
+			"noMatchingOptions": "Ingen treff"
 		},
 		"attributes": {
 			"description": "Beskrivelse",
@@ -92,7 +100,8 @@
 		"resultCount": "{count, plural, one {# produkt} other {# produkter}}",
 		"clearAllFilters": "Fjern alle filtre ({count})",
 		"clearAll": "Fjern alle",
-		"removeFilter": "Fjern filter {value}"
+		"removeFilter": "Fjern filter {value}",
+		"noMatchingFilters": "Ingen produkter samsvarer med filtrene dine."
 	},
 	"search": {
 		"title": "Søk",
@@ -273,14 +282,17 @@
 			"redirecting": "Omdirigerer deg til butikken…"
 		},
 		"confirm": {
-			"confirmingTitle": "Bekrefter kontoen din",
-			"confirmingBody": "Verifiserer {email}…",
 			"successTitle": "Konto bekreftet",
-			"successBody": "Kontoen din for {email} er aktiv. Logg inn med passordet du opprettet.",
+			"successBody": "Kontoen din for {email} er aktiv.",
 			"signIn": "Logg inn",
 			"continueShopping": "Fortsett å handle",
 			"errorTitle": "Kunne ikke bekrefte konto",
-			"goToSignIn": "Gå til innlogging"
+			"goToSignIn": "Gå til innlogging",
+			"title": "Bekreft kontoen din",
+			"body": "Skriv inn passordet for {email} for å fullføre bekreftelsen av kontoen.",
+			"submit": "Bekreft konto",
+			"submitting": "Bekrefter…",
+			"tryAgain": "Prøv igjen"
 		},
 		"nav": {
 			"ariaLabel": "Konto",
@@ -556,7 +568,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Kunne ikke lagre markedsføringspreferanse",
-			"invalidRedirectUrl": "Ugyldig omdirigerings-URL",
+			"invalidRedirectUrl": "Ugyldig omdirigerings-URL. Se serverloggene for mer informasjon.",
 			"createAccountFailed": "Kunne ikke opprette konto",
 			"noSaleorResponse": "Ingen respons fra Saleor",
 			"shippingMethodsFailed": "Kunne ikke laste fraktmetoder",

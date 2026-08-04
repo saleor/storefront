@@ -37,6 +37,11 @@
 		"adding": "Wird hinzugefügt…",
 		"outOfStock": "Nicht auf Lager",
 		"selectOptions": "Optionen wählen",
+		"buyBox": {
+			"overBudgetHint": "Dieses Produkt hat zu viele Optionen für diese Liste. Öffne einen direkten Varianten-Link zum Kaufen.",
+			"externalHint": "Die Optionen für dieses Produkt werden in einer eigenen Erfahrung gewählt. Öffne einen direkten Varianten-Link zum Kaufen.",
+			"selectedSummary": "Gewählte Optionen"
+		},
 		"free": "KOSTENLOS",
 		"breadcrumbHome": "Startseite",
 		"badges": {
@@ -50,7 +55,10 @@
 			"percentOffTitle": "{name} — {percent}% Rabatt",
 			"outOfStockA11y": "nicht auf Lager",
 			"percentOffA11y": "{percent}% Rabatt",
-			"selectedA11y": "ausgewählt"
+			"selectedA11y": "ausgewählt",
+			"chooseOption": "{label} wählen",
+			"searchOptions": "{label} suchen",
+			"noMatchingOptions": "Keine passenden Optionen"
 		},
 		"attributes": {
 			"description": "Beschreibung",
@@ -92,7 +100,8 @@
 		"resultCount": "{count, plural, one {# Produkt} other {# Produkte}}",
 		"clearAllFilters": "Alle Filter löschen ({count})",
 		"clearAll": "Alle löschen",
-		"removeFilter": "Filter {value} entfernen"
+		"removeFilter": "Filter {value} entfernen",
+		"noMatchingFilters": "Keine Produkte entsprechen Ihren Filtern."
 	},
 	"search": {
 		"title": "Suche",
@@ -273,14 +282,17 @@
 			"redirecting": "Sie werden zum Shop weitergeleitet…"
 		},
 		"confirm": {
-			"confirmingTitle": "Konto wird bestätigt",
-			"confirmingBody": "{email} wird verifiziert…",
 			"successTitle": "Konto bestätigt",
-			"successBody": "Ihr Konto für {email} ist aktiv. Melden Sie sich mit dem von Ihnen erstellten Passwort an.",
+			"successBody": "Ihr Konto für {email} ist aktiv.",
 			"signIn": "Anmelden",
 			"continueShopping": "Weiter einkaufen",
 			"errorTitle": "Konto konnte nicht bestätigt werden",
-			"goToSignIn": "Zur Anmeldung"
+			"goToSignIn": "Zur Anmeldung",
+			"title": "Konto bestätigen",
+			"body": "Geben Sie das Passwort für {email} ein, um Ihr Konto zu bestätigen.",
+			"submit": "Konto bestätigen",
+			"submitting": "Wird bestätigt…",
+			"tryAgain": "Erneut versuchen"
 		},
 		"nav": {
 			"ariaLabel": "Konto",
@@ -556,7 +568,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Marketing-Einstellung konnte nicht gespeichert werden",
-			"invalidRedirectUrl": "Ungültige Weiterleitungs-URL",
+			"invalidRedirectUrl": "Ungültige Weiterleitungs-URL. Weitere Informationen finden Sie in den Serverprotokollen.",
 			"createAccountFailed": "Konto konnte nicht erstellt werden",
 			"noSaleorResponse": "Keine Antwort von Saleor",
 			"shippingMethodsFailed": "Versandarten konnten nicht geladen werden",

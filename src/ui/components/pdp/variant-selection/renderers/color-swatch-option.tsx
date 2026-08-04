@@ -55,7 +55,7 @@ export function ColorSwatchOption({ option, isSelected, onSelect, isPending }: O
 						isSelected
 							? "ring-2 ring-foreground ring-offset-[3px] ring-offset-background"
 							: "ring-1 ring-border hover:ring-foreground/50",
-						isIncompatible && "opacity-50",
+						isIncompatible && "opacity-55",
 						isOutOfStock && "cursor-not-allowed",
 					)}
 					title={

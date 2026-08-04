@@ -23,6 +23,19 @@ export function pickTranslatedName(entity: {
 	return pickTranslatedField(entity.translation, "name", entity.name) ?? entity.name;
 }
 
+/**
+ * Locale-canonical catalog URL slug. Keeps `entity.slug` (primary) untouched for
+ * cache tags / webhooks — use this only when building browse paths.
+ *
+ * @see docs/adr/0004-translatable-slugs.md
+ */
+export function pickTranslatedSlug(entity: {
+	slug: string;
+	translation?: { slug?: string | null } | null;
+}): string {
+	return pickTranslatedField(entity.translation, "slug", entity.slug) ?? entity.slug;
+}
+
 export function pickTranslatedTitle(entity: {
 	title: string;
 	translation?: { title?: string | null } | null;
@@ -68,6 +81,7 @@ type TranslatableCategory = {
 		description?: string | null;
 		seoTitle?: string | null;
 		seoDescription?: string | null;
+		slug?: string | null;
 	} | null;
 };
 
@@ -92,6 +106,7 @@ type TranslatablePage = {
 		content?: string | null;
 		seoTitle?: string | null;
 		seoDescription?: string | null;
+		slug?: string | null;
 	} | null;
 };
 
@@ -115,10 +130,12 @@ type TranslatableProduct = {
 		description?: string | null;
 		seoTitle?: string | null;
 		seoDescription?: string | null;
+		slug?: string | null;
 	} | null;
 	category?: {
 		name: string;
-		translation?: { name?: string | null } | null;
+		slug?: string;
+		translation?: { name?: string | null; slug?: string | null } | null;
 	} | null;
 	variants?: Array<{
 		name: string;

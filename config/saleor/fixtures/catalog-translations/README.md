@@ -81,18 +81,23 @@ languageCode: PL # Saleor LanguageCodeEnum — not EN
 categories:
   your-category-slug:
     name: "Translated name"
+    slug: "translated-url-handle" # optional — Saleor translation.slug (ADR 0004)
     seoDescription: "Translated SEO"
 
 collections:
   your-collection-slug:
     name: "..."
+    slug: "..."
     description: "Plain text — deploy converts to EditorJS"
 
 products:
   your-product-slug:
     name: "..."
+    slug: "..."
     description: "..."
 ```
+
+URL `slug` values should be lowercase ASCII with hyphens. For CJK locales, prefer romanization over native-script handles (encoding / tooling).
 
 Attribute labels and per-product text attributes use `*.attributes.yaml` and `*.product-attributes.yaml` — see `examples/`.
 
@@ -169,4 +174,4 @@ All requests (reads, permission probe, and writes) share one throttled client so
 
 ## Supported locales
 
-Match `NEXT_PUBLIC_STOREFRONT_LOCALES`: `pl`, `de`, `fr`, `fi`, `nb`. English lives in Saleor as the default — do not add `languageCode: EN` fixtures.
+Match `NEXT_PUBLIC_STOREFRONT_LOCALES`: `pl`, `de`, `fr`, `fi`, `nb`, `ja`, `ko`. English lives in Saleor as the default — do not add `languageCode: EN` fixtures.

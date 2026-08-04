@@ -8,8 +8,7 @@ import {
 	buildPathsForAllLocales,
 	extractMenuSlugFromWebhookPayload,
 	extractPageSlugFromWebhookPayload,
-	isGlobalTagProfile,
-	getChannelScopedTagProfiles,
+	planFullPurgeTagEntries,
 	planMenuRevalidation,
 	planPageRevalidation,
 	planStorefrontContentRevalidation,
@@ -348,70 +347,56 @@ export async function GET(request: NextRequest) {
 		return Response.json({ error: "Provide path, tag, and/or all parameter" }, { status: 400 });
 	}
 
-	const revalidatedPaths: string[] = [];
-	const revalidatedTags: string[] = [];
+	try {
+		const revalidatedPaths: string[] = [];
+		const revalidatedTags: string[] = [];
 
-	if (all === "1" || all === "true") {
-		revalidatePath("/", "layout");
-		revalidatedPaths.push("/ (all routes)");
+		if (all === "1" || all === "true") {
+			revalidatePath("/", "layout");
+			revalidatedPaths.push("/ (all routes)");
 
-		const tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }> = [];
-
-		for (const p of Object.values(CACHE_PROFILES)) {
-			if (isGlobalTagProfile(p)) {
-				tagEntries.push({ tag: buildTag(p), profile: p.cacheProfile });
+			const channelSlugs = await getStorefrontChannelSlugs();
+			const tagEntries = planFullPurgeTagEntries(channelSlugs);
+			if (channelSlugs.length === 0) {
+				console.warn(
+					"[Revalidate] Full purge: no channel slugs resolved — channel/locale-scoped tags skipped. " +
+						"Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
+				);
 			}
-		}
 
-		const channelTagProfiles = getChannelScopedTagProfiles();
-		const channelSlugs = await getStorefrontChannelSlugs();
-		if (channelSlugs.length === 0 && channelTagProfiles.length > 0) {
-			console.warn(
-				"[Revalidate] Full purge: no channel slugs resolved — channel-scoped tags skipped. " +
-					"Set NEXT_PUBLIC_DEFAULT_CHANNEL or STOREFRONT_CHANNELS.",
+			revalidatedTags.push(...(await revalidateTags(tagEntries)));
+
+			console.log(
+				"[Revalidate] Full purge:",
+				'revalidatePath("/", "layout") + shared/enumerable tags:',
+				revalidatedTags.join(", ") || "(none)",
 			);
 		}
-		for (const p of channelTagProfiles) {
-			for (const channel of channelSlugs) {
-				tagEntries.push({ tag: buildTag(p, { channel }), profile: p.cacheProfile });
-			}
+
+		if (path) {
+			console.log(
+				`[Revalidate] Path: revalidatePath("${path.replace(/[\r\n]/g, "")}") — invalidates this specific route`,
+			);
+			revalidatePath(path);
+			revalidatedPaths.push(path);
 		}
 
-		revalidatedTags.push(...(await revalidateTags(tagEntries)));
+		if (tagParam) {
+			const tag = resolveManualRevalidateTag(tagParam, channelParam);
+			const profile = resolveRevalidateProfileForTag(tag, profileOverride);
+			console.log(
+				`[Revalidate] Tag: revalidateTag("${tag.replace(
+					/[\r\n]/g,
+					"",
+				)}", "${profile}") — invalidates "use cache" entries with this tag`,
+			);
+			revalidatedTags.push(...(await revalidateTags([{ tag, profile }])));
+		}
 
-		const slugProfiles = Object.values(CACHE_PROFILES)
-			.filter((p) => p.tagPattern.includes("{slug}"))
-			.map((p) => p.id);
-
-		console.log(
-			"[Revalidate] Full purge:",
-			'revalidatePath("/", "layout") invalidates all routes (including slug-based:',
-			slugProfiles.join(", ") + ").",
-			"Also revalidated tags:",
-			revalidatedTags.join(", ") || "(none)",
-		);
+		console.log("[Revalidate] Done:", { paths: revalidatedPaths, tags: revalidatedTags });
+		return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
+	} catch (error) {
+		console.error("[Revalidate] Error:", error);
+		return Response.json({ error: "Revalidation failed" }, { status: 500 });
 	}
-
-	if (path) {
-		console.log(
-			`[Revalidate] Path: revalidatePath("${path.replace(/[\r\n]/g, "")}") — invalidates this specific route`,
-		);
-		revalidatePath(path);
-		revalidatedPaths.push(path);
-	}
-
-	if (tagParam) {
-		const tag = resolveManualRevalidateTag(tagParam, channelParam);
-		const profile = resolveRevalidateProfileForTag(tag, profileOverride);
-		console.log(
-			`[Revalidate] Tag: revalidateTag("${tag.replace(
-				/[\r\n]/g,
-				"",
-			)}", "${profile}") — invalidates "use cache" entries with this tag`,
-		);
-		revalidatedTags.push(...(await revalidateTags([{ tag, profile }])));
-	}
-
-	console.log("[Revalidate] Done:", { paths: revalidatedPaths, tags: revalidatedTags });
-	return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
 }

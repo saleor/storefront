@@ -1,5 +1,5 @@
 import type { MenuItem } from "@/lib/menus/get-menu-data";
-import { pickTranslatedName, pickTranslatedTitle } from "@/lib/saleor-translations";
+import { pickTranslatedName, pickTranslatedSlug, pickTranslatedTitle } from "@/lib/saleor-translations";
 import { isSafeExternalHref, isSafeMailtoHref, sanitizeNavHref } from "@/lib/url/safe-href";
 
 export function getMenuItemLabel(item: MenuItem): string | null {
@@ -11,9 +11,9 @@ export function getMenuItemLabel(item: MenuItem): string | null {
 }
 
 export function getMenuItemHref(item: MenuItem): string | null {
-	if (item.category?.slug) return `/categories/${item.category.slug}`;
-	if (item.collection?.slug) return `/collections/${item.collection.slug}`;
-	if (item.page?.slug) return `/pages/${item.page.slug}`;
+	if (item.category?.slug) return `/categories/${pickTranslatedSlug(item.category)}`;
+	if (item.collection?.slug) return `/collections/${pickTranslatedSlug(item.collection)}`;
+	if (item.page?.slug) return `/pages/${pickTranslatedSlug(item.page)}`;
 	if (item.url) return sanitizeNavHref(item.url);
 	return null;
 }

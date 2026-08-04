@@ -9,14 +9,17 @@ languageCode: PL
 categories:
   example-category:
     name: "Przykładowa kategoria"
+    slug: "przykladowa-kategoria"
     seoDescription: "Krótki opis SEO kategorii."
 
 collections:
   example-collection:
     name: "Przykładowa kolekcja"
+    slug: "przykladowa-kolekcja"
     description: "Krótki opis kolekcji po polsku."
 
 products:
   example-product:
     name: "Przykładowy produkt"
+    slug: "przykladowy-produkt"
     description: "Opis produktu w języku polskim."

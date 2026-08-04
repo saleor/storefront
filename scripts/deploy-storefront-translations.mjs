@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Apply Paper storefront model attribute translations from per-locale YAML fixtures.
- * Configurator seeds English defaults; this script pushes PL/DE/FR/FI/NB via GraphQL.
+ * Configurator seeds English defaults; this script pushes per-locale YAML via GraphQL
+ * (`languageCode` in each fixture — e.g. PL, DE, FR, FI, NB, JA, KO).
  *
  * Fixtures: config/saleor/fixtures/translations/{locale}.yaml
  */

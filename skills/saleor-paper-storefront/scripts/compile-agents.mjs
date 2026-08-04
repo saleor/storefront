@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 29;
+const RULE_COUNT = 31;
 
 const catalog = [
 	{
@@ -33,9 +33,10 @@ const catalog = [
 			{ num: "1.1", file: "data-caching.md", title: "Caching Strategy" },
 			{ num: "1.2", file: "data-graphql.md", title: "GraphQL Workflow" },
 			{ num: "1.3", file: "data-auth-routes.md", title: "Auth Routes (BFF)" },
-			{ num: "1.4", file: "data-storefront-content.md", title: "Storefront Content Layer" },
-			{ num: "1.5", file: "data-storefront-content-saleor.md", title: "Storefront Content (Saleor Models)" },
-			{ num: "1.6", file: "data-storefront-content-attributes.md", title: "Storefront Content Attributes" },
+			{ num: "1.4", file: "data-redirect-security.md", title: "Redirect URL Security" },
+			{ num: "1.5", file: "data-storefront-content.md", title: "Storefront Content Layer" },
+			{ num: "1.6", file: "data-storefront-content-saleor.md", title: "Storefront Content (Saleor Models)" },
+			{ num: "1.7", file: "data-storefront-content-attributes.md", title: "Storefront Content Attributes" },
 		],
 	},
 	{
@@ -47,7 +48,8 @@ const catalog = [
 		rules: [
 			{ num: "2.1", file: "product-pdp.md", title: "Product Detail Page" },
 			{ num: "2.2", file: "product-variants.md", title: "Variant Selection" },
-			{ num: "2.3", file: "product-filtering.md", title: "Product Filtering" },
+			{ num: "2.3", file: "product-high-cardinality.md", title: "High-Cardinality Attributes" },
+			{ num: "2.4", file: "product-filtering.md", title: "Product Filtering" },
 		],
 	},
 	{
@@ -241,7 +243,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 

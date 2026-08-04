@@ -59,12 +59,12 @@ export function ButtonOption({
 					aria-disabled={isOutOfStock || isPending}
 					style={{ minWidth }}
 					className={cn(
-						"h-12 rounded-lg border px-4 text-sm font-medium transition-all",
+						"inline-flex h-12 items-center justify-center rounded-lg border px-4 text-sm font-medium transition-all",
 						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 						isSelected
 							? "border-foreground bg-foreground text-background"
 							: isIncompatible
-								? "border-border text-muted-foreground hover:border-muted-foreground/40"
+								? "border-border/70 text-muted-foreground/55 hover:border-muted-foreground/40 hover:text-muted-foreground/70"
 								: "border-input bg-background text-foreground hover:border-foreground",
 						isOutOfStock && "cursor-not-allowed text-muted-foreground line-through opacity-60",
 					)}

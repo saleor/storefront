@@ -65,7 +65,8 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes (market switch warns when cart cookie exists).
 6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
 7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
-8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid. Must be `NEXT_PUBLIC_` — both the server (404 guard, hreflang) and the client picker/nav read it. See `src/config/locale-channel.ts`.
+8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,ja:japan`. When set: invalid pairs 404; language switch navigates to the paired channel; region picker filters locales per market; hreflang keys use `bcp47` (`ja-JP`). When unset: any allowed locale × channel is valid, language switch keeps the current channel, hreflang keys stay language-only (`ja`). Must be `NEXT_PUBLIC_` — server (404 guard, hreflang) and client picker/nav share it. See `src/config/locale-channel.ts`, `seo-metadata.md`.
+9. **`x-default`** — same as `NEXT_PUBLIC_DEFAULT_LOCALE` (+ that locale’s channel). Intentionally not a separate env.
 
 ---
 
@@ -82,24 +83,26 @@ Browse performance is unchanged after locale routing — locale is part of the *
 
 **GraphQL:** Map URL slugs to Saleor **base** language codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge `translation { … }` fields after fetch (`src/lib/saleor-translations.ts`).
 
+**Translatable catalog slugs (Saleor 3.21+):** Product / category / collection / page URLs may use `translation.slug` per locale. Resolve with `slugLanguageCode` then primary fallback for **every** locale (`src/lib/catalog/resolve-by-slug.ts`); build links with `pickTranslatedSlug`; keep `entity.slug` as cache/webhook identity. Fetch all locale handles via `*LocaleSlugTranslations` aliases (`buildLocaleSlugMap`) for hreflang and zero-hop language switching. See `docs/adr/0004-translatable-slugs.md`.
+
 **Invalidation:** Product update → `revalidateTag("product:{slug}")` → busts EN/PL/DE cached entries → `revalidatePath` for every `/{locale}/{channel}/products/{slug}`.
 
 Full detail: `data-caching.md` § Locale & Caching.
 
 ## Implementation map (when migration starts)
 
-| Concern         | Location (planned)                                                                        |
-| --------------- | ----------------------------------------------------------------------------------------- |
-| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                               |
-| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                   |
-| Channel guard   | move/extend current `[channel]/layout.tsx`                                                |
-| Links           | replace `LinkWithChannel` → locale-aware helper                                           |
-| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                       |
-| Middleware      | root redirect, optional `Accept-Language`, preference cookie                              |
-| GraphQL         | pass `languageCode` on public queries                                                     |
-| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired |
-| Picker          | header market + language UI (footer channel select retired or secondary)                  |
-| SEO             | `hreflang`, canonical, sitemap per locale×channel                                         |
+| Concern         | Location (planned)                                                                                   |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                                          |
+| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                              |
+| Channel guard   | move/extend current `[channel]/layout.tsx`                                                           |
+| Links           | replace `LinkWithChannel` → locale-aware helper                                                      |
+| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                                  |
+| Middleware      | root redirect, optional `Accept-Language`, preference cookie                                         |
+| GraphQL         | pass `languageCode` on public queries                                                                |
+| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired            |
+| Picker          | header market + language UI (footer channel select retired or secondary)                             |
+| SEO             | `hreflang`, canonical; sitemap only via chunked `generateSitemaps` (see `seo-metadata.md` § Sitemap) |
 
 ---
 
@@ -124,7 +127,10 @@ Run **301** from old URLs for at least one release.
 ❌ **Putting locale after channel** (`/uk/en/…`) — conflicts with this ADR  
 ❌ **Implementing `[locale]` routes** before ADR helpers and redirect plan exist  
 ❌ **Hardcoding `EN_US` / `PL_PL` in `graphqlLanguageCode`** — Dashboard translations use base codes (`EN`, `PL`); see `src/config/locale.ts`  
-❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language
+❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language  
+❌ **Overwriting `entity.slug` with the translation** — Breaks cache tags / webhooks; use `pickTranslatedSlug` for URLs only  
+❌ **Assuming Saleor falls back between primary and translated slug lookups** — Client must try both (`resolveByPossiblyTranslatedSlug`)  
+❌ **Keeping a translated slug when switching locale** — Foreign-language handles 404; rewrite to primary slug via `CatalogIdentityBridge`
 
 ---
 

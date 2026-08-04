@@ -5,7 +5,7 @@ Saleor Paper
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 29 rules (~75k tokens) and exists only for humans reading offline and for
+> all 31 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 29 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 31 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -29,14 +29,16 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
    - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
-   - 1.4 [Storefront Content Layer](#14-storefront-content-layer)
-   - 1.5 [Storefront Content (Saleor Models)](#15-storefront-content-saleor-models)
-   - 1.6 [Storefront Content Attributes](#16-storefront-content-attributes)
+   - 1.4 [Redirect URL Security](#14-redirect-url-security)
+   - 1.5 [Storefront Content Layer](#15-storefront-content-layer)
+   - 1.6 [Storefront Content (Saleor Models)](#16-storefront-content-saleor-models)
+   - 1.7 [Storefront Content Attributes](#17-storefront-content-attributes)
 
 2. [Product Pages](#2-product-pages) — **HIGH**
    - 2.1 [Product Detail Page](#21-product-detail-page)
    - 2.2 [Variant Selection](#22-variant-selection)
-   - 2.3 [Product Filtering](#23-product-filtering)
+   - 2.3 [High-Cardinality Attributes](#23-high-cardinality-attributes)
+   - 2.4 [Product Filtering](#24-product-filtering)
 
 3. [Checkout Flow](#3-checkout-flow) — **HIGH**
    - 3.1 [Paper Surfaces](#31-paper-surfaces)
@@ -186,17 +188,18 @@ Sync (main)/layout.tsx
 
 ## Where to read next
 
-| If you are…                        | Start with                                                                                                       |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                         |
-| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                            |
-| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md)                                 |
-| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                             |
-| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                    |
-| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                     |
-| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md) |
-| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)      |
-| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                  |
+| If you are…                        | Start with                                                                                                                                     |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| New to the codebase                | This file, then [`paper-surfaces.md`](paper-surfaces.md)                                                                                       |
+| Naming files / exports / imports   | [`references/code-conventions.md`](../references/code-conventions.md)                                                                          |
+| Touching PDP / variants            | [`product-pdp.md`](product-pdp.md), [`product-variants.md`](product-variants.md), [`product-high-cardinality.md`](product-high-cardinality.md) |
+| Touching PLP filters / facets      | [`product-filtering.md`](product-filtering.md), [`product-high-cardinality.md`](product-high-cardinality.md)                                   |
+| Touching caching / PPR / webhooks  | [`data-caching.md`](data-caching.md)                                                                                                           |
+| Touching checkout or payments      | [`paper-surfaces.md`](paper-surfaces.md) → [`checkout-management.md`](checkout-management.md)                                                  |
+| Touching auth / account            | [`data-auth-routes.md`](data-auth-routes.md)                                                                                                   |
+| Touching locale or market URLs     | [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md), [`ui-locale-routing.md`](ui-locale-routing.md)                               |
+| Touching UI strings / translations | [`ui-i18n.md`](ui-i18n.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md)                                    |
+| Upgrading a fork                   | [`migrations/SKILL.md`](../migrations/SKILL.md)                                                                                                |
 
 Formal architecture decisions beyond day-to-day conventions: [`docs/adr/`](../../../docs/adr/).
 
@@ -268,20 +271,22 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 
 ### Tag registry
 
-| Tag pattern                             | Profile              | Used by                                        | Invalidated when            |
-| --------------------------------------- | -------------------- | ---------------------------------------------- | --------------------------- |
-| `product:{slug}`                        | `products`           | `getProductData()`                             | Product updated             |
-| `category:{slug}`                       | `categories`         | `getCategoryData()`                            | Category updated            |
-| `collection:{slug}`                     | `collections`        | `getCollectionData()`, `getFeaturedProducts()` | Collection updated          |
-| `page:{slug}`                           | `pages`              | `getPageData()` (CMS)                          | Page updated                |
-| `navigation:{channel}`                  | `navigation`         | `getNavbarMenuItems()`                         | Navbar changed              |
-| `footer-menu:{channel}`                 | `footerMenu`         | `getFooterMenuItems()`                         | Footer changed              |
-| `storefront-content:{channel}:{locale}` | `storefront-content` | `getStorefrontContent()`                       | `storefront-*` Page updated |
-| `channels`                              | `channels`           | `getCachedChannelsList()`                      | Channel list changed        |
+| Tag pattern                                         | Profile              | Used by                                                   | Invalidated when                  |
+| --------------------------------------------------- | -------------------- | --------------------------------------------------------- | --------------------------------- |
+| `product:{slug}`                                    | `products`           | `getProductData()`                                        | Product updated                   |
+| `category:{slug}`                                   | `categories`         | `getCategoryData()`                                       | Category updated                  |
+| `collection:{slug}`                                 | `collections`        | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                |
+| `page:{slug}`                                       | `pages`              | `getPageData()` (CMS)                                     | Page updated                      |
+| `products` / `categories` / `collections` / `pages` | same (sharedTag)     | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions |
+| `navigation:{channel}`                              | `navigation`         | `getNavbarMenuItems()`                                    | Navbar changed                    |
+| `footer-menu:{channel}`                             | `footerMenu`         | `getFooterMenuItems()`                                    | Footer changed                    |
+| `storefront-content:{channel}:{locale}`             | `storefront-content` | `getStorefrontContent()`                                  | `storefront-*` Page updated       |
+| `channels`                                          | `channels`           | `getCachedChannelsList()`                                 | Channel list changed              |
 
+Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
 Named `cacheLife` tiers (configured in `next.config.js`): `catalog` ~5 min (products/categories/collections/CMS pages), `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
 
-`GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically.
+`GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically. Manifest **v6+** includes an optional `identity` block (`saleorApiUrl`, `environment`, deploy metadata) for the Paper handshake. `saleorApiUrl` comes from `NEXT_PUBLIC_SALEOR_API_URL`. `environment` defaults from `VERCEL_ENV` / `NODE_ENV`; set `PAPER_STOREFRONT_ENVIRONMENT` only when those lie (true staging, or non-Vercel hosts that aren't prod).
 
 ---
 
@@ -362,8 +367,13 @@ Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag + r
 **Manual / emergency** (Bearer header, timing-safe; `?secret=` is deprecated):
 
 ```bash
+# One product
 curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
   "https://store.com/api/revalidate?tag=product:blue-hoodie&path=/en/default-channel/products/blue-hoodie"
+
+# Full purge (path layout + shared/enumerable tags — what paper-app "Revalidate all" calls)
+curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
+  "https://store.com/api/revalidate?all=1"
 ```
 
 Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
@@ -664,7 +674,56 @@ Related: [`data-caching.md`](data-caching.md) (page-boundary model), [`checkout-
 
 ---
 
-### 1.4 Storefront Content Layer
+### 1.4 Redirect URL Security
+
+Redirect URLs are security-sensitive everywhere. Any code path that accepts, builds, validates, stores, forwards, or follows a redirect URL must treat the destination origin as attacker-controlled until it has passed the shared allowlist check.
+
+## Rule
+
+Production redirect allowlists must come from explicit configuration, not request metadata.
+
+The allowed origin sources are documented in `docs/configuration/allowed-origins.md`; do NOT copy that list into other code; always reuse `isAllowedRedirectUrl()` for redirect destination checks. Do not duplicate its parsing, normalization, environment handling, or development fallback logic in route handlers, Server Actions, components, or tests.
+
+## Never Trust These For Production Allowlisting
+
+Do not allow these values to introduce a production redirect origin:
+
+- `Host`
+- `X-Forwarded-Host`
+- `X-Forwarded-Proto`
+- `Origin`
+- `Referer`
+- `request.nextUrl.origin`
+- `headers().get(...)`
+- helper output derived from request headers, including `getRequestOrigin()`
+
+## Saleor Boundary
+
+Saleor also validates these redirect URLs with [`ALLOWED_CLIENT_HOSTS`]. Keep storefront allowlists aligned with Saleor config, but do not rely on Saleor as the only guard. The storefront check should reject invalid redirect origins before forwarding the mutation.
+
+[`ALLOWED_CLIENT_HOSTS`]: https://docs.saleor.io/setup/configuration#allowed_client_hosts
+
+## Required Tests
+
+When changing redirect validation, auth routes, or checkout auth actions, add or keep tests that prove:
+
+- A redirect URL matching only `request.nextUrl.origin` or `getRequestOrigin()` is rejected in production.
+- Spoofed `Host` or `X-Forwarded-*` derived origins do not become allowed production origins.
+- Configured storefront, checkout, and extra origins are accepted.
+- Loopback request origins are accepted only outside production.
+- Foreign origins, subdomain tricks, non-http schemes, protocol-relative URLs, and malformed URLs are rejected.
+
+## Anti-patterns
+
+- Do not use `allowed.push(request.nextUrl.origin)`
+- Do not use `allowed.push(await getRequestOrigin())`
+- Do not treat `Origin` as a redirect allowlist source.
+- Do not fix failing tests by broadening the allowlist to request headers.
+- Do not add preview or deployment hosts implicitly unless the helper already supports that exact env source.
+
+---
+
+### 1.5 Storefront Content Layer
 
 Marketing and merchandising copy (announcement bar, homepage sections, cart trust labels, checkout empty states) lives in a **provider-agnostic content layer** — separate from catalog data, menus, and transactional checkout state.
 
@@ -828,7 +887,7 @@ Marketing copy is cached like navigation; cart/checkout **transactional** data s
 
 ---
 
-### 1.5 Storefront Content (Saleor Models)
+### 1.6 Storefront Content (Saleor Models)
 
 Paper models merchandising copy in **Saleor Models** (PageTypes + Pages + page-type attributes) and the storefront maps those Pages into the normalized `StorefrontContent` shape. This rule is the Saleor side — provider behavior, merge, and the code/Saleor scope split are in [`data-storefront-content.md`](data-storefront-content.md); attribute types in [`data-storefront-content-attributes.md`](data-storefront-content-attributes.md).
 
@@ -937,7 +996,7 @@ Storefront content is cached under `storefront-content:{channel}:{locale}` and f
 
 ---
 
-### 1.6 Storefront Content Attributes
+### 1.7 Storefront Content Attributes
 
 How to choose Saleor attribute `inputType`s on storefront Models, and what Paper reads today.
 
@@ -1021,7 +1080,7 @@ Product pages are the core shopping experience. PDP layout, variant selection, a
 
 ### 2.1 Product Detail Page
 
-PDP architecture, the variant-aware image gallery, and the add-to-cart flow. Variant _selection_ logic is in [`product-variants.md`](product-variants.md); the PPR boundary model and `getProductData` caching are in [`paper-architecture.md`](paper-architecture.md) / [`data-caching.md`](data-caching.md) — this rule covers what's PDP-specific.
+PDP architecture, the variant-aware image gallery, and the add-to-cart flow. Variant _selection_ logic is in [`product-variants.md`](product-variants.md); caps, buy-box strategies, and over-budget deep links are in [`product-high-cardinality.md`](product-high-cardinality.md); the PPR boundary model and `getProductData` caching are in [`paper-architecture.md`](paper-architecture.md) / [`data-caching.md`](data-caching.md) — this rule covers what's PDP-specific.
 
 ## Architecture
 
@@ -1157,6 +1216,8 @@ Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic
 
 Variant and attribute selection on product detail pages. Ensures correct "Add to Cart" button state, option availability, discount badges, and URL-driven selection.
 
+For caps, buy-box strategies, and over-budget deep links, see [`product-high-cardinality.md`](product-high-cardinality.md).
+
 > **Source**: [Saleor Docs - Attributes](https://docs.saleor.io/developer/attributes/overview) - How product/variant attributes work
 
 > **UI & renderers:** For border states, swatch pills, sizing, and renderer routing, see
@@ -1227,28 +1288,41 @@ See [variant-selector-ui.md](../references/variant-selector-ui.md) for border/st
 src/ui/components/pdp/variant-selection/
 ├── index.ts
 ├── types.ts
-├── utils.ts
+├── saleor-variant.ts              # Shared Saleor variant shapes + value IDs
+├── selection-index.ts             # Once-built Map/Set indexes + *FromIndex helpers
+├── utils.ts                       # Public API (delegates to index; rebuilds per call)
+├── resolve-group-control.ts       # chips | select | combobox ladder
 ├── variant-selector.tsx
-├── variant-selection-section.tsx
+├── variant-selection-section.tsx  # Builds index once via useMemo
 ├── optional-attributes.tsx
 └── renderers/
-    ├── color-swatch-option.tsx      # Hex swatch circles
-    ├── image-swatch-pill-option.tsx # Image swatch pills
-    ├── button-option.tsx            # Size/text buttons
-    └── index.ts                     # defaultRenderers registry
+    ├── color-swatch-option.tsx
+    ├── image-swatch-pill-option.tsx
+    ├── button-option.tsx
+    └── index.ts
 ```
 
-## Key Functions in `utils.ts`
+Thresholds: `src/config/variants.ts`. Select/combobox are lazy-loaded so the chips path stays lean.
 
-| Function                        | Purpose                                        |
-| ------------------------------- | ---------------------------------------------- |
-| `groupVariantsByAttributes()`   | Extract unique attribute values from variants  |
-| `findMatchingVariant()`         | Find variant matching ALL selected attributes  |
-| `hasCompatibleVariant()`        | Any variant matches partial selections         |
-| `getOptionsForAttribute()`      | Options with availability + compatibility info |
-| `getAdjustedSelections()`       | Partial accumulation + conflict auto-clear     |
-| `getUnavailableAttributeInfo()` | Detect dead-end selections                     |
-| `normalizeAttributeValueId()`   | Value name → URL option id                     |
+## Merchant order + natural sort
+
+- **Group order** = first-seen order from Saleor's `selectionAttributes` (product-type assignment). Do not re-sort groups with a swatch-first heuristic.
+- **Option values** = `sortByOptionLabel` / `compareOptionLabels` (natural / size-aware).
+
+## Key Functions
+
+Prefer building `buildVariantSelectionIndex(variants)` once and calling `*FromIndex` in UI hot paths.
+
+| Function / area                     | Purpose                                    |
+| ----------------------------------- | ------------------------------------------ |
+| `buildVariantSelectionIndex()`      | Groups + Maps/Sets for O(1)-ish lookups    |
+| `findMatchingVariantFromIndex()`    | Complete selection → variant id            |
+| `getOptionsForAttributeFromIndex()` | Availability + compatibility per option    |
+| `getAdjustedSelectionsFromIndex()`  | Partial accumulation + conflict auto-clear |
+| `groupVariantsByAttributes()`       | Public wrapper → `index.groups`            |
+| `resolveVariantGroupControl()`      | Per-group chips / select / combobox        |
+
+Compat wrappers in `utils.ts` still exist for tests; they rebuild the index each call.
 
 For detailed function signatures, see [../references/variant-utils-reference.md](../references/variant-utils-reference.md).
 
@@ -1284,6 +1358,8 @@ Multi-attribute example (demo audiobooks): Medium + Audio quality + Instant Deli
 ```
 
 The `variant` param is only set when ALL attributes are selected and a match exists.
+
+Over-cap / external buy boxes also honor `?sku=` (see [`product-high-cardinality.md`](product-high-cardinality.md)); when both are present, `variant` wins.
 
 ## Discount Badges
 
@@ -1334,6 +1410,7 @@ For the full state diagram and transition rules, see [../references/variant-stat
 
 ```bash
 pnpm test src/ui/components/pdp/variant-selection/utils.test.ts
+pnpm test src/ui/components/pdp/variant-selection/selection-index.test.ts
 ```
 
 Fixture `audiobookVariants` in `__fixtures__/variants.ts` covers 3-attribute partial selection.
@@ -1346,150 +1423,236 @@ Fixture `audiobookVariants` in `__fixtures__/variants.ts` covers 3-attribute par
 ❌ **Don't assume single attribute** - Products can have multiple (incl. BOOLEAN selection attrs)  
 ❌ **Don't use `0` in boolean checks for prices** - Use `typeof === "number"`  
 ❌ **Don't make non-selection attributes interactive** - They're display-only (badges, not toggles)  
-❌ **Don't use `border-border` on compatible button/pill options** - Use `border-gray-400`
+❌ **Don't use `border-border` on compatible button/pill options** - Use `border-gray-400`  
+❌ **Don't re-sort attribute groups** away from merchant/API order  
+❌ **Don't rebuild the selection index on every click** in the picker — memoize once
 
 ---
 
-### 2.3 Product Filtering
+### 2.3 High-Cardinality Attributes
 
-Product list filtering and sorting architecture. Ensures correct server-side vs client-side filtering, category resolution, static price ranges, and filter UI behavior.
+Paper treats large option matrices as a first-class shape: **degrade by attribute-group shape**, never fetch unpaginated variant lists, and keep LCP on the static PDP shell.
 
-> **Source**: [Saleor API - ProductFilterInput](https://docs.saleor.io/api-reference/products/inputs/product-filter-input) - Available server-side filter options
+Budgets and thresholds live in one fork override point: `src/config/variants.ts` (+ `src/config/facets.ts` for PLP).
 
-## Filter Architecture
+## Caps (do not scatter magic numbers)
 
-| Filter         | Processing     | Why                                           |
-| -------------- | -------------- | --------------------------------------------- |
-| **Categories** | ✅ Server-side | Uses Saleor's `ProductFilterInput.categories` |
-| **Price**      | ✅ Server-side | Uses Saleor's `ProductFilterInput.price`      |
-| **Sort**       | ✅ Server-side | Uses Saleor's `ProductOrder`                  |
-| **Colors**     | ❌ Client-side | Saleor needs attribute IDs                    |
-| **Sizes**      | ❌ Client-side | Same as colors                                |
+| Constant                            | Default | Role                                                                     |
+| ----------------------------------- | ------- | ------------------------------------------------------------------------ |
+| `SALEOR_VARIANT_PAGE_SIZE`          | 100     | Saleor `productVariants(first:)` page size                               |
+| `PDP_VARIANT_CAP`                   | 200     | Max variants hydrated for the matrix picker                              |
+| `PLP_VARIANT_SAMPLE`                | 50      | Card swatches / facet **option hints** only (not filter truth)           |
+| `VARIANT_CHIP_MAX_OPTIONS`          | 10      | Text/numeric groups stay chips                                           |
+| `VARIANT_SWATCH_CHIP_MAX_OPTIONS`   | 12      | Swatch groups stay chip grid; then combobox (Select can't show swatches) |
+| `VARIANT_NATIVE_SELECT_MAX_OPTIONS` | 24      | Text groups: select, then combobox                                       |
 
-## Key Files
+**Stock freshness:** PDP variant payloads (incl. `quantityAvailable`) use the same `product:{slug}` + `catalog` cache profile as the product shell (~5 min TTL, PRODUCT\_\* webhooks). Cart/checkout always re-fetch live.
 
-| File                                           | Purpose                                |
-| ---------------------------------------------- | -------------------------------------- |
-| `src/ui/components/plp/filter-utils.ts`        | All filter utilities (server + client) |
-| `src/ui/components/plp/filter-bar.tsx`         | Filter UI (dropdowns, mobile sheet)    |
-| `src/ui/components/plp/use-product-filters.ts` | Hook consolidating filter logic        |
+## Data layer (never the firehose)
 
-## Server-Side Filtering
+- **Product shell** (`ProductDetails`): no unpaginated `Product.variants`. Probe with `productVariants(first: 1) { totalCount }` + `productType`.
+- **Matrix path**: paginated `ProductVariantsForPdp` only inside dynamic islands, and only when `totalCount ≤ PDP_VARIANT_CAP`.
+- **Lint**: `src/graphql/*.graphql` must not use deprecated `variants {` — enforced in `verify`.
+- **PLP cards**: `productVariants(first:)` capped at `PLP_VARIANT_SAMPLE` for swatches; keep the GraphQL `first` arg in sync with that constant.
 
-Category slugs in URL are resolved to IDs:
+## Buy-box strategies (`src/lib/catalog/buy-box-strategy.ts`)
 
-```typescript
-// In page.tsx (server component)
-import { resolveCategorySlugsToIds, buildFilterVariables } from "@/ui/components/plp/filter-utils";
+Resolve **only inside dynamic islands** — never in the static shell (PPR / LCP).
 
-const categorySlugs = searchParams.categories?.split(",") || [];
-const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
-const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+| Strategy      | When                                                      | Buy box                                            |
+| ------------- | --------------------------------------------------------- | -------------------------------------------------- |
+| `matrix`      | `totalCount ≤ PDP_VARIANT_CAP` (default)                  | Attribute picker + selection index                 |
+| `over_budget` | `totalCount > PDP_VARIANT_CAP`                            | No matrix; ATC via deep link only                  |
+| `external`    | Product-type slug in `EXTERNAL_BUYBOX_PRODUCT_TYPE_SLUGS` | Fork picker (seat map, CPQ, …); same deep-link ATC |
 
-const filter = buildFilterVariables({
-	priceRange: searchParams.price,
-	categoryIds,
-});
+`guided` (stepped `attribute.choices`) is **deferred**.
 
-// Pass to GraphQL query
-const { products } = await executePublicGraphQL(ProductListDocument, {
-	variables: { channel, filter },
-});
-```
+### Deep-link contract (public)
 
-## Client-Side Filtering
+- `?variant=<Saleor global id>` — preferred
+- `?sku=<variant sku>` — when the id is unknown (feeds, email, POS)
+- When both present, **`variant` wins**
+- Resolved buy box: selection summary + ATC enabled **without** loading sibling variants
 
-Colors and sizes are filtered after fetch:
+## Per-group control ladder
 
-```typescript
-import { filterProducts, extractColorOptions } from "@/ui/components/plp/filter-utils";
+Each attribute group picks its own control (`resolveVariantGroupControl`):
 
-// Extract available options
-const colorOptions = extractColorOptions(products, selectedColors);
+| Shape                 | Control                        |
+| --------------------- | ------------------------------ |
+| Swatches, ≤12 options | Chip / swatch grid             |
+| Swatches, >12         | Lazy combobox (swatch leading) |
+| Text/numeric, ≤10     | Chips                          |
+| Text/numeric, 11–24   | Lazy `<Select>`                |
+| Text/numeric, ≥25     | Lazy searchable combobox       |
 
-// Apply filters
-const filtered = filterProducts(products, {
-	colors: selectedColors,
-	sizes: selectedSizes,
-});
-```
+Select/combobox load via `next/dynamic` (`ssr: false`) so the common chips path stays lean.
 
-## Using the Hook
+## Merchant order + natural sort
 
-The `useProductFilters` hook consolidates all filter logic:
+- Preserve Saleor's `selectionAttributes` order (product-type assignment order). **Do not** re-sort groups with a fashion “swatch first” heuristic.
+- Sort option **values** with `compareOptionLabels` / `sortByOptionLabel` (S before L; Row 10 after Row 2).
 
-```tsx
-"use client";
-import { useProductFilters } from "@/ui/components/plp/use-product-filters";
+## Selection-index performance
 
-function ProductsClient({ products, resolvedCategories }) {
-	const {
-		filteredProducts,
-		colorOptions,
-		sizeOptions,
-		selectedColors,
-		handleColorToggle,
-		handleSortChange,
-		activeFilters,
-	} = useProductFilters({
-		products,
-		resolvedCategories,
-		enableCategoryFilter: true,
-	});
+Hot paths live in `selection-index.ts`. Build **once** per product payload (`useMemo` in `VariantSelectionSection`):
 
-	return (
-		<FilterBar
-			colorOptions={colorOptions}
-			selectedColors={selectedColors}
-			onColorToggle={handleColorToggle}
-			// ...
-		/>
-	);
-}
-```
+- `variantById`
+- `variantsByAttrValue` (attr → value → variant ids)
+- `variantBySelectionKey` (complete fingerprint → variant id)
+- Cached `groupSlugs` + `implicitSelections`
 
-## Static Price Ranges
+Public wrappers in `utils.ts` rebuild an index per call (compat/tests). The picker must use `*FromIndex` helpers.
 
-Price ranges are static to avoid UI flicker when filtering:
+## PLP facets (server-side)
 
-```typescript
-import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils";
+See [`product-filtering.md`](product-filtering.md). Facets are configured in `src/config/facets.ts` (`PLP_FACETS`). Colors/sizes are presets — not hardcoded Saleor special cases. Listing filters OR attribute slug **aliases** (`size` | `shoe-size` | …) via `ProductWhereInput` (Saleor forbids combining `filter` + `where`).
 
-// Returns: [
-//   { label: "Under $50", value: "0-50", count: 0 },
-//   { label: "$50 - $100", value: "50-100", count: 0 },
-//   ...
-// ]
-```
+## Quick-add / over-cap
 
-## Examples
+- `hasVariants` still gates one-click add when multiple variants exist.
+- `isOverVariantCap` (`variantTotalCount > PDP_VARIANT_CAP`): never open a variant sheet from PLP — route to the PDP.
 
-### Adding a New Server-Side Filter
+## Perf gates (testable invariants)
 
-1. Update `buildFilterVariables` in `filter-utils.ts`:
+1. Strategy / `searchParams` / uncached variant fetches stay **inside** Suspense islands — gate with `pnpm run build` on PPR-sensitive changes.
+2. Facet toggles use `useOptimistic` + `useTransition` so chips acknowledge instantly while RSC results stream.
+3. Unfiltered first-load PLP remains static-friendly; filtered views are soft navigations (combinatorial cache dilution is expected).
+4. Common-path PDP client bundle: chips path must not pull Select/cmdk.
 
-```typescript
-export function buildFilterVariables(params: {
-	priceRange?: string | null;
-	categoryIds?: string[];
-	inStock?: boolean; // New filter
-}): ProductFilterInput | undefined {
-	// ... existing code ...
+## Ceilings (product guidance)
 
-	if (params.inStock) {
-		filter.stockAvailability = "IN_STOCK";
-		hasFilter = true;
-	}
-}
-```
+| Scale                        | Approach                                         |
+| ---------------------------- | ------------------------------------------------ |
+| Matrix ≤ `PDP_VARIANT_CAP`   | Full attribute picker                            |
+| SKU lookup / deep link ~2–3k | `over_budget` / external + `?variant=` / `?sku=` |
+| Beyond that                  | Split products, or keep inventory outside Saleor |
 
-2. Parse from URL in page.tsx and pass to the function.
+Dashboard bulk ops / Configurator: prefer commerce-as-code and paginated APIs; never teach the storefront to dump all variants into RSC payloads.
 
 ## Anti-patterns
 
-❌ **Don't filter categories client-side** - Use server-side with IDs  
-❌ **Don't generate dynamic price ranges** - Use static ranges  
-❌ **Don't hide selected filters** - Always show so users can deselect
+❌ Fetching deprecated unpaginated `Product.variants`  
+❌ Resolving buy-box strategy or reading `?variant=` in the static shell  
+❌ Shipping a **partial** attribute matrix when over cap  
+❌ Client-only color/size filtering against the PLP sample (sample ≠ truth)  
+❌ Filtering only the primary attribute slug when aliases exist (`size` without `shoe-size`)  
+❌ Rebuilding the selection index on every click in the picker
+
+---
+
+### 2.4 Product Filtering
+
+Product list filtering and sorting. Attribute facets (colors/sizes/…) are **server-side** via Saleor; the PLP variant sample is only for card swatches and option-list hints.
+
+> **Source**: [Saleor API - ProductFilterInput](https://docs.saleor.io/api-reference/products/inputs/product-filter-input) / `ProductWhereInput`  
+> **High-cardinality context**: [`product-high-cardinality.md`](product-high-cardinality.md)
+
+## Filter Architecture
+
+| Filter         | Processing     | Mechanism                                                                |
+| -------------- | -------------- | ------------------------------------------------------------------------ |
+| **Categories** | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
+| **Price**      | ✅ Server-side | `filter.price` or `where.price.range`                                    |
+| **Sort**       | ✅ Server-side | `ProductOrder`                                                           |
+| **Colors**     | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
+| **Sizes**      | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
+
+Saleor allows **only one** of `filter` or `where` per products query. When any attribute facet is selected, Paper puts the whole constraint set into `where` so aliases can OR correctly.
+
+> The old claim “Saleor needs attribute IDs” is **false** for modern schemas — `AttributeInput` filters by attribute slug + value slugs.
+
+## Facet config (`src/config/facets.ts`)
+
+```ts
+export const PLP_FACETS = [
+	{ param: "colors", attributeSlug: "color", attributeAliases: ["colour"], control: "swatch" },
+	{
+		param: "sizes",
+		attributeSlug: "size",
+		attributeAliases: ["shoe-size", "clothing-size"],
+		control: "chip",
+	},
+] as const;
+```
+
+- **URL tokens** = normalized **value slugs** (`?sizes=43`, not display names).
+- Forks add/reorder facets here — colors/sizes are presets, not GraphQL special cases.
+- Option chips in the filter bar are still derived from the **current page sample** (`PLP_VARIANT_SAMPLE`); that list can be incomplete. Matching itself is exhaustive against all variants.
+
+## Key Files
+
+| File                                           | Purpose                                             |
+| ---------------------------------------------- | --------------------------------------------------- |
+| `src/config/facets.ts`                         | Which attributes are facets + slug aliases          |
+| `src/ui/components/plp/filter-utils.ts`        | `buildProductListingConstraints`, option extractors |
+| `src/ui/components/plp/filter-utils.server.ts` | `resolveCategorySlugsToIds`                         |
+| `src/ui/components/plp/use-product-filters.ts` | URL sync, optimistic chips, `useTransition`         |
+| `src/ui/components/plp/filter-bar.tsx`         | Filter UI                                           |
+
+## Building listing constraints
+
+```typescript
+import { buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
+import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+
+const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
+const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+
+const { filter, where } = buildProductListingConstraints({
+	priceRange: searchParams.price,
+	categoryIds,
+	colors: searchParams.colors,
+	sizes: searchParams.sizes,
+});
+
+// Pass exactly one of filter / where (the other is undefined)
+await executePublicGraphQL(ProductListPaginatedDocument, {
+	variables: { channel, sortBy, filter, where, ... },
+});
+```
+
+`buildFilterVariables` remains for **category/price only** — do not hang attribute facets on it (single-slug `filter.attributes` cannot OR `shoe-size`).
+
+## Client UX (not client matching)
+
+```tsx
+const {
+	filteredProducts, // server-already-filtered page
+	colorOptions,
+	selectedColors,
+	isPending,
+	resultCount, // prefers server totalCount
+	handleColorToggle,
+} = useProductFilters({ products, totalCount, enableCategoryFilter: true });
+```
+
+- Toggles write sorted slug lists to the URL and use `useOptimistic` + `useTransition`.
+- Do **not** re-apply `filterProducts` for colors/sizes on the live PLP (kept only for tests / hybrid experiments).
+
+## Static Price Ranges
+
+Price ranges are static to avoid UI flicker:
+
+```typescript
+import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils";
+```
+
+## Adding a New Attribute Facet
+
+1. Add a row to `PLP_FACETS` (`param`, `attributeSlug`, `attributeAliases`, `control`).
+2. Ensure listing pages pass `searchParams[param]` into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map).
+3. Wire FilterBar / `useProductFilters` for that param if it needs a dedicated control.
+4. Prefer value **slugs** in the URL.
+
+## Anti-patterns
+
+❌ **Don't filter categories client-side** — resolve slugs → IDs server-side  
+❌ **Don't generate dynamic price ranges** — use static ranges  
+❌ **Don't hide selected filters** — always show so users can deselect  
+❌ **Don't treat the PLP variant sample as filter truth** — sample is for swatches/hints  
+❌ **Don't filter only `size` when sneakers use `shoe-size`** — configure aliases  
+❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination
 
 ---
 
@@ -3461,7 +3624,8 @@ Bare `/en/…` without channel is ambiguous for pricing and stock.
 5. **Picker behavior** — swap one segment, preserve path suffix; confirm if cart channel changes (market switch warns when cart cookie exists).
 6. **Cache keys** — pass `localeSlug` into every `"use cache"` catalog/menu fetch; Next.js caches each locale separately (same TTL/speed per language).
 7. **Cache tags** — catalog tags stay slug-scoped (`product:{slug}`); webhooks fan out paths via `buildPathsForAllLocales()`. Storefront content uses `storefront-content:{channel}:{locale}` (BCP 47). See `data-caching.md`.
-8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl`; when unset, any allowed locale × any allowed channel is valid. Must be `NEXT_PUBLIC_` — both the server (404 guard, hreflang) and the client picker/nav read it. See `src/config/locale-channel.ts`.
+8. **Locale×channel pairs** — optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,ja:japan`. When set: invalid pairs 404; language switch navigates to the paired channel; region picker filters locales per market; hreflang keys use `bcp47` (`ja-JP`). When unset: any allowed locale × channel is valid, language switch keeps the current channel, hreflang keys stay language-only (`ja`). Must be `NEXT_PUBLIC_` — server (404 guard, hreflang) and client picker/nav share it. See `src/config/locale-channel.ts`, `seo-metadata.md`.
+9. **`x-default`** — same as `NEXT_PUBLIC_DEFAULT_LOCALE` (+ that locale’s channel). Intentionally not a separate env.
 
 ---
 
@@ -3478,24 +3642,26 @@ Browse performance is unchanged after locale routing — locale is part of the *
 
 **GraphQL:** Map URL slugs to Saleor **base** language codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge `translation { … }` fields after fetch (`src/lib/saleor-translations.ts`).
 
+**Translatable catalog slugs (Saleor 3.21+):** Product / category / collection / page URLs may use `translation.slug` per locale. Resolve with `slugLanguageCode` then primary fallback for **every** locale (`src/lib/catalog/resolve-by-slug.ts`); build links with `pickTranslatedSlug`; keep `entity.slug` as cache/webhook identity. Fetch all locale handles via `*LocaleSlugTranslations` aliases (`buildLocaleSlugMap`) for hreflang and zero-hop language switching. See `docs/adr/0004-translatable-slugs.md`.
+
 **Invalidation:** Product update → `revalidateTag("product:{slug}")` → busts EN/PL/DE cached entries → `revalidatePath` for every `/{locale}/{channel}/products/{slug}`.
 
 Full detail: `data-caching.md` § Locale & Caching.
 
 ## Implementation map (when migration starts)
 
-| Concern         | Location (planned)                                                                        |
-| --------------- | ----------------------------------------------------------------------------------------- |
-| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                               |
-| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                   |
-| Channel guard   | move/extend current `[channel]/layout.tsx`                                                |
-| Links           | replace `LinkWithChannel` → locale-aware helper                                           |
-| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                       |
-| Middleware      | root redirect, optional `Accept-Language`, preference cookie                              |
-| GraphQL         | pass `languageCode` on public queries                                                     |
-| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired |
-| Picker          | header market + language UI (footer channel select retired or secondary)                  |
-| SEO             | `hreflang`, canonical, sitemap per locale×channel                                         |
+| Concern         | Location (planned)                                                                                   |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| Route tree      | `src/app/(storefront)/[locale]/[channel]/…`                                                          |
+| Locale config   | `src/config/locale.ts` — extend `available`, maps to `LanguageCodeEnum`                              |
+| Channel guard   | move/extend current `[channel]/layout.tsx`                                                           |
+| Links           | replace `LinkWithChannel` → locale-aware helper                                                      |
+| Pathname helper | `useSelectedPathname` — strip `/{locale}/{channel}`                                                  |
+| Middleware      | root redirect, optional `Accept-Language`, preference cookie                                         |
+| GraphQL         | pass `languageCode` on public queries                                                                |
+| Content         | `getStorefrontContent(channel, localeSlug)` — Saleor Models plain-text translations wired            |
+| Picker          | header market + language UI (footer channel select retired or secondary)                             |
+| SEO             | `hreflang`, canonical; sitemap only via chunked `generateSitemaps` (see `seo-metadata.md` § Sitemap) |
 
 ---
 
@@ -3520,7 +3686,10 @@ Run **301** from old URLs for at least one release.
 ❌ **Putting locale after channel** (`/uk/en/…`) — conflicts with this ADR  
 ❌ **Implementing `[locale]` routes** before ADR helpers and redirect plan exist  
 ❌ **Hardcoding `EN_US` / `PL_PL` in `graphqlLanguageCode`** — Dashboard translations use base codes (`EN`, `PL`); see `src/config/locale.ts`  
-❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language
+❌ **Omitting `localeSlug` from cached fetches** — All locales would share one cache entry and wrong language  
+❌ **Overwriting `entity.slug` with the translation** — Breaks cache tags / webhooks; use `pickTranslatedSlug` for URLs only  
+❌ **Assuming Saleor falls back between primary and translated slug lookups** — Client must try both (`resolveByPossiblyTranslatedSlug`)  
+❌ **Keeping a translated slug when switching locale** — Foreign-language handles 404; rewrite to primary slug via `CatalogIdentityBridge`
 
 ---
 
@@ -3564,7 +3733,7 @@ Rule of thumb: _Would a merchant reword this per shop?_ → CMS. Otherwise → m
 - **Types:** `src/i18n/types.d.ts` augments next-intl from `en.json` (source of truth).
 - **Loader:** `src/i18n/request.ts` — dynamic import by locale filename; keep aligned with `LOCALE_DEFINITIONS`.
 
-Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`.
+Built-in slugs today: `en`, `pl`, `de`, `fr`, `fi`, `nb`, `ja`, `ko`.
 
 ---
 
@@ -3651,7 +3820,7 @@ Client-side validation should use the same `account.errors.*` keys before callin
 ## Adding strings
 
 1. Add key to `messages/en.json` (correct namespace).
-2. Mirror in all locale files (`pl`, `de`, `fr`, `fi`, `nb`, …).
+2. Mirror in all locale files (`pl`, `de`, `fr`, `fi`, `nb`, `ja`, `ko`, …).
 3. Wire component with `getTranslations` / `useTranslations`.
 4. Run `pnpm exec tsc --noEmit` — missing keys fail typecheck.
 
@@ -3710,31 +3879,50 @@ export const seoConfig = {
 
 ```
 src/lib/seo/
-├── index.ts      # Public exports
-├── config.ts     # Configuration
-├── metadata.ts   # Page metadata helpers
-└── json-ld.ts    # Structured data helpers
+├── index.ts           # Public exports
+├── config.ts          # Configuration (no static og:locale)
+├── metadata.ts        # Page metadata helpers + resolveSeoDescription
+├── metadata.test.ts
+├── hreflang.ts        # Locale/channel hreflang + x-default
+├── hreflang.test.ts
+├── json-ld.ts         # Structured data helpers
+└── og-brand-colors.ts
 ```
 
-## Root Layout Metadata
+## Root / locale layout metadata
+
+`rootMetadata` holds site-wide defaults (title template, icons, robots, OG siteName/images) **without** a hardcoded `og:locale`.
+
+The storefront locale layout (`(storefront)/[locale]/layout.tsx`) exports params-only `generateMetadata` that sets `openGraph.locale` from the URL locale’s `ogLocale` (`ja` → `ja_JP`). Browse pages that call `buildBrowsePageMetadata` replace the OpenGraph block wholesale (and set locale + alternates themselves). Non-browse pages (login, account, cart) inherit the layout locale.
 
 ```typescript
-// src/app/layout.tsx
-import { rootMetadata } from "@/lib/seo";
-export const metadata = rootMetadata;
+// src/app/(storefront)/[locale]/layout.tsx — params-only, PPR-safe
+export async function generateMetadata({ params }): Promise<Metadata> {
+	const { locale } = await params;
+	const definition = resolveLocaleFromSlug(/* … */);
+	return { ...rootMetadata, openGraph: { ...rootMetadata.openGraph, locale: definition.ogLocale } };
+}
 ```
 
 ## Page Metadata
 
 ```typescript
-import { buildPageMetadata } from "@/lib/seo";
+import { buildBrowsePageMetadata, resolveSeoDescription } from "@/lib/seo";
 
-export async function generateMetadata() {
-	return buildPageMetadata({
-		title: "Page Title",
-		description: "Page description",
-		image: "/og-image.jpg",
-		url: "/page-path",
+export async function generateMetadata({ params }) {
+	const product = await getProductData(/* … */);
+	return buildBrowsePageMetadata({
+		title: product.seoTitle || product.name,
+		description: resolveSeoDescription({
+			seoDescription: product.seoDescription,
+			body: product.description,
+			fallbackName: product.name,
+		}),
+		locale: params.locale,
+		channel: params.channel,
+		pathSuffix: catalogPathSuffix("products", product),
+		pathSuffixByLocale: buildCatalogPathSuffixByLocale("products", buildLocaleSlugMap(product)),
+		ogType: "product", // omits openGraph.type — see PDP og:type below
 	});
 }
 ```
@@ -3782,74 +3970,112 @@ buildPageMetadata({
 
 ### Complete Product Page SEO
 
-```typescript
-// src/app/[channel]/(main)/products/[slug]/page.tsx
-
-export async function generateMetadata({ params }) {
-  const product = await fetchProduct(params.slug);
-
-  return buildPageMetadata({
-    title: product.name,
-    description: product.seoDescription || product.description,
-    image: product.thumbnail?.url,
-    url: `/${params.channel}/products/${params.slug}`,
-  });
-}
-
-export default async function ProductPage({ params }) {
-  const product = await fetchProduct(params.slug);
-
-  const jsonLd = buildProductJsonLd({
-    name: product.name,
-    price: product.pricing?.priceRange?.start?.gross,
-    inStock: product.isAvailable,
-  });
-
-  return (
-    <>
-      {jsonLd && <script {...jsonLdScriptProps(jsonLd)} />}
-      <ProductContent product={product} />
-    </>
-  );
-}
-```
+Use `buildBrowsePageMetadata` + `resolveSeoDescription` + JSON-LD (see International URLs and Product JSON-LD above). The live PDP is `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx` — `ProductShell` hoists `og:type=product` after the product resolves; `generateMetadata` sets `ogType: "product"` so Next never receives an invalid `openGraph.type`.
 
 ## International URLs
 
 Browse canonical URLs include locale and channel: `/{locale}/{channel}/…` (see `docs/adr/0001-locale-channel-url-routing.md`, `ui-locale-routing.md`).
 
-- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates (same channel, each configured locale).
-- `generateMetadata` `pathSuffix` is the path after locale/channel, e.g. `/products/${slug}`.
-- `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment — no client patching.
+- Use `buildBrowsePageMetadata()` for catalog/CMS pages — sets canonical + `hreflang` alternates, plus `og:locale` (from the URL locale's `ogLocale`) and `og:locale:alternate` for other **reachable** locales (matrix locales when `LOCALE_CHANNELS` is set; otherwise all `STOREFRONT_LOCALES`).
+- Non-browse pages inherit `og:locale` from the storefront locale layout's `generateMetadata` — never hardcode a locale in OG tags.
+- Meta/OG/JSON-LD descriptions: use `resolveSeoDescription()` — `seoDescription` → translated Editor.js plain text → name. Don't let them collapse to the bare entity name.
+- **PDP `og:type=product`:** Next's metadata API **rejects** OG types outside its union at runtime (**E237** — throws and drops the page's whole metadata). `ogType: "product"` therefore omits `openGraph.type`, and `ProductShell` hoists `<meta property="og:type" content="product">` **only after the product resolves** (never on the missing-slug `notFound()` path — a sync-shell tag would advertise `product` on 404s). Trade-off: the tag sits behind the page `Suspense` boundary; bot UAs that wait on `generateMetadata` still get the rest of OG, and cached shells resolve quickly. Do **not** use `metadata.other: { "og:type": "product" }` — Next renders that as `name=`, not `property=`.
+- `generateMetadata` `pathSuffix` is the path after locale/channel for **this** locale, e.g. `/products/${pickTranslatedSlug(product)}`.
+- For translated catalog slugs (ADR 0004), also pass `pathSuffixByLocale` from `buildCatalogPathSuffixByLocale` / `buildLocaleSlugMap` so each `hreflang` points at that language’s handle.
+- `<html lang>` is rendered server-side by the storefront root layout (`(storefront)/[locale]/layout.tsx`), derived from the URL locale segment (`htmlLang`, language-only) — no client patching.
 
 ```typescript
-import { buildBrowsePageMetadata } from "@/lib/seo";
+import { buildBrowsePageMetadata, resolveSeoDescription } from "@/lib/seo";
+import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
+import { catalogPathSuffix } from "@/lib/catalog/canonical-slug";
 
 return buildBrowsePageMetadata({
 	title: category.name,
-	description: category.seoDescription,
+	description: resolveSeoDescription({
+		seoDescription: category.seoDescription,
+		body: category.description,
+		fallbackName: category.name,
+	}),
 	locale: params.locale,
 	channel: params.channel,
-	pathSuffix: `/categories/${params.slug}`,
+	pathSuffix: catalogPathSuffix("categories", category),
+	pathSuffixByLocale: buildCatalogPathSuffixByLocale("categories", buildLocaleSlugMap(category)),
 });
 ```
 
-Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` restricts valid locale×channel pairs (see `src/config/locale-channel.ts`).
+### hreflang keys and `x-default`
+
+`buildLocaleHreflangAlternates()` (used by `buildBrowsePageMetadata`):
+
+| Config                                      | hreflang keys                                | URLs                                             |
+| ------------------------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| No `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS` | Language-only (`ja`, `en`) from `htmlLang`   | Each locale keeps the **current** page’s channel |
+| Pairs set (`ja:japan,en:default,…`)         | Region-aware (`ja-JP`, `en-US`) from `bcp47` | Each locale uses its **paired** channel          |
+
+**`x-default`** points at `NEXT_PUBLIC_DEFAULT_LOCALE` + that locale’s paired/default channel — same knob as the root redirect and invalid-locale fallback. Paper intentionally does **not** add a separate `x-default` env; change the demo/default locale if the fallback URL is wrong.
+
+### Locale×channel pairs (SEO + navigation)
+
+Optional `NEXT_PUBLIC_STOREFRONT_LOCALE_CHANNELS=en:uk,pl:pl` (see `src/config/locale-channel.ts`):
+
+1. Invalid pairs → `notFound()`
+2. Language switch navigates to the paired channel (Japanese → `japan`, etc.)
+3. Region picker filters languages per market
+4. hreflang becomes region-aware (table above)
+
+When unset, any allowlisted locale × channel is valid and language switch **keeps** the current channel.
+
+## Known Next.js / audit findings
+
+- **Streaming metadata “duplicates”:** For normal browser UAs, Next may stream metadata into `<body>` then also place copies in `<head>` after hydration — DevTools can show 2× canonical / 18× hreflang. Bot UAs get blocking `<head>` metadata (`htmlLimitedBots`). Not a Paper double-`generateMetadata` bug; soft locale/market navigations can make leftovers more visible. Prefer curl/bot UA or settled head counts when auditing.
+- **E237 `Invalid OpenGraph type: product`:** Closed OG type union in Next’s Metadata API; unknown types throw and abort the metadata RSC payload. Workaround: omit `openGraph.type` + hoist `<meta property="og:type" content="product">` in `ProductShell` only after the product resolves (never on 404).
+
+## Sitemap & robots (do not ship naive)
+
+Paper has **no** `sitemap.ts` / `robots.ts` yet (middleware already reserves `sitemap.xml` / `robots.txt`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
+
+**Why a single `sitemap.ts` dump fails at scale**
+
+- URL cardinality ≈ products × locales × channels (plus categories / collections / pages). 10k SKUs × 8 locales × 5 channels ≈ 400k product URLs alone.
+- Protocol / Google limits: **≤50k URLs and ≤50MB per sitemap file**.
+- Live Saleor GraphQL walks of the full catalog risk timeouts, serverless memory, and slow TTFB.
+- Translated slugs (ADR 0004) mean each locale may need its own handle — you cannot stamp one primary-slug list across languages.
+
+**Required shape when implementing**
+
+1. **Sitemap index + chunks** via Next [`generateSitemaps`](https://nextjs.org/docs/app/api-reference/functions/generate-sitemaps) (`/sitemap.xml` → `/sitemap/0.xml`, …), ~≤40–50k URLs each.
+2. **Paginate Saleor with cursors** (`first` / `after`) per chunk — never load the full catalog into memory.
+3. **Chunk by stable dimensions** (e.g. `{channel}:{locale}:{entity}:{page}` or at least `{channel}:{page}`), not one global product offset.
+4. **Respect `LOCALE_CHANNELS`:** when set, emit only paired locale×channel URLs (same set as hreflang). When unset, avoid a blind full cross-product — prefer channel-scoped chunks; on-page hreflang already advertises language alternates.
+5. **Cache aggressively** (long CDN/`Cache-Control`); invalidate via existing PRODUCT\_\* / catalog webhook tags. Mega catalogs may need a background export / blob rather than GraphQL-at-request.
+6. Ship **`robots.ts` first** (disallow `noIndexPaths`, eventually `Sitemap:` → index URL), then chunked sitemaps.
+
+| Catalog size              | Approach                                                            |
+| ------------------------- | ------------------------------------------------------------------- |
+| Demo / ≲5k SKUs × few L×C | Few chunks; on-demand GraphQL OK                                    |
+| Mid (tens of k)           | `generateSitemaps` + cursor pagination per channel                  |
+| Huge (100k+)              | Precompute / background pipeline; storefront serves cached XML only |
 
 ## Disabling SEO
 
 To remove SEO features entirely:
 
 1. Delete `src/lib/seo/` folder
-2. Remove `rootMetadata` import from layout
+2. Remove `rootMetadata` / locale `generateMetadata` from layouts
 3. Remove `buildPageMetadata`/`buildProductJsonLd` from pages
 4. Delete `src/app/api/og/`
 
 ## Anti-patterns
 
-❌ **Don't hardcode metadata** - Use the helpers  
-❌ **Don't skip JSON-LD on product pages** - Important for search  
-❌ **Don't forget `noIndexPaths`** - Exclude checkout, cart
+❌ **Don't hardcode metadata** — Use the helpers  
+❌ **Don't skip JSON-LD on product pages** — Important for search  
+❌ **Don't forget `noIndexPaths`** — Exclude checkout, cart  
+❌ **Don't set `openGraph.type: "product"`** — Triggers Next E237 and drops all page metadata  
+❌ **Don't hoist PDP `og:type` on the sync shell before the product resolves** — 404 URLs would advertise `product`  
+❌ **Don't hardcode `og:locale` to `en_US`** — Derive from the URL locale  
+❌ **Don't list unpaired locales in `og:locale:alternate`** — When `LOCALE_CHANNELS` is set, alternate locales must match the matrix (same as hreflang)  
+❌ **Don't treat DevTools double tags as a Paper SEO bug** — Check streaming metadata / bot UA first  
+❌ **Don't add a monolithic `sitemap.ts` that loads every product×locale×channel** — Use index + chunks; see Sitemap & robots above
 
 ---
 

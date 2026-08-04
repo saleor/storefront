@@ -37,6 +37,11 @@
 		"adding": "Dodawanie…",
 		"outOfStock": "Brak w magazynie",
 		"selectOptions": "Wybierz opcje",
+		"buyBox": {
+			"overBudgetHint": "Ten produkt ma zbyt wiele opcji, by je tu wypisać. Otwórz bezpośredni link do wariantu, aby kupić.",
+			"externalHint": "Opcje tego produktu wybiera się w osobnym doświadczeniu. Otwórz bezpośredni link do wariantu, aby kupić.",
+			"selectedSummary": "Wybrane opcje"
+		},
 		"free": "ZA DARMO",
 		"breadcrumbHome": "Strona główna",
 		"badges": {
@@ -50,7 +55,10 @@
 			"percentOffTitle": "{name} — {percent}% taniej",
 			"outOfStockA11y": "brak w magazynie",
 			"percentOffA11y": "{percent}% taniej",
-			"selectedA11y": "wybrane"
+			"selectedA11y": "wybrane",
+			"chooseOption": "Wybierz: {label}",
+			"searchOptions": "Szukaj: {label}",
+			"noMatchingOptions": "Brak pasujących opcji"
 		},
 		"attributes": {
 			"description": "Opis",
@@ -92,7 +100,8 @@
 		"resultCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
 		"clearAllFilters": "Wyczyść filtry ({count})",
 		"clearAll": "Wyczyść wszystko",
-		"removeFilter": "Usuń filtr {value}"
+		"removeFilter": "Usuń filtr {value}",
+		"noMatchingFilters": "Żadne produkty nie pasują do wybranych filtrów."
 	},
 	"search": {
 		"title": "Szukaj",
@@ -273,14 +282,17 @@
 			"redirecting": "Przekierowujemy do sklepu…"
 		},
 		"confirm": {
-			"confirmingTitle": "Potwierdzanie konta",
-			"confirmingBody": "Weryfikacja {email}…",
 			"successTitle": "Konto potwierdzone",
-			"successBody": "Twoje konto dla {email} jest aktywne. Zaloguj się hasłem, które utworzyłeś.",
+			"successBody": "Twoje konto dla {email} jest aktywne.",
 			"signIn": "Zaloguj się",
 			"continueShopping": "Kontynuuj zakupy",
 			"errorTitle": "Nie udało się potwierdzić konta",
-			"goToSignIn": "Przejdź do logowania"
+			"goToSignIn": "Przejdź do logowania",
+			"title": "Potwierdź konto",
+			"body": "Wpisz hasło dla {email}, aby dokończyć potwierdzanie konta.",
+			"submit": "Potwierdź konto",
+			"submitting": "Potwierdzanie…",
+			"tryAgain": "Spróbuj ponownie"
 		},
 		"nav": {
 			"ariaLabel": "Konto",
@@ -556,7 +568,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Nie udało się zapisać zgody marketingowej",
-			"invalidRedirectUrl": "Nieprawidłowy adres przekierowania",
+			"invalidRedirectUrl": "Nieprawidłowy adres przekierowania. Więcej informacji można znaleźć w logach serwera.",
 			"createAccountFailed": "Nie udało się utworzyć konta",
 			"noSaleorResponse": "Brak odpowiedzi z Saleor",
 			"shippingMethodsFailed": "Nie udało się wczytać metod dostawy",

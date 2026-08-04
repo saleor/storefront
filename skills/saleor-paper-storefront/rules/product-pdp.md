@@ -5,7 +5,7 @@ description: PDP architecture: ProductShell + dynamic gallery/variant islands, g
 
 # Product Detail Page
 
-PDP architecture, the variant-aware image gallery, and the add-to-cart flow. Variant _selection_ logic is in [`product-variants.md`](product-variants.md); the PPR boundary model and `getProductData` caching are in [`paper-architecture.md`](paper-architecture.md) / [`data-caching.md`](data-caching.md) — this rule covers what's PDP-specific.
+PDP architecture, the variant-aware image gallery, and the add-to-cart flow. Variant _selection_ logic is in [`product-variants.md`](product-variants.md); caps, buy-box strategies, and over-budget deep links are in [`product-high-cardinality.md`](product-high-cardinality.md); the PPR boundary model and `getProductData` caching are in [`paper-architecture.md`](paper-architecture.md) / [`data-caching.md`](data-caching.md) — this rule covers what's PDP-specific.
 
 ## Architecture
 

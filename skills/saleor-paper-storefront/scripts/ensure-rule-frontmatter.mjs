@@ -11,7 +11,8 @@
  *
  * Descriptions are authored here (source of truth) and inserted once. The
  * script is idempotent: a file that already has frontmatter is left untouched,
- * so hand-edits in the file win.
+ * so hand-edits in the file win. Keep DESCRIPTIONS in sync when adding a rule
+ * (and bump RULE_COUNT in compile-agents.mjs).
  *
  * Usage:
  *   node skills/saleor-paper-storefront/scripts/ensure-rule-frontmatter.mjs        # insert missing
@@ -39,6 +40,8 @@ const DESCRIPTIONS = {
 		"GraphQL codegen workflow: edit src/graphql/*.graphql or src/checkout/graphql/*.graphql then run pnpm generate / generate:checkout. Use when adding GraphQL fields, hitting missing generated types, permission errors, or the assignedAttribute API.",
 	"data-auth-routes.md":
 		"BFF auth and PPR-safe account routes: /api/auth/*, HttpOnly cookies, resolveSessionUser, header chrome refresh. Use when touching login/session, account pages, or fixing 'uncached data outside Suspense' on routes that read cookies.",
+	"data-redirect-security.md":
+		"Redirect URL security for auth emails and checkout/account flows: isAllowedRedirectUrl, redirectUrl, password reset, account confirmation, Host/Origin/X-Forwarded spoofing, NEXT_PUBLIC_STOREFRONT_URL, ALLOWED_EXTRA_ORIGINS, Saleor ALLOWED_CLIENT_HOSTS. Use when touching redirect allowlists or URLs sent to Saleor mutations.",
 	"data-storefront-content.md":
 		"Provider-agnostic marketing/merchandising copy layer (announcement bar, homepage, cart/checkout copy): getStorefrontContent, defaults.ts, merge semantics, CONTENT_PROVIDER. Use when editing editorial copy or wiring new content fields.",
 	"data-storefront-content-saleor.md":
@@ -48,9 +51,11 @@ const DESCRIPTIONS = {
 	"product-pdp.md":
 		"PDP architecture: ProductShell + dynamic gallery/variant islands, gallery registry/layouts, LCP strategy, add-to-cart Server Action. Use when changing the product detail page layout, gallery, or buy box.",
 	"product-variants.md":
-		"Variant selection state machine on PDP: selection vs non-selection attributes, swatch renderers, partial selection, URL-driven variant param. Use when changing variant pickers or add-to-cart enablement.",
+		"Variant selection state machine on PDP: selection vs non-selection attributes, control ladder, selection-index, merchant order, URL-driven variant param. Use when changing variant pickers or add-to-cart enablement.",
+	"product-high-cardinality.md":
+		"High-cardinality catalogs on Paper — PDP_VARIANT_CAP, per-group control ladder, buy-box strategies, ?variant=/?sku= deep links, selection-index, PLP_FACETS alias OR. Use when products have many variants/options, over-cap PDPs, or facet config.",
 	"product-filtering.md":
-		"PLP filtering/sorting: server-side categories/price/sort via Saleor, client-side colors/sizes, filter-utils.ts. Use when changing product list filters or sort.",
+		"PLP filtering/sorting — server-side categories/price/sort plus attribute facets via PLP_FACETS and ProductWhereInput alias OR. Use when changing product list filters, facet config, or sort.",
 	"paper-surfaces.md":
 		"The two-surface model (storefront vs checkout): route groups, import boundaries, @paper/session-bridge handoff, checkout entry/data flow. Use when working across the storefront/checkout boundary.",
 	"checkout-design-principles.md":

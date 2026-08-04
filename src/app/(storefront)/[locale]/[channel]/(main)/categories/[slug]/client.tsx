@@ -1,8 +1,15 @@
 "use client";
 
 import { Suspense } from "react";
-import { FilterBar, ProductGrid, useProductFilters, type ProductCardData } from "@/ui/components/plp";
+import {
+	FilterBar,
+	ProductGrid,
+	PlpEmptyFilterResults,
+	useProductFilters,
+	type ProductCardData,
+} from "@/ui/components/plp";
 import { Pagination } from "@/ui/components/pagination";
+import { cn } from "@/lib/utils";
 
 interface CategoryPageClientProps {
 	products: ProductCardData[];
@@ -24,7 +31,7 @@ function PaginationSkeleton() {
 	);
 }
 
-export function CategoryPageClient({ products, pageInfo }: CategoryPageClientProps) {
+export function CategoryPageClient({ products, pageInfo, totalCount }: CategoryPageClientProps) {
 	const {
 		filteredProducts,
 		colorOptions,
@@ -35,18 +42,20 @@ export function CategoryPageClient({ products, pageInfo }: CategoryPageClientPro
 		selectedPriceRange,
 		sortValue,
 		activeFilters,
+		resultCount,
+		isPending,
 		handleColorToggle,
 		handleSizeToggle,
 		handlePriceRangeChange,
 		handleSortChange,
 		handleRemoveFilter,
 		handleClearFilters,
-	} = useProductFilters({ products });
+	} = useProductFilters({ products, totalCount });
 
 	return (
 		<>
 			<FilterBar
-				resultCount={filteredProducts.length}
+				resultCount={resultCount}
 				sortValue={sortValue}
 				onSortChange={handleSortChange}
 				colorOptions={colorOptions}
@@ -62,20 +71,12 @@ export function CategoryPageClient({ products, pageInfo }: CategoryPageClientPro
 				onRemoveFilter={handleRemoveFilter}
 				onClearFilters={handleClearFilters}
 			/>
-			<div className="w-full">
+			<div className={cn("w-full transition-opacity", isPending && "opacity-60")}>
 				<div className="container-content py-8">
 					{filteredProducts.length > 0 ? (
 						<ProductGrid products={filteredProducts} />
 					) : (
-						<div className="py-12 text-center">
-							<p className="text-lg text-muted-foreground">No products match your filters.</p>
-							<button
-								onClick={handleClearFilters}
-								className="mt-4 text-sm font-medium text-foreground underline underline-offset-4"
-							>
-								Clear all filters
-							</button>
-						</div>
+						<PlpEmptyFilterResults onClear={handleClearFilters} />
 					)}
 					<Suspense fallback={<PaginationSkeleton />}>
 						<Pagination pageInfo={pageInfo} />

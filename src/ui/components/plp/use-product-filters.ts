@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useOptimistic, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { parseFacetParam } from "@/config/facets";
 import type { SortOption, ActiveFilter } from "./filter-bar";
 import type { ProductCardData } from "./product-card-data";
 import {
@@ -9,7 +10,6 @@ import {
 	extractSizeOptions,
 	extractCategoryOptions,
 	STATIC_PRICE_RANGES_WITH_COUNT,
-	filterProducts,
 	buildActiveFilters,
 	sortProductsClientSide,
 	type CategoryOption,
@@ -21,27 +21,35 @@ interface UseProductFiltersOptions {
 	resolvedCategories?: Array<{ slug: string; id: string; name: string }>;
 	/** Whether to include category filter (only for /products page) */
 	enableCategoryFilter?: boolean;
+	/** Server `products.totalCount` after filters — preferred for result count. */
+	totalCount?: number;
 }
 
 interface UseProductFiltersResult {
-	// Filtered/sorted products
+	// Products from the server (already attribute-filtered); client only sorts as fallback
 	filteredProducts: ProductCardData[];
 
 	// Filter options for UI
 	categoryOptions: CategoryOption[];
-	colorOptions: Array<{ name: string; count: number; hex?: string }>;
-	sizeOptions: Array<{ name: string; count: number }>;
+	colorOptions: Array<{ name: string; value?: string; count: number; hex?: string }>;
+	sizeOptions: Array<{ name: string; value?: string; count: number }>;
 	priceRanges: typeof STATIC_PRICE_RANGES_WITH_COUNT;
 
-	// Selected filter values
+	// Selected filter values (optimistic while navigation is pending)
 	selectedCategories: string[];
 	selectedColors: string[];
 	selectedSizes: string[];
 	selectedPriceRange: string | null;
 	sortValue: SortOption;
 
+	/** True while a filter navigation is in flight */
+	isPending: boolean;
+
 	// Active filters for display
 	activeFilters: ActiveFilter[];
+
+	/** Prefer server totalCount when provided */
+	resultCount: number;
 
 	// Handlers
 	handleCategoryToggle: (slug: string) => void;
@@ -55,37 +63,40 @@ interface UseProductFiltersResult {
 
 /**
  * Custom hook for product filtering and sorting logic.
- * Consolidates filter state management, URL synchronization, and filter application.
  *
- * Server-side filters: categories, price (via URL params -> GraphQL)
- * Client-side filters: colors, sizes (via JavaScript filtering)
+ * Server-side filters: categories, price, colors, sizes (URL → GraphQL)
+ * Client: option lists from the current page sample + optimistic chip state
  */
 export function useProductFilters({
 	products,
 	resolvedCategories = [],
 	enableCategoryFilter = false,
+	totalCount,
 }: UseProductFiltersOptions): UseProductFiltersResult {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
+	const [isPending, startTransition] = useTransition();
 
-	// Parse current filters from URL
-	const selectedCategories = useMemo(
+	const urlCategories = useMemo(
 		() => (enableCategoryFilter ? searchParams.get("categories")?.split(",").filter(Boolean) || [] : []),
 		[searchParams, enableCategoryFilter],
 	);
-	const selectedColors = useMemo(
-		() => searchParams.get("colors")?.split(",").filter(Boolean) || [],
-		[searchParams],
-	);
-	const selectedSizes = useMemo(
-		() => searchParams.get("sizes")?.split(",").filter(Boolean) || [],
-		[searchParams],
-	);
-	const selectedPriceRange = searchParams.get("price") || null;
+	const urlColors = useMemo(() => parseFacetParam(searchParams.get("colors")), [searchParams]);
+	const urlSizes = useMemo(() => parseFacetParam(searchParams.get("sizes")), [searchParams]);
+	const urlPriceRange = searchParams.get("price") || null;
 	const sortValue = (searchParams.get("sort") as SortOption) || "featured";
 
-	// Update URL with new filters (triggers server re-fetch for server-side filters)
+	const [optimisticCategories, setOptimisticCategories] = useOptimistic(urlCategories);
+	const [optimisticColors, setOptimisticColors] = useOptimistic(urlColors);
+	const [optimisticSizes, setOptimisticSizes] = useOptimistic(urlSizes);
+	const [optimisticPriceRange, setOptimisticPriceRange] = useOptimistic(urlPriceRange);
+
+	const selectedCategories = enableCategoryFilter ? optimisticCategories : [];
+	const selectedColors = optimisticColors;
+	const selectedSizes = optimisticSizes;
+	const selectedPriceRange = optimisticPriceRange;
+
 	const updateFilters = useCallback(
 		(updates: {
 			categories?: string[];
@@ -106,7 +117,7 @@ export function useProductFilters({
 
 			if (updates.colors !== undefined) {
 				if (updates.colors.length > 0) {
-					params.set("colors", updates.colors.join(","));
+					params.set("colors", [...updates.colors].sort().join(","));
 				} else {
 					params.delete("colors");
 				}
@@ -114,7 +125,7 @@ export function useProductFilters({
 
 			if (updates.sizes !== undefined) {
 				if (updates.sizes.length > 0) {
-					params.set("sizes", updates.sizes.join(","));
+					params.set("sizes", [...updates.sizes].sort().join(","));
 				} else {
 					params.delete("sizes");
 				}
@@ -136,13 +147,38 @@ export function useProductFilters({
 				}
 			}
 
+			// Drop pagination cursor when filters change so results start from page 1
+			if (
+				updates.categories !== undefined ||
+				updates.colors !== undefined ||
+				updates.sizes !== undefined ||
+				updates.price !== undefined
+			) {
+				params.delete("cursor");
+				params.delete("direction");
+			}
+
 			const queryString = params.toString();
-			router.push(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+			startTransition(() => {
+				if (updates.categories !== undefined) setOptimisticCategories(updates.categories);
+				if (updates.colors !== undefined) setOptimisticColors(updates.colors);
+				if (updates.sizes !== undefined) setOptimisticSizes(updates.sizes);
+				if (updates.price !== undefined) setOptimisticPriceRange(updates.price);
+				router.push(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+			});
 		},
-		[router, pathname, searchParams],
+		[
+			router,
+			pathname,
+			searchParams,
+			startTransition,
+			setOptimisticCategories,
+			setOptimisticColors,
+			setOptimisticSizes,
+			setOptimisticPriceRange,
+		],
 	);
 
-	// Filter handlers
 	const handleCategoryToggle = useCallback(
 		(slug: string) => {
 			const newCategories = selectedCategories.includes(slug)
@@ -187,13 +223,11 @@ export function useProductFilters({
 		[updateFilters],
 	);
 
-	// Extract filter options from products
 	const categoryOptions = useMemo(() => extractCategoryOptions(products), [products]);
 
 	const handleRemoveFilter = useCallback(
 		(key: string, value: string) => {
 			if (key === "category") {
-				// value here is the display name, we need to find the slug
 				const category =
 					resolvedCategories.find((c) => c.name === value) || categoryOptions.find((c) => c.name === value);
 				if (category) {
@@ -201,11 +235,9 @@ export function useProductFilters({
 					updateFilters({ categories: newCategories });
 				}
 			} else if (key === "color") {
-				const newColors = selectedColors.filter((c) => c !== value);
-				updateFilters({ colors: newColors });
+				updateFilters({ colors: selectedColors.filter((c) => c !== value) });
 			} else if (key === "size") {
-				const newSizes = selectedSizes.filter((s) => s !== value);
-				updateFilters({ sizes: newSizes });
+				updateFilters({ sizes: selectedSizes.filter((s) => s !== value) });
 			} else if (key === "price") {
 				updateFilters({ price: null });
 			}
@@ -214,47 +246,67 @@ export function useProductFilters({
 	);
 
 	const handleClearFilters = useCallback(() => {
-		router.push(pathname, { scroll: false });
-	}, [router, pathname]);
+		startTransition(() => {
+			setOptimisticCategories([]);
+			setOptimisticColors([]);
+			setOptimisticSizes([]);
+			setOptimisticPriceRange(null);
+			router.push(pathname, { scroll: false });
+		});
+	}, [
+		router,
+		pathname,
+		startTransition,
+		setOptimisticCategories,
+		setOptimisticColors,
+		setOptimisticSizes,
+		setOptimisticPriceRange,
+	]);
 
-	// Extract filter options with selected values included for deselection
 	const colorOptions = useMemo(
 		() => extractColorOptions(products, selectedColors),
 		[products, selectedColors],
 	);
 	const sizeOptions = useMemo(() => extractSizeOptions(products, selectedSizes), [products, selectedSizes]);
 
-	// Apply client-side filters (colors, sizes only)
-	const clientFilteredProducts = useMemo(
-		() =>
-			filterProducts(products, {
-				colors: selectedColors,
-				sizes: selectedSizes,
-			}),
-		[products, selectedColors, selectedSizes],
-	);
+	// Server already applied attribute/category/price filters — only sort as a fallback
+	const filteredProducts = useMemo(() => sortProductsClientSide(products, sortValue), [products, sortValue]);
 
-	// Sort (server-side primary, client-side fallback)
-	const filteredProducts = useMemo(
-		() => sortProductsClientSide(clientFilteredProducts, sortValue),
-		[clientFilteredProducts, sortValue],
-	);
+	const colorLabels = useMemo(() => {
+		const map: Record<string, string> = {};
+		for (const opt of colorOptions) {
+			const value = opt.value ?? opt.name;
+			map[value] = opt.name;
+		}
+		return map;
+	}, [colorOptions]);
 
-	// Build active filters for display
+	const sizeLabels = useMemo(() => {
+		const map: Record<string, string> = {};
+		for (const opt of sizeOptions) {
+			const value = opt.value ?? opt.name;
+			map[value] = opt.name;
+		}
+		return map;
+	}, [sizeOptions]);
+
 	const activeFilters = useMemo(() => {
 		const filters = buildActiveFilters({
 			colors: selectedColors,
 			sizes: selectedSizes,
 			priceRange: selectedPriceRange,
+			colorLabels,
+			sizeLabels,
 		});
 
-		// Add category filters from server-resolved data
 		resolvedCategories.forEach((cat) => {
 			filters.unshift({ key: "category", label: "Category", value: cat.name });
 		});
 
 		return filters;
-	}, [selectedColors, selectedSizes, selectedPriceRange, resolvedCategories]);
+	}, [selectedColors, selectedSizes, selectedPriceRange, resolvedCategories, colorLabels, sizeLabels]);
+
+	const resultCount = totalCount ?? filteredProducts.length;
 
 	return {
 		filteredProducts,
@@ -267,7 +319,9 @@ export function useProductFilters({
 		selectedSizes,
 		selectedPriceRange,
 		sortValue,
+		isPending,
 		activeFilters,
+		resultCount,
 		handleCategoryToggle,
 		handleColorToggle,
 		handleSizeToggle,

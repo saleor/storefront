@@ -37,6 +37,11 @@
 		"adding": "Ajout…",
 		"outOfStock": "Rupture de stock",
 		"selectOptions": "Choisir les options",
+		"buyBox": {
+			"overBudgetHint": "Ce produit a trop d’options pour les afficher ici. Ouvrez un lien vers une variante précise pour acheter.",
+			"externalHint": "Les options de ce produit se choisissent dans une expérience dédiée. Ouvrez un lien vers une variante précise pour acheter.",
+			"selectedSummary": "Options sélectionnées"
+		},
 		"free": "GRATUIT",
 		"breadcrumbHome": "Accueil",
 		"badges": {
@@ -50,7 +55,10 @@
 			"percentOffTitle": "{name} — {percent}% de réduction",
 			"outOfStockA11y": "rupture de stock",
 			"percentOffA11y": "{percent}% de réduction",
-			"selectedA11y": "sélectionné"
+			"selectedA11y": "sélectionné",
+			"chooseOption": "Choisir {label}",
+			"searchOptions": "Rechercher {label}",
+			"noMatchingOptions": "Aucune option correspondante"
 		},
 		"attributes": {
 			"description": "Description",
@@ -92,7 +100,8 @@
 		"resultCount": "{count, plural, one {# produit} other {# produits}}",
 		"clearAllFilters": "Effacer les filtres ({count})",
 		"clearAll": "Tout effacer",
-		"removeFilter": "Retirer le filtre {value}"
+		"removeFilter": "Retirer le filtre {value}",
+		"noMatchingFilters": "Aucun produit ne correspond à vos filtres."
 	},
 	"search": {
 		"title": "Recherche",
@@ -273,14 +282,17 @@
 			"redirecting": "Redirection vers la boutique…"
 		},
 		"confirm": {
-			"confirmingTitle": "Confirmation de votre compte",
-			"confirmingBody": "Vérification de {email}…",
 			"successTitle": "Compte confirmé",
-			"successBody": "Votre compte pour {email} est actif. Connectez-vous avec le mot de passe que vous avez créé.",
+			"successBody": "Votre compte pour {email} est actif.",
 			"signIn": "Se connecter",
-			"continueShopping": "Continuer mes achats",
+			"continueShopping": "Continuer vos achats",
 			"errorTitle": "Impossible de confirmer le compte",
-			"goToSignIn": "Aller à la connexion"
+			"goToSignIn": "Aller à la connexion",
+			"title": "Confirmer votre compte",
+			"body": "Saisissez le mot de passe de {email} pour terminer la confirmation de votre compte.",
+			"submit": "Confirmer le compte",
+			"submitting": "Confirmation…",
+			"tryAgain": "Réessayer"
 		},
 		"nav": {
 			"ariaLabel": "Compte",
@@ -556,7 +568,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Échec de l'enregistrement de la préférence marketing",
-			"invalidRedirectUrl": "URL de redirection non valide",
+			"invalidRedirectUrl": "URL de redirection non valide. Consultez les journaux du serveur pour plus d'informations.",
 			"createAccountFailed": "Échec de la création du compte",
 			"noSaleorResponse": "Aucune réponse de Saleor",
 			"shippingMethodsFailed": "Échec du chargement des modes de livraison",

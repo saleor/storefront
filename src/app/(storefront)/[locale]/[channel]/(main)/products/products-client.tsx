@@ -1,8 +1,15 @@
 "use client";
 
 import { Suspense } from "react";
-import { FilterBar, ProductGrid, useProductFilters, type ProductCardData } from "@/ui/components/plp";
+import {
+	FilterBar,
+	ProductGrid,
+	PlpEmptyFilterResults,
+	useProductFilters,
+	type ProductCardData,
+} from "@/ui/components/plp";
 import { Pagination } from "@/ui/components/pagination";
+import { cn } from "@/lib/utils";
 
 interface ProductsPageClientProps {
 	products: ProductCardData[];
@@ -26,7 +33,12 @@ function PaginationSkeleton() {
 	);
 }
 
-export function ProductsPageClient({ products, pageInfo, resolvedCategories = [] }: ProductsPageClientProps) {
+export function ProductsPageClient({
+	products,
+	pageInfo,
+	totalCount,
+	resolvedCategories = [],
+}: ProductsPageClientProps) {
 	const {
 		filteredProducts,
 		categoryOptions,
@@ -39,6 +51,8 @@ export function ProductsPageClient({ products, pageInfo, resolvedCategories = []
 		selectedPriceRange,
 		sortValue,
 		activeFilters,
+		resultCount,
+		isPending,
 		handleCategoryToggle,
 		handleColorToggle,
 		handleSizeToggle,
@@ -50,12 +64,13 @@ export function ProductsPageClient({ products, pageInfo, resolvedCategories = []
 		products,
 		resolvedCategories,
 		enableCategoryFilter: true,
+		totalCount,
 	});
 
 	return (
 		<>
 			<FilterBar
-				resultCount={filteredProducts.length}
+				resultCount={resultCount}
 				sortValue={sortValue}
 				onSortChange={handleSortChange}
 				categoryOptions={categoryOptions}
@@ -74,20 +89,12 @@ export function ProductsPageClient({ products, pageInfo, resolvedCategories = []
 				onRemoveFilter={handleRemoveFilter}
 				onClearFilters={handleClearFilters}
 			/>
-			<div className="w-full">
+			<div className={cn("w-full transition-opacity", isPending && "opacity-60")}>
 				<div className="container-content py-8">
 					{filteredProducts.length > 0 ? (
 						<ProductGrid products={filteredProducts} />
 					) : (
-						<div className="py-12 text-center">
-							<p className="text-lg text-muted-foreground">No products match your filters.</p>
-							<button
-								onClick={handleClearFilters}
-								className="mt-4 text-sm font-medium text-foreground underline underline-offset-4"
-							>
-								Clear all filters
-							</button>
-						</div>
+						<PlpEmptyFilterResults onClear={handleClearFilters} />
 					)}
 					<Suspense fallback={<PaginationSkeleton />}>
 						<Pagination pageInfo={pageInfo} />

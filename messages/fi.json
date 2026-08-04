@@ -37,6 +37,11 @@
 		"adding": "Lisätään…",
 		"outOfStock": "Loppunut varastosta",
 		"selectOptions": "Valitse vaihtoehdot",
+		"buyBox": {
+			"overBudgetHint": "Tässä tuotteessa on liian monta vaihtoehtoa listattavaksi. Avaa suora varianttilinkki ostaaksesi.",
+			"externalHint": "Tämän tuotteen vaihtoehdot valitaan erillisessä kokemuksessa. Avaa suora varianttilinkki ostaaksesi.",
+			"selectedSummary": "Valitut vaihtoehdot"
+		},
 		"free": "ILMAINEN",
 		"breadcrumbHome": "Etusivu",
 		"badges": {
@@ -50,7 +55,10 @@
 			"percentOffTitle": "{name} — {percent}% alennus",
 			"outOfStockA11y": "loppunut varastosta",
 			"percentOffA11y": "{percent}% alennus",
-			"selectedA11y": "valittu"
+			"selectedA11y": "valittu",
+			"chooseOption": "Valitse {label}",
+			"searchOptions": "Hae: {label}",
+			"noMatchingOptions": "Ei vastaavia vaihtoehtoja"
 		},
 		"attributes": {
 			"description": "Kuvaus",
@@ -92,7 +100,8 @@
 		"resultCount": "{count, plural, one {# tuote} other {# tuotetta}}",
 		"clearAllFilters": "Tyhjennä suodattimet ({count})",
 		"clearAll": "Tyhjennä kaikki",
-		"removeFilter": "Poista suodatin {value}"
+		"removeFilter": "Poista suodatin {value}",
+		"noMatchingFilters": "Mikään tuote ei vastaa suodattimia."
 	},
 	"search": {
 		"title": "Haku",
@@ -273,14 +282,17 @@
 			"redirecting": "Ohjataan kauppaan…"
 		},
 		"confirm": {
-			"confirmingTitle": "Vahvistetaan tiliä",
-			"confirmingBody": "Vahvistetaan {email}…",
 			"successTitle": "Tili vahvistettu",
-			"successBody": "Tilisi osoitteelle {email} on aktiivinen. Kirjaudu sisään luomallasi salasanalla.",
+			"successBody": "Tilisi osoitteelle {email} on aktiivinen.",
 			"signIn": "Kirjaudu sisään",
 			"continueShopping": "Jatka ostoksia",
-			"errorTitle": "Tilin vahvistaminen epäonnistui",
-			"goToSignIn": "Siirry kirjautumiseen"
+			"errorTitle": "Tiliä ei voitu vahvistaa",
+			"goToSignIn": "Siirry kirjautumiseen",
+			"title": "Vahvista tilisi",
+			"body": "Viimeistele tilisi vahvistus antamalla salasanasi osoitteelle {email}.",
+			"submit": "Vahvista tili",
+			"submitting": "Vahvistetaan…",
+			"tryAgain": "Yritä uudelleen"
 		},
 		"nav": {
 			"ariaLabel": "Tili",
@@ -556,7 +568,7 @@
 		},
 		"server": {
 			"marketingSaveFailed": "Markkinointiasetuksen tallennus epäonnistui",
-			"invalidRedirectUrl": "Virheellinen uudelleenohjauksen URL",
+			"invalidRedirectUrl": "Virheellinen uudelleenohjauksen URL. Katso lisätietoja palvelimen lokitiedoista.",
 			"createAccountFailed": "Tilin luonti epäonnistui",
 			"noSaleorResponse": "Ei vastausta Saleorilta",
 			"shippingMethodsFailed": "Toimitustapojen lataus epäonnistui",
