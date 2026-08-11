@@ -390,6 +390,7 @@ SALEOR_WEBHOOK_SECRET=                               # Webhook HMAC verification
 SALEOR_APP_TOKEN=                                    # Server-side: footer channel metadata (never exposed to client)
 STOREFRONT_DISCOVER_CHANNELS=true                    # Opt-in: discover ALL active Saleor channels from API
                                                      # (not recommended when Saleor has many channels; prefer STOREFRONT_CHANNELS)
+CONTENT_PROVIDER=saleor                              # Default: Saleor Models. Set `code` for code defaults only.
 ```
 
 **Channel resolution order** (`getStorefrontChannelSlugs`):
@@ -471,9 +472,9 @@ The design token system uses CSS custom properties—swap the entire color palet
 
 Known gaps and planned improvements:
 
-- **Checkout functional i18n** — checkout step labels still live in storefront content (ADR 0002); migrate to next-intl
+- **Error / not-found pages** — localized shells for global error boundaries (see [`docs/international-storefront.md`](./docs/international-storefront.md) Backlog)
 - **Filtering logic iteration** — fetching attributes from API for dynamic product filters
-- **Error / not-found pages** — localized shells for global error boundaries
+- **Draft Mode** — unpublished Model preview via the Paper app (not implemented yet)
 
 ---
 

@@ -19,9 +19,6 @@ export const metadata = {
 	description: brandConfig.description,
 };
 
-/** Prefer footwear/marquee products for the hero; otherwise the first available image. */
-const HERO_SLUG_HINT = /shoe|plimsoll|sneaker|trainer|runner|force|boot/i;
-
 type FeaturedProduct = Awaited<ReturnType<typeof getFeaturedProducts>>[number];
 
 function pickImage(product: FeaturedProduct | undefined) {
@@ -80,7 +77,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 		featuredCollection.limit,
 		featuredCollection.collectionSlug,
 	);
-	const heroProduct = products.find((product) => HERO_SLUG_HINT.test(product.slug)) ?? products[0];
+	const heroProduct = products[0];
 	const heroImage = pickImage(heroProduct);
 	const editorialProduct = products.find(
 		(product) => product.slug !== heroProduct?.slug && product.thumbnail?.url,

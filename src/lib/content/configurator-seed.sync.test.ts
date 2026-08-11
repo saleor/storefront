@@ -7,9 +7,14 @@ import {
 	serializeConfiguratorSeedModels,
 } from "@/lib/content/configurator-seed";
 import { defaultStorefrontContent } from "@/lib/content/defaults";
+import {
+	buildStorefrontContentSnapshotFromYaml,
+	formatStorefrontContentSnapshotJson,
+} from "@/lib/content/storefront-content-snapshot";
 
 const ROOT = resolve(import.meta.dirname, "../../..");
 const CONFIG_PATH = resolve(ROOT, "config/saleor/storefront-content.config.yml");
+const SNAPSHOT_PATH = resolve(ROOT, "config/saleor/storefront-content.snapshot.json");
 
 describe("configurator seed sync", () => {
 	it("storefront-content.config.yml models match defaults.ts", () => {
@@ -22,5 +27,12 @@ describe("configurator seed sync", () => {
 			JSON.parse(serializeConfiguratorSeedModels(models));
 
 		expect(normalize(config.models)).toEqual(normalize(expected));
+	});
+
+	it("storefront-content.snapshot.json matches config YAML", () => {
+		const yamlSource = readFileSync(CONFIG_PATH, "utf8");
+		const expected = formatStorefrontContentSnapshotJson(buildStorefrontContentSnapshotFromYaml(yamlSource));
+		const actual = readFileSync(SNAPSHOT_PATH, "utf8");
+		expect(actual).toBe(expected);
 	});
 });
