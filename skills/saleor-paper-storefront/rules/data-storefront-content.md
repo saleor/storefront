@@ -84,8 +84,8 @@ Saleor: leave `announcement-id` unset for content-hash behavior; set it only whe
 
 | `CONTENT_PROVIDER` | Behavior                                                                  |
 | ------------------ | ------------------------------------------------------------------------- |
-| `code` (default)   | Returns `defaults.ts` only — no Saleor call                               |
-| `saleor`           | Fetches storefront Pages, maps attributes → partial, merges over defaults |
+| `saleor` (default) | Fetches storefront Pages, maps attributes → partial, merges over defaults |
+| `code`             | Returns `defaults.ts` only — no Saleor call (escape hatch)                |
 | `url`              | Reserved; falls back to `code`                                            |
 
 Restart `next dev` after changing `CONTENT_PROVIDER`.

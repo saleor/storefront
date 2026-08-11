@@ -18,7 +18,7 @@ export const brandConfig = {
 	siteName: "Saleor Store",
 
 	/** Legal entity name for copyright notices */
-	copyrightHolder: "Saleor Demo Store",
+	copyrightHolder: "Saleor Store",
 
 	/** Organization name for structured data (JSON-LD) */
 	organizationName: "Saleor Store",
@@ -27,10 +27,10 @@ export const brandConfig = {
 	defaultBrand: "Saleor Store",
 
 	/** Tagline/description for the store */
-	tagline: "Premium products with exceptional quality. Discover our curated collection.",
+	tagline: "Discover our collection.",
 
 	/** Homepage meta description */
-	description: "Starter pack for building performant e-commerce experiences with Saleor.",
+	description: "Shop our collection.",
 
 	/** Logo aria-label for accessibility */
 	logoAriaLabel: "Store",

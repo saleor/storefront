@@ -5,7 +5,7 @@
 #   pnpm configurator:storefront-content:deploy
 #
 # Requires SALEOR_APP_TOKEN with MANAGE_PAGES + MANAGE_PAGE_TYPES_AND_ATTRIBUTES (or admin).
-# After deploy: CONTENT_PROVIDER=saleor in storefront .env.local
+# CONTENT_PROVIDER defaults to saleor; set CONTENT_PROVIDER=code to use code defaults only.
 #
 # Page slug convention (globally unique in Saleor):
 #   storefront-chrome, storefront-homepage, storefront-cart, storefront-checkout
@@ -248,7 +248,7 @@ models:
     isPublished: true
     attributes:
       Listing title: All Products
-      Listing description: Discover our full collection of premium products.
+      Listing description: Browse our full catalog.
   - title: Storefront Homepage
     slug: storefront-homepage
     modelType: Storefront — Homepage
@@ -256,28 +256,26 @@ models:
     attributes:
       Hero eyebrow: ""
       Hero heading: Discover our collection
-      Hero subheading: Premium products with exceptional quality. Discover our curated collection.
+      Hero subheading: Discover our collection.
       Hero CTA label: Shop all
       Featured heading: Featured products
       Featured collection: featured-products
       Featured limit: 8
       Categories heading: Shop by category
       Categories eyebrow: ""
-      Brand story heading: Built for real commerce
-      Brand story paragraph 1: Paper is a minimal, production-ready storefront for Saleor — clean as a
-        blank page, built to ship.
-      Brand story paragraph 2: Customize sections in code, connect your catalog, and keep checkout, cart,
-        and product pages battle-tested out of the box.
+      Brand story heading: Our story
+      Brand story paragraph 1: Tell shoppers who you are and what you stand for.
+      Brand story paragraph 2: Edit this copy in Dashboard → Models → Storefront — Homepage.
       Values heading: Why shop with us
       Values columns desktop: 3
-      Values column 1 title: Curated quality
-      Values column 1 text: Every product is selected for craftsmanship and longevity — not trend-chasing.
-      Values column 2 title: Fast fulfillment
-      Values column 2 text: Orders ship from regional warehouses with tracking from checkout to delivery.
-      Values column 3 title: Easy returns
-      Values column 3 text: Hassle-free returns within {returnsWindowDays} days. We stand behind what we sell.
-      Editorial heading: Designed to last
-      Editorial paragraph 1: Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season.
+      Values column 1 title: Quality
+      Values column 1 text: Share what makes your products worth choosing.
+      Values column 2 title: Shipping
+      Values column 2 text: Describe how and when orders arrive.
+      Values column 3 title: Returns
+      Values column 3 text: Easy returns within {returnsWindowDays} days.
+      Editorial heading: From the shop
+      Editorial paragraph 1: Highlight a collection, seasonal story, or campaign — then edit this block in Models.
       Editorial image position: right
       Editorial CTA label: Explore collections
       Photo credits: "[]"
