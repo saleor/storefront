@@ -31,8 +31,9 @@ describe("configurator seed sync", () => {
 
 	it("storefront-content.snapshot.json matches config YAML", () => {
 		const yamlSource = readFileSync(CONFIG_PATH, "utf8");
-		const expected = formatStorefrontContentSnapshotJson(buildStorefrontContentSnapshotFromYaml(yamlSource));
-		const actual = readFileSync(SNAPSHOT_PATH, "utf8");
-		expect(actual).toBe(expected);
+		const expected = buildStorefrontContentSnapshotFromYaml(yamlSource);
+		const actual = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8")) as typeof expected;
+		expect(actual).toEqual(expected);
+		expect(readFileSync(SNAPSHOT_PATH, "utf8")).toBe(formatStorefrontContentSnapshotJson(expected));
 	});
 });

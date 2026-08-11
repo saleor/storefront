@@ -111,7 +111,9 @@ export function buildStorefrontContentSnapshotFromYaml(yamlSource: string): Stor
 }
 
 export function formatStorefrontContentSnapshotJson(snapshot: StorefrontContentSnapshot): string {
-	return `${JSON.stringify(snapshot, null, 2)}\n`;
+	// Tab indent matches repo Prettier (`useTabs`), but keep full expand — do not run
+	// Prettier on this file (see .prettierignore) or short arrays collapse and drift.
+	return `${JSON.stringify(snapshot, null, "\t")}\n`;
 }
 
 export function readStorefrontContentConfigYaml(root = resolve(import.meta.dirname, "../../..")): string {

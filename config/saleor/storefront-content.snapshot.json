@@ -277,7 +277,10 @@
 		{
 			"name": "Storefront — Policies",
 			"slug": "storefront-policies",
-			"attributes": ["Free shipping threshold", "Returns window days"]
+			"attributes": [
+				"Free shipping threshold",
+				"Returns window days"
+			]
 		},
 		{
 			"name": "Storefront — Chrome",
@@ -295,7 +298,10 @@
 		{
 			"name": "Storefront — Products",
 			"slug": "storefront-products",
-			"attributes": ["Listing title", "Listing description"]
+			"attributes": [
+				"Listing title",
+				"Listing description"
+			]
 		},
 		{
 			"name": "Storefront — Homepage",
