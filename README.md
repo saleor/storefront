@@ -256,6 +256,35 @@ Without webhooks? TTL handles it—cached data expires per the `catalog` / `menu
 
 ---
 
+## Image Pipeline
+
+Saleor already returns a compressed, format-converted thumbnail from a CDN. Re-encoding that through Next's image optimizer is paid work that buys nothing, so Paper asks Saleor for **several sizes at once** and hands the browser a real `srcset`:
+
+```graphql
+thumbnail(size: 1024, format: WEBP) { url alt }
+thumbnail256: thumbnail(size: 256, format: WEBP) { url }
+thumbnail512: thumbnail(size: 512, format: WEBP) { url }
+```
+
+Product cards and the PDP gallery render those through [`<SaleorImage>`](src/ui/atoms/saleor-image.tsx) as a plain `<img srcset sizes>`, so they never hit `/_next/image` and are never billed as image transformations. Anything without a Saleor size ladder — CMS uploads, local assets — falls back to `next/image` automatically.
+
+|                        | Saleor-native `srcset`     | `next/image`                                                           |
+| ---------------------- | -------------------------- | ---------------------------------------------------------------------- |
+| Used for               | Product cards, PDP gallery | CMS uploads, local assets, slots far below the smallest requested size |
+| Transformations billed | none                       | one per `(src, width, quality)`                                        |
+| Served by              | Saleor's CDN               | `/_next/image`                                                         |
+
+Set `NEXT_PUBLIC_PAPER_IMAGE_PIPELINE=vercel` to route everything back through `next/image` without a code change — the escape hatch if your Saleor deployment doesn't front media with a CDN.
+
+Two things to know before going to production:
+
+- **Newly requested sizes start as redirects.** Until a thumbnail exists, Saleor returns a `/thumbnail/{id}/{size}/{format}/` proxy URL that 302s to storage, generating the file on first hit. Cached pages therefore embed redirect URLs right after you add a size, costing one extra round trip per image. It self-heals — once the file exists, the next GraphQL resolve returns the storage URL and the next re-render bakes it in — but on a large catalog, crawl it before cutting traffic over so shoppers don't pay for the warm-up.
+- **Every `thumbnail` selection needs `size:` and `format:`.** A bare `thumbnail { url }` resolves to 256px in the image's _original_ format, which puts the format conversion back on your bill.
+
+> 📚 **Deep dive**: [`skills/saleor-paper-storefront/rules/ui-images.md`](skills/saleor-paper-storefront/rules/ui-images.md) covers the Saleor thumbnail mechanics, the `sizes` vocabulary, and the anti-patterns.
+
+---
+
 ## Quick Start
 
 > [!NOTE]
@@ -391,6 +420,12 @@ SALEOR_APP_TOKEN=                                    # Server-side: footer chann
 STOREFRONT_DISCOVER_CHANNELS=true                    # Opt-in: discover ALL active Saleor channels from API
                                                      # (not recommended when Saleor has many channels; prefer STOREFRONT_CHANNELS)
 CONTENT_PROVIDER=saleor                              # Default: Saleor Models. Set `code` for code defaults only.
+
+# Cost controls — each trades money against freshness. See .env.example for the full reasoning.
+NEXT_PUBLIC_PAPER_IMAGE_PIPELINE=saleor              # `vercel` routes catalog images back through /_next/image
+IMAGE_ALLOWED_HOSTS=                                 # Extra hosts /_next/image may optimize (and bill you for)
+NEXT_IMAGE_MIN_CACHE_TTL=2678400                     # 31 days; lower it if the catalogue is re-shot often
+SALEOR_MIN_REQUEST_DELAY_MS=0                        # Runtime GraphQL throttle; defaults to 200 during `next build`
 ```
 
 **Channel resolution order** (`getStorefrontChannelSlugs`):

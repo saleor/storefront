@@ -14,6 +14,7 @@ import {
 } from "@/config/locale";
 import { PersistBrowseLocaleCookie } from "@/ui/components/persist-browse-locale-cookie";
 import { getRootHtmlFontProps } from "@/lib/fonts";
+import { saleorMediaPreconnectOrigin } from "@/lib/images";
 
 /**
  * Root defaults + `og:locale` derived from the URL locale segment. Params-only, so it
@@ -69,9 +70,13 @@ export default async function LocaleRootLayout({
 	setRequestLocale(localeSlug);
 	const messages = await getMessages();
 	const htmlProps = getRootHtmlFontProps(htmlLang);
+	const mediaOrigin = saleorMediaPreconnectOrigin();
 
 	return (
 		<html {...htmlProps}>
+			{/* No crossOrigin: plain <img> fetches are not CORS, and a `crossorigin`
+			    preconnect would warm a connection the image load cannot reuse. */}
+			{mediaOrigin && <link rel="preconnect" href={mediaOrigin} />}
 			<body className="min-h-dvh font-sans">
 				<NextIntlClientProvider locale={localeSlug} messages={messages}>
 					<PersistBrowseLocaleCookie locale={localeSlug} />

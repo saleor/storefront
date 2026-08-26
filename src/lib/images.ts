@@ -93,6 +93,29 @@ export const PDP_GALLERY_RUNGS = [512, 1024, 2048] as const;
 export const PAPER_IMAGE_PIPELINE: "saleor" | "vercel" =
 	process.env.NEXT_PUBLIC_PAPER_IMAGE_PIPELINE === "vercel" ? "vercel" : "saleor";
 
+/**
+ * Origin to `preconnect` when the Saleor pipeline is active.
+ *
+ * Under `next/image` every image is same-origin (`/_next/image?url=…`) and rides the
+ * connection the document already opened. Pointing `<img>` straight at Saleor makes the
+ * LCP image cross-origin, so without this hint the browser pays DNS + TCP + TLS before
+ * requesting its first byte.
+ *
+ * Returns `null` when the pipeline is `vercel` (the hint would open a socket nothing
+ * uses) or when the API URL is unset or unparseable. Assumes media is served from the
+ * API origin, which holds for Saleor Cloud and typical self-hosted deploys; a separate
+ * media domain needs its own hint.
+ */
+export function saleorMediaPreconnectOrigin(): string | null {
+	if (PAPER_IMAGE_PIPELINE !== "saleor") return null;
+
+	try {
+		return new URL(process.env.NEXT_PUBLIC_SALEOR_API_URL ?? "").origin;
+	} catch {
+		return null;
+	}
+}
+
 export interface SaleorSrcSetEntry {
 	/** Must be a value from {@link SALEOR_THUMBNAIL_RUNGS} that was actually requested. */
 	width: number;

@@ -24,8 +24,12 @@ export interface GalleryImage {
 	srcSet?: string;
 }
 
-/** Aliased rungs from ProductDetails / VariantDetailsFragment media selections. */
-type GalleryMedia = { url: string; url512?: string; url1024?: string; alt?: string | null };
+/**
+ * Aliased rungs from the ProductDetails / VariantDetailsFragment media selections.
+ * Required, not optional: if a fragment loses an alias this must fail typecheck rather
+ * than quietly fall back to `/_next/image` and start billing transformations again.
+ */
+type GalleryMedia = { url: string; url512: string; url1024: string; alt?: string | null };
 
 function toGalleryImage(media: GalleryMedia): GalleryImage {
 	return {

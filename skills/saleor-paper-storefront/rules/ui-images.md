@@ -50,7 +50,13 @@ thumbnail512: thumbnail(size: 512, format: WEBP) { url }
 
 Feed those to `buildSaleorSrcSet()` in the mapper, pass the result to [`<SaleorImage>`](../../../src/ui/atoms/saleor-image.tsx), and it renders a plain `<img srcset sizes>`. With no `srcSet` it falls back to `next/image`, so a surface Saleor can't serve degrades on its own rather than breaking.
 
-Two costs to accept: each aliased rung materialises its own `Thumbnail` row on Saleor (one-time generation), and the `<img>` path has to ask for the LCP preload that `next/image` emits for `priority` — `<SaleorImage>` does this via `ReactDOM.preload`.
+Three consequences of leaving the optimizer, all handled but none of them free:
+
+- **Connection setup moves onto the critical path.** `/_next/image` is same-origin, so it reuses the document's connection; Saleor's CDN is a different origin and costs DNS + TCP + TLS before the LCP image's first byte. The storefront root layout emits a `<link rel="preconnect">` from `saleorMediaPreconnectOrigin()`. It carries no `crossOrigin`, because plain `<img>` fetches are not CORS and a mismatched hint warms a connection the load cannot reuse. The origin is derived from `NEXT_PUBLIC_SALEOR_API_URL`; a deployment serving media from a separate domain needs its own hint.
+- **`priority` no longer implies a preload.** `next/image` emits one; the `<img>` path asks for it explicitly via `ReactDOM.preload`.
+- **A rung you have never requested comes back as a proxy URL, and cached pages bake it in.** `resolve_thumbnail` returns `/thumbnail/{id}/{size}/{format}/` until a `Thumbnail` row exists, so right after adding a rung the prerendered payload is full of URLs that 302 to storage — one extra round trip per image, on the LCP path. It self-heals: the first hit generates the file, the next resolve returns the storage URL, and the next re-render embeds it. On a large catalogue, crawl the new rungs before cutting traffic over. Verify with `curl -sI` on a fresh rung; a `302` means it has not been materialised yet.
+
+Type the rung fields as **required** where you consume them. If a fragment loses an alias, that should fail typecheck, not silently fall back to `/_next/image` and quietly start billing again.
 
 Prefer `next/image` when the slot is far smaller than the smallest rung you request. The PDP thumbnail strip is 80px against a 512 floor, so letting the browser pick a rung would ship ~6× the bytes to save two cheap transformations — the wrong trade.
 
