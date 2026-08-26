@@ -65,8 +65,9 @@ function parseWebhookPayload(payload: unknown): {
 		};
 	}
 
-	if (data.productVariant && typeof data.productVariant === "object") {
-		const variant = data.productVariant as Record<string, unknown>;
+	const variantNode = data.productVariant ?? data.variant;
+	if (variantNode && typeof variantNode === "object") {
+		const variant = variantNode as Record<string, unknown>;
 		const product = variant.product as Record<string, unknown> | undefined;
 		if (product) {
 			const category = product.category as Record<string, unknown> | undefined;

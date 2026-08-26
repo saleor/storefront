@@ -294,7 +294,7 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
 Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/categories/collections/listings/CMS pages) is `stale 5 min / revalidate 1 hr / expire 1 day`, `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
 
-`revalidate` is a **backstop**, not the freshness mechanism — webhooks are. A short backstop regenerates every entry on a timer whether or not anything changed, which is pure cost; only shorten it if a deployment genuinely cannot run webhooks.
+`revalidate` is a **backstop**, not the freshness mechanism — webhooks are. Regeneration is request-triggered: a cold entry costs nothing. A short backstop on a _hot_ entry can approach one regeneration per window (1,440/day at 60s); only shorten it if a deployment genuinely cannot run webhooks.
 
 ### Listing grids
 
@@ -372,15 +372,15 @@ Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ 
 
 **The `saleor-event` header drives the scope.** `src/lib/webhook-events.ts` maps each event Paper acts on to an entity and an `affectsListing` flag; anything absent from that map is logged and skipped. Opting a new event into invalidation means adding it there. Never reintroduce a catch-all fallback — an unmapped event (orders, checkouts, customers) firing a catalog purge is a self-inflicted cost and cache-hit-rate problem.
 
-| Event family                                     | Storefront effect                                                                      |
-| ------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| `PRODUCT_*` / `PRODUCT_MEDIA_*` (card-affecting) | `product:{slug}` + `product-listing:{channel}`                                         |
-| `PRODUCT_VARIANT_*` stock/metadata               | `product:{slug}` only — never the listing tag                                          |
-| `CATEGORY_*`, `COLLECTION_*`                     | `category:{slug}` / `collection:{slug}` + `product-listing:{channel}`                  |
-| `PAGE_*`                                         | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
-| `MENU_*`, `MENU_ITEM_*`                          | `navigation:{channel}`, `footer-menu:{channel}`                                        |
-| `CHANNEL_*`                                      | `channels`                                                                             |
-| Everything else                                  | Logged and skipped                                                                     |
+| Event family                                                        | Storefront effect                                                                      |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `product-listing:{channel}`                                         |
+| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never the listing tag                                          |
+| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + `product-listing:{channel}`                  |
+| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
+| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                        |
+| `CHANNEL_*`                                                         | `channels`                                                                             |
+| Everything else                                                     | Logged and skipped                                                                     |
 
 Catalog entries are **tag-addressable** — `applyCacheProfile` attaches the entity tag inside every `"use cache"` function, so `revalidateTag` alone busts every locale. Per-locale `revalidatePath` fan-out is therefore redundant for catalog data and is only used for CMS pages. `revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`).
 
@@ -415,7 +415,7 @@ Paper runs on Vercel, where the meters that matter are **function invocations + 
 
 | Knob                                                   | Default        | Raises cost when…                     | Trade-off when tightened                         |
 | ------------------------------------------------------ | -------------- | ------------------------------------- | ------------------------------------------------ |
-| `catalog.revalidate` (`cache-life-profiles.data.mjs`)  | 1 hr           | Lowered — timer-driven regeneration   | Staler catalog if webhooks are not configured    |
+| `catalog.revalidate` (`cache-life-profiles.data.mjs`)  | 1 hr           | Lowered — request-triggered backstop  | Staler catalog if webhooks are not configured    |
 | `isCacheableListingView()` allowlist                   | first page     | Widened — one entry per permutation   | Filtered views stay uncached (a live fetch each) |
 | `NEXT_IMAGE_MIN_CACHE_TTL`                             | 31 days        | Lowered — re-optimizes the same image | In-place image replacements are served stale     |
 | `images.deviceSizes` / `imageSizes` (`next.config.js`) | trimmed ladder | Widened — a transformation per width  | No >1920px variants for 4K displays              |

@@ -7,9 +7,10 @@
  * (orders, checkouts, customers, …) is skipped instead of triggering a broad purge.
  *
  * `affectsListing` separates events that can change how a product appears in a grid
- * (created/deleted/renamed/repriced/new media) from the high-frequency churn that
- * cannot (stock movements, metadata writes). Inventory sync must not cost a listing
- * cache entry.
+ * (created/deleted/renamed/repriced/new media, plus variant CRUD — channel listing
+ * price and priceRange live on the variant) from the high-frequency churn that cannot
+ * (stock movements, metadata writes). Inventory sync must not cost a listing cache
+ * entry.
  *
  * Event names verified against saleor/webhook/event_types.py (WebhookEventAsyncType).
  */
@@ -41,12 +42,14 @@ const WEBHOOK_EVENT_SCOPES: Readonly<Record<string, WebhookEventScope>> = {
 	product_media_updated: PRODUCT_LISTING,
 	product_media_deleted: PRODUCT_LISTING,
 	product_variant_discounted_price_updated: PRODUCT_LISTING,
+	// Variant CRUD can change the card's priceRange. Saleor does not reliably also
+	// emit product_updated for a channel-listing price edit.
+	product_variant_created: PRODUCT_LISTING,
+	product_variant_updated: PRODUCT_LISTING,
+	product_variant_deleted: PRODUCT_LISTING,
 
-	// PDP-only: never changes a listing card, and fires far more often.
+	// PDP-only: cannot change a listing card, and fires far more often.
 	product_metadata_updated: PRODUCT_DETAIL_ONLY,
-	product_variant_created: PRODUCT_DETAIL_ONLY,
-	product_variant_updated: PRODUCT_DETAIL_ONLY,
-	product_variant_deleted: PRODUCT_DETAIL_ONLY,
 	product_variant_metadata_updated: PRODUCT_DETAIL_ONLY,
 	product_variant_out_of_stock: PRODUCT_DETAIL_ONLY,
 	product_variant_back_in_stock: PRODUCT_DETAIL_ONLY,

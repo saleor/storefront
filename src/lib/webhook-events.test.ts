@@ -33,6 +33,9 @@ describe("resolveWebhookEventScope", () => {
 		expect(resolveWebhookEventScope("product_deleted")?.affectsListing).toBe(true);
 		expect(resolveWebhookEventScope("product_media_updated")?.affectsListing).toBe(true);
 		expect(resolveWebhookEventScope("product_variant_discounted_price_updated")?.affectsListing).toBe(true);
+		expect(resolveWebhookEventScope("product_variant_created")?.affectsListing).toBe(true);
+		expect(resolveWebhookEventScope("product_variant_updated")?.affectsListing).toBe(true);
+		expect(resolveWebhookEventScope("product_variant_deleted")?.affectsListing).toBe(true);
 	});
 
 	it("keeps stock and metadata churn off the listing cache", () => {
@@ -40,9 +43,6 @@ describe("resolveWebhookEventScope", () => {
 		// the listing cache permanently cold.
 		const detailOnly = [
 			"product_metadata_updated",
-			"product_variant_created",
-			"product_variant_updated",
-			"product_variant_deleted",
 			"product_variant_metadata_updated",
 			"product_variant_out_of_stock",
 			"product_variant_back_in_stock",

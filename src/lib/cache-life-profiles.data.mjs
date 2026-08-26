@@ -12,9 +12,10 @@ const WEEK = 7 * DAY;
 export const paperCacheLifeProfiles = {
 	// Webhook invalidation (PRODUCT_*, CATEGORY_*, COLLECTION_*) is the primary freshness
 	// mechanism for catalog data, so `revalidate` is only the backstop for a webhook that
-	// was never configured or was dropped. A 1-minute backstop meant every catalog entry
-	// regenerated ~1440x/day regardless of traffic; an hour keeps the safety net without
-	// paying for it continuously.
+	// was never configured or was dropped. Regeneration is request-triggered: a cold
+	// entry costs nothing. A hot entry with a 1-minute backstop can approach ~1440
+	// regenerations/day; an hour keeps the safety net without paying for it on every
+	// request.
 	catalog: {
 		stale: 5 * MINUTE,
 		revalidate: 1 * HOUR,

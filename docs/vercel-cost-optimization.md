@@ -190,11 +190,11 @@ anything absent is logged and skipped. Then split events by whether they can cha
 // Changes a card: bust the listing tag.
 product_created, product_updated, product_deleted,
 product_media_created / _updated / _deleted,
+product_variant_created / _updated / _deleted,
 product_variant_discounted_price_updated
 
-// Cannot change a card, and fires orders of magnitude more often: PDP tag only.
-product_metadata_updated,
-product_variant_created / _updated / _deleted / _metadata_updated,
+// Cannot change a card, and fires far more often: PDP tag only.
+product_metadata_updated, product_variant_metadata_updated,
 product_variant_out_of_stock, product_variant_back_in_stock,
 product_variant_stock_updated, *_in_channel, *_for_click_and_collect
 ```
@@ -207,8 +207,9 @@ Event names are verifiable against `saleor/webhook/event_types.py` (`WebhookEven
 ## 7. Raise the catalog revalidate backstop
 
 If webhooks are wired up they are your freshness mechanism, and `revalidate` is only the safety net
-for a webhook that was never configured or got dropped. A 60-second backstop means a cached entry
-regenerates up to 1,440 times a day regardless of traffic.
+for a webhook that was never configured or got dropped. Regeneration is request-triggered — a cold
+entry costs nothing. A _hot_ entry with a 60-second backstop can approach 1,440 regenerations a
+day; an hour caps that at 24.
 
 ```js
 catalog: {
