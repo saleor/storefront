@@ -9,18 +9,27 @@ structural one. Items 6–11 are caching and compute.
 
 ## Why these specific things
 
-Vercel bills four meters that a storefront can blow up without noticing:
+These are the meters this guide is written against. Rates are **iad1 Pro on-demand** — the
+cheapest published region, confirmed against Vercel's docs in August 2026. EU and APAC run
+higher (transformations up to $0.0812 / 1K, cache writes up to $6.40 / 1M). Enterprise
+contracts and the pre-2025 “source images” image plan can differ.
 
-| Meter                           | Rate (iad1)                  | What drives it                                  |
-| ------------------------------- | ---------------------------- | ----------------------------------------------- |
-| Image transformations           | $0.05 / 1K                   | source images × candidate widths × cache misses |
-| Image cache writes              | $4.00 / 1M units (8 KB)      | same, weighted by output bytes                  |
-| ISR writes                      | $4.00 / 1M units (8 KB)      | every regeneration of a cached route            |
-| Fast Data Transfer              | $0.15 / GB over 1 TB         | every byte Vercel serves, images included       |
-| Active CPU / Provisioned Memory | $0.128 / hr, $0.0106 / GB-hr | render time, plus I/O wait for memory           |
+| Meter                           | Rate (iad1)                  | What drives it                                                 |
+| ------------------------------- | ---------------------------- | -------------------------------------------------------------- |
+| Image transformations           | $0.05 / 1K                   | billed on cache MISS and STALE, per (source × width × quality) |
+| Image cache writes              | $4.00 / 1M units (8 KB)      | same events, weighted by output bytes                          |
+| ISR writes                      | $4.00 / 1M units (8 KB)      | every regeneration of a cached route                           |
+| Fast Data Transfer              | $0.15 / GB over 1 TB         | every byte Vercel serves, including `/_next/image` responses   |
+| Active CPU / Provisioned Memory | $0.128 / hr, $0.0106 / GB-hr | CPU while code runs; memory for the whole instance lifetime    |
 
-The trap is that the first two scale with **catalog size × widths**, not with traffic. A fork with
-20K products pays for image work whether or not anyone visits.
+Image cache reads, ISR reads, Edge Requests, and function invocations are real meters too.
+They are usually smaller on this workload, so they stay off the table.
+
+The trap on the first two: they scale with **distinct (source × width) pairs that get
+requested at least once per TTL window** — a shopper, a crawler, or prerender. No request,
+no transformation. A 20K-SKU catalog does not generate a bill by existing. What it does is
+multiply how many of those pairs _can_ be hit, and a 4-hour TTL means a pair that is hit
+even once a window can be re-derived ~180 times a month.
 
 ## Checklist
 
@@ -44,9 +53,11 @@ The trap is that the first two scale with **catalog size × widths**, not with t
 
 ## 1. Raise `minimumCacheTTL`
 
-Next's default is 4 hours. A product photo that never changes is therefore re-transformed up to
-**180 times a month** — each one a billed transformation plus a billed cache write. Saleor
-thumbnail URLs are content-addressed and stable, so there is no reason to re-derive them.
+Next's default is 4 hours. A variant that is requested at least once per window can be
+re-transformed up to **~180 times a month** (31 days × 24 h / 4 h) — each one a billed
+transformation plus a billed cache write. Idle images cost nothing. Saleor thumbnail URLs
+are stable per (media id, size, format), so there is no reason to re-derive a pair that
+already exists.
 
 ```js
 // next.config.js
@@ -300,10 +311,9 @@ Expect a short list, and read it carefully — **every line is a component still
 On Paper's own build exactly one source survives: the homepage hero, which renders a raw CMS upload
 rather than a `thumbnail()` field and so has no rung set to request.
 
-Then compare a full billing cycle before and after on four meters in the Vercel dashboard: Image
-Optimization transformations, ISR writes, Active CPU, and Fast Data Transfer. The one to watch in
-week one is transformations. If the count does not collapse, something is still routing catalog
-images through the optimizer.
+Then compare a full billing cycle before and after on Image Optimization transformations, ISR
+writes, Active CPU, and Fast Data Transfer. The one to watch in week one is transformations. If
+the count does not collapse, something is still routing catalog images through the optimizer.
 
 ### The silent fallback trap
 
