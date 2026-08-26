@@ -85,6 +85,23 @@ const profiles = {
 		pathPattern: "/{locale}/{channel}/pages/{slug}",
 		sharedTag: "pages",
 	},
+	/**
+	 * Listing grids (PLP, category, collection) for the *cacheable* views only —
+	 * see `isCacheableListingView` in src/lib/catalog/get-product-listing.ts.
+	 *
+	 * Deliberately channel-scoped rather than slug-scoped: one tag busts every
+	 * cached grid in a channel, and the entry count is bounded by the allowlist,
+	 * so precision here would buy nothing. Only product events that can change a
+	 * listing card revalidate it (`affectsListing` in src/lib/webhook-events.ts) —
+	 * stock and metadata churn must not, or the cache never stays warm.
+	 */
+	productListing: {
+		id: "product-listing",
+		label: "Product Listings",
+		cacheProfile: "catalog",
+		tagPattern: "product-listing:{channel}",
+		pathPattern: null,
+	},
 	navigation: {
 		id: "navigation",
 		label: "Navigation Menus",

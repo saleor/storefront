@@ -224,6 +224,10 @@ describe("full purge tag planning", () => {
 		expect(tags).toContain("categories");
 		expect(tags).toContain("collections");
 		expect(tags).toContain("pages");
+		// "Revalidate all" must clear cached listing grids too, or the Dashboard button
+		// appears to work while the PLP keeps serving the old grid.
+		expect(tags).toContain("product-listing:us");
+		expect(tags).toContain("product-listing:uk");
 		expect(tags.some((t) => t.includes("{locale}"))).toBe(false);
 		expect(tags.some((t) => t.startsWith("product:"))).toBe(false);
 	});
