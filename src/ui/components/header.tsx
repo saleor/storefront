@@ -5,7 +5,6 @@ import { serializeMenuForNav } from "@/lib/menus/serialize-menu-for-nav";
 import { getStorefrontContent } from "@/lib/content/server";
 import { Logo } from "./logo";
 import { NavLinksDesktop } from "./nav/components/nav-links-desktop";
-import { MobileNavLinks } from "./nav/components/mobile-nav-links";
 import { CartNavItem } from "./nav/components/cart-nav-item";
 import { UserMenuContainer } from "./nav/components/user-menu/user-menu-container";
 import { MobileMenu } from "./nav/components/mobile-menu";

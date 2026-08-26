@@ -18,7 +18,7 @@ const MobileMenuContext = createContext<{ close: () => void } | null>(null);
 
 export const useMobileMenuClose = () => {
 	const context = useContext(MobileMenuContext);
-	return context?.close ?? (() => {});
+	return context?.close ?? (() => { });
 };
 
 type Props = {
@@ -36,7 +36,7 @@ export const MobileMenu = ({ children }: Props) => {
 			<SheetTrigger asChild>
 				<button
 					type="button"
-					className="flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-accent md:hidden"
+					className="flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-accent lg:hidden"
 					aria-label={t("open")}
 				>
 					<Menu className="h-5 w-5" />
