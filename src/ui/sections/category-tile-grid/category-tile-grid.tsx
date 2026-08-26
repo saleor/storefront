@@ -55,8 +55,11 @@ function TileLink({
 	className: string;
 	children: React.ReactNode;
 }) {
+	// Default (auto) prefetch, not `prefetch={true}`: under `partialPrefetching` a grid of
+	// tiles would otherwise request a full RSC payload per tile on viewport entry. Auto
+	// shares one App Shell per route, which is what makes the navigation feel instant anyway.
 	return (
-		<NavHrefLink href={href} prefetch={true} className={className}>
+		<NavHrefLink href={href} className={className}>
 			{children}
 		</NavHrefLink>
 	);

@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
 import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { hasDiscount } from "@/lib/pricing";
+import { CART_THUMBNAIL_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
 import { buildCheckoutPath } from "@paper/session-bridge";
 import type { CartContent, StorefrontPolicies } from "@/lib/content";
 import { formatContentLabel } from "@/lib/content/format-label";
@@ -258,6 +259,8 @@ export function CartDrawer({
 														src={line.variant.product.thumbnail.url}
 														alt={line.variant.product.thumbnail.alt ?? line.variant.product.name}
 														fill
+														sizes={CART_THUMBNAIL_IMAGE_SIZES}
+														quality={PRODUCT_IMAGE_QUALITY}
 														className="object-cover transition-transform duration-300 group-hover:scale-105"
 													/>
 												)}

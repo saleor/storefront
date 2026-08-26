@@ -40,6 +40,9 @@ export const PDP_MOSAIC_IMAGE_SIZES = "(max-width: 1024px) 50vw, 30vw";
 /** PDP desktop thumbnail strip */
 export const PDP_THUMBNAIL_IMAGE_SIZES = "80px";
 
+/** Cart drawer line item — fixed 80px slot (h-24 w-20) */
+export const CART_THUMBNAIL_IMAGE_SIZES = "80px";
+
 /** LCP candidate on Home, PLP, and PDP — only one high-priority image per viewport */
 export const LCP_IMAGE_PRIORITY_COUNT = 1;
 
