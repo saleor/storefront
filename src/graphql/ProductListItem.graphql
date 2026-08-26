@@ -45,14 +45,23 @@ fragment ProductListItem on Product {
 			name
 			slug
 		}
-		backgroundImage {
+		# Homepage category tiles — never full-bleed, so a smaller rung than the hero.
+		backgroundImage(size: 1024, format: WEBP) {
 			url
 			alt
 		}
 	}
+	# Rung set for a Saleor-native srcset — keep in sync with CATALOG_CARD_RUNGS in
+	# src/lib/images.ts. Sizes must be exact ladder values; Saleor snaps to the nearest.
 	thumbnail(size: 1024, format: WEBP) {
 		url
 		alt
+	}
+	thumbnail256: thumbnail(size: 256, format: WEBP) {
+		url
+	}
+	thumbnail512: thumbnail(size: 512, format: WEBP) {
+		url
 	}
 	# Bestseller merchandising flag — fetch only the boolean by slug (new attribute API).
 	# Slugs must match PRODUCT_FLAG_SLUGS in src/lib/catalog/product-flags.ts.

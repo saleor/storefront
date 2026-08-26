@@ -1,10 +1,11 @@
-import Image from "next/image";
-import { PDP_IMMERSIVE_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PDP_IMMERSIVE_IMAGE_SIZES } from "@/lib/images";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { GalleryImageFrame, galleryImageFrameClass } from "@/ui/components/shared/gallery-image-frame";
 import { PDP_IMMERSIVE_IMAGE_HEIGHT } from "./gallery-layout";
 
 interface ImmersiveGalleryFallbackProps {
 	src: string;
+	srcSet?: string;
 	alt: string;
 	/** Accepted for a uniform gallery-registry signature; immersive shows a single hero frame. */
 	imageCount?: number;
@@ -16,7 +17,7 @@ interface ImmersiveGalleryFallbackProps {
  * Renders the first (default) image at the immersive size with LCP priority so
  * the streamed gallery does not shift layout.
  */
-export function ImmersiveGalleryFallback({ src, alt }: ImmersiveGalleryFallbackProps) {
+export function ImmersiveGalleryFallback({ src, srcSet, alt }: ImmersiveGalleryFallbackProps) {
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="overflow-hidden">
@@ -27,13 +28,12 @@ export function ImmersiveGalleryFallback({ src, alt }: ImmersiveGalleryFallbackP
 							PDP_IMMERSIVE_IMAGE_HEIGHT,
 						)}
 					>
-						<Image
+						<SaleorImage
 							src={src}
+							srcSet={srcSet}
 							alt={alt}
-							fill
 							className="object-cover"
 							sizes={PDP_IMMERSIVE_IMAGE_SIZES}
-							quality={PRODUCT_IMAGE_QUALITY}
 							priority
 						/>
 					</GalleryImageFrame>

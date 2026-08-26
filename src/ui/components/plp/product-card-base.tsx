@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
 import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import type { ProductCardData } from "./product-card-data";
 import { ProductCardLink } from "./product-card-link";
 
@@ -26,12 +27,11 @@ export function ProductCardBase({
 		<article className="group">
 			<div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-card bg-secondary">
 				<ProductCardLink href={product.href} className="absolute inset-0 z-0 block" aria-label={product.name}>
-					<Image
+					<SaleorImage
 						src={product.image}
+						srcSet={product.imageSrcSet}
 						alt={product.imageAlt || product.name}
-						fill
 						sizes={imageSizes}
-						quality={PRODUCT_IMAGE_QUALITY}
 						className={cn(
 							"object-cover transition-all duration-500 ease-out md:group-hover:scale-105",
 							product.hoverImage && "md:group-hover:opacity-0",

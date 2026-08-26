@@ -200,6 +200,7 @@ async function ProductShell({
 	const galleryFallback = lcpImage ? (
 		<GalleryFallback
 			src={lcpImage.url}
+			srcSet={lcpImage.srcSet}
 			alt={lcpImage.alt ?? product.name}
 			imageCount={defaultImages.length}
 			showChrome={showGalleryChrome}

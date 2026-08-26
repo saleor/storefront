@@ -1,4 +1,5 @@
 import type { ProductShell, PdpVariant } from "@/lib/catalog/get-product-data";
+import { buildSaleorSrcSet } from "@/lib/images";
 
 /**
  * PDP product shape: shell fields from ProductDetails, plus variants merged by
@@ -16,21 +17,41 @@ export type Product = ProductShell & {
 };
 export type Variant = PdpVariant;
 
+export interface GalleryImage {
+	url: string;
+	alt: string | null | undefined;
+	/** Saleor rung `srcset`; absent means the surface falls back to `next/image`. */
+	srcSet?: string;
+}
+
+/** Aliased rungs from ProductDetails / VariantDetailsFragment media selections. */
+type GalleryMedia = { url: string; url512?: string; url1024?: string; alt?: string | null };
+
+function toGalleryImage(media: GalleryMedia): GalleryImage {
+	return {
+		url: media.url,
+		alt: media.alt,
+		srcSet: buildSaleorSrcSet([
+			{ width: 512, url: media.url512 },
+			{ width: 1024, url: media.url1024 },
+			{ width: 2048, url: media.url },
+		]),
+	};
+}
+
 export function getGalleryImages(
 	product: Product,
 	selectedVariant: Variant | null | undefined,
-): { url: string; alt: string | null | undefined }[] {
+): GalleryImage[] {
 	if (selectedVariant?.media && selectedVariant.media.length > 0) {
-		const variantImages = selectedVariant.media
-			.filter((m) => m.type === "IMAGE")
-			.map((m) => ({ url: m.url, alt: m.alt }));
+		const variantImages = selectedVariant.media.filter((m) => m.type === "IMAGE").map(toGalleryImage);
 		if (variantImages.length > 0) {
 			return variantImages;
 		}
 	}
 
 	if (product.media && product.media.length > 0) {
-		return product.media.filter((m) => m.type === "IMAGE").map((m) => ({ url: m.url, alt: m.alt }));
+		return product.media.filter((m) => m.type === "IMAGE").map(toGalleryImage);
 	}
 
 	if (product.thumbnail) {

@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { PDP_MOSAIC_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PDP_MOSAIC_IMAGE_SIZES } from "@/lib/images";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { type ImageCarouselImage } from "@/ui/components/ui/image-carousel";
 import { PDP_GALLERY_EMPTY_IMAGE_FRAME_CLASS } from "@/ui/components/shared/gallery-image-frame";
 import { GalleryImageZoomTrigger } from "@/ui/components/shared/gallery-image-zoom-trigger";
@@ -38,14 +38,12 @@ export function MosaicGallery({ images, productName }: MosaicGalleryProps) {
 						className="aspect-[4/5] w-full"
 						aria-label={image.alt || `${productName} - View ${index + 1}`}
 					>
-						<Image
+						<SaleorImage
 							src={image.url}
+							srcSet={image.srcSet}
 							alt={image.alt || `${productName} - View ${index + 1}`}
-							fill
 							className="pointer-events-none object-cover"
 							sizes={PDP_MOSAIC_IMAGE_SIZES}
-							quality={PRODUCT_IMAGE_QUALITY}
-							priority={false}
 							loading={index === 0 ? "eager" : "lazy"}
 						/>
 					</GalleryImageZoomTrigger>

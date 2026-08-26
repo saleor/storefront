@@ -17,8 +17,16 @@ export const FEATURED_COLLECTION_IMAGE_SIZES =
 export const PLP_IMAGE_SIZES =
 	"(max-width: 1024px) calc((100vw - 3rem) / 2), calc((min(100vw, 80rem) - 4rem - 3rem) / 3)";
 
-/** Full-width category/collection hero background */
+/**
+ * Full-bleed hero background. `100vw` is honest here — the image really does span the
+ * viewport — and `deviceSizes` in next.config.js caps the widest variant at 1920.
+ * Only use this on edge-to-edge surfaces; a half-width panel wants
+ * {@link SPLIT_PANEL_IMAGE_SIZES} instead, or it requests double the pixels it shows.
+ */
 export const PLP_HERO_IMAGE_SIZES = "100vw";
+
+/** Two-column section where the image occupies one column on desktop (lg:grid-cols-2) */
+export const SPLIT_PANEL_IMAGE_SIZES = "(max-width: 1024px) 100vw, 50vw";
 
 /** PDP main gallery: full width on mobile, half viewport on desktop split layout */
 export const PDP_MAIN_IMAGE_SIZES = "(max-width: 768px) 100vw, 50vw";
@@ -48,3 +56,65 @@ export const LCP_IMAGE_PRIORITY_COUNT = 1;
 
 /** Match Next.js default — higher values slow cold /_next/image encoding on Vercel */
 export const PRODUCT_IMAGE_QUALITY = 75;
+
+/* -------------------------------------------------------------------------- */
+/* Saleor-native responsive images                                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Saleor's fixed thumbnail ladder (`saleor/thumbnail/__init__.py`). A requested size
+ * snaps to the **nearest** rung, not the next one up — asking for 300 returns 256.
+ * Only ever request values from this list, or the width you get back is not the
+ * width you put in the `srcset` descriptor.
+ */
+export const SALEOR_THUMBNAIL_RUNGS = [32, 64, 128, 256, 512, 1024, 2048, 4096] as const;
+
+/**
+ * Rungs requested for PLP/collection/category cards. Covers a 2-up mobile grid at 2x
+ * (~340px) through a 3-up desktop grid at 2x (~780px).
+ */
+export const CATALOG_CARD_RUNGS = [256, 512, 1024] as const;
+
+/** Rungs requested for the PDP gallery, which runs up to full-bleed on desktop. */
+export const PDP_GALLERY_RUNGS = [512, 1024, 2048] as const;
+
+/**
+ * Which pipeline serves catalog images.
+ *
+ * - `saleor` — plain `<img srcset>` pointing at Saleor's CDN-backed thumbnails.
+ *   Saleor has already produced a correctly-sized WebP, so this skips `/_next/image`
+ *   entirely and the transformation is never billed.
+ * - `vercel` — route everything through `next/image`. The escape hatch: set
+ *   `NEXT_PUBLIC_PAPER_IMAGE_PIPELINE=vercel` to revert without a code change.
+ *
+ * Surfaces without a Saleor rung set (local assets, CMS uploads) always use
+ * `next/image` regardless of this setting.
+ */
+export const PAPER_IMAGE_PIPELINE: "saleor" | "vercel" =
+	process.env.NEXT_PUBLIC_PAPER_IMAGE_PIPELINE === "vercel" ? "vercel" : "saleor";
+
+export interface SaleorSrcSetEntry {
+	/** Must be a value from {@link SALEOR_THUMBNAIL_RUNGS} that was actually requested. */
+	width: number;
+	url: string | null | undefined;
+}
+
+/**
+ * Builds a `srcset` from aliased Saleor thumbnail fields.
+ *
+ * Returns `undefined` for fewer than two usable rungs: a single-candidate `srcset`
+ * tells the browser nothing that `src` doesn't, and the caller uses that signal to
+ * fall back to `next/image`.
+ */
+export function buildSaleorSrcSet(entries: readonly SaleorSrcSetEntry[]): string | undefined {
+	const seen = new Set<number>();
+	const candidates: string[] = [];
+
+	for (const { width, url } of entries) {
+		if (!url || seen.has(width)) continue;
+		seen.add(width);
+		candidates.push(`${url} ${width}w`);
+	}
+
+	return candidates.length > 1 ? candidates.join(", ") : undefined;
+}

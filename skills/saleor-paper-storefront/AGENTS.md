@@ -3465,7 +3465,34 @@ Both are stable per `(media id, size, format)`.
 
 **The consequence:** you cannot rewrite a Saleor image URL to change its width. The two URL shapes are not interchangeable, and rewriting a direct storage URL produces a 404. Any "custom loader that swaps the size segment" idea dies here — verify against `saleor/thumbnail/utils.py` (`get_image_or_proxy_url`) before trying it.
 
-So Paper asks Saleor for a sensibly-sized thumbnail, then lets `/_next/image` handle responsive widths from that already-small source.
+Saleor Cloud fronts those storage URLs with CloudFront at `cache-control: max-age=604800`. So for catalog images Paper skips `/_next/image` altogether: it asks Saleor for **several rungs at once** and hands the browser a real `srcset`. The optimizer stays in the path only for sources Saleor never produced.
+
+---
+
+## The two pipelines
+
+`NEXT_PUBLIC_PAPER_IMAGE_PIPELINE` (default `saleor`) selects between them; `vercel` is the escape hatch if your Saleor deployment has no CDN in front of media.
+
+|                        | Saleor-native `srcset`                                       | `next/image`                                                                              |
+| ---------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Use for                | Product cards, PDP gallery — anything with a Saleor rung set | CMS uploads, local assets, category backgrounds, slots far smaller than the smallest rung |
+| Transformations billed | none                                                         | one per `(src, width, quality)`                                                           |
+| Served by              | Saleor's CDN                                                 | `/_next/image`                                                                            |
+| Width selection        | browser, from the rungs you requested                        | optimizer, from `deviceSizes`                                                             |
+
+The rung sets live in [`images.ts`](../../../src/lib/images.ts) (`CATALOG_CARD_RUNGS`, `PDP_GALLERY_RUNGS`) and must match the aliased GraphQL fields:
+
+```graphql
+thumbnail(size: 1024, format: WEBP) { url alt }
+thumbnail256: thumbnail(size: 256, format: WEBP) { url }
+thumbnail512: thumbnail(size: 512, format: WEBP) { url }
+```
+
+Feed those to `buildSaleorSrcSet()` in the mapper, pass the result to [`<SaleorImage>`](../../../src/ui/atoms/saleor-image.tsx), and it renders a plain `<img srcset sizes>`. With no `srcSet` it falls back to `next/image`, so a surface Saleor can't serve degrades on its own rather than breaking.
+
+Two costs to accept: each aliased rung materialises its own `Thumbnail` row on Saleor (one-time generation), and the `<img>` path has to ask for the LCP preload that `next/image` emits for `priority` — `<SaleorImage>` does this via `ReactDOM.preload`.
+
+Prefer `next/image` when the slot is far smaller than the smallest rung you request. The PDP thumbnail strip is 80px against a 512 floor, so letting the browser pick a rung would ship ~6× the bytes to save two cheap transformations — the wrong trade.
 
 ---
 
@@ -3517,6 +3544,23 @@ Fixed-size images (`width`/`height`) are self-bounding and don't need `sizes` �
 
 `quality` is pinned at `PRODUCT_IMAGE_QUALITY` (75). Next 16 defaults `images.qualities` to `[75]`, so any other value is silently coerced unless you widen the allowlist — and each distinct quality multiplies the transformation count.
 
+A `sizes` constant describes a **layout**, not a surface. `PLP_HERO_IMAGE_SIZES` is `100vw` because a hero is genuinely edge-to-edge; reusing it on a `lg:grid-cols-2` panel asks for double the pixels that surface ever displays. Match the constant to the column width, or add one.
+
+---
+
+## Every `thumbnail` selection needs `size:` and `format:`
+
+A bare `thumbnail { url }` is not "the default, which is fine". Saleor's `resolve_thumbnail` defaults to **256px in the image's original format** — so a PNG product shot arrives as a PNG, and Vercel is then billed to transcode it to WebP on every distinct width. Passing `format: WEBP` moves that conversion to Saleor, where it is free and cached.
+
+```graphql
+thumbnail(size: 256, format: WEBP) {
+	url
+	alt
+}
+```
+
+Pick `size:` from the ladder at or just above the largest rendered slot in **device** pixels — the CSS box times the retina factor. A 128px slot on a 2× screen needs 256, not 128.
+
 ---
 
 ## Anti-patterns
@@ -3528,6 +3572,10 @@ Fixed-size images (`width`/`height`) are self-bounding and don't need `sizes` �
 ❌ Per-call-site `quality` values — each one is a separate transformation of the same image
 ❌ Widening `deviceSizes` "just in case" — every entry is a transformation per source image
 ❌ Requesting a huge Saleor `thumbnail(size:)` and letting Vercel shrink it — pay once, at the source
+❌ A bare `thumbnail { url }` — 256px in the original format, so Vercel pays for the WebP conversion
+❌ Off-ladder sizes in an aliased rung set — Saleor snaps to the nearest rung, so the `srcset` width descriptor lies about the pixels delivered
+❌ Routing a Saleor-backed catalog image through `next/image` when a rung set exists — that is the duplicated encode this rule exists to prevent
+❌ Reusing `PLP_HERO_IMAGE_SIZES` on anything that isn't full-bleed — a half-width panel wants `SPLIT_PANEL_IMAGE_SIZES`
 
 ---
 

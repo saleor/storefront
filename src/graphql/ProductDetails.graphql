@@ -25,7 +25,10 @@ query ProductDetails(
 			alt
 		}
 		media {
+			# Rung set for a Saleor-native srcset — keep in sync with PDP_GALLERY_RUNGS.
 			url(size: 2048, format: WEBP)
+			url512: url(size: 512, format: WEBP)
+			url1024: url(size: 1024, format: WEBP)
 			alt
 			type
 		}

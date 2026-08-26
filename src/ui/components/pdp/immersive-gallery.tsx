@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PDP_IMMERSIVE_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PDP_IMMERSIVE_IMAGE_SIZES } from "@/lib/images";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { cn } from "@/lib/utils";
 import { Button } from "@/ui/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/ui/components/ui/carousel";
@@ -93,15 +93,13 @@ export function ImmersiveGallery({ images, productName }: ImmersiveGalleryProps)
 									className={cn("aspect-square w-full", PDP_IMMERSIVE_IMAGE_HEIGHT)}
 									aria-label={`${productName} - View ${index + 1}`}
 								>
-									<Image
+									<SaleorImage
 										src={image.url}
+										srcSet={image.srcSet}
 										alt={image.alt || `${productName} - View ${index + 1}`}
-										fill
 										draggable={false}
 										className="pointer-events-none object-cover"
 										sizes={PDP_IMMERSIVE_IMAGE_SIZES}
-										quality={PRODUCT_IMAGE_QUALITY}
-										priority={false}
 										loading={index === 0 ? "eager" : "lazy"}
 									/>
 								</GalleryImageZoomTrigger>
