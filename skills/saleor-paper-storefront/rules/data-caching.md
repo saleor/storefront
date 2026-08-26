@@ -150,6 +150,8 @@ Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ 
 
 **The `saleor-event` header drives the scope.** `src/lib/webhook-events.ts` maps each event Paper acts on to an entity and an `affectsListing` flag; anything absent from that map is logged and skipped. Opting a new event into invalidation means adding it there. Never reintroduce a catch-all fallback — an unmapped event (orders, checkouts, customers) firing a catalog purge is a self-inflicted cost and cache-hit-rate problem.
 
+saleor-paper-app forwards that header on every entity POST. A POST without it (manual curl, older app) is treated as listing-affecting. After upgrading the app, click **Sync Webhooks** so Saleor delivers variant CRUD, stock, and metadata — stock events must arrive _with_ `saleor-event` or they bust the listing tag. Do not also subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for media edits.
+
 | Event family                                                        | Storefront effect                                                                      |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `product-listing:{channel}`                                         |

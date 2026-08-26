@@ -204,6 +204,12 @@ difference between a handful of listing regenerations a day and tens of thousand
 
 Event names are verifiable against `saleor/webhook/event_types.py` (`WebhookEventAsyncType`).
 
+If you use [saleor-paper-app](https://github.com/saleor/saleor-paper-app), the storefront only
+sees `saleor-event` after you deploy an app version that forwards the header and click **Sync
+Webhooks**. Until then every app POST is header-less and still busts the listing tag — including
+stock. Do not subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for
+media edits, and a second delivery would double the purge.
+
 ## 7. Raise the catalog revalidate backstop
 
 If webhooks are wired up they are your freshness mechanism, and `revalidate` is only the safety net
