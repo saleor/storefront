@@ -5,7 +5,7 @@ Saleor Paper
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 31 rules (~75k tokens) and exists only for humans reading offline and for
+> all 32 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 31 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 32 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -57,9 +57,10 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 
 5. [UI & Channels](#5-ui-channels) — **MEDIUM**
    - 5.1 [UI Components](#51-ui-components)
-   - 5.2 [Channels & Multi-Currency](#52-channels-multi-currency)
-   - 5.3 [Locale & Channel URL Routing](#53-locale-channel-url-routing)
-   - 5.4 [next-intl (Code-Owned UI Strings)](#54-next-intl-code-owned-ui-strings)
+   - 5.2 [Images](#52-images)
+   - 5.3 [Channels & Multi-Currency](#53-channels-multi-currency)
+   - 5.4 [Locale & Channel URL Routing](#54-locale-channel-url-routing)
+   - 5.5 [next-intl (Code-Owned UI Strings)](#55-next-intl-code-owned-ui-strings)
 
 6. [SEO](#6-seo) — **MEDIUM**
    - 6.1 [SEO & Metadata](#61-seo-metadata)
@@ -243,7 +244,9 @@ This rule holds **Paper's caching decisions** — what we cache, the contracts t
 
 | Surface                                | Data source                                                         | Freshness                              |
 | -------------------------------------- | ------------------------------------------------------------------- | -------------------------------------- |
-| PDP / category / collection / homepage | `getProductData()`, `getCategoryData()`, `getFeaturedProducts()`, … | Cached (~5 min)                        |
+| PDP / category / collection / homepage | `getProductData()`, `getCategoryData()`, `getFeaturedProducts()`, … | Webhook-invalidated (1 hr backstop)    |
+| Listing grids (unfiltered first page)  | `getProductListingPage()` and siblings                              | Webhook-invalidated (1 hr backstop)    |
+| Filtered / paginated listing views     | inline `executePublicGraphQL`                                       | **Always fresh** (uncached long tail)  |
 | Navigation / footer menus              | `getNavbarMenuItems()` / `getFooterMenuItems()`                     | Cached (~1 hr)                         |
 | Cart drawer, checkout, add-to-cart     | `Checkout.find()`, server actions, Saleor mutations                 | **Always fresh** (`cache: "no-cache"`) |
 
@@ -282,13 +285,20 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 | `collection:{slug}`                                 | `collections`        | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                |
 | `page:{slug}`                                       | `pages`              | `getPageData()` (CMS)                                     | Page updated                      |
 | `products` / `categories` / `collections` / `pages` | same (sharedTag)     | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions |
+| `product-listing:{channel}`                         | `productListing`     | `getProductListingPage()` / category / collection grids   | Product event that changes a card |
 | `navigation:{channel}`                              | `navigation`         | `getNavbarMenuItems()`                                    | Navbar changed                    |
 | `footer-menu:{channel}`                             | `footerMenu`         | `getFooterMenuItems()`                                    | Footer changed                    |
 | `storefront-content:{channel}:{locale}`             | `storefront-content` | `getStorefrontContent()`                                  | `storefront-*` Page updated       |
 | `channels`                                          | `channels`           | `getCachedChannelsList()`                                 | Channel list changed              |
 
 Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
-Named `cacheLife` tiers (configured in `next.config.js`): `catalog` ~5 min (products/categories/collections/CMS pages), `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
+Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/categories/collections/listings/CMS pages) is `stale 5 min / revalidate 1 hr / expire 1 day`, `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
+
+`revalidate` is a **backstop**, not the freshness mechanism — webhooks are. A short backstop regenerates every entry on a timer whether or not anything changed, which is pure cost; only shorten it if a deployment genuinely cannot run webhooks.
+
+### Listing grids
+
+Listing grids are cached only for the **unfiltered first page** (any sort order) — see `isCacheableListingView()` in `src/lib/catalog/get-product-listing.ts`. Filtered and paginated views fall through to a live fetch on purpose: every filter permutation would be a cache entry that is written once and rarely read again, trading invocation cost for cache-write cost. Entry count stays bounded by `sorts × locales × channels`, independent of catalog size.
 
 `GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically. Manifest **v6+** includes an optional `identity` block (`saleorApiUrl`, `environment`, deploy metadata) for the Paper handshake. `saleorApiUrl` comes from `NEXT_PUBLIC_SALEOR_API_URL`. `environment` defaults from `VERCEL_ENV` / `NODE_ENV`; set `PAPER_STOREFRONT_ENVIRONMENT` only when those lie (true staging, or non-Vercel hosts that aren't prod).
 
@@ -347,7 +357,7 @@ applyCacheProfile(CACHE_PROFILES.products, slug); // single tag product:hoodie c
 ```
 
 - Cached fetches pass `graphqlLanguageCodeVariables(localeSlug)`; map URL slugs to Saleor **base** codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge translations with `withTranslatedProductFields()` (`src/lib/saleor-translations.ts`) after the fetch.
-- **Invalidation fan-out:** catalog tags stay slug-scoped; `buildPathsForAllLocales()` revalidates every configured locale path on a generic `PRODUCT_UPDATED`.
+- **Invalidation fan-out:** catalog tags stay slug-scoped and locale-agnostic — one `revalidateTag("product:hoodie")` clears every locale entry, so no path fan-out is needed.
 - Adding locales adds ~N cache entries (one per locale × page), not per-request work. Each locale warms independently after deploy.
 
 ---
@@ -357,16 +367,24 @@ applyCacheProfile(CACHE_PROFILES.products, slug); // single tag product:hoodie c
 **Production path: [saleor-paper-app](https://github.com/saleor/saleor-paper-app).** On install it registers managed webhooks and proxies them to the storefront:
 
 ```
-Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
+Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ revalidatePath for CMS pages)
 ```
 
-| Event family                              | Storefront effect                                                                      |
-| ----------------------------------------- | -------------------------------------------------------------------------------------- |
-| `PRODUCT_*`, `CATEGORY_*`, `COLLECTION_*` | Catalog tags + paths (all locales via `buildPathsForAllLocales`)                       |
-| `PAGE_*`                                  | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
-| `MENU_*`, `MENU_ITEM_*`                   | `navigation:{channel}`, `footer-menu:{channel}`                                        |
+**The `saleor-event` header drives the scope.** `src/lib/webhook-events.ts` maps each event Paper acts on to an entity and an `affectsListing` flag; anything absent from that map is logged and skipped. Opting a new event into invalidation means adding it there. Never reintroduce a catch-all fallback — an unmapped event (orders, checkouts, customers) firing a catalog purge is a self-inflicted cost and cache-hit-rate problem.
 
-`revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`); paths use `getStorefrontChannelSlugs()` × `buildPathsForAllLocales()`. **Don't** point Saleor webhooks directly at `/api/revalidate` while the app is installed (duplicate deliveries, no logging). Direct webhooks remain valid for self-hosted setups without the app (set `SALEOR_WEBHOOK_SECRET`).
+| Event family                                     | Storefront effect                                                                      |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| `PRODUCT_*` / `PRODUCT_MEDIA_*` (card-affecting) | `product:{slug}` + `product-listing:{channel}`                                         |
+| `PRODUCT_VARIANT_*` stock/metadata               | `product:{slug}` only — never the listing tag                                          |
+| `CATEGORY_*`, `COLLECTION_*`                     | `category:{slug}` / `collection:{slug}` + `product-listing:{channel}`                  |
+| `PAGE_*`                                         | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
+| `MENU_*`, `MENU_ITEM_*`                          | `navigation:{channel}`, `footer-menu:{channel}`                                        |
+| `CHANNEL_*`                                      | `channels`                                                                             |
+| Everything else                                  | Logged and skipped                                                                     |
+
+Catalog entries are **tag-addressable** — `applyCacheProfile` attaches the entity tag inside every `"use cache"` function, so `revalidateTag` alone busts every locale. Per-locale `revalidatePath` fan-out is therefore redundant for catalog data and is only used for CMS pages. `revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`).
+
+**Don't** point Saleor webhooks directly at `/api/revalidate` while the app is installed (duplicate deliveries, doubled invalidation cost). Each delivery logs its `saleor-event` and `saleor-api-url`, so duplicates show up as two identical log lines per change — check there first if invalidation looks twice as busy as expected. Direct webhooks remain valid for self-hosted setups without the app (set `SALEOR_WEBHOOK_SECRET`).
 
 **Manual / emergency** (Bearer header, timing-safe; `?secret=` is deprecated):
 
@@ -380,7 +398,7 @@ curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
   "https://store.com/api/revalidate?all=1"
 ```
 
-Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
+Without webhooks, TTL takes over (catalog 1 hr, menus 1 hr).
 
 ### Debugging stale content
 
@@ -388,6 +406,27 @@ Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
 2. Tag exact? (`product:blue-hoodie` — slug must match).
 3. Force: `curl … "?tag=product:my-product"`.
 4. Translation still wrong language on `/pl/…`? Confirm a `PL` base translation exists; bust the tag; restart dev if you changed `src/config/locale.ts`.
+
+---
+
+## Cost controls
+
+Paper runs on Vercel, where the meters that matter are **function invocations + active CPU**, **edge middleware invocations**, **image transformations**, and **cache writes/bandwidth**. Caching decisions are cost decisions; these are the knobs, and each trades money against freshness.
+
+| Knob                                                   | Default        | Raises cost when…                     | Trade-off when tightened                         |
+| ------------------------------------------------------ | -------------- | ------------------------------------- | ------------------------------------------------ |
+| `catalog.revalidate` (`cache-life-profiles.data.mjs`)  | 1 hr           | Lowered — timer-driven regeneration   | Staler catalog if webhooks are not configured    |
+| `isCacheableListingView()` allowlist                   | first page     | Widened — one entry per permutation   | Filtered views stay uncached (a live fetch each) |
+| `NEXT_IMAGE_MIN_CACHE_TTL`                             | 31 days        | Lowered — re-optimizes the same image | In-place image replacements are served stale     |
+| `images.deviceSizes` / `imageSizes` (`next.config.js`) | trimmed ladder | Widened — a transformation per width  | No >1920px variants for 4K displays              |
+| `IMAGE_ALLOWED_HOSTS`                                  | unset          | Widened — third parties can bill you  | Non-Saleor image sources must be listed          |
+| `SALEOR_MIN_REQUEST_DELAY_MS`                          | 0 at runtime   | Raised — billed idle CPU per request  | Less protection against Saleor API rate limits   |
+
+Rules of thumb:
+
+- **A cache entry is only worth writing if it will be read again before it expires.** That is the whole argument for the listing allowlist, and the test to apply before caching anything new.
+- **Prefer webhook invalidation over short TTLs.** A TTL charges you continuously for freshness you need occasionally.
+- **Narrow the invalidation scope, not the cache.** Busting less on each event beats caching less.
 
 ---
 
@@ -399,6 +438,10 @@ Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
 ❌ Awaiting `searchParams` in a shell — collapses the route into a dynamic hole (move to an island)
 ❌ Raw `cacheLife("minutes")` / hand-rolled `cacheTag` — use `applyCacheProfile(CACHE_PROFILES.*)`
 ❌ Fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness
+❌ A catch-all `default:` in the webhook switch — unmapped events must log and skip, not purge
+❌ Busting listing tags on stock/metadata events — inventory sync would keep the grids permanently cold
+❌ Caching every filter/cursor permutation — unbounded cache writes for entries nobody re-reads
+❌ Shortening the `catalog` backstop to "make things fresher" — configure webhooks instead
 ❌ Wrapping only `<main>` in Suspense to silence a PPR error — fix the segment that owns the work
 ❌ Omitting `localeSlug` from cached fetches — all locales share one entry, wrong language
 ❌ Regional Saleor codes (`PL_PL`) in `graphqlLanguageCode` — Dashboard uses base codes (`PL`)
@@ -3400,7 +3443,105 @@ export function Card({ title, children, className }: CardProps) {
 
 ---
 
-### 5.2 Channels & Multi-Currency
+### 5.2 Images
+
+Images are usually the largest line on a Paper storefront's Vercel bill — transformations and image cache writes both scale with the size of the catalog times the number of widths requested. The decisions here are about **not paying twice for the same optimization**.
+
+---
+
+## The one decision: Saleor optimizes, Vercel resizes
+
+> **Saleor already returns a compressed, format-converted thumbnail. Vercel's optimizer should only be picking a width — never redoing the encode from a 4000px original.**
+
+Saleor's `thumbnail(size:, format:)` field does real work server-side:
+
+- It snaps the requested size to a fixed ladder — `[32, 64, 128, 256, 512, 1024, 2048, 4096]` — and picks the **nearest** entry, not the next one up. Asking for 300 gives you 256.
+- It converts format (`format: WEBP`) and caches the result.
+- The returned URL is one of two shapes, and **this is the part that catches people out**:
+  - a **direct storage URL** once the thumbnail has been generated, or
+  - a **proxy URL** (`/thumbnail/{id}/{size}/{format}/`) that generates on first hit and 302s to storage.
+
+Both are stable per `(media id, size, format)`.
+
+**The consequence:** you cannot rewrite a Saleor image URL to change its width. The two URL shapes are not interchangeable, and rewriting a direct storage URL produces a 404. Any "custom loader that swaps the size segment" idea dies here — verify against `saleor/thumbnail/utils.py` (`get_image_or_proxy_url`) before trying it.
+
+So Paper asks Saleor for a sensibly-sized thumbnail, then lets `/_next/image` handle responsive widths from that already-small source.
+
+---
+
+## Cost model
+
+Vercel meters images two ways, and both are driven by **how many distinct URLs you generate**, not how many requests you serve:
+
+| Meter              | Driven by                                               |
+| ------------------ | ------------------------------------------------------- |
+| Transformations    | unique `(src, width, quality, format)` — first hit only |
+| Image cache writes | each transformation's result being stored               |
+
+Every entry in `deviceSizes`/`imageSizes` that a `sizes` attribute can select is a potential transformation **per source image**. A 5,000-product catalog with 8 candidate widths is 40,000 transformations before anyone visits a second page.
+
+That leads to three levers, all in [`next.config.js`](../../../next.config.js):
+
+1. **`minimumCacheTTL`** (Paper: 31 days, override with `NEXT_IMAGE_MIN_CACHE_TTL`). The Next default is 4 hours, which re-optimizes the same unchanged catalog image ~180×/month. Saleor URLs are stable, so a long TTL is nearly free correctness-wise — **except** that replacing an image in place in Saleor reuses the URL, so the old bytes serve until expiry. Uploading as new media always dodges this.
+2. **`deviceSizes` / `imageSizes`** — trimmed below the Next defaults. The 2048/3840 steps only serve 4K displays and are the most expensive to generate and store; the 16/32/48 steps are smaller than anything Paper renders.
+3. **`formats: ["image/webp"]`** — WebP only. AVIF compresses better but cold-encodes add ~500ms+ to the first `/_next/image` hit, which lands directly on LCP.
+
+---
+
+## `remotePatterns` is a security control, not just config
+
+`/_next/image` will fetch and optimize **any** host it is allowed to, and you are billed for it. A wildcard `hostname: "*"` in production lets anyone use the storefront as a free image CDN by hitting `/_next/image?url=…`.
+
+Paper builds the production allowlist from Saleor Cloud hosts plus the configured `NEXT_PUBLIC_SALEOR_API_URL` host, with extra sources (a DAM, a CMS) added via `IMAGE_ALLOWED_HOSTS`. The wildcard is **development-only**.
+
+---
+
+## Every `fill` image needs `sizes`
+
+Without `sizes`, Next assumes `100vw` and requests the widest candidate in `deviceSizes` — so an 80px cart thumbnail downloads a 1920px image. This is the single most common image bug and it is invisible locally, where everything is fast.
+
+Shared `sizes` strings live in [`src/lib/images.ts`](../../../src/lib/images.ts), keyed to the layout breakpoints they describe (`PLP_IMAGE_SIZES`, `PDP_MAIN_IMAGE_SIZES`, `CART_THUMBNAIL_IMAGE_SIZES`, …). Add a constant there rather than inlining a string, so the value stays reviewable next to the others.
+
+```tsx
+<Image
+	src={product.image}
+	alt={product.imageAlt || product.name}
+	fill
+	sizes={PLP_IMAGE_SIZES}
+	quality={PRODUCT_IMAGE_QUALITY}
+	className="object-cover"
+/>
+```
+
+Fixed-size images (`width`/`height`) are self-bounding and don't need `sizes` — Next requests roughly `width` and `width × 2`.
+
+`quality` is pinned at `PRODUCT_IMAGE_QUALITY` (75). Next 16 defaults `images.qualities` to `[75]`, so any other value is silently coerced unless you widen the allowlist — and each distinct quality multiplies the transformation count.
+
+---
+
+## Anti-patterns
+
+❌ `fill` without `sizes` — requests the widest variant for a thumbnail slot
+❌ `hostname: "*"` in `remotePatterns` for production — third parties bill you
+❌ A custom loader that rewrites Saleor thumbnail URL widths — the two URL shapes aren't interchangeable
+❌ Adding AVIF to `formats` — doubles transformations and cold-encode cost lands on LCP
+❌ Per-call-site `quality` values — each one is a separate transformation of the same image
+❌ Widening `deviceSizes` "just in case" — every entry is a transformation per source image
+❌ Requesting a huge Saleor `thumbnail(size:)` and letting Vercel shrink it — pay once, at the source
+
+---
+
+## Key files
+
+| File                              | Purpose                                                         |
+| --------------------------------- | --------------------------------------------------------------- |
+| `next.config.js` → `images`       | Allowlist, TTL, width ladders, formats                          |
+| `src/lib/images.ts`               | Shared `sizes` strings and quality constant                     |
+| `src/graphql/fragments/*.graphql` | `thumbnail(size:, format:)` selections — the source-side budget |
+
+---
+
+### 5.3 Channels & Multi-Currency
 
 Configure multi-channel and multi-currency support. This storefront supports multiple Saleor channels, each with its own currency. Understanding the underlying fulfillment model helps debug "product not purchasable" issues.
 
@@ -3571,7 +3712,7 @@ Default locale slug: `en` (`NEXT_PUBLIC_DEFAULT_LOCALE`). Configure `NEXT_PUBLIC
 
 ---
 
-### 5.3 Locale & Channel URL Routing
+### 5.4 Locale & Channel URL Routing
 
 Browse routes use **two URL prefixes**: locale (language) then channel (market). Checkout is unchanged.
 
@@ -3712,7 +3853,7 @@ Run **301** from old URLs for at least one release.
 
 ---
 
-### 5.4 next-intl (Code-Owned UI Strings)
+### 5.5 next-intl (Code-Owned UI Strings)
 
 Functional storefront strings — buttons, labels, validation, a11y, order status — live in **`messages/{locale}.json`**, not Saleor Models.
 

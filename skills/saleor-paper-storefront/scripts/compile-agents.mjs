@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 31;
+const RULE_COUNT = 32;
 
 const catalog = [
 	{
@@ -88,9 +88,10 @@ const catalog = [
 		intro: "UI components and channel configuration control the visual layer and multi-currency support.",
 		rules: [
 			{ num: "5.1", file: "ui-components.md", title: "UI Components" },
-			{ num: "5.2", file: "ui-channels.md", title: "Channels & Multi-Currency" },
-			{ num: "5.3", file: "ui-locale-routing.md", title: "Locale & Channel URL Routing" },
-			{ num: "5.4", file: "ui-i18n.md", title: "next-intl (Code-Owned UI Strings)" },
+			{ num: "5.2", file: "ui-images.md", title: "Images" },
+			{ num: "5.3", file: "ui-channels.md", title: "Channels & Multi-Currency" },
+			{ num: "5.4", file: "ui-locale-routing.md", title: "Locale & Channel URL Routing" },
+			{ num: "5.5", file: "ui-i18n.md", title: "next-intl (Code-Owned UI Strings)" },
 		],
 	},
 	{

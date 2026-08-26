@@ -1,0 +1,100 @@
+---
+name: ui-images
+description: Images in Paper — Saleor already produces optimized thumbnails, so Vercel's optimizer must not redo that work. Covers the thumbnail ladder, remotePatterns allowlisting, minimumCacheTTL, deviceSizes/imageSizes budgets, and mandatory `sizes` on every fill image. Use when adding an <Image>, tuning image cost, debugging oversized requests, or touching next.config.js images config.
+---
+
+# Images
+
+Images are usually the largest line on a Paper storefront's Vercel bill — transformations and image cache writes both scale with the size of the catalog times the number of widths requested. The decisions here are about **not paying twice for the same optimization**.
+
+---
+
+## The one decision: Saleor optimizes, Vercel resizes
+
+> **Saleor already returns a compressed, format-converted thumbnail. Vercel's optimizer should only be picking a width — never redoing the encode from a 4000px original.**
+
+Saleor's `thumbnail(size:, format:)` field does real work server-side:
+
+- It snaps the requested size to a fixed ladder — `[32, 64, 128, 256, 512, 1024, 2048, 4096]` — and picks the **nearest** entry, not the next one up. Asking for 300 gives you 256.
+- It converts format (`format: WEBP`) and caches the result.
+- The returned URL is one of two shapes, and **this is the part that catches people out**:
+  - a **direct storage URL** once the thumbnail has been generated, or
+  - a **proxy URL** (`/thumbnail/{id}/{size}/{format}/`) that generates on first hit and 302s to storage.
+
+Both are stable per `(media id, size, format)`.
+
+**The consequence:** you cannot rewrite a Saleor image URL to change its width. The two URL shapes are not interchangeable, and rewriting a direct storage URL produces a 404. Any "custom loader that swaps the size segment" idea dies here — verify against `saleor/thumbnail/utils.py` (`get_image_or_proxy_url`) before trying it.
+
+So Paper asks Saleor for a sensibly-sized thumbnail, then lets `/_next/image` handle responsive widths from that already-small source.
+
+---
+
+## Cost model
+
+Vercel meters images two ways, and both are driven by **how many distinct URLs you generate**, not how many requests you serve:
+
+| Meter              | Driven by                                               |
+| ------------------ | ------------------------------------------------------- |
+| Transformations    | unique `(src, width, quality, format)` — first hit only |
+| Image cache writes | each transformation's result being stored               |
+
+Every entry in `deviceSizes`/`imageSizes` that a `sizes` attribute can select is a potential transformation **per source image**. A 5,000-product catalog with 8 candidate widths is 40,000 transformations before anyone visits a second page.
+
+That leads to three levers, all in [`next.config.js`](../../../next.config.js):
+
+1. **`minimumCacheTTL`** (Paper: 31 days, override with `NEXT_IMAGE_MIN_CACHE_TTL`). The Next default is 4 hours, which re-optimizes the same unchanged catalog image ~180×/month. Saleor URLs are stable, so a long TTL is nearly free correctness-wise — **except** that replacing an image in place in Saleor reuses the URL, so the old bytes serve until expiry. Uploading as new media always dodges this.
+2. **`deviceSizes` / `imageSizes`** — trimmed below the Next defaults. The 2048/3840 steps only serve 4K displays and are the most expensive to generate and store; the 16/32/48 steps are smaller than anything Paper renders.
+3. **`formats: ["image/webp"]`** — WebP only. AVIF compresses better but cold-encodes add ~500ms+ to the first `/_next/image` hit, which lands directly on LCP.
+
+---
+
+## `remotePatterns` is a security control, not just config
+
+`/_next/image` will fetch and optimize **any** host it is allowed to, and you are billed for it. A wildcard `hostname: "*"` in production lets anyone use the storefront as a free image CDN by hitting `/_next/image?url=…`.
+
+Paper builds the production allowlist from Saleor Cloud hosts plus the configured `NEXT_PUBLIC_SALEOR_API_URL` host, with extra sources (a DAM, a CMS) added via `IMAGE_ALLOWED_HOSTS`. The wildcard is **development-only**.
+
+---
+
+## Every `fill` image needs `sizes`
+
+Without `sizes`, Next assumes `100vw` and requests the widest candidate in `deviceSizes` — so an 80px cart thumbnail downloads a 1920px image. This is the single most common image bug and it is invisible locally, where everything is fast.
+
+Shared `sizes` strings live in [`src/lib/images.ts`](../../../src/lib/images.ts), keyed to the layout breakpoints they describe (`PLP_IMAGE_SIZES`, `PDP_MAIN_IMAGE_SIZES`, `CART_THUMBNAIL_IMAGE_SIZES`, …). Add a constant there rather than inlining a string, so the value stays reviewable next to the others.
+
+```tsx
+<Image
+	src={product.image}
+	alt={product.imageAlt || product.name}
+	fill
+	sizes={PLP_IMAGE_SIZES}
+	quality={PRODUCT_IMAGE_QUALITY}
+	className="object-cover"
+/>
+```
+
+Fixed-size images (`width`/`height`) are self-bounding and don't need `sizes` — Next requests roughly `width` and `width × 2`.
+
+`quality` is pinned at `PRODUCT_IMAGE_QUALITY` (75). Next 16 defaults `images.qualities` to `[75]`, so any other value is silently coerced unless you widen the allowlist — and each distinct quality multiplies the transformation count.
+
+---
+
+## Anti-patterns
+
+❌ `fill` without `sizes` — requests the widest variant for a thumbnail slot
+❌ `hostname: "*"` in `remotePatterns` for production — third parties bill you
+❌ A custom loader that rewrites Saleor thumbnail URL widths — the two URL shapes aren't interchangeable
+❌ Adding AVIF to `formats` — doubles transformations and cold-encode cost lands on LCP
+❌ Per-call-site `quality` values — each one is a separate transformation of the same image
+❌ Widening `deviceSizes` "just in case" — every entry is a transformation per source image
+❌ Requesting a huge Saleor `thumbnail(size:)` and letting Vercel shrink it — pay once, at the source
+
+---
+
+## Key files
+
+| File                              | Purpose                                                         |
+| --------------------------------- | --------------------------------------------------------------- |
+| `next.config.js` → `images`       | Allowlist, TTL, width ladders, formats                          |
+| `src/lib/images.ts`               | Shared `sizes` strings and quality constant                     |
+| `src/graphql/fragments/*.graphql` | `thumbnail(size:, format:)` selections — the source-side budget |
