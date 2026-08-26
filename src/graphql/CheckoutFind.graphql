@@ -22,7 +22,7 @@ query CheckoutFind($id: ID!, $languageCode: LanguageCodeEnum!) {
 					translation(languageCode: $languageCode) {
 						name
 					}
-					thumbnail {
+					thumbnail(size: 256, format: WEBP) {
 						url
 						alt
 					}

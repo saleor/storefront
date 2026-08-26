@@ -24,7 +24,9 @@ query ProductListByCategory(
 			slug
 		}
 		...CategoryLocaleSlugTranslations
-		backgroundImage {
+		# Full-bleed hero. Unsized, Saleor returns the 4096 rung in the original format —
+		# a multi-MB JPEG that Vercel then has to transcode.
+		backgroundImage(size: 2048, format: WEBP) {
 			url
 			alt
 		}

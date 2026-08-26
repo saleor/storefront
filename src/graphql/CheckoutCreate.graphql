@@ -17,7 +17,7 @@ mutation CheckoutCreate($channel: String!, $languageCode: LanguageCodeEnum!) {
 						id
 						name
 						slug
-						thumbnail {
+						thumbnail(size: 256, format: WEBP) {
 							url
 							alt
 						}
