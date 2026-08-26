@@ -7,6 +7,7 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { buildBrowsePageMetadata } from "@/lib/seo";
+import { getProductListingPage, isCacheableListingView } from "@/lib/catalog/get-product-listing";
 import { getStorefrontContent } from "@/lib/content/server";
 import { CategoryHero, toProductCardData } from "@/ui/components/plp";
 import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
@@ -96,7 +97,6 @@ async function ProductsContent({
 }) {
 	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
 
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
 	const sortBy = buildSortVariables(searchParams.sort);
 
 	// Parse category slugs from URL and resolve to IDs for server-side filtering
@@ -104,29 +104,21 @@ async function ProductsContent({
 	const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
 	const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
 
-	const { filter, where } = buildProductListingConstraints({
-		priceRange: searchParams.price,
-		categoryIds,
-		colors: searchParams.colors,
-		sizes: searchParams.sizes,
-	});
+	// The unfiltered first page is the bulk of PLP traffic — serve it from cache.
+	// Filtered and paginated views stay live (see isCacheableListingView).
+	const products = isCacheableListingView(searchParams)
+		? await getProductListingPage(params.channel, params.locale, sortBy)
+		: await fetchFilteredProductListing({
+				searchParams,
+				categoryIds,
+				channel: params.channel,
+				locale: params.locale,
+				sortBy,
+			});
 
-	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
-		variables: {
-			...paginationVariables,
-			channel: params.channel,
-			sortBy,
-			filter,
-			where,
-			...graphqlLanguageCodeVariables(params.locale),
-		},
-	});
-
-	if (!result.ok || !result.data.products) {
+	if (!products) {
 		notFound();
 	}
-
-	const products = result.data.products;
 	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
 	// Build resolved categories array for the client (for active filter display)
@@ -145,6 +137,42 @@ async function ProductsContent({
 			resolvedCategories={resolvedCategories}
 		/>
 	);
+}
+
+/** Live fetch for filtered or paginated views — deliberately uncached (long tail). */
+async function fetchFilteredProductListing({
+	searchParams,
+	categoryIds,
+	channel,
+	locale,
+	sortBy,
+}: {
+	searchParams: Awaited<PageProps["searchParams"]>;
+	categoryIds: string[];
+	channel: string;
+	locale: string;
+	sortBy: ReturnType<typeof buildSortVariables>;
+}) {
+	const paginationVariables = getPaginatedListVariables({ params: searchParams });
+	const { filter, where } = buildProductListingConstraints({
+		priceRange: searchParams.price,
+		categoryIds,
+		colors: searchParams.colors,
+		sizes: searchParams.sizes,
+	});
+
+	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
+		variables: {
+			...paginationVariables,
+			channel,
+			sortBy,
+			filter,
+			where,
+			...graphqlLanguageCodeVariables(locale),
+		},
+	});
+
+	return result.ok ? (result.data.products ?? null) : null;
 }
 
 /**

@@ -10,10 +10,15 @@ const WEEK = 7 * DAY;
  * @type {Record<"catalog" | "menus" | "channels", CacheLifeTier>}
  */
 export const paperCacheLifeProfiles = {
+	// Webhook invalidation (PRODUCT_*, CATEGORY_*, COLLECTION_*) is the primary freshness
+	// mechanism for catalog data, so `revalidate` is only the backstop for a webhook that
+	// was never configured or was dropped. A 1-minute backstop meant every catalog entry
+	// regenerated ~1440x/day regardless of traffic; an hour keeps the safety net without
+	// paying for it continuously.
 	catalog: {
 		stale: 5 * MINUTE,
-		revalidate: 1 * MINUTE,
-		expire: 1 * HOUR,
+		revalidate: 1 * HOUR,
+		expire: 1 * DAY,
 	},
 	menus: {
 		stale: 5 * MINUTE,

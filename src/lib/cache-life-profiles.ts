@@ -83,10 +83,10 @@ export const paperCacheLifeProfileDocs: Record<
 > = {
 	catalog: {
 		label: "Catalog",
-		usedFor: "Products, categories, collections, homepage featured",
+		usedFor: "Products, categories, collections, listings, homepage featured",
 		stale: "5 min",
-		revalidate: "1 min",
-		expire: "1 hour",
+		revalidate: "1 hour",
+		expire: "1 day",
 	},
 	menus: {
 		label: "Menus",

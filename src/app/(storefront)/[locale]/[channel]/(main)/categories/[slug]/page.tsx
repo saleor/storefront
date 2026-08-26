@@ -8,6 +8,7 @@ import { executePublicGraphQL } from "@/lib/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
+import { getCategoryListingPage, isCacheableListingView } from "@/lib/catalog/get-product-listing";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
@@ -18,8 +19,9 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CategoryPageClient } from "./client";
 
-// Prefetch: default (auto) under global `partialPrefetching`. Category tiles use
-// `prefetch={true}` so the hero + grid shell resolve at runtime with the link's params.
+// Prefetch: default (auto) under global `partialPrefetching` — App Shell only. Category
+// tiles deliberately do not opt into `prefetch={true}`: one runtime prefetch per tile in a
+// grid is a large invocation bill for navigation that already feels instant.
 
 type PageProps = {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
@@ -129,13 +131,7 @@ async function CategoryProducts({
 }) {
 	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
 
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
 	const sortBy = buildSortVariables(searchParams.sort);
-	const { filter, where } = buildProductListingConstraints({
-		priceRange: searchParams.price,
-		colors: searchParams.colors,
-		sizes: searchParams.sizes,
-	});
 
 	// Resolve via cached getCategoryData (handles translated URL slugs), then list by primary slug.
 	const category = await getCategoryData(params.slug, params.channel, params.locale);
@@ -143,19 +139,16 @@ async function CategoryProducts({
 		notFound();
 	}
 
-	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
-		variables: {
-			slug: category.slug,
-			channel: params.channel,
-			...paginationVariables,
-			sortBy,
-			filter,
-			where,
-			...graphqlLanguageCodeVariables(params.locale),
-		},
-	});
+	const products = isCacheableListingView(searchParams)
+		? await getCategoryListingPage(category.slug, params.channel, params.locale, sortBy)
+		: await fetchFilteredCategoryListing({
+				searchParams,
+				categorySlug: category.slug,
+				channel: params.channel,
+				locale: params.locale,
+				sortBy,
+			});
 
-	const products = result.ok ? result.data.category?.products : null;
 	if (!products) {
 		notFound();
 	}
@@ -169,4 +162,40 @@ async function CategoryProducts({
 			totalCount={products.totalCount ?? productCards.length}
 		/>
 	);
+}
+
+/** Live fetch for filtered or paginated views — deliberately uncached (long tail). */
+async function fetchFilteredCategoryListing({
+	searchParams,
+	categorySlug,
+	channel,
+	locale,
+	sortBy,
+}: {
+	searchParams: Awaited<PageProps["searchParams"]>;
+	categorySlug: string;
+	channel: string;
+	locale: string;
+	sortBy: ReturnType<typeof buildSortVariables>;
+}) {
+	const paginationVariables = getPaginatedListVariables({ params: searchParams });
+	const { filter, where } = buildProductListingConstraints({
+		priceRange: searchParams.price,
+		colors: searchParams.colors,
+		sizes: searchParams.sizes,
+	});
+
+	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
+		variables: {
+			slug: categorySlug,
+			channel,
+			...paginationVariables,
+			sortBy,
+			filter,
+			where,
+			...graphqlLanguageCodeVariables(locale),
+		},
+	});
+
+	return result.ok ? (result.data.category?.products ?? null) : null;
 }

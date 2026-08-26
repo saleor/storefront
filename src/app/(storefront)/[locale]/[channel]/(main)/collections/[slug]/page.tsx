@@ -2,12 +2,18 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
+import {
+	ProductListByCollectionDocument,
+	ProductOrderField,
+	OrderDirection,
+	type ProductOrder,
+} from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { executePublicGraphQL } from "@/lib/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
+import { getCollectionListingPage, isCacheableListingView } from "@/lib/catalog/get-product-listing";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
@@ -120,35 +126,26 @@ async function CollectionProducts({
 }) {
 	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
 
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
 	const sortBy = buildSortVariables(searchParams.sort) ?? {
 		field: ProductOrderField.Collection,
 		direction: OrderDirection.Asc,
 	};
-	const { filter, where } = buildProductListingConstraints({
-		priceRange: searchParams.price,
-		colors: searchParams.colors,
-		sizes: searchParams.sizes,
-	});
 
 	const collection = await getCollectionData(params.slug, params.channel, params.locale);
 	if (!collection) {
 		notFound();
 	}
 
-	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
-		variables: {
-			slug: collection.slug,
-			channel: params.channel,
-			...paginationVariables,
-			sortBy,
-			filter,
-			where,
-			...graphqlLanguageCodeVariables(params.locale),
-		},
-	});
+	const products = isCacheableListingView(searchParams)
+		? await getCollectionListingPage(collection.slug, params.channel, params.locale, sortBy)
+		: await fetchFilteredCollectionListing({
+				searchParams,
+				collectionSlug: collection.slug,
+				channel: params.channel,
+				locale: params.locale,
+				sortBy,
+			});
 
-	const products = result.ok ? result.data.collection?.products : null;
 	if (!products) {
 		notFound();
 	}
@@ -162,4 +159,40 @@ async function CollectionProducts({
 			totalCount={products.totalCount ?? productCards.length}
 		/>
 	);
+}
+
+/** Live fetch for filtered or paginated views — deliberately uncached (long tail). */
+async function fetchFilteredCollectionListing({
+	searchParams,
+	collectionSlug,
+	channel,
+	locale,
+	sortBy,
+}: {
+	searchParams: Awaited<PageProps["searchParams"]>;
+	collectionSlug: string;
+	channel: string;
+	locale: string;
+	sortBy: ProductOrder;
+}) {
+	const paginationVariables = getPaginatedListVariables({ params: searchParams });
+	const { filter, where } = buildProductListingConstraints({
+		priceRange: searchParams.price,
+		colors: searchParams.colors,
+		sizes: searchParams.sizes,
+	});
+
+	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
+		variables: {
+			slug: collectionSlug,
+			channel,
+			...paginationVariables,
+			sortBy,
+			filter,
+			where,
+			...graphqlLanguageCodeVariables(locale),
+		},
+	});
+
+	return result.ok ? (result.data.collection?.products ?? null) : null;
 }
