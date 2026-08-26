@@ -8,6 +8,9 @@ import { AccountProvider } from "@/ui/components/account/account-context";
 import { AccountUnavailable } from "@/ui/components/account/account-unavailable";
 import { getAccountAuthState } from "./get-current-user";
 
+/** Auth-gated routes — prefetching is wasteful for rarely visited account pages. */
+export const prefetch = "force-disabled";
+
 type LayoutProps = {
 	children: ReactNode;
 	params: Promise<{ locale: string; channel: string }>;

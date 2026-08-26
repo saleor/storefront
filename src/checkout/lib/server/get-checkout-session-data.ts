@@ -5,6 +5,7 @@ import { cache } from "react";
 import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-user";
 import { fetchChannelCountriesOnServer } from "@/checkout/lib/server/fetch-channel-countries";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
+import { formatCountryNameOnServer } from "@/checkout/lib/server/format-country-name";
 import type { LocaleSlug } from "@/config/locale";
 
 /**
@@ -17,6 +18,10 @@ export const getCheckoutSessionCheckout = cache((checkoutId: string, localeSlug:
 	fetchCheckoutOnServer(checkoutId, localeSlug),
 );
 
-export const getCheckoutSessionCountries = cache((channelSlug: string) =>
-	fetchChannelCountriesOnServer(channelSlug),
-);
+export const getCheckoutSessionCountries = cache(async (channelSlug: string, localeSlug: LocaleSlug) => {
+	const codes = await fetchChannelCountriesOnServer(channelSlug);
+	return codes.map((code) => ({
+		code,
+		label: formatCountryNameOnServer(code, localeSlug),
+	}));
+});

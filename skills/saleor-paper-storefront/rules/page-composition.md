@@ -14,17 +14,16 @@ How to mold PDP and homepage layouts by editing the page files — adding, remov
 
 Pick the page shape by **whether the route reads any runtime data** (`searchParams`/`cookies`/uncached fetch). A skeleton is a **per-hole** affordance, never a **per-page** default:
 
-- **Static page (no runtime data)** → `async page` awaits `params` + `"use cache"` data and renders the shell **directly**. **No page-level `Suspense`, no skeleton** — it prerenders as real content. (homepage, CMS pages)
+- **Static page (no runtime data)** → sync page wraps an async body that awaits `params` + `"use cache"` data in **page-level `Suspense`** (fold-height fallback). Required for Partial Prefetching: URL data must stay out of the shared App Shell. Direct loads still prerender full HTML per `generateStaticParams`. (homepage; CMS pages follow the same shape when they await `params`)
 - **Hybrid page (some runtime data)** → render the cached shell **eagerly**, then wrap **only** the dynamic island in `Suspense` with a small skeleton. (PLP grid via `searchParams`, PDP variant section)
 
 Design changes must stay inside the right layer:
 
 ```
-Page (async export)                 ← awaits params + "use cache" data only; no runtime data at top level
-├── cached shell                    ← STATIC design, prerendered into the PPR shell (renders directly)
-│     sections from cached content (hero, story, value columns, featured grid…)
-└── Suspense island(s)              ← DYNAMIC design only; present on hybrid pages, absent on static ones
-      searchParams / cookies / client hooks  (variant gallery/section, filtered grid, cart)
+Page (sync export)
+└── Suspense (fold fallback)        ← keeps params out of the shared instant App Shell
+      HomePageContent (async)       ← awaits params + "use cache" only; no searchParams/cookies
+        cached sections             ← hero, story, value columns, featured grid…
 ```
 
 | Put it in the STATIC shell                                        | Put it in a DYNAMIC island (nested Suspense)                      |
@@ -47,22 +46,27 @@ File: [`src/app/(storefront)/[locale]/[channel]/(main)/page.tsx`](<../../../src/
 
 The homepage composes typed content (`getStorefrontContent`) into an ordered list of sections. To mold it:
 
-1. **Reorder / add / remove sections** by editing the JSX section list. Pull copy from `content.surfaces.homepage` (extend the content model for new fields — see `data-storefront-content`).
-2. **Render cached sections directly**: `FeaturedCollectionSection` is `"use cache"`, so it's inlined into the static shell (no `Suspense`, no skeleton) alongside the editorial sections. Wrap a section in `Suspense` only if it reads runtime data — none do today.
-3. **Vary width per section** with the container tokens (a full-bleed `HeroBanner` + a `container-content` story + a `container-wide` editorial band is fine).
-4. **Width is intentional** — a full-width homepage is supported; don't default to centered-narrow.
+1. **Reorder / add / remove sections** by editing the JSX inside `HomePageContent`. Pull copy from `content.surfaces.homepage` (extend the content model for new fields — see `data-storefront-content`).
+2. **Keep the sync `Page` + `Suspense` shell** — do not hoist `await params` into the default export (breaks Partial Prefetching App Shell sharing across locale/channel).
+3. **Cached sections stay in `HomePageContent`**: `FeaturedCollectionSection` is `"use cache"` and resolves with the rest of the body. Add a nested `Suspense` only for genuinely dynamic runtime data — none today.
+4. **Vary width per section** with the container tokens (a full-bleed `HeroBanner` + a `container-content` story + a `container-wide` editorial band is fine).
+5. **Width is intentional** — a full-width homepage is supported; don't default to centered-narrow.
 
 ```tsx
-// Sketch: reordered homepage with a new full-bleed editorial band.
-// The homepage is a static `async` page — NO page-level Suspense. The body awaits
-// `params` + "use cache" content and renders every section (incl. featured) directly.
+// Sketch: sync page shell + async body (Partial Prefetching).
+export default function Page({ params }: { params: HomeParams }) {
+  return (
+    <Suspense fallback={<HomePageFallback />}>
+      <HomePageContent params={params} />
+    </Suspense>
+  );
+}
+
+// Inside HomePageContent — await params + "use cache", then compose sections:
 return (
   <>
     <HeroBanner heading={hero.heading} backgroundImage={hero.backgroundImage} height="large" primaryCta={…} />
-
-    {/* Cached → inlined into the static shell, not streamed behind a skeleton */}
     <FeaturedCollectionSection locale={locale} channel={channel} {...featured} />
-
     <ImageWithText heading={editorial.heading} paragraphs={editorial.paragraphs} imagePosition="right" cta={…} />
     <MulticolumnSection heading={values.heading} columns={valueColumns} columnsDesktop={values.columnsDesktop} />
     <RichTextBlock heading={brandStory.heading} paragraphs={brandStory.paragraphs} align="center" width="narrow" />
@@ -70,7 +74,7 @@ return (
 );
 ```
 
-> The homepage is **fully static**: an `async` page that awaits only `params` + `"use cache"` content (never `searchParams`/`cookies`) and renders every section — including the featured collection — directly into the PPR static shell. There is **no page-level `Suspense` and no skeleton**. `pnpm build`'s Cache Components check fails if any uncached/runtime access sneaks in outside a `Suspense`, which is the guarantee that `/` stays a real static shell. Add a `Suspense` island only when you introduce a genuinely dynamic section.
+> The homepage body is **cached-only** (`params` + `"use cache"`, never `searchParams`/`cookies`). The page-level `Suspense` exists solely so URL data stays out of the shared instant App Shell; direct loads still prerender full HTML per `generateStaticParams`. Do not remove that boundary to "get content into the shell" — that reintroduces the instant-shell URL-data insight.
 
 ## PDP molding
 

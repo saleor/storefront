@@ -28,7 +28,6 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 		return (
 			<LinkWithChannel
 				href={href}
-				prefetch={false}
 				className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 			>
 				{label}
@@ -54,7 +53,6 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 							<li key={link.href}>
 								<Link
 									href={link.href}
-									prefetch={false}
 									className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 								>
 									{link.label}
@@ -70,7 +68,6 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 							<li key={link.href}>
 								<Link
 									href={link.href}
-									prefetch={false}
 									className="text-sm text-inverse-subtle transition-colors hover:text-inverse"
 								>
 									{link.label}

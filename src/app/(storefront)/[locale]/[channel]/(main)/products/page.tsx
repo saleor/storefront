@@ -14,6 +14,9 @@ import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.serv
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { ProductsPageClient } from "./products-client";
 
+// Prefetch: default (auto) under global `partialPrefetching`. Mega-menu "All products"
+// uses `prefetch={true}` so the grid shell resolves at runtime with searchParams.
+
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }): Promise<Metadata> {

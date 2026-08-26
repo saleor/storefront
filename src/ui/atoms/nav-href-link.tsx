@@ -4,7 +4,7 @@ import { isSafeNavHref } from "@/lib/url/safe-href";
 import { cn } from "@/lib/utils";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 
-export interface NavHrefLinkProps extends Omit<ComponentProps<"a">, "href"> {
+export interface NavHrefLinkProps extends Omit<ComponentProps<typeof LinkWithChannel>, "href"> {
 	href: string;
 	children: ReactNode;
 }
@@ -28,7 +28,7 @@ export function NavHrefLink({ href, children, className, ...props }: NavHrefLink
 	}
 
 	return (
-		<LinkWithChannel href={href} prefetch={false} className={className} {...props}>
+		<LinkWithChannel href={href} className={className} {...props}>
 			{children}
 		</LinkWithChannel>
 	);

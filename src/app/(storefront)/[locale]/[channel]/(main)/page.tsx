@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { brandConfig } from "@/config/brand";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
@@ -19,7 +20,11 @@ export const metadata = {
 	description: brandConfig.description,
 };
 
+// Prefetch: default (auto). With global `partialPrefetching`, viewport links already get the
+// homepage App Shell. No link uses `prefetch={true}` to "/".
+
 type FeaturedProduct = Awaited<ReturnType<typeof getFeaturedProducts>>[number];
+type HomeParams = Promise<{ locale: string; channel: string }>;
 
 function pickImage(product: FeaturedProduct | undefined) {
 	if (!product?.thumbnail?.url) return null;
@@ -52,19 +57,30 @@ function buildCategoryTiles(products: readonly FeaturedProduct[], max = 3): Cate
 	return tiles;
 }
 
+/** Fold-height placeholder so client-nav App Shells keep layout while URL data resolves. */
+function HomePageFallback() {
+	return (
+		<div aria-hidden="true">
+			<div className="min-h-[calc(100svh-var(--chrome-offset))] bg-secondary">
+				<div className="container-content flex h-full min-h-[calc(100svh-var(--chrome-offset))] flex-col justify-end pb-16 pt-24">
+					<div className="h-3 w-24 animate-pulse rounded bg-muted" />
+					<div className="mt-4 h-10 w-2/3 max-w-xl animate-pulse rounded bg-muted" />
+					<div className="mt-3 h-4 w-1/2 max-w-md animate-pulse rounded bg-muted" />
+					<div className="mt-8 h-11 w-36 animate-pulse rounded bg-muted" />
+				</div>
+			</div>
+		</div>
+	);
+}
+
 /**
- * Homepage — fully static. Every input is cached (`getStorefrontContent`, `getFeaturedProducts`,
- * `resolveChannelCurrency`) and the route reads no runtime data (no `searchParams` / `cookies`),
- * so it prerenders into the PPR static shell as real content — no page-level `Suspense`, no
- * skeleton. The featured collection is cached too, so it is inlined into the shell rather than
- * streamed behind a fallback.
- *
- * There are no dynamic holes here. If one is ever added (e.g. a personalized strip), wrap *only*
- * that island in its own `Suspense` — never re-wrap the whole page in a page-level skeleton.
- * The `pnpm build` Cache Components check enforces this: any uncached/runtime access outside a
- * `Suspense` fails the build, proving `/` stays a real static shell.
+ * Homepage body — awaits `params` + cached catalog/content. Wrapped by the page's
+ * Suspense so Partial Prefetching can share one App Shell across locale/channel URLs.
+ * Direct loads still prerender full HTML per `generateStaticParams` (Suspense resolves
+ * at build time); client navigations show {@link HomePageFallback} until the cached
+ * body streams in.
  */
-export default async function Page({ params }: { params: Promise<{ locale: string; channel: string }> }) {
+async function HomePageContent({ params }: { params: HomeParams }) {
 	const { locale, channel } = await params;
 	const content = await getStorefrontContent(channel, locale);
 	const { hero, featuredCollection, categories, brandStory, values, editorial } = content.surfaces.homepage;
@@ -122,7 +138,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 				/>
 			)}
 
-			{/* Cached collection → inlined into the static shell (not streamed behind a skeleton). */}
+			{/* Cached collection — resolves with the rest of the body inside Suspense. */}
 			<FeaturedCollectionSection
 				locale={locale}
 				channel={channel}
@@ -168,5 +184,17 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 				tone="inverse"
 			/>
 		</>
+	);
+}
+
+/**
+ * Sync page shell — `params` are URL data and must stay behind Suspense for a shared
+ * instant App Shell (Next.js 16.3 Partial Prefetching).
+ */
+export default function Page({ params }: { params: HomeParams }) {
+	return (
+		<Suspense fallback={<HomePageFallback />}>
+			<HomePageContent params={params} />
+		</Suspense>
 	);
 }

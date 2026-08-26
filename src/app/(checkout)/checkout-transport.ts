@@ -1,4 +1,5 @@
 import {
+	attachCustomerToCheckout,
 	initializeCheckoutTransaction,
 	initializePaymentGateways,
 	processCheckoutTransaction,
@@ -15,6 +16,7 @@ import type { CheckoutTransport } from "@/checkout/lib/checkout-transport";
  */
 export const nextCheckoutTransport: CheckoutTransport = {
 	fetchCheckout: syncCheckoutFromServer,
+	attachCustomer: attachCustomerToCheckout,
 	updateBillingAddress: updateCheckoutBillingAddress,
 	initializePaymentGateways,
 	initializeTransaction: initializeCheckoutTransaction,

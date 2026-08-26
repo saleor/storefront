@@ -18,6 +18,9 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { CollectionPageClient } from "./client";
 
+// Prefetch: default (auto) under global `partialPrefetching` — App Shell only until a
+// caller opts in with `prefetch={true}` (no collection-destination links do today).
+
 type PageProps = {
 	params: Promise<{ locale: string; slug: string; channel: string }>;
 	searchParams: Promise<{

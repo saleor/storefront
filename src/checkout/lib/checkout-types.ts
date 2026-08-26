@@ -29,4 +29,9 @@ export type DeliveryOption = DeliveryOptionsCalculateMutation["deliveryOptionsCa
 		: never
 	: never;
 
-export type ShippingCountries = CountryCode[];
+export type ShippingCountryOption = {
+	code: CountryCode;
+	label: string;
+};
+
+export type ShippingCountries = ShippingCountryOption[];

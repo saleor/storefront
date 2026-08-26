@@ -9,6 +9,9 @@ import { loadCheckoutMessages } from "@/i18n/load-messages";
 import { OrderConfirmationRouteFallback } from "@/checkout/views/order-confirmation/order-confirmation-route-fallback";
 import { formatPageTitle } from "@/config/brand";
 
+/** One-time post-purchase surface — no browse prefetch. */
+export const prefetch = "force-disabled";
+
 export const metadata = {
 	title: formatPageTitle("Order confirmed"),
 	description: "Your order has been placed successfully.",

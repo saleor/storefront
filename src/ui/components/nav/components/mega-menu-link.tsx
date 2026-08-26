@@ -39,7 +39,6 @@ export function MegaMenuLeafLink({ item }: { item: NavMenuItem }) {
 		<li>
 			<LinkWithChannel
 				href={item.href}
-				prefetch={false}
 				className={clsx(leafLinkClassName, isActive && "font-medium text-foreground")}
 				onClick={closeMenu}
 			>
@@ -56,7 +55,7 @@ export function MegaMenuColumnHeader({ item }: { item: NavMenuItem }) {
 
 	if (item.href && !isExternalNavHref(item.href)) {
 		return (
-			<LinkWithChannel href={item.href} prefetch={false} className={className} onClick={closeMenu}>
+			<LinkWithChannel href={item.href} className={className} onClick={closeMenu}>
 				{item.label}
 			</LinkWithChannel>
 		);

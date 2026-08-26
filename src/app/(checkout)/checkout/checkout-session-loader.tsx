@@ -86,7 +86,7 @@ export async function CheckoutSessionLoader({
 	}
 
 	if (channelSlug) {
-		shippingCountries = await getCheckoutSessionCountries(channelSlug);
+		shippingCountries = await getCheckoutSessionCountries(channelSlug, browseLocale);
 	}
 
 	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());

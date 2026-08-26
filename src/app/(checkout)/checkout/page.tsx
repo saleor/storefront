@@ -4,6 +4,9 @@ import { CheckoutRouteFallback } from "@/checkout/views/saleor-checkout/checkout
 import { formatPageTitle } from "@/config/brand";
 import { CheckoutSessionLoader } from "./checkout-session-loader";
 
+/** Checkout is always fresh — skip ahead-of-time segment prefetch. */
+export const prefetch = "force-disabled";
+
 export const metadata = {
 	title: formatPageTitle("Checkout"),
 	description: "Complete your purchase securely.",

@@ -218,7 +218,7 @@ export function ConfirmAccountMode({
 
 				<form onSubmit={handleConfirm} className="space-y-4">
 					{errorKey && (
-						<div role="alert" className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">
+						<div role="alert" className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
 							{errorMessage}
 						</div>
 					)}

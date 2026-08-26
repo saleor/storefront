@@ -45,7 +45,7 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 				<div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
 					{/* Brand */}
 					<div className="col-span-2 md:col-span-1">
-						<Link href={buildStorefrontPath(locale, channel)} prefetch={false} className="mb-4 inline-block">
+						<Link href={buildStorefrontPath(locale, channel)} className="mb-4 inline-block">
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
 						<p className="mt-4 max-w-xs text-sm leading-relaxed text-inverse-subtle">{brandConfig.tagline}</p>
@@ -73,14 +73,12 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 					<div className="flex items-center gap-6">
 						<Link
 							href="/privacy"
-							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
 							Privacy Policy
 						</Link>
 						<Link
 							href="/terms"
-							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
 							Terms of Service

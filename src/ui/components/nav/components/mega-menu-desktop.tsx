@@ -152,7 +152,6 @@ function MegaMenuPanel({
 							<div className="mt-6 border-t border-border pt-5">
 								<LinkWithChannel
 									href={item.href}
-									prefetch={false}
 									className="text-sm font-medium text-foreground transition-colors hover:text-foreground/80"
 									onClick={onClose}
 								>
@@ -223,7 +222,7 @@ function MegaMenuTopItem({
 	return (
 		<NavigationMenuItem value={item.id}>
 			<NavigationMenuLink asChild>
-				<LinkWithChannel href={item.href} prefetch={false} className={linkClassName} onClick={onClose}>
+				<LinkWithChannel href={item.href} className={linkClassName} onClick={onClose}>
 					{item.label}
 				</LinkWithChannel>
 			</NavigationMenuLink>
@@ -295,7 +294,7 @@ function MegaMenuDesktopMenu({
 						<NavigationMenuLink asChild>
 							<LinkWithChannel
 								href="/products"
-								prefetch={false}
+								prefetch={true}
 								className={allProductsClassName}
 								onClick={closeMenu}
 							>

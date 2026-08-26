@@ -26,7 +26,9 @@ describe("confirmAccountWithToken", () => {
 			},
 		});
 
-		await expect(confirmAccountWithToken("user@example.com", "token", "secret")).resolves.toEqual({ ok: true });
+		await expect(confirmAccountWithToken("user@example.com", "token", "secret")).resolves.toEqual({
+			ok: true,
+		});
 		expect(executeRawGraphQL).toHaveBeenCalledWith(
 			expect.objectContaining({
 				variables: { email: "user@example.com", token: "token", password: "secret" },

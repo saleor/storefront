@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { isStorefrontLocaleSlug } from "@/config/locale";
 import { isAllowedStorefrontChannel } from "@/config/channels";
@@ -30,7 +30,16 @@ export const generateStaticParams = async () => {
 	return channels.map((channel) => ({ channel }));
 };
 
-export default async function ChannelLayout({
+/**
+ * Validate locale/channel, then render children.
+ *
+ * Must wrap `{children}` so invalid routes never fetch/render before `notFound()`.
+ * Must NOT use `fallback={children}` — that re-renders the browse tree as the Suspense
+ * fallback while this guard awaits `params`, and instant-shell validation then treats
+ * nested chrome `await params` as outside Suspense. `fallback={null}` keeps the params
+ * read inside the boundary without leaking children into the fallback slot.
+ */
+async function ChannelRouteGuard({
 	children,
 	params,
 }: {
@@ -49,4 +58,18 @@ export default async function ChannelLayout({
 	}
 
 	return children;
+}
+
+export default function ChannelLayout({
+	children,
+	params,
+}: {
+	children: ReactNode;
+	params: Promise<{ locale: string; channel: string }>;
+}) {
+	return (
+		<Suspense fallback={null}>
+			<ChannelRouteGuard params={params}>{children}</ChannelRouteGuard>
+		</Suspense>
+	);
 }

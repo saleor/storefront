@@ -12,6 +12,8 @@ import { buttonClassName } from "@/ui/components/ui/button";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
+// Prefetch: default (auto). Search is reached via form submit, not `prefetch={true}` links.
+
 /**
  * Search results are query-dependent and thin — keep them out of the index.
  * Title falls back to the brand template (`%s | Saleor Store`).

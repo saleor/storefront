@@ -14,6 +14,10 @@ const config = {
 	// See: https://nextjs.org/docs/app/getting-started/cache-components
 	cacheComponents: true,
 
+	// Next.js 16.3 — prefetch one reusable loading shell per route (not per link).
+	// See: https://nextjs.org/blog/next-16-3-instant-navigations
+	partialPrefetching: true,
+
 	// Named cacheLife tiers for `"use cache"` — see src/lib/cache-life-profiles.ts
 	cacheLife: paperCacheLifeProfiles,
 
@@ -65,16 +69,21 @@ const config = {
 						},
 					]
 				: []),
-			{
-				// Static assets - cache for 1 year (immutable with hash in filename)
-				source: "/_next/static/:path*",
-				headers: [
-					{
-						key: "Cache-Control",
-						value: "public, max-age=31536000, immutable",
-					},
-				],
-			},
+			// Production only — immutable breaks Turbopack HMR when applied in dev
+			// (stale action/chunk stubs → "module factory is not available").
+			...(!isDev
+				? [
+						{
+							source: "/_next/static/:path*",
+							headers: [
+								{
+									key: "Cache-Control",
+									value: "public, max-age=31536000, immutable",
+								},
+							],
+						},
+					]
+				: []),
 			{
 				// Public folder assets - cache for 1 month (logos, favicons, etc.)
 				source: "/(.*)\\.(ico|png|jpg|jpeg|gif|svg|webp|woff|woff2|webmanifest)",

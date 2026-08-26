@@ -36,7 +36,7 @@ function MobileNavLeafLink({ item }: { item: NavMenuItem }) {
 	}
 
 	return (
-		<LinkWithChannel href={item.href} prefetch={false} className={className}>
+		<LinkWithChannel href={item.href} className={className}>
 			{item.label}
 		</LinkWithChannel>
 	);
@@ -65,7 +65,7 @@ function MobileNavSectionHeading({ item, hasChildren }: { item: NavMenuItem; has
 	}
 
 	return (
-		<LinkWithChannel href={item.href} prefetch={false} className={className}>
+		<LinkWithChannel href={item.href} className={className}>
 			{item.label}
 		</LinkWithChannel>
 	);
@@ -108,11 +108,7 @@ function MobileNavGroup({ item, nav }: { item: NavMenuItem; nav: NavChromeConten
 					</div>
 					{item.href ? (
 						<div className="mt-5 border-t border-border pt-4">
-							<LinkWithChannel
-								href={item.href}
-								prefetch={false}
-								className="text-sm font-medium text-primary hover:underline"
-							>
+							<LinkWithChannel href={item.href} className="text-sm font-medium text-primary hover:underline">
 								{formatContentLabel(nav.viewAllLabel, { label: item.label })}
 							</LinkWithChannel>
 						</div>
@@ -146,7 +142,7 @@ function MobileNavTopLink({ item }: { item: NavMenuItem }) {
 	}
 
 	return (
-		<LinkWithChannel href={item.href} prefetch={false} className={className}>
+		<LinkWithChannel href={item.href} className={className}>
 			{item.label}
 		</LinkWithChannel>
 	);

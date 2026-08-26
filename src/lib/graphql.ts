@@ -1,3 +1,4 @@
+import { io } from "next/cache";
 import { type TypedDocumentString } from "../gql/graphql";
 
 // ============================================================================
@@ -301,6 +302,14 @@ async function executeGraphQL<Result, Variables>(
 	options: GraphQLOptions<Variables> & { auth: GraphQLAuth },
 ): Promise<GraphQLResult<Result>> {
 	const { variables, headers, cache, revalidate, auth } = options;
+
+	// @saleor/auth-sdk checks JWT expiry with `Date.now()` inside `fetchWithAuth`.
+	// Under Cache Components + partial prefetching that sync clock read must happen in
+	// the dynamic stage — hoist `io()` before the request queue so the boundary is
+	// established in the caller's render frame (Header user menu, account pages, etc.).
+	if (auth === "session") {
+		await io();
+	}
 
 	const operationName = operation.toString().match(/(?:query|mutation)\s+(\w+)/)?.[1] || "UnknownOperation";
 	const variablesForLog = variables ? formatVariablesForLog(variables) : undefined;
