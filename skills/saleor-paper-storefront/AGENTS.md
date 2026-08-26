@@ -808,8 +808,8 @@ Saleor: leave `announcement-id` unset for content-hash behavior; set it only whe
 
 | `CONTENT_PROVIDER` | Behavior                                                                  |
 | ------------------ | ------------------------------------------------------------------------- |
-| `code` (default)   | Returns `defaults.ts` only — no Saleor call                               |
-| `saleor`           | Fetches storefront Pages, maps attributes → partial, merges over defaults |
+| `saleor` (default) | Fetches storefront Pages, maps attributes → partial, merges over defaults |
+| `code`             | Returns `defaults.ts` only — no Saleor call (escape hatch)                |
 | `url`              | Reserved; falls back to `code`                                            |
 
 Restart `next dev` after changing `CONTENT_PROVIDER`.
@@ -906,6 +906,7 @@ Each **PageType** defines a purpose (chrome, homepage, cart, checkout); the **at
 | `storefront-policies` (PageType) / `storefront-policy` (global Page slug) | Channel-wide **policy values** (free-shipping threshold, returns window) — `NUMERIC`/`BOOLEAN`, not copy |
 | `storefront-chrome`                                                       | Site-wide chrome (announcement bar)                                                                      |
 | `storefront-homepage`                                                     | Homepage sections                                                                                        |
+| `storefront-products`                                                     | Products listing title / description                                                                     |
 | `storefront-cart`                                                         | Cart drawer **editorial** copy (title, free-shipping nudges, empty state, trust)                         |
 | `storefront-checkout`                                                     | Checkout surface copy                                                                                    |
 
@@ -945,7 +946,7 @@ Resolution (`resolve-page.ts`): `storefront-{surface}-{channel}` (override wins)
 
 Configurator resolves by **name** when deploying; the app reads **slugs** at runtime. Keep YAML names and `attribute-slugs.ts` in sync — `pnpm content:verify-attribute-slugs`. Types and catalog references (`SINGLE_REFERENCE`/`REFERENCE`) are in `data-storefront-content-attributes.md`.
 
-**Greenfield bootstrap:** with no storefront models yet, `pnpm configurator:storefront-content:deploy` creates PageTypes, attributes, and seed models from `storefront-content.config.yml`. Copy fields that reference channel policies use `{freeShippingThreshold}` / `{returnsWindowDays}` in seed values — keep those tokens in Dashboard translations too.
+**Greenfield bootstrap:** Merchants use the **Paper app** init screen (“Add storefront Models”). Developers can still run `pnpm configurator:storefront-content:deploy` to create PageTypes, attributes, and seed models from `storefront-content.config.yml`. Copy fields that reference channel policies use `{freeShippingThreshold}` / `{returnsWindowDays}` in seed values — keep those tokens in Dashboard translations too.
 
 ## Configurator (commerce-as-code, not editorial)
 
@@ -964,7 +965,7 @@ pnpm configurator:storefront-content:plan       # dry-run remote diff (may show 
 pnpm configurator:storefront-content:deploy     # apply — additive for omitted sections, never wipes
 ```
 
-**Token split (dev safety):** `SALEOR_APP_TOKEN` (`.env.local`, narrow — Next.js runtime) vs `SALEOR_CONFIGURATOR_TOKEN` (`.env.configurator.local`, broad — Configurator scripts only). Never expose the configurator token as `NEXT_PUBLIC_*` or import it in app code. After deploy, set `CONTENT_PROVIDER=saleor` and restart dev; ongoing copy work stays in Dashboard. See `config/saleor/README.md`.
+**Token split (dev safety):** `SALEOR_APP_TOKEN` (`.env.local`, narrow — Next.js runtime) vs `SALEOR_CONFIGURATOR_TOKEN` (`.env.configurator.local`, broad — Configurator scripts only). Never expose the configurator token as `NEXT_PUBLIC_*` or import it in app code. `CONTENT_PROVIDER` defaults to `saleor`; set `CONTENT_PROVIDER=code` to skip Models. Ongoing copy work stays in Dashboard. See `config/saleor/README.md`.
 
 ## Mapper pipeline (saleor provider)
 

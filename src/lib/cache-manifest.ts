@@ -475,6 +475,12 @@ function applyCacheLife(name: PaperCacheLifeProfile): void {
 			return cacheLife("menus");
 		case "channels":
 			return cacheLife("channels");
+		default: {
+			// Adding a tier without a case above must fail typecheck here — otherwise the
+			// switch falls through and the entry silently inherits Next's default timings.
+			const unregistered: never = name;
+			throw new Error(`Unregistered cacheLife profile: ${String(unregistered)}`);
+		}
 	}
 }
 

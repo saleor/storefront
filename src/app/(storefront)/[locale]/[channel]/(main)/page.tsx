@@ -23,9 +23,6 @@ export const metadata = {
 // Prefetch: default (auto). With global `partialPrefetching`, viewport links already get the
 // homepage App Shell. No link uses `prefetch={true}` to "/".
 
-/** Prefer footwear/marquee products for the hero; otherwise the first available image. */
-const HERO_SLUG_HINT = /shoe|plimsoll|sneaker|trainer|runner|force|boot/i;
-
 type FeaturedProduct = Awaited<ReturnType<typeof getFeaturedProducts>>[number];
 type HomeParams = Promise<{ locale: string; channel: string }>;
 
@@ -96,7 +93,7 @@ async function HomePageContent({ params }: { params: HomeParams }) {
 		featuredCollection.limit,
 		featuredCollection.collectionSlug,
 	);
-	const heroProduct = products.find((product) => HERO_SLUG_HINT.test(product.slug)) ?? products[0];
+	const heroProduct = products[0];
 	const heroImage = pickImage(heroProduct);
 	const editorialProduct = products.find(
 		(product) => product.slug !== heroProduct?.slug && product.thumbnail?.url,

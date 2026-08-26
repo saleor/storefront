@@ -1,9 +1,17 @@
 blockExoticSubdeps: true
 minimumReleaseAge: 1440 # 24h
 minimumReleaseAgeExclude:
-  # Fresh Next patches on this branch — allow install before the 24h age gate
-  - next
-  - "@next/*"
+  - "next@16.3.3"
+  - "@next/env@16.3.3"
+  - "@next/playwright@16.3.3"
+  - "@next/swc-darwin-arm64@16.3.3"
+  - "@next/swc-darwin-x64@16.3.3"
+  - "@next/swc-linux-arm64-gnu@16.3.3"
+  - "@next/swc-linux-arm64-musl@16.3.3"
+  - "@next/swc-linux-x64-gnu@16.3.3"
+  - "@next/swc-linux-x64-musl@16.3.3"
+  - "@next/swc-win32-arm64-msvc@16.3.3"
+  - "@next/swc-win32-x64-msvc@16.3.3"
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - "semver@6.3.1"
@@ -14,4 +22,3 @@ overrides:
   "@babel/runtime": ">=7.26.10"
   "@babel/helpers": ">=7.26.10"
   "brace-expansion@>=2": ">=2.0.2"
-  next: 16.3.0

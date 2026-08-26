@@ -43,6 +43,13 @@ export const saleorContentProvider: ContentProvider = {
 		const pages = await fetchStorefrontPages(channel, locale ?? "en");
 		const bySlug = indexStorefrontPagesBySlug(pages);
 
+		if (bySlug.size === 0 && process.env.NODE_ENV !== "production") {
+			console.warn(
+				`[content/saleor] No storefront-* Models found for channel "${channel}". ` +
+					"Using code defaults — seed Models via Paper app init or Configurator.",
+			);
+		}
+
 		const mapperPartials = [
 			mapPolicyPage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.policy, channel)),
 			mapChromePage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.chrome, channel)),

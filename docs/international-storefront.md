@@ -132,9 +132,9 @@ NEXT_PUBLIC_STOREFRONT_LOCALES=en,pl,de,fr,fi,nb,ja,ko
 STOREFRONT_CHANNELS=us,uk,pl
 NEXT_PUBLIC_DEFAULT_CHANNEL=us
 
-# Merchant copy provider
-CONTENT_PROVIDER=code          # defaults only
-# CONTENT_PROVIDER=saleor      # Saleor Models + Configurator
+# Merchant copy provider (default: saleor — Saleor Models)
+CONTENT_PROVIDER=saleor
+# CONTENT_PROVIDER=code          # code defaults only (escape hatch)
 ```
 
 Configurator ops: [`config/saleor/README.md`](../config/saleor/README.md).
@@ -162,7 +162,7 @@ Details: [`data-caching.md`](../skills/saleor-paper-storefront/rules/data-cachin
 2. **`messages/{slug}.json`** — copy structure from `en.json`; translate all keys.
 3. **`NEXT_PUBLIC_STOREFRONT_LOCALES`** — include the new slug.
 4. **Saleor Dashboard** — translate products, categories, menus, attributes for that language; optionally set **translated URL slugs** (Translations → slug) for SEO handles.
-5. **If `CONTENT_PROVIDER=saleor`:** add `config/saleor/fixtures/translations/{slug}.yaml` and run `pnpm configurator:storefront-content:translations`.
+5. **For Saleor Models translations (default provider):** add `config/saleor/fixtures/translations/{slug}.yaml` and run `pnpm configurator:storefront-content:translations`.
 6. **If adding a locale to `LOCALE_DEFINITIONS`:** also add `slugXX` aliases in `src/graphql/LocaleSlugTranslations.graphql` (keep in sync with `graphqlLanguageCode`).
 7. **Verify:** browse URL, product name translation, translated-slug URL + language switch, cart/checkout handoff, hreflang alternates, region picker.
 

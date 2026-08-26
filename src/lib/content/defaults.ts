@@ -50,35 +50,33 @@ export const defaultStorefrontContent = {
 			},
 			photoCredits: [],
 			brandStory: {
-				heading: "Built for real commerce",
+				heading: "Our story",
 				paragraphs: [
-					"Paper is a minimal, production-ready storefront for Saleor — clean as a blank page, built to ship.",
-					"Customize sections in code, connect your catalog, and keep checkout, cart, and product pages battle-tested out of the box.",
+					"Tell shoppers who you are and what you stand for.",
+					"Edit this copy in Dashboard → Models → Storefront — Homepage.",
 				],
 			},
 			values: {
 				heading: "Why shop with us",
 				columns: [
 					{
-						title: "Curated quality",
-						text: "Every product is selected for craftsmanship and longevity — not trend-chasing.",
+						title: "Quality",
+						text: "Share what makes your products worth choosing.",
 					},
 					{
-						title: "Fast fulfillment",
-						text: "Orders ship from regional warehouses with tracking from checkout to delivery.",
+						title: "Shipping",
+						text: "Describe how and when orders arrive.",
 					},
 					{
-						title: "Easy returns",
-						text: "Hassle-free returns within {returnsWindowDays} days. We stand behind what we sell.",
+						title: "Returns",
+						text: "Easy returns within {returnsWindowDays} days.",
 					},
 				],
 				columnsDesktop: 3,
 			},
 			editorial: {
-				heading: "Designed to last",
-				paragraphs: [
-					"Thoughtful materials and timeless silhouettes — pieces you'll reach for season after season.",
-				],
+				heading: "From the shop",
+				paragraphs: ["Highlight a collection, seasonal story, or campaign — then edit this block in Models."],
 				imagePosition: "right",
 				ctaLabel: "Explore collections",
 				image: null,
@@ -87,7 +85,7 @@ export const defaultStorefrontContent = {
 		},
 		products: {
 			title: "All Products",
-			description: "Discover our full collection of premium products.",
+			description: "Browse our full catalog.",
 		},
 		cart: {
 			empty: {

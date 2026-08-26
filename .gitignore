@@ -35,7 +35,7 @@ scripts/local/*
 .agents/
 
 # Saleor Configurator deploy reports (generated per deploy, env-specific)
-.configurator/reports/
+.configurator/
 
 # debug
 npm-debug.log*

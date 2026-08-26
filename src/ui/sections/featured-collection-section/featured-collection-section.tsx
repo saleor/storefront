@@ -62,7 +62,7 @@ export async function FeaturedCollectionSection({
 				/>
 			) : (
 				<p className="text-muted-foreground">
-					No featured products yet. Add products to the {collectionSlug} collection.
+					Featured products will appear here once added to your catalog.
 				</p>
 			)}
 		</Section>

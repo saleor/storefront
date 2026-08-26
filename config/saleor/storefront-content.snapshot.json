@@ -1,0 +1,470 @@
+{
+	"paperContentSchemaVersion": 1,
+	"contentAttributes": [
+		{
+			"name": "Free shipping threshold",
+			"slug": "free-shipping-threshold",
+			"inputType": "NUMERIC"
+		},
+		{
+			"name": "Returns window days",
+			"slug": "returns-window-days",
+			"inputType": "NUMERIC"
+		},
+		{
+			"name": "Announcement ID",
+			"slug": "announcement-id",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Announcement message",
+			"slug": "announcement-message",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Announcement href",
+			"slug": "announcement-href",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Announcement link label",
+			"slug": "announcement-link-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Announcement dismissible",
+			"slug": "announcement-dismissible",
+			"inputType": "BOOLEAN"
+		},
+		{
+			"name": "Nav all products label",
+			"slug": "nav-all-products-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Nav view all label",
+			"slug": "nav-view-all-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Listing title",
+			"slug": "listing-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Listing description",
+			"slug": "listing-description",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Hero eyebrow",
+			"slug": "hero-eyebrow",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Hero heading",
+			"slug": "hero-heading",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Hero subheading",
+			"slug": "hero-subheading",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Hero CTA label",
+			"slug": "hero-cta-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Hero image",
+			"slug": "hero-image",
+			"inputType": "FILE"
+		},
+		{
+			"name": "Featured heading",
+			"slug": "featured-heading",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Featured collection",
+			"slug": "featured-collection",
+			"inputType": "SINGLE_REFERENCE",
+			"entityType": "COLLECTION"
+		},
+		{
+			"name": "Featured limit",
+			"slug": "featured-limit",
+			"inputType": "NUMERIC"
+		},
+		{
+			"name": "Categories heading",
+			"slug": "categories-heading",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Categories eyebrow",
+			"slug": "categories-eyebrow",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Brand story heading",
+			"slug": "brand-story-heading",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Brand story paragraph 1",
+			"slug": "brand-story-paragraph-1",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Brand story paragraph 2",
+			"slug": "brand-story-paragraph-2",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values heading",
+			"slug": "values-heading",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values columns desktop",
+			"slug": "values-columns-desktop",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values column 1 title",
+			"slug": "values-column-1-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values column 1 text",
+			"slug": "values-column-1-text",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values column 2 title",
+			"slug": "values-column-2-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values column 2 text",
+			"slug": "values-column-2-text",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values column 3 title",
+			"slug": "values-column-3-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Values column 3 text",
+			"slug": "values-column-3-text",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Editorial heading",
+			"slug": "editorial-heading",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Editorial paragraph 1",
+			"slug": "editorial-paragraph-1",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Editorial image position",
+			"slug": "editorial-image-position",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Editorial CTA label",
+			"slug": "editorial-cta-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Photo credits",
+			"slug": "photo-credits",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty title",
+			"slug": "empty-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty body",
+			"slug": "empty-body",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty CTA label",
+			"slug": "empty-cta-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Trust free shipping prefix",
+			"slug": "trust-free-shipping-prefix",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Trust returns label",
+			"slug": "trust-returns-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Drawer title",
+			"slug": "drawer-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Drawer add for free shipping",
+			"slug": "drawer-add-for-free-shipping",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Drawer free shipping qualified",
+			"slug": "drawer-free-shipping-qualified",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty cart title",
+			"slug": "empty-cart-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty cart body",
+			"slug": "empty-cart-body",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty cart start label",
+			"slug": "empty-cart-start-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty cart go back label",
+			"slug": "empty-cart-go-back-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty session title",
+			"slug": "empty-session-title",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Empty session message",
+			"slug": "empty-session-message",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Marketing opt-in label",
+			"slug": "marketing-opt-in-label",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Trust secure checkout",
+			"slug": "trust-secure-checkout",
+			"inputType": "PLAIN_TEXT"
+		},
+		{
+			"name": "Trust Stripe processor",
+			"slug": "trust-stripe-processor",
+			"inputType": "PLAIN_TEXT"
+		}
+	],
+	"modelTypes": [
+		{
+			"name": "Storefront — Policies",
+			"slug": "storefront-policies",
+			"attributes": [
+				"Free shipping threshold",
+				"Returns window days"
+			]
+		},
+		{
+			"name": "Storefront — Chrome",
+			"slug": "storefront-chrome",
+			"attributes": [
+				"Announcement ID",
+				"Announcement message",
+				"Announcement href",
+				"Announcement link label",
+				"Announcement dismissible",
+				"Nav all products label",
+				"Nav view all label"
+			]
+		},
+		{
+			"name": "Storefront — Products",
+			"slug": "storefront-products",
+			"attributes": [
+				"Listing title",
+				"Listing description"
+			]
+		},
+		{
+			"name": "Storefront — Homepage",
+			"slug": "storefront-homepage",
+			"attributes": [
+				"Hero eyebrow",
+				"Hero heading",
+				"Hero subheading",
+				"Hero CTA label",
+				"Hero image",
+				"Featured heading",
+				"Featured collection",
+				"Featured limit",
+				"Categories heading",
+				"Categories eyebrow",
+				"Brand story heading",
+				"Brand story paragraph 1",
+				"Brand story paragraph 2",
+				"Values heading",
+				"Values columns desktop",
+				"Values column 1 title",
+				"Values column 1 text",
+				"Values column 2 title",
+				"Values column 2 text",
+				"Values column 3 title",
+				"Values column 3 text",
+				"Editorial heading",
+				"Editorial paragraph 1",
+				"Editorial image position",
+				"Editorial CTA label",
+				"Photo credits"
+			]
+		},
+		{
+			"name": "Storefront — Cart",
+			"slug": "storefront-cart",
+			"attributes": [
+				"Empty title",
+				"Empty body",
+				"Empty CTA label",
+				"Trust free shipping prefix",
+				"Trust returns label",
+				"Drawer title",
+				"Drawer add for free shipping",
+				"Drawer free shipping qualified"
+			]
+		},
+		{
+			"name": "Storefront — Checkout",
+			"slug": "storefront-checkout",
+			"attributes": [
+				"Empty cart title",
+				"Empty cart body",
+				"Empty cart start label",
+				"Empty cart go back label",
+				"Empty session title",
+				"Empty session message",
+				"Marketing opt-in label",
+				"Trust secure checkout",
+				"Trust Stripe processor"
+			]
+		}
+	],
+	"models": [
+		{
+			"title": "Storefront Policies",
+			"slug": "storefront-policy",
+			"modelType": "Storefront — Policies",
+			"isPublished": true,
+			"attributes": {
+				"Free shipping threshold": 75,
+				"Returns window days": 30
+			}
+		},
+		{
+			"title": "Storefront Chrome",
+			"slug": "storefront-chrome",
+			"modelType": "Storefront — Chrome",
+			"isPublished": true,
+			"attributes": {
+				"Announcement ID": "",
+				"Announcement message": "Free shipping on orders over {freeShippingThreshold}",
+				"Announcement dismissible": true,
+				"Nav all products label": "All",
+				"Nav view all label": "View all {label}"
+			}
+		},
+		{
+			"title": "Storefront Products",
+			"slug": "storefront-products",
+			"modelType": "Storefront — Products",
+			"isPublished": true,
+			"attributes": {
+				"Listing title": "All Products",
+				"Listing description": "Browse our full catalog."
+			}
+		},
+		{
+			"title": "Storefront Homepage",
+			"slug": "storefront-homepage",
+			"modelType": "Storefront — Homepage",
+			"isPublished": true,
+			"attributes": {
+				"Hero eyebrow": "",
+				"Hero heading": "Discover our collection",
+				"Hero subheading": "Discover our collection.",
+				"Hero CTA label": "Shop all",
+				"Featured heading": "Featured products",
+				"Featured collection": "featured-products",
+				"Featured limit": 8,
+				"Categories heading": "Shop by category",
+				"Categories eyebrow": "",
+				"Brand story heading": "Our story",
+				"Brand story paragraph 1": "Tell shoppers who you are and what you stand for.",
+				"Brand story paragraph 2": "Edit this copy in Dashboard → Models → Storefront — Homepage.",
+				"Values heading": "Why shop with us",
+				"Values columns desktop": 3,
+				"Values column 1 title": "Quality",
+				"Values column 1 text": "Share what makes your products worth choosing.",
+				"Values column 2 title": "Shipping",
+				"Values column 2 text": "Describe how and when orders arrive.",
+				"Values column 3 title": "Returns",
+				"Values column 3 text": "Easy returns within {returnsWindowDays} days.",
+				"Editorial heading": "From the shop",
+				"Editorial paragraph 1": "Highlight a collection, seasonal story, or campaign — then edit this block in Models.",
+				"Editorial image position": "right",
+				"Editorial CTA label": "Explore collections",
+				"Photo credits": "[]"
+			}
+		},
+		{
+			"title": "Storefront Cart",
+			"slug": "storefront-cart",
+			"modelType": "Storefront — Cart",
+			"isPublished": true,
+			"attributes": {
+				"Empty title": "Your bag is empty",
+				"Empty body": "Looks like you haven't added anything to your bag yet.",
+				"Empty CTA label": "Start Shopping",
+				"Trust free shipping prefix": "Free delivery over",
+				"Trust returns label": "{returnsWindowDays}-day returns",
+				"Drawer title": "Your Bag",
+				"Drawer add for free shipping": "Add {amount} more for free shipping",
+				"Drawer free shipping qualified": "You qualify for free shipping!"
+			}
+		},
+		{
+			"title": "Storefront Checkout",
+			"slug": "storefront-checkout",
+			"modelType": "Storefront — Checkout",
+			"isPublished": true,
+			"attributes": {
+				"Empty cart title": "Your cart is empty",
+				"Empty cart body": "Looks like you haven't added anything to your cart yet.",
+				"Empty cart start label": "Start Shopping",
+				"Empty cart go back label": "Go back",
+				"Empty session title": "Your cart is empty",
+				"Empty session message": "Add items from the store, then return here to complete your purchase.",
+				"Marketing opt-in label": "Email me with news and offers",
+				"Trust secure checkout": "Secure checkout",
+				"Trust Stripe processor": "Payments processed by Stripe"
+			}
+		}
+	],
+	"contentHash": "bb0b30f65eabcc6a"
+}
