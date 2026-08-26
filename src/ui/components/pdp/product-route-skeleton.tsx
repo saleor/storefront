@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { PDP_GALLERY_LAYOUT, PDP_LAYOUT_CLASSES } from "./gallery-layout";
 import { GallerySkeleton } from "./variant-gallery-dynamic";
-import { VariantSectionSkeleton } from "./variant-section-dynamic";
+import { VariantSectionSkeleton } from "./variant-section-fallback";
 
 interface ProductRouteSkeletonProps {
 	/**
