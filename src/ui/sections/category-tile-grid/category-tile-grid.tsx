@@ -1,8 +1,8 @@
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
-import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PLP_IMAGE_SIZES } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import { NavHrefLink } from "@/ui/atoms/nav-href-link";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { Section, type SectionTone, type SectionWidth } from "@/ui/sections/section";
 import { SectionHeader, type SectionHeaderCta } from "@/ui/sections/section-header";
 
@@ -10,6 +10,8 @@ export interface CategoryTile {
 	title: string;
 	href: string;
 	image?: string | null;
+	/** Saleor rung set for `image`. Absent for sources with a single rung, which fall back to `next/image`. */
+	imageSrcSet?: string;
 	imageAlt?: string;
 	/** Small overline above the title (e.g. item count, category group). */
 	subtitle?: string;
@@ -112,12 +114,11 @@ export function CategoryTileGrid({
 									)}
 								>
 									{tile.image ? (
-										<Image
+										<SaleorImage
 											src={tile.image}
+											srcSet={tile.imageSrcSet}
 											alt={tile.imageAlt || tile.title}
-											fill
 											sizes={PLP_IMAGE_SIZES}
-											quality={PRODUCT_IMAGE_QUALITY}
 											className="object-contain p-8 transition-transform duration-slow ease-standard motion-reduce:transition-none md:group-hover:scale-105"
 										/>
 									) : null}
@@ -144,12 +145,11 @@ export function CategoryTileGrid({
 								)}
 							>
 								{tile.image ? (
-									<Image
+									<SaleorImage
 										src={tile.image}
+										srcSet={tile.imageSrcSet}
 										alt={tile.imageAlt || tile.title}
-										fill
 										sizes={PLP_IMAGE_SIZES}
-										quality={PRODUCT_IMAGE_QUALITY}
 										className="object-cover transition-transform duration-slow ease-standard motion-reduce:transition-none md:group-hover:scale-105"
 									/>
 								) : null}

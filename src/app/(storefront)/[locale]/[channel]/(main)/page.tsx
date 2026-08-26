@@ -6,6 +6,7 @@ import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency"
 import { buildPolicyLabelValues } from "@/lib/content";
 import { formatContentLabel } from "@/lib/content/format-label";
 import { getStorefrontContent } from "@/lib/content/server";
+import { buildSaleorSrcSet } from "@/lib/images";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { PaperSignEditorialPlaceholder } from "@/ui/components/shared/paper-sign";
 import { CategoryTileGrid, type CategoryTile } from "@/ui/sections/category-tile-grid/category-tile-grid";
@@ -26,9 +27,30 @@ export const metadata = {
 type FeaturedProduct = Awaited<ReturnType<typeof getFeaturedProducts>>[number];
 type HomeParams = Promise<{ locale: string; channel: string }>;
 
+/** Aliased rungs must stay in sync with CATALOG_CARD_RUNGS in src/lib/images.ts. */
+function productThumbnailSrcSet(product: FeaturedProduct) {
+	return buildSaleorSrcSet([
+		{ width: 256, url: product.thumbnail256?.url },
+		{ width: 512, url: product.thumbnail512?.url },
+		{ width: 1024, url: product.thumbnail?.url },
+	]);
+}
+
+function categoryBackgroundSrcSet(category: NonNullable<FeaturedProduct["category"]>) {
+	return buildSaleorSrcSet([
+		{ width: 256, url: category.backgroundImage256?.url },
+		{ width: 512, url: category.backgroundImage512?.url },
+		{ width: 1024, url: category.backgroundImage?.url },
+	]);
+}
+
 function pickImage(product: FeaturedProduct | undefined) {
 	if (!product?.thumbnail?.url) return null;
-	return { url: product.thumbnail.url, alt: product.thumbnail.alt || product.name || "" };
+	return {
+		url: product.thumbnail.url,
+		alt: product.thumbnail.alt || product.name || "",
+		srcSet: productThumbnailSrcSet(product),
+	};
 }
 
 /**
@@ -44,12 +66,14 @@ function buildCategoryTiles(products: readonly FeaturedProduct[], max = 3): Cate
 		if (!category?.slug || seen.has(category.slug)) continue;
 		seen.add(category.slug);
 		const categoryName = category.translation?.name || category.name;
-		const image = category.backgroundImage?.url ?? product.thumbnail?.url ?? null;
-		const imageAlt = category.backgroundImage?.alt || product.thumbnail?.alt || categoryName;
+		const background = category.backgroundImage;
+		const image = background?.url ?? product.thumbnail?.url ?? null;
+		const imageAlt = background?.alt || product.thumbnail?.alt || categoryName;
 		tiles.push({
 			title: categoryName,
 			href: `/categories/${pickTranslatedSlug(category)}`,
 			image,
+			imageSrcSet: background?.url ? categoryBackgroundSrcSet(category) : productThumbnailSrcSet(product),
 			imageAlt,
 		});
 		if (tiles.length >= max) break;
@@ -132,6 +156,7 @@ async function HomePageContent({ params }: { params: HomeParams }) {
 					heading={hero.heading}
 					subheading={hero.subheading}
 					image={heroImage?.url}
+					imageSrcSet={heroImage?.srcSet}
 					imageAlt={heroImage?.alt ?? ""}
 					primaryCta={{ label: hero.primaryCtaLabel, href: "/products" }}
 					placeholder={<PaperSignEditorialPlaceholder />}
@@ -162,6 +187,7 @@ async function HomePageContent({ params }: { params: HomeParams }) {
 				heading={editorial.heading}
 				paragraphs={editorial.paragraphs}
 				image={editorial.image ?? editorialFallbackImage?.url}
+				imageSrcSet={editorial.image ? undefined : editorialFallbackImage?.srcSet}
 				imageAlt={editorial.image ? editorial.imageAlt : (editorialFallbackImage?.alt ?? "")}
 				imageFit={editorial.image ? "cover" : "contain"}
 				imagePosition={editorial.imagePosition}

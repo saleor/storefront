@@ -46,9 +46,16 @@ fragment ProductListItem on Product {
 			slug
 		}
 		# Homepage category tiles — never full-bleed, so a smaller rung than the hero.
+		# Rung set for a Saleor-native srcset; keep in sync with CATALOG_CARD_RUNGS.
 		backgroundImage(size: 1024, format: WEBP) {
 			url
 			alt
+		}
+		backgroundImage256: backgroundImage(size: 256, format: WEBP) {
+			url
+		}
+		backgroundImage512: backgroundImage(size: 512, format: WEBP) {
+			url
 		}
 	}
 	# Rung set for a Saleor-native srcset — keep in sync with CATALOG_CARD_RUNGS in
