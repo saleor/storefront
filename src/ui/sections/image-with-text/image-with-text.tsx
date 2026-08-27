@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
-import { PLP_HERO_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { SPLIT_PANEL_IMAGE_SIZES } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import { NavHrefLink } from "@/ui/atoms/nav-href-link";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { WavePattern } from "@/ui/components/plp/wave-pattern";
 import { buttonClassName } from "@/ui/components/ui/button";
 import type { SectionTone } from "@/ui/sections/section";
@@ -22,6 +22,8 @@ export interface ImageWithTextProps {
 	paragraphs: readonly string[];
 	eyebrow?: string;
 	image?: string | null;
+	/** Saleor rung set for `image`. Absent for CMS uploads, which fall back to `next/image`. */
+	imageSrcSet?: string;
 	imageAlt?: string;
 	imagePosition?: ImageWithTextPosition;
 	/** `contain` (on a soft panel) suits studio packshots; `cover` suits lifestyle photos. */
@@ -53,6 +55,7 @@ export function ImageWithText({
 	paragraphs,
 	eyebrow,
 	image,
+	imageSrcSet,
 	imageAlt = "",
 	imagePosition = "left",
 	imageFit = "cover",
@@ -78,13 +81,12 @@ export function ImageWithText({
 					)}
 				>
 					{hasImage && image ? (
-						<Image
+						<SaleorImage
 							src={image}
+							srcSet={imageSrcSet}
 							alt={imageAlt}
-							fill
 							className={cn(isContain ? "object-contain p-10 sm:p-14 lg:p-16" : "object-cover")}
-							sizes={PLP_HERO_IMAGE_SIZES}
-							quality={PRODUCT_IMAGE_QUALITY}
+							sizes={SPLIT_PANEL_IMAGE_SIZES}
 						/>
 					) : (
 						(placeholder ?? <WavePattern className="h-full w-full text-secondary" />)

@@ -105,5 +105,18 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ["/((?!_next/static|_next/image).*)"],
+	/**
+	 * Vercel bills an Edge Middleware invocation for every matched request, including the
+	 * ones this function immediately no-ops on. Excluding them here means they are never
+	 * invoked at all: API routes, the checkout surface, all `_next` internals, and any
+	 * path ending in a file extension (public/ assets, fonts, icons — this also covers
+	 * favicon.ico, robots.txt and sitemap.xml).
+	 *
+	 * Prefixes are anchored with `/` or `$` so they exclude `/api/…` without also
+	 * excluding a channel or locale slug that merely starts with those letters.
+	 *
+	 * The equivalent guards at the top of `middleware()` stay as a backstop for runtimes
+	 * that apply the matcher differently (self-hosted, `next start`).
+	 */
+	matcher: ["/((?!api/|api$|checkout/|checkout$|_next/|.*\\.[\\w]+$).*)"],
 };

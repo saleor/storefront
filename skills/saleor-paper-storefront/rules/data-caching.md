@@ -22,7 +22,9 @@ This rule holds **Paper's caching decisions** — what we cache, the contracts t
 
 | Surface                                | Data source                                                         | Freshness                              |
 | -------------------------------------- | ------------------------------------------------------------------- | -------------------------------------- |
-| PDP / category / collection / homepage | `getProductData()`, `getCategoryData()`, `getFeaturedProducts()`, … | Cached (~5 min)                        |
+| PDP / category / collection / homepage | `getProductData()`, `getCategoryData()`, `getFeaturedProducts()`, … | Webhook-invalidated (1 hr backstop)    |
+| Listing grids (unfiltered first page)  | `getProductListingPage()` and siblings                              | Webhook-invalidated (1 hr backstop)    |
+| Filtered / paginated listing views     | inline `executePublicGraphQL`                                       | **Always fresh** (uncached long tail)  |
 | Navigation / footer menus              | `getNavbarMenuItems()` / `getFooterMenuItems()`                     | Cached (~1 hr)                         |
 | Cart drawer, checkout, add-to-cart     | `Checkout.find()`, server actions, Saleor mutations                 | **Always fresh** (`cache: "no-cache"`) |
 
@@ -61,13 +63,20 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 | `collection:{slug}`                                 | `collections`        | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                |
 | `page:{slug}`                                       | `pages`              | `getPageData()` (CMS)                                     | Page updated                      |
 | `products` / `categories` / `collections` / `pages` | same (sharedTag)     | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions |
+| `product-listing:{channel}`                         | `productListing`     | `getProductListingPage()` / category / collection grids   | Product event that changes a card |
 | `navigation:{channel}`                              | `navigation`         | `getNavbarMenuItems()`                                    | Navbar changed                    |
 | `footer-menu:{channel}`                             | `footerMenu`         | `getFooterMenuItems()`                                    | Footer changed                    |
 | `storefront-content:{channel}:{locale}`             | `storefront-content` | `getStorefrontContent()`                                  | `storefront-*` Page updated       |
 | `channels`                                          | `channels`           | `getCachedChannelsList()`                                 | Channel list changed              |
 
 Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
-Named `cacheLife` tiers (configured in `next.config.js`): `catalog` ~5 min (products/categories/collections/CMS pages), `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
+Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/categories/collections/listings/CMS pages) is `stale 5 min / revalidate 1 hr / expire 1 day`, `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
+
+`revalidate` is a **backstop**, not the freshness mechanism — webhooks are. Regeneration is request-triggered: a cold entry costs nothing. A short backstop on a _hot_ entry can approach one regeneration per window (1,440/day at 60s); only shorten it if a deployment genuinely cannot run webhooks.
+
+### Listing grids
+
+Listing grids are cached only for the **unfiltered first page** (any sort order) — see `isCacheableListingView()` in `src/lib/catalog/get-product-listing.ts`. Filtered and paginated views fall through to a live fetch on purpose: every filter permutation would be a cache entry that is written once and rarely read again, trading invocation cost for cache-write cost. Entry count stays bounded by `sorts × locales × channels`, independent of catalog size.
 
 `GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically. Manifest **v6+** includes an optional `identity` block (`saleorApiUrl`, `environment`, deploy metadata) for the Paper handshake. `saleorApiUrl` comes from `NEXT_PUBLIC_SALEOR_API_URL`. `environment` defaults from `VERCEL_ENV` / `NODE_ENV`; set `PAPER_STOREFRONT_ENVIRONMENT` only when those lie (true staging, or non-Vercel hosts that aren't prod).
 
@@ -126,7 +135,7 @@ applyCacheProfile(CACHE_PROFILES.products, slug); // single tag product:hoodie c
 ```
 
 - Cached fetches pass `graphqlLanguageCodeVariables(localeSlug)`; map URL slugs to Saleor **base** codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge translations with `withTranslatedProductFields()` (`src/lib/saleor-translations.ts`) after the fetch.
-- **Invalidation fan-out:** catalog tags stay slug-scoped; `buildPathsForAllLocales()` revalidates every configured locale path on a generic `PRODUCT_UPDATED`.
+- **Invalidation fan-out:** catalog tags stay slug-scoped and locale-agnostic — one `revalidateTag("product:hoodie")` clears every locale entry, so no path fan-out is needed.
 - Adding locales adds ~N cache entries (one per locale × page), not per-request work. Each locale warms independently after deploy.
 
 ---
@@ -136,16 +145,26 @@ applyCacheProfile(CACHE_PROFILES.products, slug); // single tag product:hoodie c
 **Production path: [saleor-paper-app](https://github.com/saleor/saleor-paper-app).** On install it registers managed webhooks and proxies them to the storefront:
 
 ```
-Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag + revalidatePath
+Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ revalidatePath for CMS pages)
 ```
 
-| Event family                              | Storefront effect                                                                      |
-| ----------------------------------------- | -------------------------------------------------------------------------------------- |
-| `PRODUCT_*`, `CATEGORY_*`, `COLLECTION_*` | Catalog tags + paths (all locales via `buildPathsForAllLocales`)                       |
-| `PAGE_*`                                  | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
-| `MENU_*`, `MENU_ITEM_*`                   | `navigation:{channel}`, `footer-menu:{channel}`                                        |
+**The `saleor-event` header drives the scope.** `src/lib/webhook-events.ts` maps each event Paper acts on to an entity and an `affectsListing` flag; anything absent from that map is logged and skipped. Opting a new event into invalidation means adding it there. Never reintroduce a catch-all fallback — an unmapped event (orders, checkouts, customers) firing a catalog purge is a self-inflicted cost and cache-hit-rate problem.
 
-`revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`); paths use `getStorefrontChannelSlugs()` × `buildPathsForAllLocales()`. **Don't** point Saleor webhooks directly at `/api/revalidate` while the app is installed (duplicate deliveries, no logging). Direct webhooks remain valid for self-hosted setups without the app (set `SALEOR_WEBHOOK_SECRET`).
+saleor-paper-app forwards that header on every entity POST. A POST without it (manual curl, older app) is treated as listing-affecting. After upgrading the app, click **Sync Webhooks** so Saleor delivers variant CRUD, stock, and metadata — stock events must arrive _with_ `saleor-event` or they bust the listing tag. Do not also subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for media edits.
+
+| Event family                                                        | Storefront effect                                                                      |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `product-listing:{channel}`                                         |
+| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never the listing tag                                          |
+| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + `product-listing:{channel}`                  |
+| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
+| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                        |
+| `CHANNEL_*`                                                         | `channels`                                                                             |
+| Everything else                                                     | Logged and skipped                                                                     |
+
+Catalog entries are **tag-addressable** — `applyCacheProfile` attaches the entity tag inside every `"use cache"` function, so `revalidateTag` alone busts every locale. Per-locale `revalidatePath` fan-out is therefore redundant for catalog data and is only used for CMS pages. `revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`).
+
+**Don't** point Saleor webhooks directly at `/api/revalidate` while the app is installed (duplicate deliveries, doubled invalidation cost). Each delivery logs its `saleor-event` and `saleor-api-url`, so duplicates show up as two identical log lines per change — check there first if invalidation looks twice as busy as expected. Direct webhooks remain valid for self-hosted setups without the app (set `SALEOR_WEBHOOK_SECRET`).
 
 **Manual / emergency** (Bearer header, timing-safe; `?secret=` is deprecated):
 
@@ -159,7 +178,7 @@ curl -H "Authorization: Bearer <REVALIDATE_SECRET>" \
   "https://store.com/api/revalidate?all=1"
 ```
 
-Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
+Without webhooks, TTL takes over (catalog 1 hr, menus 1 hr).
 
 ### Debugging stale content
 
@@ -167,6 +186,27 @@ Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
 2. Tag exact? (`product:blue-hoodie` — slug must match).
 3. Force: `curl … "?tag=product:my-product"`.
 4. Translation still wrong language on `/pl/…`? Confirm a `PL` base translation exists; bust the tag; restart dev if you changed `src/config/locale.ts`.
+
+---
+
+## Cost controls
+
+Paper runs on Vercel, where the meters that matter are **function invocations + active CPU**, **edge middleware invocations**, **image transformations**, and **cache writes/bandwidth**. Caching decisions are cost decisions; these are the knobs, and each trades money against freshness.
+
+| Knob                                                   | Default        | Raises cost when…                     | Trade-off when tightened                         |
+| ------------------------------------------------------ | -------------- | ------------------------------------- | ------------------------------------------------ |
+| `catalog.revalidate` (`cache-life-profiles.data.mjs`)  | 1 hr           | Lowered — request-triggered backstop  | Staler catalog if webhooks are not configured    |
+| `isCacheableListingView()` allowlist                   | first page     | Widened — one entry per permutation   | Filtered views stay uncached (a live fetch each) |
+| `NEXT_IMAGE_MIN_CACHE_TTL`                             | 31 days        | Lowered — re-optimizes the same image | In-place image replacements are served stale     |
+| `images.deviceSizes` / `imageSizes` (`next.config.js`) | trimmed ladder | Widened — a transformation per width  | No >1920px variants for 4K displays              |
+| `IMAGE_ALLOWED_HOSTS`                                  | unset          | Widened — third parties can bill you  | Non-Saleor image sources must be listed          |
+| `SALEOR_MIN_REQUEST_DELAY_MS`                          | 0 at runtime   | Raised — billed idle CPU per request  | Less protection against Saleor API rate limits   |
+
+Rules of thumb:
+
+- **A cache entry is only worth writing if it will be read again before it expires.** That is the whole argument for the listing allowlist, and the test to apply before caching anything new.
+- **Prefer webhook invalidation over short TTLs.** A TTL charges you continuously for freshness you need occasionally.
+- **Narrow the invalidation scope, not the cache.** Busting less on each event beats caching less.
 
 ---
 
@@ -178,6 +218,10 @@ Without webhooks, TTL takes over (catalog ~5 min, menus ~1 hr).
 ❌ Awaiting `searchParams` in a shell — collapses the route into a dynamic hole (move to an island)
 ❌ Raw `cacheLife("minutes")` / hand-rolled `cacheTag` — use `applyCacheProfile(CACHE_PROFILES.*)`
 ❌ Fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness
+❌ A catch-all `default:` in the webhook switch — unmapped events must log and skip, not purge
+❌ Busting listing tags on stock/metadata events — inventory sync would keep the grids permanently cold
+❌ Caching every filter/cursor permutation — unbounded cache writes for entries nobody re-reads
+❌ Shortening the `catalog` backstop to "make things fresher" — configure webhooks instead
 ❌ Wrapping only `<main>` in Suspense to silence a PPR error — fix the segment that owns the work
 ❌ Omitting `localeSlug` from cached fetches — all locales share one entry, wrong language
 ❌ Regional Saleor codes (`PL_PL`) in `graphqlLanguageCode` — Dashboard uses base codes (`PL`)

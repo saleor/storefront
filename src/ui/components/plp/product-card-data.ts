@@ -14,6 +14,8 @@ export interface ProductCardData {
 	/** BCP 47 locale for price formatting (from the route locale at build/render time). */
 	localeBcp47?: string;
 	image: string;
+	/** Saleor rung `srcset`; absent means the card falls back to `next/image`. */
+	imageSrcSet?: string;
 	imageAlt?: string;
 	hoverImage?: string | null;
 	href: string;

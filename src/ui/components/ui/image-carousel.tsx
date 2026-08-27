@@ -11,6 +11,7 @@ import {
 	GalleryImageZoomTrigger,
 } from "@/ui/components/shared/gallery-image-zoom-trigger";
 import { PDP_MAIN_IMAGE_SIZES, PDP_THUMBNAIL_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { cn } from "@/lib/utils";
 import {
 	Carousel,
@@ -26,6 +27,8 @@ import {
 export interface ImageCarouselImage {
 	url: string;
 	alt?: string | null;
+	/** Saleor rung `srcset`; absent falls back to `next/image`. */
+	srcSet?: string;
 }
 
 interface ImageCarouselProps {
@@ -133,27 +136,23 @@ export function ImageCarousel({
 										onClick={() => onImageClick(index)}
 										aria-label={image.alt || `${productName} - View ${index + 1}`}
 									>
-										<Image
+										<SaleorImage
 											src={image.url}
+											srcSet={image.srcSet}
 											alt={image.alt || `${productName} - View ${index + 1}`}
-											fill
 											className="object-cover"
 											sizes={PDP_MAIN_IMAGE_SIZES}
-											quality={PRODUCT_IMAGE_QUALITY}
-											priority={false}
 											loading={index === 0 ? "eager" : "lazy"}
 										/>
 									</GalleryImageZoomTrigger>
 								) : (
 									<div className="relative h-full min-h-0 w-full overflow-hidden">
-										<Image
+										<SaleorImage
 											src={image.url}
+											srcSet={image.srcSet}
 											alt={image.alt || `${productName} - View ${index + 1}`}
-											fill
 											className="object-cover"
 											sizes={PDP_MAIN_IMAGE_SIZES}
-											quality={PRODUCT_IMAGE_QUALITY}
-											priority={false}
 											loading={index === 0 ? "eager" : "lazy"}
 										/>
 									</div>
@@ -198,6 +197,9 @@ export function ImageCarousel({
 							aria-label={`${productName} - Thumbnail ${index + 1}`}
 							aria-current={selectedIndex === index ? "true" : undefined}
 						>
+							{/* Stays on next/image: the smallest gallery rung is 512, and letting the
+							    browser pick that for an 80px slot ships ~6x the bytes. Two cheap
+							    transformations beat the oversized CDN fetch here. */}
 							<Image
 								src={image.url}
 								alt=""

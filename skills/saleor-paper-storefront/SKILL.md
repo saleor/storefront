@@ -104,6 +104,7 @@ Reference these guidelines when:
 
 - `references/code-conventions.md` - kebab-case files, PascalCase exports, `@/` imports
 - `ui-components` - Design tokens, shadcn/ui primitives, component locations
+- `ui-images` - Saleor thumbnails vs Vercel's optimizer, `sizes` discipline, image cost budget
 - `ui-channels` - Channel allowlist, fulfillment triangle, multi-currency, channel selector
 - `ui-locale-routing` - `/{locale}/{channel}/` routing, middleware redirects, path helpers
 - `ui-i18n` - next-intl namespaces, server/client patterns, ADR 0002 boundary

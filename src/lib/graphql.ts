@@ -141,6 +141,9 @@ class RequestQueue {
 		this.activeRequests++;
 
 		try {
+			if (this.minDelayMs <= 0) {
+				return await fn();
+			}
 			const [result] = await Promise.all([fn(), sleep(this.minDelayMs)]);
 			return result;
 		} finally {
@@ -179,9 +182,17 @@ function formatVariablesForLog(variables: Record<string, unknown>): string {
 	return parts.length > 0 ? `(${parts.join(", ")})` : "";
 }
 
+/**
+ * The inter-request delay exists to survive `next build`, where `generateStaticParams`
+ * fans out enough parallel requests to trip Saleor's rate limiter. At runtime the
+ * concurrency cap already bounds pressure, so the delay only adds latency to every
+ * request — and on Fluid Compute you pay for that wall time. Default it off at runtime.
+ */
+const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+
 const requestQueue = new RequestQueue(
 	parseInt(process.env.SALEOR_MAX_CONCURRENT_REQUESTS || "3", 10),
-	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || "200", 10),
+	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || (isBuildPhase ? "200" : "0"), 10),
 );
 
 function getRetryConfig() {

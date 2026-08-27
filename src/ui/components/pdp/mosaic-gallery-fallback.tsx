@@ -1,9 +1,10 @@
-import Image from "next/image";
-import { PDP_MOSAIC_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PDP_MOSAIC_IMAGE_SIZES } from "@/lib/images";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { GalleryImageFrame } from "@/ui/components/shared/gallery-image-frame";
 
 interface MosaicGalleryFallbackProps {
 	src: string;
+	srcSet?: string;
 	alt: string;
 	imageCount: number;
 	/** Omit placeholder tiles when image count may differ after searchParams resolve. */
@@ -17,6 +18,7 @@ interface MosaicGalleryFallbackProps {
  */
 export function MosaicGalleryFallback({
 	src,
+	srcSet,
 	alt,
 	imageCount,
 	showChrome = imageCount > 1,
@@ -26,13 +28,12 @@ export function MosaicGalleryFallback({
 	return (
 		<div className="grid grid-cols-2 gap-2 sm:gap-3">
 			<GalleryImageFrame className="aspect-[4/5] w-full">
-				<Image
+				<SaleorImage
 					src={src}
+					srcSet={srcSet}
 					alt={alt}
-					fill
 					className="object-cover"
 					sizes={PDP_MOSAIC_IMAGE_SIZES}
-					quality={PRODUCT_IMAGE_QUALITY}
 					priority
 				/>
 			</GalleryImageFrame>

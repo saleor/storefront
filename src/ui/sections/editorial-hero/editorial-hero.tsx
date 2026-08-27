@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
+import { SPLIT_PANEL_IMAGE_SIZES } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import { NavHrefLink } from "@/ui/atoms/nav-href-link";
+import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { buttonClassName } from "@/ui/components/ui/button";
 
 export interface EditorialHeroCta {
@@ -19,6 +20,8 @@ export interface EditorialHeroProps {
 	secondaryCta?: EditorialHeroCta;
 	/** Large product/editorial image shown on the soft panel beside the copy. */
 	image?: string | null;
+	/** Saleor rung set for `image`. Absent for CMS uploads, which fall back to `next/image`. */
+	imageSrcSet?: string;
 	imageAlt?: string;
 	/** Rendered on the image panel when no image is provided. */
 	placeholder?: ReactNode;
@@ -55,6 +58,7 @@ export function EditorialHero({
 	primaryCta,
 	secondaryCta,
 	image,
+	imageSrcSet,
 	imageAlt = "",
 	placeholder,
 	id = "homepage-hero-heading",
@@ -102,12 +106,12 @@ export function EditorialHero({
 
 				<div className="relative order-1 min-h-[52vh] overflow-hidden bg-secondary lg:order-2 lg:min-h-[80vh]">
 					{image ? (
-						<Image
+						<SaleorImage
 							src={image}
+							srcSet={imageSrcSet}
 							alt={imageAlt}
-							fill
 							priority
-							sizes="(max-width: 1024px) 100vw, 50vw"
+							sizes={SPLIT_PANEL_IMAGE_SIZES}
 							className="object-contain p-10 sm:p-16 lg:p-20"
 						/>
 					) : (

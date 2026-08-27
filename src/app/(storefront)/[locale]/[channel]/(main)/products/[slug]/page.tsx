@@ -32,7 +32,8 @@ import {
 	VariantGalleryDynamic,
 	ProductRouteSkeleton,
 	VariantSectionDynamic,
-	VariantSectionSkeleton,
+	VariantSectionFallback,
+	variantSectionFallbackProps,
 	VariantSectionError,
 	getDefaultGalleryImages,
 	PDP_GALLERY_LAYOUT,
@@ -128,9 +129,10 @@ async function ProductShell({
 		getStorefrontContent(params.channel, params.locale),
 		resolveChannelCurrency(params.channel),
 	]);
+	const intlLocale = resolveLocaleFromSlug(params.locale).bcp47;
 	const policyLabels = buildPolicyLabelValues(content.policies, {
 		currency,
-		locale: resolveLocaleFromSlug(params.locale).bcp47,
+		locale: intlLocale,
 	});
 
 	if (!product) {
@@ -191,6 +193,18 @@ async function ProductShell({
 		variantCount: product.productVariants?.totalCount ?? 0,
 	});
 
+	const variantSectionFallback = (
+		<VariantSectionFallback
+			{...variantSectionFallbackProps({
+				product,
+				content,
+				currency,
+				locale: intlLocale,
+				selectOptionsLabel: tPdp("selectOptions"),
+			})}
+		/>
+	);
+
 	const lcpImage = defaultImages[0];
 	// Reserve mobile dots / desktop thumbs in fallback when product has multiple images
 	const showGalleryChrome = defaultImages.length > 1;
@@ -200,6 +214,7 @@ async function ProductShell({
 	const galleryFallback = lcpImage ? (
 		<GalleryFallback
 			src={lcpImage.url}
+			srcSet={lcpImage.srcSet}
 			alt={lcpImage.alt ?? product.name}
 			imageCount={defaultImages.length}
 			showChrome={showGalleryChrome}
@@ -255,7 +270,7 @@ async function ProductShell({
 						<h1 className="order-2 text-balance text-h1">{product.name}</h1>
 
 						<ErrorBoundary FallbackComponent={VariantSectionError}>
-							<Suspense fallback={<VariantSectionSkeleton />}>
+							<Suspense fallback={variantSectionFallback}>
 								<VariantSectionDynamic
 									product={product}
 									channel={params.channel}

@@ -48,6 +48,8 @@ export interface GalleryRendererProps {
 
 export interface GalleryFallbackProps {
 	src: string;
+	/** Saleor rung `srcset` for the shell's LCP image; absent falls back to `next/image`. */
+	srcSet?: string;
 	alt: string;
 	imageCount: number;
 	/** Layout-specific extra chrome or placeholder tiles when the product has multiple images. */

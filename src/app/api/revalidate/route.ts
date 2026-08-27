@@ -5,7 +5,6 @@ import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
 import {
 	CACHE_PROFILES,
 	buildTag,
-	buildPathsForAllLocales,
 	extractMenuSlugFromWebhookPayload,
 	extractPageSlugFromWebhookPayload,
 	planFullPurgeTagEntries,
@@ -16,9 +15,8 @@ import {
 	resolveRevalidateProfileForTag,
 	type CacheProfile,
 } from "@/lib/cache-manifest";
-import { getStorefrontLocaleSlugs } from "@/config/locale";
-import { buildStorefrontPath } from "@/lib/storefront-path";
 import { revalidateTags } from "@/lib/revalidate-tags";
+import { deliveryFingerprint, resolveWebhookEventScope, sanitizeLogValue } from "@/lib/webhook-events";
 import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
 /**
@@ -67,8 +65,9 @@ function parseWebhookPayload(payload: unknown): {
 		};
 	}
 
-	if (data.productVariant && typeof data.productVariant === "object") {
-		const variant = data.productVariant as Record<string, unknown>;
+	const variantNode = data.productVariant ?? data.variant;
+	if (variantNode && typeof variantNode === "object") {
+		const variant = variantNode as Record<string, unknown>;
 		const product = variant.product as Record<string, unknown> | undefined;
 		if (product) {
 			const category = product.category as Record<string, unknown> | undefined;
@@ -110,27 +109,18 @@ function parseWebhookPayload(payload: unknown): {
 // Revalidation helper — keeps the switch cases DRY
 // ============================================================================
 
-function revalidateProfile(
-	profile: CacheProfile,
-	channel: string,
-	slug: string,
-	tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }>,
-	paths: string[],
-) {
+type TagEntry = { tag: string; profile: CacheProfile["cacheProfile"] };
+
+/**
+ * Queue an entity tag for revalidation.
+ *
+ * Catalog entries are tag-addressable: every `"use cache"` function in src/lib/catalog/
+ * carries the entity tag via `applyCacheProfile`, so `revalidateTag` alone busts every
+ * locale variant. The per-locale `revalidatePath` fan-out this used to also do was
+ * redundant with that — paths are now only used for CMS pages.
+ */
+function queueEntityTag(profile: CacheProfile, channel: string, slug: string, tagEntries: TagEntry[]) {
 	tagEntries.push({ tag: buildTag(profile, { slug, channel }), profile: profile.cacheProfile });
-
-	for (const path of buildPathsForAllLocales(profile, { channel, slug })) {
-		revalidatePath(path);
-		paths.push(path);
-	}
-}
-
-function revalidateProductListing(channel: string, paths: string[]) {
-	for (const locale of getStorefrontLocaleSlugs()) {
-		const path = buildStorefrontPath(locale, channel, "/products");
-		revalidatePath(path);
-		paths.push(path);
-	}
 }
 
 // ============================================================================
@@ -149,6 +139,23 @@ export async function POST(request: NextRequest) {
 		}
 	}
 
+	// Saleor sends the event type on every delivery. One line per delivery makes duplicate
+	// app + direct webhook subscriptions visible: same fingerprint twice = double billing.
+	const eventHeader = request.headers.get("saleor-event");
+	const delivery = {
+		event: sanitizeLogValue(eventHeader),
+		source: sanitizeLogValue(request.headers.get("saleor-api-url")),
+		fingerprint: deliveryFingerprint(rawBody),
+	};
+	console.log("[Revalidate] Delivery:", delivery);
+
+	const eventScope = resolveWebhookEventScope(eventHeader);
+
+	if (eventHeader && !eventScope) {
+		console.log("[Revalidate] Ignoring event Paper does not act on:", delivery);
+		return Response.json({ paths: [], tags: [], success: true, skipped: true, reason: "unhandled_event" });
+	}
+
 	try {
 		const payload = JSON.parse(rawBody);
 
@@ -156,10 +163,25 @@ export async function POST(request: NextRequest) {
 			console.log("[Revalidate] Raw payload:", JSON.stringify(payload, null, 2));
 		}
 
-		const { type, slug, channel, categorySlug } = parseWebhookPayload(payload);
+		const parsed = parseWebhookPayload(payload);
+		const { slug, channel } = parsed;
+		// The header is authoritative when present; payload shape is the fallback for
+		// manual POSTs and self-hosted setups that post without Saleor's headers.
+		const type = eventScope?.entity ?? parsed.type;
+
+		if (type === "unknown") {
+			console.log("[Revalidate] Skipping unrecognised payload:", delivery);
+			return Response.json({
+				paths: [],
+				tags: [],
+				success: true,
+				skipped: true,
+				reason: "unrecognised_payload",
+			});
+		}
 
 		const revalidatedPaths: string[] = [];
-		const tagEntries: Array<{ tag: string; profile: CacheProfile["cacheProfile"] }> = [];
+		const tagEntries: TagEntry[] = [];
 
 		if (type === "menu") {
 			const plan = planMenuRevalidation(slug, await getStorefrontChannelSlugs());
@@ -241,6 +263,15 @@ export async function POST(request: NextRequest) {
 			return Response.json({ paths: revalidatedPaths, tags: revalidatedTags, success: true });
 		}
 
+		if (type === "channel") {
+			const profile = CACHE_PROFILES.channels;
+			const revalidatedTags = await revalidateTags([
+				{ tag: buildTag(profile), profile: profile.cacheProfile },
+			]);
+			console.log("[Revalidate] Success:", { type, tags: revalidatedTags });
+			return Response.json({ paths: [], tags: revalidatedTags, success: true });
+		}
+
 		const targetChannel = channel || DefaultChannelSlug;
 		if (!targetChannel) {
 			return Response.json(
@@ -249,38 +280,43 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
+		// Listing grids share one channel-scoped tag. Only events that can change a card
+		// bust it — stock and metadata churn would otherwise keep the grids permanently cold.
+		// No header (manual POST) is treated as listing-affecting, matching prior behaviour.
+		if (eventScope?.affectsListing ?? true) {
+			tagEntries.push({
+				tag: buildTag(CACHE_PROFILES.productListing, { channel: targetChannel }),
+				profile: CACHE_PROFILES.productListing.cacheProfile,
+			});
+		}
+
 		switch (type) {
 			case "product":
 				if (slug) {
-					revalidateProfile(CACHE_PROFILES.products, targetChannel, slug, tagEntries, revalidatedPaths);
+					queueEntityTag(CACHE_PROFILES.products, targetChannel, slug, tagEntries);
 				}
-				revalidateProductListing(targetChannel, revalidatedPaths);
-
-				if (categorySlug) {
-					revalidateProfile(
-						CACHE_PROFILES.categories,
-						targetChannel,
-						categorySlug,
-						tagEntries,
-						revalidatedPaths,
-					);
-				}
+				// A product event does not change category *metadata*; the category page's own
+				// cached hero is busted by category_* events. Nothing to do for categorySlug here.
 				break;
 
 			case "category":
 				if (slug) {
-					revalidateProfile(CACHE_PROFILES.categories, targetChannel, slug, tagEntries, revalidatedPaths);
+					queueEntityTag(CACHE_PROFILES.categories, targetChannel, slug, tagEntries);
 				}
 				break;
 
 			case "collection":
 				if (slug) {
-					revalidateProfile(CACHE_PROFILES.collections, targetChannel, slug, tagEntries, revalidatedPaths);
+					queueEntityTag(CACHE_PROFILES.collections, targetChannel, slug, tagEntries);
 				}
 				break;
 
-			default:
-				revalidateProductListing(targetChannel, revalidatedPaths);
+			default: {
+				// Every entity is handled above; a new WebhookEntity must fail typecheck here
+				// rather than silently fall through to a broad purge.
+				const unhandled: never = type;
+				throw new Error(`Unhandled webhook entity: ${String(unhandled)}`);
+			}
 		}
 
 		const revalidatedTags = await revalidateTags(tagEntries);

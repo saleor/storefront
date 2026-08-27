@@ -19,7 +19,7 @@ Paper rules are **authoritative on architecture**: Server Components by default,
 - **Product:** `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`
 - **Checkout:** `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
 - **Design:** `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `design-from-image`, `design-verification`
-- **UI & channels:** `ui-components`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
+- **UI & channels:** `ui-components`, `ui-images`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
 - **SEO:** `seo-metadata`
 - **Dev:** `dev-local`, `dev-investigation`, `third-party-embeds`
 - **Fork upgrades:** `skills/saleor-paper-storefront/migrations/SKILL.md` (triggers: "upgrade Paper", "apply Paper migrations")

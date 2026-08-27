@@ -209,32 +209,3 @@ export async function VariantSectionDynamic({
 		</>
 	);
 }
-
-/**
- * Skeleton fallback for variant section.
- *
- * Uses delayed visibility (300ms) to prevent flash on fast loads.
- * Part of the static shell - shows while variant data streams in.
- */
-export function VariantSectionSkeleton() {
-	return (
-		<>
-			<div className="order-1 h-4 w-20 animate-pulse animate-skeleton-delayed rounded bg-muted opacity-0" />
-
-			<div className="order-3 mt-4 animate-pulse animate-skeleton-delayed space-y-6 opacity-0">
-				<div className="space-y-4">
-					<div className="h-4 w-16 rounded bg-muted" />
-					<div className="flex gap-2">
-						<div className="h-10 w-16 rounded bg-muted" />
-						<div className="h-10 w-16 rounded bg-muted" />
-						<div className="h-10 w-16 rounded bg-muted" />
-					</div>
-				</div>
-
-				<div className="h-8 w-24 rounded bg-muted" />
-
-				<div className="h-12 w-full rounded bg-muted" />
-			</div>
-		</>
-	);
-}

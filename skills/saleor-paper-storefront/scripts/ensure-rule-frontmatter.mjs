@@ -80,6 +80,8 @@ const DESCRIPTIONS = {
 		"Post-design verification gates (autofixer loop): hard gate lint:design-tokens + tsc + lint; advisory PPR/LCP/a11y review. Use after molding UI to confirm it is Paper-correct, fast, and accessible.",
 	"ui-components.md":
 		"Creating/styling components with design tokens and shadcn/Radix primitives, extending cva matrices, the build-time variant registry. Use when building or restyling a UI component.",
+	"ui-images.md":
+		"Images in Paper — Saleor already produces optimized thumbnails, so Vercel's optimizer must not redo that work. Covers the thumbnail ladder, remotePatterns allowlisting, minimumCacheTTL, deviceSizes/imageSizes budgets, and mandatory `sizes` on every fill image. Use when adding an <Image>, tuning image cost, debugging oversized requests, or touching next.config.js images config.",
 	"ui-channels.md":
 		"Channels & multi-currency: URL channel segment, STOREFRONT_CHANNELS allowlist, the purchasability/fulfillment model, channel selector. Use when configuring channels or debugging 'product not purchasable'.",
 	"ui-locale-routing.md":

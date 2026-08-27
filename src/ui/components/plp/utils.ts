@@ -9,6 +9,7 @@ import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller } from "@/lib/catalog/product-flags";
+import { buildSaleorSrcSet } from "@/lib/images";
 
 type ListVariantNode = NonNullable<
 	NonNullable<ProductListItemFragment["productVariants"]>["edges"][number]
@@ -115,6 +116,11 @@ export function toProductCardData(
 		discountPercent,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",
+		imageSrcSet: buildSaleorSrcSet([
+			{ width: 256, url: product.thumbnail256?.url },
+			{ width: 512, url: product.thumbnail512?.url },
+			{ width: 1024, url: product.thumbnail?.url },
+		]),
 		imageAlt: product.thumbnail?.alt ?? productName,
 		hoverImage: null,
 		localeBcp47: resolveLocaleFromSlug(locale).bcp47,
