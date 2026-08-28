@@ -47,6 +47,7 @@ even once a window can be re-derived ~180 times a month.
 [ ] 11. Stop prefetching every link
 [ ] 12. Check for duplicate webhook subscriptions (Saleor app + direct)
 [ ] 13. Audit every remaining next/image call site for Saleor-backed sources
+[ ] 14. Public-asset Cache-Control must include video (and any other /public media)
 ```
 
 ---
@@ -294,6 +295,28 @@ createHash("sha1").update(rawBody).digest("hex").slice(0, 12);
 
 Do not use this to _drop_ deliveries — functions are multi-instance, so dedup here would be
 unreliable in exactly the way that silently loses invalidations.
+
+## 14. Cache `/public` media in the browser, including video
+
+Next.js defaults unmatched responses to `Cache-Control: public, max-age=0, must-revalidate`
+so HTML always revalidates. The `headers()` rule that overrides that for `/public` files is
+an extension allowlist. If `mp4` / `webm` / `mov` are missing, a hero loop inherits
+**document** caching: the browser re-requests it on every visit. Vercel Fast Data Transfer
+is bytes from the edge to the client, so a 33 MB file billed once per session dominates
+the meter even when the CDN already has a HIT.
+
+Paper's allowlist lives in `src/lib/public-asset-cache.data.mjs` (wired from `next.config.js`).
+Add the extension there — do not patch the regex inline. After deploy:
+
+```bash
+curl -sI https://<host>/videos/hero.mp4
+```
+
+You want `max-age=2592000` and `video/*`, not `text/html` + `max-age=0`.
+
+This is a guardrail for leftovers in `/public`. Catalog and CMS media should still be served
+from Saleor's CDN (item 5), not copied into the Next app. Browser cache only helps repeat
+visits; first-visit FDT is the file size.
 
 ---
 

@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 import createNextIntlPlugin from "next-intl/plugin";
 import { paperCacheLifeProfiles } from "./src/lib/cache-life-profiles.data.mjs";
+import {
+	PUBLIC_ASSET_CACHE_CONTROL,
+	publicAssetCacheHeaderSource,
+} from "./src/lib/public-asset-cache.data.mjs";
 
 /** Hostnames for mobile/tunnel dev (ngrok, LAN). See ALLOWED_DEV_ORIGINS in .env.example */
 const allowedDevOrigins = process.env.ALLOWED_DEV_ORIGINS?.split(",")
@@ -134,14 +138,11 @@ const config = {
 					]
 				: []),
 			{
-				// Public folder assets - cache for 1 month (logos, favicons, etc.)
-				source: "/(.*)\\.(ico|png|jpg|jpeg|gif|svg|webp|woff|woff2|webmanifest)",
-				headers: [
-					{
-						key: "Cache-Control",
-						value: "public, max-age=2592000, stale-while-revalidate=31536000",
-					},
-				],
+				// /public leftovers (logos, fonts, same-origin video). Allowlist lives in
+				// public-asset-cache.data.mjs — a missed extension inherits document
+				// caching (max-age=0) and re-downloads on every visit (Fast Data Transfer).
+				source: publicAssetCacheHeaderSource(),
+				headers: [{ key: "Cache-Control", value: PUBLIC_ASSET_CACHE_CONTROL }],
 			},
 			{
 				// OG Image API — output is a pure function of the query string, and each render
