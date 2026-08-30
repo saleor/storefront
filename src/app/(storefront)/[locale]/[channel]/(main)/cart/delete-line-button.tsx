@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { bumpChromeVersion } from "@/lib/chrome-sync";
 import { ariaDisabledClassName } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -21,8 +22,11 @@ export const DeleteLineButton = ({ deleteLine }: Props) => {
 			)}
 			onClick={() => {
 				if (isPending) return;
-				startTransition(() => {
-					void deleteLine();
+				startTransition(async () => {
+					await deleteLine();
+					// This tab re-renders via `refresh()` inside the action;
+					// other tabs sync their cart chrome on next focus.
+					bumpChromeVersion();
 				});
 			}}
 			aria-disabled={isPending}

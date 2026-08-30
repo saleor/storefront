@@ -2,21 +2,28 @@
 
 import type { useRouter } from "next/navigation";
 
-import { revalidateStorefrontChromeAction } from "@/app/actions";
-import { markAuthSurfaceHardNav } from "@/lib/auth/auth-surface-nav";
 import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
+import { bumpChromeVersion } from "@/lib/chrome-sync";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 type Router = ReturnType<typeof useRouter>;
 
 export type SyncAuthSurfacesAfterSignInOptions = {
-	/** Full navigation after cache bust — reliable once BFF Set-Cookie has landed. */
+	/** Full navigation — reliable once BFF Set-Cookie has landed. */
 	redirectTo?: string;
 	/** Skip router.refresh() when client UI must stay mounted (e.g. password-reset success screen). */
 	skipRefresh?: boolean;
 };
 
-/** Bust cached auth UI and refresh RSC after BFF sign-in (cookies already set by the API route). */
+/**
+ * Refresh auth UI after BFF sign-in (cookies already set by the API route).
+ *
+ * Auth chrome is a cookie-gated dynamic hole — never in shared cache — so a
+ * client refresh (or the hard navigation below) re-renders it with the new
+ * session. No server-side invalidation: the old `revalidatePath(layout)` purge
+ * busted shared shells for every visitor per sign-in (see paper-vercel-cost).
+ * Other tabs pick the change up via the chrome version bump.
+ */
 export async function syncAuthSurfacesAfterSignIn(
 	channel: string,
 	router: Router,
@@ -26,12 +33,11 @@ export async function syncAuthSurfacesAfterSignIn(
 		throw new Error("syncAuthSurfacesAfterSignIn requires a channel slug");
 	}
 
-	await revalidateStorefrontChromeAction(channel);
+	bumpChromeVersion();
 
 	if (options?.redirectTo) {
 		// Hard navigation: avoids router.refresh() racing on the login page and guarantees
-		// cookies + invalidated layout are picked up on the destination.
-		markAuthSurfaceHardNav();
+		// cookies are picked up on the destination.
 		window.location.assign(options.redirectTo);
 		return;
 	}
@@ -53,6 +59,5 @@ export function navigateToStorefrontHome(channel: string, locale?: string) {
 	}
 
 	const resolvedLocale = resolveBrowseLocaleSlugWithFallback(locale);
-	markAuthSurfaceHardNav();
 	window.location.assign(buildStorefrontPath(resolvedLocale, channel));
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 import {
 	AccountUpdateDocument,
 	PasswordChangeDocument,
@@ -195,13 +195,13 @@ export async function requestAccountDeletion(formData: FormData): Promise<Accoun
 /**
  * Account UI reads profile data from the layout-level AccountProvider (client context).
  *
- * The account layout lives at `/[locale]/[channel]/account` (route groups like `(main)` are
- * not URL segments). Passing the dynamic route pattern + `"layout"` busts the layout — and all
- * nested account pages — across every locale/channel pair in a single call; a literal `/account`
- * matches no route and silently no-ops.
+ * Account data is auth-gated and rendered per user at request time — it is never in the
+ * shared cache. `refresh()` re-renders this user's account route (layout provider included)
+ * in the action response. The previous `revalidatePath(..., "layout")` purged the shared
+ * account shells for every locale × channel × visitor on each profile edit.
  */
 function revalidateAccountLayout() {
-	revalidatePath("/[locale]/[channel]/account", "layout");
+	refresh();
 }
 
 function extractAddressInput(formData: FormData): AddressInput {

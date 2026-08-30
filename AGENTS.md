@@ -14,7 +14,7 @@ Paper rules are **authoritative on architecture**: Server Components by default,
 
 ## Project skill index (read `SKILL.md`, then the one matching rule)
 
-- **Architecture:** `paper-architecture`
+- **Architecture:** `paper-architecture`, `paper-vercel-cost`
 - **Data:** `data-caching`, `data-graphql`, `data-auth-routes`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes`
 - **Product:** `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`
 - **Checkout:** `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`

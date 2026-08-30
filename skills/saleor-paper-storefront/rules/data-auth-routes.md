@@ -26,17 +26,19 @@ Client forms call `loginWithBff()` / `setPasswordWithBff()` (`src/lib/auth/bff-c
 
 ## Keeping header chrome fresh (Router Cache)
 
-HttpOnly cookies are the source of truth, but the **client Router Cache** can reuse a stale RSC payload for the header after a session change. Paper uses explicit triggers — never client-side retry loops:
+HttpOnly cookies are the source of truth, and the header auth/cart chrome renders inside **cookie-gated dynamic holes** — the served document is always cookie-correct, and none of that content is in the shared cache. Freshness triggers are therefore **local to the acting user**; nothing here invalidates shared cache (see [`paper-vercel-cost.md`](paper-vercel-cost.md)):
 
-| Trigger                       | When                                 | Mechanism                                                                             |
-| ----------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
-| Initial load / hard refresh   | Land with an existing session        | `HeaderAuthRefresh` → `revalidateStorefrontChrome` + `router.refresh()` once on mount |
-| Cross-tab                     | Return after login/logout elsewhere  | `visibilitychange` → `revalidateStorefrontChromeAction` + `router.refresh()`          |
-| Cross-surface / auth boundary | Login, logout, checkout → storefront | `revalidateStorefrontChrome` + **hard navigation**                                    |
+| Trigger                       | When                                        | Mechanism                                                                                                                                   |
+| ----------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Same-tab mutation             | Add-to-cart, cart line edits, profile edits | Server action calls `refresh()` (`next/cache`) — re-renders this user's route in the action response                                        |
+| Cross-tab                     | Login/logout/cart change in another tab     | Mutators call `bumpChromeVersion()`; `HeaderChromeSync` compares on `storage`/`visibilitychange`/`pageshow` and refreshes once when visible |
+| Cross-surface / auth boundary | Login, logout, checkout → storefront        | **Hard navigation** — a fresh document needs no invalidation                                                                                |
 
-**Do NOT `router.refresh()` on in-store soft navigation.** The header lives in the shared layout (preserved across sibling navigations), and every session/cart mutation already busts chrome via `revalidateStorefrontChrome` (add-to-cart, cart line edits, login/logout, checkout). A per-pathname refresh forces a server round-trip on every soft nav and defeats instant navigation to prerendered shells — most visibly returning to the homepage, which has no loading skeleton to mask the wait. The one-time initial-mount sync covers the PPR-anonymous-shell case; cross-tab and auth boundaries are covered by their own triggers above.
+**Do NOT `router.refresh()` on in-store soft navigation.** The header lives in the shared layout (preserved across sibling navigations), and every session/cart mutation already refreshes this user's chrome via the action's `refresh()`. A per-pathname refresh forces a server round-trip on every soft nav and defeats instant navigation to prerendered shells — most visibly returning to the homepage, which has no loading skeleton to mask the wait.
 
-**Hard navigation is required** when leaving `/checkout` or after login/logout — soft `router.push`/`<Link>` can restore a cached anonymous `UserMenuServer`. Use `syncAuthSurfacesAfterSignIn({ redirectTo })`, `useLogout({ channel })`, `navigateToStorefrontHome()`, or `StorefrontHomeLink` (plain anchor). `revalidateStorefrontChrome(channel)` invalidates the `/${channel}` layout (user menu + cart badge) and `/checkout` — call it from server actions (after cart mutations / checkout complete / before a client refresh), not during RSC render.
+**Do NOT revalidate on first paint or tab focus.** The removed `HeaderAuthRefresh` design called a Server Action that `revalidatePath`-ed the entire locale/channel layout on every hard load and every refocus — a **sitewide shared-cache purge per visitor**, billed at traffic scale (invocations, ISR writes, defeated CDN). First paint is already cookie-correct; cross-tab staleness is what the version bump exists for.
+
+**Hard navigation is required** when leaving `/checkout` or after login/logout — soft `router.push`/`<Link>` can restore a cached anonymous `UserMenuServer`. Use `syncAuthSurfacesAfterSignIn({ redirectTo })`, `useLogout({ channel })`, `navigateToStorefrontHome()`, or `StorefrontHomeLink` (plain anchor).
 
 ## Account architecture
 
@@ -51,7 +53,7 @@ account/layout.tsx
             ├── AccountNav (static client)
             └── {children}   (sync pages + nested Suspense islands)
 
-header.tsx → Suspense → HeaderAuthRefresh (client; one-time mount sync + cross-tab, NOT per-nav)
+header.tsx → Suspense → HeaderChromeSync (client; cross-tab version listener only, NO mount/per-nav work)
                           └── UserMenuServer (async; cookies() + getHeaderUser() or sign-in link)
 ```
 
@@ -92,17 +94,17 @@ export default function AccountOverviewPage() {
 
 ## Key files
 
-| Concern                | File                                                                                                                        | Note                                                            |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Cookie presence        | `src/lib/auth/has-auth-session.ts`                                                                                          | Same lookup as auth SDK (`readAuthCookieValue`)                 |
-| User profile           | `account/get-current-user.ts`                                                                                               | `React.cache()` — deduped per request                           |
-| Header user            | `src/lib/auth/get-header-user.ts`                                                                                           | guest / authenticated / unavailable                             |
-| Session resolution     | `src/lib/auth/resolve-session-user.ts`                                                                                      | Classifies the `me` fetch; one server retry on transient errors |
-| Auth failure codes     | `src/lib/auth/session-auth-state.ts`                                                                                        | `isDefinitiveAuthFailure` — Saleor JWT codes + message fallback |
-| BFF sign-in            | `src/lib/auth/bff-server.ts`, `/api/auth/login/route.ts`                                                                    | HttpOnly cookies, rate limited                                  |
-| Client forms / profile | `bff-client.ts`, `account-context.tsx`                                                                                      | `loginWithBff`; `useAccountUser()`                              |
-| Sign-in UI             | `account-login.tsx`                                                                                                         | `LoginForm` in Suspense (no SDK provider)                       |
-| Chrome refresh         | `user-menu-server.tsx`, `header-auth-refresh.tsx`, `revalidate-storefront-chrome.ts`, `sync-auth-surfaces-after-sign-in.ts` | Header auth chrome + Router Cache sync + post-login hard nav    |
-| Layouts                | `(main)/layout.tsx`, `account/layout.tsx`, `account/actions.ts`                                                             | Browse chrome vs account auth gate; layout revalidation         |
+| Concern                | File                                                                                                              | Note                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Cookie presence        | `src/lib/auth/has-auth-session.ts`                                                                                | Same lookup as auth SDK (`readAuthCookieValue`)                 |
+| User profile           | `account/get-current-user.ts`                                                                                     | `React.cache()` — deduped per request                           |
+| Header user            | `src/lib/auth/get-header-user.ts`                                                                                 | guest / authenticated / unavailable                             |
+| Session resolution     | `src/lib/auth/resolve-session-user.ts`                                                                            | Classifies the `me` fetch; one server retry on transient errors |
+| Auth failure codes     | `src/lib/auth/session-auth-state.ts`                                                                              | `isDefinitiveAuthFailure` — Saleor JWT codes + message fallback |
+| BFF sign-in            | `src/lib/auth/bff-server.ts`, `/api/auth/login/route.ts`                                                          | HttpOnly cookies, rate limited                                  |
+| Client forms / profile | `bff-client.ts`, `account-context.tsx`                                                                            | `loginWithBff`; `useAccountUser()`                              |
+| Sign-in UI             | `account-login.tsx`                                                                                               | `LoginForm` in Suspense (no SDK provider)                       |
+| Chrome refresh         | `user-menu-server.tsx`, `header-chrome-sync.tsx`, `src/lib/chrome-sync.ts`, `sync-auth-surfaces-after-sign-in.ts` | Header auth chrome + cross-tab sync + post-login hard nav       |
+| Layouts                | `(main)/layout.tsx`, `account/layout.tsx`, `account/actions.ts`                                                   | Browse chrome vs account auth gate; `refresh()` after mutations |
 
 Related: [`data-caching.md`](data-caching.md) (page-boundary model), [`checkout-management.md`](checkout-management.md) (checkout BFF sign-in + `router.refresh()`).

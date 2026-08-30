@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-31 rules across 8 categories covering architecture, caching, storefront content, PDP architecture, checkout v2,
+32 rules across 8 categories covering architecture, Vercel cost discipline, caching, storefront content, PDP architecture, checkout v2,
 design & composition (token system, design quality, section catalog, page composition, design-from-image, verification),
 components, UI patterns, locale routing, i18n, and SEO.
 
@@ -35,6 +35,7 @@ Reference these guidelines when:
 - Modifying checkout flow or payment integration
 - Editing GraphQL queries or regenerating types
 - Debugging caching, stale content, or revalidation
+- Optimizing Vercel cost, invalidation scope, or scaling traffic
 - Editing merchandising copy, homepage content, or `CONTENT_PROVIDER=saleor`
 - Seeding or extending Saleor Models for storefront content (Configurator)
 - Migrating authenticated routes (account, session cookies) under Cache Components / PPR
@@ -64,6 +65,7 @@ Reference these guidelines when:
 ### 0. Architecture (CRITICAL)
 
 - `paper-architecture` - **Start here** — canonical Next.js stance, pillars, non-goals, where to read next
+- `paper-vercel-cost` - Vercel billing model, cost invariants (no global invalidation for private state, sharded listing tags, sampling, image guards), scaling playbook
 
 ### 1. Data Layer (CRITICAL)
 

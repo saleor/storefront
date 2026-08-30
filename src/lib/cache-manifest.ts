@@ -43,6 +43,13 @@ export interface CacheProfile {
 	 * is busted without enumerating slugs.
 	 */
 	readonly sharedTag?: string;
+	/**
+	 * Channel-scoped catch-all applied alongside channel+slug tags (listing grids).
+	 * Full purge enumerates it per channel, and webhook events whose payload does
+	 * not name the affected slugs fall back to it — one channel's grids, never
+	 * every channel's.
+	 */
+	readonly sharedTagPattern?: string;
 }
 
 export type CacheTagParams = {
@@ -89,18 +96,40 @@ const profiles = {
 	 * Listing grids (PLP, category, collection) for the *cacheable* views only —
 	 * see `isCacheableListingView` in src/lib/catalog/get-product-listing.ts.
 	 *
-	 * Deliberately channel-scoped rather than slug-scoped: one tag busts every
-	 * cached grid in a channel, and the entry count is bounded by the allowlist,
-	 * so precision here would buy nothing. Only product events that can change a
-	 * listing card revalidate it (`affectsListing` in src/lib/webhook-events.ts) —
-	 * stock and metadata churn must not, or the cache never stays warm.
+	 * Sharded by surface and slug: cache entries are keyed by (slug ×) sort ×
+	 * locale × channel, and the tags follow the key so one product edit busts
+	 * only the grids it can appear in — its category grid, its collections'
+	 * grids, and the all-products grid — instead of every cached grid in the
+	 * channel. Category/collection grids also carry a channel catch-all
+	 * (`sharedTagPattern`) used by full purge and by product events whose
+	 * payload doesn't name the affected grids (unenriched webhooks).
+	 *
+	 * Only product events that can change a listing card revalidate these
+	 * (`affectsListing` in src/lib/webhook-events.ts) — stock and metadata
+	 * churn must not, or the cache never stays warm.
 	 */
-	productListing: {
-		id: "product-listing",
-		label: "Product Listings",
+	listingAll: {
+		id: "listing-all",
+		label: "All-Products Listing",
 		cacheProfile: "catalog",
-		tagPattern: "product-listing:{channel}",
+		tagPattern: "listing:all:{channel}",
 		pathPattern: null,
+	},
+	listingCategory: {
+		id: "listing-category",
+		label: "Category Listings",
+		cacheProfile: "catalog",
+		tagPattern: "listing:category:{channel}:{slug}",
+		pathPattern: null,
+		sharedTagPattern: "listing:category-any:{channel}",
+	},
+	listingCollection: {
+		id: "listing-collection",
+		label: "Collection Listings",
+		cacheProfile: "catalog",
+		tagPattern: "listing:collection:{channel}:{slug}",
+		pathPattern: null,
+		sharedTagPattern: "listing:collection-any:{channel}",
 	},
 	navigation: {
 		id: "navigation",
@@ -366,6 +395,17 @@ export function planFullPurgeTagEntries(
 			entries.push({ tag: profile.sharedTag, profile: profile.cacheProfile });
 		}
 
+		// Channel-scoped catch-alls (listing grids) — the per-slug tags can't be
+		// enumerated, but every entry also carries the catch-all.
+		if (profile.sharedTagPattern) {
+			for (const channel of channels) {
+				entries.push({
+					tag: buildCatchAllTag(profile, channel),
+					profile: profile.cacheProfile,
+				});
+			}
+		}
+
 		if (isGlobalTagProfile(profile)) {
 			entries.push({ tag: buildTag(profile), profile: profile.cacheProfile });
 			continue;
@@ -417,6 +457,9 @@ export function resolveCacheLifeProfileForTag(tag: string): CacheLifeProfile {
 function resolveCacheLifeProfileForTagFromManifest(tag: string): CacheLifeProfile {
 	for (const profile of CACHE_PROFILE_LIST) {
 		if (profile.sharedTag === tag) return profile.cacheProfile;
+		if (profile.sharedTagPattern && tagPatternToRegExp(profile.sharedTagPattern).test(tag)) {
+			return profile.cacheProfile;
+		}
 		if (isGlobalTagProfile(profile)) {
 			if (tag === profile.tagPattern) return profile.cacheProfile;
 			continue;
@@ -465,18 +508,21 @@ export function resolveManualRevalidateTag(tag: string, channel?: string | null)
 /**
  * Apply cacheLife + cacheTag for a profile inside a "use cache" function body.
  * Pass `slug` and/or `channel` when the profile's tagPattern contains placeholders.
- * Slug-scoped profiles also receive `sharedTag` so full purge can bust the whole set.
+ * Slug-scoped profiles also receive `sharedTag` (and channel+slug profiles their
+ * channel catch-all) so full purge can bust the whole set without enumerating slugs.
  *
  * Profile timings are defined in src/lib/cache-life-profiles.ts (registered in next.config.js).
  */
 export function applyCacheProfile(profile: CacheProfile, params?: string | CacheTagParams) {
 	applyCacheLife(profile.cacheProfile);
-	const entityTag = buildTag(profile, params);
+	const tags = [buildTag(profile, params)];
 	if (profile.sharedTag) {
-		cacheTag(entityTag, profile.sharedTag);
-	} else {
-		cacheTag(entityTag);
+		tags.push(profile.sharedTag);
 	}
+	if (profile.sharedTagPattern) {
+		tags.push(resolveTagPattern(profile, profile.sharedTagPattern, params));
+	}
+	cacheTag(...tags);
 }
 
 /**
@@ -506,8 +552,23 @@ function applyCacheLife(name: PaperCacheLifeProfile): void {
 // ============================================================================
 
 export function buildTag(profile: CacheProfile, params?: string | CacheTagParams): string {
+	return resolveTagPattern(profile, profile.tagPattern, params);
+}
+
+/**
+ * Channel catch-all for a channel+slug profile (`sharedTagPattern`) — the fallback
+ * tag when an event can't name the affected slugs, and the full-purge handle.
+ */
+export function buildCatchAllTag(profile: CacheProfile, channel: string): string {
+	if (!profile.sharedTagPattern) {
+		throw new Error(`[cache-manifest] Profile "${profile.id}" has no sharedTagPattern`);
+	}
+	return resolveTagPattern(profile, profile.sharedTagPattern, { channel });
+}
+
+function resolveTagPattern(profile: CacheProfile, pattern: string, params?: string | CacheTagParams): string {
 	const { slug, channel, locale } = normalizeTagParams(params);
-	let tag = profile.tagPattern;
+	let tag = pattern;
 	if (slug) tag = tag.replaceAll("{slug}", slug);
 	if (channel) tag = tag.replaceAll("{channel}", channel);
 	if (locale) tag = tag.replaceAll("{locale}", locale);
@@ -562,7 +623,9 @@ export function buildPathsForAllLocales(
 // Manifest for /api/cache-info
 // ============================================================================
 
-const MANIFEST_VERSION = 6;
+// v7: listing tags sharded by surface/slug (listing:all|category|collection) with
+// channel catch-alls — replaces the channel-wide product-listing:{channel} tag.
+const MANIFEST_VERSION = 7;
 
 const STOREFRONT_MANIFEST_ENVIRONMENTS = ["production", "preview", "development", "staging"] as const;
 
@@ -657,6 +720,7 @@ export function buildManifest() {
 			tagPattern: p.tagPattern,
 			pathPattern: p.pathPattern,
 			...(p.sharedTag ? { sharedTag: p.sharedTag } : {}),
+			...(p.sharedTagPattern ? { sharedTagPattern: p.sharedTagPattern } : {}),
 		})),
 		locales: [...getStorefrontLocaleSlugs()],
 		defaultLocale: getDefaultLocaleSlug(),

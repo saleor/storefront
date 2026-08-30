@@ -10,6 +10,7 @@ import { Button, buttonClassName } from "@/ui/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetCloseButton } from "@/ui/components/ui/sheet";
 import { useCart } from "./cart-context";
 import type { DeleteCartLine, UpdateCartLineQuantity } from "./cart-mutations";
+import { bumpChromeVersion } from "@/lib/chrome-sync";
 import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/utils";
 import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
@@ -114,7 +115,6 @@ interface CartDrawerProps {
 			currency: string;
 		};
 	} | null;
-	channel: string;
 	localeSlug: string;
 	cart: CartContent;
 	policies: StorefrontPolicies;
@@ -126,7 +126,6 @@ export function CartDrawer({
 	checkoutId,
 	lines,
 	totalPrice,
-	channel,
 	localeSlug,
 	cart,
 	policies,
@@ -146,18 +145,21 @@ export function CartDrawer({
 	const runCartMutation = (mutation: () => Promise<void>) => {
 		setIsCartBusy(true);
 		void mutation().finally(() => {
+			// This tab re-renders via `refresh()` inside the action; other tabs
+			// sync their cart chrome on next focus.
+			bumpChromeVersion();
 			setIsCartBusy(false);
 		});
 	};
 
 	const handleRemove = (lineId: string) => {
 		if (!checkoutId) return;
-		runCartMutation(() => deleteCartLine(checkoutId, lineId, channel));
+		runCartMutation(() => deleteCartLine(checkoutId, lineId));
 	};
 
 	const handleUpdateQuantity = (lineId: string, newQuantity: number) => {
 		if (!checkoutId || newQuantity < 1) return;
-		runCartMutation(() => updateCartLineQuantity(checkoutId, lineId, newQuantity, channel));
+		runCartMutation(() => updateCartLineQuantity(checkoutId, lineId, newQuantity));
 	};
 
 	const checkoutHref = checkoutId

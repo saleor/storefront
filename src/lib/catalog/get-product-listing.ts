@@ -29,7 +29,15 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
  * first page (in any sort order), which carries the bulk of real traffic. Filtered and
  * deep-paginated views fall through to a live fetch and behave exactly as before.
  *
- * Entry count is therefore bounded by `sorts × locales × channels`, not by catalog size.
+ * ## Entry cardinality and tag sharding
+ *
+ * Category/collection slugs are function arguments, so they are part of the cache key:
+ * the upper bound is `(1 + categories + collections) × sorts × locales × channels`, not
+ * `sorts × locales × channels`. Only *visited* grids materialize, so real cost tracks
+ * traffic rather than catalog size — but that cardinality is exactly why the cache tags
+ * are sharded per surface/slug (`listing:all|category|collection`, see cache-manifest.ts).
+ * A single channel-wide tag here would let one product edit mark every materialized grid
+ * in the channel stale at once — a regeneration storm per webhook.
  *
  * ## Failure semantics
  *
@@ -69,7 +77,7 @@ export async function getProductListingPage(
 	sortBy: ProductOrder | undefined,
 ): Promise<ListingConnection | null> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.productListing, { channel });
+	applyCacheProfile(CACHE_PROFILES.listingAll, { channel });
 
 	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
 		variables: {
@@ -104,7 +112,7 @@ export async function getCategoryListingPage(
 	sortBy: ProductOrder | undefined,
 ): Promise<CategoryListing["products"] | null> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.productListing, { channel });
+	applyCacheProfile(CACHE_PROFILES.listingCategory, { channel, slug: categorySlug });
 
 	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
 		variables: {
@@ -136,7 +144,7 @@ export async function getCollectionListingPage(
 	sortBy: ProductOrder | undefined,
 ): Promise<CollectionListing["products"] | null> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.productListing, { channel });
+	applyCacheProfile(CACHE_PROFILES.listingCollection, { channel, slug: collectionSlug });
 
 	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
 		variables: {
