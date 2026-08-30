@@ -307,6 +307,37 @@
 				"src/graphql/StorefrontContentPages.graphql"
 			],
 			"detectMarkers": ["buildStorefrontPath", "graphqlLanguageCodeVariables", "StorefrontRegionPicker"]
+		},
+		{
+			"id": "2026-08-cost-invariants",
+			"title": "Cost invariants — private-state refresh, sharded listing tags, sampled telemetry",
+			"upstreamSha": "9cd9c5aa",
+			"landedAt": "2026-08-30T20:19:00+02:00",
+			"introducedIn": "2026.08",
+			"requires": ["2026-06-cache-manifest-v3", "2026-06-checkout-v2"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "caching",
+			"touchPaths": [
+				"src/lib/chrome-sync.ts",
+				"src/ui/components/nav/components/user-menu/header-chrome-sync.tsx",
+				"src/app/actions.ts",
+				"src/app/(checkout)/actions.ts",
+				"src/lib/cache-manifest.ts",
+				"src/lib/catalog/get-product-listing.ts",
+				"src/app/api/revalidate/route.ts",
+				"src/lib/checkout.ts",
+				"src/lib/speed-insights.ts",
+				"src/app/robots.ts",
+				"eslint.config.mjs"
+			],
+			"detectMarkers": [
+				"CHROME_LOCAL_BUMP_EVENT",
+				"HeaderChromeSync",
+				"listing:category:{channel}:{slug}",
+				"buildCatchAllTag",
+				"speedInsightsSampleRate"
+			]
 		}
 	]
 }

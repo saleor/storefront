@@ -80,7 +80,7 @@ Cache entries for listing grids are keyed by `(slug ×) sort × locale × channe
 | `listing:collection:{channel}:{slug}`                                 | enriched product events, collection entity events                |
 | `listing:category-any:{channel}` / `listing:collection-any:{channel}` | fallback when the payload can't name the grid; full purge        |
 
-**Enriched payload contract:** saleor-paper-app includes `collections { slug }` (and `category { slug }`) in product/variant webhook subscriptions. `undefined` collections → channel catch-all (correct but imprecise); `[]` → no collection grid busted. Keep the app's subscriptions enriched — precision here is directly billed regeneration avoided.
+**Enriched payload contract:** saleor-paper-app queries `collections { slug }` (and `category { slug }`) in product/variant webhook subscriptions and — from its `cost-invariants` change on — forwards them in the storefront POST. `undefined` collections → channel catch-all (correct but imprecise); `[]` → no collection grid busted. Keep the app on a forwarding version (older ones strip the field) — precision here is directly billed regeneration avoided.
 
 **Coalescing belongs in saleor-paper-app:** a bulk PIM sync of N products delivers N webhooks; the storefront intentionally does no dedup (multi-instance dedup drops invalidations). Buffer per (entity, channel) for 5–30 s in the app and deliver one enriched event. Duplicate app + direct webhook subscriptions double every invalidation — watch for repeated delivery fingerprints in `[Revalidate]` logs.
 
