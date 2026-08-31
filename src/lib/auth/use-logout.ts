@@ -3,8 +3,8 @@
 import { useCallback } from "react";
 
 import { logout } from "@/app/actions";
-import { markAuthSurfaceHardNav } from "@/lib/auth/auth-surface-nav";
 import { resolveBrowseLocaleSlugWithFallback } from "@/lib/browse-locale";
+import { bumpChromeVersion } from "@/lib/chrome-sync";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 export type LogoutOptions = {
@@ -25,8 +25,10 @@ export function useLogout() {
 			// Checkout detach / server cookie clear is best-effort.
 		}
 
+		// Other tabs re-render their auth chrome on next focus; this tab hard-navigates.
+		bumpChromeVersion();
+
 		if (options?.stayOnPage) {
-			markAuthSurfaceHardNav();
 			window.location.reload();
 			return;
 		}

@@ -1,4 +1,5 @@
 import { buildOrderConfirmationPath } from "@paper/session-bridge";
+import { bumpChromeVersion } from "@/lib/chrome-sync";
 
 /**
  * Client navigation to `/checkout/complete?order=`.
@@ -15,6 +16,9 @@ import { buildOrderConfirmationPath } from "@paper/session-bridge";
  * `RootViews` keeps `PaymentCompletingScreen` up until the document unloads.
  */
 export function navigateToOrderConfirmation(orderId: string) {
+	// Order placed → cart cookie is being cleared; storefront tabs re-render
+	// their cart chrome on next focus.
+	bumpChromeVersion();
 	const path = buildOrderConfirmationPath({ orderId });
 	window.location.replace(path);
 }

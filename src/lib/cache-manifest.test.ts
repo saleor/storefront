@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
 	CACHE_PROFILES,
 	CACHE_PROFILE_LIST,
+	buildCatchAllTag,
 	buildTag,
 	buildStorefrontManifestIdentity,
 	resolveCacheLifeProfileForTag,
@@ -35,10 +36,31 @@ describe("buildTag", () => {
 		expect(buildTag(CACHE_PROFILES.footerMenu, { channel: "us" })).toBe("footer-menu:us");
 	});
 
+	it("resolves channel+slug listing patterns", () => {
+		expect(buildTag(CACHE_PROFILES.listingAll, { channel: "us" })).toBe("listing:all:us");
+		expect(buildTag(CACHE_PROFILES.listingCategory, { channel: "us", slug: "shoes" })).toBe(
+			"listing:category:us:shoes",
+		);
+		expect(buildTag(CACHE_PROFILES.listingCollection, { channel: "uk", slug: "summer" })).toBe(
+			"listing:collection:uk:summer",
+		);
+	});
+
 	it("throws when required placeholders are missing", () => {
 		expect(() => buildTag(CACHE_PROFILES.navigation)).toThrow(/Unresolved tag/);
 		expect(() => buildTag(CACHE_PROFILES.navigation, {})).toThrow(/Provide: \{channel\}/);
 		expect(() => buildTag(CACHE_PROFILES.products, { channel: "us" })).toThrow(/Provide: \{slug\}/);
+	});
+});
+
+describe("buildCatchAllTag", () => {
+	it("resolves the channel catch-all for listing profiles", () => {
+		expect(buildCatchAllTag(CACHE_PROFILES.listingCategory, "us")).toBe("listing:category-any:us");
+		expect(buildCatchAllTag(CACHE_PROFILES.listingCollection, "uk")).toBe("listing:collection-any:uk");
+	});
+
+	it("throws for profiles without a sharedTagPattern", () => {
+		expect(() => buildCatchAllTag(CACHE_PROFILES.products, "us")).toThrow(/no sharedTagPattern/);
 	});
 });
 
@@ -50,6 +72,14 @@ describe("resolveCacheLifeProfileForTag", () => {
 		expect(resolveCacheLifeProfileForTag("page:about-us")).toBe("catalog");
 		expect(resolveCacheLifeProfileForTag("storefront-content:default-channel:en-US")).toBe("menus");
 		expect(resolveCacheLifeProfileForTag("channels")).toBe("channels");
+	});
+
+	it("maps sharded listing tags and their catch-alls to the catalog tier", () => {
+		expect(resolveCacheLifeProfileForTag("listing:all:us")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("listing:category:us:shoes")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("listing:collection:us:summer")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("listing:category-any:us")).toBe("catalog");
+		expect(resolveCacheLifeProfileForTag("listing:collection-any:us")).toBe("catalog");
 	});
 
 	it("falls back to catalog for unknown tags", () => {
@@ -225,9 +255,14 @@ describe("full purge tag planning", () => {
 		expect(tags).toContain("collections");
 		expect(tags).toContain("pages");
 		// "Revalidate all" must clear cached listing grids too, or the Dashboard button
-		// appears to work while the PLP keeps serving the old grid.
-		expect(tags).toContain("product-listing:us");
-		expect(tags).toContain("product-listing:uk");
+		// appears to work while the PLP keeps serving the old grid. Per-slug grids are
+		// covered by the channel catch-alls every entry also carries.
+		expect(tags).toContain("listing:all:us");
+		expect(tags).toContain("listing:all:uk");
+		expect(tags).toContain("listing:category-any:us");
+		expect(tags).toContain("listing:category-any:uk");
+		expect(tags).toContain("listing:collection-any:us");
+		expect(tags).toContain("listing:collection-any:uk");
 		expect(tags.some((t) => t.includes("{locale}"))).toBe(false);
 		expect(tags.some((t) => t.startsWith("product:"))).toBe(false);
 	});

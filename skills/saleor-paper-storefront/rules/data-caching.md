@@ -56,18 +56,21 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 
 ### Tag registry
 
-| Tag pattern                                         | Profile              | Used by                                                   | Invalidated when                  |
-| --------------------------------------------------- | -------------------- | --------------------------------------------------------- | --------------------------------- |
-| `product:{slug}`                                    | `products`           | `getProductData()`                                        | Product updated                   |
-| `category:{slug}`                                   | `categories`         | `getCategoryData()`                                       | Category updated                  |
-| `collection:{slug}`                                 | `collections`        | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                |
-| `page:{slug}`                                       | `pages`              | `getPageData()` (CMS)                                     | Page updated                      |
-| `products` / `categories` / `collections` / `pages` | same (sharedTag)     | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions |
-| `product-listing:{channel}`                         | `productListing`     | `getProductListingPage()` / category / collection grids   | Product event that changes a card |
-| `navigation:{channel}`                              | `navigation`         | `getNavbarMenuItems()`                                    | Navbar changed                    |
-| `footer-menu:{channel}`                             | `footerMenu`         | `getFooterMenuItems()`                                    | Footer changed                    |
-| `storefront-content:{channel}:{locale}`             | `storefront-content` | `getStorefrontContent()`                                  | `storefront-*` Page updated       |
-| `channels`                                          | `channels`           | `getCachedChannelsList()`                                 | Channel list changed              |
+| Tag pattern                                                           | Profile                 | Used by                                                   | Invalidated when                                               |
+| --------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
+| `product:{slug}`                                                      | `products`              | `getProductData()`                                        | Product updated                                                |
+| `category:{slug}`                                                     | `categories`            | `getCategoryData()`                                       | Category updated                                               |
+| `collection:{slug}`                                                   | `collections`           | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                                             |
+| `page:{slug}`                                                         | `pages`                 | `getPageData()` (CMS)                                     | Page updated                                                   |
+| `products` / `categories` / `collections` / `pages`                   | same (sharedTag)        | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions                              |
+| `listing:all:{channel}`                                               | `listingAll`            | `getProductListingPage()` (/products grid)                | Listing-affecting product event                                |
+| `listing:category:{channel}:{slug}`                                   | `listingCategory`       | `getCategoryListingPage()`                                | Product event in that category; category event                 |
+| `listing:collection:{channel}:{slug}`                                 | `listingCollection`     | `getCollectionListingPage()`                              | Enriched product event naming the collection; collection event |
+| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | same (sharedTagPattern) | Applied alongside each category/collection grid tag       | Fallback when the payload can't name the grid; full purge      |
+| `navigation:{channel}`                                                | `navigation`            | `getNavbarMenuItems()`                                    | Navbar changed                                                 |
+| `footer-menu:{channel}`                                               | `footerMenu`            | `getFooterMenuItems()`                                    | Footer changed                                                 |
+| `storefront-content:{channel}:{locale}`                               | `storefront-content`    | `getStorefrontContent()`                                  | `storefront-*` Page updated                                    |
+| `channels`                                                            | `channels`              | `getCachedChannelsList()`                                 | Channel list changed                                           |
 
 Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
 Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/categories/collections/listings/CMS pages) is `stale 5 min / revalidate 1 hr / expire 1 day`, `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
@@ -76,7 +79,7 @@ Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/ca
 
 ### Listing grids
 
-Listing grids are cached only for the **unfiltered first page** (any sort order) — see `isCacheableListingView()` in `src/lib/catalog/get-product-listing.ts`. Filtered and paginated views fall through to a live fetch on purpose: every filter permutation would be a cache entry that is written once and rarely read again, trading invocation cost for cache-write cost. Entry count stays bounded by `sorts × locales × channels`, independent of catalog size.
+Listing grids are cached only for the **unfiltered first page** (any sort order) — see `isCacheableListingView()` in `src/lib/catalog/get-product-listing.ts`. Filtered and paginated views fall through to a live fetch on purpose: every filter permutation would be a cache entry that is written once and rarely read again, trading invocation cost for cache-write cost. Category/collection slugs are cache-key arguments, so the entry upper bound is `(1 + categories + collections) × sorts × locales × channels` — only _visited_ grids materialize, and the **sharded tags** above keep invalidation per-grid: one product edit busts its own category/collection grids plus `listing:all`, never every grid in the channel. Product webhook payloads carry `category.slug`; collection membership comes from the saleor-paper-app **enriched payload** (`collections { slug }` in the subscription) — without it the channel catch-all keeps correctness at the cost of precision.
 
 `GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically. Manifest **v6+** includes an optional `identity` block (`saleorApiUrl`, `environment`, deploy metadata) for the Paper handshake. `saleorApiUrl` comes from `NEXT_PUBLIC_SALEOR_API_URL`. `environment` defaults from `VERCEL_ENV` / `NODE_ENV`; set `PAPER_STOREFRONT_ENVIRONMENT` only when those lie (true staging, or non-Vercel hosts that aren't prod).
 
@@ -150,17 +153,19 @@ Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ 
 
 **The `saleor-event` header drives the scope.** `src/lib/webhook-events.ts` maps each event Paper acts on to an entity and an `affectsListing` flag; anything absent from that map is logged and skipped. Opting a new event into invalidation means adding it there. Never reintroduce a catch-all fallback — an unmapped event (orders, checkouts, customers) firing a catalog purge is a self-inflicted cost and cache-hit-rate problem.
 
-saleor-paper-app forwards that header on every entity POST. A POST without it (manual curl, older app) is treated as listing-affecting. After upgrading the app, click **Sync Webhooks** so Saleor delivers variant CRUD, stock, and metadata — stock events must arrive _with_ `saleor-event` or they bust the listing tag. Do not also subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for media edits.
+saleor-paper-app forwards that header on every entity POST. A POST without it (manual curl, older app) is treated as listing-affecting. After upgrading the app, click **Sync Webhooks** so Saleor delivers variant CRUD, stock, and metadata — stock events must arrive _with_ `saleor-event` or they bust the listing tags. Do not also subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for media edits.
 
-| Event family                                                        | Storefront effect                                                                      |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `product-listing:{channel}`                                         |
-| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never the listing tag                                          |
-| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + `product-listing:{channel}`                  |
-| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*` |
-| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                        |
-| `CHANNEL_*`                                                         | `channels`                                                                             |
-| Everything else                                                     | Logged and skipped                                                                     |
+| Event family                                                        | Storefront effect                                                                                                                      |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `listing:all:{channel}` + its category grid + its collections' grids (enriched payload) or the collection catch-all |
+| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never listing tags                                                                                             |
+| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + only that entity's own listing grid                                                          |
+| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*`                                                 |
+| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                                                                        |
+| `CHANNEL_*`                                                         | `channels`                                                                                                                             |
+| Everything else                                                     | Logged and skipped                                                                                                                     |
+
+**Known sharding gap — removals.** Payloads name only a product's _current_ memberships, so moving a product out of a category/collection leaves the **old** grid's cache untouched: it keeps showing the product until the `catalog` cacheLife backstop expires it. Editing the source category/collection itself (a `CATEGORY_*`/`COLLECTION_*` event) busts its grid immediately. Accepted trade-off: a bounded staleness window on a rare operation, versus busting every grid in the channel on every product edit.
 
 Catalog entries are **tag-addressable** — `applyCacheProfile` attaches the entity tag inside every `"use cache"` function, so `revalidateTag` alone busts every locale. Per-locale `revalidatePath` fan-out is therefore redundant for catalog data and is only used for CMS pages. `revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`).
 
@@ -191,7 +196,7 @@ Without webhooks, TTL takes over (catalog 1 hr, menus 1 hr).
 
 ## Cost controls
 
-Paper runs on Vercel, where the meters that matter are **function invocations + active CPU**, **edge middleware invocations**, **image transformations**, and **cache writes/bandwidth**. Caching decisions are cost decisions; these are the knobs, and each trades money against freshness.
+Paper runs on Vercel, where the meters that matter are **function invocations + active CPU**, **edge middleware invocations**, **image transformations**, and **cache writes/bandwidth**. Caching decisions are cost decisions; these are the knobs, and each trades money against freshness. The full billing model, cost invariants, and scaling playbook live in [`paper-vercel-cost.md`](paper-vercel-cost.md).
 
 | Knob                                                   | Default        | Raises cost when…                     | Trade-off when tightened                         |
 | ------------------------------------------------------ | -------------- | ------------------------------------- | ------------------------------------------------ |

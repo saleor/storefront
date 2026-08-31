@@ -2,10 +2,6 @@
 
 import { after } from "next/server";
 import {
-	revalidateStorefrontBrowsePath,
-	revalidateStorefrontChrome,
-} from "@/lib/auth/revalidate-storefront-chrome";
-import {
 	AddressValidationRulesDocument,
 	CheckoutAddPromoCodeDocument,
 	CheckoutBillingAddressUpdateDocument,
@@ -592,7 +588,6 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 	}
 
 	const orderId = payload.order?.id;
-	const channelSlug = payload.order?.channel?.slug;
 	if (!orderId) {
 		const { server: t } = await getCheckoutServerTranslations();
 		return {
@@ -602,14 +597,13 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 	}
 
 	// Return orderId for client `navigateToOrderConfirmation()` — do not `redirect()` here (see
-	// navigate-to-order.ts). Cookie clear + cart revalidation run in `after()` so the client can
-	// leave `/checkout?checkout=…` first; RootViews keeps PaymentCompletingScreen up meanwhile.
+	// navigate-to-order.ts). Cookie clear runs in `after()` so the client can leave
+	// `/checkout?checkout=…` first; RootViews keeps PaymentCompletingScreen up meanwhile.
+	// No cache invalidation: cart chrome is a cookie-gated dynamic hole, the client
+	// hard-navigates to order confirmation, and other tabs sync via bumpChromeVersion()
+	// in navigateToOrderConfirmation().
 	after(async () => {
 		await Checkout.clearCheckoutCookieByValue(checkoutId);
-		if (channelSlug) {
-			revalidateStorefrontBrowsePath(channelSlug, "/cart");
-			revalidateStorefrontChrome(channelSlug);
-		}
 	});
 
 	return { ok: true, orderId };

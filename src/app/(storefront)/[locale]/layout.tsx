@@ -15,6 +15,7 @@ import {
 import { PersistBrowseLocaleCookie } from "@/ui/components/persist-browse-locale-cookie";
 import { getRootHtmlFontProps } from "@/lib/fonts";
 import { saleorMediaPreconnectOrigin } from "@/lib/images";
+import { speedInsightsSampleRate } from "@/lib/speed-insights";
 
 /**
  * Root defaults + `og:locale` derived from the URL locale segment. Params-only, so it
@@ -81,7 +82,8 @@ export default async function LocaleRootLayout({
 				<NextIntlClientProvider locale={localeSlug} messages={messages}>
 					<PersistBrowseLocaleCookie locale={localeSlug} />
 					{children}
-					<SpeedInsights />
+					{/* Sampled — unsampled Speed Insights dominates the Vercel bill at scale. */}
+					<SpeedInsights sampleRate={speedInsightsSampleRate()} />
 				</NextIntlClientProvider>
 			</body>
 		</html>

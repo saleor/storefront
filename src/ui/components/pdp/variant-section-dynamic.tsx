@@ -1,12 +1,9 @@
+import { refresh } from "next/cache";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { getDiscountInfo } from "@/lib/pricing";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
 import { getStorefrontContent } from "@/lib/content/server";
-import {
-	revalidateStorefrontBrowsePath,
-	revalidateStorefrontChrome,
-} from "@/lib/auth/revalidate-storefront-chrome";
 import { CheckoutAddLineDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
@@ -155,8 +152,10 @@ export async function VariantSectionDynamic({
 				return;
 			}
 
-			revalidateStorefrontBrowsePath(channel, "/cart");
-			revalidateStorefrontChrome(channel);
+			// Cart badge/drawer are cookie-gated dynamic holes — never in shared cache.
+			// Re-render them for *this* user only; a revalidatePath here would purge
+			// shared shells sitewide on every add-to-cart (see paper-vercel-cost rule).
+			refresh();
 		} catch (error) {
 			console.error("Add to cart failed:", error);
 		}

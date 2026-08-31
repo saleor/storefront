@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { cache } from "react";
 import { checkoutIdCookieName } from "@paper/session-bridge";
 import { CheckoutCreateDocument, CheckoutCustomerDetachDocument, CheckoutFindDocument } from "@/gql/graphql";
 import { type CartCheckout, withTranslatedCartCheckout } from "@/lib/cart-checkout";
@@ -108,7 +109,13 @@ export async function clearCheckoutCookieByValue(checkoutId: string) {
 	}
 }
 
-export async function find(checkoutId: string, localeSlug?: string): Promise<CartCheckout | null> {
+/**
+ * Live checkout fetch — always `no-cache` (per-user data must never be shared-cached),
+ * but **request-memoized** via React `cache()`: the header cart badge, the cart drawer,
+ * and the cart page all read the checkout during one RSC render, and without dedup each
+ * paid its own Saleor round trip (extra upstream load + provisioned-memory wall time).
+ */
+export const find = cache(async (checkoutId: string, localeSlug?: string): Promise<CartCheckout | null> => {
 	if (!checkoutId) {
 		return null;
 	}
@@ -123,7 +130,7 @@ export async function find(checkoutId: string, localeSlug?: string): Promise<Car
 	}
 
 	return withTranslatedCartCheckout(result.data.checkout);
-}
+});
 
 export async function findOrCreate({
 	channel,

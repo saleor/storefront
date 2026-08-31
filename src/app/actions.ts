@@ -1,27 +1,18 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
-import { getStaticStorefrontChannelSlugs } from "@/config/channels";
-import { getStorefrontLocaleSlugs } from "@/config/locale";
+import { refresh } from "next/cache";
 import { signOutSession } from "@/lib/auth/bff-server";
-import { revalidateStorefrontChrome } from "@/lib/auth/revalidate-storefront-chrome";
-import { buildStorefrontPath } from "@/lib/storefront-path";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 
-function revalidateCart(channel: string) {
-	for (const locale of getStorefrontLocaleSlugs()) {
-		revalidatePath(buildStorefrontPath(locale, channel, "/cart"));
-	}
-	revalidateStorefrontChrome(channel);
-}
-
-/** Invalidate cached storefront chrome (header + checkout shell). Server actions only — not during RSC render. */
-export async function revalidateStorefrontChromeAction(channel: string) {
-	revalidateStorefrontChrome(channel);
-}
+// Private state (session/cart cookies) lives in dynamic holes that read cookies at
+// request time — it is never in the shared cache, so there is nothing global to
+// invalidate. `refresh()` re-renders the acting user's route in the action response;
+// `revalidatePath` here would purge shared static shells for every visitor (a
+// sitewide regeneration bill per cart click). Cross-tab sync is client-side via
+// `bumpChromeVersion()` — see src/lib/chrome-sync.ts and the `paper-vercel-cost` rule.
 
 /**
  * SDK `signOut` only clears cookies for the current NEXT_PUBLIC_SALEOR_API_URL.
@@ -38,6 +29,7 @@ async function clearAllSaleorAuthCookies() {
 	}
 }
 
+/** Callers hard-navigate afterwards (see `useLogout`), which picks up the cleared cookies. */
 export async function logout() {
 	const cookieStore = await cookies();
 
@@ -50,16 +42,6 @@ export async function logout() {
 
 	await signOutSession();
 	await clearAllSaleorAuthCookies();
-
-	for (const channel of getStaticStorefrontChannelSlugs()) {
-		revalidateStorefrontChrome(channel);
-		for (const locale of getStorefrontLocaleSlugs()) {
-			revalidatePath(buildStorefrontPath(locale, channel, "/login"));
-		}
-	}
-
-	revalidatePath("/", "layout");
-	revalidatePath("/checkout");
 }
 
 export async function saveCheckoutId(channel: string, checkoutId: string) {
@@ -74,13 +56,10 @@ export async function saveCheckoutId(channel: string, checkoutId: string) {
 export async function clearCheckout(channel: string) {
 	"use server";
 	await Checkout.clearCheckoutCookie(channel);
-	for (const locale of getStorefrontLocaleSlugs()) {
-		revalidatePath(buildStorefrontPath(locale, channel, "/cart"));
-	}
-	revalidateStorefrontChrome(channel);
+	refresh();
 }
 
-export async function deleteCartLine(checkoutId: string, lineId: string, channel: string) {
+export async function deleteCartLine(checkoutId: string, lineId: string) {
 	const result = await executeAuthenticatedGraphQL(CheckoutDeleteLinesDocument, {
 		variables: {
 			checkoutId,
@@ -96,17 +75,12 @@ export async function deleteCartLine(checkoutId: string, lineId: string, channel
 		}
 	}
 
-	revalidateCart(channel);
+	refresh();
 }
 
-export async function updateCartLineQuantity(
-	checkoutId: string,
-	lineId: string,
-	quantity: number,
-	channel: string,
-) {
+export async function updateCartLineQuantity(checkoutId: string, lineId: string, quantity: number) {
 	if (quantity < 1) {
-		return deleteCartLine(checkoutId, lineId, channel);
+		return deleteCartLine(checkoutId, lineId);
 	}
 
 	await executeAuthenticatedGraphQL(CheckoutLinesUpdateDocument, {
@@ -117,5 +91,5 @@ export async function updateCartLineQuantity(
 		cache: "no-cache",
 	});
 
-	revalidateCart(channel);
+	refresh();
 }

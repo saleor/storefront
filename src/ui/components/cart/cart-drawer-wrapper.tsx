@@ -24,7 +24,6 @@ export async function CartDrawerWrapper({ channel, localeSlug, cart, policies }:
 			checkoutId={checkoutId || null}
 			lines={checkout?.lines ?? []}
 			totalPrice={checkout?.totalPrice ?? null}
-			channel={channel}
 			localeSlug={localeSlug}
 			cart={cart}
 			policies={policies}

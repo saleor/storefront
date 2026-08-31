@@ -117,9 +117,7 @@ async function CartContent({
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm font-bold">{t("quantity", { count: item.quantity })}</div>
-									<DeleteLineButton
-										deleteLine={deleteCartLine.bind(null, checkoutId, item.id, params.channel)}
-									/>
+									<DeleteLineButton deleteLine={deleteCartLine.bind(null, checkoutId, item.id)} />
 								</div>
 							</div>
 						</li>

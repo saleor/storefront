@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
 import { ShoppingBag } from "lucide-react";
+import { bumpChromeVersion } from "@/lib/chrome-sync";
 import { Button } from "@/ui/components/ui/button";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
 import { cn } from "@/lib/utils";
@@ -26,6 +28,17 @@ function AddToCartButton({
 }) {
 	const { pending } = useFormStatus();
 	const t = useTranslations("pdp");
+
+	// The add-to-cart action re-renders this tab via `refresh()`; other tabs sync
+	// their cart chrome on next focus. Bump on the pending→idle edge — the form
+	// action API gives the client no other completion callback.
+	const wasPending = useRef(false);
+	useEffect(() => {
+		if (wasPending.current && !pending) {
+			bumpChromeVersion();
+		}
+		wasPending.current = pending;
+	}, [pending]);
 
 	const getButtonText = () => {
 		if (pending) return t("adding");

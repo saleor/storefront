@@ -11,7 +11,7 @@ import { MobileMenu } from "@/ui/components/nav/components/mobile-menu";
 import { MobileNavLinks } from "@/ui/components/nav/components/mobile-nav-links";
 import { NavLinksDesktop } from "@/ui/components/nav/components/nav-links-desktop";
 import { SearchBar } from "@/ui/components/nav/components/search-bar";
-import { HeaderAuthRefresh } from "@/ui/components/nav/components/user-menu/header-auth-refresh";
+import { HeaderChromeSync } from "@/ui/components/nav/components/user-menu/header-chrome-sync";
 import { UserMenuServer } from "@/ui/components/nav/components/user-menu/user-menu-server";
 import { AnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar";
 import { DismissibleAnnouncementBar } from "@/ui/sections/announcement-bar/announcement-bar-slot";
@@ -113,9 +113,9 @@ export async function HeaderActionsSlot({ params }: { params: BrowseRouteParams 
 
 	return (
 		<>
-			<HeaderAuthRefresh channel={channel}>
+			<HeaderChromeSync>
 				<UserMenuServer locale={locale} channel={channel} />
-			</HeaderAuthRefresh>
+			</HeaderChromeSync>
 			<CartNavItem channel={channel} localeSlug={locale} />
 		</>
 	);
