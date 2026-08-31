@@ -1,5 +1,8 @@
 import { io } from "next/cache";
+import packageJson from "../../package.json";
 import { type TypedDocumentString } from "../gql/graphql";
+
+const USER_AGENT = `${packageJson.name}/${packageJson.version}`;
 
 // ============================================================================
 // Result Types - Explicit error handling without exceptions
@@ -335,6 +338,7 @@ async function executeGraphQL<Result, Variables>(
 
 	const requestHeaders: Record<string, string> = {
 		"Content-Type": "application/json",
+		"User-Agent": USER_AGENT,
 		...(headers as Record<string, string> | undefined),
 	};
 
@@ -465,7 +469,7 @@ export async function executeRawGraphQL<T = unknown>(options: RawGraphQLOptions)
 	try {
 		const response = await fetch(url, {
 			method: "POST",
-			headers: { "Content-Type": "application/json", ...headers },
+			headers: { "Content-Type": "application/json", "User-Agent": USER_AGENT, ...headers },
 			body: JSON.stringify({ query, variables }),
 		});
 
