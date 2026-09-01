@@ -13,6 +13,7 @@ import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { PaymentTrustSignals } from "@/checkout/components/payment/payment-trust-signals";
 import { type StripeBillingContext } from "./stripe-payment-form";
 import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 
 type FreeOrderCheckoutProps = {
 	checkout: CheckoutFragment;
@@ -32,6 +33,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 }) => {
 	const { refreshCheckout } = useCheckoutData();
 	const paymentMessages = useCheckoutPaymentMessages();
+	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
 	const tActions = useTranslations("checkout.actions");
 	const [isLoading, setIsLoading] = useState(false);
 	const totalStr = formatMoneyWithFallback(checkout.totalPrice?.gross);
@@ -52,11 +54,14 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 				userAddresses: billing.userAddresses,
 				authenticated: billing.authenticated,
 				refreshCheckout,
+				fallbackError: paymentMessages.fulfillmentCheckFailed,
 			});
 
 			if (!result.ok) {
 				if (result.kind === "billing") {
 					onBillingErrors(result.errors, result.focusField);
+				} else if (result.kind === "availability") {
+					setAvailabilityIssue(result.issue);
 				} else {
 					onError(result.error);
 				}
@@ -78,13 +83,13 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 	};
 
 	return (
-		<div className="bg-muted/30 space-y-4 rounded-lg border border-border p-6">
+		<div className="space-y-4 rounded-lg border border-border bg-muted/30 p-6">
 			<p className="text-sm text-muted-foreground">{paymentMessages.freeOrderBody(totalStr)}</p>
 			<PaymentTrustSignals />
 			<Button
 				type="button"
 				className="h-12 w-full md:w-auto md:min-w-[200px]"
-				disabled={isLoading}
+				disabled={isLoading || Boolean(availabilityIssue)}
 				onClick={() => void handleComplete()}
 			>
 				{isLoading ? (

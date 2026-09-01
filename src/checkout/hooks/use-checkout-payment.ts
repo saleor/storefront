@@ -26,6 +26,8 @@ import {
 import { navigateToOrderConfirmation } from "@/checkout/lib/payment/navigate-to-order";
 import { useCheckoutGatewayMessages } from "@/checkout/hooks/use-checkout-gateway-messages";
 import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
+import { validateCheckoutFulfillment } from "@/checkout/lib/validate-checkout-fulfillment";
 
 type UseCheckoutPaymentParams = {
 	checkout: CheckoutFragment;
@@ -47,6 +49,7 @@ export function useCheckoutPayment({
 	authenticated,
 }: UseCheckoutPaymentParams) {
 	const { refreshCheckout } = useCheckoutData();
+	const { setAvailabilityIssue } = useCheckoutAvailability();
 	const paymentMessages = useCheckoutPaymentMessages();
 	const gatewayMessages = useCheckoutGatewayMessages();
 
@@ -85,6 +88,7 @@ export function useCheckoutPayment({
 			}
 
 			setErrors({});
+			setAvailabilityIssue(null);
 			setIsProcessing(true);
 			let orderPlaced = false;
 
@@ -140,6 +144,20 @@ export function useCheckoutPayment({
 				}
 
 				setPriceChangeNotice(null);
+
+				const fulfillment = await validateCheckoutFulfillment(
+					liveCheckout,
+					paymentMessages.fulfillmentCheckFailed,
+				);
+				if (!fulfillment.ok) {
+					if (fulfillment.reason === "availability") {
+						setAvailabilityIssue(fulfillment.issue);
+					} else {
+						setErrors({ payment: fulfillment.error });
+					}
+					return;
+				}
+
 				markPaymentCompleting(liveCheckout.id);
 
 				const payResult = await executePayment(
@@ -190,6 +208,7 @@ export function useCheckoutPayment({
 			authenticated,
 			provider,
 			refreshCheckout,
+			setAvailabilityIssue,
 			paymentMessages,
 			gatewayMessages,
 		],

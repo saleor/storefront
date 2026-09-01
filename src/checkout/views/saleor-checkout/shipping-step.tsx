@@ -5,6 +5,9 @@ import { Truck, Clock, Leaf, ChevronLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { cn } from "@/lib/utils";
 import { updateCheckoutDeliveryMethod } from "@/app/(checkout)/actions";
+import { availabilityIssueFromFieldErrors } from "@/checkout/lib/checkout-availability";
+import { validateCheckoutFulfillment } from "@/checkout/lib/validate-checkout-fulfillment";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import type { DeliveryOption, ServerCheckout } from "@/checkout/lib/checkout-types";
 import { hasDeliveryProblem } from "@/checkout/lib/delivery-problems";
@@ -49,6 +52,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	const selectedMethod = resolveSelectedDeliveryId(userSelectedMethod, deliveries, savedDeliveryId);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
 
 	const showInvalidWarning =
 		hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid") &&
@@ -67,31 +71,55 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 
 			setIsSubmitting(true);
 			setError(null);
+			setAvailabilityIssue(null);
 
 			try {
+				let nextCheckout = checkout;
 				if (selectedMethod !== savedDeliveryId) {
 					const result = await updateCheckoutDeliveryMethod(checkout.id, selectedMethod);
 					if (!result.ok) {
-						setError(
-							result.error ?? result.fieldErrors?.[0]?.message ?? t("errors.updateShippingMethodFailed"),
-						);
+						const issue = result.fieldErrors?.length
+							? availabilityIssueFromFieldErrors(checkout.lines, result.fieldErrors)
+							: null;
+						if (issue) {
+							setAvailabilityIssue(issue);
+						} else {
+							setError(
+								result.error ?? result.fieldErrors?.[0]?.message ?? t("errors.updateShippingMethodFailed"),
+							);
+						}
 						setIsSubmitting(false);
 						return;
 					}
-					onComplete(result.checkout);
+					nextCheckout = result.checkout;
+				}
+
+				const fulfillment = await validateCheckoutFulfillment(
+					nextCheckout,
+					t("errors.fulfillmentCheckFailed"),
+				);
+				if (!fulfillment.ok) {
+					if (fulfillment.reason === "availability") {
+						setAvailabilityIssue(fulfillment.issue);
+					} else {
+						setError(fulfillment.error);
+					}
+					setIsSubmitting(false);
 					return;
 				}
 
-				onComplete(checkout);
+				onComplete(nextCheckout);
 			} catch {
+				setError(t("errors.fulfillmentCheckFailed"));
 				setIsSubmitting(false);
 			}
 		},
-		[selectedMethod, savedDeliveryId, onComplete, checkout, isSubmitting, t],
+		[selectedMethod, savedDeliveryId, onComplete, checkout, isSubmitting, setAvailabilityIssue, t],
 	);
 
 	const showSpinner = isLoadingDeliveries && !isSubmitting && deliveries.length === 0;
-	const canContinue = !isSubmitting && deliveries.length > 0 && !!selectedMethod && !showSpinner;
+	const canContinue =
+		!isSubmitting && deliveries.length > 0 && !!selectedMethod && !showSpinner && !availabilityIssue;
 	const buttonText = isSubmitting
 		? tActions("saving")
 		: showSpinner
@@ -155,8 +183,8 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 										"flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors",
 										"focus-within:ring-2 focus-within:ring-foreground focus-within:ring-offset-2",
 										isSelected
-											? "bg-secondary/50 border-foreground"
-											: "hover:border-muted-foreground/50 border-border",
+											? "border-foreground bg-secondary/50"
+											: "border-border hover:border-muted-foreground/50",
 									)}
 								>
 									<input

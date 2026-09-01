@@ -27,4 +27,21 @@ describe("mapAddressFieldErrors", () => {
 			streetAddress1: "Invalid value",
 		});
 	});
+
+	it("leaves stock/line errors out so the availability banner can own them", () => {
+		expect(
+			mapAddressFieldErrors(
+				[{ field: "quantity", message: "Could not add items M. Only 0 remaining in stock." }],
+				"streetAddress1",
+				"Invalid value",
+			),
+		).toEqual({});
+		expect(
+			mapAddressFieldErrors(
+				[{ field: "streetAddress1", message: "Only 0 remaining in stock.", code: "INSUFFICIENT_STOCK" }],
+				"streetAddress1",
+				"Invalid value",
+			),
+		).toEqual({});
+	});
 });

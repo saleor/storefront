@@ -34,12 +34,15 @@ import {
 	storeStripeTransactionId,
 } from "@/checkout/lib/payment/stripe-transaction-storage";
 import type { CheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
+import type { CheckoutAvailabilityIssue } from "@/checkout/lib/checkout-availability";
+import { validateCheckoutFulfillment } from "@/checkout/lib/validate-checkout-fulfillment";
 
 export type StripeCheckoutPayResult =
 	| { ok: true }
 	| { ok: false; kind: "error"; message: string }
 	| { ok: false; kind: "billing"; errors: Record<string, string>; focusField?: string }
-	| { ok: false; kind: "price_change"; notice: CheckoutPriceChangeNotice };
+	| { ok: false; kind: "price_change"; notice: CheckoutPriceChangeNotice }
+	| { ok: false; kind: "availability"; issue: CheckoutAvailabilityIssue };
 
 type ExecuteStripeCheckoutPaymentParams = {
 	stripe: Stripe;
@@ -203,6 +206,14 @@ async function runStripeCheckoutPayment({
 				kind: "price_change",
 				notice: buildCheckoutPriceChangeNotice(displayedAmount, payAmount, currency),
 			};
+		}
+
+		const fulfillment = await validateCheckoutFulfillment(liveCheckout, messages.fulfillmentCheckFailed);
+		if (!fulfillment.ok) {
+			if (fulfillment.reason === "availability") {
+				return { ok: false, kind: "availability", issue: fulfillment.issue };
+			}
+			return { ok: false, kind: "error", message: fulfillment.error };
 		}
 
 		let methodContext = paymentMethodContext;

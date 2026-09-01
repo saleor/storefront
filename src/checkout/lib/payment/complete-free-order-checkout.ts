@@ -4,6 +4,8 @@ import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount"
 import { updateCheckoutBilling } from "@/checkout/lib/payment/update-billing";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
 import { type ServerCheckout } from "@/checkout/lib/checkout-types";
+import type { CheckoutAvailabilityIssue } from "@/checkout/lib/checkout-availability";
+import { validateCheckoutFulfillment } from "@/checkout/lib/validate-checkout-fulfillment";
 
 export type CompleteFreeOrderCheckoutParams = {
 	checkout: CheckoutFragment;
@@ -14,12 +16,14 @@ export type CompleteFreeOrderCheckoutParams = {
 	userAddresses: ReadonlyArray<AddressFragment> | undefined;
 	authenticated: boolean;
 	refreshCheckout: (options?: { updateState?: boolean }) => Promise<ServerCheckout | null>;
+	fallbackError: string;
 };
 
 export type CompleteFreeOrderCheckoutResult =
 	| { ok: true }
 	| { ok: false; kind: "billing"; errors: Record<string, string>; focusField?: string }
-	| { ok: false; kind: "complete"; error: string };
+	| { ok: false; kind: "complete"; error: string }
+	| { ok: false; kind: "availability"; issue: CheckoutAvailabilityIssue };
 
 /** Billing sync + checkoutComplete for $0 totals (no PSP transaction). */
 export async function completeFreeOrderCheckout({
@@ -31,6 +35,7 @@ export async function completeFreeOrderCheckout({
 	userAddresses,
 	authenticated,
 	refreshCheckout,
+	fallbackError,
 }: CompleteFreeOrderCheckoutParams): Promise<CompleteFreeOrderCheckoutResult> {
 	const billingResult = await updateCheckoutBilling({
 		checkoutId: checkout.id,
@@ -59,6 +64,14 @@ export async function completeFreeOrderCheckout({
 			kind: "complete",
 			error: "Your order total has changed and now requires payment. Please review and try again.",
 		};
+	}
+
+	const fulfillment = await validateCheckoutFulfillment(checkoutToComplete, fallbackError);
+	if (!fulfillment.ok) {
+		if (fulfillment.reason === "availability") {
+			return { ok: false, kind: "availability", issue: fulfillment.issue };
+		}
+		return { ok: false, kind: "complete", error: fulfillment.error };
 	}
 
 	const completeResult = await finalizeCheckoutOrder(checkoutToComplete.id, checkoutToComplete.channel.slug);

@@ -22,15 +22,21 @@ import {
 	getAddressInputData,
 	getAddressInputDataFromAddress,
 	isMatchingAddressData,
+	isSameAddressInput,
 } from "@/checkout/components/address-form/utils";
 import { useUser } from "@/checkout/hooks/use-user";
 import { useOrphanedCheckoutRecovery } from "@/checkout/hooks/use-orphaned-checkout-recovery";
 import { getQueryParams, createQueryString } from "@/checkout/lib/utils/url";
 import { mapAddressFieldErrors } from "@/checkout/lib/address-field-errors";
 import {
+	availabilityIssueFromFieldErrors,
+	partitionCheckoutFieldErrors,
+} from "@/checkout/lib/checkout-availability";
+import {
 	getCheckoutSaveAddressFlag,
 	isUsingSavedShippingAddress,
 } from "@/checkout/lib/shipping-address-submit";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
 import { useTranslations } from "next-intl";
 
@@ -106,6 +112,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const t = useTranslations("checkout.actions");
 	const tErrors = useTranslations("checkout.errors");
 	const tAccount = useTranslations("account.errors");
+	const { setAvailabilityIssue } = useCheckoutAvailability();
 	const infoStep = useCheckoutStepNumber("INFO", checkout.isShippingRequired);
 	const {
 		isOrphaned,
@@ -323,24 +330,27 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			}
 
 			setIsSubmitting(true);
+			setAvailabilityIssue(null);
 			try {
 				let updatedCheckout: ServerCheckout = checkout;
 
 				if (!authenticated) {
-					const emailResult = await updateCheckoutEmail(checkout.id, email);
-					if (!emailResult.ok) {
-						if (emailResult.fieldErrors?.length) {
-							const errorMap: Record<string, string> = {};
-							emailResult.fieldErrors.forEach((err) => {
-								errorMap[err.field || "email"] = err.message || tErrors("invalidValue");
-							});
-							setErrors(errorMap);
-						} else {
-							setErrors({ email: emailResult.error ?? tErrors("updateEmailFailed") });
+					if (checkout.email !== email) {
+						const emailResult = await updateCheckoutEmail(checkout.id, email);
+						if (!emailResult.ok) {
+							if (emailResult.fieldErrors?.length) {
+								const errorMap: Record<string, string> = {};
+								emailResult.fieldErrors.forEach((err) => {
+									errorMap[err.field || "email"] = err.message || tErrors("invalidValue");
+								});
+								setErrors(errorMap);
+							} else {
+								setErrors({ email: emailResult.error ?? tErrors("updateEmailFailed") });
+							}
+							return;
 						}
-						return;
+						updatedCheckout = emailResult.checkout;
 					}
-					updatedCheckout = emailResult.checkout;
 
 					if (isCheckoutMarketingConsentEnabled()) {
 						try {
@@ -395,17 +405,27 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					}
 
 					if (addressInput) {
+						const addressUnchanged = isSameAddressInput(updatedCheckout.shippingAddress, addressInput);
 						const addressResult = await updateCheckoutShippingAddress(
 							updatedCheckout.id,
 							addressInput,
-							saveAddress,
+							addressUnchanged ? false : saveAddress,
 						);
 
 						if (!addressResult.ok) {
 							if (addressResult.fieldErrors?.length) {
-								setErrors(
-									mapAddressFieldErrors(addressResult.fieldErrors, "streetAddress1", tErrors("invalidValue")),
+								const { address } = partitionCheckoutFieldErrors(addressResult.fieldErrors);
+								const issue = availabilityIssueFromFieldErrors(
+									updatedCheckout.lines,
+									addressResult.fieldErrors,
+									tErrors("itemUnavailableMessage"),
 								);
+								if (issue) {
+									setAvailabilityIssue(issue);
+								}
+								if (address.length) {
+									setErrors(mapAddressFieldErrors(address, "streetAddress1", tErrors("invalidValue")));
+								}
 							} else {
 								setErrors({
 									form: addressResult.error ?? tErrors("updateAddressFailed"),
@@ -445,6 +465,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			countryCode,
 			effectiveCountryCode,
 			onComplete,
+			setAvailabilityIssue,
 		],
 	);
 
@@ -497,7 +518,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			: t("continueToPayment");
 
 	return (
-		<form className="space-y-8" onSubmit={handleSubmit} noValidate>
+		<form className="space-y-8" method="post" action="#" onSubmit={handleSubmit} noValidate>
 			{isOrphaned ? (
 				<div className="space-y-3 rounded-lg border border-border bg-muted/40 p-4">
 					<p className="text-sm text-foreground">{tErrors("orphanedCartMessage")}</p>

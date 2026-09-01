@@ -21,6 +21,7 @@ import { StripePaymentProcessingOverlay } from "./stripe-payment-processing-over
 import { PaymentTrustSignals } from "@/checkout/components/payment/payment-trust-signals";
 import { type StripeBillingContext } from "./stripe-billing-context";
 import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 
 export type { StripeBillingContext } from "./stripe-billing-context";
 
@@ -53,6 +54,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 	const liveSearchParams = useLiveCheckoutSearchParams(searchParams);
 	const { refreshCheckout } = useCheckoutData();
 	const paymentMessages = useCheckoutPaymentMessages();
+	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
 	const tActions = useTranslations("checkout.actions");
 	const [isLoading, setIsLoading] = useState(false);
 	const paymentElementChangeTypeRef = useRef<string | null>(null);
@@ -92,6 +94,8 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 				onBillingErrors(result.errors, result.focusField);
 			} else if (result.kind === "price_change") {
 				onPriceChangeNotice(result.notice);
+			} else if (result.kind === "availability") {
+				setAvailabilityIssue(result.issue);
 			} else {
 				onError(result.message);
 			}
@@ -141,7 +145,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 				<Button
 					type="button"
 					className="h-12 w-full md:w-auto md:min-w-[200px]"
-					disabled={isLoading || !stripe || !elements}
+					disabled={isLoading || !stripe || !elements || Boolean(availabilityIssue)}
 					onClick={() => void handlePay()}
 				>
 					{isLoading ? (

@@ -15,6 +15,7 @@ import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { executeStripeCheckoutPayment } from "./execute-stripe-checkout-payment";
 import { type StripeBillingContext } from "./stripe-billing-context";
 import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 
 const expressCheckoutOptions: StripeExpressCheckoutElementOptions = {
 	buttonType: {
@@ -53,6 +54,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 	onPriceChangeNotice,
 	onPaymentActivityChange,
 }) => {
+	const { setAvailabilityIssue } = useCheckoutAvailability();
 	const stripe = useStripe();
 	const elements = useElements();
 	const searchParams = useSearchParams();
@@ -102,6 +104,12 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 					return;
 				}
 
+				if (result.kind === "availability") {
+					setAvailabilityIssue(result.issue);
+					event.paymentFailed({ message: result.issue.message });
+					return;
+				}
+
 				onError(result.message);
 				event.paymentFailed({ message: result.message });
 				return;
@@ -117,6 +125,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			onPriceChangeNotice,
 			paymentMessages,
 			refreshCheckout,
+			setAvailabilityIssue,
 			liveSearchParams,
 			stripe,
 		],

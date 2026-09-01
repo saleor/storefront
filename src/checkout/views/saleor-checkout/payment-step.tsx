@@ -32,6 +32,7 @@ import { usesClientPaymentSubmit } from "@/checkout/lib/payment";
 import { consumePaymentCompletionError } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
 import { useSyncCheckoutRouterUrl } from "@/checkout/hooks/use-sync-checkout-router-url";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -47,6 +48,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	onPaymentBusyChange,
 }) => {
 	useSyncCheckoutRouterUrl();
+	const { availabilityIssue } = useCheckoutAvailability();
 
 	const { user, authenticated } = useUser();
 	const tActions = useTranslations("checkout.actions");
@@ -173,7 +175,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 		return fieldErrors;
 	}, [errors]);
 
-	const isDisabled = isLoading || hasInvalidDelivery || (!canSubmit && !isFreeOrder);
+	const isDisabled =
+		isLoading || hasInvalidDelivery || Boolean(availabilityIssue) || (!canSubmit && !isFreeOrder);
 
 	const paymentContent = (
 		<>

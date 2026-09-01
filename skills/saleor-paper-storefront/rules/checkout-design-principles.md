@@ -88,6 +88,7 @@ Use reward-early-punish-late validation: clear errors on `input`, validate on `b
 - Preserve entered data on errors — never wipe the form.
 - Specific, plain-language error copy next to the field; error summary on submit for multiple failures.
 - `aria-live` for dynamic errors (accessibility = conversion).
+- **Inventory / warehouse stock** is not a field error. Shopify puts it on `$.cart` (page banner) and on the cart line (`MERCHANDISE_OUT_OF_STOCK` / `purchase.checkout.cart-line-item`), and the banner includes a next step. Paper: `CheckoutIssueBanner` + sold-out + Remove on the matching summary line. Re-validate when the destination is already known (Information Continue, even if the address is unchanged) and again immediately before pay. A failed stock check (including network) must block pay — do not fail open. Never attach it to contact or street. Do not copy Shopify’s “items were removed” modal — Saleor leaves the line in the checkout. Do not wait for `checkoutComplete` after a charge — that path is not recoverable.
 
 ### 8. Trust is contextual
 
