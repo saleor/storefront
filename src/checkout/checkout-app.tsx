@@ -4,7 +4,12 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { nextCheckoutTransport } from "@/app/(checkout)/checkout-transport";
-import type { CheckoutUser, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
+import type {
+	ChannelDefaultCountryCode,
+	CheckoutUser,
+	ServerCheckout,
+	ShippingCountries,
+} from "@/checkout/lib/checkout-types";
 import { setCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import { CheckoutContentProvider, type CheckoutContent } from "@/lib/content";
 import { CheckoutDataProvider, type CheckoutLoadState } from "@/checkout/providers/checkout-data";
@@ -35,6 +40,7 @@ type CheckoutAppProps = {
 	initialCheckout: ServerCheckout | null;
 	initialUser: CheckoutUser | null;
 	shippingCountries: ShippingCountries;
+	channelDefaultCountryCode: ChannelDefaultCountryCode;
 	checkoutContent: CheckoutContent;
 	storefrontLocale: LocaleSlug;
 	messages: CheckoutMessages;
@@ -50,6 +56,7 @@ export function CheckoutApp({
 	initialCheckout,
 	initialUser,
 	shippingCountries,
+	channelDefaultCountryCode,
 	checkoutContent,
 	storefrontLocale,
 	messages,
@@ -68,6 +75,7 @@ export function CheckoutApp({
 							loadState={loadState}
 							initialCheckout={initialCheckout}
 							shippingCountries={shippingCountries}
+							channelDefaultCountryCode={channelDefaultCountryCode}
 						>
 							<CheckoutContentProvider content={checkoutContent}>
 								<CheckoutPaymentReturnErrorProvider>

@@ -55,6 +55,8 @@ import { AddressFields, FormInput, FormSelect, FieldError } from "@/checkout/com
 | `AddressDisplay`  | `address`, `title?`, `onEdit?`                                                       | Show address read-only       |
 | `AddressFields`   | `orderedFields`, `formData`, `errors`, `onFieldChange`, `autocompleteSection?`, etc. | Dynamic country-aware fields |
 
+**Blank form country:** empty shipping/billing country selects use Saleor `channel.defaultCountry` when that code is in the channel’s shippable countries. Do not default to the first alphabetically listed country (often Afghanistan). `defaultCountry` is staff/app-only — fetch it with a **raw** app-token query (`executeRawGraphQL`, no codegen document). Generated checkout operations are gitignored; a new `ChannelDefaultCountryDocument` crashes a running `next dev` that still has a stale `operations.ts`, which aborted guest Continue on RSC refresh. Never add `defaultCountry` to the public checkout `channel` query (that field error nulls the whole channel and wipes the country list). Resolution is `resolveBlankAddressCountryCode`. Without an app token the blank form falls back to the first listed country. Guest Continue must not swallow mutation errors or let optional marketing-consent metadata abort the step.
+
 ## Form field autofill (`input-attributes`)
 
 Checkout text inputs must expose `name`, `autoComplete`, and `inputMode` so mobile keyboards and browser autofill work, and validation can focus the first error (`querySelector('[name="…"]')`).

@@ -1,5 +1,10 @@
 import { getRequestConfig } from "next-intl/server";
-import { getDefaultLocaleSlug, isStorefrontLocaleSlug, type LocaleSlug } from "@/config/locale";
+import {
+	getDefaultLocaleSlug,
+	getDefaultTimeZone,
+	isStorefrontLocaleSlug,
+	type LocaleSlug,
+} from "@/config/locale";
 import { mergeMessagesWithDefault } from "@/i18n/merge-messages";
 
 async function loadMessagesForLocale(locale: LocaleSlug): Promise<Record<string, unknown>> {
@@ -33,6 +38,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
 	return {
 		locale,
+		timeZone: getDefaultTimeZone(),
 		messages: await loadMessagesForLocale(locale),
 	};
 });

@@ -1,7 +1,5 @@
 "use client";
 
-/* eslint-disable react-hooks/preserve-manual-memoization -- large submit handler; refactor separately */
-
 import { useState, useCallback, useEffect, type FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { syncAuthSurfacesAfterSignIn } from "@/lib/auth";
@@ -28,6 +26,7 @@ import {
 import { useUser } from "@/checkout/hooks/use-user";
 import { useOrphanedCheckoutRecovery } from "@/checkout/hooks/use-orphaned-checkout-recovery";
 import { getQueryParams, createQueryString } from "@/checkout/lib/utils/url";
+import { mapAddressFieldErrors } from "@/checkout/lib/address-field-errors";
 import {
 	getCheckoutSaveAddressFlag,
 	isUsingSavedShippingAddress,
@@ -115,14 +114,9 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 		recoverAsGuest,
 	} = useOrphanedCheckoutRecovery(checkout);
 	const contactLoading = userLoading || isAuthTransitionLoading;
-	const { availableShippingCountries } = useAvailableShippingCountries();
+	const { availableShippingCountries, resolveBlankCountry } = useAvailableShippingCountries();
 	const shippingAddress = checkout.shippingAddress;
-
-	// Default country: use checkout's address, or first available country from channel
-	const defaultCountry =
-		(shippingAddress?.country?.code as CountryCode) ||
-		availableShippingCountries[0]?.code ||
-		("US" as CountryCode);
+	const defaultCountry = resolveBlankCountry(shippingAddress?.country?.code);
 
 	// View state - what sub-view are we showing?
 	const [contactView, setContactView] = useState<ContactView>(() => {
@@ -141,6 +135,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 	// ----- Address form state (for guests/new address) -----
 	const [countryCode, setCountryCode] = useState<CountryCode>(defaultCountry);
+	const countryInList = availableShippingCountries.some((country) => country.code === countryCode);
+	const effectiveCountryCode = countryInList ? countryCode : defaultCountry;
 	const [formData, setFormData] = useState<Record<string, string>>(() => ({
 		firstName: shippingAddress?.firstName || "",
 		lastName: shippingAddress?.lastName || "",
@@ -194,7 +190,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 	// Country-specific address configuration
 	const { orderedAddressFields, getFieldLabel, isRequiredField, countryAreaChoices } =
-		useAddressFormUtils(countryCode);
+		useAddressFormUtils(effectiveCountryCode);
 
 	// ----- Event Handlers -----
 	const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -342,13 +338,16 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 						} else {
 							setErrors({ email: emailResult.error ?? tErrors("updateEmailFailed") });
 						}
-						setIsSubmitting(false);
 						return;
 					}
 					updatedCheckout = emailResult.checkout;
 
 					if (isCheckoutMarketingConsentEnabled()) {
-						await updateCheckoutMarketingConsent(updatedCheckout.id, subscribeNews);
+						try {
+							await updateCheckoutMarketingConsent(updatedCheckout.id, subscribeNews);
+						} catch {
+							// Optional metadata — never block guest continue.
+						}
 					}
 
 					if (createAccount && accountPassword) {
@@ -367,7 +366,6 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 							setErrors({
 								password: fieldError?.message ?? registerResult.error ?? tErrors("createAccountFailed"),
 							});
-							setIsSubmitting(false);
 							return;
 						}
 					}
@@ -393,7 +391,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 							addressInput = getAddressInputDataFromAddress(selectedAddress);
 						}
 					} else {
-						addressInput = getAddressInputData({ ...formData, countryCode });
+						addressInput = getAddressInputData({ ...formData, countryCode: effectiveCountryCode });
 					}
 
 					if (addressInput) {
@@ -405,16 +403,15 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 						if (!addressResult.ok) {
 							if (addressResult.fieldErrors?.length) {
-								const errorMap: Record<string, string> = {};
-								addressResult.fieldErrors.forEach((err) => {
-									const field = err.field || "streetAddress1";
-									errorMap[field] = err.message || tErrors("invalidValue");
-								});
-								setErrors(errorMap);
+								setErrors(
+									mapAddressFieldErrors(addressResult.fieldErrors, "streetAddress1", tErrors("invalidValue")),
+								);
 							} else {
-								setErrors({ streetAddress1: addressResult.error ?? tErrors("updateAddressFailed") });
+								setErrors({
+									form: addressResult.error ?? tErrors("updateAddressFailed"),
+									streetAddress1: addressResult.error ?? tErrors("updateAddressFailed"),
+								});
 							}
-							setIsSubmitting(false);
 							return;
 						}
 						updatedCheckout = addressResult.checkout;
@@ -423,6 +420,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 				onComplete(updatedCheckout);
 			} catch {
+				setErrors({ form: tErrors("crashMessage") });
+			} finally {
 				setIsSubmitting(false);
 			}
 		},
@@ -444,6 +443,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			getFieldLabel,
 			formData,
 			countryCode,
+			effectiveCountryCode,
 			onComplete,
 		],
 	);
@@ -519,6 +519,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 				</div>
 			) : null}
 
+			{errors.form ? <p className="text-sm text-destructive">{errors.form}</p> : null}
+
 			<ContactSection
 				isSignedIn={authenticated}
 				user={user}
@@ -554,7 +556,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					onSelectAddress={handleSelectAddress}
 					showNewAddressForm={showNewAddressForm}
 					onShowNewAddressForm={handleShowNewAddressForm}
-					countryCode={countryCode}
+					countryCode={effectiveCountryCode}
 					onCountryChange={handleCountryChange}
 					availableCountries={availableShippingCountries}
 					formData={formData}

@@ -19,6 +19,7 @@ URL: /us/products/...  →  Channel "us" (USD)
 - Currency comes from the channel settings in Saleor
 - Channel selector appears in the footer (shows currency codes)
 - Checkout inherits the channel from where the cart was created
+- Blank checkout address forms use the channel’s **default country** (`channel.defaultCountry`, via `SALEOR_APP_TOKEN` / `ChannelsList`) when that country is shippable — not the first alphabetically listed country
 
 ## Saleor Commerce Model
 

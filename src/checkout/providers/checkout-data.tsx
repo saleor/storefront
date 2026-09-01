@@ -3,7 +3,12 @@
 import { createContext, type ReactNode, use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
-import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
+import type {
+	ChannelDefaultCountryCode,
+	CheckoutLoadState,
+	ServerCheckout,
+	ShippingCountries,
+} from "@/checkout/lib/checkout-types";
 import { adoptCheckoutSnapshot, resolveSessionCheckout } from "@/checkout/lib/checkout-sync";
 
 export type { CheckoutLoadState };
@@ -17,6 +22,7 @@ export type CheckoutDataContextValue = {
 	loadState: CheckoutLoadState;
 	checkout: ServerCheckout | null;
 	shippingCountries: ShippingCountries;
+	channelDefaultCountryCode: ChannelDefaultCountryCode;
 	setCheckout: (checkout: ServerCheckout) => void;
 	/** Re-fetch from Saleor; returns null when the checkout is missing or the request fails. */
 	refreshCheckout: (options?: RefreshCheckoutOptions) => Promise<ServerCheckout | null>;
@@ -29,6 +35,7 @@ type CheckoutDataProviderProps = {
 	loadState: CheckoutLoadState;
 	initialCheckout: ServerCheckout | null;
 	shippingCountries: ShippingCountries;
+	channelDefaultCountryCode: ChannelDefaultCountryCode;
 	children: ReactNode;
 };
 
@@ -37,6 +44,7 @@ export function CheckoutDataProvider({
 	loadState,
 	initialCheckout,
 	shippingCountries,
+	channelDefaultCountryCode,
 	children,
 }: CheckoutDataProviderProps) {
 	const [checkout, setCheckout] = useState<ServerCheckout | null>(initialCheckout);
@@ -95,10 +103,11 @@ export function CheckoutDataProvider({
 			loadState,
 			checkout: sessionCheckout,
 			shippingCountries,
+			channelDefaultCountryCode,
 			setCheckout,
 			refreshCheckout,
 		}),
-		[loadState, refreshCheckout, sessionCheckout, shippingCountries],
+		[loadState, refreshCheckout, sessionCheckout, shippingCountries, channelDefaultCountryCode],
 	);
 
 	return <CheckoutDataContext value={value}>{children}</CheckoutDataContext>;
