@@ -35,3 +35,6 @@ export type ShippingCountryOption = {
 };
 
 export type ShippingCountries = ShippingCountryOption[];
+
+/** Saleor `channel.defaultCountry`, when the channel query succeeded. */
+export type ChannelDefaultCountryCode = CountryCode | null;

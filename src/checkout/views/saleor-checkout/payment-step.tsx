@@ -8,7 +8,8 @@ import {
 	buildPaymentSummaryRows,
 	useCheckoutSummaryLabels,
 } from "./checkout-summary-context";
-import { type CheckoutFragment, type CountryCode, type AddressFragment } from "@/checkout/graphql";
+import { type CheckoutFragment, type AddressFragment } from "@/checkout/graphql";
+import { useAvailableShippingCountries } from "@/checkout/hooks/use-available-shipping-countries";
 import { useUser } from "@/checkout/hooks/use-user";
 import { useCheckoutPayment } from "@/checkout/hooks/use-checkout-payment";
 import { MobileStickyAction } from "./mobile-sticky-action";
@@ -31,6 +32,7 @@ import { usesClientPaymentSubmit } from "@/checkout/lib/payment";
 import { consumePaymentCompletionError } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
 import { useSyncCheckoutRouterUrl } from "@/checkout/hooks/use-sync-checkout-router-url";
+import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -46,6 +48,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	onPaymentBusyChange,
 }) => {
 	useSyncCheckoutRouterUrl();
+	const { availabilityIssue } = useCheckoutAvailability();
 
 	const { user, authenticated } = useUser();
 	const tActions = useTranslations("checkout.actions");
@@ -54,11 +57,16 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	const paymentStep = useCheckoutStepNumber("PAYMENT", isShippingRequired);
 	const hasShippingAddress = !!checkout.shippingAddress;
 	const shippingAddress = checkout.shippingAddress;
+	const { resolveBlankCountry } = useAvailableShippingCountries();
+	// Billing country usually matches shipping — prefer it over the channel default.
+	const defaultBillingCountry = resolveBlankCountry(
+		checkout.billingAddress?.country?.code ?? checkout.shippingAddress?.country?.code,
+	);
 
 	const [isPaymentBusy, setIsPaymentBusy] = useState(false);
 	const [sameAsBilling, setSameAsBilling] = useState(isShippingRequired && hasShippingAddress);
 	const [billingData, setBillingData] = useState<BillingAddressData>(() => ({
-		countryCode: (checkout.billingAddress?.country?.code as CountryCode) || "US",
+		countryCode: defaultBillingCountry,
 		formData: {
 			firstName: checkout.billingAddress?.firstName || "",
 			lastName: checkout.billingAddress?.lastName || "",
@@ -167,7 +175,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 		return fieldErrors;
 	}, [errors]);
 
-	const isDisabled = isLoading || hasInvalidDelivery || (!canSubmit && !isFreeOrder);
+	const isDisabled =
+		isLoading || hasInvalidDelivery || Boolean(availabilityIssue) || (!canSubmit && !isFreeOrder);
 
 	const paymentContent = (
 		<>

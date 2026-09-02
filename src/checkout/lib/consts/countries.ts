@@ -252,5 +252,3 @@ export const countries: CountryCode[] = [
 	"ZW",
 	"AX",
 ];
-
-export const defaultCountry = countries[0];

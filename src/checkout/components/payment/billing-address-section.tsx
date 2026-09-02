@@ -84,7 +84,9 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 }) => {
 	const t = useTranslations("checkout.billing");
 	const tShipping = useTranslations("checkout.shipping");
-	const { availableShippingCountries } = useAvailableShippingCountries();
+	const { availableShippingCountries, resolveBlankCountry } = useAvailableShippingCountries();
+	// Billing country usually matches shipping — prefer it over the channel default.
+	const defaultCountry = resolveBlankCountry(billingAddress?.country?.code ?? shippingAddress?.country?.code);
 
 	const hasShippingAddress = !!shippingAddress;
 	const selectableAddresses = useMemo(
@@ -115,9 +117,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 		getPreferredBillingAddressId(),
 	);
 
-	const [countryCode, setCountryCode] = useState<CountryCode>(
-		(billingAddress?.country?.code as CountryCode) || "US",
-	);
+	const [countryCode, setCountryCode] = useState<CountryCode>(defaultCountry);
 
 	const [formData, setFormData] = useState<Record<string, string>>({
 		firstName: billingAddress?.firstName || "",
@@ -148,7 +148,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 		setSelectedAddressId(id);
 		const address = selectableAddresses.find((a) => a.id === id);
 		if (address) {
-			setCountryCode((address.country?.code as CountryCode) || "US");
+			setCountryCode((address.country?.code as CountryCode) || defaultCountry);
 			setFormData({
 				firstName: address.firstName || "",
 				lastName: address.lastName || "",

@@ -449,7 +449,13 @@
 			"createAccountFailed": "Échec de la création du compte",
 			"updateAddressFailed": "Échec de la mise à jour de l'adresse",
 			"crashTitle": "Erreur de paiement",
-			"crashMessage": "Un problème est survenu lors du chargement du paiement. Veuillez réessayer."
+			"crashMessage": "Un problème est survenu lors du chargement du paiement. Veuillez réessayer.",
+			"itemUnavailableTitle": "An item isn’t available",
+			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
+			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
+			"itemUnavailableRemove": "Remove item",
+			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
 		},
 		"contact": {
 			"title": "Contact",
@@ -482,7 +488,10 @@
 			"shipTo": "Livrer à",
 			"method": "Mode",
 			"delivery": "Livraison",
-			"digital": "Numérique"
+			"digital": "Numérique",
+			"soldOut": "Sold out",
+			"unavailableHint": "An item isn’t available",
+			"removeItem": "Remove"
 		},
 		"promo": {
 			"placeholder": "Code promo",

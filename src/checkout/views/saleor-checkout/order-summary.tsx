@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FC, type FormEvent } from "react";
+import { useEffect, useState, type FC, type FormEvent } from "react";
 import Image from "next/image";
 import { Tag, ShieldCheck, RotateCcw, Truck, ChevronDown, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
@@ -46,6 +46,10 @@ interface OrderSummaryProps {
 	order?: OrderFragment;
 	editable?: boolean;
 	onCheckoutChange?: () => void;
+	/** Line ids Saleor marked unavailable (warehouse stock for this destination). */
+	unavailableLineIds?: readonly string[];
+	onRemoveUnavailableLine?: (lineId: string) => void | Promise<void>;
+	isRemovingUnavailableLine?: boolean;
 }
 
 // ============================================================================
@@ -168,13 +172,29 @@ function getCheckoutErrorMessage(errors: readonly CheckoutErrorFragment[] | unde
 // Component
 // ============================================================================
 
-export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable, onCheckoutChange }) => {
+export const OrderSummary: FC<OrderSummaryProps> = ({
+	checkout,
+	order,
+	editable,
+	onCheckoutChange,
+	unavailableLineIds = [],
+	onRemoveUnavailableLine,
+	isRemovingUnavailableLine,
+}) => {
 	const t = useTranslations("checkout.summary");
 	const tCommon = useTranslations("account.common");
 	const localeSlug = useCheckoutBrowseLocale();
 	const localeBcp47 = getLocaleDefinition(localeSlug)?.bcp47 ?? localeConfig.default;
 	// Collapsed by default on mobile
 	const [isExpanded, setIsExpanded] = useState(false);
+	const unavailableIds = new Set(unavailableLineIds);
+
+	useEffect(() => {
+		if (unavailableLineIds.length > 0) {
+			// eslint-disable-next-line react-hooks/set-state-in-effect -- expand summary so the sold-out line is visible
+			setIsExpanded(true);
+		}
+	}, [unavailableLineIds]);
 
 	// Extract data from either checkout or order
 	const data = checkout ? extractCheckoutData(checkout) : order ? extractOrderData(order) : null;
@@ -266,10 +286,13 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 					</div>
 					<span className="text-base font-semibold tabular-nums">{formatMoney(total)}</span>
 				</div>
+				{unavailableLineIds.length > 0 ? (
+					<p className="text-xs text-destructive">{t("unavailableHint")}</p>
+				) : null}
 			</button>
 
 			{/* Desktop Header - Only visible on desktop */}
-			<header className="bg-secondary/30 hidden items-center gap-2 px-5 py-4 md:flex">
+			<header className="hidden items-center gap-2 bg-secondary/30 px-5 py-4 md:flex">
 				<h2 className="text-base font-semibold">{t("title")}</h2>
 				<span className="text-sm text-muted-foreground">({t("itemCount", { count: itemCount })})</span>
 			</header>
@@ -314,6 +337,21 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 												{line.attributes.join(" / ")}
 											</p>
 										)}
+										{unavailableIds.has(line.id) ? (
+											<div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+												<p className="text-xs font-medium text-destructive">{t("soldOut")}</p>
+												{onRemoveUnavailableLine ? (
+													<button
+														type="button"
+														className="text-xs font-medium text-foreground underline underline-offset-2 disabled:opacity-50"
+														disabled={isRemovingUnavailableLine}
+														onClick={() => void onRemoveUnavailableLine(line.id)}
+													>
+														{t("removeItem")}
+													</button>
+												) : null}
+											</div>
+										) : null}
 									</div>
 
 									{/* Price */}
@@ -361,7 +399,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 						</dl>
 
 						{/* Total */}
-						<div className="border-border/50 mt-4 flex items-baseline justify-between border-t pt-4">
+						<div className="mt-4 flex items-baseline justify-between border-t border-border/50 pt-4">
 							<div className="flex flex-col">
 								<span className="text-base font-semibold">{t("total")}</span>
 								{tax > 0 && <span className="text-xs text-muted-foreground">{t("includingVat")}</span>}
@@ -373,7 +411,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({ checkout, order, editable,
 					</section>
 
 					{/* Trust/Social proof */}
-					<footer className="bg-secondary/30 grid grid-cols-3 gap-2 border-t border-border px-5 py-4">
+					<footer className="grid grid-cols-3 gap-2 border-t border-border bg-secondary/30 px-5 py-4">
 						<div className="flex flex-col items-center rounded-lg bg-secondary p-2.5 text-center">
 							<ShieldCheck className="mb-1 h-4 w-4 text-muted-foreground" />
 							<span className="text-[10px] leading-tight text-muted-foreground">

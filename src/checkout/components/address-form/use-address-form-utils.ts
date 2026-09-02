@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { getAddressValidationRules } from "@/app/(checkout)/actions";
 import { type CountryCode, type ValidationRulesFragment } from "@/checkout/graphql";
 import { type OptionalAddress, type AddressField } from "@/checkout/components/address-form/types";
-import { defaultCountry } from "@/checkout/lib/consts/countries";
 import { getOrderedAddressFields, getRequiredAddressFields } from "@/checkout/components/address-form/utils";
 
 const DEFAULT_ADDRESS_FIELDS: AddressField[] = [
@@ -53,7 +52,7 @@ const LOCALIZED_FIELD_KEYS: Record<LocalizedAddressFieldLabel, string> = {
 	prefecture: "localized.prefecture",
 };
 
-export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) => {
+export const useAddressFormUtils = (countryCode: CountryCode) => {
 	const t = useTranslations("account.fields");
 	const [validationRules, setValidationRules] = useState<ValidationRulesFragment | undefined>();
 	const [loadedCountry, setLoadedCountry] = useState<CountryCode | null>(null);
@@ -62,11 +61,17 @@ export const useAddressFormUtils = (countryCode: CountryCode = defaultCountry) =
 	useEffect(() => {
 		let cancelled = false;
 
-		void getAddressValidationRules(countryCode).then((result) => {
-			if (cancelled) return;
-			setValidationRules(result.ok ? result.rules : undefined);
-			setLoadedCountry(countryCode);
-		});
+		void getAddressValidationRules(countryCode)
+			.then((result) => {
+				if (cancelled) return;
+				setValidationRules(result.ok ? result.rules : undefined);
+				setLoadedCountry(countryCode);
+			})
+			.catch(() => {
+				if (cancelled) return;
+				setValidationRules(undefined);
+				setLoadedCountry(countryCode);
+			});
 
 		return () => {
 			cancelled = true;

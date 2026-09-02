@@ -449,7 +449,13 @@
 			"createAccountFailed": "Konto konnte nicht erstellt werden",
 			"updateAddressFailed": "Adresse konnte nicht aktualisiert werden",
 			"crashTitle": "Checkout-Fehler",
-			"crashMessage": "Beim Laden des Checkouts ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+			"crashMessage": "Beim Laden des Checkouts ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+			"itemUnavailableTitle": "An item isn’t available",
+			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
+			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
+			"itemUnavailableRemove": "Remove item",
+			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -482,7 +488,10 @@
 			"shipTo": "Lieferung an",
 			"method": "Methode",
 			"delivery": "Lieferung",
-			"digital": "Digital"
+			"digital": "Digital",
+			"soldOut": "Sold out",
+			"unavailableHint": "An item isn’t available",
+			"removeItem": "Remove"
 		},
 		"promo": {
 			"placeholder": "Rabattcode",

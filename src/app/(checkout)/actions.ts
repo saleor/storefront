@@ -11,6 +11,7 @@ import {
 	CheckoutDeliveryMethodUpdateDocument,
 	CheckoutEmailUpdateDocument,
 	CheckoutMetadataUpdateDocument,
+	CheckoutLineDeleteDocument,
 	CheckoutLinesAddDocument,
 	CheckoutRemovePromoCodeDocument,
 	CheckoutShippingAddressUpdateDocument,
@@ -38,6 +39,8 @@ import {
 	type CheckoutEmailUpdateMutationVariables,
 	type CheckoutMetadataUpdateMutation,
 	type CheckoutMetadataUpdateMutationVariables,
+	type CheckoutLineDeleteMutation,
+	type CheckoutLineDeleteMutationVariables,
 	type CheckoutLinesAddMutation,
 	type CheckoutLinesAddMutationVariables,
 	type CheckoutRemovePromoCodeMutation,
@@ -116,6 +119,11 @@ const checkoutCreateDocument = toTypedDocument<CheckoutCreateMutation, CheckoutC
 const checkoutLinesAddDocument = toTypedDocument<CheckoutLinesAddMutation, CheckoutLinesAddMutationVariables>(
 	CheckoutLinesAddDocument,
 );
+
+const checkoutLineDeleteDocument = toTypedDocument<
+	CheckoutLineDeleteMutation,
+	CheckoutLineDeleteMutationVariables
+>(CheckoutLineDeleteDocument);
 
 const checkoutDeliveryMethodUpdateDocument = toTypedDocument<
 	CheckoutDeliveryMethodUpdateMutation,
@@ -627,6 +635,23 @@ export async function getAddressValidationRules(
 	}
 
 	return { ok: true, rules: result.data.addressValidationRules };
+}
+
+export async function removeCheckoutLine(checkoutId: string, lineId: string): Promise<CheckoutActionResult> {
+	const result = await executeAuthenticatedGraphQL(checkoutLineDeleteDocument, {
+		variables: {
+			checkoutId,
+			lineId,
+			languageCode: await checkoutGraphqlLanguageCode(),
+		},
+		cache: "no-cache",
+	});
+
+	if (!result.ok) {
+		return { ok: false, error: result.error.message };
+	}
+
+	return toCheckoutActionResult(result.data.checkoutLineDelete);
 }
 
 export async function applyCheckoutPromoCode(

@@ -8,6 +8,7 @@ import { rootMetadata } from "@/lib/seo";
 import { getConfiguredLocaleChannelPairs } from "@/config/locale-channel";
 import {
 	getDefaultLocaleSlug,
+	getDefaultTimeZone,
 	getStorefrontLocaleSlugs,
 	isStorefrontLocaleSlug,
 	resolveLocaleFromSlug,
@@ -79,7 +80,7 @@ export default async function LocaleRootLayout({
 			    preconnect would warm a connection the image load cannot reuse. */}
 			{mediaOrigin && <link rel="preconnect" href={mediaOrigin} />}
 			<body className="min-h-dvh font-sans">
-				<NextIntlClientProvider locale={localeSlug} messages={messages}>
+				<NextIntlClientProvider locale={localeSlug} messages={messages} timeZone={getDefaultTimeZone()}>
 					<PersistBrowseLocaleCookie locale={localeSlug} />
 					{children}
 					{/* Sampled — unsampled Speed Insights dominates the Vercel bill at scale. */}

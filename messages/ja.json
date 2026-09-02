@@ -448,6 +448,12 @@
 			"updateEmailFailed": "メールの更新に失敗しました",
 			"createAccountFailed": "アカウントの作成に失敗しました",
 			"updateAddressFailed": "住所の更新に失敗しました",
+			"itemUnavailableTitle": "An item isn’t available",
+			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
+			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
+			"itemUnavailableRemove": "Remove item",
+			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
 			"crashTitle": "チェックアウトエラー",
 			"crashMessage": "チェックアウトの読み込み中に問題が発生しました。もう一度お試しください。"
 		},

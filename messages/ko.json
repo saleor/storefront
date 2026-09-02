@@ -439,6 +439,12 @@
 			"updateEmailFailed": "이메일 업데이트에 실패했습니다",
 			"createAccountFailed": "계정 생성에 실패했습니다",
 			"updateAddressFailed": "주소 업데이트에 실패했습니다",
+			"itemUnavailableTitle": "An item isn’t available",
+			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
+			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
+			"itemUnavailableRemove": "Remove item",
+			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
 			"crashTitle": "결제 오류",
 			"crashMessage": "결제 정보를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요."
 		},

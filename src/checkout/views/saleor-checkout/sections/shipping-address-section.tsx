@@ -121,6 +121,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 							name="countryCode"
 							value={countryCode}
 							onChange={onCountryChange}
+							error={errors.countryCode}
 							placeholder={t("selectCountry")}
 							autoComplete="shipping country"
 							options={availableCountries.map(({ code, label }) => ({
@@ -128,6 +129,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 								label,
 							}))}
 						/>
+						<FieldError error={errors.countryCode} />
 					</div>
 
 					{/* Dynamic address fields */}

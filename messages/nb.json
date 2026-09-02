@@ -449,7 +449,13 @@
 			"createAccountFailed": "Kunne ikke opprette konto",
 			"updateAddressFailed": "Kunne ikke oppdatere adresse",
 			"crashTitle": "Kassefeil",
-			"crashMessage": "Noe gikk galt under lasting av kassen. Prøv igjen."
+			"crashMessage": "Noe gikk galt under lasting av kassen. Prøv igjen.",
+			"itemUnavailableTitle": "An item isn’t available",
+			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
+			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
+			"itemUnavailableRemove": "Remove item",
+			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -482,7 +488,10 @@
 			"shipTo": "Send til",
 			"method": "Metode",
 			"delivery": "Levering",
-			"digital": "Digital"
+			"digital": "Digital",
+			"soldOut": "Sold out",
+			"unavailableHint": "An item isn’t available",
+			"removeItem": "Remove"
 		},
 		"promo": {
 			"placeholder": "Rabattkode",

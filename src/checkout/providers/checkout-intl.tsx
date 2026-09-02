@@ -2,7 +2,7 @@
 
 import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
-import type { LocaleSlug } from "@/config/locale";
+import { getDefaultTimeZone, type LocaleSlug } from "@/config/locale";
 import type { CheckoutMessages } from "@/i18n/load-messages";
 
 type CheckoutIntlProviderProps = {
@@ -14,7 +14,7 @@ type CheckoutIntlProviderProps = {
 /** next-intl for checkout — locale from browse cookie / `?locale=`, not URL segment (ADR 0001). */
 export function CheckoutIntlProvider({ locale, messages, children }: CheckoutIntlProviderProps) {
 	return (
-		<NextIntlClientProvider locale={locale} messages={messages}>
+		<NextIntlClientProvider locale={locale} messages={messages} timeZone={getDefaultTimeZone()}>
 			{children}
 		</NextIntlClientProvider>
 	);

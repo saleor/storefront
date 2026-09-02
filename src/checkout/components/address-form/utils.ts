@@ -104,6 +104,15 @@ export const getAddressInputDataFromAddress = (
 	} as AddressInput;
 };
 
+/** True when the form payload matches the address already on the checkout. */
+export const isSameAddressInput = (existing: OptionalAddress, input: AddressInput): boolean => {
+	if (!existing) {
+		return false;
+	}
+
+	return isEqual(getAddressInputDataFromAddress(existing), input);
+};
+
 export const getAddressFormDataFromAddress = (address: OptionalAddress): AddressFormData => {
 	if (!address) {
 		return {

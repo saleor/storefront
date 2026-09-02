@@ -5,5 +5,8 @@ query ChannelsList {
 		slug
 		isActive
 		currencyCode
+		defaultCountry {
+			code
+		}
 	}
 }

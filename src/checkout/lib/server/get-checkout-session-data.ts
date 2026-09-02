@@ -19,9 +19,12 @@ export const getCheckoutSessionCheckout = cache((checkoutId: string, localeSlug:
 );
 
 export const getCheckoutSessionCountries = cache(async (channelSlug: string, localeSlug: LocaleSlug) => {
-	const codes = await fetchChannelCountriesOnServer(channelSlug);
-	return codes.map((code) => ({
-		code,
-		label: formatCountryNameOnServer(code, localeSlug),
-	}));
+	const { countries, defaultCountryCode } = await fetchChannelCountriesOnServer(channelSlug);
+	return {
+		countries: countries.map((code) => ({
+			code,
+			label: formatCountryNameOnServer(code, localeSlug),
+		})),
+		defaultCountryCode,
+	};
 });

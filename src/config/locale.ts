@@ -89,6 +89,15 @@ function parseEnvLocaleList(raw: string | undefined): LocaleSlug[] | null {
 }
 
 /** Default URL locale slug — `NEXT_PUBLIC_DEFAULT_LOCALE` (e.g. `en`). */
+/**
+ * Stable next-intl time zone so server and browser format dates the same.
+ * Override with `NEXT_PUBLIC_DEFAULT_TIME_ZONE` (IANA name, e.g. `Europe/Warsaw`).
+ */
+export function getDefaultTimeZone(): string {
+	const fromEnv = process.env.NEXT_PUBLIC_DEFAULT_TIME_ZONE?.trim();
+	return fromEnv || "UTC";
+}
+
 export function getDefaultLocaleSlug(): LocaleSlug {
 	const fromEnv = process.env.NEXT_PUBLIC_DEFAULT_LOCALE?.trim().toLowerCase();
 	if (fromEnv && isLocaleSlug(fromEnv)) {

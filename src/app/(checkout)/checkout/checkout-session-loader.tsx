@@ -6,7 +6,12 @@ import { CheckoutApp } from "@/checkout/checkout-app";
 import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
 import { getStorefrontContent } from "@/lib/content/server";
 import { loadCheckoutMessages } from "@/i18n/load-messages";
-import type { CheckoutLoadState, ServerCheckout, ShippingCountries } from "@/checkout/lib/checkout-types";
+import type {
+	ChannelDefaultCountryCode,
+	CheckoutLoadState,
+	ServerCheckout,
+	ShippingCountries,
+} from "@/checkout/lib/checkout-types";
 import {
 	getCheckoutSessionCheckout,
 	getCheckoutSessionCountries,
@@ -59,6 +64,7 @@ export async function CheckoutSessionLoader({
 	let channelSlug: string | null = null;
 	let initialCheckout: ServerCheckout | null = null;
 	let shippingCountries: ShippingCountries = [];
+	let channelDefaultCountryCode: ChannelDefaultCountryCode = null;
 
 	if (!checkoutIdFromUrl) {
 		loadState = "none";
@@ -86,7 +92,9 @@ export async function CheckoutSessionLoader({
 	}
 
 	if (channelSlug) {
-		shippingCountries = await getCheckoutSessionCountries(channelSlug, browseLocale);
+		const channelCountries = await getCheckoutSessionCountries(channelSlug, browseLocale);
+		shippingCountries = channelCountries.countries;
+		channelDefaultCountryCode = channelCountries.defaultCountryCode;
 	}
 
 	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
@@ -103,6 +111,7 @@ export async function CheckoutSessionLoader({
 			initialCheckout={initialCheckout}
 			initialUser={initialUser}
 			shippingCountries={shippingCountries}
+			channelDefaultCountryCode={channelDefaultCountryCode}
 			checkoutContent={checkoutContent}
 			storefrontLocale={browseLocale}
 			messages={messages}

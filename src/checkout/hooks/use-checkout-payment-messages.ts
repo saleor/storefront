@@ -6,9 +6,11 @@ import { useTranslations } from "next-intl";
 /** User-facing payment copy for checkout Stripe/dummy flows. */
 export function useCheckoutPaymentMessages() {
 	const t = useTranslations("checkout.payment");
+	const tErrors = useTranslations("checkout.errors");
 
 	return useMemo(
 		() => ({
+			fulfillmentCheckFailed: tErrors("fulfillmentCheckFailed"),
 			unavailable: t("unavailable"),
 			initFailed: t("initFailed"),
 			loadingGateway: (gateway: string) => t("loadingGateway", { gateway }),
@@ -43,7 +45,7 @@ export function useCheckoutPaymentMessages() {
 			dummyTestMode: t("dummyTestMode"),
 			stripeLoadTitle: t("stripeLoadTitle"),
 		}),
-		[t],
+		[t, tErrors],
 	);
 }
 
