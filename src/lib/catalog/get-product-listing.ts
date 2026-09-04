@@ -41,8 +41,8 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
  *
  * ## Failure semantics
  *
- * A failed request **throws** so nothing is written to the cache; the island's
- * ErrorBoundary renders and the next request retries. Returning null here instead would
+ * A failed request **throws** so nothing is written to the cache; the listing
+ * Suspense / API caller surfaces the error and the next request retries. Returning null here instead would
  * cache the failure and serve a 404 for the whole grid until the entry expired — one
  * blip in Saleor becoming an hour of missing catalog. Only a genuinely absent entity
  * returns null, which is a real result and safe to cache.

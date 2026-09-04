@@ -2,21 +2,14 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { ProductListPaginatedDocument } from "@/gql/graphql";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { executePublicGraphQL } from "@/lib/graphql";
-import { getPaginatedListVariables } from "@/lib/utils";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { getProductListingPage, isCacheableListingView } from "@/lib/catalog/get-product-listing";
+import { getProductListingPage } from "@/lib/catalog/get-product-listing";
 import { getStorefrontContent } from "@/lib/content/server";
-import { CategoryHero, toProductCardData } from "@/ui/components/plp";
-import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
-import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+import { CategoryHero, PlpListingClient, toProductCardData } from "@/ui/components/plp";
 import { buildStorefrontPath } from "@/lib/storefront-path";
-import { ProductsPageClient } from "./products-client";
 
-// Prefetch: default (auto) under global `partialPrefetching`. Mega-menu "All products"
-// uses `prefetch={true}` so the grid shell resolves at runtime with searchParams.
+// Prefetch: default (auto) under global `partialPrefetching` — App Shell only.
+// Do not put `prefetch={true}` on header chrome or homepage CTAs (`eslint` bans it).
 
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
@@ -35,20 +28,11 @@ export async function generateMetadata(props: {
 
 type PageProps = {
 	params: Promise<{ locale: string; channel: string }>;
-	searchParams: Promise<{
-		cursor?: string | string[];
-		direction?: string | string[];
-		sort?: string;
-		price?: string;
-		colors?: string;
-		sizes?: string;
-		categories?: string;
-	}>;
 };
 
 /**
- * Products page with Cache Components.
- * Static shell (hero) renders immediately, product grid streams in.
+ * Canonical `/products` is params-only — cached first page, no `searchParams`.
+ * Filters / sort / cursor swap the grid via `/api/listing` on the client.
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
@@ -59,7 +43,6 @@ export default async function Page(props: PageProps) {
 	]);
 	const productsCopy = surfaces.products;
 
-	// Breadcrumb labels are functional chrome — code-owned i18n (ADR 0002).
 	const breadcrumbs = [
 		{ label: tListing("breadcrumbHome"), href: buildStorefrontPath(params.locale, params.channel) },
 		{
@@ -70,123 +53,51 @@ export default async function Page(props: PageProps) {
 
 	return (
 		<>
-			{/* Static shell - renders immediately */}
 			<CategoryHero
 				title={productsCopy.title}
 				description={productsCopy.description}
 				breadcrumbs={breadcrumbs}
 				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
-			{/* Dynamic content - streams in via Suspense */}
-			<Suspense fallback={<ProductsGridSkeleton />}>
-				<ProductsContent params={props.params} searchParams={props.searchParams} />
+			<Suspense fallback={<ProductsGridSkeletonFallback />}>
+				<ProductsContent params={props.params} />
 			</Suspense>
 		</>
 	);
 }
 
-/**
- * Dynamic products content - reads searchParams at request time.
- */
 async function ProductsContent({
 	params: paramsPromise,
-	searchParams: searchParamsPromise,
 }: {
 	params: Promise<{ locale: string; channel: string }>;
-	searchParams: PageProps["searchParams"];
 }) {
-	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
-
-	const sortBy = buildSortVariables(searchParams.sort);
-
-	// Parse category slugs from URL and resolve to IDs for server-side filtering
-	const categorySlugs = searchParams.categories?.split(",").filter(Boolean) || [];
-	const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
-	const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
-
-	// The unfiltered first page is the bulk of PLP traffic — serve it from cache.
-	// Filtered and paginated views stay live (see isCacheableListingView).
-	const products = isCacheableListingView(searchParams)
-		? await getProductListingPage(params.channel, params.locale, sortBy)
-		: await fetchFilteredProductListing({
-				searchParams,
-				categoryIds,
-				channel: params.channel,
-				locale: params.locale,
-				sortBy,
-			});
+	const params = await paramsPromise;
+	const products = await getProductListingPage(params.channel, params.locale, undefined);
 
 	if (!products) {
 		notFound();
 	}
 	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
-	// Build resolved categories array for the client (for active filter display)
-	const resolvedCategories = categorySlugs
-		.map((slug) => {
-			const cat = categoryMap.get(slug);
-			return cat ? { slug, id: cat.id, name: cat.name } : null;
-		})
-		.filter(Boolean) as { slug: string; id: string; name: string }[];
-
 	return (
-		<ProductsPageClient
+		<PlpListingClient
+			surface="all"
+			locale={params.locale}
+			channel={params.channel}
 			products={productCards}
 			pageInfo={products.pageInfo}
 			totalCount={products.totalCount ?? productCards.length}
-			resolvedCategories={resolvedCategories}
+			enableCategoryFilter
 		/>
 	);
 }
 
-/** Live fetch for filtered or paginated views — deliberately uncached (long tail). */
-async function fetchFilteredProductListing({
-	searchParams,
-	categoryIds,
-	channel,
-	locale,
-	sortBy,
-}: {
-	searchParams: Awaited<PageProps["searchParams"]>;
-	categoryIds: string[];
-	channel: string;
-	locale: string;
-	sortBy: ReturnType<typeof buildSortVariables>;
-}) {
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
-	const { filter, where } = buildProductListingConstraints({
-		priceRange: searchParams.price,
-		categoryIds,
-		colors: searchParams.colors,
-		sizes: searchParams.sizes,
-	});
-
-	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
-		variables: {
-			...paginationVariables,
-			channel,
-			sortBy,
-			filter,
-			where,
-			...graphqlLanguageCodeVariables(locale),
-		},
-	});
-
-	return result.ok ? (result.data.products ?? null) : null;
-}
-
-/**
- * Products grid skeleton with delayed visibility.
- * Matches ProductGrid/ProductCard dimensions to prevent layout shift.
- */
-function ProductsGridSkeleton() {
+function ProductsGridSkeletonFallback() {
 	return (
 		<div className="container-content animate-skeleton-delayed py-8 opacity-0">
-			{/* Matches ProductGrid: grid-cols-2 lg:grid-cols-3 */}
 			<div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
 				{Array.from({ length: 6 }).map((_, i) => (
 					<div key={i} className="animate-pulse">
-						{/* Matches ProductCard: aspect-[3/4] rounded-xl */}
 						<div className="mb-4 aspect-[3/4] rounded-xl bg-muted" />
 						<div className="space-y-1.5">
 							<div className="h-4 w-3/4 rounded bg-muted" />

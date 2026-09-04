@@ -29,17 +29,9 @@ const heightClassName: Record<HeroBannerHeight, string> = {
 	large: "min-h-[420px] md:min-h-[520px]",
 };
 
-function HeroBannerCtaLink({
-	cta,
-	className,
-	prefetch,
-}: {
-	cta: HeroBannerCta;
-	className: string;
-	prefetch?: boolean;
-}) {
+function HeroBannerCtaLink({ cta, className }: { cta: HeroBannerCta; className: string }) {
 	return (
-		<NavHrefLink href={cta.href} prefetch={prefetch} className={className}>
+		<NavHrefLink href={cta.href} className={className}>
 			{cta.label}
 		</NavHrefLink>
 	);
@@ -100,7 +92,6 @@ export function HeroBanner({
 							{primaryCta ? (
 								<HeroBannerCtaLink
 									cta={primaryCta}
-									prefetch={true}
 									className={buttonClassName({
 										asLink: true,
 										size: "lg",

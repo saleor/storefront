@@ -36,3 +36,5 @@ export {
 	type ProductListingConstraints,
 } from "./filter-utils";
 export { useProductFilters } from "./use-product-filters";
+export { useListingQuery } from "./use-listing-query";
+export { PlpListingClient } from "./plp-listing-client";

@@ -33,12 +33,20 @@ Saleor Cloud fronts those storage URLs with CloudFront at `cache-control: max-ag
 
 `NEXT_PUBLIC_PAPER_IMAGE_PIPELINE` (default `saleor`) selects between them; `vercel` is the escape hatch if your Saleor deployment has no CDN in front of media.
 
-|                        | Saleor-native `srcset`                                       | `next/image`                                                                              |
-| ---------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Use for                | Product cards, PDP gallery — anything with a Saleor rung set | CMS uploads, local assets, category backgrounds, slots far smaller than the smallest rung |
-| Transformations billed | none                                                         | one per `(src, width, quality)`                                                           |
-| Served by              | Saleor's CDN                                                 | `/_next/image`                                                                            |
-| Width selection        | browser, from the rungs you requested                        | optimizer, from `deviceSizes`                                                             |
+|                        | Saleor-native `srcset`                                                                    | `next/image` or plain `<img>`                                                                                      |
+| ---------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Use for                | Product `thumbnail(size, format)` and category/collection `backgroundImage(size, format)` | Everything Saleor does **not** resize: `/public`, Model/Page `FILE` URLs, slots far smaller than the smallest rung |
+| Transformations billed | none                                                                                      | `/_next/image`: one per `(src, width, quality)`. Plain `<img>`: none                                               |
+| Served by              | Saleor's media CDN                                                                        | Vercel origin (`/public` or optimizer) or the raw FILE host                                                        |
+| Width selection        | browser, from the rungs you requested                                                     | optimizer `deviceSizes`, or files you authored                                                                     |
+
+Saleor does **not** run marketing art through that ladder. A Model/Page `FILE` attribute returns the **original** upload URL (often on Saleor CloudFront — CDN, no resize/WebP rungs). Files in Next `/public` get neither. Putting a hero through `SaleorImage` without a rung `srcset` just falls through to `/_next/image`. Uploading the same PNG as a `FILE` and wrapping it in `next/image` is worse: Vercel re-encodes a file already on another CDN.
+
+For that leftover set (logo, homepage banners, tiles that are not category `backgroundImage`):
+
+1. **Prefer one pre-encoded file per slot** (flatten layered PSDs/PNGs to a single WebP) and a plain `<img>` / `srcset` you author. Zero image transformations; you pay FDT for the file you chose.
+2. **If the art is category/collection art**, store it as Saleor `backgroundImage` and request the same aliased rungs as catalog cards — that _is_ the thumbnail pipeline.
+3. **Keep `next/image` only** when you need the optimizer (tiny slot vs a huge original, or you refuse to maintain two widths). Then `sizes` must match the box, and the source should already be WebP — do not ship 4-layer 2048 px PNGs at `100vw`.
 
 The rung sets live in [`images.ts`](../../../src/lib/images.ts) (`CATALOG_CARD_RUNGS`, `PDP_GALLERY_RUNGS`) and must match the aliased GraphQL fields:
 
@@ -126,6 +134,8 @@ thumbnail(size: 256, format: WEBP) {
 ```
 
 Pick `size:` from the ladder at or just above the largest rendered slot in **device** pixels — the CSS box times the retina factor. A 128px slot on a 2× screen needs 256, not 128.
+
+The PDP **thumb strip** is an 80px slot. It must use a 256 (or 512) Saleor rung (`thumbSrc` / `url256`) via `SaleorImage` — never the 2048 gallery URL through `next/image`. Main-stage `srcset` stays 512/1024/2048 (`PDP_GALLERY_RUNGS`).
 
 ---
 

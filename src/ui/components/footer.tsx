@@ -73,12 +73,14 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 					<div className="flex items-center gap-6">
 						<Link
 							href="/privacy"
+							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
 							Privacy Policy
 						</Link>
 						<Link
 							href="/terms"
+							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
 							Terms of Service

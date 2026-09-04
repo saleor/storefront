@@ -155,7 +155,7 @@ Patterns we **do not** use — regressions to avoid:
 
 Real exceptions to the rules above — documented so the code and the convention stay reconciled. Align when you next touch these files; do not treat as new precedent.
 
-_Browse pages aligned under Partial Prefetching._ The homepage (`(main)/page.tsx`) is a **sync shell** that wraps `HomePageContent` (awaits `params` + `"use cache"` data, including the featured collection) in page-level `Suspense` with a fold-height fallback — required so locale/channel URL data stays out of the shared instant App Shell. Direct loads still prerender full HTML per `generateStaticParams`. The **category** (`categories/[slug]/page.tsx`) and **products** (`products/page.tsx`) pages are **hybrid** — `async` pages that render the cached hero eagerly into the static shell and suspend **only** the `searchParams`-driven grid behind `ProductsGridSkeleton`. Route `loading.tsx` files (`PlpPageLoading` for categories/collections, `ProductsLoading` for products) remain as height-matched **instant-navigation** fallbacks — the documented "meaningful partial frame" use, not page-render skeletons. There is intentionally **no shared `(main)/loading.tsx`**. Add a row here only when a new, intentional exception is introduced.
+_Browse pages aligned under Partial Prefetching._ The homepage (`(main)/page.tsx`) is a **sync shell** that wraps `HomePageContent` (awaits `params` + `"use cache"` data, including the featured collection) in page-level `Suspense` with a fold-height fallback — required so locale/channel URL data stays out of the shared instant App Shell. Direct loads still prerender full HTML per `generateStaticParams`. Listing pages (`products/page.tsx`, `categories/[slug]/page.tsx`, `collections/[slug]/page.tsx`) are **params-only** — cached hero + cached first-page grid; filters / sort / cursor swap via `GET /api/listing`. Category/collection pages may still `await searchParams` on the **non-canonical slug redirect** only. Route `loading.tsx` files (`PlpPageLoading` for categories/collections, `ProductsLoading` for products) remain as height-matched **instant-navigation** fallbacks — the documented "meaningful partial frame" use, not page-render skeletons. There is intentionally **no shared `(main)/loading.tsx`**. Add a row here only when a new, intentional exception is introduced.
 
 ---
 
@@ -278,21 +278,21 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 
 ### Tag registry
 
-| Tag pattern                                                           | Profile                 | Used by                                                   | Invalidated when                                               |
-| --------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
-| `product:{slug}`                                                      | `products`              | `getProductData()`                                        | Product updated                                                |
-| `category:{slug}`                                                     | `categories`            | `getCategoryData()`                                       | Category updated                                               |
-| `collection:{slug}`                                                   | `collections`           | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                                             |
-| `page:{slug}`                                                         | `pages`                 | `getPageData()` (CMS)                                     | Page updated                                                   |
-| `products` / `categories` / `collections` / `pages`                   | same (sharedTag)        | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions                              |
-| `listing:all:{channel}`                                               | `listingAll`            | `getProductListingPage()` (/products grid)                | Listing-affecting product event                                |
-| `listing:category:{channel}:{slug}`                                   | `listingCategory`       | `getCategoryListingPage()`                                | Product event in that category; category event                 |
-| `listing:collection:{channel}:{slug}`                                 | `listingCollection`     | `getCollectionListingPage()`                              | Enriched product event naming the collection; collection event |
-| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | same (sharedTagPattern) | Applied alongside each category/collection grid tag       | Fallback when the payload can't name the grid; full purge      |
-| `navigation:{channel}`                                                | `navigation`            | `getNavbarMenuItems()`                                    | Navbar changed                                                 |
-| `footer-menu:{channel}`                                               | `footerMenu`            | `getFooterMenuItems()`                                    | Footer changed                                                 |
-| `storefront-content:{channel}:{locale}`                               | `storefront-content`    | `getStorefrontContent()`                                  | `storefront-*` Page updated                                    |
-| `channels`                                                            | `channels`              | `getCachedChannelsList()`                                 | Channel list changed                                           |
+| Tag pattern                                                           | Profile                 | Used by                                                   | Invalidated when                                                                             |
+| --------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `product:{slug}`                                                      | `products`              | `getProductData()`                                        | Product updated                                                                              |
+| `category:{slug}`                                                     | `categories`            | `getCategoryData()`                                       | Category updated                                                                             |
+| `collection:{slug}`                                                   | `collections`           | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                                                                           |
+| `page:{slug}`                                                         | `pages`                 | `getPageData()` (CMS)                                     | Page updated                                                                                 |
+| `products` / `categories` / `collections` / `pages`                   | same (sharedTag)        | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions                                                            |
+| `listing:all:{channel}`                                               | `listingAll`            | `getProductListingPage()` (/products grid)                | Listing-affecting product event (`PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0` skips this tag) |
+| `listing:category:{channel}:{slug}`                                   | `listingCategory`       | `getCategoryListingPage()`                                | Product event in that category; category event                                               |
+| `listing:collection:{channel}:{slug}`                                 | `listingCollection`     | `getCollectionListingPage()`                              | Enriched product event naming the collection; collection event                               |
+| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | same (sharedTagPattern) | Applied alongside each category/collection grid tag       | Fallback when the payload can't name the grid; full purge                                    |
+| `navigation:{channel}`                                                | `navigation`            | `getNavbarMenuItems()`                                    | Navbar changed                                                                               |
+| `footer-menu:{channel}`                                               | `footerMenu`            | `getFooterMenuItems()`                                    | Footer changed                                                                               |
+| `storefront-content:{channel}:{locale}`                               | `storefront-content`    | `getStorefrontContent()`                                  | `storefront-*` Page updated                                                                  |
+| `channels`                                                            | `channels`              | `getCachedChannelsList()`                                 | Channel list changed                                                                         |
 
 Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
 Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/categories/collections/listings/CMS pages) is `stale 5 min / revalidate 1 hr / expire 1 day`, `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
@@ -301,7 +301,7 @@ Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/ca
 
 ### Listing grids
 
-Listing grids are cached only for the **unfiltered first page** (any sort order) — see `isCacheableListingView()` in `src/lib/catalog/get-product-listing.ts`. Filtered and paginated views fall through to a live fetch on purpose: every filter permutation would be a cache entry that is written once and rarely read again, trading invocation cost for cache-write cost. Category/collection slugs are cache-key arguments, so the entry upper bound is `(1 + categories + collections) × sorts × locales × channels` — only _visited_ grids materialize, and the **sharded tags** above keep invalidation per-grid: one product edit busts its own category/collection grids plus `listing:all`, never every grid in the channel. Product webhook payloads carry `category.slug`; collection membership comes from the saleor-paper-app **enriched payload** (`collections { slug }` in the subscription) — without it the channel catch-all keeps correctness at the cost of precision.
+Listing **pages** do not await `searchParams`. The HTML is always the unfiltered first page from `getProductListingPage` / `getCategoryListingPage` / `getCollectionListingPage`. Filtered, sorted, and paginated views are `GET /api/listing` (`loadListing` in `fetch-filtered-listing.ts`): sort-only still uses the `"use cache"` helpers (`isCacheableListingView`); filters and cursors stay live. Caching every filter permutation would add entries that are written once and rarely read again. Category/collection slugs are cache-key arguments, so the entry upper bound is `(1 + categories + collections) × sorts × locales × channels` — only _visited_ grids materialize, and the **sharded tags** above keep invalidation per-grid: one product edit busts its own category/collection grids plus `listing:all` (unless `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`), never every grid in the channel. Product webhook payloads carry `category.slug`; collection membership comes from the saleor-paper-app **enriched payload** (`collections { slug }` in the subscription) — without it the channel catch-all keeps correctness at the cost of precision.
 
 `GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically. Manifest **v6+** includes an optional `identity` block (`saleorApiUrl`, `environment`, deploy metadata) for the Paper handshake. `saleorApiUrl` comes from `NEXT_PUBLIC_SALEOR_API_URL`. `environment` defaults from `VERCEL_ENV` / `NODE_ENV`; set `PAPER_STOREFRONT_ENVIRONMENT` only when those lie (true staging, or non-Vercel hosts that aren't prod).
 
@@ -309,7 +309,7 @@ Listing grids are cached only for the **unfiltered first page** (any sort order)
 
 ## The page-boundary model (Paper convention)
 
-The PPR layer stack — pick the page shape by **whether the route reads runtime data** (`searchParams`/`cookies`/uncached fetch): a **cached page** (no runtime data) uses a sync shell + page-level `Suspense` around an async body that awaits `params` + `"use cache"` (homepage — required for Partial Prefetching App Shell sharing); a **hybrid page** renders the cached shell **eagerly** and wraps **only** the dynamic island (`searchParams`/cookies) in `Suspense` (e.g. PLP grid, PDP variant section). A skeleton is a **per-hole** affordance, never a blanket page default — the homepage fold fallback is the App Shell exception. Documented in [`paper-architecture.md`](paper-architecture.md) and [`page-composition.md`](page-composition.md); PDP specifics in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
+The PPR layer stack — pick the page shape by **whether the route reads runtime data** (`searchParams`/`cookies`/uncached fetch): a **cached page** (no runtime data) uses a sync shell + page-level `Suspense` around an async body that awaits `params` + `"use cache"` (homepage — required for Partial Prefetching App Shell sharing); a **hybrid page** renders the cached shell **eagerly** and wraps **only** the dynamic island (`searchParams`/cookies) in `Suspense` (e.g. PDP variant section). Listing pages are params-only — the unfiltered grid is `"use cache"`; filters/sort/cursor swap via `GET /api/listing`, not a page `searchParams` await. A skeleton is a **per-hole** affordance, never a blanket page default — the homepage fold fallback is the App Shell exception. Documented in [`paper-architecture.md`](paper-architecture.md) and [`page-composition.md`](page-composition.md); PDP specifics in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
 
 - **Catalog fetches live in modules**, not inline in pages long-term: `src/lib/catalog/`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/`.
 - **`executePublicGraphQL`** is safe inside `"use cache"`; **`executeAuthenticatedGraphQL`** is **not** (needs cookies) — keep it out of cached functions.
@@ -377,15 +377,15 @@ Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ 
 
 saleor-paper-app forwards that header on every entity POST. A POST without it (manual curl, older app) is treated as listing-affecting. After upgrading the app, click **Sync Webhooks** so Saleor delivers variant CRUD, stock, and metadata — stock events must arrive _with_ `saleor-event` or they bust the listing tags. Do not also subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for media edits.
 
-| Event family                                                        | Storefront effect                                                                                                                      |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `listing:all:{channel}` + its category grid + its collections' grids (enriched payload) or the collection catch-all |
-| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never listing tags                                                                                             |
-| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + only that entity's own listing grid                                                          |
-| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*`                                                 |
-| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                                                                        |
-| `CHANNEL_*`                                                         | `channels`                                                                                                                             |
-| Everything else                                                     | Logged and skipped                                                                                                                     |
+| Event family                                                        | Storefront effect                                                                                                                                                                                |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `listing:all:{channel}` (opt-out via `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`) + its category grid + its collections' grids (enriched payload) or the collection catch-all |
+| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never listing tags                                                                                                                                                       |
+| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + only that entity's own listing grid                                                                                                                    |
+| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*`                                                                                                           |
+| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                                                                                                                                  |
+| `CHANNEL_*`                                                         | `channels`                                                                                                                                                                                       |
+| Everything else                                                     | Logged and skipped                                                                                                                                                                               |
 
 **Known sharding gap — removals.** Payloads name only a product's _current_ memberships, so moving a product out of a category/collection leaves the **old** grid's cache untouched: it keeps showing the product until the `catalog` cacheLife backstop expires it. Editing the source category/collection itself (a `CATEGORY_*`/`COLLECTION_*` event) busts its grid immediately. Accepted trade-off: a bounded staleness window on a rare operation, versus busting every grid in the channel on every product edit.
 
@@ -1645,6 +1645,9 @@ export const PLP_FACETS = [
 | `src/ui/components/plp/filter-utils.ts`        | `buildProductListingConstraints`, option extractors |
 | `src/ui/components/plp/filter-utils.server.ts` | `resolveCategorySlugsToIds`                         |
 | `src/ui/components/plp/use-product-filters.ts` | URL sync, optimistic chips, `useTransition`         |
+| `src/ui/components/plp/use-listing-query.ts`   | Canonical grid vs `GET /api/listing` swap           |
+| `src/lib/catalog/fetch-filtered-listing.ts`    | Shared live / cached listing loader                 |
+| `src/app/api/listing/route.ts`                 | Public listing JSON (pages stay params-only)        |
 | `src/ui/components/plp/filter-bar.tsx`         | Filter UI                                           |
 
 ## Building listing constraints
@@ -1698,7 +1701,7 @@ import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils
 ## Adding a New Attribute Facet
 
 1. Add a row to `PLP_FACETS` (`param`, `attributeSlug`, `attributeAliases`, `control`).
-2. Ensure listing pages pass `searchParams[param]` into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map).
+2. Ensure `loadListing` / `fetch-filtered-listing.ts` passes the new param into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map). Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
 3. Wire FilterBar / `useProductFilters` for that param if it needs a dedicated control.
 4. Prefer value **slugs** in the URL.
 
@@ -3010,7 +3013,7 @@ How to mold PDP and homepage layouts by editing the page files — adding, remov
 Pick the page shape by **whether the route reads any runtime data** (`searchParams`/`cookies`/uncached fetch). A skeleton is a **per-hole** affordance, never a **per-page** default:
 
 - **Static page (no runtime data)** → sync page wraps an async body that awaits `params` + `"use cache"` data in **page-level `Suspense`** (fold-height fallback). Required for Partial Prefetching: URL data must stay out of the shared App Shell. Direct loads still prerender full HTML per `generateStaticParams`. (homepage; CMS pages follow the same shape when they await `params`)
-- **Hybrid page (some runtime data)** → render the cached shell **eagerly**, then wrap **only** the dynamic island in `Suspense` with a small skeleton. (PLP grid via `searchParams`, PDP variant section)
+- **Hybrid page (some runtime data)** → render the cached shell **eagerly**, then wrap **only** the dynamic island in `Suspense` with a small skeleton. (PDP variant section. Listing pages are params-only — the cached first-page grid is not a `searchParams` hole; filters go through `GET /api/listing`.)
 
 Design changes must stay inside the right layer:
 
@@ -3021,12 +3024,14 @@ Page (sync export)
         cached sections             ← hero, story, value columns, featured grid…
 ```
 
-| Put it in the STATIC shell                                        | Put it in a DYNAMIC island (nested Suspense)                      |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Marketing sections from `getStorefrontContent()`                  | Anything reading `searchParams` (variant gallery/section)         |
-| `h1`, breadcrumbs, JSON-LD, copy, value props                     | Anything reading `cookies()` (cart, auth chrome)                  |
-| LCP image preload                                                 | `cache: "no-cache"` fetches; client routing hooks                 |
-| Cached collection grids via `"use cache"` helpers (e.g. featured) | `searchParams`-filtered/sorted grids; per-request personalization |
+| Put it in the STATIC shell                                  | Put it in a DYNAMIC island (nested Suspense)                                   |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Marketing sections from `getStorefrontContent()`            | Anything reading `searchParams` (variant gallery/section)                      |
+| `h1`, breadcrumbs, JSON-LD, copy, value props               | Anything reading `cookies()` (cart, auth chrome)                               |
+| LCP image preload                                           | `cache: "no-cache"` fetches; client routing hooks                              |
+| Cached collection / listing grids via `"use cache"` helpers | `searchParams` on the PDP (`?variant=` / `?sku=`); per-request personalization |
+
+Listing pages are params-only: the cached first-page grid is not a `searchParams` hole. Filters / sort / cursor swap via `GET /api/listing`.
 
 Hard constraints (never violate when redesigning):
 
@@ -3487,12 +3492,20 @@ Saleor Cloud fronts those storage URLs with CloudFront at `cache-control: max-ag
 
 `NEXT_PUBLIC_PAPER_IMAGE_PIPELINE` (default `saleor`) selects between them; `vercel` is the escape hatch if your Saleor deployment has no CDN in front of media.
 
-|                        | Saleor-native `srcset`                                       | `next/image`                                                                              |
-| ---------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Use for                | Product cards, PDP gallery — anything with a Saleor rung set | CMS uploads, local assets, category backgrounds, slots far smaller than the smallest rung |
-| Transformations billed | none                                                         | one per `(src, width, quality)`                                                           |
-| Served by              | Saleor's CDN                                                 | `/_next/image`                                                                            |
-| Width selection        | browser, from the rungs you requested                        | optimizer, from `deviceSizes`                                                             |
+|                        | Saleor-native `srcset`                                                                    | `next/image` or plain `<img>`                                                                                      |
+| ---------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Use for                | Product `thumbnail(size, format)` and category/collection `backgroundImage(size, format)` | Everything Saleor does **not** resize: `/public`, Model/Page `FILE` URLs, slots far smaller than the smallest rung |
+| Transformations billed | none                                                                                      | `/_next/image`: one per `(src, width, quality)`. Plain `<img>`: none                                               |
+| Served by              | Saleor's media CDN                                                                        | Vercel origin (`/public` or optimizer) or the raw FILE host                                                        |
+| Width selection        | browser, from the rungs you requested                                                     | optimizer `deviceSizes`, or files you authored                                                                     |
+
+Saleor does **not** run marketing art through that ladder. A Model/Page `FILE` attribute returns the **original** upload URL (often on Saleor CloudFront — CDN, no resize/WebP rungs). Files in Next `/public` get neither. Putting a hero through `SaleorImage` without a rung `srcset` just falls through to `/_next/image`. Uploading the same PNG as a `FILE` and wrapping it in `next/image` is worse: Vercel re-encodes a file already on another CDN.
+
+For that leftover set (logo, homepage banners, tiles that are not category `backgroundImage`):
+
+1. **Prefer one pre-encoded file per slot** (flatten layered PSDs/PNGs to a single WebP) and a plain `<img>` / `srcset` you author. Zero image transformations; you pay FDT for the file you chose.
+2. **If the art is category/collection art**, store it as Saleor `backgroundImage` and request the same aliased rungs as catalog cards — that _is_ the thumbnail pipeline.
+3. **Keep `next/image` only** when you need the optimizer (tiny slot vs a huge original, or you refuse to maintain two widths). Then `sizes` must match the box, and the source should already be WebP — do not ship 4-layer 2048 px PNGs at `100vw`.
 
 The rung sets live in [`images.ts`](../../../src/lib/images.ts) (`CATALOG_CARD_RUNGS`, `PDP_GALLERY_RUNGS`) and must match the aliased GraphQL fields:
 
@@ -3580,6 +3593,8 @@ thumbnail(size: 256, format: WEBP) {
 ```
 
 Pick `size:` from the ladder at or just above the largest rendered slot in **device** pixels — the CSS box times the retina factor. A 128px slot on a 2× screen needs 256, not 128.
+
+The PDP **thumb strip** is an 80px slot. It must use a 256 (or 512) Saleor rung (`thumbSrc` / `url256`) via `SaleorImage` — never the 2048 gallery URL through `next/image`. Main-stage `srcset` stays 512/1024/2048 (`PDP_GALLERY_RUNGS`).
 
 ---
 
@@ -4251,7 +4266,7 @@ When unset, any allowlisted locale × channel is valid and language switch **kee
 
 ## Sitemap & robots (do not ship naive)
 
-Paper has **no** `sitemap.ts` / `robots.ts` yet (middleware already reserves `sitemap.xml` / `robots.txt`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
+Paper ships `src/app/robots.ts` (faceted/sorted/search listing queries + cart/checkout/account/search). It still has **no** `sitemap.ts` (middleware already reserves `sitemap.xml`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
 
 **Why a single `sitemap.ts` dump fails at scale**
 

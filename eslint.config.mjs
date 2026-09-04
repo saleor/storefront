@@ -20,7 +20,6 @@ const NEXT_IMAGE_ALLOWED_FILES = [
 	"src/ui/components/account/account-nav.tsx",
 	"src/ui/components/account/order-row.tsx",
 	"src/ui/components/cart/cart-drawer.tsx",
-	"src/ui/components/ui/image-carousel.tsx",
 	"src/ui/sections/hero-banner/hero-banner.tsx",
 	"src/ui/sections/logo-strip/logo-strip.tsx",
 	"src/ui/sections/media-hero/media-hero.tsx",
@@ -30,6 +29,21 @@ const NEXT_IMAGE_ALLOWED_FILES = [
 	"src/app/(storefront)/\\[locale\\]/\\[channel\\]/(main)/cart/page.tsx",
 	"src/app/(storefront)/\\[locale\\]/\\[channel\\]/(main)/account/orders/\\[number\\]/page.tsx",
 ];
+
+/**
+ * Files allowed to set `prefetch={true}` / `prefetch="true"`.
+ *
+ * Full prefetch resolves the destination (including `searchParams`) on every view
+ * of the linking page — a listing render the shopper never asked for. Empty by
+ * default; adding a file is a deliberate, reviewed cost exception.
+ */
+const PREFETCH_TRUE_ALLOWED_FILES = [];
+
+const PREFETCH_TRUE_MESSAGE =
+	"prefetch={true} full-resolves the destination (including searchParams) on every " +
+	"view of the linking page. Use default (auto) under partialPrefetching, or " +
+	"prefetch={false} for footer/utility links. If this file genuinely needs full " +
+	"prefetch, add it to PREFETCH_TRUE_ALLOWED_FILES in eslint.config.mjs.";
 
 const config = [
 	...nextVitals,
@@ -53,6 +67,23 @@ const config = [
 								"NEXT_IMAGE_ALLOWED_FILES in eslint.config.mjs.",
 						},
 					],
+				},
+			],
+		},
+	},
+	{
+		files: ["src/**/*.{ts,tsx}"],
+		ignores: PREFETCH_TRUE_ALLOWED_FILES,
+		rules: {
+			"no-restricted-syntax": [
+				"error",
+				{
+					selector: "JSXAttribute[name.name='prefetch'][value.expression.value=true]",
+					message: PREFETCH_TRUE_MESSAGE,
+				},
+				{
+					selector: "JSXAttribute[name.name='prefetch'][value.value='true']",
+					message: PREFETCH_TRUE_MESSAGE,
 				},
 			],
 		},

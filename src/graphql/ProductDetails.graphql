@@ -25,8 +25,10 @@ query ProductDetails(
 			alt
 		}
 		media {
-			# Rung set for a Saleor-native srcset — keep in sync with PDP_GALLERY_RUNGS.
+			# Main-stage srcset stays in sync with PDP_GALLERY_RUNGS (512/1024/2048).
+			# url256 is the PDP thumb strip — never pass the 2048 URL to next/image.
 			url(size: 2048, format: WEBP)
+			url256: url(size: 256, format: WEBP)
 			url512: url(size: 512, format: WEBP)
 			url1024: url(size: 1024, format: WEBP)
 			alt

@@ -292,12 +292,10 @@ function MegaMenuDesktopMenu({
 				<NavigationMenuList className="items-baseline gap-6">
 					<NavigationMenuItem>
 						<NavigationMenuLink asChild>
-							<LinkWithChannel
-								href="/products"
-								prefetch={true}
-								className={allProductsClassName}
-								onClick={closeMenu}
-							>
+							<LinkWithChannel href="/products" className={allProductsClassName} onClick={closeMenu}>
+								{/* Default (auto) prefetch — not `prefetch={true}`. This link is on every
+								    browse page; a full prefetch would resolve `/products` searchParams
+								    (and the listing) on every view. */}
 								{nav.allProductsLabel}
 							</LinkWithChannel>
 						</NavigationMenuLink>

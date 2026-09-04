@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import {
 	galleryImageFrameClass,
 	PDP_GALLERY_EMPTY_IMAGE_FRAME_CLASS,
@@ -10,7 +9,7 @@ import {
 	GalleryImageThumbTrigger,
 	GalleryImageZoomTrigger,
 } from "@/ui/components/shared/gallery-image-zoom-trigger";
-import { PDP_MAIN_IMAGE_SIZES, PDP_THUMBNAIL_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PDP_MAIN_IMAGE_SIZES, PDP_THUMBNAIL_IMAGE_SIZES } from "@/lib/images";
 import { SaleorImage } from "@/ui/atoms/saleor-image";
 import { cn } from "@/lib/utils";
 import {
@@ -29,6 +28,9 @@ export interface ImageCarouselImage {
 	alt?: string | null;
 	/** Saleor rung `srcset`; absent falls back to `next/image`. */
 	srcSet?: string;
+	/** 256 (or 512) CDN URL for the 80px thumb strip — never the 2048 gallery URL. */
+	thumbSrc?: string;
+	thumbSrcSet?: string;
 }
 
 interface ImageCarouselProps {
@@ -197,16 +199,13 @@ export function ImageCarousel({
 							aria-label={`${productName} - Thumbnail ${index + 1}`}
 							aria-current={selectedIndex === index ? "true" : undefined}
 						>
-							{/* Stays on next/image: the smallest gallery rung is 512, and letting the
-							    browser pick that for an 80px slot ships ~6x the bytes. Two cheap
-							    transformations beat the oversized CDN fetch here. */}
-							<Image
-								src={image.url}
+							{/* 256/512 Saleor rungs — never the 2048 gallery URL through next/image. */}
+							<SaleorImage
+								src={image.thumbSrc ?? image.url}
+								srcSet={image.thumbSrcSet}
 								alt=""
-								fill
 								className="object-cover"
 								sizes={PDP_THUMBNAIL_IMAGE_SIZES}
-								quality={PRODUCT_IMAGE_QUALITY}
 								loading="lazy"
 							/>
 						</GalleryImageThumbTrigger>

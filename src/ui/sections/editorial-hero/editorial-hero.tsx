@@ -30,17 +30,9 @@ export interface EditorialHeroProps {
 	className?: string;
 }
 
-function HeroCtaLink({
-	cta,
-	className,
-	prefetch,
-}: {
-	cta: EditorialHeroCta;
-	className: string;
-	prefetch?: boolean;
-}) {
+function HeroCtaLink({ cta, className }: { cta: EditorialHeroCta; className: string }) {
 	return (
-		<NavHrefLink href={cta.href} prefetch={prefetch} className={className}>
+		<NavHrefLink href={cta.href} className={className}>
 			{cta.label}
 		</NavHrefLink>
 	);
@@ -81,7 +73,6 @@ export function EditorialHero({
 								{primaryCta ? (
 									<HeroCtaLink
 										cta={primaryCta}
-										prefetch={true}
 										className={buttonClassName({
 											asLink: true,
 											size: "lg",

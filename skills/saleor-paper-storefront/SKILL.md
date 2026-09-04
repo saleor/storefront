@@ -65,7 +65,7 @@ Reference these guidelines when:
 ### 0. Architecture (CRITICAL)
 
 - `paper-architecture` - **Start here** — canonical Next.js stance, pillars, non-goals, where to read next
-- `paper-vercel-cost` - Vercel billing model, cost invariants (no global invalidation for private state, sharded listing tags, sampling, image guards), scaling playbook
+- `paper-vercel-cost` - Vercel billing model, why edge requests outnumber page views, cost invariants (no global invalidation for private state, sharded listing tags, sampling, image guards), scaling playbook, high-churn / subpath / Cloudflare forks
 
 ### 1. Data Layer (CRITICAL)
 

@@ -1,0 +1,82 @@
+{
+	"log": {
+		"entries": [
+			{
+				"request": { "url": "https://shop.example.com/en/default-channel" },
+				"response": {
+					"status": 200,
+					"headers": [
+						{ "name": "content-type", "value": "text/html" },
+						{ "name": "x-vercel-id", "value": "iad1::1" },
+						{ "name": "cache-control", "value": "public, max-age=0, must-revalidate" }
+					],
+					"content": { "mimeType": "text/html" },
+					"_transferSize": 24000
+				}
+			},
+			{
+				"request": { "url": "https://shop.example.com/_next/static/chunks/app.js" },
+				"response": {
+					"status": 200,
+					"headers": [{ "name": "x-vercel-id", "value": "iad1::1" }],
+					"content": { "mimeType": "application/javascript" },
+					"_transferSize": 80000
+				}
+			},
+			{
+				"request": { "url": "https://shop.example.com/en/default-channel/products?_rsc=1" },
+				"response": {
+					"status": 200,
+					"headers": [{ "name": "x-vercel-id", "value": "iad1::1" }],
+					"content": { "mimeType": "text/x-component" },
+					"_transferSize": 12000
+				},
+				"_initiator": { "type": "other" }
+			},
+			{
+				"request": {
+					"url": "https://shop.example.com/_next/image?url=https%3A%2F%2Fexample.saleor.cloud%2Fthumb.jpg&w=640&q=75"
+				},
+				"response": {
+					"status": 200,
+					"headers": [{ "name": "x-vercel-id", "value": "iad1::1" }],
+					"content": { "mimeType": "image/webp" },
+					"_transferSize": 40000
+				}
+			},
+			{
+				"request": { "url": "https://example.media.saleor.cloud/thumbnails/1/512/webp/" },
+				"response": {
+					"status": 200,
+					"headers": [],
+					"content": { "mimeType": "image/webp" },
+					"_transferSize": 18000
+				}
+			},
+			{
+				"request": { "url": "https://example.saleor.cloud/thumbnail/abc/2048/webp/" },
+				"response": {
+					"status": 302,
+					"headers": [
+						{ "name": "content-type", "value": "text/html" },
+						{ "name": "location", "value": "https://example.media.saleor.cloud/thumbnail_2048.webp" }
+					],
+					"content": { "mimeType": "text/html" },
+					"_transferSize": 400
+				}
+			},
+			{
+				"request": { "url": "https://shop.example.com/site.webmanifest" },
+				"response": {
+					"status": 403,
+					"headers": [
+						{ "name": "content-type", "value": "text/html" },
+						{ "name": "server", "value": "cloudflare" }
+					],
+					"content": { "mimeType": "text/html" },
+					"_transferSize": 1200
+				}
+			}
+		]
+	}
+}
