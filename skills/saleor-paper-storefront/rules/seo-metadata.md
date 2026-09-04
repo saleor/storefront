@@ -185,7 +185,7 @@ When unset, any allowlisted locale × channel is valid and language switch **kee
 
 ## Sitemap & robots (do not ship naive)
 
-Paper has **no** `sitemap.ts` / `robots.ts` yet (middleware already reserves `sitemap.xml` / `robots.txt`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
+Paper ships `src/app/robots.ts` (faceted/sorted/search listing queries + cart/checkout/account/search). It still has **no** `sitemap.ts` (middleware already reserves `sitemap.xml`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
 
 **Why a single `sitemap.ts` dump fails at scale**
 

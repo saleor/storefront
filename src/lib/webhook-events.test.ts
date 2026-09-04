@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { deliveryFingerprint, resolveWebhookEventScope, sanitizeLogValue } from "./webhook-events";
+import {
+	bustListingAllOnProductEvent,
+	deliveryFingerprint,
+	resolveWebhookEventScope,
+	sanitizeLogValue,
+} from "./webhook-events";
 
 describe("resolveWebhookEventScope", () => {
 	it("returns null for events Paper does not act on", () => {
@@ -64,6 +69,29 @@ describe("resolveWebhookEventScope", () => {
 	it("normalizes header casing and whitespace", () => {
 		expect(resolveWebhookEventScope("PRODUCT_UPDATED")?.entity).toBe("product");
 		expect(resolveWebhookEventScope("  product_updated  ")?.entity).toBe("product");
+	});
+});
+
+describe("bustListingAllOnProductEvent", () => {
+	it("defaults on so existing shops keep current invalidation", () => {
+		expect(bustListingAllOnProductEvent(undefined)).toBe(true);
+		expect(bustListingAllOnProductEvent("")).toBe(true);
+		expect(bustListingAllOnProductEvent("   ")).toBe(true);
+	});
+
+	it("turns off for high-churn catalogs", () => {
+		expect(bustListingAllOnProductEvent("0")).toBe(false);
+		expect(bustListingAllOnProductEvent("false")).toBe(false);
+		expect(bustListingAllOnProductEvent("OFF")).toBe(false);
+	});
+
+	it("accepts explicit on values", () => {
+		expect(bustListingAllOnProductEvent("1")).toBe(true);
+		expect(bustListingAllOnProductEvent("true")).toBe(true);
+	});
+
+	it("fails open on garbage so a typo does not silently skip listing:all", () => {
+		expect(bustListingAllOnProductEvent("sometimes")).toBe(true);
 	});
 });
 

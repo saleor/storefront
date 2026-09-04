@@ -17,7 +17,12 @@ import {
 	type CacheProfile,
 } from "@/lib/cache-manifest";
 import { revalidateTags } from "@/lib/revalidate-tags";
-import { deliveryFingerprint, resolveWebhookEventScope, sanitizeLogValue } from "@/lib/webhook-events";
+import {
+	bustListingAllOnProductEvent,
+	deliveryFingerprint,
+	resolveWebhookEventScope,
+	sanitizeLogValue,
+} from "@/lib/webhook-events";
 import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
 /**
@@ -161,11 +166,13 @@ function queueListingTag(
  * Sharded listing invalidation — bust only the grids this event can change.
  *
  * A product appears in the all-products grid, its (single) category's grid, and its
- * collections' grids. The category slug rides on standard Saleor payloads; collection
- * membership requires the enriched saleor-paper-app payload (`collections { slug }`) —
- * without it the channel's collection catch-all keeps correctness at the cost of
- * precision. Category/collection entity events bust only their own grid: they cannot
- * change product cards in other grids.
+ * collections' grids. `listing:all` is skipped when
+ * `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0` (high-churn catalogs). The category
+ * slug rides on standard Saleor payloads; collection membership requires the
+ * enriched saleor-paper-app payload (`collections { slug }`) — without it the
+ * channel's collection catch-all keeps correctness at the cost of precision.
+ * Category/collection entity events bust only their own grid: they cannot change
+ * product cards in other grids.
  */
 function queueListingTags(
 	entity: "product" | "category" | "collection",
@@ -175,10 +182,12 @@ function queueListingTags(
 ) {
 	switch (entity) {
 		case "product":
-			tagEntries.push({
-				tag: buildTag(CACHE_PROFILES.listingAll, { channel }),
-				profile: CACHE_PROFILES.listingAll.cacheProfile,
-			});
+			if (bustListingAllOnProductEvent()) {
+				tagEntries.push({
+					tag: buildTag(CACHE_PROFILES.listingAll, { channel }),
+					profile: CACHE_PROFILES.listingAll.cacheProfile,
+				});
+			}
 			queueListingTag(CACHE_PROFILES.listingCategory, channel, parsed.categorySlug, tagEntries);
 			if (parsed.collectionSlugs) {
 				for (const collectionSlug of parsed.collectionSlugs) {

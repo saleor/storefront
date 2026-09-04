@@ -1,6 +1,6 @@
 ---
 name: paper-vercel-cost
-description: "Vercel billing model and Paper's cost invariants: what each storefront activity is billed as, why private state never invalidates shared cache, sharded listing tags, Speed Insights sampling, image pipeline guards, and the scaling playbook (anonymous fast path, warming, assetPrefix, self-host threshold). Use when working on caching/invalidation cost, the Vercel bill, scaling traffic, or anything that changes how often functions run or caches regenerate."
+description: "Vercel billing model and Paper's cost invariants: why edge requests outnumber page views, what each storefront activity is billed as, why private state never invalidates shared cache, sharded listing tags, Speed Insights sampling, image pipeline guards, the scaling playbook, and high-churn / subpath / Cloudflare forks (PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT). Use when working on caching/invalidation cost, the Vercel bill, scaling traffic, or anything that changes how often functions run or caches regenerate."
 ---
 
 # Vercel Cost Model & Optimization
@@ -50,6 +50,27 @@ SpeedInsights = enabled × ($10 project + per-10K data points)
 | `next/image` on a remote file                    | Edge + FDT; MISS/STALE adds a transformation + image cache writes     |
 | Speed Insights point                             | Its own meter + the collection request                                |
 
+### Why edge requests outnumber page views
+
+That gap is the **shape of a Next.js App Router document**, not a broken page-view counter. Vercel **Edge Requests** count every hit on the edge network. **Page views** (Analytics / GA / Speed Insights) count one navigation — and usually only after JS runs, so bots and prefetch do not add a page view.
+
+A typical Paper browse view, images already off Vercel:
+
+| What the browser asks for                         | Count (order of)      | Vercel meter                                             |
+| ------------------------------------------------- | --------------------- | -------------------------------------------------------- |
+| HTML document                                     | 1                     | Edge + FDT; function only on MISS                        |
+| JS chunks (`/_next/static`)                       | many                  | Edge + FDT only — **keep these HIT**                     |
+| CSS                                               | a few                 | Edge + FDT                                               |
+| Fonts (Geist ± mono ± editorial)                  | a few                 | Edge + FDT                                               |
+| PPR / RSC holes (badge, drawer, grid, variant)    | several               | Edge; function if the hole is live                       |
+| `prefetch={true}` or a unique App Shell per route | 0–N                   | Extra RSC; function if destination awaits `searchParams` |
+| `/_next/image` (if the Saleor pipeline is off)    | one per card × srcset | Edge + **transformations**                               |
+| Speed Insights / other beacons                    | 0–few                 | Own meter + Edge                                         |
+
+A product grid through `next/image` can dominate the edge-request count by itself. With `SaleorImage`, the leftover requests are mostly **cheap CDN HITs**. Closing the gap to 1:1 is the wrong goal (that is a multi-page app with inlined CSS). The bill is the **expensive subset**: function invocations, image transforms, ISR writes, bot-driven uncached HTML.
+
+**Bots inflate the gap further.** Analytics page views exclude most crawlers; Edge Requests do not. A sitemap of every unique SKU × that SKU’s asset graph is a large crawl with almost no page views.
+
 Two multipliers dominate everything else at scale:
 
 1. **Invalidation scope** — one `revalidatePath`/broad tag can convert millions of future cheap CDN hits into billed regenerations.
@@ -73,12 +94,12 @@ Session and cart cookies are read inside **dynamic holes** (`HeaderActionsSlot`,
 
 Cache entries for listing grids are keyed by `(slug ×) sort × locale × channel` — upper bound `(1 + categories + collections) × sorts × locales × channels`, so tags follow the key (`cache-manifest.ts`):
 
-| Tag                                                                   | Busted by                                                        |
-| --------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `listing:all:{channel}`                                               | any listing-affecting product event in the channel               |
-| `listing:category:{channel}:{slug}`                                   | product events (payload `category.slug`), category entity events |
-| `listing:collection:{channel}:{slug}`                                 | enriched product events, collection entity events                |
-| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | fallback when the payload can't name the grid; full purge        |
+| Tag                                                                   | Busted by                                                                                |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `listing:all:{channel}`                                               | listing-affecting product events (skip with `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`) |
+| `listing:category:{channel}:{slug}`                                   | product events (payload `category.slug`), category entity events                         |
+| `listing:collection:{channel}:{slug}`                                 | enriched product events, collection entity events                                        |
+| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | fallback when the payload can't name the grid; full purge                                |
 
 **Enriched payload contract:** saleor-paper-app queries `collections { slug }` (and `category { slug }`) in product/variant webhook subscriptions and — from its `cost-invariants` change on — forwards them in the storefront POST. `undefined` collections → channel catch-all (correct but imprecise); `[]` → no collection grid busted. Keep the app on a forwarding version (older ones strip the field) — precision here is directly billed regeneration avoided.
 
@@ -105,6 +126,7 @@ Catalog imagery renders as plain `<img srcset>` against Saleor's CDN (`SaleorIma
 - Only the **unfiltered first page** of listings is cached (`isCacheableListingView`) — never cache filter/cursor permutations.
 - Stock/metadata events **never** bust listing tags (`affectsListing`).
 - No `prefetch={true}` on grids of links (per-card runtime prefetch = invocation fan-out); global `partialPrefetching` shares one App Shell per route.
+- No `prefetch={true}` on persistent chrome **or homepage CTAs**. That full-resolves URL data (`params` / `searchParams`) on every view of the linking page — a per-visit invocation. `/products` and category grids await `searchParams`, so `prefetch={true}` from the header or hero is a listing render the shopper never asked for. Footer and secondary nav stay `prefetch={false}` so a fat unique-path menu does not fan out `_rsc` fetches on first paint.
 - Catalog `cacheLife` backstop is 1 h `revalidate` / 1 d `expire` — webhooks own freshness. Never shorten the backstop to "feel fresher".
 - No broad middleware; product pages render on demand; builds prerender locale × channel, never the catalog.
 
@@ -126,9 +148,31 @@ When traffic grows, apply these **before** considering leaving Vercel:
 10. **Committed-use pricing** once optimized FDT/compute is predictable — negotiate before overage becomes routine.
 11. **Self-hosting (OpenNext/containers) is the last lever, not the first.** An optimized Paper deployment is cheap; the ops cost of replacing Vercel's deploy/CDN/ISR machinery usually exceeds the platform margin until media, analytics, invalidation, and bots are already controlled. Revisit when the optimized bill's platform share still dominates.
 
+### High-churn, subpath, and Cloudflare forks
+
+Catalogs whose SKUs turn over constantly (unique items listed and sold all day) and a storefront mounted on a URL subpath under a marketing CMS change the cost model. Do these **before** raising TTLs or leaving Vercel:
+
+1. **`PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`.** Every sale is a listing-affecting product event. Leaving `listing:all` on means the all-products grid never stays warm. Category/collection shards still bust; `/products` then uses the 1 h `catalog` backstop. Accept a sold item lingering on that one grid until then — checkout cannot complete at a stale price.
+2. **Do not ship a sitemap of every unique SKU.** Paper has no `sitemap.ts` for this reason. A dump invites crawlers to fetch every PDP × its asset graph; sold URLs 404 and get recrawled. Canonical + hreflang on visited pages is enough until you have a **chunked, in-stock-only** export.
+3. **`basePath` (or a rewrite onto a subpath) is a first-class cost surface.** Middleware matchers, `robots.ts` paths, cookie `path`, checkout session-bridge URLs, and `assetPrefix` must all know the prefix. A 308 from the mount → `/{locale}/{channel}` is an extra edge request on every landing; for a single-market shop, collapsing locale/channel out of the path removes that hop.
+4. **An extra CDN in front of Vercel does not cut the Vercel Edge Request count** unless that CDN **absorbs** the request (cache HIT on `/_next/static`, or a bot challenge that never reaches origin). Proxy-with-bypass = you pay both hops for the same asset graph. DNS-only the shop hostname, or cache only `/_next/static*` at the outer CDN with a long TTL and let HTML/RSC hit Vercel. Do not forward bot-management cookies in a way that varies Vercel's shared cache. Bot challenges belong **in front of** origin, not as a second trip after Vercel has already rendered.
+5. **Co-locate Vercel region with Saleor.** Provisioned memory bills during GraphQL waits; a transatlantic hop is usually more expensive than a regional price delta saves.
+6. **Search is always uncached** on Paper. Rate-limit it; never `prefetch` it; keep `/*/search` and `/*?*query=` in `robots.ts`. Adapt the disallow list to the fork's real filter params (and leftover query names from a previous storefront if those URLs still resolve).
+7. **Images of unique, short-lived items must not touch `/_next/image`.** A sold SKU's transformation is paid once and never read again. Verify `SaleorImage` actually received a rung `srcset` — a missing alias silently falls back to the optimizer. Saleor's ladder is **product `thumbnail` and category/collection `backgroundImage` only**. Homepage banners, logos, and `/public` tiles have no rungs; do not expect uploading them as a Model `FILE` to create one. Pre-encode those and serve with a plain `<img>`, or accept a small, stable `next/image` set with honest `sizes`.
+8. **Coalesce webhooks in saleor-paper-app** (5–30 s per entity). A bulk PIM/POS sync of N items is N storefront POSTs if the app does not buffer.
+
 ### Measure before believing any model
 
 Replace assumptions with a 30-day export: Edge Requests + FDT by path, invocations/CPU/memory/wall time, FOT, ISR reads/writes, image transformations, Speed Insights points, build minutes, bot share, % of requests with checkout/auth cookies, Saleor GraphQL latency by operation, webhooks by event type. The most uncertain model inputs are Fluid concurrency, dynamic-request share, regional-CDN miss rate, and average response size — get those from real data.
+
+For a **single homepage** (or any browse URL) when you cannot see the fork's source: capture one HAR after the bot challenge, then classify it.
+
+1. Chrome Incognito → DevTools → Network → Disable cache.
+2. Open the homepage. Wait until the spinner is idle, then ~3 s more (prefetch).
+3. Right-click the request list → Save all as HAR with content.
+4. `pnpm har:analyze path/to/page.har`
+
+The script buckets HTML, `/_next/static`, RSC/prefetch, `/_next/image`, Saleor media, fonts, beacons, and bot-challenge scripts, and flags uncacheable HTML, redirects, and `Set-Cookie` on the document. `*.har` is gitignored (bodies often carry cookies). Drop the file in chat if you want it read here.
 
 ---
 
@@ -141,23 +185,24 @@ Replace assumptions with a 30-day export: Edge Requests + FDT by path, invocatio
 ❌ Caching filter/cursor permutations, or one giant tag over many entries (write cost ↔ regeneration storms)
 ❌ Stock/metadata webhooks busting listing tags; unmapped events falling through to broad purges
 ❌ Video or heavy media in `public/`
-❌ `prefetch={true}` on link grids
+❌ `prefetch={true}` on link grids, header chrome, homepage CTAs, or footer/utility links
 ❌ Crawlable dynamic query surfaces (facets, search) left out of `robots.ts`
 ❌ Retrying Saleor errors without a budget while an instance holds memory open
 ❌ Shortening cache backstops to compensate for missing webhooks
 
 ## Key files
 
-| File                                               | Role                                                     |
-| -------------------------------------------------- | -------------------------------------------------------- |
-| `src/lib/chrome-sync.ts`, `header-chrome-sync.tsx` | Cross-tab chrome sync without server work                |
-| `src/app/actions.ts`, `account/actions.ts`         | `refresh()`-based per-user mutations                     |
-| `src/lib/cache-manifest.ts`                        | Sharded listing tags + catch-alls (manifest v7)          |
-| `src/app/api/revalidate/route.ts`                  | Per-grid webhook invalidation, enriched payload contract |
-| `src/lib/checkout.ts`                              | Request-memoized `Checkout.find`                         |
-| `src/lib/speed-insights.ts`                        | Sample-rate env parsing (default 0.01)                   |
-| `src/app/robots.ts`                                | Crawl policy = cost policy                               |
-| `eslint.config.mjs`                                | `next/image` allowlist guard                             |
-| `next.config.js`                                   | Image ladder/TTL/allowlist, cacheLife tiers              |
+| File                                               | Role                                                        |
+| -------------------------------------------------- | ----------------------------------------------------------- |
+| `src/lib/chrome-sync.ts`, `header-chrome-sync.tsx` | Cross-tab chrome sync without server work                   |
+| `src/app/actions.ts`, `account/actions.ts`         | `refresh()`-based per-user mutations                        |
+| `src/lib/cache-manifest.ts`                        | Sharded listing tags + catch-alls (manifest v7)             |
+| `src/app/api/revalidate/route.ts`                  | Per-grid webhook invalidation, enriched payload contract    |
+| `src/lib/checkout.ts`                              | Request-memoized `Checkout.find`                            |
+| `src/lib/speed-insights.ts`                        | Sample-rate env parsing (default 0.01)                      |
+| `src/app/robots.ts`                                | Crawl policy = cost policy                                  |
+| `src/lib/webhook-events.ts`                        | Event allowlist + `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT` |
+| `eslint.config.mjs`                                | `next/image` allowlist guard                                |
+| `next.config.js`                                   | Image ladder/TTL/allowlist, cacheLife tiers                 |
 
-Related: [`data-caching.md`](data-caching.md) (cache manifest, invalidation), [`ui-images.md`](ui-images.md) (image pipeline decision table), [`data-auth-routes.md`](data-auth-routes.md) (chrome freshness).
+Related: [`data-caching.md`](data-caching.md) (cache manifest, invalidation), [`ui-images.md`](ui-images.md) (image pipeline decision table), [`data-auth-routes.md`](data-auth-routes.md) (chrome freshness). Backlog: [`docs/plans/paper-cost-efficiency.md`](../../../../docs/plans/paper-cost-efficiency.md).

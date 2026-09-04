@@ -48,6 +48,9 @@ yarn-error.log*
 # Demo credential dumps (e.g. .env.local.demo) — never commit
 .env*.demo
 
+# Local HAR captures — often contain cookies and full response bodies
+*.har
+
 # vercel
 .vercel
 
@@ -69,3 +72,6 @@ next-env.d.ts
 
 # Internal/marketing docs — keep local, never commit (strategy lives in the brain)
 docs/marketing/
+
+# Customer-fork cost notes (merchant-identifying — keep local)
+docs/plans/fork-*.md

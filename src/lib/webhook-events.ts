@@ -96,6 +96,29 @@ export function resolveWebhookEventScope(eventHeader: string | null | undefined)
 	return WEBHOOK_EVENT_SCOPES[eventHeader.trim().toLowerCase()] ?? null;
 }
 
+/**
+ * High-churn catalogs (unique SKUs that turn over quickly) fire listing-affecting
+ * product events constantly. Busting `listing:all:{channel}` on every sale keeps
+ * the all-products grid permanently cold. Category/collection shards still bust.
+ *
+ * Default is on (current Paper behavior). Set `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`
+ * when the all-products first page changing every few minutes is not worth a
+ * regeneration — the `catalog` cacheLife backstop (1 h) is then the freshness path.
+ */
+export function bustListingAllOnProductEvent(
+	raw: string | undefined = process.env.PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT,
+): boolean {
+	if (raw === undefined || raw.trim() === "") return true;
+	const normalized = raw.trim().toLowerCase();
+	if (["0", "false", "no", "off"].includes(normalized)) return false;
+	if (["1", "true", "yes", "on"].includes(normalized)) return true;
+	console.warn(
+		`[revalidate] Ignoring invalid PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT="${raw.replace(/[\r\n]/g, "")}". ` +
+			`Expected 0/1 (or true/false). Defaulting to on.`,
+	);
+	return true;
+}
+
 /** Header values are attacker-influenced; keep them on one log line. */
 export function sanitizeLogValue(value: string | null | undefined): string {
 	return value?.replace(/[\r\n]/g, "") ?? "";

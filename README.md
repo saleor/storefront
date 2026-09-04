@@ -266,13 +266,13 @@ thumbnail256: thumbnail(size: 256, format: WEBP) { url }
 thumbnail512: thumbnail(size: 512, format: WEBP) { url }
 ```
 
-Product cards and the PDP gallery render those through [`<SaleorImage>`](src/ui/atoms/saleor-image.tsx) as a plain `<img srcset sizes>`, so they never hit `/_next/image` and are never billed as image transformations. Anything without a Saleor size ladder — CMS uploads, local assets — falls back to `next/image` automatically.
+Product cards and the PDP gallery render those through [`<SaleorImage>`](src/ui/atoms/saleor-image.tsx) as a plain `<img srcset sizes>`, so they never hit `/_next/image` and are never billed as image transformations. Category and collection `backgroundImage(size, format)` use the same ladder. Anything else — `/public`, Model/Page `FILE` (original URL, no rungs) — has no Saleor resize; prefer a pre-encoded file and a plain `<img>`, or let `SaleorImage` fall back to `next/image`.
 
-|                        | Saleor-native `srcset`     | `next/image`                                                           |
-| ---------------------- | -------------------------- | ---------------------------------------------------------------------- |
-| Used for               | Product cards, PDP gallery | CMS uploads, local assets, slots far below the smallest requested size |
-| Transformations billed | none                       | one per `(src, width, quality)`                                        |
-| Served by              | Saleor's CDN               | `/_next/image`                                                         |
+|                        | Saleor-native `srcset`                                     | Pre-encoded `<img>` or `next/image`                                   |
+| ---------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
+| Used for               | Product `thumbnail`, category/collection `backgroundImage` | `/public`, FILE uploads, slots far below the smallest requested size  |
+| Transformations billed | none                                                       | none (plain `<img>`) / one per `(src, width, quality)` (`next/image`) |
+| Served by              | Saleor's media CDN                                         | Vercel origin or the raw FILE host                                    |
 
 Set `NEXT_PUBLIC_PAPER_IMAGE_PIPELINE=vercel` to route everything back through `next/image` without a code change — the escape hatch if your Saleor deployment doesn't front media with a CDN.
 

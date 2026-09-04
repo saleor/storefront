@@ -4,6 +4,8 @@ A migration checklist for anyone running a Next.js + Saleor storefront on Vercel
 below shipped on Paper's `feat/better-cost-control` branch; file paths reference Paper, but the
 reasoning applies to any fork.
 
+Living backlog for this repo: [`docs/plans/paper-cost-efficiency.md`](plans/paper-cost-efficiency.md).
+
 Ordered by leverage. Items 1–4 are one-line config changes worth doing today. Item 5 is the
 structural one. Items 6–11 are caching and compute.
 
@@ -278,8 +280,12 @@ body too.
 ## 11. Stop prefetching every link
 
 `prefetch={true}` on a grid of category tiles fires one RSC request per tile on viewport entry —
-edge requests, function invocations, and render time for pages most visitors never open. Leave
-Next's default (prefetch on hover) except on the one or two links you know convert.
+edge requests, function invocations, and render time for pages most visitors never open. The same
+trap is a `prefetch={true}` on header chrome: that full-resolves the destination (including
+`searchParams`) on **every** browse page, not just the homepage. Leave Next's default (App Shell
+under `partialPrefetching`) except on the one or two converting CTAs. Footer and legal links
+should be `prefetch={false}` — a fork with many unique header/footer paths otherwise fans out
+`?_rsc=` fetches on first paint.
 
 ## 12. Check for duplicate webhook subscriptions
 

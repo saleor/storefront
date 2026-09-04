@@ -278,21 +278,21 @@ Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** ra
 
 ### Tag registry
 
-| Tag pattern                                                           | Profile                 | Used by                                                   | Invalidated when                                               |
-| --------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
-| `product:{slug}`                                                      | `products`              | `getProductData()`                                        | Product updated                                                |
-| `category:{slug}`                                                     | `categories`            | `getCategoryData()`                                       | Category updated                                               |
-| `collection:{slug}`                                                   | `collections`           | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                                             |
-| `page:{slug}`                                                         | `pages`                 | `getPageData()` (CMS)                                     | Page updated                                                   |
-| `products` / `categories` / `collections` / `pages`                   | same (sharedTag)        | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions                              |
-| `listing:all:{channel}`                                               | `listingAll`            | `getProductListingPage()` (/products grid)                | Listing-affecting product event                                |
-| `listing:category:{channel}:{slug}`                                   | `listingCategory`       | `getCategoryListingPage()`                                | Product event in that category; category event                 |
-| `listing:collection:{channel}:{slug}`                                 | `listingCollection`     | `getCollectionListingPage()`                              | Enriched product event naming the collection; collection event |
-| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | same (sharedTagPattern) | Applied alongside each category/collection grid tag       | Fallback when the payload can't name the grid; full purge      |
-| `navigation:{channel}`                                                | `navigation`            | `getNavbarMenuItems()`                                    | Navbar changed                                                 |
-| `footer-menu:{channel}`                                               | `footerMenu`            | `getFooterMenuItems()`                                    | Footer changed                                                 |
-| `storefront-content:{channel}:{locale}`                               | `storefront-content`    | `getStorefrontContent()`                                  | `storefront-*` Page updated                                    |
-| `channels`                                                            | `channels`              | `getCachedChannelsList()`                                 | Channel list changed                                           |
+| Tag pattern                                                           | Profile                 | Used by                                                   | Invalidated when                                                                             |
+| --------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `product:{slug}`                                                      | `products`              | `getProductData()`                                        | Product updated                                                                              |
+| `category:{slug}`                                                     | `categories`            | `getCategoryData()`                                       | Category updated                                                                             |
+| `collection:{slug}`                                                   | `collections`           | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                                                                           |
+| `page:{slug}`                                                         | `pages`                 | `getPageData()` (CMS)                                     | Page updated                                                                                 |
+| `products` / `categories` / `collections` / `pages`                   | same (sharedTag)        | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions                                                            |
+| `listing:all:{channel}`                                               | `listingAll`            | `getProductListingPage()` (/products grid)                | Listing-affecting product event (`PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0` skips this tag) |
+| `listing:category:{channel}:{slug}`                                   | `listingCategory`       | `getCategoryListingPage()`                                | Product event in that category; category event                                               |
+| `listing:collection:{channel}:{slug}`                                 | `listingCollection`     | `getCollectionListingPage()`                              | Enriched product event naming the collection; collection event                               |
+| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | same (sharedTagPattern) | Applied alongside each category/collection grid tag       | Fallback when the payload can't name the grid; full purge                                    |
+| `navigation:{channel}`                                                | `navigation`            | `getNavbarMenuItems()`                                    | Navbar changed                                                                               |
+| `footer-menu:{channel}`                                               | `footerMenu`            | `getFooterMenuItems()`                                    | Footer changed                                                                               |
+| `storefront-content:{channel}:{locale}`                               | `storefront-content`    | `getStorefrontContent()`                                  | `storefront-*` Page updated                                                                  |
+| `channels`                                                            | `channels`              | `getCachedChannelsList()`                                 | Channel list changed                                                                         |
 
 Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
 Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/categories/collections/listings/CMS pages) is `stale 5 min / revalidate 1 hr / expire 1 day`, `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
@@ -301,7 +301,7 @@ Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/ca
 
 ### Listing grids
 
-Listing grids are cached only for the **unfiltered first page** (any sort order) — see `isCacheableListingView()` in `src/lib/catalog/get-product-listing.ts`. Filtered and paginated views fall through to a live fetch on purpose: every filter permutation would be a cache entry that is written once and rarely read again, trading invocation cost for cache-write cost. Category/collection slugs are cache-key arguments, so the entry upper bound is `(1 + categories + collections) × sorts × locales × channels` — only _visited_ grids materialize, and the **sharded tags** above keep invalidation per-grid: one product edit busts its own category/collection grids plus `listing:all`, never every grid in the channel. Product webhook payloads carry `category.slug`; collection membership comes from the saleor-paper-app **enriched payload** (`collections { slug }` in the subscription) — without it the channel catch-all keeps correctness at the cost of precision.
+Listing grids are cached only for the **unfiltered first page** (any sort order) — see `isCacheableListingView()` in `src/lib/catalog/get-product-listing.ts`. Filtered and paginated views fall through to a live fetch on purpose: every filter permutation would be a cache entry that is written once and rarely read again, trading invocation cost for cache-write cost. Category/collection slugs are cache-key arguments, so the entry upper bound is `(1 + categories + collections) × sorts × locales × channels` — only _visited_ grids materialize, and the **sharded tags** above keep invalidation per-grid: one product edit busts its own category/collection grids plus `listing:all` (unless `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`), never every grid in the channel. Product webhook payloads carry `category.slug`; collection membership comes from the saleor-paper-app **enriched payload** (`collections { slug }` in the subscription) — without it the channel catch-all keeps correctness at the cost of precision.
 
 `GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically. Manifest **v6+** includes an optional `identity` block (`saleorApiUrl`, `environment`, deploy metadata) for the Paper handshake. `saleorApiUrl` comes from `NEXT_PUBLIC_SALEOR_API_URL`. `environment` defaults from `VERCEL_ENV` / `NODE_ENV`; set `PAPER_STOREFRONT_ENVIRONMENT` only when those lie (true staging, or non-Vercel hosts that aren't prod).
 
@@ -377,15 +377,15 @@ Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ 
 
 saleor-paper-app forwards that header on every entity POST. A POST without it (manual curl, older app) is treated as listing-affecting. After upgrading the app, click **Sync Webhooks** so Saleor delivers variant CRUD, stock, and metadata — stock events must arrive _with_ `saleor-event` or they bust the listing tags. Do not also subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for media edits.
 
-| Event family                                                        | Storefront effect                                                                                                                      |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `listing:all:{channel}` + its category grid + its collections' grids (enriched payload) or the collection catch-all |
-| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never listing tags                                                                                             |
-| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + only that entity's own listing grid                                                          |
-| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*`                                                 |
-| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                                                                        |
-| `CHANNEL_*`                                                         | `channels`                                                                                                                             |
-| Everything else                                                     | Logged and skipped                                                                                                                     |
+| Event family                                                        | Storefront effect                                                                                                                                                                                |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PRODUCT_*` / `PRODUCT_MEDIA_*` / variant created, updated, deleted | `product:{slug}` + `listing:all:{channel}` (opt-out via `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`) + its category grid + its collections' grids (enriched payload) or the collection catch-all |
+| `PRODUCT_VARIANT_*` stock / metadata                                | `product:{slug}` only — never listing tags                                                                                                                                                       |
+| `CATEGORY_*`, `COLLECTION_*`                                        | `category:{slug}` / `collection:{slug}` + only that entity's own listing grid                                                                                                                    |
+| `PAGE_*`                                                            | `page:{slug}`, and `storefront-content:{channel}:{locale}` when slug is `storefront-*`                                                                                                           |
+| `MENU_*`, `MENU_ITEM_*`                                             | `navigation:{channel}`, `footer-menu:{channel}`                                                                                                                                                  |
+| `CHANNEL_*`                                                         | `channels`                                                                                                                                                                                       |
+| Everything else                                                     | Logged and skipped                                                                                                                                                                               |
 
 **Known sharding gap — removals.** Payloads name only a product's _current_ memberships, so moving a product out of a category/collection leaves the **old** grid's cache untouched: it keeps showing the product until the `catalog` cacheLife backstop expires it. Editing the source category/collection itself (a `CATEGORY_*`/`COLLECTION_*` event) busts its grid immediately. Accepted trade-off: a bounded staleness window on a rare operation, versus busting every grid in the channel on every product edit.
 
@@ -3487,12 +3487,20 @@ Saleor Cloud fronts those storage URLs with CloudFront at `cache-control: max-ag
 
 `NEXT_PUBLIC_PAPER_IMAGE_PIPELINE` (default `saleor`) selects between them; `vercel` is the escape hatch if your Saleor deployment has no CDN in front of media.
 
-|                        | Saleor-native `srcset`                                       | `next/image`                                                                              |
-| ---------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Use for                | Product cards, PDP gallery — anything with a Saleor rung set | CMS uploads, local assets, category backgrounds, slots far smaller than the smallest rung |
-| Transformations billed | none                                                         | one per `(src, width, quality)`                                                           |
-| Served by              | Saleor's CDN                                                 | `/_next/image`                                                                            |
-| Width selection        | browser, from the rungs you requested                        | optimizer, from `deviceSizes`                                                             |
+|                        | Saleor-native `srcset`                                                                    | `next/image` or plain `<img>`                                                                                      |
+| ---------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Use for                | Product `thumbnail(size, format)` and category/collection `backgroundImage(size, format)` | Everything Saleor does **not** resize: `/public`, Model/Page `FILE` URLs, slots far smaller than the smallest rung |
+| Transformations billed | none                                                                                      | `/_next/image`: one per `(src, width, quality)`. Plain `<img>`: none                                               |
+| Served by              | Saleor's media CDN                                                                        | Vercel origin (`/public` or optimizer) or the raw FILE host                                                        |
+| Width selection        | browser, from the rungs you requested                                                     | optimizer `deviceSizes`, or files you authored                                                                     |
+
+Saleor does **not** run marketing art through that ladder. A Model/Page `FILE` attribute returns the **original** upload URL (often on Saleor CloudFront — CDN, no resize/WebP rungs). Files in Next `/public` get neither. Putting a hero through `SaleorImage` without a rung `srcset` just falls through to `/_next/image`. Uploading the same PNG as a `FILE` and wrapping it in `next/image` is worse: Vercel re-encodes a file already on another CDN.
+
+For that leftover set (logo, homepage banners, tiles that are not category `backgroundImage`):
+
+1. **Prefer one pre-encoded file per slot** (flatten layered PSDs/PNGs to a single WebP) and a plain `<img>` / `srcset` you author. Zero image transformations; you pay FDT for the file you chose.
+2. **If the art is category/collection art**, store it as Saleor `backgroundImage` and request the same aliased rungs as catalog cards — that _is_ the thumbnail pipeline.
+3. **Keep `next/image` only** when you need the optimizer (tiny slot vs a huge original, or you refuse to maintain two widths). Then `sizes` must match the box, and the source should already be WebP — do not ship 4-layer 2048 px PNGs at `100vw`.
 
 The rung sets live in [`images.ts`](../../../src/lib/images.ts) (`CATALOG_CARD_RUNGS`, `PDP_GALLERY_RUNGS`) and must match the aliased GraphQL fields:
 
@@ -4251,7 +4259,7 @@ When unset, any allowlisted locale × channel is valid and language switch **kee
 
 ## Sitemap & robots (do not ship naive)
 
-Paper has **no** `sitemap.ts` / `robots.ts` yet (middleware already reserves `sitemap.xml` / `robots.txt`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
+Paper ships `src/app/robots.ts` (faceted/sorted/search listing queries + cart/checkout/account/search). It still has **no** `sitemap.ts` (middleware already reserves `sitemap.xml`). On-page canonical + hreflang cover most crawl signals; a wrong sitemap is worse than none.
 
 **Why a single `sitemap.ts` dump fails at scale**
 
