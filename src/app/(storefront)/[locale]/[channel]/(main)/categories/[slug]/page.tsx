@@ -2,22 +2,16 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { ProductListByCategoryDocument } from "@/gql/graphql";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { executePublicGraphQL } from "@/lib/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
-import { getCategoryListingPage, isCacheableListingView } from "@/lib/catalog/get-product-listing";
+import { getCategoryListingPage } from "@/lib/catalog/get-product-listing";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
-import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
-import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
+import { CategoryHero, PlpListingClient, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
-import { CategoryPageClient } from "./client";
 
 // Prefetch: default (auto) under global `partialPrefetching` — App Shell only. Category
 // tiles deliberately do not opt into `prefetch={true}`: one runtime prefetch per tile in a
@@ -55,12 +49,8 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 };
 
 /**
- * Hybrid PLP — cached hero rendered eagerly into the PPR static shell, only the
- * `searchParams`-driven product grid streams behind a `Suspense` island. The hero comes
- * exclusively from `getCategoryData()` (`"use cache"`), so it prerenders as real content
- * (no page-level `Suspense`, no hero skeleton on the page itself). Matches the products
- * listing page pattern. Route `loading.tsx` (`PlpPageLoading`) remains the height-matched
- * instant-navigation fallback.
+ * Cached hero + cached first-page grid (params only). Filters swap via `/api/listing`.
+ * `searchParams` is awaited only on the rare non-canonical slug redirect.
  */
 export default async function Page(props: PageProps) {
 	const resolvedParams = await props.params;
@@ -106,7 +96,6 @@ export default async function Page(props: PageProps) {
 				primarySlug={category.slug}
 				localeSlugs={buildLocaleSlugMap(category)}
 			/>
-			{/* Static shell — cached hero renders immediately, prerendered into the PPR shell */}
 			<CategoryHero
 				title={category.name}
 				description={plainDescription}
@@ -114,41 +103,21 @@ export default async function Page(props: PageProps) {
 				breadcrumbs={breadcrumbs}
 				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
-			{/* Dynamic island — only the searchParams-driven grid streams behind a skeleton */}
 			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CategoryProducts params={props.params} searchParams={props.searchParams} />
+				<CategoryProducts params={props.params} />
 			</Suspense>
 		</>
 	);
 }
 
-async function CategoryProducts({
-	params: paramsPromise,
-	searchParams: searchParamsPromise,
-}: {
-	params: PageProps["params"];
-	searchParams: PageProps["searchParams"];
-}) {
-	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
-
-	const sortBy = buildSortVariables(searchParams.sort);
-
-	// Resolve via cached getCategoryData (handles translated URL slugs), then list by primary slug.
+async function CategoryProducts({ params: paramsPromise }: { params: PageProps["params"] }) {
+	const params = await paramsPromise;
 	const category = await getCategoryData(params.slug, params.channel, params.locale);
 	if (!category) {
 		notFound();
 	}
 
-	const products = isCacheableListingView(searchParams)
-		? await getCategoryListingPage(category.slug, params.channel, params.locale, sortBy)
-		: await fetchFilteredCategoryListing({
-				searchParams,
-				categorySlug: category.slug,
-				channel: params.channel,
-				locale: params.locale,
-				sortBy,
-			});
-
+	const products = await getCategoryListingPage(category.slug, params.channel, params.locale, undefined);
 	if (!products) {
 		notFound();
 	}
@@ -156,46 +125,14 @@ async function CategoryProducts({
 	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
 	return (
-		<CategoryPageClient
+		<PlpListingClient
+			surface="category"
+			locale={params.locale}
+			channel={params.channel}
+			slug={category.slug}
 			products={productCards}
 			pageInfo={products.pageInfo}
 			totalCount={products.totalCount ?? productCards.length}
 		/>
 	);
-}
-
-/** Live fetch for filtered or paginated views — deliberately uncached (long tail). */
-async function fetchFilteredCategoryListing({
-	searchParams,
-	categorySlug,
-	channel,
-	locale,
-	sortBy,
-}: {
-	searchParams: Awaited<PageProps["searchParams"]>;
-	categorySlug: string;
-	channel: string;
-	locale: string;
-	sortBy: ReturnType<typeof buildSortVariables>;
-}) {
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
-	const { filter, where } = buildProductListingConstraints({
-		priceRange: searchParams.price,
-		colors: searchParams.colors,
-		sizes: searchParams.sizes,
-	});
-
-	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
-		variables: {
-			slug: categorySlug,
-			channel,
-			...paginationVariables,
-			sortBy,
-			filter,
-			where,
-			...graphqlLanguageCodeVariables(locale),
-		},
-	});
-
-	return result.ok ? (result.data.category?.products ?? null) : null;
 }

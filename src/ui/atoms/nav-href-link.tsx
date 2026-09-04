@@ -13,8 +13,19 @@ export interface NavHrefLinkProps extends Omit<ComponentProps<typeof LinkWithCha
  * Channel-aware link for CMS/menu hrefs.
  * Renders a plain anchor for safe external/mailto URLs, `LinkWithChannel` for internal paths,
  * and non-interactive content when the href fails validation.
+ *
+ * Next Link navigation props (`prefetch`, `replace`, `scroll`) stay on the internal
+ * `Link` only — spreading them onto `<a>` prints a React DOM warning (boolean `prefetch`).
  */
-export function NavHrefLink({ href, children, className, ...props }: NavHrefLinkProps) {
+export function NavHrefLink({
+	href,
+	children,
+	className,
+	prefetch,
+	replace,
+	scroll,
+	...props
+}: NavHrefLinkProps) {
 	if (!isSafeNavHref(href)) {
 		return <span className={cn(className)}>{children}</span>;
 	}
@@ -28,7 +39,14 @@ export function NavHrefLink({ href, children, className, ...props }: NavHrefLink
 	}
 
 	return (
-		<LinkWithChannel href={href} className={className} {...props}>
+		<LinkWithChannel
+			href={href}
+			className={className}
+			prefetch={prefetch}
+			replace={replace}
+			scroll={scroll}
+			{...props}
+		>
 			{children}
 		</LinkWithChannel>
 	);

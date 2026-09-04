@@ -15,7 +15,7 @@ How to mold PDP and homepage layouts by editing the page files — adding, remov
 Pick the page shape by **whether the route reads any runtime data** (`searchParams`/`cookies`/uncached fetch). A skeleton is a **per-hole** affordance, never a **per-page** default:
 
 - **Static page (no runtime data)** → sync page wraps an async body that awaits `params` + `"use cache"` data in **page-level `Suspense`** (fold-height fallback). Required for Partial Prefetching: URL data must stay out of the shared App Shell. Direct loads still prerender full HTML per `generateStaticParams`. (homepage; CMS pages follow the same shape when they await `params`)
-- **Hybrid page (some runtime data)** → render the cached shell **eagerly**, then wrap **only** the dynamic island in `Suspense` with a small skeleton. (PLP grid via `searchParams`, PDP variant section)
+- **Hybrid page (some runtime data)** → render the cached shell **eagerly**, then wrap **only** the dynamic island in `Suspense` with a small skeleton. (PDP variant section. Listing pages are params-only — the cached first-page grid is not a `searchParams` hole; filters go through `GET /api/listing`.)
 
 Design changes must stay inside the right layer:
 
@@ -26,12 +26,14 @@ Page (sync export)
         cached sections             ← hero, story, value columns, featured grid…
 ```
 
-| Put it in the STATIC shell                                        | Put it in a DYNAMIC island (nested Suspense)                      |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Marketing sections from `getStorefrontContent()`                  | Anything reading `searchParams` (variant gallery/section)         |
-| `h1`, breadcrumbs, JSON-LD, copy, value props                     | Anything reading `cookies()` (cart, auth chrome)                  |
-| LCP image preload                                                 | `cache: "no-cache"` fetches; client routing hooks                 |
-| Cached collection grids via `"use cache"` helpers (e.g. featured) | `searchParams`-filtered/sorted grids; per-request personalization |
+| Put it in the STATIC shell                                  | Put it in a DYNAMIC island (nested Suspense)                                   |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Marketing sections from `getStorefrontContent()`            | Anything reading `searchParams` (variant gallery/section)                      |
+| `h1`, breadcrumbs, JSON-LD, copy, value props               | Anything reading `cookies()` (cart, auth chrome)                               |
+| LCP image preload                                           | `cache: "no-cache"` fetches; client routing hooks                              |
+| Cached collection / listing grids via `"use cache"` helpers | `searchParams` on the PDP (`?variant=` / `?sku=`); per-request personalization |
+
+Listing pages are params-only: the cached first-page grid is not a `searchParams` hole. Filters / sort / cursor swap via `GET /api/listing`.
 
 Hard constraints (never violate when redesigning):
 

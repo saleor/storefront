@@ -135,6 +135,8 @@ thumbnail(size: 256, format: WEBP) {
 
 Pick `size:` from the ladder at or just above the largest rendered slot in **device** pixels — the CSS box times the retina factor. A 128px slot on a 2× screen needs 256, not 128.
 
+The PDP **thumb strip** is an 80px slot. It must use a 256 (or 512) Saleor rung (`thumbSrc` / `url256`) via `SaleorImage` — never the 2048 gallery URL through `next/image`. Main-stage `srcset` stays 512/1024/2048 (`PDP_GALLERY_RUNGS`).
+
 ---
 
 ## Anti-patterns

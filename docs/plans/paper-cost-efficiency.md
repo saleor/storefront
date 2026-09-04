@@ -17,21 +17,14 @@ Status: `done` · `next` · `later` · `measure`
 - [x] Cost rule: why edge requests outnumber page views; high-churn / subpath / outer-CDN playbook.
 - [x] `*.har` gitignored.
 - [x] HAR classifier: Saleor thumbnail 302s and leftover `text/html` 403s (manifest, ads) are not “challenge page” or “HTML redirect”.
+- [x] **P2** — ESLint ban on JSX `prefetch={true}` (`PREFETCH_TRUE_ALLOWED_FILES`, empty).
+- [x] **P4** — Geist Mono loads on checkout / `global-error` only — not browse `<html>`.
+- [x] **P3** — PDP thumb strip uses Saleor 256/512 (`url256`), not the 2048 gallery URL through `next/image`.
+- [x] **P1** — Canonical PLP is params-only; filters / sort / cursor swap via `GET /api/listing`.
 
 ---
 
-## Next (high leverage in Paper)
-
-| ID  | Change                                                                                                                                                                                                                                                                                                                                  | Why                                                                                                                                        | Where                                                 |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| P1  | **Canonical PLP without awaiting `searchParams`.** Empty-query first page should be a full CDN hit; filters move to a client island + route handler.                                                                                                                                                                                    | Playbook #1. Every `/products` view still pays a function to discover “no query”.                                                          | `products/page.tsx`, category/collection twins        |
-| P2  | **CI guard: no new `prefetch={true}`.** Fail `verify` if it appears outside an explicit allowlist (empty by default).                                                                                                                                                                                                                   | Comments already forbid it; a fork will re-add it on a hero. Full prefetch of a `searchParams` page can emit several RSC flights per CTA.  | `eslint.config.mjs` or a small `scripts/` check       |
-| P3  | **Marketing images have no Saleor ladder.** `/public` and Model/Page `FILE` / `file_upload` URLs are originals. Default path: one pre-encoded WebP per slot + plain `<img>`. Keep `next/image` only for tiny slots. **PDP thumb strip:** if it stays on `next/image`, `src` must be a 256/512 Saleor rung — never the 2048 gallery URL. | Homepage optimizer bill is `/public` (and leftover FILE) originals; thumbs sourced from a 2048 proxy pay a transform Vercel should not do. | `saleor-image.tsx`, `image-carousel.tsx`, `ui-images` |
-| P4  | **Browse layout: do not load unused font files.** Geist Mono is barely used on browse.                                                                                                                                                                                                                                                  | Extra edge + FDT on every view.                                                                                                            | `src/lib/fonts.ts`, checkout keeps mono               |
-
----
-
-## Later (Paper, after P1–P4)
+## Later (Paper)
 
 | ID  | Change                                                                                                           | Why                                                                                  |
 | --- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
@@ -46,8 +39,8 @@ Status: `done` · `next` · `later` · `measure`
 ## Measure (Paper)
 
 - [ ] `pnpm har:analyze` on Paper’s own production (or preview) homepage — baseline for this repo.
-- [ ] After P1: share of `/products` requests that are function invocations (Vercel, 7-day).
-- [ ] After P3: `/_next/image` count on a homepage HAR should be ~0 if the page has no CMS-only leftovers.
+- [ ] Share of `/products` requests that are function invocations (Vercel, 7-day) after the params-only PLP.
+- [ ] `/_next/image` on a homepage HAR should stay limited to CMS/`/public` leftovers; PDP thumbs should not request `w=` sources of the 2048 gallery URL.
 
 ---
 

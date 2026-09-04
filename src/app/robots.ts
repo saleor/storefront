@@ -4,11 +4,11 @@ import type { MetadataRoute } from "next";
  * Crawl policy is cost policy.
  *
  * Faceted/paginated listing URLs (`?price=`, `?colors=`, `?sizes=`, `?categories=`,
- * `?cursor=`…) are deliberately *uncached* long-tail views (see
- * `isCacheableListingView`) — every crawler hit is a billed function invocation plus
- * a live Saleor query, and the permutation space is combinatorial. Canonical URLs
- * already point at the clean listing, so blocking the query permutations loses no
- * indexable content. Sorted views are cached but pure duplicates of the canonical.
+ * `?cursor=`…) are long-tail views. Listing *pages* stay params-only (cached first
+ * page); the client swaps via `GET /api/listing`. Crawlers that ignore this file
+ * still receive the canonical first-page HTML. Blocking the query permutations
+ * loses no indexable content. Sorted views are cacheable on the API but duplicates
+ * of the canonical document.
  *
  * Transactional and per-user surfaces (cart, checkout, account, search results) are
  * always-dynamic renders with nothing to index.

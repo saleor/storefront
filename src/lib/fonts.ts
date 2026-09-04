@@ -1,5 +1,4 @@
 import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import { Fraunces } from "next/font/google";
 import { isEditorialTypography } from "@/config/typography-theme";
 import { cn } from "@/lib/utils";
@@ -20,13 +19,15 @@ export type RootHtmlFontProps = {
 	"data-typography"?: "editorial";
 };
 
-/** Shared `<html>` font classes + optional editorial data attribute for all root layouts. */
+/** Shared `<html>` font classes + optional editorial data attribute for browse layouts.
+ *  Geist Mono is imported only from checkout / `global-error` so browse documents
+ *  do not download a font those surfaces use. */
 export function getRootHtmlFontProps(htmlLang: string): RootHtmlFontProps {
 	const editorial = isEditorialTypography();
 
 	return {
 		lang: htmlLang,
-		className: cn(GeistSans.variable, GeistMono.variable, editorial && frauncesDisplay.variable, "min-h-dvh"),
+		className: cn(GeistSans.variable, editorial && frauncesDisplay.variable, "min-h-dvh"),
 		suppressHydrationWarning: true,
 		...(editorial ? { "data-typography": "editorial" as const } : {}),
 	};

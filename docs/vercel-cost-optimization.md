@@ -242,6 +242,10 @@ The reason forks skip it is filter and pagination combinatorics. Cache an allowl
 instead: unfiltered, first page, sort-only. Those are the ones that get crawled and shared, and
 they are a small bounded set. Everything else falls through to a live render.
 
+Vanilla Paper listing **pages** do not await `searchParams` — the HTML is always that cached
+first page. Filters / sort / cursor swap the grid via `GET /api/listing` so an empty-query
+`/products` view can be a CDN hit.
+
 One correctness note: have the cached function **throw** when the GraphQL call fails, rather than
 returning `null`. Otherwise a transient upstream blip caches a 404 for the whole TTL. Reserve
 `null` for genuinely absent entities.

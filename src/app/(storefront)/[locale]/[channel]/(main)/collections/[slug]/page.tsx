@@ -2,27 +2,17 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import {
-	ProductListByCollectionDocument,
-	ProductOrderField,
-	OrderDirection,
-	type ProductOrder,
-} from "@/gql/graphql";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { OrderDirection, ProductOrderField } from "@/gql/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
-import { getCollectionListingPage, isCacheableListingView } from "@/lib/catalog/get-product-listing";
+import { getCollectionListingPage } from "@/lib/catalog/get-product-listing";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
-import { getPaginatedListVariables } from "@/lib/utils";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { CategoryHero, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
-import { buildSortVariables, buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
+import { CategoryHero, PlpListingClient, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
-import { CollectionPageClient } from "./client";
 
 // Prefetch: default (auto) under global `partialPrefetching` — App Shell only until a
 // caller opts in with `prefetch={true}` (no collection-destination links do today).
@@ -59,8 +49,8 @@ export const generateMetadata = async (props: PageProps): Promise<Metadata> => {
 };
 
 /**
- * Cached hero shell (params only) + dynamic product grid island (searchParams).
- * Matches the products listing page pattern — hero is not blocked behind a full-page Suspense.
+ * Cached hero + cached first-page grid (params only). Filters swap via `/api/listing`.
+ * `searchParams` is awaited only on the rare non-canonical slug redirect.
  */
 export default async function Page(props: PageProps) {
 	const params = await props.params;
@@ -111,41 +101,23 @@ export default async function Page(props: PageProps) {
 				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
 			/>
 			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CollectionProducts params={props.params} searchParams={props.searchParams} />
+				<CollectionProducts params={props.params} />
 			</Suspense>
 		</>
 	);
 }
 
-async function CollectionProducts({
-	params: paramsPromise,
-	searchParams: searchParamsPromise,
-}: {
-	params: PageProps["params"];
-	searchParams: PageProps["searchParams"];
-}) {
-	const [params, searchParams] = await Promise.all([paramsPromise, searchParamsPromise]);
-
-	const sortBy = buildSortVariables(searchParams.sort) ?? {
-		field: ProductOrderField.Collection,
-		direction: OrderDirection.Asc,
-	};
-
+async function CollectionProducts({ params: paramsPromise }: { params: PageProps["params"] }) {
+	const params = await paramsPromise;
 	const collection = await getCollectionData(params.slug, params.channel, params.locale);
 	if (!collection) {
 		notFound();
 	}
 
-	const products = isCacheableListingView(searchParams)
-		? await getCollectionListingPage(collection.slug, params.channel, params.locale, sortBy)
-		: await fetchFilteredCollectionListing({
-				searchParams,
-				collectionSlug: collection.slug,
-				channel: params.channel,
-				locale: params.locale,
-				sortBy,
-			});
-
+	const products = await getCollectionListingPage(collection.slug, params.channel, params.locale, {
+		field: ProductOrderField.Collection,
+		direction: OrderDirection.Asc,
+	});
 	if (!products) {
 		notFound();
 	}
@@ -153,46 +125,14 @@ async function CollectionProducts({
 	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
 	return (
-		<CollectionPageClient
+		<PlpListingClient
+			surface="collection"
+			locale={params.locale}
+			channel={params.channel}
+			slug={collection.slug}
 			products={productCards}
 			pageInfo={products.pageInfo}
 			totalCount={products.totalCount ?? productCards.length}
 		/>
 	);
-}
-
-/** Live fetch for filtered or paginated views — deliberately uncached (long tail). */
-async function fetchFilteredCollectionListing({
-	searchParams,
-	collectionSlug,
-	channel,
-	locale,
-	sortBy,
-}: {
-	searchParams: Awaited<PageProps["searchParams"]>;
-	collectionSlug: string;
-	channel: string;
-	locale: string;
-	sortBy: ProductOrder;
-}) {
-	const paginationVariables = getPaginatedListVariables({ params: searchParams });
-	const { filter, where } = buildProductListingConstraints({
-		priceRange: searchParams.price,
-		colors: searchParams.colors,
-		sizes: searchParams.sizes,
-	});
-
-	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
-		variables: {
-			slug: collectionSlug,
-			channel,
-			...paginationVariables,
-			sortBy,
-			filter,
-			where,
-			...graphqlLanguageCodeVariables(locale),
-		},
-	});
-
-	return result.ok ? (result.data.collection?.products ?? null) : null;
 }

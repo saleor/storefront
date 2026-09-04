@@ -50,6 +50,9 @@ export const PLP_FACETS = [
 | `src/ui/components/plp/filter-utils.ts`        | `buildProductListingConstraints`, option extractors |
 | `src/ui/components/plp/filter-utils.server.ts` | `resolveCategorySlugsToIds`                         |
 | `src/ui/components/plp/use-product-filters.ts` | URL sync, optimistic chips, `useTransition`         |
+| `src/ui/components/plp/use-listing-query.ts`   | Canonical grid vs `GET /api/listing` swap           |
+| `src/lib/catalog/fetch-filtered-listing.ts`    | Shared live / cached listing loader                 |
+| `src/app/api/listing/route.ts`                 | Public listing JSON (pages stay params-only)        |
 | `src/ui/components/plp/filter-bar.tsx`         | Filter UI                                           |
 
 ## Building listing constraints
@@ -103,7 +106,7 @@ import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils
 ## Adding a New Attribute Facet
 
 1. Add a row to `PLP_FACETS` (`param`, `attributeSlug`, `attributeAliases`, `control`).
-2. Ensure listing pages pass `searchParams[param]` into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map).
+2. Ensure `loadListing` / `fetch-filtered-listing.ts` passes the new param into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map). Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
 3. Wire FilterBar / `useProductFilters` for that param if it needs a dedicated control.
 4. Prefer value **slugs** in the URL.
 

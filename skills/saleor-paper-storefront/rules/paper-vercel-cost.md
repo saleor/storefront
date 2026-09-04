@@ -119,14 +119,14 @@ Catalog imagery renders as plain `<img srcset>` against Saleor's CDN (`SaleorIma
 
 ### 6. Crawlers don't get to run functions for free
 
-`src/app/robots.ts` disallows faceted/paginated/sorted listing queries (each hit on those is an **uncached** invocation + live Saleor query, and the space is combinatorial) plus cart/checkout/account/search. Canonicals already point at clean URLs. Keep new dynamic surfaces out of crawl reach; rate-limit search/filter endpoints if bots ignore robots.
+`src/app/robots.ts` disallows faceted/paginated/sorted listing queries plus cart/checkout/account/search. Listing pages are params-only (cached first-page HTML); those query URLs are still not indexable, and `/api/listing` is under `/api/`. Canonicals already point at clean URLs. Keep new dynamic surfaces out of crawl reach; rate-limit search/filter endpoints if bots ignore robots.
 
 ### 7. Existing discipline that must not regress
 
 - Only the **unfiltered first page** of listings is cached (`isCacheableListingView`) — never cache filter/cursor permutations.
 - Stock/metadata events **never** bust listing tags (`affectsListing`).
 - No `prefetch={true}` on grids of links (per-card runtime prefetch = invocation fan-out); global `partialPrefetching` shares one App Shell per route.
-- No `prefetch={true}` on persistent chrome **or homepage CTAs**. That full-resolves URL data (`params` / `searchParams`) on every view of the linking page — a per-visit invocation. `/products` and category grids await `searchParams`, so `prefetch={true}` from the header or hero is a listing render the shopper never asked for. Footer and secondary nav stay `prefetch={false}` so a fat unique-path menu does not fan out `_rsc` fetches on first paint.
+- No `prefetch={true}` on persistent chrome **or homepage CTAs**. That full-resolves URL data (`params` / `searchParams`) on every view of the linking page — a per-visit invocation. Listing pages are params-only (canonical grid is cached); `prefetch={true}` from the header or hero is still wasted RSC. Footer and secondary nav stay `prefetch={false}` so a fat unique-path menu does not fan out `_rsc` fetches on first paint. `eslint.config.mjs` bans new `prefetch={true}`.
 - Catalog `cacheLife` backstop is 1 h `revalidate` / 1 d `expire` — webhooks own freshness. Never shorten the backstop to "feel fresher".
 - No broad middleware; product pages render on demand; builds prerender locale × channel, never the catalog.
 
@@ -136,7 +136,7 @@ Catalog imagery renders as plain `<img srcset>` against Saleor's CDN (`SaleorIma
 
 When traffic grows, apply these **before** considering leaving Vercel:
 
-1. **Widen the anonymous static path.** Most visitors carry no cookies; their browse chrome and canonical PLP responses should be full CDN hits. Audit which holes really need cookies. The canonical (no-query) PLP still invokes a function because the page awaits `searchParams` — moving filtered views behind a client island + route handler would make the canonical response fully static. Measure the dynamic-request share first.
+1. **Widen the anonymous static path.** Most visitors carry no cookies; their browse chrome and canonical PLP responses should be full CDN hits. Audit which holes really need cookies. Listing pages do **not** await `searchParams` — the empty-query first page is `"use cache"` HTML. Filters / sort / cursor swap the grid via `GET /api/listing` (`useListingQuery`). Measure the dynamic-request share first.
 2. **Raise catalog backstops** toward 1 d `revalidate` / 1 w `expire` once webhook delivery is proven reliable (`cache-life-profiles.data.mjs`) — the backstop's only job is surviving a dropped webhook.
 3. **Co-locate compute with Saleor.** Function region next to the Saleor API cuts GraphQL wait = provisioned-memory GB-hours (memory bills during I/O waits). Transatlantic hops cost more in memory-time and conversion than regional price deltas save.
 4. **Test 2 GB vs 4 GB memory.** I/O-bound GraphQL rendering usually wins at the default 2 GB; CPU-heavy serialization may finish enough faster at 4 GB. Measure, don't guess.
@@ -201,8 +201,11 @@ The script buckets HTML, `/_next/static`, RSC/prefetch, `/_next/image`, Saleor m
 | `src/lib/checkout.ts`                              | Request-memoized `Checkout.find`                            |
 | `src/lib/speed-insights.ts`                        | Sample-rate env parsing (default 0.01)                      |
 | `src/app/robots.ts`                                | Crawl policy = cost policy                                  |
+| `src/app/api/listing/route.ts`                     | Filtered PLP JSON — pages stay params-only                  |
+| `src/lib/fonts.ts`                                 | Browse `<html>` sans (+ editorial) — no Geist Mono          |
+| `src/app/(checkout)/layout.tsx`                    | Geist Mono on checkout only                                 |
 | `src/lib/webhook-events.ts`                        | Event allowlist + `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT` |
-| `eslint.config.mjs`                                | `next/image` allowlist guard                                |
+| `eslint.config.mjs`                                | `next/image` allowlist + `prefetch={true}` ban              |
 | `next.config.js`                                   | Image ladder/TTL/allowlist, cacheLife tiers                 |
 
 Related: [`data-caching.md`](data-caching.md) (cache manifest, invalidation), [`ui-images.md`](ui-images.md) (image pipeline decision table), [`data-auth-routes.md`](data-auth-routes.md) (chrome freshness). Backlog: [`docs/plans/paper-cost-efficiency.md`](../../../../docs/plans/paper-cost-efficiency.md).

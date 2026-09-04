@@ -22,6 +22,9 @@ export interface GalleryImage {
 	alt: string | null | undefined;
 	/** Saleor rung `srcset`; absent means the surface falls back to `next/image`. */
 	srcSet?: string;
+	/** 256 (or 512) CDN URL for the 80px thumb strip — never the 2048 gallery URL. */
+	thumbSrc?: string;
+	thumbSrcSet?: string;
 }
 
 /**
@@ -29,7 +32,13 @@ export interface GalleryImage {
  * Required, not optional: if a fragment loses an alias this must fail typecheck rather
  * than quietly fall back to `/_next/image` and start billing transformations again.
  */
-type GalleryMedia = { url: string; url512: string; url1024: string; alt?: string | null };
+type GalleryMedia = {
+	url: string;
+	url256: string;
+	url512: string;
+	url1024: string;
+	alt?: string | null;
+};
 
 function toGalleryImage(media: GalleryMedia): GalleryImage {
 	return {
@@ -39,6 +48,11 @@ function toGalleryImage(media: GalleryMedia): GalleryImage {
 			{ width: 512, url: media.url512 },
 			{ width: 1024, url: media.url1024 },
 			{ width: 2048, url: media.url },
+		]),
+		thumbSrc: media.url256 || media.url512,
+		thumbSrcSet: buildSaleorSrcSet([
+			{ width: 256, url: media.url256 },
+			{ width: 512, url: media.url512 },
 		]),
 	};
 }
