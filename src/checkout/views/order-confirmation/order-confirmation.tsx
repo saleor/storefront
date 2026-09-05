@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { navigateToStorefrontHome } from "@/lib/auth";
 import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
+import { useCheckoutUser } from "@/checkout/providers/checkout-user";
 import { Button } from "@/ui/components/ui/button";
 import { useOrder } from "@/checkout/hooks/use-order";
 import { OrderSummary } from "@/checkout/views/saleor-checkout/order-summary";
@@ -64,6 +65,7 @@ function deliveryWindow(
 
 export const OrderConfirmation = () => {
 	const { order, access } = useOrder();
+	const { authenticated } = useCheckoutUser();
 	const storefrontLocale = useCheckoutBrowseLocale();
 	const t = useTranslations("checkout.confirmation");
 	const tStatus = useTranslations("account.orderStatus");
@@ -203,7 +205,7 @@ export const OrderConfirmation = () => {
 									>
 										{tActions("continueShopping")}
 									</Button>
-									{verified && channel ? (
+									{verified && channel && !authenticated ? (
 										<a
 											href={buildStorefrontPath(storefrontLocale, channel, "/signup")}
 											className="text-sm text-muted-foreground underline underline-offset-2"
@@ -217,7 +219,7 @@ export const OrderConfirmation = () => {
 									>
 										{tFind("findAnother")}
 									</Link>
-									{!verified && channel ? (
+									{!verified && channel && !authenticated ? (
 										<a
 											href={buildStorefrontPath(storefrontLocale, channel, "/login")}
 											className="text-sm text-muted-foreground underline underline-offset-2"
