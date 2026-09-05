@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { AuthFormSection } from "@/ui/components/auth/auth-form-section";
+import { AccountUnavailable } from "@/ui/components/account/account-unavailable";
 import { ConfirmAccountMode } from "@/ui/components/auth/confirm-account-mode";
 import { LoginForm } from "@/ui/components/login-form";
 import {
@@ -12,6 +13,7 @@ import {
 import { searchParamsRecordToGetter } from "@/lib/auth/search-params-record";
 import { CurrentUserDocument } from "@/gql/graphql";
 import { fetchAuthenticatedUserIfSession } from "@/lib/auth/fetch-authenticated-user";
+import { resolveSessionUser } from "@/lib/auth/resolve-session-user";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -91,15 +93,19 @@ function LoginSkeleton() {
 }
 
 async function LoginContent({ locale, channel }: { locale: string; channel: string }) {
-	// Request-dynamic — never serve a cached login redirect from a prior authenticated session.
+	// Uncaught — `hasAuthSession` swallows `cookies()` throws and can hide this hole.
 	await cookies();
 
-	const result = await fetchAuthenticatedUserIfSession(CurrentUserDocument, {
-		cache: "no-cache",
-	});
+	const auth = await resolveSessionUser(() =>
+		fetchAuthenticatedUserIfSession(CurrentUserDocument, { cache: "no-cache" }),
+	);
 
-	if (result?.ok && result.data.me) {
+	if (auth.status === "authenticated") {
 		redirect(buildStorefrontPath(locale, channel));
+	}
+
+	if (auth.status === "unavailable") {
+		return <AccountUnavailable locale={locale} />;
 	}
 
 	return (
