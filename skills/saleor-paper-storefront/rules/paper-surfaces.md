@@ -11,22 +11,24 @@ One Next.js project, two product surfaces, one shared handoff package.
 
 ## Documentation map (checkout v2)
 
-| Read first                                                                                        | When                                                        |
-| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| **This file**                                                                                     | Where code lives, import boundaries, routes                 |
-| [`checkout-design-principles.md`](checkout-design-principles.md)                                  | UX principles for checkout UI and flow decisions            |
-| [`checkout-management.md`](checkout-management.md)                                                | Cart sync, step URLs, payment → order transition, debugging |
-| [`checkout-payment-gateways.md`](checkout-payment-gateways.md)                                    | Adding or changing payment apps                             |
-| [`checkout-components.md`](checkout-components.md)                                                | Reusable step UI (contact, address, billing)                |
-| [`data-auth-routes.md`](data-auth-routes.md)                                                      | BFF login, `resolveSessionUser`, header chrome refresh      |
-| [`migrations/atomic/2026-06-checkout-v2/`](../migrations/atomic/2026-06-checkout-v2/MIGRATION.md) | Fork upgrade from urql checkout                             |
+| Read first                                                                                        | When                                                                |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| **This file**                                                                                     | Where code lives, import boundaries, routes                         |
+| [`checkout-design-principles.md`](checkout-design-principles.md)                                  | UX principles for checkout UI and flow decisions                    |
+| [`checkout-management.md`](checkout-management.md)                                                | Cart sync, step URLs, payment → order transition, debugging         |
+| [`checkout-payment-gateways.md`](checkout-payment-gateways.md)                                    | Adding or changing payment apps                                     |
+| [`checkout-components.md`](checkout-components.md)                                                | Reusable step UI (contact, address, billing)                        |
+| [`checkout-guest-order.md`](checkout-guest-order.md)                                              | Guest `/order/{key}`: HMAC, email step-up, live order vs frozen URL |
+| [`data-auth-routes.md`](data-auth-routes.md)                                                      | BFF login, `resolveSessionUser`, header chrome refresh              |
+| [`migrations/atomic/2026-06-checkout-v2/`](../migrations/atomic/2026-06-checkout-v2/MIGRATION.md) | Fork upgrade from urql checkout                                     |
 
 ## Layout
 
 ```text
 src/app/
   (storefront)/[channel]/...   # Browse, cart, account — URL: /{channel}/...
-  (checkout)/checkout/...      # Checkout — /checkout?checkout=…, confirmation — /checkout/complete?order=…
+  (checkout)/checkout/...      # Checkout — /checkout?checkout=…
+  (checkout)/order/...         # Guest order status — /order/{key}, /order/find
 
 src/session-bridge/            # @paper/session-bridge — only cross-surface import
 src/checkout/                  # Checkout UI + GraphQL (not imported by storefront)
@@ -54,7 +56,9 @@ SaleorCheckout (steps)          ← ?step= via shallow updateCheckoutQuery()
 actions.ts (server)             ← mutations, payment transactions, checkoutComplete
         │
         ▼
-/checkout/complete?order=       ← hard navigation after payment (separate route)
+/order/{hmac}                   ← hard navigation after payment (URL frozen; body is live Saleor)
+/order/{saleorId}               ← Customer Emails landing (redacted until we recognize you)
+/checkout/complete?order=       ← legacy redirect to /order/{id}
 ```
 
 ## Data and caching
@@ -65,7 +69,7 @@ actions.ts (server)             ← mutations, payment transactions, checkoutCom
 | Checkout   | RSC page + server actions (`execute*GraphQL`)                   | Always fresh (`cache: "no-cache"`) |
 | Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                       |
 
-`CheckoutSessionLoader` passes `initialCheckout` when `loadState === "ready"`. Order confirmation is a separate route (`checkout/complete/page.tsx` + `OrderConfirmationApp` — no cart context). Client `syncCheckoutFromServer` is a narrow fallback; normal path is RSC hydrate + `adoptCheckoutSnapshot` on refresh.
+`CheckoutSessionLoader` passes `initialCheckout` when `loadState === "ready"`. Guest order status is a separate route (`order/[key]/page.tsx` + `OrderConfirmationApp` — no cart context). Client `syncCheckoutFromServer` is a narrow fallback; normal path is RSC hydrate + `adoptCheckoutSnapshot` on refresh.
 
 ## Session (shared BFF)
 
@@ -97,7 +101,7 @@ See `data-auth-routes.md` for Router Cache pitfalls (stale header menu) and when
 
 ## Hosted checkout-only deploy (optional)
 
-- **Middleware + env**: block non-`/checkout` routes on the same build.
+- **Middleware + env**: block non-`/checkout` and non-`/order` routes on the same build.
 - **Fork**: omit `app/(storefront)/` for a smaller artifact.
 - Set `NEXT_PUBLIC_CHECKOUT_URL` so `buildCheckoutUrl` returns absolute links from storefront.
 

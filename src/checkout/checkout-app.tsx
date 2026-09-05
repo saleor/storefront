@@ -48,7 +48,7 @@ type CheckoutAppProps = {
 
 /**
  * Client shell for active checkout UI. Session and cart data flow through RSC + server actions.
- * Order confirmation uses `OrderConfirmationApp` on `/checkout/complete`.
+ * Order confirmation uses `OrderConfirmationApp` on `/order/{key}`.
  */
 export function CheckoutApp({
 	checkoutId,

@@ -6,7 +6,10 @@ export type BuildCheckoutPathOptions = {
 };
 
 export type BuildOrderConfirmationPathOptions = {
-	orderId: string;
+	/** Signed guest-order token (`ov1.…`), or a Saleor order id for the email landing. */
+	token: string;
+	/** Browse locale slug — `/order` is locale-less, so confirmation must carry `?locale=`. */
+	browseLocale?: string | null;
 };
 
 /** Query keys as they appear in the browser URL (not internal mapped names). */
@@ -16,6 +19,15 @@ const urlQueryKeys = {
 	step: "step",
 	locale: "locale",
 } as const;
+
+/** Locale-less guest / confirmation order page. */
+export function buildOrderStatusPath(key: string, browseLocale?: string | null): string {
+	const path = `/order/${encodeURIComponent(key)}`;
+	if (!browseLocale) {
+		return path;
+	}
+	return `${path}?${urlQueryKeys.locale}=${encodeURIComponent(browseLocale)}`;
+}
 
 /**
  * Relative checkout path (same-origin Paper deploy).
@@ -36,12 +48,13 @@ export function buildCheckoutPath({ checkoutId, step, browseLocale }: BuildCheck
 }
 
 /**
- * Order confirmation path — separate route from active checkout (`/checkout?checkout=`).
+ * Post-pay and email order page (`/order/{token}`).
  */
-export function buildOrderConfirmationPath({ orderId }: BuildOrderConfirmationPathOptions): string {
-	const params = new URLSearchParams();
-	params.set(urlQueryKeys.order, orderId);
-	return `/checkout/complete?${params.toString()}`;
+export function buildOrderConfirmationPath({
+	token,
+	browseLocale,
+}: BuildOrderConfirmationPathOptions): string {
+	return buildOrderStatusPath(token, browseLocale);
 }
 
 /**

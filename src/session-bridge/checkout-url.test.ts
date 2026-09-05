@@ -5,6 +5,7 @@ import {
 	buildCheckoutUrl,
 	buildOrderConfirmationPath,
 	buildOrderConfirmationUrl,
+	buildOrderStatusPath,
 } from "./checkout-url";
 
 describe("buildCheckoutPath", () => {
@@ -26,8 +27,24 @@ describe("buildCheckoutPath", () => {
 });
 
 describe("buildOrderConfirmationPath", () => {
-	it("builds order confirmation path on dedicated route", () => {
-		expect(buildOrderConfirmationPath({ orderId: "ord-1" })).toBe("/checkout/complete?order=ord-1");
+	it("builds the guest order path from a signed token", () => {
+		expect(buildOrderConfirmationPath({ token: "ov1.abc.def" })).toBe("/order/ov1.abc.def");
+	});
+
+	it("forwards browse locale so confirmation matches checkout", () => {
+		expect(buildOrderConfirmationPath({ token: "ov1.abc.def", browseLocale: "pl" })).toBe(
+			"/order/ov1.abc.def?locale=pl",
+		);
+	});
+});
+
+describe("buildOrderStatusPath", () => {
+	it("encodes a Saleor order id for the email landing", () => {
+		expect(buildOrderStatusPath("T3JkZXI6MQ==")).toBe("/order/T3JkZXI6MQ%3D%3D");
+	});
+
+	it("appends browse locale when provided", () => {
+		expect(buildOrderStatusPath("T3JkZXI6MQ==", "ja")).toBe("/order/T3JkZXI6MQ%3D%3D?locale=ja");
 	});
 });
 
@@ -51,7 +68,7 @@ describe("buildOrderConfirmationUrl", () => {
 	it("returns relative path when CHECKOUT_URL is unset", () => {
 		const prev = process.env.NEXT_PUBLIC_CHECKOUT_URL;
 		delete process.env.NEXT_PUBLIC_CHECKOUT_URL;
-		expect(buildOrderConfirmationUrl({ orderId: "ord-1" })).toBe("/checkout/complete?order=ord-1");
+		expect(buildOrderConfirmationUrl({ token: "ov1.abc.def" })).toBe("/order/ov1.abc.def");
 		process.env.NEXT_PUBLIC_CHECKOUT_URL = prev;
 	});
 });

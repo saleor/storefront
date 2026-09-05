@@ -52,7 +52,11 @@ describe("executePayment", () => {
 				errors: [],
 			},
 		});
-		completeCheckout.mockResolvedValue({ ok: true, orderId: "order-1" });
+		completeCheckout.mockResolvedValue({
+			ok: true,
+			orderId: "order-1",
+			orderViewToken: "ov1.test.token",
+		});
 
 		const result = await executePayment(
 			{ type: "dummy", gateway: { id: "saleor.io.dummy-payment-app", name: "Dummy" }, submitMode: "server" },
@@ -60,7 +64,7 @@ describe("executePayment", () => {
 			gatewayMessages,
 		);
 
-		expect(result).toEqual({ ok: true, orderId: "order-1" });
+		expect(result).toEqual({ ok: true, orderId: "order-1", orderViewToken: "ov1.test.token" });
 		expect(initializeTransaction).toHaveBeenCalledWith({
 			checkoutId: "checkout-1",
 			amount: 42.5,
@@ -91,7 +95,11 @@ describe("executePayment", () => {
 	});
 
 	it("completes checkout without payment when amount is zero", async () => {
-		completeCheckout.mockResolvedValue({ ok: true, orderId: "order-free" });
+		completeCheckout.mockResolvedValue({
+			ok: true,
+			orderId: "order-free",
+			orderViewToken: "ov1.free.token",
+		});
 
 		const result = await executePayment(
 			{ type: "stripe", gateway: { id: "stripe", name: "Stripe" }, submitMode: "client" },
@@ -99,7 +107,7 @@ describe("executePayment", () => {
 			gatewayMessages,
 		);
 
-		expect(result).toEqual({ ok: true, orderId: "order-free" });
+		expect(result).toEqual({ ok: true, orderId: "order-free", orderViewToken: "ov1.free.token" });
 		expect(initializeTransaction).not.toHaveBeenCalled();
 		expect(completeCheckout).toHaveBeenCalledWith("checkout-1");
 	});

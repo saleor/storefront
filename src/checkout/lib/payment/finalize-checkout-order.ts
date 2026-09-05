@@ -34,7 +34,7 @@ export async function finalizeCheckoutOrder(
 		}
 
 		// Client nav — see navigate-to-order.ts (server redirect would false-trigger payment errors).
-		navigateToOrderConfirmation(result.orderId);
+		navigateToOrderConfirmation(result.orderViewToken);
 
 		return { ok: true, orderId: result.orderId };
 	})();

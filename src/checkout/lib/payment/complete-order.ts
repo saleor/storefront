@@ -13,5 +13,5 @@ export async function completeCheckoutOrder(checkoutId: string): Promise<Payment
 		};
 	}
 
-	return { ok: true, orderId: result.orderId };
+	return { ok: true, orderId: result.orderId, orderViewToken: result.orderViewToken };
 }

@@ -8,7 +8,7 @@ description: >
 license: MIT
 metadata:
   author: saleor-paper
-  version: "1.8.0"
+  version: "1.9.0"
 dependencies:
   - saleor/agent-skills#saleor-storefront
 ---
@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-32 rules across 8 categories covering architecture, Vercel cost discipline, caching, storefront content, PDP architecture, checkout v2,
+33 rules across 8 categories covering architecture, Vercel cost discipline, caching, storefront content, PDP architecture, checkout v2,
 design & composition (token system, design quality, section catalog, page composition, design-from-image, verification),
 components, UI patterns, locale routing, i18n, and SEO.
 
@@ -92,6 +92,7 @@ Reference these guidelines when:
 - `checkout-management` - Lifecycle, RSC sync, shallow steps, payment transition UX (+ cheat sheet)
 - `checkout-payment-gateways` - Payment app registry, submit modes, Stripe Express Checkout wallets, adding a new gateway
 - `checkout-components` - Reusable checkout UI (SignInForm, AddressSelector, billing, integrated payment UI)
+- `checkout-guest-order` - Guest `/order/{key}`: HMAC, redacted email landing, live Saleor refetch, Customer Emails `/order/{{id}}`
 
 ### 4. Design & Composition (HIGH)
 

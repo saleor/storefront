@@ -4,6 +4,7 @@ export {
 	buildCheckoutUrl,
 	buildOrderConfirmationPath,
 	buildOrderConfirmationUrl,
+	buildOrderStatusPath,
 	getCheckoutOrigin,
 } from "./checkout-url";
 export type { BuildCheckoutPathOptions, BuildOrderConfirmationPathOptions } from "./checkout-url";

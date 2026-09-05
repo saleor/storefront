@@ -43,12 +43,12 @@ Storefront cart                    Checkout surface
 src/lib/checkout.ts                src/app/(checkout)/checkout/
   cookie + mutations        →        CheckoutSessionLoader (RSC)
 @paper/session-bridge                  CheckoutApp → steps + payment
-buildCheckoutPath()                  /checkout/complete?order= (confirmation)
+buildCheckoutPath()                  /order/{hmac} (guest confirmation)
 ```
 
 - **Server-first cart** — RSC loads checkout + `me` on entry; client context is a cache of server truth (`CheckoutDataProvider`).
 - **URL-driven steps** — `?step=contact|shipping|payment` updates shallowly (no full page refetch per click); browser Back walks the funnel.
-- **Dedicated confirmation** — `/checkout/complete?order=` is separate from the active cart route.
+- **Dedicated confirmation** — `/order/{hmac}` after pay (URL frozen; status/tracking refresh from Saleor). `/order/{saleorId}` from email is redacted until we recognize you. Legacy `/checkout/complete?order=` redirects. See [`checkout-guest-order.md`](skills/saleor-paper-storefront/rules/checkout-guest-order.md).
 - **Extensible payments** — Registry (`INTEGRATED_GATEWAYS`) with Stripe + Dummy; add gateways via `checkout-payment-gateways` skill.
 - **Shared BFF auth** — Sign-in via `/api/auth/login`; session resolved server-side (`resolveSessionUser` — guest / authenticated / unavailable).
 - **Multi-step, mobile-first** — Focused forms, international address fields, composable step components.
@@ -106,7 +106,7 @@ Whether you're pair-programming with Cursor, Claude, or Copilot—the codebase i
 
 | Feature                    | Description                                                                                                                    |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **Checkout (v2)**          | RSC + server actions, shallow step URLs, payment registry (Stripe/Dummy), `/checkout/complete`                                 |
+| **Checkout (v2)**          | RSC + server actions, shallow step URLs, payment registry (Stripe/Dummy), guest `/order/{key}`                                 |
 | **Cart**                   | Slide-over drawer with real-time updates, quantity editing                                                                     |
 | **Product Pages**          | Multi-attribute variants, image gallery, sticky add-to-cart                                                                    |
 | **Product Listings**       | Category & collection pages with PPR (cached hero + dynamic filters), pagination                                               |

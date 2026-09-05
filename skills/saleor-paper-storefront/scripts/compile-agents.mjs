@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 32;
+const RULE_COUNT = 33;
 
 const catalog = [
 	{
@@ -64,6 +64,7 @@ const catalog = [
 			{ num: "3.3", file: "checkout-management.md", title: "Checkout Management" },
 			{ num: "3.4", file: "checkout-payment-gateways.md", title: "Payment Gateways" },
 			{ num: "3.5", file: "checkout-components.md", title: "Checkout Components" },
+			{ num: "3.6", file: "checkout-guest-order.md", title: "Guest Order Status" },
 		],
 	},
 	{
@@ -228,7 +229,7 @@ These patterns cause extra renders and make data flow hard to trace.
 
 const header = `# Saleor Paper Storefront
 
-**Version 1.8.0**  
+**Version 1.9.0**  
 Saleor Paper  
 June 2026
 
@@ -244,7 +245,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers ${RULE_COUNT} rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 

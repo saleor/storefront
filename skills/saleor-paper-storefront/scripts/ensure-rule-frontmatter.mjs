@@ -66,6 +66,8 @@ const DESCRIPTIONS = {
 		"Adding/changing Saleor payment apps: INTEGRATED_GATEWAYS registry, server- vs client-submit, Stripe + Express Checkout, shared transaction actions. Use when integrating a payment gateway or touching Stripe.",
 	"checkout-components.md":
 		"Reusable checkout UI: contact, shipping-address, payment/billing components and input-attributes autofill. Use when composing or extending checkout step UI.",
+	"checkout-guest-order.md":
+		"Guest order status page at /order/{key} — HMAC tokens, redacted Saleor-id landings, email step-up, Customer Emails /order/{{id}}, live Saleor refetch vs frozen URL. Use when touching post-pay confirmation, order lookup, or order-view tokens.",
 	"ui-design-system.md":
 		"The token vocabulary: OKLCH semantic color, typography role tokens, page-width containers, spacing/rhythm, radius/elevation/motion, cva variant matrix. Read before any visual/design work; tokens live in src/styles/brand.css.",
 	"design-quality-rubric.md":

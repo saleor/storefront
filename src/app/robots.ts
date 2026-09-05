@@ -31,6 +31,7 @@ export default function robots(): MetadataRoute.Robots {
 					"/*?*query=",
 					// Per-user and transactional surfaces — dynamic on every hit, never indexable.
 					"/checkout",
+					"/order",
 					"/api/",
 					"/*/cart$",
 					"/*/account",
