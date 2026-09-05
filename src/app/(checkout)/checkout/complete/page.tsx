@@ -1,60 +1,29 @@
-import { Suspense } from "react";
-import { invariant } from "ts-invariant";
+import { redirect } from "next/navigation";
 
-import { OrderConfirmationApp } from "@/checkout/order-confirmation-app";
-import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-user";
-import { fetchOrderOnServer } from "@/checkout/lib/server/fetch-order";
-import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
-import { loadCheckoutMessages } from "@/i18n/load-messages";
-import { OrderConfirmationRouteFallback } from "@/checkout/views/order-confirmation/order-confirmation-route-fallback";
+import { buildOrderStatusPath } from "@paper/session-bridge";
 import { formatPageTitle } from "@/config/brand";
 
-/** One-time post-purchase surface — no browse prefetch. */
+export const instant = false;
 export const prefetch = "force-disabled";
 
 export const metadata = {
 	title: formatPageTitle("Order confirmed"),
-	description: "Your order has been placed successfully.",
+	robots: { index: false, follow: false },
 };
 
 /**
- * Order confirmation route (`/checkout/complete?order=`).
- * Separate from active checkout so completion navigation uses a distinct pathname.
+ * Legacy confirmation URL. Same access rules as `/order/{id}` — redirect so
+ * there is only one order page.
  */
-export default function OrderCompletePage(props: {
+export default async function OrderCompletePage(props: {
 	searchParams: Promise<{ order?: string; locale?: string }>;
 }) {
-	return (
-		<Suspense fallback={<OrderConfirmationRouteFallback />}>
-			<OrderCompleteContent searchParams={props.searchParams} />
-		</Suspense>
-	);
-}
+	const searchParams = await props.searchParams;
+	const orderId = searchParams.order;
 
-async function OrderCompleteContent({
-	searchParams: searchParamsPromise,
-}: {
-	searchParams: Promise<{ order?: string; locale?: string }>;
-}) {
-	const searchParams = await searchParamsPromise;
-	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
+	if (!orderId) {
+		redirect("/order/find");
+	}
 
-	const orderId = searchParams.order ?? null;
-	const storefrontLocale = await resolveBrowseLocaleForCheckout(searchParams.locale);
-
-	const [initialUser, initialOrder, messages] = await Promise.all([
-		fetchCheckoutUserOnServer(),
-		orderId ? fetchOrderOnServer(orderId, storefrontLocale) : Promise.resolve(null),
-		loadCheckoutMessages(storefrontLocale),
-	]);
-
-	return (
-		<OrderConfirmationApp
-			orderId={orderId}
-			initialOrder={initialOrder}
-			initialUser={initialUser}
-			storefrontLocale={storefrontLocale}
-			messages={messages}
-		/>
-	);
+	redirect(buildOrderStatusPath(orderId, searchParams.locale));
 }

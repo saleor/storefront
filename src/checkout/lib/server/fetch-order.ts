@@ -13,13 +13,19 @@ import type { LocaleSlug } from "@/config/locale";
 
 const orderQueryDocument = toTypedDocument<OrderQuery, OrderQueryVariables>(OrderDocument);
 
+export type FetchOrderResult =
+	| { status: "found"; order: ServerOrder }
+	| { status: "miss" }
+	| { status: "unavailable" };
+
 /**
- * Fetch order for confirmation page. Order ID in URL is the credential (public query).
+ * Fetch an order by Saleor id. Callers must sanitize before sending to the client.
+ * A failed request is `unavailable`, not a miss — do not 404 a valid HMAC during an outage.
  */
 export async function fetchOrderOnServer(
 	orderId: string,
 	localeSlug?: LocaleSlug,
-): Promise<ServerOrder | null> {
+): Promise<FetchOrderResult> {
 	const result = await executePublicGraphQL(orderQueryDocument, {
 		variables: {
 			id: orderId,
@@ -29,8 +35,9 @@ export async function fetchOrderOnServer(
 	});
 
 	if (!result.ok) {
-		return null;
+		return { status: "unavailable" };
 	}
 
-	return result.data.order ?? null;
+	const order = result.data.order ?? null;
+	return order ? { status: "found", order } : { status: "miss" };
 }

@@ -568,12 +568,34 @@
 		"confirmation": {
 			"orderNumber": "Order #{number}",
 			"thankYou": "Thank you for your order!",
+			"statusTitle": "Order status",
 			"confirmedTitle": "Your order is confirmed",
+			"publicTitle": "Your order",
+			"publicBody": "Items and totals are shown here. Confirm the email used at checkout to see the address and tracking.",
 			"confirmedEmail": "You'll receive a confirmation email at {email}",
 			"emailSent": "Confirmation email sent",
 			"shippingAddress": "Shipping address",
-			"billingAddress": "Billing address",
-			"estimatedDelivery": "Estimated delivery"
+			"billingAddress": "Billing city",
+			"shippingMethod": "Shipping method",
+			"deliveryDays": "{days} days",
+			"tracking": "Tracking",
+			"createAccount": "Save this order to an account",
+			"signIn": "Sign in to view all order details"
+		},
+		"orderFind": {
+			"title": "Find your order",
+			"body": "Enter the order number from your email and the address you used at checkout.",
+			"emailGateBody": "Confirm the email used at checkout to see the address and tracking.",
+			"emailLabel": "Email",
+			"emailPlaceholder": "you@example.com",
+			"numberLabel": "Order number",
+			"numberPlaceholder": "Order number",
+			"confirmEmail": "View order details",
+			"submit": "Find order",
+			"findAnother": "Find another order",
+			"generic": "We could not find an order with those details.",
+			"rateLimited": "Too many attempts. Please try again later.",
+			"lookupUnavailable": "Use the link from your confirmation email, or contact the store with your order number."
 		},
 		"server": {
 			"marketingSaveFailed": "Failed to save marketing preference",

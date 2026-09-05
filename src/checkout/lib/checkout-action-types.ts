@@ -25,7 +25,7 @@ export type TransactionInitializeActionResult =
 	| { ok: false; error: string };
 
 export type CheckoutCompleteActionResult =
-	| { ok: true; orderId: string }
+	| { ok: true; orderId: string; orderViewToken: string }
 	| { ok: false; error: string; fieldErrors?: CheckoutFieldError[] };
 
 export type PaymentGatewayInitializePayload = {

@@ -12,6 +12,7 @@ import {
 	type AddressAutocompleteSection,
 	typeTags,
 } from "@/checkout/lib/consts/input-attributes";
+import { uniqueSelectOptions } from "@/checkout/lib/unique-select-options";
 
 // =============================================================================
 // Constants
@@ -59,32 +60,36 @@ export const FormSelect: FC<FormSelectProps> = ({
 	options,
 	autoComplete,
 	name,
-}) => (
-	<select
-		id={id}
-		name={name}
-		value={value}
-		onChange={(e) => onChange(e.target.value)}
-		autoComplete={autoComplete}
-		className={cn(
-			"flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm",
-			"ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-			"disabled:cursor-not-allowed disabled:opacity-50",
-			error && "border-destructive",
-		)}
-	>
-		{placeholder && (
-			<option value="" disabled>
-				{placeholder}
-			</option>
-		)}
-		{options.map((option) => (
-			<option key={option.value} value={option.value}>
-				{option.label}
-			</option>
-		))}
-	</select>
-);
+}) => {
+	const uniqueOptions = uniqueSelectOptions(options);
+
+	return (
+		<select
+			id={id}
+			name={name}
+			value={value}
+			onChange={(e) => onChange(e.target.value)}
+			autoComplete={autoComplete}
+			className={cn(
+				"flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm",
+				"ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+				"disabled:cursor-not-allowed disabled:opacity-50",
+				error && "border-destructive",
+			)}
+		>
+			{placeholder && (
+				<option value="" disabled>
+					{placeholder}
+				</option>
+			)}
+			{uniqueOptions.map((option) => (
+				<option key={option.value} value={option.value}>
+					{option.label}
+				</option>
+			))}
+		</select>
+	);
+};
 
 interface FormInputProps {
 	id: string;
@@ -202,8 +207,8 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 						placeholder={`Select ${label.toLowerCase()}`}
 						autoComplete={autoComplete}
 						options={countryAreaChoices.map(({ raw, verbose }) => ({
-							value: raw as string,
-							label: verbose as string,
+							value: typeof raw === "string" ? raw : "",
+							label: typeof verbose === "string" ? verbose : "",
 						}))}
 					/>
 					<FieldError error={error} />

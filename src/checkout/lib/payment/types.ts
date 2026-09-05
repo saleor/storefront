@@ -6,7 +6,7 @@ export type PaymentSubmitMode = "client" | "server";
 
 /** Result of a payment attempt after billing has been updated. */
 export type PaymentResult =
-	| { ok: true; orderId: string }
+	| { ok: true; orderId: string; orderViewToken: string }
 	| {
 			ok: false;
 			error: string;

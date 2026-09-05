@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import type { CheckoutUser, ServerOrder } from "@/checkout/lib/checkout-types";
+import type { OrderViewAccess } from "@/lib/order-view/sanitize";
 import { CheckoutBrowseProvider } from "@/checkout/providers/checkout-browse";
 import { OrderDataProvider } from "@/checkout/providers/order-data";
 import { CheckoutUserProvider } from "@/checkout/providers/checkout-user";
@@ -18,6 +19,7 @@ import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
 type OrderConfirmationAppProps = {
 	orderId: string | null;
 	initialOrder: ServerOrder | null;
+	access: OrderViewAccess;
 	initialUser: CheckoutUser | null;
 	storefrontLocale: LocaleSlug;
 	messages: CheckoutMessages;
@@ -29,6 +31,7 @@ type OrderConfirmationAppProps = {
 export function OrderConfirmationApp({
 	orderId,
 	initialOrder,
+	access,
 	initialUser,
 	storefrontLocale,
 	messages,
@@ -37,7 +40,7 @@ export function OrderConfirmationApp({
 		<CheckoutIntlProvider locale={storefrontLocale} messages={messages}>
 			<CheckoutBrowseProvider locale={storefrontLocale}>
 				<CheckoutUserProvider initialUser={initialUser}>
-					<OrderDataProvider orderId={orderId} initialOrder={initialOrder}>
+					<OrderDataProvider orderId={orderId} initialOrder={initialOrder} access={access}>
 						<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
 							<Suspense fallback={<OrderConfirmationSkeleton />}>
 								<OrderConfirmation />

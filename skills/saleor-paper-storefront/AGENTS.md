@@ -1,11 +1,11 @@
 # Saleor Paper Storefront
 
-**Version 1.8.0**  
+**Version 1.9.0**  
 Saleor Paper  
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 32 rules (~75k tokens) and exists only for humans reading offline and for
+> all 33 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 32 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 33 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -46,6 +46,7 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 3.3 [Checkout Management](#33-checkout-management)
    - 3.4 [Payment Gateways](#34-payment-gateways)
    - 3.5 [Checkout Components](#35-checkout-components)
+   - 3.6 [Guest Order Status](#36-guest-order-status)
 
 4. [Design & Composition](#4-design-composition) — **HIGH**
    - 4.1 [UI Design System](#41-ui-design-system)
@@ -1730,22 +1731,24 @@ One Next.js project, two product surfaces, one shared handoff package.
 
 ## Documentation map (checkout v2)
 
-| Read first                                                                                        | When                                                        |
-| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| **This file**                                                                                     | Where code lives, import boundaries, routes                 |
-| [`checkout-design-principles.md`](checkout-design-principles.md)                                  | UX principles for checkout UI and flow decisions            |
-| [`checkout-management.md`](checkout-management.md)                                                | Cart sync, step URLs, payment → order transition, debugging |
-| [`checkout-payment-gateways.md`](checkout-payment-gateways.md)                                    | Adding or changing payment apps                             |
-| [`checkout-components.md`](checkout-components.md)                                                | Reusable step UI (contact, address, billing)                |
-| [`data-auth-routes.md`](data-auth-routes.md)                                                      | BFF login, `resolveSessionUser`, header chrome refresh      |
-| [`migrations/atomic/2026-06-checkout-v2/`](../migrations/atomic/2026-06-checkout-v2/MIGRATION.md) | Fork upgrade from urql checkout                             |
+| Read first                                                                                        | When                                                                |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| **This file**                                                                                     | Where code lives, import boundaries, routes                         |
+| [`checkout-design-principles.md`](checkout-design-principles.md)                                  | UX principles for checkout UI and flow decisions                    |
+| [`checkout-management.md`](checkout-management.md)                                                | Cart sync, step URLs, payment → order transition, debugging         |
+| [`checkout-payment-gateways.md`](checkout-payment-gateways.md)                                    | Adding or changing payment apps                                     |
+| [`checkout-components.md`](checkout-components.md)                                                | Reusable step UI (contact, address, billing)                        |
+| [`checkout-guest-order.md`](checkout-guest-order.md)                                              | Guest `/order/{key}`: HMAC, email step-up, live order vs frozen URL |
+| [`data-auth-routes.md`](data-auth-routes.md)                                                      | BFF login, `resolveSessionUser`, header chrome refresh              |
+| [`migrations/atomic/2026-06-checkout-v2/`](../migrations/atomic/2026-06-checkout-v2/MIGRATION.md) | Fork upgrade from urql checkout                                     |
 
 ## Layout
 
 ```text
 src/app/
   (storefront)/[channel]/...   # Browse, cart, account — URL: /{channel}/...
-  (checkout)/checkout/...      # Checkout — /checkout?checkout=…, confirmation — /checkout/complete?order=…
+  (checkout)/checkout/...      # Checkout — /checkout?checkout=…
+  (checkout)/order/...         # Guest order status — /order/{key}, /order/find
 
 src/session-bridge/            # @paper/session-bridge — only cross-surface import
 src/checkout/                  # Checkout UI + GraphQL (not imported by storefront)
@@ -1773,7 +1776,9 @@ SaleorCheckout (steps)          ← ?step= via shallow updateCheckoutQuery()
 actions.ts (server)             ← mutations, payment transactions, checkoutComplete
         │
         ▼
-/checkout/complete?order=       ← hard navigation after payment (separate route)
+/order/{hmac}                   ← hard navigation after payment (URL frozen; body is live Saleor)
+/order/{saleorId}               ← Customer Emails landing (redacted until we recognize you)
+/checkout/complete?order=       ← legacy redirect to /order/{id}
 ```
 
 ## Data and caching
@@ -1784,7 +1789,7 @@ actions.ts (server)             ← mutations, payment transactions, checkoutCom
 | Checkout   | RSC page + server actions (`execute*GraphQL`)                   | Always fresh (`cache: "no-cache"`) |
 | Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                       |
 
-`CheckoutSessionLoader` passes `initialCheckout` when `loadState === "ready"`. Order confirmation is a separate route (`checkout/complete/page.tsx` + `OrderConfirmationApp` — no cart context). Client `syncCheckoutFromServer` is a narrow fallback; normal path is RSC hydrate + `adoptCheckoutSnapshot` on refresh.
+`CheckoutSessionLoader` passes `initialCheckout` when `loadState === "ready"`. Guest order status is a separate route (`order/[key]/page.tsx` + `OrderConfirmationApp` — no cart context). Client `syncCheckoutFromServer` is a narrow fallback; normal path is RSC hydrate + `adoptCheckoutSnapshot` on refresh.
 
 ## Session (shared BFF)
 
@@ -1816,7 +1821,7 @@ See `data-auth-routes.md` for Router Cache pitfalls (stale header menu) and when
 
 ## Hosted checkout-only deploy (optional)
 
-- **Middleware + env**: block non-`/checkout` routes on the same build.
+- **Middleware + env**: block non-`/checkout` and non-`/order` routes on the same build.
 - **Fork**: omit `app/(storefront)/` for a smaller artifact.
 - Set `NEXT_PUBLIC_CHECKOUT_URL` so `buildCheckoutUrl` returns absolute links from storefront.
 
@@ -1865,7 +1870,7 @@ First-time buyers complete as guests. Account creation is an **upgrade**, not a 
 
 - `GuestContact` and "Continue as guest" must be visually primary over sign-in.
 - Optional "create account" on the information step — de-emphasized, never required.
-- Prefer post-order account invite on `/checkout/complete` (3–5× higher capture than pre-checkout gates).
+- Prefer post-order account invite on `/order/{hmac}` (3–5× higher capture than pre-checkout gates).
 
 **Elasticity:** Forced account creation drives ~19–26% of abandonments.
 
@@ -1939,7 +1944,7 @@ Display pages may cache prices for performance; checkout must always charge the 
 A broken ending erodes repeat purchase more than a slow form.
 
 - `PaymentCompletingScreen` while `checkoutComplete` runs — no flash of "session expired".
-- Hard navigation to `/checkout/complete?order=` via `navigateToOrderConfirmation()`.
+- Hard navigation to `/order/{hmac}` via `navigateToOrderConfirmation()`. Guest status access: [`checkout-guest-order.md`](checkout-guest-order.md).
 - Clear cookie in `after()` — not before leaving `?checkout=`.
 - Confirmation page: receipt, next steps, soft account invite.
 
@@ -2059,20 +2064,21 @@ Pay clicked (or 3DS return)
  → transactionInitialize / process     [provider-specific]
  → finalizeCheckoutOrder()             [runCheckoutComplete]
      ├─ failure → clearPaymentCompleting(), show inline error
-     └─ success → navigateToOrderConfirmation(orderId)  [window.location.replace → /checkout/complete?order=]
+     └─ success → navigateToOrderConfirmation(orderViewToken)  [window.location.replace → /order/{hmac}]
  → confirmation page clears completion storage; cookie cleared in runCheckoutComplete after()
 ```
 
 ### Routes & transition storage
 
-| Mechanism                          | Purpose                                                                                           |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                        |
-| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                   |
-| `checkout:payment-completing`      | Keeps `PaymentCompletingScreen` up while `checkoutComplete` runs (no flash back to step 1)        |
-| `?processingPayment=true`          | Stripe 3DS return flag; pairs with `isCheckoutPaymentActive()` when the payment step is unmounted |
-| `?step=contact\|shipping\|payment` | Step deep link; URL is source of truth via `useLiveCheckoutSearchParams()`                        |
-| `updateCheckoutQuery()`            | **Shallow** step URL updates (`pushState`/`replaceState`) — avoids re-running checkout RSC        |
+| Mechanism                          | Purpose                                                                                                                                               |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                            |
+| `/order/{key}`                     | Guest order status — HMAC full view, Saleor id redacted + email step-up; URL frozen, body live ([`checkout-guest-order.md`](checkout-guest-order.md)) |
+| `/checkout/complete?order=`        | Legacy redirect to `/order/{id}`                                                                                                                      |
+| `checkout:payment-completing`      | Keeps `PaymentCompletingScreen` up while `checkoutComplete` runs (no flash back to step 1)                                                            |
+| `?processingPayment=true`          | Stripe 3DS return flag; pairs with `isCheckoutPaymentActive()` when the payment step is unmounted                                                     |
+| `?step=contact\|shipping\|payment` | Step deep link; URL is source of truth via `useLiveCheckoutSearchParams()`                                                                            |
+| `updateCheckoutQuery()`            | **Shallow** step URL updates (`pushState`/`replaceState`) — avoids re-running checkout RSC                                                            |
 
 **Critical sequencing gotchas:**
 
@@ -2124,7 +2130,8 @@ Step changes use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout
 | `src/checkout/providers/checkout-data.tsx` · `lib/checkout-sync.ts`                                               | Client state + adopt/refresh semantics                                      |
 | `src/checkout/hooks/use-checkout.ts` · `use-checkout-transition.ts`                                               | Steps context; payment→order guard                                          |
 | `src/checkout/lib/payment/finalize-checkout-order.ts` · `navigate-to-order.ts` · `checkout-payment-completion.ts` | `checkoutComplete` + nav; `markPaymentCompleting`/`isCheckoutPaymentActive` |
-| `src/app/(checkout)/checkout/complete/page.tsx` · `order-confirmation-app.tsx`                                    | Confirmation RSC + client shell                                             |
+| `src/app/(checkout)/order/[key]/page.tsx` · `order-confirmation-app.tsx`                                          | Guest order RSC + client shell                                              |
+| `src/app/(checkout)/checkout/complete/page.tsx`                                                                   | Legacy redirect to `/order/{id}`                                            |
 | `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx`                                       | Post-redirect completion                                                    |
 
 ## Anti-patterns
@@ -2140,7 +2147,7 @@ Step changes use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout
 
 **Which refresh:** `refreshCheckout()` replaces client state (promo/line change); `adoptCheckoutSnapshot` merges an RSC snapshot without clobbering in-flow edits (on `initialCheckout` change only); `useRefreshCheckoutRsc()` triggers `router.refresh()`; cross-surface cart edits propagate via `revalidateStorefrontChrome` + next nav.
 
-**URL params:** `checkout` (RSC reads — required), `order` on `/checkout` (RSC → redirect; canonical is `/checkout/complete?order=`), `step` (client only), `processingPayment`/Stripe params (client; merged from live `window.location.search`).
+**URL params:** `checkout` (RSC reads — required), `order` on `/checkout` (RSC → redirect; canonical is `/order/{id}`), `step` (client only), `processingPayment`/Stripe params (client; merged from live `window.location.search`).
 
 **Hooks:** `useCheckout()` (compat API; `refetch` → `refreshCheckout`), `useCheckoutData()` (full context incl. `loadState`/`setCheckout`), `useLiveCheckoutSearchParams()`, `useCheckoutTransition()`, `useRefreshCheckoutRsc()`.
 
@@ -2573,6 +2580,79 @@ Keep inline when:
 
 - **One-off** UI specific to that step
 - Tightly coupled to step's state machine
+
+---
+
+### 3.6 Guest Order Status
+
+One link. The page is a locked glass door, not a key.
+
+Anyone who has the link can see **what was bought and what it cost**. That is the shop window: items, totals, “confirmed / on its way.” It is not a secret. Saleor already treats the order id that way.
+
+**Addresses, email, phone, payment, tracking** stay behind the door. Those are the house keys. You only get them if we already know it is you.
+
+We know it is you in one of these ways:
+
+1. **You just paid in this browser** — we left a short-lived cookie. Like walking from the till to the receipt counter.
+2. **You have the long receipt link we minted after pay or after you proved the email** — a signed token (`ov1.…`), not the raw Saleor id. That is a spare key we cut for this order only. It expires (14 days). An expired-but-authentic token still opens the shop window (not a 404) and asks for the email.
+3. **You type the email that is on the order** — same door, we check the name on the bell. Wrong email and “no such order” sound the same, so guessing does not help.
+4. **You are signed in as that customer** — you already have the house keys.
+
+The Customer Emails “View order details” button uses `/order/{{id}}`. That is the **street address**, not a spare key. Clicking it shows the shop window and asks for the email. After that we hand you a spare key (`/order/{signed-token}`) so you are not walking around with the raw id in the URL.
+
+**What we never do:** put card numbers on the page, put email in the URL, tell you “that order exists but the email is wrong,” or treat the Saleor id as a forever password.
+
+**One sentence:** _The link shows the receipt stub; the address and tracking only appear after we recognize you — cookie, signed token, matching email, or a logged-in account._
+
+## What evolves (and what does not)
+
+The **URL is frozen**. `ov1.{payload}.{mac}` carries only `{ id, exp }` — which order, and when the spare key stops unlocking the house. Reloading the same link never means a different order.
+
+The **page is live**. Each request loads the order from Saleor with `cache: "no-cache"` (`fetchOrderOnServer`). A refresh can show a new high-level status, tracking numbers once fulfillments exist, and current lines/totals if the Dashboard edited the order. There is no client poll — reload to see change.
+
+**Access is what ages, not the id:**
+
+| Clock                                        | What the same `/order/{hmac}` does                                |
+| -------------------------------------------- | ----------------------------------------------------------------- |
+| Token still valid (14 days from mint)        | Full receipt (address, email, tracking).                          |
+| Token expired (mac still good)               | Shop window + email gate. Matching email mints a **new** `ov1.…`. |
+| Post-pay cookie (`paper_order_view`, 1 hour) | Separate spare key for this browser only. Not the URL.            |
+| Order gone in Saleor                         | `404`.                                                            |
+| Saleor unreachable                           | `500` / lookup-unavailable — never “we didn’t find your order.”   |
+
+Do not invent a delivery date. Show min/max days only when the shipping method has them. This page is not cancel/return and not a live tracker.
+
+## Routes
+
+| URL                                           | Role                                                                                                                                                                                                                                          |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/order/{hmac}`                               | Post-pay destination. Full receipt while the token is valid. Expired-but-authentic tokens show the public stub (same as Saleor id).                                                                                                           |
+| `/order/{saleorId}`                           | Customer Emails landing. Redacted + email step-up unless cookie/session already matches.                                                                                                                                                      |
+| `/order/{number}`                             | Redirects to `/order/find?number=`                                                                                                                                                                                                            |
+| `/order/find`                                 | Number + email. Needs `SALEOR_APP_TOKEN` with `MANAGE_ORDERS`. A missing token, a token without that permission, or any failed `orders` query is not a miss — show lookup-unavailable, not “order not found.” Only `{ edges: [] }` is a miss. |
+| `/checkout/complete?order=`                   | Legacy. Redirects to `/order/{id}`.                                                                                                                                                                                                           |
+| `/{locale}/{channel}/account/orders/{number}` | Signed-in history. Not the email button.                                                                                                                                                                                                      |
+
+## Files
+
+- Tokens / sanitize / classify: `src/lib/order-view/`
+- Load + redact: `src/checkout/lib/server/load-order-view.ts`
+- Lookup actions: `src/app/(checkout)/order-actions.ts`
+- Pages: `src/app/(checkout)/order/[key]/page.tsx`, `order/find/page.tsx`
+
+## Ops
+
+- `ORDER_VIEW_SECRET` (or fallback `REVALIDATE_SECRET`) signs tokens. Required in production.
+- Customer Emails Branding: `https://<storefront-origin>/order/{{id}}`. One URL. Do not add `{{token}}` to the email app.
+- Shop URL in that app must be the origin, not a `/{locale}/{channel}` browse path.
+
+## Anti-patterns
+
+- Sending a raw `OrderFragment` (addresses, email) to the client on a public landing
+- Using deprecated `orderByToken`
+- Linking the confirmation email to `/account/orders/{number}` for guest checkout
+- Inventing a delivery date when the method has no min/max days
+- Treating `/order/{hmac}` as a frozen confirmation screenshot — the URL is stable; the Saleor order is not
 
 ---
 
@@ -4062,7 +4142,7 @@ Client-side validation should use the same `account.errors.*` keys before callin
 
 ## Checkout
 
-Checkout uses the **`checkout` namespace** for functional chrome (same ADR 0002 split as cart). Locale is passed from RSC (`loadMessagesForLocale` + `CheckoutIntlProvider`), not from a `[locale]` URL segment.
+Checkout uses the **`checkout` namespace** for functional chrome (same ADR 0002 split as cart). Locale is passed from RSC (`loadCheckoutMessages` + `CheckoutIntlProvider`), not from a `[locale]` URL segment. `loadCheckoutMessages` always merges onto `messages/en.json` so a non-English `NEXT_PUBLIC_DEFAULT_LOCALE` still receives new keys.
 
 **Still CMS (`useCheckoutContent`):** `emptyCart`, `emptySession`, `marketingOptInLabel`, `trust.*`.
 

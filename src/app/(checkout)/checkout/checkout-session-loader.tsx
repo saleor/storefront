@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { invariant } from "ts-invariant";
-import { buildCheckoutPath, buildOrderConfirmationPath } from "@paper/session-bridge";
+import { buildCheckoutPath, buildOrderStatusPath } from "@paper/session-bridge";
 import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
 import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
@@ -45,7 +45,7 @@ export async function CheckoutSessionLoader({
 	const browseLocale = await resolveBrowseLocaleForCheckout(searchParams.locale);
 
 	if (orderId) {
-		redirect(buildOrderConfirmationPath({ orderId }));
+		redirect(buildOrderStatusPath(orderId, searchParams.locale));
 	}
 
 	if (!checkoutIdFromUrl) {

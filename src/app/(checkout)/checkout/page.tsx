@@ -14,7 +14,7 @@ export const metadata = {
 
 /**
  * Active checkout route (`/checkout?checkout=`).
- * Order confirmation lives at `/checkout/complete?order=`.
+ * Order status lives at `/order/{key}` (`/checkout/complete?order=` redirects there).
  */
 export default function CheckoutPage(props: {
 	searchParams: Promise<{ checkout?: string; order?: string; locale?: string }>;

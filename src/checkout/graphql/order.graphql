@@ -57,9 +57,18 @@ fragment ShippingFragment on ShippingMethod {
 	maximumDeliveryDays
 }
 
+fragment OrderFulfillmentFragment on Fulfillment {
+	id
+	status
+	trackingNumber
+}
+
 fragment OrderFragment on Order {
 	id
 	number
+	created
+	status
+	statusDisplay
 	userEmail
 	isPaid
 	channel {
@@ -91,9 +100,6 @@ fragment OrderFragment on Order {
 			...Money
 		}
 	}
-	voucher {
-		code
-	}
 	shippingPrice {
 		gross {
 			...Money
@@ -113,10 +119,23 @@ fragment OrderFragment on Order {
 	totalCaptured {
 		...Money
 	}
+	fulfillments {
+		...OrderFulfillmentFragment
+	}
 }
 
 query order($id: ID!, $languageCode: LanguageCodeEnum!) {
 	order(id: $id) {
 		...OrderFragment
+	}
+}
+
+query ordersByNumber($number: Int!, $languageCode: LanguageCodeEnum!) {
+	orders(first: 1, where: { number: { eq: $number } }) {
+		edges {
+			node {
+				...OrderFragment
+			}
+		}
 	}
 }

@@ -2,7 +2,7 @@ import { OrderConfirmationHeaderSkeleton } from "./order-confirmation-header-ske
 import { OrderConfirmationBodySkeleton } from "./order-confirmation-body-skeleton";
 
 /**
- * Page-level Suspense fallback for `/checkout/complete` — no `CheckoutIntlProvider` yet.
+ * Page-level Suspense fallback for `/order/{key}` — no `CheckoutIntlProvider` yet.
  * In-app loading uses `OrderConfirmationSkeleton` inside `OrderConfirmationApp` instead.
  */
 export function OrderConfirmationRouteFallback() {

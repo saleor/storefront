@@ -37,7 +37,7 @@ First-time buyers complete as guests. Account creation is an **upgrade**, not a 
 
 - `GuestContact` and "Continue as guest" must be visually primary over sign-in.
 - Optional "create account" on the information step — de-emphasized, never required.
-- Prefer post-order account invite on `/checkout/complete` (3–5× higher capture than pre-checkout gates).
+- Prefer post-order account invite on `/order/{hmac}` (3–5× higher capture than pre-checkout gates).
 
 **Elasticity:** Forced account creation drives ~19–26% of abandonments.
 
@@ -111,7 +111,7 @@ Display pages may cache prices for performance; checkout must always charge the 
 A broken ending erodes repeat purchase more than a slow form.
 
 - `PaymentCompletingScreen` while `checkoutComplete` runs — no flash of "session expired".
-- Hard navigation to `/checkout/complete?order=` via `navigateToOrderConfirmation()`.
+- Hard navigation to `/order/{hmac}` via `navigateToOrderConfirmation()`. Guest status access: [`checkout-guest-order.md`](checkout-guest-order.md).
 - Clear cookie in `after()` — not before leaving `?checkout=`.
 - Confirmation page: receipt, next steps, soft account invite.
 

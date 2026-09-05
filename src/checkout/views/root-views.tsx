@@ -50,7 +50,7 @@ export const RootViews = () => {
 	const accountCredentials = getEmailAndTokenFromSearchParams(searchParams);
 
 	// After checkoutComplete, cookie deletion re-renders this RSC tree with `not_found` while
-	// navigation to `/checkout/complete` is still in flight — keep the processing screen up.
+	// navigation to `/order/{hmac}` is still in flight — keep the processing screen up.
 	if (transition === "completing") {
 		return <PaymentCompletingScreen isShippingRequired={checkout?.isShippingRequired ?? true} />;
 	}

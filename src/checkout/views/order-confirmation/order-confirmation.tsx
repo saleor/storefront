@@ -1,40 +1,77 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
+import { CheckCircle, Mail, MapPin, Package, CreditCard, Truck } from "lucide-react";
+import { useTranslations } from "next-intl";
+
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { navigateToStorefrontHome } from "@/lib/auth";
 import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
-import { CheckCircle, Mail, MapPin, Package, CreditCard } from "lucide-react";
+import { useCheckoutUser } from "@/checkout/providers/checkout-user";
 import { Button } from "@/ui/components/ui/button";
 import { useOrder } from "@/checkout/hooks/use-order";
 import { OrderSummary } from "@/checkout/views/saleor-checkout/order-summary";
 import { OrderConfirmationPageShell } from "./order-confirmation-page-shell";
 import { PageNotFound } from "@/checkout/views/page-not-found";
-import { useTranslations } from "next-intl";
-import { getLocaleDefinition } from "@/config/locale";
+import { getCustomerOrderStatusLabel } from "@/lib/order-status";
+import { billingCityCountry } from "@/lib/order-view/sanitize";
+import { buildStorefrontPath } from "@/lib/storefront-path";
+import { OrderEmailGate } from "./order-email-gate";
 
-/** Format address for display */
 function formatAddress(address: {
+	firstName?: string | null;
+	lastName?: string | null;
 	streetAddress1?: string | null;
+	streetAddress2?: string | null;
 	city?: string | null;
 	postalCode?: string | null;
 	country?: { country?: string | null } | null;
 }) {
-	return [address.streetAddress1, address.city, address.postalCode, address.country?.country]
+	const name = [address.firstName, address.lastName].filter(Boolean).join(" ");
+	return [
+		name,
+		address.streetAddress1,
+		address.streetAddress2,
+		[address.postalCode, address.city].filter(Boolean).join(" "),
+		address.country?.country,
+	]
 		.filter(Boolean)
 		.join(", ");
 }
 
-/**
- * Order confirmation — rendered at `/checkout/complete?order=…` after successful payment.
- */
+function deliveryWindow(
+	method: {
+		minimumDeliveryDays?: number | null;
+		maximumDeliveryDays?: number | null;
+	} | null,
+): string | null {
+	if (!method) {
+		return null;
+	}
+	const min = method.minimumDeliveryDays;
+	const max = method.maximumDeliveryDays;
+	if (min != null && max != null && min !== max) {
+		return `${min}–${max}`;
+	}
+	if (min != null) {
+		return String(min);
+	}
+	if (max != null) {
+		return String(max);
+	}
+	return null;
+}
+
 export const OrderConfirmation = () => {
-	const { order } = useOrder();
+	const { order, access } = useOrder();
+	const { authenticated } = useCheckoutUser();
 	const storefrontLocale = useCheckoutBrowseLocale();
 	const t = useTranslations("checkout.confirmation");
+	const tStatus = useTranslations("account.orderStatus");
+	const tFind = useTranslations("checkout.orderFind");
 	const tErrors = useTranslations("checkout.errors");
 	const tActions = useTranslations("checkout.actions");
-	const localeBcp47 = getLocaleDefinition(storefrontLocale)?.bcp47 ?? "en-US";
 
 	useEffect(() => {
 		if (!order?.id) {
@@ -49,18 +86,17 @@ export const OrderConfirmation = () => {
 	}
 
 	const channel = order.channel?.slug ?? "";
-
-	const estimatedDelivery = new Date();
-	estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
-	const formattedDelivery = estimatedDelivery.toLocaleDateString(localeBcp47, {
-		weekday: "long",
-		month: "long",
-		day: "numeric",
-	});
-
+	const verified = access === "verified";
 	const shippingAddress = order.shippingAddress;
-	const billingAddress = order.billingAddress;
+	const billingLabel = billingCityCountry(order.billingAddress ?? null);
 	const email = order.userEmail || "";
+	const statusLabel = getCustomerOrderStatusLabel(tStatus, order.status, order.statusDisplay);
+	const method = order.deliveryMethod && "name" in order.deliveryMethod ? order.deliveryMethod : null;
+	const days = deliveryWindow(method);
+	const trackingNumbers =
+		order.fulfillments
+			?.map((fulfillment) => fulfillment.trackingNumber)
+			.filter((value): value is string => Boolean(value)) ?? [];
 
 	return (
 		<OrderConfirmationPageShell storefrontChannel={channel}>
@@ -71,60 +107,97 @@ export const OrderConfirmation = () => {
 							<div className="space-y-8">
 								<div className="space-y-4 text-center">
 									<div className="flex justify-center">
-										<div className="relative">
-											<div className="absolute inset-0 animate-ping rounded-full bg-green-400/30" />
-											<CheckCircle className="relative h-16 w-16 text-green-500" />
-										</div>
+										<CheckCircle className="h-16 w-16 text-foreground" />
 									</div>
 									<div>
 										<p className="text-muted-foreground">{t("orderNumber", { number: order.number })}</p>
-										<h1 className="mt-1 text-balance text-h1">{t("thankYou")}</h1>
+										<h1 className="mt-1 text-balance text-h1">
+											{verified ? t("thankYou") : t("statusTitle")}
+										</h1>
+										<p className="mt-2 text-sm font-medium">{statusLabel}</p>
 									</div>
 								</div>
 
 								<div className="overflow-hidden rounded-lg border border-border">
-									<div className="bg-secondary/50 border-b border-border p-4">
-										<h2 className="font-semibold">{t("confirmedTitle")}</h2>
-										<p className="mt-1 text-sm text-muted-foreground">{t("confirmedEmail", { email })}</p>
+									<div className="border-b border-border bg-secondary/50 p-4">
+										<h2 className="font-semibold">{verified ? t("confirmedTitle") : t("publicTitle")}</h2>
+										<p className="mt-1 text-sm text-muted-foreground">
+											{verified ? t("confirmedEmail", { email }) : t("publicBody")}
+										</p>
 									</div>
 
 									<div className="space-y-4 p-4">
-										<div className="flex items-start gap-3">
-											<Mail className="mt-0.5 h-5 w-5 text-muted-foreground" />
-											<div>
-												<p className="text-sm font-medium">{t("emailSent")}</p>
-												<p className="text-sm text-muted-foreground">{email}</p>
-											</div>
-										</div>
-										{shippingAddress && (
-											<div className="flex items-start gap-3">
-												<MapPin className="mt-0.5 h-5 w-5 text-muted-foreground" />
-												<div>
-													<p className="text-sm font-medium">{t("shippingAddress")}</p>
-													<p className="text-sm text-muted-foreground">{formatAddress(shippingAddress)}</p>
+										{verified ? (
+											<>
+												<div className="flex items-start gap-3">
+													<Mail className="mt-0.5 h-5 w-5 text-muted-foreground" />
+													<div>
+														<p className="text-sm font-medium">{t("emailSent")}</p>
+														<p className="text-sm text-muted-foreground">{email}</p>
+													</div>
 												</div>
-											</div>
+												{shippingAddress ? (
+													<div className="flex items-start gap-3">
+														<MapPin className="mt-0.5 h-5 w-5 text-muted-foreground" />
+														<div>
+															<p className="text-sm font-medium">{t("shippingAddress")}</p>
+															<p className="text-sm text-muted-foreground">
+																{formatAddress(shippingAddress)}
+															</p>
+														</div>
+													</div>
+												) : null}
+												{billingLabel ? (
+													<div className="flex items-start gap-3">
+														<CreditCard className="mt-0.5 h-5 w-5 text-muted-foreground" />
+														<div>
+															<p className="text-sm font-medium">{t("billingAddress")}</p>
+															<p className="text-sm text-muted-foreground">{billingLabel}</p>
+														</div>
+													</div>
+												) : null}
+												{method?.name ? (
+													<div className="flex items-start gap-3">
+														<Package className="mt-0.5 h-5 w-5 text-muted-foreground" />
+														<div>
+															<p className="text-sm font-medium">{t("shippingMethod")}</p>
+															<p className="text-sm text-muted-foreground">
+																{method.name}
+																{days ? ` · ${t("deliveryDays", { days })}` : ""}
+															</p>
+														</div>
+													</div>
+												) : null}
+												{trackingNumbers.length > 0 ? (
+													<div className="flex items-start gap-3">
+														<Truck className="mt-0.5 h-5 w-5 text-muted-foreground" />
+														<div>
+															<p className="text-sm font-medium">{t("tracking")}</p>
+															<ul className="text-sm text-muted-foreground">
+																{trackingNumbers.map((number) => (
+																	<li key={number}>
+																		<a
+																			href={`https://www.google.com/search?q=${encodeURIComponent(number)}`}
+																			rel="noopener noreferrer"
+																			target="_blank"
+																			className="underline underline-offset-2"
+																		>
+																			{number}
+																		</a>
+																	</li>
+																))}
+															</ul>
+														</div>
+													</div>
+												) : null}
+											</>
+										) : (
+											<OrderEmailGate orderId={order.id} />
 										)}
-										{billingAddress && (
-											<div className="flex items-start gap-3">
-												<CreditCard className="mt-0.5 h-5 w-5 text-muted-foreground" />
-												<div>
-													<p className="text-sm font-medium">{t("billingAddress")}</p>
-													<p className="text-sm text-muted-foreground">{formatAddress(billingAddress)}</p>
-												</div>
-											</div>
-										)}
-										<div className="flex items-start gap-3">
-											<Package className="mt-0.5 h-5 w-5 text-muted-foreground" />
-											<div>
-												<p className="text-sm font-medium">{t("estimatedDelivery")}</p>
-												<p className="text-sm text-muted-foreground">{formattedDelivery}</p>
-											</div>
-										</div>
 									</div>
 								</div>
 
-								<div className="flex justify-center">
+								<div className="flex flex-col items-center gap-3">
 									<Button
 										type="button"
 										className="min-w-[200px] px-8"
@@ -132,6 +205,28 @@ export const OrderConfirmation = () => {
 									>
 										{tActions("continueShopping")}
 									</Button>
+									{verified && channel && !authenticated ? (
+										<a
+											href={buildStorefrontPath(storefrontLocale, channel, "/signup")}
+											className="text-sm text-muted-foreground underline underline-offset-2"
+										>
+											{t("createAccount")}
+										</a>
+									) : null}
+									<Link
+										href={`/order/find?locale=${encodeURIComponent(storefrontLocale)}`}
+										className="text-sm text-muted-foreground underline underline-offset-2"
+									>
+										{tFind("findAnother")}
+									</Link>
+									{!verified && channel && !authenticated ? (
+										<a
+											href={buildStorefrontPath(storefrontLocale, channel, "/login")}
+											className="text-sm text-muted-foreground underline underline-offset-2"
+										>
+											{t("signIn")}
+										</a>
+									) : null}
 								</div>
 							</div>
 						</div>

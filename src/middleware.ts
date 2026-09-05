@@ -8,6 +8,7 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 const RESERVED_ROOT_SEGMENTS = new Set([
 	"api",
 	"checkout",
+	"order",
 	"_next",
 	"favicon.ico",
 	"robots.txt",
@@ -118,5 +119,5 @@ export const config = {
 	 * The equivalent guards at the top of `middleware()` stay as a backstop for runtimes
 	 * that apply the matcher differently (self-hosted, `next start`).
 	 */
-	matcher: ["/((?!api/|api$|checkout/|checkout$|_next/|.*\\.[\\w]+$).*)"],
+	matcher: ["/((?!api/|api$|checkout/|checkout$|order/|order$|_next/|.*\\.[\\w]+$).*)"],
 };

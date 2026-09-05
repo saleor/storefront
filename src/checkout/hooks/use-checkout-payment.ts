@@ -189,7 +189,7 @@ export function useCheckoutPayment({
 				}
 
 				orderPlaced = true;
-				navigateToOrderConfirmation(payResult.orderId);
+				navigateToOrderConfirmation(payResult.orderViewToken);
 			} finally {
 				setIsProcessing(false);
 				if (!orderPlaced) {

@@ -128,7 +128,7 @@ Client-side validation should use the same `account.errors.*` keys before callin
 
 ## Checkout
 
-Checkout uses the **`checkout` namespace** for functional chrome (same ADR 0002 split as cart). Locale is passed from RSC (`loadMessagesForLocale` + `CheckoutIntlProvider`), not from a `[locale]` URL segment.
+Checkout uses the **`checkout` namespace** for functional chrome (same ADR 0002 split as cart). Locale is passed from RSC (`loadCheckoutMessages` + `CheckoutIntlProvider`), not from a `[locale]` URL segment. `loadCheckoutMessages` always merges onto `messages/en.json` so a non-English `NEXT_PUBLIC_DEFAULT_LOCALE` still receives new keys.
 
 **Still CMS (`useCheckoutContent`):** `emptyCart`, `emptySession`, `marketingOptInLabel`, `trust.*`.
 

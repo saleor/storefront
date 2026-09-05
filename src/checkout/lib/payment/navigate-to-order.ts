@@ -2,7 +2,7 @@ import { buildOrderConfirmationPath } from "@paper/session-bridge";
 import { bumpChromeVersion } from "@/lib/chrome-sync";
 
 /**
- * Client navigation to `/checkout/complete?order=`.
+ * Client navigation to `/order/{hmac}`.
  *
  * Intentionally **not** `redirect()` inside `runCheckoutComplete` — server redirects throw
  * `NEXT_REDIRECT`, which Stripe payment try/catch blocks surface as a false "Payment failed"
@@ -15,10 +15,11 @@ import { bumpChromeVersion } from "@/lib/chrome-sync";
  * Cookie clear is deferred via `after()` in the server action so this navigation can run first;
  * `RootViews` keeps `PaymentCompletingScreen` up until the document unloads.
  */
-export function navigateToOrderConfirmation(orderId: string) {
+export function navigateToOrderConfirmation(orderViewToken: string) {
 	// Order placed → cart cookie is being cleared; storefront tabs re-render
 	// their cart chrome on next focus.
 	bumpChromeVersion();
-	const path = buildOrderConfirmationPath({ orderId });
+	const browseLocale = new URLSearchParams(window.location.search).get("locale");
+	const path = buildOrderConfirmationPath({ token: orderViewToken, browseLocale });
 	window.location.replace(path);
 }

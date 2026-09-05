@@ -36,20 +36,21 @@ Pay clicked (or 3DS return)
  → transactionInitialize / process     [provider-specific]
  → finalizeCheckoutOrder()             [runCheckoutComplete]
      ├─ failure → clearPaymentCompleting(), show inline error
-     └─ success → navigateToOrderConfirmation(orderId)  [window.location.replace → /checkout/complete?order=]
+     └─ success → navigateToOrderConfirmation(orderViewToken)  [window.location.replace → /order/{hmac}]
  → confirmation page clears completion storage; cookie cleared in runCheckoutComplete after()
 ```
 
 ### Routes & transition storage
 
-| Mechanism                          | Purpose                                                                                           |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                        |
-| `/checkout/complete?order=`        | Order confirmation — separate RSC page + `OrderConfirmationApp`                                   |
-| `checkout:payment-completing`      | Keeps `PaymentCompletingScreen` up while `checkoutComplete` runs (no flash back to step 1)        |
-| `?processingPayment=true`          | Stripe 3DS return flag; pairs with `isCheckoutPaymentActive()` when the payment step is unmounted |
-| `?step=contact\|shipping\|payment` | Step deep link; URL is source of truth via `useLiveCheckoutSearchParams()`                        |
-| `updateCheckoutQuery()`            | **Shallow** step URL updates (`pushState`/`replaceState`) — avoids re-running checkout RSC        |
+| Mechanism                          | Purpose                                                                                                                                               |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/checkout?checkout=`              | Active cart flow — `CheckoutApp` + step UI                                                                                                            |
+| `/order/{key}`                     | Guest order status — HMAC full view, Saleor id redacted + email step-up; URL frozen, body live ([`checkout-guest-order.md`](checkout-guest-order.md)) |
+| `/checkout/complete?order=`        | Legacy redirect to `/order/{id}`                                                                                                                      |
+| `checkout:payment-completing`      | Keeps `PaymentCompletingScreen` up while `checkoutComplete` runs (no flash back to step 1)                                                            |
+| `?processingPayment=true`          | Stripe 3DS return flag; pairs with `isCheckoutPaymentActive()` when the payment step is unmounted                                                     |
+| `?step=contact\|shipping\|payment` | Step deep link; URL is source of truth via `useLiveCheckoutSearchParams()`                                                                            |
+| `updateCheckoutQuery()`            | **Shallow** step URL updates (`pushState`/`replaceState`) — avoids re-running checkout RSC                                                            |
 
 **Critical sequencing gotchas:**
 
@@ -101,7 +102,8 @@ Step changes use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout
 | `src/checkout/providers/checkout-data.tsx` · `lib/checkout-sync.ts`                                               | Client state + adopt/refresh semantics                                      |
 | `src/checkout/hooks/use-checkout.ts` · `use-checkout-transition.ts`                                               | Steps context; payment→order guard                                          |
 | `src/checkout/lib/payment/finalize-checkout-order.ts` · `navigate-to-order.ts` · `checkout-payment-completion.ts` | `checkoutComplete` + nav; `markPaymentCompleting`/`isCheckoutPaymentActive` |
-| `src/app/(checkout)/checkout/complete/page.tsx` · `order-confirmation-app.tsx`                                    | Confirmation RSC + client shell                                             |
+| `src/app/(checkout)/order/[key]/page.tsx` · `order-confirmation-app.tsx`                                          | Guest order RSC + client shell                                              |
+| `src/app/(checkout)/checkout/complete/page.tsx`                                                                   | Legacy redirect to `/order/{id}`                                            |
 | `src/checkout/components/payment/stripe/stripe-checkout-return-handler.tsx`                                       | Post-redirect completion                                                    |
 
 ## Anti-patterns
@@ -117,7 +119,7 @@ Step changes use **`updateCheckoutQuery({ step })`** (`src/checkout/lib/checkout
 
 **Which refresh:** `refreshCheckout()` replaces client state (promo/line change); `adoptCheckoutSnapshot` merges an RSC snapshot without clobbering in-flow edits (on `initialCheckout` change only); `useRefreshCheckoutRsc()` triggers `router.refresh()`; cross-surface cart edits propagate via `revalidateStorefrontChrome` + next nav.
 
-**URL params:** `checkout` (RSC reads — required), `order` on `/checkout` (RSC → redirect; canonical is `/checkout/complete?order=`), `step` (client only), `processingPayment`/Stripe params (client; merged from live `window.location.search`).
+**URL params:** `checkout` (RSC reads — required), `order` on `/checkout` (RSC → redirect; canonical is `/order/{id}`), `step` (client only), `processingPayment`/Stripe params (client; merged from live `window.location.search`).
 
 **Hooks:** `useCheckout()` (compat API; `refetch` → `refreshCheckout`), `useCheckoutData()` (full context incl. `loadState`/`setCheckout`), `useLiveCheckoutSearchParams()`, `useCheckoutTransition()`, `useRefreshCheckoutRsc()`.
 
