@@ -7,7 +7,7 @@ Set `STOREFRONT_AGENTS_ENABLED=true` and rebuild. `.env.example` enables new sto
 - `/agents.md` and `/llms.txt`: store identity, public GraphQL URL, locale/channels, available currencies, policy links, and a catalog query.
 - `/agents/catalog.md`: search, pagination, variants, prices, and availability examples.
 
-Only the public API URL is exposed. Listed channels do not control Saleor access.
+These documents guide agents to the GraphQL API, Markdown pages, and store policies. Only the public API URL is exposed. Listed channels do not control Saleor access.
 
 ## Markdown pages
 
