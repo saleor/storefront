@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isStorefrontAgentsEnabled } from "@/config/agents";
 import { StorefrontRegionPicker } from "./storefront-region-picker";
 import {
 	getStaticStorefrontChannelSlugs,
@@ -68,6 +69,14 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 							<CopyrightText />
 						</p>
 						<FooterAttribution />
+						{isStorefrontAgentsEnabled() && (
+							<a
+								href="/agents.md"
+								className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
+							>
+								For AI agents
+							</a>
+						)}
 						<FooterPhotoCredits credits={content.surfaces.homepage.photoCredits} />
 					</div>
 					<div className="flex items-center gap-6">
