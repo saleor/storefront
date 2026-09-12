@@ -5,19 +5,17 @@ import {
 	COMMERCE_CONTEXT_SURFACE_STOREFRONT,
 	COMMERCE_CONTEXT_SYSTEM_PAPER,
 	type CommerceContextMetadataInput,
+	type OriginConsent,
 } from "@/lib/commerce-context/keys";
 
 /**
  * Tier-1 Commerce Context: facts about *how the order came to exist*, written once
  * on `checkoutCreate` as part of the same mutation (zero extra round trips).
  *
- * Consent-free by construction — nothing here is derived from cookies, storage,
- * UTMs or the shopper: surface, writer system, capture time, UI locale and the
- * Paper baseline the fork runs. That is exactly why it can be written for every
- * checkout: `origin` alone flips Pulse's coverage from `missing` to `valid`, so
- * merchants can tell storefront orders from POS / draft / import even before any
- * marketing attribution exists. Tier 2 (`marketing`, `session`) is consent-gated
- * and written later via `updateMetadata`.
+ * Nothing here is derived from UTMs or marketing storage: surface, writer,
+ * capture time, locale, Paper baseline, and a Pulse `origin.consent` marker
+ * the caller already resolved. Marketing / session stay out — those are
+ * consent-gated phase 3 `updateMetadata` writes.
  *
  * Paper targets Saleor 3.23+, where `CheckoutCreateInput.metadata` is a given.
  * The builder is pure and cannot throw; never wrap create in a "retry without
@@ -26,14 +24,17 @@ import {
 export function buildCheckoutCreateContextMetadata({
 	locale,
 	now = new Date(),
+	consent,
 }: {
 	locale: LocaleSlug;
 	now?: Date;
+	consent: OriginConsent;
 }): CommerceContextMetadataInput[] {
 	const origin = {
 		surface: COMMERCE_CONTEXT_SURFACE_STOREFRONT,
 		system: COMMERCE_CONTEXT_SYSTEM_PAPER,
 		capturedAt: now.toISOString(),
+		consent,
 	};
 
 	const extPaper = {

@@ -78,7 +78,7 @@ Reference these guidelines when:
 - `data-storefront-content` - Provider-agnostic copy layer, merge semantics, cache tags, wiring
 - `data-storefront-content-saleor` - Saleor Models, slug stack, channel overrides, Configurator
 - `data-storefront-content-attributes` - Attribute inputTypes, catalog references, scalar roadmap
-- `data-analytics` - Vercel Web Analytics, PaperCommerceEvent bus, Commerce Context (`commerce.context.*`) for Pulse
+- `data-analytics` - Vercel Web Analytics, consent mode, first-touch UTM, GA4 Consent Mode v2, PaperCommerceEvent bus, Commerce Context (`commerce.context.*`) for Pulse
 
 ### 2. Product Pages (HIGH)
 

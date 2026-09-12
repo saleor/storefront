@@ -18,6 +18,7 @@ import { getRootHtmlFontProps } from "@/lib/fonts";
 import { saleorMediaPreconnectOrigin } from "@/lib/images";
 import { speedInsightsSampleRate } from "@/lib/speed-insights";
 import { webAnalyticsEnabled } from "@/lib/analytics/web-analytics";
+import { AnalyticsMount } from "@/ui/components/analytics-mount";
 import { WebAnalytics } from "@/ui/components/web-analytics";
 
 /**
@@ -90,6 +91,7 @@ export default async function LocaleRootLayout({
 					{/* Unsampled page views — the denominator; URLs are redacted in beforeSend. */}
 					{webAnalyticsEnabled() && <WebAnalytics />}
 				</NextIntlClientProvider>
+				<AnalyticsMount />
 			</body>
 		</html>
 	);

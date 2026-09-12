@@ -4,7 +4,7 @@ import { checkoutIdCookieName } from "@paper/session-bridge";
 import { CheckoutCreateDocument, CheckoutCustomerDetachDocument, CheckoutFindDocument } from "@/gql/graphql";
 import { type CartCheckout, withTranslatedCartCheckout } from "@/lib/cart-checkout";
 import { checkoutGraphqlLocaleVariables, resolveCheckoutLocaleSlug } from "@/lib/checkout-locale";
-import { buildCheckoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create";
+import { checkoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create-context";
 import { executeAuthenticatedGraphQL, executePublicGraphQL } from "@/lib/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
@@ -164,7 +164,7 @@ export async function create({ channel, localeSlug }: { channel: string; localeS
 		variables: {
 			channel,
 			...graphqlLanguageCodeVariables(locale),
-			metadata: buildCheckoutCreateContextMetadata({ locale }),
+			metadata: await checkoutCreateContextMetadata(locale),
 		},
 	});
 }

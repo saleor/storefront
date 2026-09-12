@@ -5,7 +5,6 @@ import { after } from "next/server";
 import { track } from "@vercel/analytics/server";
 import type { PaperCommerceEvent } from "@/lib/analytics/catalog";
 import { projectConsole } from "@/lib/analytics/destinations/console";
-import { projectGa4 } from "@/lib/analytics/destinations/ga4";
 import { projectVercel } from "@/lib/analytics/destinations/vercel";
 import { webAnalyticsEnabled } from "@/lib/analytics/web-analytics";
 
@@ -32,7 +31,8 @@ async function deliver(event: PaperCommerceEvent): Promise<void> {
 			// `after()` often loses the implicit Vercel request context — pass them.
 			await track(vercel.name, vercel.props, { headers: await headers() });
 		}
-		projectGa4(event);
+		// GA4 server delivery is Measurement Protocol (phase 4). Client events
+		// (begin_checkout, checkout_step, search) go through emit.client.
 		if (process.env.NODE_ENV === "development") {
 			projectConsole(event);
 		}

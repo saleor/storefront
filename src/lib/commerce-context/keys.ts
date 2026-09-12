@@ -27,6 +27,14 @@ export const COMMERCE_CONTEXT_SURFACE_STOREFRONT = "storefront";
 /** `origin.system` — identifies the writer implementation, not the deployment. */
 export const COMMERCE_CONTEXT_SYSTEM_PAPER = "paper";
 
+/**
+ * Pulse `origin.consent` — whether the shopper allowed storage that marketing /
+ * session are derived from. Origin itself is never consent-gated; the marker
+ * lives here so "declined" is not indistinguishable from "direct".
+ */
+export const ORIGIN_CONSENT_VALUES = ["granted", "denied", "not_required", "unknown"] as const;
+export type OriginConsent = (typeof ORIGIN_CONSENT_VALUES)[number];
+
 export type CommerceContextMetadataInput = {
 	key: string;
 	value: string;

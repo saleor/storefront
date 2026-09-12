@@ -88,7 +88,7 @@ import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { checkoutGraphqlLanguageCode, resolveCheckoutLocaleSlug } from "@/lib/checkout-locale";
 import { emitCommerceEvent } from "@/lib/analytics/emit.server";
-import { buildCheckoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create";
+import { checkoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create-context";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { executeAuthenticatedGraphQL, executePublicGraphQL, executeRawGraphQL } from "@/lib/graphql";
@@ -346,7 +346,7 @@ export async function recoverOrphanedCheckout(
 		variables: {
 			channel,
 			languageCode: graphqlLanguageCodeVariables(locale).languageCode,
-			metadata: buildCheckoutCreateContextMetadata({ locale }),
+			metadata: await checkoutCreateContextMetadata(locale),
 		},
 		cache: "no-cache",
 	});

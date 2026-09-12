@@ -1,13 +1,39 @@
 import type { PaperCommerceEvent } from "@/lib/analytics/catalog";
 
+/** Recommended GA4 event + params. `items[]` waits on richer catalog fields. */
+export type Ga4Event = {
+	name: string;
+	params: Record<string, string | number | boolean>;
+};
+
 /**
- * GA4 projector — phase 2.
- *
- * Will map the same `PaperCommerceEvent` onto recommended names + `items[]`
- * (`add_to_cart`, `begin_checkout`, `purchase`, `search`) behind
- * `NEXT_PUBLIC_GA_MEASUREMENT_ID` and Consent Mode v2. No-op until then so
- * emit sites never grow a second `gtag` call.
+ * Project a Paper event onto GA4 recommended names. Search text is never a
+ * param. Contact is not a GA checkout step — skip it. Server delivery
+ * (Measurement Protocol) is phase 4; this function is payload-only.
  */
-export function projectGa4(_event: PaperCommerceEvent): null {
-	return null;
+export function projectGa4(event: PaperCommerceEvent): Ga4Event | null {
+	switch (event.name) {
+		case "product_added_to_cart":
+			if (!event.currency) return null;
+			return { name: "add_to_cart", params: { currency: event.currency, value: event.value } };
+		case "checkout_started":
+			if (!event.currency) return null;
+			return { name: "begin_checkout", params: { currency: event.currency, value: event.value } };
+		case "checkout_step_viewed":
+			if (event.step === "shipping") return { name: "add_shipping_info", params: {} };
+			if (event.step === "payment") return { name: "add_payment_info", params: {} };
+			return null;
+		case "checkout_completed":
+			if (!event.currency || !event.transactionId) return null;
+			return {
+				name: "purchase",
+				params: {
+					transaction_id: event.transactionId,
+					currency: event.currency,
+					value: event.value,
+				},
+			};
+		case "search_submitted":
+			return { name: "search", params: {} };
+	}
 }
