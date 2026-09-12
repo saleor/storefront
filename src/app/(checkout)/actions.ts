@@ -86,7 +86,9 @@ import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { getCheckoutServerTranslations } from "@/checkout/lib/server/get-checkout-server-translations";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
-import { checkoutGraphqlLanguageCode } from "@/lib/checkout-locale";
+import { checkoutGraphqlLanguageCode, resolveCheckoutLocaleSlug } from "@/lib/checkout-locale";
+import { executeCheckoutCreateWithContext } from "@/lib/commerce-context/checkout-create";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { executeAuthenticatedGraphQL, executePublicGraphQL, executeRawGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
@@ -338,13 +340,19 @@ export async function recoverOrphanedCheckout(
 	channel: string,
 	lines: RecoverLine[],
 ): Promise<CheckoutActionResult & { checkoutId?: string }> {
-	const createResult = await executeAuthenticatedGraphQL(checkoutCreateDocument, {
-		variables: {
-			channel,
-			languageCode: await checkoutGraphqlLanguageCode(),
-		},
-		cache: "no-cache",
-	});
+	const locale = await resolveCheckoutLocaleSlug();
+	const createResult = await executeCheckoutCreateWithContext(
+		(metadata) =>
+			executeAuthenticatedGraphQL(checkoutCreateDocument, {
+				variables: {
+					channel,
+					languageCode: graphqlLanguageCodeVariables(locale).languageCode,
+					metadata,
+				},
+				cache: "no-cache",
+			}),
+		locale,
+	);
 
 	if (!createResult.ok) {
 		return { ok: false, error: createResult.error.message };

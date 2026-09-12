@@ -1,0 +1,73 @@
+import { describe, expect, it } from "vitest";
+import { buildCheckoutCreateContextMetadata, isCommerceContextBlockingCreate } from "./checkout-create";
+import { COMMERCE_CONTEXT_KEYS } from "./keys";
+
+const now = new Date("2026-09-12T10:00:00.000Z");
+
+function section(items: { key: string; value: string }[], key: string): Record<string, unknown> {
+	const item = items.find((candidate) => candidate.key === key);
+	if (!item) throw new Error(`missing ${key}`);
+	return JSON.parse(item.value) as Record<string, unknown>;
+}
+
+describe("buildCheckoutCreateContextMetadata", () => {
+	it("writes exactly the consent-free sections: origin + ext.paper", () => {
+		const keys = buildCheckoutCreateContextMetadata({ locale: "en", now }).map((item) => item.key);
+		expect(keys.sort()).toEqual([COMMERCE_CONTEXT_KEYS.origin, COMMERCE_CONTEXT_KEYS.extPaper].sort());
+	});
+
+	it("origin is a spec-valid storefront origin", () => {
+		const origin = section(
+			buildCheckoutCreateContextMetadata({ locale: "en", now }),
+			COMMERCE_CONTEXT_KEYS.origin,
+		);
+		expect(origin).toEqual({
+			surface: "storefront",
+			system: "paper",
+			capturedAt: "2026-09-12T10:00:00.000Z",
+		});
+	});
+
+	it("ext.paper carries the BCP 47 locale and the Paper baseline", () => {
+		const ext = section(
+			buildCheckoutCreateContextMetadata({ locale: "pl", now }),
+			COMMERCE_CONTEXT_KEYS.extPaper,
+		);
+		expect(ext.locale).toBe("pl-PL");
+		expect(ext.paperVersion).toMatch(/^[0-9a-f]{7,40}$/);
+	});
+
+	it("never writes marketing, session or Pulse-private keys at create time", () => {
+		const keys = buildCheckoutCreateContextMetadata({ locale: "en", now }).map((item) => item.key);
+		expect(keys).not.toContain(COMMERCE_CONTEXT_KEYS.marketing);
+		expect(keys).not.toContain(COMMERCE_CONTEXT_KEYS.session);
+		expect(keys.some((key) => key.startsWith("pulse."))).toBe(false);
+	});
+
+	it("does not collide with the newsletter opt-in namespace", () => {
+		const keys = buildCheckoutCreateContextMetadata({ locale: "en", now }).map((item) => item.key);
+		expect(keys.some((key) => key.startsWith("paper."))).toBe(false);
+	});
+});
+
+describe("isCommerceContextBlockingCreate", () => {
+	it("retries when the schema does not know CheckoutCreateInput.metadata", () => {
+		expect(
+			isCommerceContextBlockingCreate({
+				graphqlMessage: 'Unknown argument "metadata" on field "CheckoutCreateInput"',
+			}),
+		).toBe(true);
+	});
+
+	it("retries when Saleor reports a domain error on the metadata field", () => {
+		expect(isCommerceContextBlockingCreate({ checkoutErrors: [{ field: "metadata" }] })).toBe(true);
+	});
+
+	it("does not retry a real checkout failure (channel, network)", () => {
+		expect(isCommerceContextBlockingCreate({ graphqlMessage: "Failed to connect to Saleor API" })).toBe(
+			false,
+		);
+		expect(isCommerceContextBlockingCreate({ checkoutErrors: [{ field: "channel" }] })).toBe(false);
+		expect(isCommerceContextBlockingCreate({ checkoutErrors: [] })).toBe(false);
+	});
+});

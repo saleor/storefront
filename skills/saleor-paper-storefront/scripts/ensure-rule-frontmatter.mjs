@@ -48,6 +48,8 @@ const DESCRIPTIONS = {
 		"Saleor Models (PageTypes + Pages) as the storefront copy surface, slug stack for per-channel copy, Configurator commerce-as-code. Use with CONTENT_PROVIDER=saleor or when adding content PageTypes/attributes.",
 	"data-storefront-content-attributes.md":
 		"Choosing Saleor attribute inputTypes for storefront content Models (PLAIN_TEXT, BOOLEAN, NUMERIC, references) and what Paper reads today. Use when adding a content attribute or catalog reference to a Model.",
+	"data-analytics.md":
+		"Analytics and order attribution in Paper — Vercel Web Analytics toggle (NEXT_PUBLIC_VERCEL_WEB_ANALYTICS) with beforeSend URL redaction, and Commerce Context metadata (commerce.context.origin / ext.paper) written on checkoutCreate for Saleor Pulse. Use when adding tracking, GA4/pixels, custom events, page-view cost questions, or order-origin/marketing attribution metadata.",
 	"product-pdp.md":
 		"PDP architecture: ProductShell + dynamic gallery/variant islands, gallery registry/layouts, LCP strategy, add-to-cart Server Action. Use when changing the product detail page layout, gallery, or buy box.",
 	"product-variants.md":
