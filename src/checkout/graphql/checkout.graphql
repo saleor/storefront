@@ -390,6 +390,12 @@ mutation checkoutComplete($checkoutId: ID!) {
 			channel {
 				slug
 			}
+			total {
+				gross {
+					amount
+					currency
+				}
+			}
 		}
 	}
 }

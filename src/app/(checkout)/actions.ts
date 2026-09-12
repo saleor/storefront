@@ -87,6 +87,7 @@ import { getCheckoutServerTranslations } from "@/checkout/lib/server/get-checkou
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { checkoutGraphqlLanguageCode, resolveCheckoutLocaleSlug } from "@/lib/checkout-locale";
+import { emitCommerceEvent } from "@/lib/analytics/emit.server";
 import { buildCheckoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
@@ -617,6 +618,15 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 	// in navigateToOrderConfirmation().
 	const orderViewToken = signOrderViewToken(orderId);
 	await setOrderViewCookie(orderViewToken);
+
+	const order = payload.order;
+	emitCommerceEvent({
+		name: "checkout_completed",
+		channel: order?.channel?.slug ?? "",
+		value: order?.total?.gross?.amount ?? 0,
+		currency: order?.total?.gross?.currency ?? "",
+		transactionId: orderId,
+	});
 
 	after(async () => {
 		await Checkout.clearCheckoutCookieByValue(checkoutId);
