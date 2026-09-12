@@ -24,6 +24,8 @@ Paper follows **canonical Next.js App Router** patterns (Next.js 16):
 
 We align with upstream Next.js docs rather than inventing parallel data layers. When Next.js offers a first-class pattern (metadata API, `loading.tsx`, Server Actions, `use cache`), prefer it.
 
+**Supported Saleor: 3.23 and later** (same floor as Pulse). Do not add fallbacks for older APIs. Features that landed earlier (translatable slugs in 3.21, assigned page attributes in 3.22, `CheckoutCreateInput.metadata` in 3.21) are simply available. `pnpm generate` against a pre-3.23 schema failing is the intended signal.
+
 ---
 
 ## Architectural pillars

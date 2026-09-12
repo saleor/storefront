@@ -6,7 +6,6 @@ import {
 	COMMERCE_CONTEXT_SYSTEM_PAPER,
 	type CommerceContextMetadataInput,
 } from "@/lib/commerce-context/keys";
-import type { GraphQLResult } from "@/lib/graphql";
 
 /**
  * Tier-1 Commerce Context: facts about *how the order came to exist*, written once
@@ -20,7 +19,9 @@ import type { GraphQLResult } from "@/lib/graphql";
  * marketing attribution exists. Tier 2 (`marketing`, `session`) is consent-gated
  * and written later via `updateMetadata`.
  *
- * Never let this block a checkout: no I/O, no throws on bad input.
+ * Paper targets Saleor 3.23+, where `CheckoutCreateInput.metadata` is a given.
+ * The builder is pure and cannot throw; never wrap create in a "retry without
+ * metadata" fallback — an older API is out of support, not a soft failure.
  */
 export function buildCheckoutCreateContextMetadata({
 	locale,
@@ -46,49 +47,4 @@ export function buildCheckoutCreateContextMetadata({
 		{ key: COMMERCE_CONTEXT_KEYS.origin, value: JSON.stringify(origin) },
 		{ key: COMMERCE_CONTEXT_KEYS.extPaper, value: JSON.stringify(extPaper) },
 	];
-}
-
-type CheckoutCreatePayload = {
-	checkoutCreate?: {
-		checkout?: unknown;
-		errors?: ReadonlyArray<{ field?: string | null } | null> | null;
-	} | null;
-};
-
-/**
- * True when Saleor rejected the create *because of metadata* — unknown argument on
- * a pre-3.21 instance, or a domain error on the `metadata` field. Other failures
- * (channel, network) must not be retried without context; they are real.
- */
-export function isCommerceContextBlockingCreate(input: {
-	graphqlMessage?: string;
-	checkoutErrors?: ReadonlyArray<{ field?: string | null } | null> | null;
-}): boolean {
-	if (input.checkoutErrors?.some((error) => error?.field && /metadata/i.test(error.field))) {
-		return true;
-	}
-	return Boolean(input.graphqlMessage && /metadata/i.test(input.graphqlMessage));
-}
-
-/**
- * Run `checkoutCreate` with tier-1 context, and if Saleor rejects that metadata,
- * retry once without it. Attribution is optional; creating the cart is not.
- */
-export async function executeCheckoutCreateWithContext<T extends CheckoutCreatePayload>(
-	run: (metadata: CommerceContextMetadataInput[] | undefined) => Promise<GraphQLResult<T>>,
-	locale: LocaleSlug,
-): Promise<GraphQLResult<T>> {
-	const first = await run(buildCheckoutCreateContextMetadata({ locale }));
-	if (first.ok && first.data.checkoutCreate?.checkout) return first;
-
-	const blocking = isCommerceContextBlockingCreate({
-		graphqlMessage: first.ok ? undefined : first.error.message,
-		checkoutErrors: first.ok ? first.data.checkoutCreate?.errors : undefined,
-	});
-	if (!blocking) return first;
-
-	console.warn(
-		"[commerce-context] Saleor rejected create-time metadata; creating checkout without Commerce Context.",
-	);
-	return run(undefined);
 }

@@ -292,6 +292,8 @@ Two things to know before going to production:
 
 ### 1. Get a Saleor Backend
 
+Paper requires **Saleor 3.23 or later**. Older schemas are not supported.
+
 **Option A:** Free [Saleor Cloud](https://cloud.saleor.io/?utm_source=storefront&utm_medium=github) account (recommended)
 
 **Option B:** [Run locally with Docker](https://docs.saleor.io/docs/3.x/setup/docker-compose)

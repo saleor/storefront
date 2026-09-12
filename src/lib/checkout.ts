@@ -4,7 +4,7 @@ import { checkoutIdCookieName } from "@paper/session-bridge";
 import { CheckoutCreateDocument, CheckoutCustomerDetachDocument, CheckoutFindDocument } from "@/gql/graphql";
 import { type CartCheckout, withTranslatedCartCheckout } from "@/lib/cart-checkout";
 import { checkoutGraphqlLocaleVariables, resolveCheckoutLocaleSlug } from "@/lib/checkout-locale";
-import { executeCheckoutCreateWithContext } from "@/lib/commerce-context/checkout-create";
+import { buildCheckoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create";
 import { executeAuthenticatedGraphQL, executePublicGraphQL } from "@/lib/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
@@ -159,18 +159,14 @@ export async function findOrCreate({
 
 export async function create({ channel, localeSlug }: { channel: string; localeSlug?: string }) {
 	const locale = await resolveCheckoutLocaleSlug(localeSlug);
-	return executeCheckoutCreateWithContext(
-		(metadata) =>
-			executeAuthenticatedGraphQL(CheckoutCreateDocument, {
-				cache: "no-cache",
-				variables: {
-					channel,
-					...graphqlLanguageCodeVariables(locale),
-					metadata,
-				},
-			}),
-		locale,
-	);
+	return executeAuthenticatedGraphQL(CheckoutCreateDocument, {
+		cache: "no-cache",
+		variables: {
+			channel,
+			...graphqlLanguageCodeVariables(locale),
+			metadata: buildCheckoutCreateContextMetadata({ locale }),
+		},
+	});
 }
 
 /** Detach the logged-in customer from a checkout (call before sign-out). */

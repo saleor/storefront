@@ -23,7 +23,8 @@ components, UI patterns, locale routing, i18n, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
 > for universal Saleor API knowledge (data model, permissions, checkout lifecycle,
-> channels). Install it alongside this skill.
+> channels). Install it alongside this skill. Paper targets **Saleor 3.23+** — do not
+> add fallbacks for older APIs.
 
 ## When to Apply
 

@@ -1,6 +1,6 @@
 # Saleor Paper — agent guide (always-on)
 
-Paper is a Saleor headless storefront on **Next.js 16** (App Router, Server Components, Server Actions, Cache Components/PPR, BFF auth). This file is the **thin always-on router** — depth lives in bundled docs and skills, loaded on demand, not here.
+Paper is a Saleor **3.23+** headless storefront on **Next.js 16** (App Router, Server Components, Server Actions, Cache Components/PPR, BFF auth). This file is the **thin always-on router** — depth lives in bundled docs and skills, loaded on demand, not here.
 
 ## How to get context (read in this order; stop when answered)
 

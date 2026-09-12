@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildCheckoutCreateContextMetadata, isCommerceContextBlockingCreate } from "./checkout-create";
+import { buildCheckoutCreateContextMetadata } from "./checkout-create";
 import { COMMERCE_CONTEXT_KEYS } from "./keys";
 
 const now = new Date("2026-09-12T10:00:00.000Z");
@@ -47,27 +47,5 @@ describe("buildCheckoutCreateContextMetadata", () => {
 	it("does not collide with the newsletter opt-in namespace", () => {
 		const keys = buildCheckoutCreateContextMetadata({ locale: "en", now }).map((item) => item.key);
 		expect(keys.some((key) => key.startsWith("paper."))).toBe(false);
-	});
-});
-
-describe("isCommerceContextBlockingCreate", () => {
-	it("retries when the schema does not know CheckoutCreateInput.metadata", () => {
-		expect(
-			isCommerceContextBlockingCreate({
-				graphqlMessage: 'Unknown argument "metadata" on field "CheckoutCreateInput"',
-			}),
-		).toBe(true);
-	});
-
-	it("retries when Saleor reports a domain error on the metadata field", () => {
-		expect(isCommerceContextBlockingCreate({ checkoutErrors: [{ field: "metadata" }] })).toBe(true);
-	});
-
-	it("does not retry a real checkout failure (channel, network)", () => {
-		expect(isCommerceContextBlockingCreate({ graphqlMessage: "Failed to connect to Saleor API" })).toBe(
-			false,
-		);
-		expect(isCommerceContextBlockingCreate({ checkoutErrors: [{ field: "channel" }] })).toBe(false);
-		expect(isCommerceContextBlockingCreate({ checkoutErrors: [] })).toBe(false);
 	});
 });

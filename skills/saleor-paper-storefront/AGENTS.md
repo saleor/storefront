@@ -101,6 +101,8 @@ Paper follows **canonical Next.js App Router** patterns (Next.js 16):
 
 We align with upstream Next.js docs rather than inventing parallel data layers. When Next.js offers a first-class pattern (metadata API, `loading.tsx`, Server Actions, `use cache`), prefer it.
 
+**Supported Saleor: 3.23 and later** (same floor as Pulse). Do not add fallbacks for older APIs. Features that landed earlier (translatable slugs in 3.21, assigned page attributes in 3.22, `CheckoutCreateInput.metadata` in 3.21) are simply available. `pnpm generate` against a pre-3.23 schema failing is the intended signal.
+
 ---
 
 ## Architectural pillars
@@ -1194,9 +1196,8 @@ Why tier 1 alone matters: `origin` present ⇒ Pulse coverage `valid`, so mercha
 
 - Paper owns `origin`, `marketing`, `session`, `ext.paper`. Never write `actors` / `experiment` (affiliate / A-B tooling own those) and never any `pulse.*` key.
 - No PII, ever: no email, customer id, address, IP, or full referrer. `capturedAt` and BCP 47 locale are fine.
-- Never block checkout on context: the builder is pure and cannot throw. Both `checkoutCreate` callers go through `executeCheckoutCreateWithContext`, which retries **once without metadata** if Saleor rejects the field (pre-3.21 runtime, or a domain error on `metadata`). Other failures (channel, network) are not retried. A future tier-2 write must swallow its own errors.
+- Never block checkout on context: the builder is pure and cannot throw. A future tier-2 write must swallow its own errors. Do **not** retry `checkoutCreate` without metadata — Paper's floor is Saleor 3.23+, where `CheckoutCreateInput.metadata` is required API.
 - Distinct from `paper.marketing_opt_in*` (`src/checkout/lib/marketing-consent/keys.ts`) — that is the newsletter choice for merchant apps, not attribution. Do not merge the namespaces.
-- `CheckoutCreateInput.metadata` requires **Saleor ≥ 3.21**. On an older instance `pnpm generate` fails at build time (unknown field) — which is the intended signal; do not work around it with a second `updateMetadata` round trip.
 
 ---
 
