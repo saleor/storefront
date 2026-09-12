@@ -1,9 +1,9 @@
 import { redactAnalyticsUrl } from "@/lib/analytics/redact-url";
 
 /**
- * First-touch capture for later Pulse `commerce.context.marketing` (phase 3)
- * and GA4 campaign params (this phase). Written to a first-party cookie only
- * when analytics storage is allowed. Never sent to a pixel before consent.
+ * First-touch capture for `commerce.context.marketing` (written fill-missing
+ * before checkoutComplete) and campaign params on the merchant tag. Cookie
+ * only when analytics storage is allowed. Never sent to a tag before consent.
  *
  * No full referrer, no click ids, no PII. UTM values are copied off the URL
  * (the URL is not storage); `landingPath` is redacted and stripped of `utm_*`.
@@ -26,7 +26,7 @@ const UTM_FIELDS = [
 	["utm_content", "content"],
 ] as const;
 
-/** Click ids stay off the snapshot — Pulse marketing is UTM + path only. */
+/** Click ids stay off the snapshot — marketing is UTM + path only. */
 const CLICK_ID_PARAMS = new Set([
 	"gclid",
 	"gbraid",
@@ -40,7 +40,7 @@ const CLICK_ID_PARAMS = new Set([
 ]);
 
 const MAX_UTM_CHARS = 200;
-/** Cookie + Pulse JSON budget — drop the query before slicing the path. */
+/** Cookie + metadata JSON budget — drop the query before slicing the path. */
 const MAX_LANDING_PATH_CHARS = 400;
 
 export function captureLandingSnapshot(href: string, now = new Date()): LandingSnapshot {

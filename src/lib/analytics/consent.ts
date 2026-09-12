@@ -3,13 +3,13 @@ import type { OriginConsent } from "@/lib/commerce-context/keys";
 /**
  * Analytics consent mode.
  *
- * `required` (default) — GDPR-shaped. Storage-derived destinations (GA4) and
+ * `required` (default) — storage-derived destinations (merchant tag) and
  * the first-touch cookie stay off until a fork banner calls
  * `window.paperAnalytics.setConsent("granted")`. Paper core ships no banner.
  *
- * `implied` — visiting is enough. First-touch cookie is written; GA4 may load
- * with `analytics_storage` granted. Ads consents stay denied (Paper has no ad
- * pixels).
+ * `implied` — visiting is enough. First-touch cookie is written; the tag may
+ * load with `analytics_storage` granted. Ads consents stay denied (Paper has
+ * no ad pixels).
  *
  * Distinct from `paper.marketing_opt_in*` (newsletter). Do not merge them.
  */
@@ -29,7 +29,7 @@ export function analyticsConsentMode(
 	return "required";
 }
 
-/** True when first-touch storage and GA4 events may run. */
+/** True when first-touch storage and the merchant tag may run. */
 export function analyticsStorageAllowed(
 	choice: AnalyticsConsentChoice | null,
 	mode: AnalyticsConsentMode = analyticsConsentMode(),
@@ -40,8 +40,8 @@ export function analyticsStorageAllowed(
 }
 
 /**
- * Pulse `origin.consent` for the current visitor. Always a known enum once
- * Paper has this primitive — never omit the field on checkoutCreate.
+ * Commerce Context `origin.consent` for the current visitor. Always a known
+ * enum — never omit the field on checkoutCreate.
  */
 export function resolveOriginConsent(
 	choice: AnalyticsConsentChoice | null,

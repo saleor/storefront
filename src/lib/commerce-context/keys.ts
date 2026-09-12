@@ -28,7 +28,7 @@ export const COMMERCE_CONTEXT_SURFACE_STOREFRONT = "storefront";
 export const COMMERCE_CONTEXT_SYSTEM_PAPER = "paper";
 
 /**
- * Pulse `origin.consent` — whether the shopper allowed storage that marketing /
+ * `origin.consent` — whether the shopper allowed storage that marketing /
  * session are derived from. Origin itself is never consent-gated; the marker
  * lives here so "declined" is not indistinguishable from "direct".
  */

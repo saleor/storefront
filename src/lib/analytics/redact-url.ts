@@ -1,6 +1,6 @@
 /**
  * Strip secrets and PII from a URL before it leaves the browser for an analytics
- * destination (Vercel Web Analytics `beforeSend` today; GA4 `page_location` later).
+ * destination (Web Analytics `beforeSend` today; tag `page_location` later).
  *
  * Paper URLs carry bearer-like values in plain sight: `?checkout=<id>` loads that
  * checkout for anyone holding it, `/order/<token>` is an HMAC-signed guest order

@@ -1,9 +1,9 @@
 /**
- * Paper commerce event catalog — Shopify-shaped moment names, Saleor-shaped fields.
+ * Paper commerce event catalog.
  *
- * Call sites emit one of these. Destinations project: Vercel gets two flat props,
- * GA4 gets recommended names (client + consent; Measurement Protocol later).
- * Never put gtag / track / pixel calls in components.
+ * Call sites emit one of these. Destinations project: Web Analytics gets two
+ * flat props; the merchant tag gets recommended names (client + consent;
+ * server delivery later). Never put track / tag / pixel calls in components.
  */
 export const PAPER_COMMERCE_EVENT_VERSION = 1 as const;
 

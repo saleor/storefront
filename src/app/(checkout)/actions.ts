@@ -82,6 +82,7 @@ import {
 } from "@/checkout/lib/payment/checkout-pay-amount";
 import { getStripePaymentGuardError, isStripePaymentEnabled } from "@/checkout/lib/payment/providers/stripe";
 import { buildMarketingConsentMetadata } from "@/checkout/lib/marketing-consent";
+import { enrichCheckoutCommerceContext } from "@/checkout/lib/server/enrich-commerce-context";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { getCheckoutServerTranslations } from "@/checkout/lib/server/get-checkout-server-translations";
 import { toCheckoutActionResult } from "@/checkout/lib/server/mutation-result";
@@ -573,6 +574,9 @@ export async function processCheckoutTransaction(
 }
 
 export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutCompleteActionResult> {
+	// Before complete — Saleor copies checkout public metadata onto the order.
+	await enrichCheckoutCommerceContext(checkoutId);
+
 	const result = await executeAuthenticatedGraphQL(checkoutCompleteDocument, {
 		variables: { checkoutId },
 		cache: "no-cache",

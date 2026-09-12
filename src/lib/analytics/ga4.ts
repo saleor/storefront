@@ -1,6 +1,7 @@
 /**
- * GA4 is off until a valid measurement id is set. Paper does not ship GTM.
- * Ads consents stay denied even when analytics storage is granted.
+ * Merchant tag is off until a valid measurement id is set. Container ids
+ * (GTM-…) are rejected. Ads consents stay denied even when analytics
+ * storage is granted.
  */
 const GA4_MEASUREMENT_ID = /^G-[A-Z0-9]+$/i;
 

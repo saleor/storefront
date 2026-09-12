@@ -2,7 +2,7 @@ import Script from "next/script";
 import type { AnalyticsConsentMode } from "@/lib/analytics/consent";
 
 /**
- * GA4 + Consent Mode v2. The default-consent stub is a blocking inline script
+ * Optional merchant tag. The default-consent stub is a blocking inline script
  * so it runs before `gtag.js` (`afterInteractive`). Automatic page views are
  * off — `AnalyticsRuntime` sends a redacted `page_view` after storage is allowed.
  *

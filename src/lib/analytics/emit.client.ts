@@ -11,7 +11,7 @@ import { projectVercel } from "@/lib/analytics/destinations/vercel";
  * Client publisher. `track()` no-ops when `<WebAnalytics />` is not mounted
  * (`window.va` unset). Do not gate on `webAnalyticsEnabled()` here — `VERCEL`
  * is not a `NEXT_PUBLIC_*` var, so the client would always see "off".
- * GA4 is gated on measurement id + analytics consent inside `sendGa4Event`.
+ * The merchant tag is gated on measurement id + consent inside `sendGa4Event`.
  */
 export function emitCommerceEvent(event: PaperCommerceEvent): void {
 	try {

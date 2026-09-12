@@ -7,7 +7,7 @@ import { type LocaleSlug } from "@/config/locale";
 import { buildCheckoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create";
 import type { CommerceContextMetadataInput } from "@/lib/commerce-context/keys";
 
-/** Tier-1 metadata for `checkoutCreate`, including Pulse `origin.consent`. */
+/** Tier-1 metadata for `checkoutCreate`, including `origin.consent`. */
 export async function checkoutCreateContextMetadata(
 	locale: LocaleSlug,
 ): Promise<CommerceContextMetadataInput[]> {

@@ -31,7 +31,7 @@ async function deliver(event: PaperCommerceEvent): Promise<void> {
 			// `after()` often loses the implicit Vercel request context — pass them.
 			await track(vercel.name, vercel.props, { headers: await headers() });
 		}
-		// GA4 server delivery is Measurement Protocol (phase 4). Client events
+		// Server tag delivery is not shipped. Client events
 		// (begin_checkout, checkout_step, search) go through emit.client.
 		if (process.env.NODE_ENV === "development") {
 			projectConsole(event);

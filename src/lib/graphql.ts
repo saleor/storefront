@@ -198,14 +198,19 @@ const requestQueue = new RequestQueue(
 	parseInt(process.env.SALEOR_MIN_REQUEST_DELAY_MS || (isBuildPhase ? "200" : "0"), 10),
 );
 
-function getRetryConfig() {
+function getRetryConfig(overrides?: { maxRetries?: number; timeoutMs?: number }) {
 	const buildRetries = process.env.NEXT_BUILD_RETRIES;
 	const timeoutMs = parseInt(process.env.SALEOR_REQUEST_TIMEOUT_MS || "15000", 10);
+	const base =
+		buildRetries !== undefined
+			? { maxRetries: parseInt(buildRetries, 10), delayMs: 500, timeoutMs }
+			: { maxRetries: 3, delayMs: 1000, timeoutMs };
 
-	if (buildRetries !== undefined) {
-		return { maxRetries: parseInt(buildRetries, 10), delayMs: 500, timeoutMs };
-	}
-	return { maxRetries: 3, delayMs: 1000, timeoutMs };
+	return {
+		maxRetries: overrides?.maxRetries ?? base.maxRetries,
+		delayMs: base.delayMs,
+		timeoutMs: overrides?.timeoutMs ?? base.timeoutMs,
+	};
 }
 
 async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number): Promise<Response> {
@@ -228,18 +233,26 @@ type GraphQLAuth = "none" | "session" | "app";
 
 type FetchResult = GraphQLSuccess<Response> | GraphQLFailure;
 
+type RetryOverrides = {
+	maxRetries?: number;
+	timeoutMs?: number;
+	/** When set, session auth honors `timeoutMs` via AbortSignal. Default session fetches stay untimed. */
+	abortSession?: boolean;
+};
+
 async function fetchWithRetry(
 	input: RequestInit,
 	auth: GraphQLAuth,
 	operationName: string,
 	variablesForLog?: string,
+	retry?: RetryOverrides,
 ): Promise<FetchResult> {
 	const url = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 	if (!url) {
 		return networkError("Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 	}
 
-	const { maxRetries, delayMs, timeoutMs } = getRetryConfig();
+	const { maxRetries, delayMs, timeoutMs } = getRetryConfig(retry);
 
 	for (let attempt = 0; attempt <= maxRetries; attempt++) {
 		try {
@@ -247,7 +260,18 @@ async function fetchWithRetry(
 
 			if (auth === "session") {
 				const { getServerAuthClient } = await import("@/lib/auth/server");
-				response = await (await getServerAuthClient()).fetchWithAuth(url, input);
+				const client = await getServerAuthClient();
+				if (retry?.abortSession) {
+					const controller = new AbortController();
+					const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+					try {
+						response = await client.fetchWithAuth(url, { ...input, signal: controller.signal });
+					} finally {
+						clearTimeout(timeoutId);
+					}
+				} else {
+					response = await client.fetchWithAuth(url, input);
+				}
 			} else {
 				response = await fetchWithTimeout(url, input, timeoutMs);
 			}
@@ -296,6 +320,10 @@ type GraphQLOptions<Variables> = {
 	headers?: HeadersInit;
 	cache?: RequestCache;
 	revalidate?: number;
+	/** Override the default retry count (runtime: 3). Use `0` for best-effort side effects. */
+	maxRetries?: number;
+	/** Override `SALEOR_REQUEST_TIMEOUT_MS`. Also applies to session auth (otherwise untimed). */
+	timeoutMs?: number;
 } & (Variables extends Record<string, never> ? { variables?: never } : { variables: Variables });
 
 type GraphQLResponseBody<T> = {
@@ -315,7 +343,7 @@ async function executeGraphQL<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
 	options: GraphQLOptions<Variables> & { auth: GraphQLAuth },
 ): Promise<GraphQLResult<Result>> {
-	const { variables, headers, cache, revalidate, auth } = options;
+	const { variables, headers, cache, revalidate, auth, maxRetries, timeoutMs } = options;
 
 	// @saleor/auth-sdk checks JWT expiry with `Date.now()` inside `fetchWithAuth`.
 	// Under Cache Components + partial prefetching that sync clock read must happen in
@@ -362,7 +390,11 @@ async function executeGraphQL<Result, Variables>(
 	};
 
 	const fetchResult = await requestQueue.enqueue(() =>
-		fetchWithRetry(input, auth, operationName, variablesForLog),
+		fetchWithRetry(input, auth, operationName, variablesForLog, {
+			maxRetries,
+			timeoutMs,
+			abortSession: timeoutMs !== undefined,
+		}),
 	);
 
 	if (!fetchResult.ok) {

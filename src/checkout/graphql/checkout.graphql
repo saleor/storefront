@@ -184,6 +184,16 @@ query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
 	}
 }
 
+query checkoutCommerceContext($id: ID!) {
+	checkout(id: $id) {
+		id
+		metadata {
+			key
+			value
+		}
+	}
+}
+
 query channel($slug: String!) {
 	channel(slug: $slug) {
 		countries {

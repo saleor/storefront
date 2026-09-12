@@ -13,9 +13,9 @@ import {
  * on `checkoutCreate` as part of the same mutation (zero extra round trips).
  *
  * Nothing here is derived from UTMs or marketing storage: surface, writer,
- * capture time, locale, Paper baseline, and a Pulse `origin.consent` marker
+ * capture time, locale, Paper baseline, and an `origin.consent` marker
  * the caller already resolved. Marketing / session stay out — those are
- * consent-gated phase 3 `updateMetadata` writes.
+ * consent-gated `updateMetadata` writes in `checkout-complete.ts`.
  *
  * Paper targets Saleor 3.23+, where `CheckoutCreateInput.metadata` is a given.
  * The builder is pure and cannot throw; never wrap create in a "retry without
@@ -39,7 +39,7 @@ export function buildCheckoutCreateContextMetadata({
 
 	const extPaper = {
 		locale: resolveLocaleFromSlug(locale).bcp47,
-		// Upstream Paper commit this fork is based on — lets Pulse (and support) tell
+		// Upstream Paper commit this fork is based on — lets support tell
 		// "orders from stores on baseline X" apart from a store's own deploy history.
 		paperVersion: paperVersion.lastUpstreamSha,
 	};

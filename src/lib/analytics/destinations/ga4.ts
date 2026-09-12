@@ -1,15 +1,15 @@
 import type { PaperCommerceEvent } from "@/lib/analytics/catalog";
 
-/** Recommended GA4 event + params. `items[]` waits on richer catalog fields. */
+/** Recommended tag event + params. `items[]` waits on richer catalog fields. */
 export type Ga4Event = {
 	name: string;
 	params: Record<string, string | number | boolean>;
 };
 
 /**
- * Project a Paper event onto GA4 recommended names. Search text is never a
- * param. Contact is not a GA checkout step — skip it. Server delivery
- * (Measurement Protocol) is phase 4; this function is payload-only.
+ * Project a Paper event onto recommended tag names. Search text is never a
+ * param. Contact is not a checkout-step event — skip it. Server delivery
+ * is not shipped; this function is payload-only.
  */
 export function projectGa4(event: PaperCommerceEvent): Ga4Event | null {
 	switch (event.name) {
