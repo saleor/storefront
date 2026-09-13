@@ -7,9 +7,12 @@ import type { OriginConsent } from "@/lib/commerce-context/keys";
  * the first-touch cookie stay off until a fork banner calls
  * `window.paperAnalytics.setConsent("granted")`. Paper core ships no banner.
  *
- * `implied` — visiting is enough. First-touch cookie is written; the tag may
- * load with `analytics_storage` granted. Ads consents stay denied (Paper has
- * no ad pixels).
+ * `implied` — visiting is enough (`origin.consent` = `not_required`). First-touch
+ * cookie is written; the tag may load with `analytics_storage` granted. Ads
+ * consents stay denied (Paper has no ad pixels).
+ *
+ * Agents / POS do not use this env. They write `origin.consent: "not_required"`
+ * because there is no shopper cookie, not because a banner was skipped.
  *
  * Distinct from `paper.marketing_opt_in*` (newsletter). Do not merge them.
  */

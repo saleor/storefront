@@ -54,6 +54,7 @@ describe("buildCheckoutCreateContextMetadata", () => {
 		);
 		expect(keys).not.toContain(COMMERCE_CONTEXT_KEYS.marketing);
 		expect(keys).not.toContain(COMMERCE_CONTEXT_KEYS.session);
+		expect(keys).not.toContain(COMMERCE_CONTEXT_KEYS.actors);
 		expect(keys.some((key) => key.startsWith("pulse."))).toBe(false);
 	});
 

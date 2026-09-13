@@ -17,6 +17,10 @@ import {
  * the caller already resolved. Marketing / session stay out — those are
  * consent-gated `updateMetadata` writes in `checkout-complete.ts`.
  *
+ * Storefront only — hard-codes `surface: "storefront"`. An agent route writes
+ * its own origin (`surface: "agent"`, `consent: "not_required"`) and must not
+ * call this builder.
+ *
  * Paper targets Saleor 3.23+, where `CheckoutCreateInput.metadata` is a given.
  * The builder is pure and cannot throw; never wrap create in a "retry without
  * metadata" fallback — an older API is out of support, not a soft failure.

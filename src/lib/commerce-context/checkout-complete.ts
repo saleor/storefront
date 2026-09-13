@@ -1,6 +1,7 @@
 import type { LandingSnapshot } from "@/lib/analytics/landing";
 import {
 	COMMERCE_CONTEXT_KEYS,
+	COMMERCE_CONTEXT_SURFACE_AGENT,
 	COMMERCE_CONTEXT_SURFACE_STOREFRONT,
 	COMMERCE_CONTEXT_SYSTEM_PAPER,
 	ORIGIN_CONSENT_VALUES,
@@ -9,7 +10,16 @@ import {
 } from "@/lib/commerce-context/keys";
 
 const DEVICES = new Set(["mobile", "tablet", "desktop", "other"]);
-const SURFACES = new Set(["storefront", "pos", "draft", "import", "marketplace", "api", "agent", "support"]);
+const SURFACES = new Set([
+	COMMERCE_CONTEXT_SURFACE_STOREFRONT,
+	COMMERCE_CONTEXT_SURFACE_AGENT,
+	"pos",
+	"draft",
+	"import",
+	"marketplace",
+	"api",
+	"support",
+]);
 
 export type CheckoutMetadataEntry = {
 	key: string;
@@ -23,6 +33,9 @@ export type CheckoutMetadataEntry = {
  *
  * Storage sections are written only for `granted` / `not_required`. Denied and
  * unknown never get UTMs, so declined stays distinct from direct.
+ *
+ * Shopper cookies belong to the browse storefront. A recognized non-storefront
+ * origin (agent, POS, import, …) is left alone — including `not_required`.
  */
 export function buildCheckoutCompleteContextMetadata({
 	existing,
@@ -37,6 +50,8 @@ export function buildCheckoutCompleteContextMetadata({
 	sessionId: string | null;
 	now?: Date;
 }): CommerceContextMetadataInput[] {
+	if (!shouldApplyShopperCompleteEnrichment(existing)) return [];
+
 	const writes: CommerceContextMetadataInput[] = [];
 	const originWrite = originPatch(existing, consent, now);
 	if (originWrite) writes.push(originWrite);
@@ -68,6 +83,18 @@ export function buildCheckoutCompleteContextMetadata({
  */
 export function shouldSkipCheckoutCompleteEnrichment(consent: OriginConsent): boolean {
 	return consent === "unknown";
+}
+
+/**
+ * Complete-time enrich reads the *browser* consent / landing cookies. That is
+ * storefront work. Missing or unrecognized `surface` still counts as storefront
+ * (same fallback as `originPatch`).
+ */
+export function shouldApplyShopperCompleteEnrichment(existing: readonly CheckoutMetadataEntry[]): boolean {
+	const current = readOrigin(existing);
+	if (!current?.surface) return true;
+	if (!SURFACES.has(current.surface)) return true;
+	return current.surface === COMMERCE_CONTEXT_SURFACE_STOREFRONT;
 }
 
 export function storageSectionsAllowed(consent: OriginConsent): boolean {

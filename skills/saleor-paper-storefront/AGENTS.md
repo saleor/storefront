@@ -1247,7 +1247,7 @@ A new destination is a projector over the same union. Do not retouch PDP or chec
 
 ## Commerce Context (order attribution)
 
-Sectioned **public metadata** `commerce.context.{origin,marketing,actors,experiment,session}` + `commerce.context.ext.<vendor>`. Paper writes on the **checkout**; Saleor copies checkout public metadata onto the order at `checkoutComplete`, so there is no order-side write. Pulse composes those keys on `ORDER_CREATED`.
+Sectioned **public metadata** `commerce.context.{origin,marketing,actors,experiment,session}` + `commerce.context.ext.<vendor>`. Paper writes on the **checkout**; Saleor copies checkout public metadata onto the order at `checkoutComplete`, so there is no order-side write. Pulse composes those keys on `ORDER_CREATED` and ranks **Origins** on Financial. Public recipe: [Pulse Commerce Context](https://docs.saleor.io/developer/app-store/apps/pulse/commerce-context) (source: `saleor-docs` `docs/developer/app-store/apps/pulse/commerce-context.mdx`).
 
 ```
 src/lib/commerce-context/keys.ts                      key names + owner notes (spec copy)
@@ -1270,12 +1270,46 @@ Why tier 1 alone matters: `origin` present ⇒ coverage `valid`, so storefront o
 
 **Rules:**
 
-- Paper owns `origin`, `marketing`, `session`, `ext.paper`. Never write `actors` / `experiment` (affiliate / A-B tooling own those) and never any `pulse.*` key.
+- Paper's **browse storefront** owns `origin`, `marketing`, `session`, `ext.paper`. It never writes `experiment` or any `pulse.*` key. It never writes `actors` — unless Paper also owns that identity (the dedicated agent route writes `actors.agent`).
 - No PII, ever: no email, customer id, address, IP, or full referrer. `capturedAt` and BCP 47 locale are fine.
-- Always set `origin.consent` (`granted` / `denied` / `not_required` / `unknown`). Write `denied` rather than omitting the field.
+- Always set `origin.consent`. Same enum everywhere:
+
+| Value          | When Paper (or a Paper-owned route) uses it                              | `marketing` / `session`        |
+| -------------- | ------------------------------------------------------------------------ | ------------------------------ |
+| `granted`      | Shopper called `setConsent("granted")`                                   | Fill-missing if data existed   |
+| `denied`       | Shopper called `setConsent("denied")`                                    | Absent                         |
+| `not_required` | Storefront `implied` mode, **or** no shopper cookie (agent, POS, import) | Allowed if the writer has data |
+| `unknown`      | Storefront `required` and no decision yet (default: no banner)           | Skip — do not guess            |
+
+Write `denied` rather than omitting the field. Agents do **not** go through the banner/`setConsent` path.
+
 - Never block checkout on context: both builders are pure. Tier 2 (`enrichCheckoutCommerceContext`) swallows read/write errors and still lets `checkoutComplete` run. Skip the Saleor read/write entirely when consent is still `unknown` (default Paper: required, no banner — origin was written at create and marketing is not allowed). Best-effort calls use `maxRetries: 0` and a 1.5s timeout — do not inherit the catalog client's 3×15s retry. Skip the write entirely if the metadata read fails — do not guess fill-missing. Do **not** retry `checkoutCreate` without metadata — Paper's floor is Saleor 3.23+, where `CheckoutCreateInput.metadata` is required API.
 - Re-send `origin` at complete only when `consent` changed (or the key is missing). Keep the original `capturedAt` and a valid `surface` / `system` already on the checkout — do not rewrite a non-storefront origin to Paper's default. Never write `session.anonymousId`.
 - Distinct from `paper.marketing_opt_in*` (`src/checkout/lib/marketing-consent/keys.ts`) — that is the newsletter choice for merchant apps, not attribution. Do not merge the namespaces.
+
+### Agent / dedicated route
+
+A Paper-owned agent checkout is a different **surface**, not a storefront visitor who skipped the banner.
+
+On `checkoutCreate` (do not reuse `buildCheckoutCreateContextMetadata` — it hard-codes `surface: "storefront"`):
+
+```json
+{
+	"commerce.context.origin": {
+		"surface": "agent",
+		"system": "paper",
+		"capturedAt": "…",
+		"consent": "not_required"
+	},
+	"commerce.context.actors": {
+		"agent": { "type": "mcp", "id": "…" }
+	}
+}
+```
+
+`not_required` means there is no shopper cookie to ask about — same bucket as a till. `unknown` is reserved for the human storefront while `required` has no decision yet. Do not copy `paper_analytics_*` cookies, do not call `setConsent`, and do not write shopper first-touch `marketing` onto an agent order unless the agent sent its own explicit campaign payload. Ids in `actors.agent` are opaque (type + id), never email.
+
+Complete-time enrich is shopper-cookie work. It no-ops when the browser consent is still `unknown`, and it no-ops when `origin.surface` is a recognized non-storefront (agent, POS, import, …) — including `not_required`. The agent route must get create-time origin right; enrich will not promote a storefront origin to `agent`, rewrite agent consent from the banner, or stamp first-touch UTMs onto that order.
 
 ---
 
@@ -1291,6 +1325,7 @@ Why tier 1 alone matters: `origin` present ⇒ coverage `valid`, so storefront o
 ❌ Loading a tag manager or flipping `ad_storage` from Paper core.
 ❌ Gating Web Analytics on the consent cookie — it is the cookieless denominator.
 ❌ Sending a tag `page_view` with automatic page views on — the first hit would include secrets.
+❌ Reusing the storefront create builder (or shopper landing cookies / `setConsent`) for an agent checkout — it would rank as web traffic.
 
 ---
 

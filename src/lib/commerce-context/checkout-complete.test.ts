@@ -2,10 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
 	buildCheckoutCompleteContextMetadata,
 	sanitizeSessionId,
+	shouldApplyShopperCompleteEnrichment,
 	shouldSkipCheckoutCompleteEnrichment,
 	storageSectionsAllowed,
 } from "./checkout-complete";
-import { COMMERCE_CONTEXT_KEYS } from "./keys";
+import { COMMERCE_CONTEXT_KEYS, COMMERCE_CONTEXT_SURFACE_AGENT } from "./keys";
 
 const now = new Date("2026-09-12T15:00:00.000Z");
 const landing = {
@@ -169,7 +170,30 @@ describe("buildCheckoutCompleteContextMetadata", () => {
 		expect(writes).toEqual([]);
 	});
 
-	it("keeps a non-storefront origin surface when only consent changes", () => {
+	it("does not stamp shopper cookies onto a non-storefront origin", () => {
+		const agentOrigin = JSON.stringify({
+			surface: COMMERCE_CONTEXT_SURFACE_AGENT,
+			system: "paper",
+			capturedAt: "2026-09-12T10:00:00.000Z",
+			consent: "not_required",
+		});
+		expect(
+			shouldApplyShopperCompleteEnrichment([{ key: COMMERCE_CONTEXT_KEYS.origin, value: agentOrigin }]),
+		).toBe(false);
+
+		for (const consent of ["granted", "denied", "not_required"] as const) {
+			const writes = buildCheckoutCompleteContextMetadata({
+				existing: [{ key: COMMERCE_CONTEXT_KEYS.origin, value: agentOrigin }],
+				consent,
+				landing,
+				sessionId: sid,
+				now,
+			});
+			expect(writes).toEqual([]);
+		}
+	});
+
+	it("does not rewrite POS consent from the browser visitor", () => {
 		const writes = buildCheckoutCompleteContextMetadata({
 			existing: [
 				{
@@ -178,7 +202,7 @@ describe("buildCheckoutCompleteContextMetadata", () => {
 						surface: "pos",
 						system: "register",
 						capturedAt: "2026-09-12T10:00:00.000Z",
-						consent: "unknown",
+						consent: "not_required",
 					}),
 				},
 			],
@@ -187,12 +211,7 @@ describe("buildCheckoutCompleteContextMetadata", () => {
 			sessionId: sid,
 			now,
 		});
-		expect(section(writes, COMMERCE_CONTEXT_KEYS.origin)).toEqual({
-			surface: "pos",
-			system: "register",
-			capturedAt: "2026-09-12T10:00:00.000Z",
-			consent: "denied",
-		});
+		expect(writes).toEqual([]);
 	});
 
 	it("does not write newsletter or pulse-private keys", () => {
