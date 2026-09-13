@@ -50,7 +50,7 @@ src/app/(storefront)/[locale]/layout.tsx · src/app/(checkout)/layout.tsx   moun
 src/lib/analytics/consent.ts              required (default) | implied — tested
 src/lib/analytics/cookies.ts              paper_analytics_consent | _landing | _sid
 src/lib/analytics/browser.ts              first-touch persist, window.paperAnalytics, tag deliver
-src/ui/components/analytics-mount.tsx     both root layouts
+src/ui/components/analytics-mount.tsx     both root layouts — first-touch in shell, page views in Suspense
 ```
 
 - **`NEXT_PUBLIC_ANALYTICS_CONSENT_MODE`**. `required` (default): storage-derived work stays off until a fork banner calls `window.paperAnalytics.setConsent("granted")`. `implied`: visiting is enough (`origin.consent` = `not_required`). Paper core ships **no banner**.
@@ -78,7 +78,7 @@ src/ui/components/google-analytics.tsx    consent defaults + loader
 ```
 
 - Unset or invalid measurement id ⇒ no third-party tag (ids must be `G-…`; no tag-manager containers).
-- Consent defaults: `required` → `analytics_storage=denied`; `implied` → `granted`. Automatic page views are **off** so the first hit cannot leak `?checkout=` / `/order/<key>`. `AnalyticsRuntime` sends a redacted `page_view` on **pathname** change only (checkout `?step=` is not a page view). `page_path` is `landingPathFromHref` — never the raw Next pathname (guest `/order/<hmac>`).
+- Consent defaults: `required` → `analytics_storage=denied`; `implied` → `granted`. Automatic page views are **off** so the first hit cannot leak `?checkout=` / `/order/<key>`. `AnalyticsPathnameViews` sends a redacted `page_view` on **pathname** change only (checkout `?step=` is not a page view). `page_path` and the sessionStorage claim key are `landingPathFromHref` — never the raw Next pathname (guest `/order/<hmac>`).
 - Client commerce events go through `projectGa4` → `gtag("event", …)` when storage is allowed. Contact is skipped (no recommended equivalent). Search has no query text.
 - **Add-to-cart and purchase stay on Web Analytics only** until a server-side tag adapter exists. Those emit sites are Server Actions.
 

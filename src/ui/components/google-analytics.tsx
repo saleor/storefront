@@ -4,7 +4,7 @@ import type { AnalyticsConsentMode } from "@/lib/analytics/consent";
 /**
  * Optional merchant tag. The default-consent stub is a blocking inline script
  * so it runs before `gtag.js` (`afterInteractive`). Automatic page views are
- * off — `AnalyticsRuntime` sends a redacted `page_view` after storage is allowed.
+ * off — `AnalyticsPathnameViews` sends a redacted `page_view` after storage is allowed.
  *
  * Ads consents stay denied; Paper core has no ad pixels.
  */

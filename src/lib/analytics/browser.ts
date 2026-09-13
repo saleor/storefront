@@ -60,7 +60,7 @@ export function setAnalyticsConsent(choice: AnalyticsConsentChoice): void {
 	applyConsentToGtag();
 	if (choice === "granted") {
 		applyCampaignFromSnapshot();
-		sendRedactedPageView(window.location.pathname);
+		sendRedactedPageView();
 	}
 }
 
@@ -132,16 +132,23 @@ export function applyCampaignFromSnapshot(): void {
 	});
 }
 
-export function sendRedactedPageView(pathname: string): void {
+/** Dedup key — redacted so guest `/order/<hmac>` never lands in sessionStorage. */
+export function pageViewClaimKey(href: string): string {
+	return `paper.analytics.page_view:${landingPathFromHref(href)}`;
+}
+
+export function sendRedactedPageView(): void {
 	if (!ga4Enabled()) return;
 	if (!analyticsStorageAllowed(readConsentChoice())) return;
-	if (!pathname || !claimOnce(`paper.analytics.page_view:${pathname}`)) return;
+	if (typeof window === "undefined") return;
 
 	const href = window.location.href;
+	const pagePath = landingPathFromHref(href);
+	if (!pagePath || !claimOnce(pageViewClaimKey(href))) return;
+
 	gtag("event", "page_view", {
 		page_location: redactAnalyticsUrl(href),
-		// Never the raw Next pathname — `/order/<hmac>` would leak the guest token.
-		page_path: landingPathFromHref(href),
+		page_path: pagePath,
 	});
 }
 

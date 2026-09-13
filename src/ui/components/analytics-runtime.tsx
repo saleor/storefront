@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
 import {
 	applyCampaignFromSnapshot,
 	applyConsentToGtag,
 	bindPaperAnalyticsApi,
 	persistFirstTouch,
-	sendRedactedPageView,
 } from "@/lib/analytics/browser";
 
 if (typeof window !== "undefined") {
@@ -15,23 +13,16 @@ if (typeof window !== "undefined") {
 }
 
 /**
- * Client leaf: first-touch snapshot, fork consent API, redacted GA page views
- * on pathname change (not `?step=` — checkout stays one page).
+ * Consent API + first-touch. No navigation hooks — stays in the static shell
+ * so a fork banner can call `window.paperAnalytics` before pathname resolves.
  */
 export function AnalyticsRuntime() {
-	const pathname = usePathname();
-
 	useEffect(() => {
 		bindPaperAnalyticsApi();
 		persistFirstTouch();
 		applyConsentToGtag();
 		applyCampaignFromSnapshot();
 	}, []);
-
-	useEffect(() => {
-		if (!pathname) return;
-		sendRedactedPageView(pathname);
-	}, [pathname]);
 
 	return null;
 }
