@@ -46,7 +46,7 @@ Status: `done` · `next` · `later` · `measure`
 
 ## Out of scope for Paper
 
-- Merchant pixels (GTM, ad networks). Paper does not ship them.
+- Merchant pixels and tag managers. Paper does not ship those. The optional merchant tag is env-gated and off by default (`data-analytics`).
 - Outer-CDN cache rules for a specific hostname.
 - Flattening a merchant’s layered banner art.
 - Setting `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0` as the default (would stale `/products` for low-churn shops).

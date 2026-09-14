@@ -111,7 +111,9 @@ Cache entries for listing grids are keyed by `(slug ×) sort × locale × channe
 
 ### 4. Speed Insights is sampled
 
-`<SpeedInsights sampleRate={speedInsightsSampleRate()} />` in both root layouts — default **0.01** via `NEXT_PUBLIC_SPEED_INSIGHTS_SAMPLE_RATE`. Unsampled at millions of visits, Speed Insights can out-cost the entire storefront infrastructure (~3–6 points/visit, billed per 10K). 1% of big traffic is statistically plenty; set `1` only for short investigations, then set it back.
+`<SpeedInsights sampleRate={speedInsightsSampleRate()} />` in both root layouts — default **0.01** via `NEXT_PUBLIC_SPEED_INSIGHTS_SAMPLE_RATE`. Unsampled at millions of visits, Speed Insights can out-cost the entire storefront infrastructure (~3–6 points/visit, billed per 10K). 1% of **high** traffic is statistically plenty for a weekly/monthly P75. It is not plenty for a daily RES line on demo-scale traffic: after the cut, expect ~100× fewer points, sawtooth daily P75, and full-day gaps, while period-aggregate route scores stay Great. Do not revert cost work from a daily dip if the route kanban is still >90 and Usage data points fell. Set `1` only for short investigations, then set it back.
+
+**Web Analytics is the one beacon that is deliberately unsampled.** `<WebAnalytics />` (both root layouts, `NEXT_PUBLIC_VERCEL_WEB_ANALYTICS`, on by default on Vercel) sends one cookieless event per navigation — it has no sampling knob and is billed per event (~$3/100k on Pro). That event is the human page-view denominator every other number in this rule is missing, so the lever is on/off, not thinning. Budget it as page views × $0.00003 and turn it off rather than dropping events in `beforeSend`. Do not gate it on the analytics consent cookie. The optional merchant tag is a third-party script (env-gated) and is **not** a Vercel meter. Details in [`data-analytics`](data-analytics.md).
 
 ### 5. Images bypass Vercel; the guard is CI-enforced
 

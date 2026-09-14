@@ -1,6 +1,6 @@
 # Saleor Paper — agent guide (always-on)
 
-Paper is a Saleor headless storefront on **Next.js 16** (App Router, Server Components, Server Actions, Cache Components/PPR, BFF auth). This file is the **thin always-on router** — depth lives in bundled docs and skills, loaded on demand, not here.
+Paper is a Saleor **3.23+** headless storefront on **Next.js 16** (App Router, Server Components, Server Actions, Cache Components/PPR, BFF auth). This file is the **thin always-on router** — depth lives in bundled docs and skills, loaded on demand, not here.
 
 ## How to get context (read in this order; stop when answered)
 
@@ -15,7 +15,7 @@ Paper rules are **authoritative on architecture**: Server Components by default,
 ## Project skill index (read `SKILL.md`, then the one matching rule)
 
 - **Architecture:** `paper-architecture`, `paper-vercel-cost`
-- **Data:** `data-caching`, `data-graphql`, `data-auth-routes`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes`
+- **Data:** `data-caching`, `data-graphql`, `data-auth-routes`, `data-analytics`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes`
 - **Product:** `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`
 - **Checkout:** `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
 - **Design:** `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `design-from-image`, `design-verification`

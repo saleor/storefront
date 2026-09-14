@@ -3,8 +3,10 @@ import { cache } from "react";
 import { checkoutIdCookieName } from "@paper/session-bridge";
 import { CheckoutCreateDocument, CheckoutCustomerDetachDocument, CheckoutFindDocument } from "@/gql/graphql";
 import { type CartCheckout, withTranslatedCartCheckout } from "@/lib/cart-checkout";
-import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
+import { checkoutGraphqlLocaleVariables, resolveCheckoutLocaleSlug } from "@/lib/checkout-locale";
+import { checkoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create-context";
 import { executeAuthenticatedGraphQL, executePublicGraphQL } from "@/lib/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
 /** Checkout id from this channel's cart cookie (`checkoutId-{channel}`). */
 export async function getIdFromCookies(channel: string) {
@@ -156,9 +158,14 @@ export async function findOrCreate({
 }
 
 export async function create({ channel, localeSlug }: { channel: string; localeSlug?: string }) {
+	const locale = await resolveCheckoutLocaleSlug(localeSlug);
 	return executeAuthenticatedGraphQL(CheckoutCreateDocument, {
 		cache: "no-cache",
-		variables: { channel, ...(await checkoutGraphqlLocaleVariables(localeSlug)) },
+		variables: {
+			channel,
+			...graphqlLanguageCodeVariables(locale),
+			metadata: await checkoutCreateContextMetadata(locale),
+		},
 	});
 }
 

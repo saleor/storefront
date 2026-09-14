@@ -72,7 +72,7 @@ A narrow storefront app token is usually **not** sufficient.
 
 ## Prerequisites
 
-1. **Saleor 3.22+** (assigned page attributes) — Configurator targets **3.23.x** schema.
+1. **Saleor 3.23+** (Paper's floor; assigned page attributes landed in 3.22) — Configurator targets **3.23.x** schema.
 2. **`NEXT_PUBLIC_SALEOR_API_URL`** in `.env.local` (same as storefront).
 3. **`SALEOR_CONFIGURATOR_TOKEN`** in `.env.configurator.local`.
 

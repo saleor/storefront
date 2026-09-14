@@ -23,6 +23,7 @@ import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
 import { RootViews } from "./views/root-views";
 import { CheckoutPaymentHistoryGuard } from "@/checkout/components/checkout-payment-history-guard";
 import { CheckoutSessionCleanup } from "@/checkout/components/checkout-session-cleanup";
+import { CheckoutCommerceEvents } from "@/checkout/components/checkout-commerce-events";
 import { CheckoutStepUrlGuard } from "@/checkout/components/checkout-step-url-guard";
 import { StripeCheckoutCompletionHost } from "@/checkout/components/payment/stripe/stripe-checkout-completion-host";
 import { CheckoutLoadingFallback } from "@/checkout/views/saleor-checkout";
@@ -78,6 +79,7 @@ export function CheckoutApp({
 							channelDefaultCountryCode={channelDefaultCountryCode}
 						>
 							<CheckoutContentProvider content={checkoutContent}>
+								<CheckoutCommerceEvents />
 								<CheckoutPaymentReturnErrorProvider>
 									<Suspense fallback={null}>
 										<StripeCheckoutCompletionHost />

@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { type Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { searchProducts, parseSearchSortParam } from "@/lib/search";
+import { SearchCommerceEvent } from "@/ui/components/search-commerce-event";
 import { SearchResults } from "@/ui/components/search-results";
 import { Pagination } from "@/ui/components/pagination";
 import { ProductsGridSkeleton } from "@/ui/components/plp";
@@ -108,19 +109,25 @@ async function SearchContent({
 
 	const { products, pagination } = result;
 
+	const isFirstPage = !cursor;
+
 	if (pagination.totalCount === 0) {
 		return (
-			<EmptyState
-				title={t("noResultsTitle", { query })}
-				body={t("noResultsBody")}
-				browseAllProducts={t("browseAllProducts")}
-				goToHomepage={t("goToHomepage")}
-			/>
+			<>
+				{isFirstPage && <SearchCommerceEvent channel={params.channel} zero />}
+				<EmptyState
+					title={t("noResultsTitle", { query })}
+					body={t("noResultsBody")}
+					browseAllProducts={t("browseAllProducts")}
+					goToHomepage={t("goToHomepage")}
+				/>
+			</>
 		);
 	}
 
 	return (
 		<div>
+			{isFirstPage && <SearchCommerceEvent channel={params.channel} zero={false} />}
 			{/* Header with count and sort */}
 			<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>

@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 33;
+const RULE_COUNT = 34;
 
 const catalog = [
 	{
@@ -37,6 +37,7 @@ const catalog = [
 			{ num: "1.5", file: "data-storefront-content.md", title: "Storefront Content Layer" },
 			{ num: "1.6", file: "data-storefront-content-saleor.md", title: "Storefront Content (Saleor Models)" },
 			{ num: "1.7", file: "data-storefront-content-attributes.md", title: "Storefront Content Attributes" },
+			{ num: "1.8", file: "data-analytics.md", title: "Analytics & Commerce Context" },
 		],
 	},
 	{

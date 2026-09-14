@@ -5,6 +5,7 @@ import { getDiscountInfo } from "@/lib/pricing";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
 import { getStorefrontContent } from "@/lib/content/server";
 import { CheckoutAddLineDocument } from "@/gql/graphql";
+import { emitCommerceEvent } from "@/lib/analytics/emit.server";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import * as Checkout from "@/lib/checkout";
 import { getTranslations } from "next-intl/server";
@@ -151,6 +152,19 @@ export async function VariantSectionDynamic({
 				console.error("Add to cart failed:", addResult.error.message);
 				return;
 			}
+
+			if (addResult.data.checkoutLinesAdd?.errors?.length) {
+				console.error("Add to cart failed:", addResult.data.checkoutLinesAdd.errors);
+				return;
+			}
+
+			const linePrice = selectedVariant?.pricing?.price?.gross;
+			emitCommerceEvent({
+				name: "product_added_to_cart",
+				channel,
+				value: linePrice?.amount ?? 0,
+				currency: linePrice?.currency ?? "",
+			});
 
 			// Cart badge/drawer are cookie-gated dynamic holes — never in shared cache.
 			// Re-render them for *this* user only; a revalidatePath here would purge

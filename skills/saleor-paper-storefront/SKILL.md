@@ -17,13 +17,14 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-33 rules across 8 categories covering architecture, Vercel cost discipline, caching, storefront content, PDP architecture, checkout v2,
+34 rules across 8 categories covering architecture, Vercel cost discipline, caching, analytics & attribution, storefront content, PDP architecture, checkout v2,
 design & composition (token system, design quality, section catalog, page composition, design-from-image, verification),
 components, UI patterns, locale routing, i18n, and SEO.
 
 > **Prerequisite**: This skill depends on [`saleor-storefront`](https://github.com/saleor/agent-skills)
 > for universal Saleor API knowledge (data model, permissions, checkout lifecycle,
-> channels). Install it alongside this skill.
+> channels). Install it alongside this skill. Paper targets **Saleor 3.23+** — do not
+> add fallbacks for older APIs.
 
 ## When to Apply
 
@@ -32,6 +33,7 @@ components, UI patterns, locale routing, i18n, and SEO.
 Reference these guidelines when:
 
 - Working on product detail pages (PDP), variant selection, high-cardinality catalogs, or filtering
+- Adding analytics, custom events, consent, or order-attribution metadata
 - Modifying checkout flow or payment integration
 - Editing GraphQL queries or regenerating types
 - Debugging caching, stale content, or revalidation
@@ -76,6 +78,7 @@ Reference these guidelines when:
 - `data-storefront-content` - Provider-agnostic copy layer, merge semantics, cache tags, wiring
 - `data-storefront-content-saleor` - Saleor Models, slug stack, channel overrides, Configurator
 - `data-storefront-content-attributes` - Attribute inputTypes, catalog references, scalar roadmap
+- `data-analytics` - Web Analytics, consent, first-touch UTM, optional merchant tag, event bus, Commerce Context on checkout
 
 ### 2. Product Pages (HIGH)
 

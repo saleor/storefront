@@ -184,6 +184,16 @@ query checkout($id: ID!, $languageCode: LanguageCodeEnum!) {
 	}
 }
 
+query checkoutCommerceContext($id: ID!) {
+	checkout(id: $id) {
+		id
+		metadata {
+			key
+			value
+		}
+	}
+}
+
 query channel($slug: String!) {
 	channel(slug: $slug) {
 		countries {
@@ -266,8 +276,8 @@ mutation checkoutCustomerDetach($checkoutId: ID!, $languageCode: LanguageCodeEnu
 	}
 }
 
-mutation checkoutCreate($channel: String!, $languageCode: LanguageCodeEnum!) {
-	checkoutCreate(input: { channel: $channel, lines: [] }) {
+mutation checkoutCreate($channel: String!, $languageCode: LanguageCodeEnum!, $metadata: [MetadataInput!]) {
+	checkoutCreate(input: { channel: $channel, languageCode: $languageCode, lines: [], metadata: $metadata }) {
 		errors {
 			...CheckoutErrorFragment
 		}
@@ -389,6 +399,12 @@ mutation checkoutComplete($checkoutId: ID!) {
 			id
 			channel {
 				slug
+			}
+			total {
+				gross {
+					amount
+					currency
+				}
 			}
 		}
 	}
