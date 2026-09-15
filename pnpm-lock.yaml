@@ -129,6 +129,9 @@ importers:
       '@graphql-codegen/typescript-urql':
         specifier: 4.0.1
         version: 4.0.1(graphql-tag@2.12.7(graphql@16.8.1))(graphql@16.8.1)
+      '@graphql-eslint/eslint-plugin':
+        specifier: 4.4.0
+        version: 4.4.0(@types/node@24.12.4)(eslint@9.39.1(jiti@1.21.7))(graphql@16.8.1)(typescript@5.3.3)
       '@next/env':
         specifier: 16.3.4
         version: 16.3.4
@@ -842,6 +845,20 @@ packages:
     engines: {node: '>=16'}
     peerDependencies:
       graphql: 16.8.1
+
+  '@graphql-eslint/eslint-plugin@4.4.0':
+    resolution: {integrity: sha512-dhW6fpk3Souuaphhc38uMAGCcgKMgtCJWFygIKODw/Kns43wiQqRPVay0aNFY1JBx3aevn4KPT/BCOdm6HNncA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@apollo/subgraph': ^2
+      eslint: '>=8.44.0'
+      graphql: 16.8.1
+      json-schema-to-ts: ^3
+    peerDependenciesMeta:
+      '@apollo/subgraph':
+        optional: true
+      json-schema-to-ts:
+        optional: true
 
   '@graphql-hive/signal@1.0.0':
     resolution: {integrity: sha512-RiwLMc89lTjvyLEivZ/qxAC5nBHoS2CtsWFSOsN35sxG9zoo5Z+JsFHM8MlvmO9yt+MJNIyC5MLE1rsbOphlag==}
@@ -2866,6 +2883,10 @@ packages:
     resolution: {integrity: sha512-BNoCY6SXXPQ7gF2opIP4GBE+Xw7U+pHMYKuzjgCN3GwiaIR09UUeKfheyIry77QtrCBlC0KK0q5/TER/tYh3PQ==}
     engines: {node: '>= 0.4'}
 
+  arrify@1.0.1:
+    resolution: {integrity: sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==}
+    engines: {node: '>=0.10.0'}
+
   asap@2.0.6:
     resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
 
@@ -3665,6 +3686,12 @@ packages:
       cosmiconfig-toml-loader:
         optional: true
 
+  graphql-depth-limit@1.1.0:
+    resolution: {integrity: sha512-+3B2BaG8qQ8E18kzk9yiSdAa75i/hnnOwgSeAxVJctGQPvmeiLtqKOYF6HETCyRjiF7Xfsyal0HbLlxCQkgkrw==}
+    engines: {node: '>=6.0.0'}
+    peerDependencies:
+      graphql: 16.8.1
+
   graphql-tag@2.12.7:
     resolution: {integrity: sha512-xnE/NFzy+0eIesvAsREJZ284zTl/wYuBAvpsFSDhRGRdRHdnE90M21Q3xAWyYInb0J756c6x0pIQ62+vtvOs1Q==}
     engines: {node: '>=10'}
@@ -4068,6 +4095,9 @@ packages:
 
   lodash-es@4.18.1:
     resolution: {integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==}
+
+  lodash.lowercase@4.3.0:
+    resolution: {integrity: sha512-UcvP1IZYyDKyEL64mmrwoA1AbFu5ahojhTtkOUr1K9dbuxzS9ev8i4TxMMGCqRC9TE8uDaSoufNAXxRPNTseVA==}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -6182,6 +6212,29 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  '@graphql-eslint/eslint-plugin@4.4.0(@types/node@24.12.4)(eslint@9.39.1(jiti@1.21.7))(graphql@16.8.1)(typescript@5.3.3)':
+    dependencies:
+      '@graphql-tools/code-file-loader': 8.1.28(graphql@16.8.1)
+      '@graphql-tools/graphql-tag-pluck': 8.3.27(graphql@16.8.1)
+      '@graphql-tools/utils': 10.11.0(graphql@16.8.1)
+      debug: 4.4.3
+      eslint: 9.39.1(jiti@1.21.7)
+      fast-glob: 3.3.3
+      graphql: 16.8.1
+      graphql-config: 5.1.5(@types/node@24.12.4)(graphql@16.8.1)(typescript@5.3.3)
+      graphql-depth-limit: 1.1.0(graphql@16.8.1)
+      lodash.lowercase: 4.3.0
+    transitivePeerDependencies:
+      - '@fastify/websocket'
+      - '@types/node'
+      - bufferutil
+      - cosmiconfig-toml-loader
+      - crossws
+      - supports-color
+      - typescript
+      - uWebSockets.js
+      - utf-8-validate
+
   '@graphql-hive/signal@1.0.0': {}
 
   '@graphql-hive/signal@2.0.0': {}
@@ -8082,6 +8135,8 @@ snapshots:
       get-intrinsic: 1.3.0
       is-array-buffer: 3.0.5
 
+  arrify@1.0.1: {}
+
   asap@2.0.6: {}
 
   assertion-error@2.0.1: {}
@@ -9109,6 +9164,11 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
+  graphql-depth-limit@1.1.0(graphql@16.8.1):
+    dependencies:
+      arrify: 1.0.1
+      graphql: 16.8.1
+
   graphql-tag@2.12.7(graphql@16.8.1):
     dependencies:
       graphql: 16.8.1
@@ -9502,6 +9562,8 @@ snapshots:
       p-locate: 5.0.0
 
   lodash-es@4.18.1: {}
+
+  lodash.lowercase@4.3.0: {}
 
   lodash.merge@4.6.2: {}
 
