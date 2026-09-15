@@ -1,4 +1,41 @@
+import graphqlPlugin from "@graphql-eslint/eslint-plugin";
+import nextEnv from "@next/env";
 import nextVitals from "eslint-config-next/core-web-vitals";
+
+// `@next/env` is CJS — no named ESM export.
+nextEnv.loadEnvConfig(process.cwd());
+
+/**
+ * Schema for `@graphql-eslint` — the same remote schema codegen reads (see `.graphqlrc.ts`).
+ * Required: without it the deprecation rule would silently pass. Set it in `.env.local`
+ * (CI sets it in `.github/workflows/lint.yml`).
+ */
+const saleorSchemaUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+
+if (!saleorSchemaUrl) {
+	throw new Error(
+		"NEXT_PUBLIC_SALEOR_API_URL is required to lint GraphQL documents. Set it in .env.local.",
+	);
+}
+
+const graphqlConfigBlock = {
+	files: ["src/**/*.graphql"],
+	languageOptions: {
+		parser: graphqlPlugin.parser,
+		parserOptions: {
+			graphQLConfig: {
+				schema: saleorSchemaUrl,
+				documents: "src/**/*.graphql",
+			},
+		},
+	},
+	plugins: { "@graphql-eslint": graphqlPlugin },
+	rules: {
+		// Warn only: deprecated fields still work, but every hit is a migration to schedule
+		// before Saleor removes it. Run `pnpm lint` to see the current list.
+		"@graphql-eslint/no-deprecated": "warn",
+	},
+};
 
 /**
  * Files allowed to import `next/image`.
@@ -88,6 +125,7 @@ const config = [
 			],
 		},
 	},
+	graphqlConfigBlock,
 ];
 
 export default config;

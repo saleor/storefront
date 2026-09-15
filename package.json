@@ -92,6 +92,7 @@
 		"@graphql-codegen/typescript": "5.0.7",
 		"@graphql-codegen/typescript-operations": "5.0.7",
 		"@graphql-codegen/typescript-urql": "4.0.1",
+		"@graphql-eslint/eslint-plugin": "4.4.0",
 		"@next/env": "16.3.4",
 		"@next/playwright": "16.3.4",
 		"@parcel/watcher": "2.5.6",
