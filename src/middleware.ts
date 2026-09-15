@@ -4,6 +4,8 @@ import { getStaticStorefrontChannelSlugs, isAllowedStorefrontChannel } from "@/c
 import { getDefaultLocaleSlug, isLocaleSlug, isStorefrontLocaleSlug } from "@/config/locale";
 import { BROWSE_LOCALE_COOKIE, getBrowseLocaleCookieOptions } from "@/lib/browse-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
+import { isStorefrontAgentsEnabled } from "@/config/agents";
+import { agentLinkHeader, isAgentPagePath, prefersMarkdown } from "@/lib/agents/negotiation";
 
 const RESERVED_ROOT_SEGMENTS = new Set([
 	"api",
@@ -13,6 +15,8 @@ const RESERVED_ROOT_SEGMENTS = new Set([
 	"favicon.ico",
 	"robots.txt",
 	"sitemap.xml",
+	"agent-pages",
+	"agents",
 ]);
 
 function isChannelSlug(segment: string): boolean {
@@ -38,6 +42,29 @@ function withBrowseLocaleCookie(request: NextRequest, response: NextResponse, lo
 
 export function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
+	const explicitMarkdown = pathname.endsWith(".md");
+	const browsePath = explicitMarkdown ? pathname.slice(0, -3) : pathname;
+	// PPR may stream an HTML not-found shell with status 200 for unknown dynamic
+	// slugs. Disabled Markdown URLs must instead be unambiguous HTTP 404s.
+	if (explicitMarkdown && isAgentPagePath(browsePath) && !isStorefrontAgentsEnabled()) {
+		return new NextResponse("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
+	}
+	const agentPage = isStorefrontAgentsEnabled() && isAgentPagePath(browsePath);
+	// Never replace React Flight, prefetch, or mutation responses with Markdown.
+	if (
+		agentPage &&
+		(request.method === "GET" || request.method === "HEAD") &&
+		!request.headers.has("rsc") &&
+		!request.headers.has("next-router-prefetch") &&
+		(explicitMarkdown || prefersMarkdown(request.headers.get("accept")))
+	) {
+		const url = request.nextUrl.clone();
+		url.pathname = `/agent-pages${browsePath}`;
+		const response = NextResponse.rewrite(url);
+		response.headers.set("Vary", "Accept");
+		response.headers.set("Cache-Control", "private, no-store");
+		return response;
+	}
 
 	if (
 		pathname.startsWith("/_next") ||
@@ -81,7 +108,12 @@ export function middleware(request: NextRequest) {
 	// Canonical format: /{locale}/{channel}/…
 	if (isStorefrontLocaleSlug(first)) {
 		if (second && isChannelSlug(second)) {
-			return withBrowseLocaleCookie(request, NextResponse.next(), first);
+			const response = withBrowseLocaleCookie(request, NextResponse.next(), first);
+			if (agentPage) {
+				response.headers.set("Vary", "Accept");
+				response.headers.set("Link", agentLinkHeader(pathname));
+			}
+			return response;
 		}
 
 		// /{locale} only → add default channel
@@ -119,5 +151,9 @@ export const config = {
 	 * The equivalent guards at the top of `middleware()` stay as a backstop for runtimes
 	 * that apply the matcher differently (self-hosted, `next start`).
 	 */
-	matcher: ["/((?!api/|api$|checkout/|checkout$|order/|order$|_next/|.*\\.[\\w]+$).*)"],
+	matcher: [
+		"/((?!api/|api$|checkout/|checkout$|order/|order$|_next/|.*\\.[\\w]+$).*)",
+		"/:locale/:channel/:path*.md",
+		"/:locale/:channel.md",
+	],
 };
