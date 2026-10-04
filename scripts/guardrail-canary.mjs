@@ -26,6 +26,10 @@ const canaries = [
 		id: "paper/cache-api",
 		body: 'import { cacheTag } from "next/cache";\nexport const tag = cacheTag;\n',
 	},
+	{
+		id: "paper/no-direct-saleor",
+		body: 'import { rawMutation } from "@/lib/saleor";\nexport const run = () => rawMutation({ query: "mutation X { x }" });\n',
+	},
 ];
 
 mkdirSync(dir, { recursive: true });

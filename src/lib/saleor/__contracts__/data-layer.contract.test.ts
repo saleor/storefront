@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { paperCacheLifeProfiles } from "../cache/life-profiles";
-import { CACHE_PROFILE_LIST } from "../cache/manifest";
+import { CACHE_PROFILE_LIST, CACHE_PROFILES } from "../cache/manifest";
 import { getOperation, listCoreOperations } from "../operations";
 
 const ROOT = join(import.meta.dirname, "../../../..");
@@ -101,5 +101,36 @@ describe("manifest tag contract", () => {
 			"storefront-content:storefront-content:{channel}:{locale}",
 		]);
 		expect(fingerprint).toHaveLength(16);
+	});
+});
+
+describe("invalidation wiring", () => {
+	it("busts every core cache profile from the revalidate route", () => {
+		const route = readFileSync(join(ROOT, "src/app/api/revalidate/route.ts"), "utf8");
+		const direct = [
+			"products",
+			"categories",
+			"collections",
+			"listingAll",
+			"listingCategory",
+			"listingCollection",
+			"channels",
+		];
+		const viaPlanner: Record<string, string> = {
+			pages: "planPageRevalidation",
+			navigation: "planMenuRevalidation",
+			footerMenu: "planMenuRevalidation",
+			storefrontContent: "planStorefrontContentRevalidation",
+		};
+
+		for (const key of Object.keys(CACHE_PROFILES)) {
+			if (direct.includes(key)) {
+				expect(route, key).toContain(`CACHE_PROFILES.${key}`);
+			} else {
+				const planner = viaPlanner[key];
+				expect(planner, `${key} has no invalidation plan`).toBeTruthy();
+				expect(route, key).toContain(planner!);
+			}
+		}
 	});
 });

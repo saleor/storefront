@@ -63,7 +63,7 @@ A diff here is a Saleor access or cache-profile change — review it for cost an
 | cachedQuery      | ProductListByCategoryDocument         | CACHE_PROFILES.listingCategory   | src/lib/catalog/get-product-listing.ts:94                             |
 | cachedQuery      | ProductListByCollectionDocument       | CACHE_PROFILES.listingCollection | src/lib/catalog/get-product-listing.ts:121                            |
 | cachedQuery      | CategoriesBySlugDocument              | CACHE_PROFILES.categories        | src/lib/catalog/resolve-category-slugs.ts:24                          |
-| cachedQuery      | ChannelsListDocument                  | CACHE_PROFILES.channels          | src/lib/channels/get-channels-data.ts:13                              |
+| cachedQuery      | ChannelsListDocument                  | CACHE_PROFILES.channels          | src/lib/channels/get-channels-data.ts:18                              |
 | liveQuery        | CheckoutFindDocument                  | —                                | src/lib/checkout.ts:125                                               |
 | mutate           | CheckoutCreateDocument                | —                                | src/lib/checkout.ts:161                                               |
 | mutate           | CheckoutCustomerDetachDocument        | —                                | src/lib/checkout.ts:176                                               |

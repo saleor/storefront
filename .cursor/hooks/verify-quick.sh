@@ -22,23 +22,22 @@ if ! command -v pnpm >/dev/null 2>&1; then
 	exit 0
 fi
 
-# Run the design-token gate. Capture output; suppress it so a clean run is silent.
-out="$(pnpm run lint:design-tokens 2>&1)"
-status=$?
+# Design tokens and the data-layer lock. Both are local and fast. Silent when clean.
+messages=""
 
-if [ "$status" -eq 0 ]; then
-	exit 0  # clean — silent success
+token_out="$(pnpm run lint:design-tokens 2>&1)" || messages="lint:design-tokens failed — there are raw hex/rgb()/hsl() color literals in src/ui styling. Fix them by using a brand.css token (bg-background, text-foreground, etc.) before declaring done. Add a \`design-tokens-allow\` comment only for a rare legitimate literal. Lint output:\n\n${token_out}"
+
+lock_out="$(node scripts/data-layer-lock.mjs --check 2>&1)" || messages="${messages:+${messages}\n\n}data-layer.lock.md is stale. Run pnpm data:lock and review the diff before declaring done. Output:\n\n${lock_out}"
+
+if [ -z "$messages" ]; then
+	exit 0
 fi
 
-# Failure: nudge the agent with the lint output. Use followup_message so a `stop`
-# follow-up loop can re-engage the agent to fix the violations. Extra JSON fields
-# are ignored by the host, so this is safe even if the exact schema differs.
-# Escape the lint output for JSON with node (guaranteed present in this repo).
-escaped="$(printf '%s' "$out" | node -e 'let s=require("fs").readFileSync(0,"utf8");process.stdout.write(JSON.stringify(s).slice(1,-1));')"
+escaped="$(printf '%s' "$messages" | node -e 'let s=require("fs").readFileSync(0,"utf8");process.stdout.write(JSON.stringify(s).slice(1,-1));')"
 
 cat <<EOF
 {
-  "followup_message": "lint:design-tokens failed — there are raw hex/rgb()/hsl() color literals in src/ui styling. Fix them by using a brand.css token (bg-background, text-foreground, etc.) before declaring done. Add a \`design-tokens-allow\` comment only for a rare legitimate literal. Lint output:\n\n${escaped}"
+  "followup_message": "${escaped}"
 }
 EOF
 exit 0

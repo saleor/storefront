@@ -49,6 +49,15 @@ const LOADER_DIRS = [
 ];
 
 /** Presence checks and the one raw app-token query that is not a codegen document. */
+/** Untyped queries. Anywhere else must use mutate() so the registry applies. */
+const RAW_MUTATION_ALLOW = new Set([
+	"src/lib/auth/confirm-account.ts",
+	"src/app/api/auth/register/route.ts",
+	"src/app/api/auth/reset-password/route.ts",
+	"src/app/(checkout)/actions.ts",
+	"src/checkout/lib/server/fetch-channel-default-country.ts",
+]);
+
 const TOKEN_READ_ALLOW = new Set([
 	"src/lib/channels/get-channels-data.ts",
 	"src/checkout/lib/server/fetch-order-by-number.ts",
@@ -154,6 +163,9 @@ const plugin = {
 						"Read SALEOR_APP_TOKEN only inside src/lib/saleor. Callers use cachedQuery/liveQuery; the registry picks app auth.",
 					hooks:
 						"Do not import checkout urql hooks. Checkout reads go through server actions and `@/lib/saleor`.",
+					fetch:
+						"Do not fetch NEXT_PUBLIC_SALEOR_API_URL directly. Use cachedQuery, liveQuery, sessionQuery, or mutate from `@/lib/saleor`. See rules/data-access.md.",
+					raw: "rawMutation skips the operation registry. Use mutate() with a .graphql document. Auth BFF exceptions are listed in RAW_MUTATION_ALLOW in eslint/paper-data-layer.mjs.",
 				},
 			},
 			create(context) {
@@ -171,6 +183,24 @@ const plugin = {
 							source.endsWith("/checkout/graphql/generated/index")
 						) {
 							context.report({ node, messageId: "hooks" });
+						}
+					},
+					CallExpression(node) {
+						if (inKernel(file) || file.endsWith(".test.ts")) return;
+						const callee = node.callee;
+						if (
+							callee.type === "Identifier" &&
+							callee.name === "rawMutation" &&
+							!RAW_MUTATION_ALLOW.has(file)
+						) {
+							context.report({ node, messageId: "raw" });
+						}
+						if (callee.type === "Identifier" && callee.name === "fetch") {
+							const arg = node.arguments[0];
+							const text = arg ? context.sourceCode.getText(arg) : "";
+							if (text.includes("SALEOR_API_URL")) {
+								context.report({ node, messageId: "fetch" });
+							}
 						}
 					},
 					MemberExpression(node) {
