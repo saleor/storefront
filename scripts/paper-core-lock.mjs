@@ -17,6 +17,7 @@ const OUT = join(ROOT, "paper-core.lock.json");
 
 const ROOTS = [
 	join(ROOT, "src/lib/saleor"),
+	join(ROOT, "src/lib/storefront"),
 	join(ROOT, "src/app/api/revalidate/route.ts"),
 	join(ROOT, "src/app/api/cache-info/route.ts"),
 ];

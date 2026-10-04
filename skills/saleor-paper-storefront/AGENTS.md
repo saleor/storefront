@@ -5,7 +5,7 @@ Saleor Paper
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 35 rules (~75k tokens) and exists only for humans reading offline and for
+> all 36 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 35 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 36 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -57,6 +57,7 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 4.4 [Page Composition (PDP & Homepage)](#44-page-composition-pdp-homepage)
    - 4.5 [Design From Prompt or Image](#45-design-from-prompt-or-image)
    - 4.6 [Design Verification Gates](#46-design-verification-gates)
+   - 4.7 [UI Templates](#47-ui-templates)
 
 5. [UI & Channels](#5-ui-channels) — **MEDIUM**
    - 5.1 [UI Components](#51-ui-components)
@@ -1475,7 +1476,7 @@ export async function VariantGalleryDynamic({ product, searchParams }) {
 
 ### Knobs
 
-- **Switch layout (whole shop):** `PDP_GALLERY_LAYOUT` in `gallery-layout.ts` — shell, island, fallbacks, and `ProductRouteSkeleton` all follow.
+- **Switch layout (whole shop):** `ACTIVE_PDP_TEMPLATE` and `ACTIVE_PDP_GALLERY` in `src/config/template-selection.ts`. A structurally different page is a new file in `src/templates/pdp/`. See [`ui-templates`](ui-templates.md). Do not edit the product route to rearrange it.
 - **Immersive frame height:** `PDP_IMMERSIVE_IMAGE_HEIGHT` (`--chrome-offset` + `--pdp-immersive-reserved` from `brand.css`).
 - **Standard gallery chrome:** `ImageCarousel` props `showArrows` / `showDots` / `showThumbnails` / `onImageClick` (the last reserved for a future lightbox).
 
@@ -1491,7 +1492,7 @@ Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic
 
 ## Common tasks
 
-- **New attribute display:** add the field to `ProductDetails.graphql` (run `pnpm run generate`), extract in `page.tsx`, pass to `ProductAttributes`.
+- **New attribute display:** if it is already an assigned attribute, it is on `ProductView.attributes`. Otherwise add it to `src/graphql/extensions/ProductDetailsExtension.graphql`, run `pnpm generate`, and map it in `src/config/storefront-view.ts`. Do not extract it in `page.tsx`.
 - **Sticky bar threshold:** `SCROLL_THRESHOLD` in `sticky-bar.tsx`.
 - **Badges (New/Sale):** rendered in `VariantSectionDynamic`.
 - **Queries:** `ProductDetails.graphql`, `VariantDetailsFragment.graphql` (regenerate after edits).
@@ -1503,6 +1504,7 @@ Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic
 ❌ Passing a Server-Component function as a Client `ErrorBoundary` fallback — keep `VariantSectionError` in its own `"use client"` file.
 ❌ Suspense without an `ErrorBoundary` around the variant section — a throw would crash the page instead of degrading.
 ❌ Re-exporting gallery renderers from `index.ts` — bloats the bundle across the client boundary.
+❌ Editing `products/[slug]/page.tsx` to rearrange the PDP — add a template (`ui-templates.md`). The route owns data and islands only.
 
 ## Testing
 
@@ -3323,7 +3325,7 @@ Section imagery (hero, editorial) comes from the content layer where wired (e.g.
 
 ### 4.4 Page Composition (PDP & Homepage)
 
-How to mold PDP and homepage layouts by editing the page files — adding, removing, reordering, and re-widthing sections — **without breaking PPR, caching, or LCP**. This is the bridge between "design freely" ([`design-quality-rubric`](design-quality-rubric.md)) and "respect the architecture" ([`paper-architecture`](paper-architecture.md), [`data-caching`](data-caching.md)).
+How to mold the homepage by editing the page file — adding, removing, reordering, and re-widthing sections — **without breaking PPR, caching, or LCP**. PDP layout is a template ([`ui-templates`](ui-templates.md)); this rule is the PPR layer model both surfaces share. This is the bridge between "design freely" ([`design-quality-rubric`](design-quality-rubric.md)) and "respect the architecture" ([`paper-architecture`](paper-architecture.md), [`data-caching`](data-caching.md)).
 
 > Molding in Paper is **code-level composition**: edit the page's section list and props. There is no runtime page-builder — and that is deliberate (keeps PPR, performance, and fork divergence under control).
 > Sections: [`ui-sections`](ui-sections.md) · Tokens/width: [`ui-design-system`](ui-design-system.md) · PDP mechanics: [`product-pdp`](product-pdp.md)
@@ -3398,45 +3400,17 @@ return (
 
 ## PDP molding
 
-File: [`src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`](<../../../src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx>)
+PDP layout is a template. Read [`ui-templates`](ui-templates.md) and edit `src/templates/pdp/`, not the product route.
 
-PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDynamic`, `VariantSectionDynamic`). **Layout width, grid ratio, and gallery style** are centralized in [`gallery-layout.ts`](../../../src/ui/components/pdp/gallery-layout.ts) (`PDP_GALLERY_LAYOUT`). To mold the PDP:
+The route still owns the PPR split: cached `ProductView` in the shell, `slots.gallery` and `slots.buyBox` as dynamic islands. A template only places those slots and renders `product`.
 
-1. **Static design** (gallery column shell, name, breadcrumbs, new editorial/spec/related bands) lives in `ProductShell` from cached `product` data.
-2. **Variant-dependent UI** stays in the dynamic islands (they read `searchParams.variant`) — don't lift variant state into the shell.
-3. **Layout width / columns**: flip `PDP_GALLERY_LAYOUT` for shop-wide immersive vs standard, or extend `PDP_LAYOUT_CLASSES` for a new ratio. Immersive defaults to `container-super-wide` (full-bleed up to 2560px); use `container-full` in `gallery-layout.ts` for true edge-to-edge at any resolution.
-4. **Add a new PDP section** (related products, reviews, story, spec table): render it in `ProductShell` from cached data, or as its own nested `<Suspense>` island if it needs runtime/searchParams data. Keep the buy box (`VariantSectionDynamic`) and its add-to-cart Server Action intact.
-5. **Preserve LCP**: keep the gallery Suspense fallback (`ImmersiveGalleryFallback` / `ProductGalleryFallback`) with `priority` on the default hero — don't add a heavier hero above the gallery.
-6. **Preserve mobile commerce UX**: keep the sticky add-to-cart bar (`sticky-bar.tsx`); use CSS `order-*` (see `data-caching` §CSS order) when dynamic content must appear above static `h1` while keeping `h1` in the static shell for SEO.
-7. **Route skeletons**: use `ProductRouteSkeleton` in `loading.tsx` — never hand-roll a 2-column skeleton that disagrees with `PDP_GALLERY_LAYOUT`.
-
-```tsx
-// Sketch: immersive PDP (default) — attributes below gallery, buy box sticky right
-const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
-
-<main className={layout.main}>
-	<div className={layout.grid}>
-		<div className={layout.galleryColumn}>
-			<Suspense fallback={<ImmersiveGalleryFallback src={lcpUrl} alt={product.name} />}>
-				<VariantGalleryDynamic product={product} searchParams={searchParams} />
-			</Suspense>
-		</div>
-		<div className={layout.infoColumn}>
-			<h1 className="order-2 text-balance text-h1">{product.name}</h1>
-			<ErrorBoundary FallbackComponent={VariantSectionError}>
-				<Suspense fallback={<VariantSectionSkeleton />}>
-					<VariantSectionDynamic product={product} searchParams={searchParams} />
-				</Suspense>
-			</ErrorBoundary>
-		</div>
-		{layout.attributesPlacement === "gallery" && (
-			<div className={layout.attributesGalleryBlock}>
-				<ProductAttributes ... />
-			</div>
-		)}
-	</div>
-</main>
-```
+1. **A different arrangement** is a new template file plus `ACTIVE_PDP_TEMPLATE` / `ACTIVE_PDP_GALLERY` in `src/config/template-selection.ts`.
+2. **Variant-dependent UI** stays in the islands (they read `searchParams`). Do not lift it into the template.
+3. **`standard` / `immersive` / `mosaic`** are the `gallery` field. Immersive uses `container-super-wide`. A page that is none of those three is still a template that places the same slots.
+4. **A new section** (story, spec table) renders from `product` inside the template. If it needs `searchParams`, it belongs in a slot the route builds, not in the template.
+5. **Preserve LCP**: the gallery slot already includes the Suspense fallback with the default hero. Do not add a heavier image above `slots.gallery`.
+6. **Preserve mobile commerce UX**: the buy box slot includes the sticky add-to-cart bar. Keep `slots.buyBox` on the page.
+7. **Route skeleton** is `templates.pdp.Skeleton`. Do not hand-roll a skeleton that disagrees with `ACTIVE_PDP_GALLERY`.
 
 ## Workflow for a layout change
 
@@ -3455,6 +3429,7 @@ const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
 ❌ Making a whole section a Client Component for one interactive child — isolate the client part
 ❌ Hardcoding section copy in the page instead of `getStorefrontContent()` / next-intl
 ❌ Turning the page into a runtime block renderer to "reorder" — reorder in code; that is the supported mold surface
+❌ Rearranging the PDP by editing `products/[slug]/page.tsx` — add or edit a template (`ui-templates.md`)
 ❌ Fixing PPR build errors by wrapping `<main>` in Suspense
 
 ---
@@ -3630,6 +3605,85 @@ For anything user-facing, run the external **`web-design-guidelines`** skill (We
 ❌ Sprinkling `design-tokens-allow` to silence real violations
 ❌ Turning advisory checks into hard CI walls that block prototyping (keep them guided)
 ❌ Skipping a build on PPR-sensitive layout changes and shipping a dynamic-hole regression
+
+---
+
+### 4.7 UI Templates
+
+A Paper shop picks one PDP layout at build time. The route owns data, caching, and the dynamic islands. The template owns the layout. A new look is a new file in `src/templates/pdp/`, not an edit to the product route.
+
+## What you may edit
+
+| Change                                   | Where                                                                                          |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Rearrange the PDP                        | `src/templates/pdp/<name>.tsx`, then register it in `src/templates/pdp/registry.ts`            |
+| Which template the shop uses             | `ACTIVE_PDP_TEMPLATE` in `src/config/template-selection.ts`                                    |
+| Which gallery island that template uses  | The template's `gallery` field, and the same value in `ACTIVE_PDP_GALLERY`                     |
+| A field the view model does not have yet | `src/graphql/extensions/ProductDetailsExtension.graphql`, then `src/config/storefront-view.ts` |
+
+`ACTIVE_PDP_GALLERY` must equal the active template's `gallery` (`standard`, `immersive`, or `mosaic`). `pnpm test` fails when they disagree. The gallery island and the route skeleton follow `ACTIVE_PDP_GALLERY`.
+
+## What a template receives
+
+`PdpTemplateProps` is the whole API:
+
+- `product` — a `ProductView`. Name, price range, images, description HTML, specs, care, bestseller flag, and `extensions`.
+- `slots.gallery` — the variant gallery, already inside Suspense. Place it exactly once.
+- `slots.buyBox` — price, variant pickers, add to cart. Already inside Suspense and an error boundary. Place it exactly once.
+- `slots.breadcrumbs` and `slots.attributes` — ready-made chrome. Place `attributes` or draw `product.attributes` yourself.
+
+Specs other than size, color, care, and the bestseller flag are already on `product.attributes`. A highlighted material line does not need a new query. A field that is not on `ProductView` goes through the extension fragment and `mapProductExtensions`. Run `pnpm generate` after the fragment change. Do not edit `src/lib/storefront/mappers/product.ts`.
+
+## What a template must not do
+
+These are lint errors (`paper/template-purity`, `paper/ui-no-gql`):
+
+- Import `@/gql`, `@/lib/saleor`, `@/lib/catalog/*`, or `@/app/actions`.
+- Call `cookies()`, `headers()`, `draftMode()`, or `connection()`.
+- Use `"use cache"` or `cacheLife`.
+- Read `searchParams`. The route already did, inside the slots.
+
+Do not edit these to change layout:
+
+- `src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`
+- `src/ui/components/pdp/gallery-layout.ts`
+- `src/ui/components/pdp/gallery-registry.tsx`
+- `src/lib/storefront/**`
+
+## Add a template
+
+```tsx
+// src/templates/pdp/editorial.tsx
+import { definePdpTemplate, type PdpTemplateProps } from "@/lib/storefront/templates";
+import { ProductRouteSkeleton } from "@/ui/components/pdp/product-route-skeleton";
+
+function EditorialLayout({ product, slots }: PdpTemplateProps) {
+	return (
+		<div className="flex min-h-screen flex-col bg-background">
+			<h1 className="text-h1">{product.name}</h1>
+			{slots.gallery}
+			{slots.buyBox}
+		</div>
+	);
+}
+
+export const editorialPdp = definePdpTemplate({
+	id: "editorial",
+	gallery: "immersive",
+	Layout: EditorialLayout,
+	Skeleton: ProductRouteSkeleton,
+});
+```
+
+Register `editorial: editorialPdp` in `src/templates/pdp/registry.ts`. Set `ACTIVE_PDP_TEMPLATE` to `"editorial"` and `ACTIVE_PDP_GALLERY` to `"immersive"`.
+
+Style with `brand.css` tokens (`bg-background`, `text-foreground`, `text-h1`). The outer wrapper stays `flex min-h-screen flex-col` so the route skeleton matches. The browse layout already renders `<main>`; the template does not.
+
+Switching among `standard`, `immersive`, and `mosaic` is the `gallery` field plus `ACTIVE_PDP_GALLERY`. Their column classes live in `PDP_LAYOUT_CLASSES` and can be reused. A page that is not one of those three is still just a template: arrange the same slots differently.
+
+## Contract version
+
+`STOREFRONT_CONTRACT_VERSION` in `src/lib/storefront/contract/version.ts`. Adding an optional field is not a bump. Removing or renaming a field is.
 
 ---
 

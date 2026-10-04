@@ -66,6 +66,48 @@ const TOKEN_READ_ALLOW = new Set([
 	"src/config/channels.test.ts",
 ]);
 
+/**
+ * UI and templates that still import generated Saleor types. Burn this list down
+ * by mapping those props through a view model. Do not add new paths.
+ */
+const GQL_UI_ALLOW = new Set([
+	"src/ui/components/account/address-card.tsx",
+	"src/ui/components/account/address-form-dialog.tsx",
+	"src/ui/components/account/order-row.tsx",
+	"src/ui/components/account/order-row-labels.ts",
+	"src/ui/components/account/order-status-badge.tsx",
+	"src/ui/components/account/order-status-config.ts",
+	"src/ui/components/account/order-timeline.tsx",
+	"src/ui/components/nav/components/user-menu/components/user-avatar.tsx",
+	"src/ui/components/nav/components/user-menu/components/user-info.tsx",
+	"src/ui/components/nav/components/user-menu/user-menu.tsx",
+	"src/ui/components/order-list-item.tsx",
+	"src/ui/components/payment-status.tsx",
+	"src/ui/components/plp/filter-utils.ts",
+	"src/ui/components/plp/product-grid.tsx",
+	"src/ui/components/plp/utils.ts",
+]);
+
+const TEMPLATE_REQUEST_IMPORTS = new Set(["cookies", "headers", "draftMode", "connection"]);
+
+/** @param {string} source */
+function isGqlOrKernelImport(source) {
+	return (
+		source === "@/gql/graphql" ||
+		source.startsWith("@/gql/") ||
+		source === "@/lib/saleor" ||
+		source.startsWith("@/lib/saleor/")
+	);
+}
+
+/** @param {string} source */
+function isTemplateForbiddenImport(source) {
+	if (source === "next/headers" || source === "next/server" || source === "next/cache") return true;
+	if (source.startsWith("@/lib/catalog/")) return true;
+	if (source === "@/app/actions" || source.endsWith("/actions")) return source.startsWith("@/app/");
+	return isGqlOrKernelImport(source);
+}
+
 const CACHE_DIRECTIVE_BANNED = new Set([
 	"cookies",
 	"headers",
@@ -384,6 +426,76 @@ const plugin = {
 						const source = node.source.value;
 						if (typeof source === "string" && source.startsWith("@/ui/")) {
 							context.report({ node, messageId: "ui" });
+						}
+					},
+				};
+			},
+		},
+		"ui-no-gql": {
+			meta: {
+				type: "problem",
+				docs: { description: "Templates and UI take view models, not generated Saleor types." },
+				schema: [],
+				messages: {
+					gql: "Do not import {{source}} from UI or templates. Take a ProductView (or another view model) from the route. Existing exceptions are GQL_UI_ALLOW in eslint/paper-data-layer.mjs. See rules/ui-templates.md.",
+				},
+			},
+			create(context) {
+				const file = rel(context.filename);
+				const inSurface = file.startsWith("src/ui/") || file.startsWith("src/templates/");
+				if (!inSurface || GQL_UI_ALLOW.has(file)) return {};
+				return {
+					ImportDeclaration(node) {
+						const source = node.source.value;
+						if (typeof source === "string" && isGqlOrKernelImport(source)) {
+							context.report({ node, messageId: "gql", data: { source } });
+						}
+					},
+				};
+			},
+		},
+		"template-purity": {
+			meta: {
+				type: "problem",
+				docs: { description: "A template cannot read the request or call Saleor." },
+				schema: [],
+				messages: {
+					import:
+						"Templates cannot import {{source}}. Arrange `product` and `slots` only. Data is loaded in the route. See rules/ui-templates.md.",
+					directive:
+						'Templates cannot use "use cache" or cacheLife. The route owns caching. See rules/ui-templates.md.',
+					request:
+						"Templates cannot call {{name}}. That reads the request and collapses the PDP shell. See rules/ui-templates.md.",
+				},
+			},
+			create(context) {
+				const file = rel(context.filename);
+				if (!file.startsWith("src/templates/")) return {};
+				return {
+					ImportDeclaration(node) {
+						const source = node.source.value;
+						if (typeof source !== "string") return;
+						if (isTemplateForbiddenImport(source)) {
+							context.report({ node, messageId: "import", data: { source } });
+						}
+						if (source === "next/headers" || source === "next/server" || source === "next/cache") {
+							for (const spec of node.specifiers) {
+								if (spec.type !== "ImportSpecifier" || spec.imported.type !== "Identifier") continue;
+								if (spec.imported.name === "cacheLife" || spec.imported.name === "cacheTag") {
+									context.report({ node: spec, messageId: "directive" });
+								}
+							}
+						}
+					},
+					ExpressionStatement(node) {
+						if (node.expression.type === "Literal" && node.expression.value === "use cache") {
+							context.report({ node, messageId: "directive" });
+						}
+					},
+					CallExpression(node) {
+						const callee = node.callee;
+						if (callee.type === "Identifier" && TEMPLATE_REQUEST_IMPORTS.has(callee.name)) {
+							context.report({ node, messageId: "request", data: { name: callee.name } });
 						}
 					},
 				};

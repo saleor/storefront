@@ -15,6 +15,12 @@
 		"src/lib/saleor/ledger.ts": "5f66b941907bbb077498165a8226e183e624e915522bb07ddfc4b678378c765e",
 		"src/lib/saleor/operations.ts": "74a56b3708ae2f63f1a6d6d1e982d064e1af8246637bc96b2b9865081a7c195e",
 		"src/lib/saleor/raw.ts": "45e3d30eabf2cca7f726571e3ac5b04c01b68f06319028944ad2dbf5dc4005cd",
+		"src/lib/storefront/AGENTS.md": "9b455795c8a8fb328dc8815c3ee23e4ce8f697705001fe1cd7d4867e2d12b3e2",
+		"src/lib/storefront/contract/product.ts": "a842b65c6cedaa4a6dbecbf1b213da3c411e6baf8dfb031b6299050a6746401f",
+		"src/lib/storefront/contract/version.ts": "5fb5608ceed1f3faf3769d0e2e9f03f1f80ca4da1b59825ed07c9a07645773c8",
+		"src/lib/storefront/mappers/gallery-images.ts": "ffc2e05b9699ee41d88755e805498ae54377dfaa61e0bba8e42a90558e365f4f",
+		"src/lib/storefront/mappers/product.ts": "6789b0feb4bc21acb0528f0672c26cdc2f8d2bcebc395c4d0ab2da964f999d2b",
+		"src/lib/storefront/templates.ts": "ee2f9c56ed0912119ac1882e49c72278c75ce4ccc1354dc58c33b143bf13b5b5",
 		"src/app/api/revalidate/route.ts": "29a3c28810b068c2f96a8b3631365c14e25a214c5e5d4be1bc2b9a8a1c2fed22",
 		"src/app/api/cache-info/route.ts": "fb640dddf16d6d360a4ea2e508e03c9b7f6239bb00c899c508126c31e40d2784"
 	}

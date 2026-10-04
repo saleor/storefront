@@ -136,6 +136,8 @@ const config = [
 			"paper/surface-boundary": "error",
 			"paper/client-boundary": "error",
 			"paper/no-lib-ui": "error",
+			"paper/ui-no-gql": "error",
+			"paper/template-purity": "error",
 		},
 	},
 ];

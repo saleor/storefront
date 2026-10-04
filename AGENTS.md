@@ -18,7 +18,7 @@ Paper rules are **authoritative on architecture**: Server Components by default,
 - **Data:** `data-access`, `data-caching`, `data-graphql`, `data-auth-routes`, `data-analytics`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes`
 - **Product:** `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`
 - **Checkout:** `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
-- **Design:** `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `design-from-image`, `design-verification`
+- **Design:** `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `ui-templates`, `design-from-image`, `design-verification`
 - **UI & channels:** `ui-components`, `ui-images`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
 - **SEO:** `seo-metadata`
 - **Dev:** `dev-local`, `dev-investigation`, `third-party-embeds`
@@ -44,6 +44,7 @@ External skills are pinned in `skills-lock.json`; run `pnpm skills:bootstrap` af
 4. Handle nullable Saleor fields intentionally — optional-chain for display, guard/throw when null is a real bug.
 5. Import via the `@/` alias. The storefront must not import `@/checkout/*` — cross-surface URLs go through `@paper/session-bridge`.
 6. Saleor only through loaders on `@/lib/saleor` (`cachedQuery`, `liveQuery`, `sessionQuery`, `mutate`). Run `pnpm data:lock` after a data change and review `data-layer.lock.md`.
+7. A new PDP layout is a template in `src/templates/pdp/`, selected in `src/config/template-selection.ts`. Do not edit the product route or `src/lib/storefront` to change layout. Read `rules/ui-templates.md`.
 
 Do not add `docs/plans/` or other plan writeups to the repo unless the user explicitly asks to publish one.
 
@@ -54,6 +55,7 @@ Do not add `docs/plans/` or other plan writeups to the repo unless the user expl
 | Storefront GraphQL → generated          | `src/graphql/*.graphql` → `src/gql/` (generated, do not edit)                      |
 | Checkout GraphQL → generated            | `src/checkout/graphql/*.graphql` → `src/checkout/graphql/generated/` (do not edit) |
 | UI components / sections / tokens       | `src/ui/components/` · `src/ui/sections/` · `src/styles/brand.css`                 |
+| PDP layout templates                    | `src/templates/pdp/` · `src/config/template-selection.ts`                          |
 | Cache manifest (single source of truth) | `src/lib/cache-manifest.ts`                                                        |
 | SEO helpers                             | `src/lib/seo/`                                                                     |
 
