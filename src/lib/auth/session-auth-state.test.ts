@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { GraphQLError } from "@/lib/graphql";
+import type { GraphQLError } from "@/lib/saleor";
 
 import { isDefinitiveAuthFailure, resolveSessionUserFetch } from "./session-auth-state";
 

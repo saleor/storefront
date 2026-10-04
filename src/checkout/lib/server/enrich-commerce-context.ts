@@ -22,7 +22,7 @@ import {
 	buildCheckoutCompleteContextMetadata,
 	shouldSkipCheckoutCompleteEnrichment,
 } from "@/lib/commerce-context/checkout-complete";
-import { executeAuthenticatedGraphQL, executePublicGraphQL } from "@/lib/graphql";
+import { liveQuery, mutate } from "@/lib/saleor";
 
 /** Best-effort: one attempt, then complete the order without attribution. */
 const ENRICH_TIMEOUT_MS = 1_500;
@@ -65,9 +65,8 @@ export async function enrichCheckoutCommerceContext(checkoutId: string): Promise
 		});
 		if (input.length === 0) return;
 
-		const result = await executeAuthenticatedGraphQL(checkoutMetadataUpdateDocument, {
+		const result = await mutate(checkoutMetadataUpdateDocument, {
 			variables: { id: checkoutId, input },
-			cache: "no-cache",
 			maxRetries: 0,
 			timeoutMs: ENRICH_TIMEOUT_MS,
 		});
@@ -85,9 +84,8 @@ export async function enrichCheckoutCommerceContext(checkoutId: string): Promise
 }
 
 async function readCheckoutMetadata(checkoutId: string): Promise<{ key: string; value: string }[] | null> {
-	const result = await executePublicGraphQL(checkoutCommerceContextDocument, {
+	const result = await liveQuery(checkoutCommerceContextDocument, {
 		variables: { id: checkoutId },
-		cache: "no-cache",
 		maxRetries: 0,
 		timeoutMs: ENRICH_TIMEOUT_MS,
 	});

@@ -1,6 +1,10 @@
+import "server-only";
+
 import { io } from "next/cache";
-import packageJson from "../../package.json";
-import { type TypedDocumentString } from "../gql/graphql";
+import packageJson from "../../../package.json";
+import { type TypedDocumentString } from "../../gql/graphql";
+import { recordResponse, takeReplay } from "./fixtures";
+import { recordSaleorCall } from "./ledger";
 
 const USER_AGENT = `${packageJson.name}/${packageJson.version}`;
 
@@ -229,7 +233,7 @@ async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: numbe
 // ============================================================================
 
 /** How to authenticate the request — session cookies or app token, never both. */
-type GraphQLAuth = "none" | "session" | "app";
+export type GraphQLAuth = "none" | "session" | "app";
 
 type FetchResult = GraphQLSuccess<Response> | GraphQLFailure;
 
@@ -253,6 +257,10 @@ async function fetchWithRetry(
 	}
 
 	const { maxRetries, delayMs, timeoutMs } = getRetryConfig(retry);
+	const requestBody = typeof input.body === "string" ? input.body : undefined;
+	const replayed = takeReplay(operationName, requestBody);
+	if (replayed.status === "miss") return networkError(`${operationName}: ${replayed.message}`);
+	if (replayed.status === "hit") return success(replayed.response);
 
 	for (let attempt = 0; attempt <= maxRetries; attempt++) {
 		try {
@@ -289,7 +297,7 @@ async function fetchWithRetry(
 				continue;
 			}
 
-			return success(response);
+			return success(await recordResponse(operationName, requestBody, response, auth));
 		} catch (error) {
 			const isTimeout = error instanceof Error && error.name === "AbortError";
 			if (attempt < maxRetries) {
@@ -316,10 +324,15 @@ async function fetchWithRetry(
 // GraphQL Execution
 // ============================================================================
 
-type GraphQLOptions<Variables> = {
+export type GraphQLOptions<Variables> = {
 	headers?: HeadersInit;
+	/**
+	 * Internal only. `liveQuery` / `sessionQuery` / `mutate` pass `no-cache`.
+	 * Cached reads omit it so `"use cache"` owns freshness. There is no `revalidate`.
+	 */
 	cache?: RequestCache;
-	revalidate?: number;
+	/** Set by the access-mode wrappers for the dev ledger. */
+	ledgerMode?: string;
 	/** Override the default retry count (runtime: 3). Use `0` for best-effort side effects. */
 	maxRetries?: number;
 	/** Override `SALEOR_REQUEST_TIMEOUT_MS`. Also applies to session auth (otherwise untimed). */
@@ -339,11 +352,12 @@ function extractErrorCodes(errors: GraphQLResponseBody<unknown>["errors"]): stri
 /**
  * Internal base GraphQL executor. Returns a Result type.
  */
-async function executeGraphQL<Result, Variables>(
+export async function executeGraphQL<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
 	options: GraphQLOptions<Variables> & { auth: GraphQLAuth },
 ): Promise<GraphQLResult<Result>> {
-	const { variables, headers, cache, revalidate, auth, maxRetries, timeoutMs } = options;
+	const { variables, headers, cache, auth, maxRetries, timeoutMs, ledgerMode } = options;
+	const started = Date.now();
 
 	// @saleor/auth-sdk checks JWT expiry with `Date.now()` inside `fetchWithAuth`.
 	// Under Cache Components + partial prefetching that sync clock read must happen in
@@ -355,12 +369,20 @@ async function executeGraphQL<Result, Variables>(
 
 	const operationName = operation.toString().match(/(?:query|mutation)\s+(\w+)/)?.[1] || "UnknownOperation";
 	const variablesForLog = variables ? formatVariablesForLog(variables) : undefined;
+	const finish = (result: GraphQLResult<Result>): GraphQLResult<Result> => {
+		recordSaleorCall({
+			op: operationName,
+			mode: ledgerMode ?? "raw",
+			auth,
+			ok: result.ok,
+			ms: Date.now() - started,
+		});
+		return result;
+	};
 
 	if (process.env.NODE_ENV === "development" && process.env.DEBUG_CACHE) {
 		console.log(
-			`[GraphQL] ${operationName} | auth: ${auth} | cache: ${cache || "default"} | revalidate: ${
-				revalidate || "none"
-			}`,
+			`[GraphQL] ${operationName} | auth: ${auth} | cache: ${cache || "default"} | mode: ${ledgerMode || "raw"}`,
 		);
 	}
 
@@ -373,7 +395,7 @@ async function executeGraphQL<Result, Variables>(
 	if (auth === "app") {
 		const token = process.env.SALEOR_APP_TOKEN;
 		if (!token) {
-			return networkError("Missing SALEOR_APP_TOKEN");
+			return finish(networkError("Missing SALEOR_APP_TOKEN"));
 		}
 		requestHeaders.Authorization = `Bearer ${token}`;
 	}
@@ -386,7 +408,6 @@ async function executeGraphQL<Result, Variables>(
 			...(variables && { variables }),
 		}),
 		...(cache !== undefined ? { cache } : {}),
-		...(revalidate !== undefined ? { next: { revalidate } } : {}),
 	};
 
 	const fetchResult = await requestQueue.enqueue(() =>
@@ -398,14 +419,14 @@ async function executeGraphQL<Result, Variables>(
 	);
 
 	if (!fetchResult.ok) {
-		return fetchResult;
+		return finish(fetchResult);
 	}
 
 	const response = fetchResult.data;
 
 	if (!response.ok) {
 		const body = await response.text().catch(() => "");
-		return httpError(response.status, `HTTP ${response.status}: ${response.statusText}\n${body}`);
+		return finish(httpError(response.status, `HTTP ${response.status}: ${response.statusText}\n${body}`));
 	}
 
 	const body = (await response.json()) as GraphQLResponseBody<Result>;
@@ -413,50 +434,14 @@ async function executeGraphQL<Result, Variables>(
 
 	// GraphQL allows partial success — return data when Saleor included it.
 	if (body.data !== null && body.data !== undefined) {
-		return success(body.data);
+		return finish(success(body.data));
 	}
 
 	if (messages.length > 0) {
-		return graphqlError(messages, extractErrorCodes(body.errors));
+		return finish(graphqlError(messages, extractErrorCodes(body.errors)));
 	}
 
-	return graphqlError(["No data in GraphQL response"]);
-}
-
-/**
- * Public Saleor API access — no Authorization header.
- *
- * Use for catalog, menus, checkout read by ID (ID is the credential).
- */
-export async function executePublicGraphQL<Result, Variables>(
-	operation: TypedDocumentString<Result, Variables>,
-	options: GraphQLOptions<Variables>,
-): Promise<GraphQLResult<Result>> {
-	return executeGraphQL(operation, { ...options, auth: "none" });
-}
-
-/**
- * Customer session — JWT from Saleor Auth cookies via `fetchWithAuth`.
- *
- * Use for `me`, orders, checkout mutations, cart lines.
- */
-export async function executeAuthenticatedGraphQL<Result, Variables>(
-	operation: TypedDocumentString<Result, Variables>,
-	options: GraphQLOptions<Variables>,
-): Promise<GraphQLResult<Result>> {
-	return executeGraphQL(operation, { ...options, auth: "session" });
-}
-
-/**
- * App token — `SALEOR_APP_TOKEN` from env (server-side only).
- *
- * Use for `channels` and other `AUTHENTICATED_APP` queries.
- */
-export async function executeAppGraphQL<Result, Variables>(
-	operation: TypedDocumentString<Result, Variables>,
-	options: GraphQLOptions<Variables>,
-): Promise<GraphQLResult<Result>> {
-	return executeGraphQL(operation, { ...options, auth: "app" });
+	return finish(graphqlError(["No data in GraphQL response"]));
 }
 
 // ============================================================================

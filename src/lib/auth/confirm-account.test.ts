@@ -4,19 +4,19 @@ vi.mock("server-only", () => ({}));
 
 import { confirmAccountWithToken } from "./confirm-account";
 
-const executeRawGraphQL = vi.fn();
+const rawMutation = vi.fn();
 
-vi.mock("@/lib/graphql", () => ({
-	executeRawGraphQL: (...args: unknown[]) => executeRawGraphQL(...args),
+vi.mock("@/lib/saleor", () => ({
+	rawMutation: (...args: unknown[]) => rawMutation(...args),
 }));
 
 describe("confirmAccountWithToken", () => {
 	beforeEach(() => {
-		executeRawGraphQL.mockReset();
+		rawMutation.mockReset();
 	});
 
 	it("returns ok when Saleor confirms the user", async () => {
-		executeRawGraphQL.mockResolvedValue({
+		rawMutation.mockResolvedValue({
 			ok: true,
 			data: {
 				confirmAccount: {
@@ -29,7 +29,7 @@ describe("confirmAccountWithToken", () => {
 		await expect(confirmAccountWithToken("user@example.com", "token", "secret")).resolves.toEqual({
 			ok: true,
 		});
-		expect(executeRawGraphQL).toHaveBeenCalledWith(
+		expect(rawMutation).toHaveBeenCalledWith(
 			expect.objectContaining({
 				variables: { email: "user@example.com", token: "token", password: "secret" },
 			}),
@@ -37,7 +37,7 @@ describe("confirmAccountWithToken", () => {
 	});
 
 	it("maps Saleor validation errors", async () => {
-		executeRawGraphQL.mockResolvedValue({
+		rawMutation.mockResolvedValue({
 			ok: true,
 			data: {
 				confirmAccount: {

@@ -1,3 +1,5 @@
+import "server-only";
+
 import {
 	ProductDetailsDocument,
 	ProductVariantForPdpDocument,
@@ -14,8 +16,7 @@ import {
 } from "@/lib/catalog/buy-box-strategy";
 import { resolveByPossiblyTranslatedSlug } from "@/lib/catalog/resolve-by-slug";
 import { tagPrimaryCatalogSlug } from "@/lib/catalog/tag-primary-slug";
-import { executePublicGraphQL } from "@/lib/graphql";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { pickTranslatedName, withTranslatedProductFields } from "@/lib/saleor-translations";
 
@@ -51,12 +52,12 @@ export async function getProductData(
 ): Promise<ProductShell | null> {
 	"use cache";
 	const decodedSlug = decodeURIComponent(slug);
-	applyCacheProfile(CACHE_PROFILES.products, decodedSlug);
-
 	const languageVariables = graphqlLanguageCodeVariables(localeSlug);
 
 	const fetchProduct = async (vars: { slug: string; slugLanguageCode?: LanguageCodeEnum }) => {
-		const result = await executePublicGraphQL(ProductDetailsDocument, {
+		const data = await cachedQuery(ProductDetailsDocument, {
+			profile: CACHE_PROFILES.products,
+			tag: decodedSlug,
 			variables: {
 				slug: vars.slug,
 				channel,
@@ -65,15 +66,7 @@ export async function getProductData(
 			},
 		});
 
-		if (!result.ok) {
-			console.error(
-				`[getProductData] Failed to fetch product ${vars.slug} for ${channel}:`,
-				result.error.message,
-			);
-			return null;
-		}
-
-		return result.data.product;
+		return data.product;
 	};
 
 	const product = await resolveByPossiblyTranslatedSlug({
@@ -166,8 +159,6 @@ export async function getProductVariantsForPdp(
 	localeSlug: string,
 ): Promise<ProductVariantsForPdpResult> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug);
-
 	const decodedSlug = decodeURIComponent(slug);
 	const languageVariables = graphqlLanguageCodeVariables(localeSlug);
 
@@ -241,13 +232,14 @@ async function getProductVariantForPdp(
 ): Promise<PdpVariant | null> {
 	"use cache";
 	// Same product:{slug} tag as the shell/list so PRODUCT_* webhooks bust this entry.
-	applyCacheProfile(CACHE_PROFILES.products, productSlug);
 
 	const id = deepLink.kind === "id" ? decodeURIComponent(deepLink.id) : undefined;
 	const sku = deepLink.kind === "sku" ? deepLink.sku : undefined;
 	const cacheKey = deepLink.kind === "id" ? id! : `sku:${sku}`;
 
-	const result = await executePublicGraphQL(ProductVariantForPdpDocument, {
+	const data = await cachedQuery(ProductVariantForPdpDocument, {
+		profile: CACHE_PROFILES.products,
+		tag: productSlug,
 		variables: {
 			id,
 			sku,
@@ -256,12 +248,7 @@ async function getProductVariantForPdp(
 		},
 	});
 
-	if (!result.ok) {
-		console.error(`[getProductVariantForPdp] Failed to fetch variant ${cacheKey}:`, result.error.message);
-		return null;
-	}
-
-	const variant = result.data.productVariant;
+	const variant = data.productVariant;
 	if (!variant) return null;
 	if (variant.product?.id && variant.product.id !== expectedProductId) {
 		console.warn(
@@ -291,7 +278,9 @@ async function fetchVariantPage(
 	hasNextPage: boolean;
 	endCursor: string | null | undefined;
 } | null> {
-	const result = await executePublicGraphQL(ProductVariantsForPdpDocument, {
+	const data = await cachedQuery(ProductVariantsForPdpDocument, {
+		profile: CACHE_PROFILES.products,
+		tag: slug,
 		variables: {
 			slug,
 			channel,
@@ -301,15 +290,7 @@ async function fetchVariantPage(
 		},
 	});
 
-	if (!result.ok) {
-		console.error(
-			`[getProductVariantsForPdp] Failed to fetch variants for ${slug} (${channel}):`,
-			result.error.message,
-		);
-		return null;
-	}
-
-	const connection = result.data.product?.productVariants;
+	const connection = data.product?.productVariants;
 	if (!connection) return null;
 
 	return {

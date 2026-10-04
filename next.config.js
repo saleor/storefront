@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 import createNextIntlPlugin from "next-intl/plugin";
-import { paperCacheLifeProfiles } from "./src/lib/cache-life-profiles.data.mjs";
+import { paperCacheLifeProfiles } from "./src/lib/saleor/cache/life-profiles.data.mjs";
 import {
 	PUBLIC_ASSET_CACHE_CONTROL,
 	publicAssetCacheHeaderSource,

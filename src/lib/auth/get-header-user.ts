@@ -11,9 +11,5 @@ export type HeaderAuthState = SessionAuthState<HeaderUser>;
 
 /** Header user menu — server session only (BFF cookies, no browser Saleor calls). */
 export const getHeaderAuthState = cache(async (): Promise<HeaderAuthState> => {
-	return resolveSessionUser(() =>
-		fetchAuthenticatedUserIfSession(CurrentUserDocument, {
-			cache: "no-cache",
-		}),
-	);
+	return resolveSessionUser(() => fetchAuthenticatedUserIfSession(CurrentUserDocument, {}));
 });

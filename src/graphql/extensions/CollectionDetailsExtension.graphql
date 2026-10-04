@@ -1,0 +1,4 @@
+# Fork-owned fields on collection pages. Add selections here; do not edit the core collection query.
+fragment CollectionDetailsExtension on Collection {
+	__typename
+}

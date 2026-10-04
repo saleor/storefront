@@ -39,20 +39,21 @@ Paper runs Next.js 16 with [`cacheComponents: true`](../../../next.config.js) (s
 All TTLs and tags are defined in **`src/lib/cache-manifest.ts`**. Cached functions read it via `applyCacheProfile()`; `/api/cache-info` serves it to the saleor-paper-app. Change a TTL or tag pattern in **one** place and both behavior and the Dashboard view update.
 
 ```typescript
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
 async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug); // sets cacheLife tier + cacheTag
 
-	return executePublicGraphQL(ProductDetailsDocument, {
+	return cachedQuery(ProductDetailsDocument, {
+		profile: CACHE_PROFILES.products,
+		tag: slug,
 		variables: { slug, channel, ...graphqlLanguageCodeVariables(localeSlug) },
 	});
 }
 ```
 
-Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings that drift from the manifest. Do **not** add fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness.
+Always use `cachedQuery` (it applies the manifest profile) — **never** raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings that drift from the manifest. Do **not** add fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness.
 
 ### Tag registry
 

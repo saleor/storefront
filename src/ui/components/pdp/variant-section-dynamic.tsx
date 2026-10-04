@@ -1,13 +1,9 @@
-import { refresh } from "next/cache";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { getDiscountInfo } from "@/lib/pricing";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
 import { getStorefrontContent } from "@/lib/content/server";
-import { CheckoutAddLineDocument } from "@/gql/graphql";
-import { emitCommerceEvent } from "@/lib/analytics/emit.server";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import * as Checkout from "@/lib/checkout";
+import { addVariantToCart } from "@/app/actions";
 import { getTranslations } from "next-intl/server";
 import { resolvePdpVariants } from "@/lib/catalog/get-product-data";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
@@ -127,49 +123,14 @@ export async function VariantSectionDynamic({
 		}
 
 		try {
-			const checkout = await Checkout.findOrCreate({
-				checkoutId: await Checkout.getIdFromCookies(channel),
-				channel: channel,
-				localeSlug,
-			});
-
-			if (!checkout) {
-				console.error("Add to cart: Failed to create checkout");
-				return;
-			}
-
-			await Checkout.saveIdToCookie(channel, checkout.id);
-
-			const addResult = await executeAuthenticatedGraphQL(CheckoutAddLineDocument, {
-				variables: {
-					id: checkout.id,
-					productVariantId: decodeURIComponent(selectedVariantID),
-				},
-				cache: "no-cache",
-			});
-
-			if (!addResult.ok) {
-				console.error("Add to cart failed:", addResult.error.message);
-				return;
-			}
-
-			if (addResult.data.checkoutLinesAdd?.errors?.length) {
-				console.error("Add to cart failed:", addResult.data.checkoutLinesAdd.errors);
-				return;
-			}
-
 			const linePrice = selectedVariant?.pricing?.price?.gross;
-			emitCommerceEvent({
-				name: "product_added_to_cart",
+			await addVariantToCart({
 				channel,
+				localeSlug,
+				variantId: selectedVariantID,
 				value: linePrice?.amount ?? 0,
 				currency: linePrice?.currency ?? "",
 			});
-
-			// Cart badge/drawer are cookie-gated dynamic holes — never in shared cache.
-			// Re-render them for *this* user only; a revalidatePath here would purge
-			// shared shells sitewide on every add-to-cart (see paper-vercel-cost rule).
-			refresh();
 		} catch (error) {
 			console.error("Add to cart failed:", error);
 		}

@@ -1,0 +1,21 @@
+{
+	"files": {
+		"src/lib/saleor/AGENTS.md": "36b86a4a7a1ccc8ffc673e563709548ca20473c1e4057bc493134b62d8f97656",
+		"src/lib/saleor/access.ts": "faaece05c880c2a61490fa6e76a39e51a6ad9c2f13ffa5de5a6714a83165484b",
+		"src/lib/saleor/cache/life-profiles.data.mjs": "3d4d75ad68f69c8f83b26f552440944b23ca3aa34f55ecb9f97f024e8fe46cf0",
+		"src/lib/saleor/cache/life-profiles.ts": "b40340cce4e7e6c6f5cb3c8972898bf2474551b7e664035ef9601ae22bad83ba",
+		"src/lib/saleor/cache/manifest.ts": "47b2c5dcfa03ee1f52fda42b8212a3fc0a040ded2ed6cb4e717fe1aa26be4574",
+		"src/lib/saleor/cache/tag-primary.ts": "9b4c7a0414e5d049e802fd7df662983a367b16646d87fae8ce0e55ab012aad56",
+		"src/lib/saleor/client.ts": "f42a3ad99f37d8706ed6f8ad8bdaaaf4bd0a370db9985e97d265ad6e452294de",
+		"src/lib/saleor/extensions.ts": "72d81cb374b9f7d84cd7736254947b91074efd6619ae0a2187c29662a87ba392",
+		"src/lib/saleor/fixtures.ts": "ea2b8f5a588f6172b35d43c213e8099176323dcc9e6713600a46d74d7ecbca5c",
+		"src/lib/saleor/index.ts": "060a090048441e96ed6fb7cfb5af004e9183b2f5d35fa9d14b0c87602ada528b",
+		"src/lib/saleor/invalidation/revalidate-tags.ts": "e28772954d168642bd82fcfc304b0f6287712cdbf1154f32422c2d9ecee899a0",
+		"src/lib/saleor/invalidation/webhook-events.ts": "5dd875565d716294383b96b63f8b42bc5b901d4bfd5eecc7a70b8170e581162b",
+		"src/lib/saleor/ledger.ts": "9b1afdbc3b13fefb0c3db13b430754cfb8237e01bdefb4d35135fdb700330506",
+		"src/lib/saleor/operations.ts": "e15ae6604060a5b78ef38f32f5445d793c6cc68a604f9df8618a8381fb04978c",
+		"src/lib/saleor/raw.ts": "45e3d30eabf2cca7f726571e3ac5b04c01b68f06319028944ad2dbf5dc4005cd",
+		"src/app/api/revalidate/route.ts": "29a3c28810b068c2f96a8b3631365c14e25a214c5e5d4be1bc2b9a8a1c2fed22",
+		"src/app/api/cache-info/route.ts": "fb640dddf16d6d360a4ea2e508e03c9b7f6239bb00c899c508126c31e40d2784"
+	}
+}

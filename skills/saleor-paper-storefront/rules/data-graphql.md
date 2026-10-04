@@ -62,11 +62,12 @@ This regenerates TypeScript types. **Always run the appropriate command after an
 
 ```typescript
 import { ProductDetailsDocument } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 
-const { product } = await executePublicGraphQL(ProductDetailsDocument, {
+const product = await cachedQuery(ProductDetailsDocument, {
+	profile: CACHE_PROFILES.products,
+	tag: slug,
 	variables: { slug, channel },
-	revalidate: 60,
 });
 // TypeScript now recognizes product.newField
 ```

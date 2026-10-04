@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { AlertCircle, RefreshCw, Home, ArrowLeft } from "lucide-react";
-import { type SaleorError } from "@/lib/graphql";
 import { buttonClassName } from "@/ui/components/ui/button";
 
 export interface ErrorContentProps {
@@ -20,7 +19,7 @@ export function ErrorContent({ error, reset }: ErrorContentProps) {
 		console.error("[Error Page]", error);
 	}, [error]);
 
-	const saleorError = error as SaleorError;
+	const saleorError = error as Error & { isRetryable?: boolean; userMessage?: string; type?: string };
 	const isRetryable = saleorError.isRetryable ?? true;
 	const userMessage = saleorError.userMessage ?? "Something went wrong loading this page.";
 	const errorType = saleorError.type ?? "unknown";
@@ -28,7 +27,7 @@ export function ErrorContent({ error, reset }: ErrorContentProps) {
 	return (
 		<div className="flex min-h-[50vh] flex-col items-center justify-center px-4 py-16">
 			<div className="mx-auto max-w-md text-center">
-				<div className="bg-destructive/10 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+				<div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
 					<AlertCircle className="h-8 w-8 text-destructive" />
 				</div>
 
@@ -66,7 +65,7 @@ export function ErrorContent({ error, reset }: ErrorContentProps) {
 					Go back
 				</button>
 
-				{error.digest && <p className="text-muted-foreground/60 mt-8 text-xs">Error ID: {error.digest}</p>}
+				{error.digest && <p className="mt-8 text-xs text-muted-foreground/60">Error ID: {error.digest}</p>}
 			</div>
 		</div>
 	);

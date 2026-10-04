@@ -1,5 +1,7 @@
+import "server-only";
+
 import { getDefaultLocaleSlug, resolveLocaleFromSlug } from "@/config/locale";
-import { applyCacheProfile, CACHE_PROFILES } from "@/lib/cache-manifest";
+import { bindCacheProfile, CACHE_PROFILES } from "@/lib/saleor";
 import { loadStorefrontContent } from "@/lib/content/provider";
 import type { StorefrontContent } from "@/lib/content/types";
 
@@ -13,7 +15,7 @@ export async function getStorefrontContent(
 ): Promise<StorefrontContent> {
 	"use cache";
 	const bcp47 = resolveLocaleFromSlug(localeSlug).bcp47;
-	applyCacheProfile(CACHE_PROFILES.storefrontContent, { channel, locale: bcp47 });
+	bindCacheProfile(CACHE_PROFILES.storefrontContent, { channel, locale: bcp47 });
 
 	return loadStorefrontContent({ channel, locale: localeSlug });
 }

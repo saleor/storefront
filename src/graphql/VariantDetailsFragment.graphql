@@ -1,4 +1,5 @@
 fragment VariantDetails on ProductVariant {
+	...VariantDetailsExtension
 	id
 	name
 	sku

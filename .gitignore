@@ -51,6 +51,10 @@ yarn-error.log*
 # Local HAR captures — often contain cookies and full response bodies
 *.har
 
+# SALEOR_FIXTURES=record output. Public queries only, still local.
+e2e/fixtures/saleor/**
+!e2e/fixtures/saleor/README.md
+
 # vercel
 .vercel
 

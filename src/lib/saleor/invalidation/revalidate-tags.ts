@@ -1,5 +1,5 @@
 import { revalidateTag } from "next/cache";
-import type { CacheLifeProfile, CacheProfile } from "@/lib/cache-manifest";
+import type { CacheLifeProfile, CacheProfile } from "../cache/manifest";
 
 /**
  * Revalidate multiple tags in parallel.

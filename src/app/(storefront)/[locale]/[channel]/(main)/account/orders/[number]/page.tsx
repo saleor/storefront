@@ -3,10 +3,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { MapPin, CreditCard } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { OrderByNumberDocument } from "@/gql/graphql";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { getOrdersForNumberLookup } from "@/lib/account/get-orders";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { pickTranslatedName } from "@/lib/saleor-translations";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
@@ -39,10 +37,7 @@ async function OrderDetailContent({ params }: Props) {
 		return <p className="text-sm text-muted-foreground">{t("signInRequired")}</p>;
 	}
 
-	const result = await executeAuthenticatedGraphQL(OrderByNumberDocument, {
-		variables: { first: 100, ...graphqlLanguageCodeVariables(locale) },
-		cache: "no-cache",
-	});
+	const result = await getOrdersForNumberLookup(locale);
 
 	if (!result.ok) {
 		return <p className="text-sm text-muted-foreground">{t("loadFailed")}</p>;
@@ -92,7 +87,7 @@ async function OrderDetailContent({ params }: Props) {
 								return (
 									<div key={line.id} className="flex items-center gap-4 px-5 py-4">
 										{product.thumbnail && (
-											<div className="bg-secondary/30 h-16 w-16 shrink-0 overflow-hidden rounded-lg border">
+											<div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-secondary/30">
 												<Image
 													src={product.thumbnail.url}
 													alt={product.thumbnail.alt ?? productName}
@@ -189,7 +184,7 @@ async function OrderDetailContent({ params }: Props) {
 
 					<LinkWithChannel
 						href="/contact"
-						className="hover:bg-secondary/50 block w-full rounded-xl border px-5 py-3 text-center text-sm font-medium transition-colors"
+						className="block w-full rounded-xl border px-5 py-3 text-center text-sm font-medium transition-colors hover:bg-secondary/50"
 					>
 						{t("needHelp")}
 					</LinkWithChannel>

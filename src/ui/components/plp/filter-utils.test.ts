@@ -1,9 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
-
-// Mock the graphql module to avoid server-only imports
-vi.mock("@/lib/graphql", () => ({
-	executePublicGraphQL: vi.fn(),
-}));
+import { describe, it, expect } from "vitest";
 
 import {
 	buildFilterVariables,

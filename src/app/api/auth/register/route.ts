@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
-import { executeRawGraphQL, asValidationError, getUserMessage } from "@/lib/graphql";
+import { rawMutation, asValidationError, getUserMessage } from "@/lib/saleor";
 
 const REGISTER_MUTATION = `
   mutation AccountRegister($input: AccountRegisterInput!) {
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const result = await executeRawGraphQL<AccountRegisterResult>({
+	const result = await rawMutation<AccountRegisterResult>({
 		query: REGISTER_MUTATION,
 		variables: {
 			input: {

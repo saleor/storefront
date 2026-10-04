@@ -338,6 +338,26 @@
 				"buildCatchAllTag",
 				"speedInsightsSampleRate"
 			]
+		},
+		{
+			"id": "2026-10-data-kernel",
+			"title": "Seal Saleor access behind src/lib/saleor with four access modes",
+			"upstreamSha": "",
+			"landedAt": "2026-10-04T23:50:00+02:00",
+			"introducedIn": "2026.10",
+			"requires": ["2026-08-cost-invariants"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "data-layer",
+			"touchPaths": [
+				"src/lib/saleor/",
+				"src/config/data-extensions.ts",
+				"src/graphql/extensions/",
+				"eslint/paper-data-layer.mjs",
+				"data-layer.lock.md",
+				"paper-core.lock.json"
+			],
+			"detectMarkers": ["cachedQuery", "liveQuery", "sessionQuery", "data-layer.lock.md"]
 		}
 	]
 }

@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { GraphQLResult } from "@/lib/graphql";
+import type { GraphQLResult } from "@/lib/saleor";
 import { hasAuthSession } from "./has-auth-session";
 import { resolveSessionUserFetch, type SessionAuthState } from "./session-auth-state";
 

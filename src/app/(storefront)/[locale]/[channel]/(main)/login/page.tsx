@@ -96,9 +96,7 @@ async function LoginContent({ locale, channel }: { locale: string; channel: stri
 	// Uncaught — `hasAuthSession` swallows `cookies()` throws and can hide this hole.
 	await cookies();
 
-	const auth = await resolveSessionUser(() =>
-		fetchAuthenticatedUserIfSession(CurrentUserDocument, { cache: "no-cache" }),
-	);
+	const auth = await resolveSessionUser(() => fetchAuthenticatedUserIfSession(CurrentUserDocument));
 
 	if (auth.status === "authenticated") {
 		redirect(buildStorefrontPath(locale, channel));

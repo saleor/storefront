@@ -1,0 +1,4 @@
+# Fork-owned fields on PDP / listing variants. Add selections here; do not edit VariantDetailsFragment.graphql.
+fragment VariantDetailsExtension on ProductVariant {
+	__typename
+}

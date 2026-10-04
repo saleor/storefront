@@ -5,7 +5,7 @@ import { CheckoutCreateDocument, CheckoutCustomerDetachDocument, CheckoutFindDoc
 import { type CartCheckout, withTranslatedCartCheckout } from "@/lib/cart-checkout";
 import { checkoutGraphqlLocaleVariables, resolveCheckoutLocaleSlug } from "@/lib/checkout-locale";
 import { checkoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create-context";
-import { executeAuthenticatedGraphQL, executePublicGraphQL } from "@/lib/graphql";
+import { liveQuery, mutate } from "@/lib/saleor";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
 /** Checkout id from this channel's cart cookie (`checkoutId-{channel}`). */
@@ -122,9 +122,8 @@ export const find = cache(async (checkoutId: string, localeSlug?: string): Promi
 		return null;
 	}
 
-	const result = await executePublicGraphQL(CheckoutFindDocument, {
+	const result = await liveQuery(CheckoutFindDocument, {
 		variables: { id: checkoutId, ...(await checkoutGraphqlLocaleVariables(localeSlug)) },
-		cache: "no-cache",
 	});
 
 	if (!result.ok || !result.data.checkout) {
@@ -159,8 +158,7 @@ export async function findOrCreate({
 
 export async function create({ channel, localeSlug }: { channel: string; localeSlug?: string }) {
 	const locale = await resolveCheckoutLocaleSlug(localeSlug);
-	return executeAuthenticatedGraphQL(CheckoutCreateDocument, {
-		cache: "no-cache",
+	return mutate(CheckoutCreateDocument, {
 		variables: {
 			channel,
 			...graphqlLanguageCodeVariables(locale),
@@ -175,8 +173,7 @@ export async function detachCustomer(checkoutId: string) {
 		return;
 	}
 
-	await executeAuthenticatedGraphQL(CheckoutCustomerDetachDocument, {
+	await mutate(CheckoutCustomerDetachDocument, {
 		variables: { id: checkoutId },
-		cache: "no-cache",
 	});
 }

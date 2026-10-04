@@ -112,5 +112,6 @@ query ProductDetails(
 				}
 			}
 		}
+		...ProductDetailsExtension
 	}
 }

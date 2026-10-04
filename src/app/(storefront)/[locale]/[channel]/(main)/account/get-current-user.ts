@@ -11,9 +11,5 @@ export type AccountAuthState = SessionAuthState<AccountUser>;
  * Returns guest / authenticated / unavailable — never conflates transient errors with signed out.
  */
 export const getAccountAuthState = cache(async (): Promise<AccountAuthState> => {
-	return resolveSessionUser(() =>
-		fetchAuthenticatedUserIfSession(CurrentUserProfileDocument, {
-			cache: "no-cache",
-		}),
-	);
+	return resolveSessionUser(() => fetchAuthenticatedUserIfSession(CurrentUserProfileDocument, {}));
 });

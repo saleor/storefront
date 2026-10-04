@@ -8,7 +8,7 @@ import {
 import type { CountryCode } from "@/checkout/graphql";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { fetchChannelDefaultCountryOnServer } from "@/checkout/lib/server/fetch-channel-default-country";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { liveQuery } from "@/lib/saleor";
 
 const channelQueryDocument = toTypedDocument<ChannelQuery, ChannelQueryVariables>(ChannelDocument);
 
@@ -19,9 +19,8 @@ export type ChannelCountriesResult = {
 
 export async function fetchChannelCountriesOnServer(channelSlug: string): Promise<ChannelCountriesResult> {
 	const [result, defaultCountryCode] = await Promise.all([
-		executePublicGraphQL(channelQueryDocument, {
+		liveQuery(channelQueryDocument, {
 			variables: { slug: channelSlug },
-			cache: "no-cache",
 		}),
 		fetchChannelDefaultCountryOnServer(channelSlug).catch(() => null),
 	]);

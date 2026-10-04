@@ -3,8 +3,13 @@
 import { cookies } from "next/headers";
 import { refresh } from "next/cache";
 import { signOutSession } from "@/lib/auth/bff-server";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import { CheckoutDeleteLinesDocument, CheckoutLinesUpdateDocument } from "@/gql/graphql";
+import { mutate } from "@/lib/saleor";
+import {
+	CheckoutAddLineDocument,
+	CheckoutDeleteLinesDocument,
+	CheckoutLinesUpdateDocument,
+} from "@/gql/graphql";
+import { emitCommerceEvent } from "@/lib/analytics/emit.server";
 import * as Checkout from "@/lib/checkout";
 
 // Private state (session/cart cookies) lives in dynamic holes that read cookies at
@@ -60,12 +65,11 @@ export async function clearCheckout(channel: string) {
 }
 
 export async function deleteCartLine(checkoutId: string, lineId: string) {
-	const result = await executeAuthenticatedGraphQL(CheckoutDeleteLinesDocument, {
+	const result = await mutate(CheckoutDeleteLinesDocument, {
 		variables: {
 			checkoutId,
 			lineIds: [lineId],
 		},
-		cache: "no-cache",
 	});
 
 	if (result.ok) {
@@ -83,12 +87,59 @@ export async function updateCartLineQuantity(checkoutId: string, lineId: string,
 		return deleteCartLine(checkoutId, lineId);
 	}
 
-	await executeAuthenticatedGraphQL(CheckoutLinesUpdateDocument, {
+	await mutate(CheckoutLinesUpdateDocument, {
 		variables: {
 			checkoutId,
 			lines: [{ lineId, quantity }],
 		},
-		cache: "no-cache",
+	});
+
+	refresh();
+}
+
+/** Add a variant to the channel cart. Private refresh only — never busts the shared cache. */
+export async function addVariantToCart(input: {
+	channel: string;
+	localeSlug: string;
+	variantId: string;
+	value?: number;
+	currency?: string;
+}) {
+	const checkout = await Checkout.findOrCreate({
+		checkoutId: await Checkout.getIdFromCookies(input.channel),
+		channel: input.channel,
+		localeSlug: input.localeSlug,
+	});
+
+	if (!checkout) {
+		console.error("Add to cart: Failed to create checkout");
+		return;
+	}
+
+	await Checkout.saveIdToCookie(input.channel, checkout.id);
+
+	const addResult = await mutate(CheckoutAddLineDocument, {
+		variables: {
+			id: checkout.id,
+			productVariantId: decodeURIComponent(input.variantId),
+		},
+	});
+
+	if (!addResult.ok) {
+		console.error("Add to cart failed:", addResult.error.message);
+		return;
+	}
+
+	if (addResult.data.checkoutLinesAdd?.errors?.length) {
+		console.error("Add to cart failed:", addResult.data.checkoutLinesAdd.errors);
+		return;
+	}
+
+	emitCommerceEvent({
+		name: "product_added_to_cart",
+		channel: input.channel,
+		value: input.value ?? 0,
+		currency: input.currency ?? "",
 	});
 
 	refresh();

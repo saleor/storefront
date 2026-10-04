@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isCacheableListingView } from "./get-product-listing";
+import { isCacheableListingView } from "./listing-view";
 
 describe("isCacheableListingView", () => {
 	it("admits the unfiltered first page", () => {

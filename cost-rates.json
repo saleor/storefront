@@ -1,0 +1,8 @@
+{
+	"note": "Shape of the Vercel bill used by pnpm cost:estimate. Not a quote. See paper-vercel-cost.",
+	"perMillion": {
+		"functionInvocations": 0.6,
+		"edgeRequests": 2,
+		"isrWrites8kb": 4
+	}
+}

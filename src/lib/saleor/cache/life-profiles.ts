@@ -1,4 +1,4 @@
-import { paperCacheLifeProfiles as paperCacheLifeProfilesData } from "./cache-life-profiles.data.mjs";
+import { paperCacheLifeProfiles as paperCacheLifeProfilesData } from "./life-profiles.data.mjs";
 
 /**
  * Paper storefront — cacheLife profile definitions

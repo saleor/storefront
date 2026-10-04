@@ -1,4 +1,5 @@
 import graphqlPlugin from "@graphql-eslint/eslint-plugin";
+import paperDataLayer from "./eslint/paper-data-layer.mjs";
 import nextEnv from "@next/env";
 import nextVitals from "eslint-config-next/core-web-vitals";
 
@@ -13,9 +14,7 @@ nextEnv.loadEnvConfig(process.cwd());
 const saleorSchemaUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 
 if (!saleorSchemaUrl) {
-	throw new Error(
-		"NEXT_PUBLIC_SALEOR_API_URL is required to lint GraphQL documents. Set it in .env.local.",
-	);
+	throw new Error("NEXT_PUBLIC_SALEOR_API_URL is required to lint GraphQL documents. Set it in .env.local.");
 }
 
 const graphqlConfigBlock = {
@@ -126,6 +125,19 @@ const config = [
 		},
 	},
 	graphqlConfigBlock,
+	{
+		files: ["src/**/*.{ts,tsx}"],
+		plugins: { paper: paperDataLayer },
+		rules: {
+			"paper/saleor-access": "error",
+			"paper/no-direct-saleor": "error",
+			"paper/cache-api": "error",
+			"paper/use-cache-shape": "error",
+			"paper/surface-boundary": "error",
+			"paper/client-boundary": "error",
+			"paper/no-lib-ui": "error",
+		},
+	},
 ];
 
 export default config;

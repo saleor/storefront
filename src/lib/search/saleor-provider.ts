@@ -5,7 +5,9 @@
  * Replace this with Typesense/Algolia/Meilisearch for production.
  */
 
-import { executePublicGraphQL } from "@/lib/graphql";
+import "server-only";
+
+import { liveQuery } from "@/lib/saleor";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { SearchProductsDocument, OrderDirection, ProductOrderField } from "@/gql/graphql";
 import { toProductCardData } from "@/ui/components/plp/utils";
@@ -37,7 +39,7 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 	// Build pagination - Saleor uses cursor-based pagination
 	const isBackward = direction === "backward" && cursor;
 
-	const result = await executePublicGraphQL(SearchProductsDocument, {
+	const result = await liveQuery(SearchProductsDocument, {
 		variables: {
 			search: query,
 			channel,
@@ -49,7 +51,6 @@ export async function searchProducts(options: SearchOptions): Promise<SearchResu
 			before: isBackward ? cursor : undefined,
 			...graphqlLanguageCodeVariables(locale),
 		},
-		revalidate: 60,
 	});
 
 	if (!result.ok || !result.data.products) {

@@ -10,7 +10,7 @@ import {
 	type ProductOrder,
 } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { liveQuery } from "@/lib/saleor";
 import { getPaginatedListVariables } from "@/lib/utils";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
@@ -22,7 +22,7 @@ import {
 	type ListingViewParams,
 } from "@/lib/catalog/get-product-listing";
 import { buildProductListingConstraints, buildSortVariables } from "@/ui/components/plp/filter-utils";
-import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+import { resolveCategorySlugsToIds } from "@/lib/catalog/resolve-category-slugs";
 import { toProductCardData } from "@/ui/components/plp/utils";
 import type { ListingPageInfo, ListingPayload, ListingSurface } from "./listing-query";
 import { listingViewFromRecord } from "./listing-query";
@@ -98,7 +98,7 @@ async function fetchLiveAll(
 		sizes: view.sizes,
 	});
 
-	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
+	const result = await liveQuery(ProductListPaginatedDocument, {
 		variables: {
 			...paginationVariables,
 			channel,
@@ -129,7 +129,7 @@ async function fetchLiveCategory(
 		sizes: view.sizes,
 	});
 
-	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
+	const result = await liveQuery(ProductListByCategoryDocument, {
 		variables: {
 			slug: categorySlug,
 			channel,
@@ -161,7 +161,7 @@ async function fetchLiveCollection(
 		sizes: view.sizes,
 	});
 
-	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
+	const result = await liveQuery(ProductListByCollectionDocument, {
 		variables: {
 			slug: collectionSlug,
 			channel,
