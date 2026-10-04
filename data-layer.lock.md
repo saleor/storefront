@@ -32,9 +32,9 @@ A diff here is a Saleor access or cache-profile change — review it for cost an
 | mutate           | AccountAddressDeleteDocument          | —                                | src/app/(storefront)/[locale]/[channel]/(main)/account/actions.ts:122 |
 | mutate           | AccountSetDefaultAddressDocument      | —                                | src/app/(storefront)/[locale]/[channel]/(main)/account/actions.ts:147 |
 | mutate           | AccountRequestDeletionDocument        | —                                | src/app/(storefront)/[locale]/[channel]/(main)/account/actions.ts:170 |
-| mutate           | CheckoutDeleteLinesDocument           | —                                | src/app/actions.ts:64                                                 |
-| mutate           | CheckoutLinesUpdateDocument           | —                                | src/app/actions.ts:86                                                 |
-| mutate           | CheckoutAddLineDocument               | —                                | src/app/actions.ts:117                                                |
+| mutate           | CheckoutDeleteLinesDocument           | —                                | src/app/actions.ts:68                                                 |
+| mutate           | CheckoutLinesUpdateDocument           | —                                | src/app/actions.ts:90                                                 |
+| mutate           | CheckoutAddLineDocument               | —                                | src/app/actions.ts:121                                                |
 | rawMutation      | —                                     | —                                | src/app/api/auth/register/route.ts:79                                 |
 | rawMutation      | —                                     | —                                | src/app/api/auth/reset-password/route.ts:71                           |
 | mutate           | checkoutMetadataUpdateDocument        | —                                | src/checkout/lib/server/enrich-commerce-context.ts:68                 |
