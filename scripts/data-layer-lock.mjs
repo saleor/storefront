@@ -10,6 +10,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
+import prettier from "prettier";
 import ts from "typescript";
 
 const ROOT = join(import.meta.dirname, "..");
@@ -96,7 +97,7 @@ const lines = [
 	),
 	"",
 ];
-const next = `${lines.join("\n")}\n`;
+const next = await prettier.format(`${lines.join("\n")}\n`, { filepath: OUT });
 
 if (process.argv.includes("--check")) {
 	const current = readFileSync(OUT, "utf8");
