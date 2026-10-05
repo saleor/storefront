@@ -64,10 +64,10 @@ A diff here is a Saleor access or cache-profile change — review it for cost an
 | bindCacheProfile | —                                       | —                                | src/lib/content/get-announcement-bar-props.ts:39                      |
 | bindCacheProfile | —                                       | —                                | src/lib/content/get-storefront-content.ts:18                          |
 | cachedQuery      | StorefrontContentPagesDocument          | CACHE_PROFILES.storefrontContent | src/lib/content/saleor/saleor-provider.ts:24                          |
-| cachedQuery      | ProductListByCategoryProductsDocument   | input.profile                    | src/lib/listing/providers/saleor/index.ts:86                          |
-| liveQuery        | ProductListByCategoryProductsDocument   | —                                | src/lib/listing/providers/saleor/index.ts:92                          |
-| cachedQuery      | ProductListByCollectionProductsDocument | input.profile                    | src/lib/listing/providers/saleor/index.ts:98                          |
-| liveQuery        | ProductListByCollectionProductsDocument | —                                | src/lib/listing/providers/saleor/index.ts:104                         |
-| cachedQuery      | ProductListPaginatedDocument            | input.profile                    | src/lib/listing/providers/saleor/index.ts:109                         |
-| liveQuery        | ProductListPaginatedDocument            | —                                | src/lib/listing/providers/saleor/index.ts:115                         |
+| cachedQuery      | ProductListByCategoryProductsDocument   | input.profile                    | src/lib/listing/providers/saleor/index.ts:103                         |
+| liveQuery        | ProductListByCategoryProductsDocument   | —                                | src/lib/listing/providers/saleor/index.ts:109                         |
+| cachedQuery      | ProductListByCollectionProductsDocument | input.profile                    | src/lib/listing/providers/saleor/index.ts:115                         |
+| liveQuery        | ProductListByCollectionProductsDocument | —                                | src/lib/listing/providers/saleor/index.ts:121                         |
+| cachedQuery      | ProductListPaginatedDocument            | input.profile                    | src/lib/listing/providers/saleor/index.ts:126                         |
+| liveQuery        | ProductListPaginatedDocument            | —                                | src/lib/listing/providers/saleor/index.ts:132                         |
 | cachedQuery      | MenuGetBySlugDocument                   | STOREFRONT_MENU_SLUGS[slug]      | src/lib/menus/get-menu-data.ts:22                                     |
