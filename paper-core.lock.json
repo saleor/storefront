@@ -6,7 +6,7 @@
 		"src/lib/saleor/cache/life-profiles.ts": "b40340cce4e7e6c6f5cb3c8972898bf2474551b7e664035ef9601ae22bad83ba",
 		"src/lib/saleor/cache/manifest.ts": "47b2c5dcfa03ee1f52fda42b8212a3fc0a040ded2ed6cb4e717fe1aa26be4574",
 		"src/lib/saleor/cache/tag-primary.ts": "9b4c7a0414e5d049e802fd7df662983a367b16646d87fae8ce0e55ab012aad56",
-		"src/lib/saleor/client.ts": "4ffa50d6924d634743a2865affb4745081a94a8d0569078504d8d80b8f28b138",
+		"src/lib/saleor/client.ts": "d46b812250e42a303397e7815bcaf8958df978025d9255ef88a54dda3e17eee5",
 		"src/lib/saleor/extensions.ts": "72d81cb374b9f7d84cd7736254947b91074efd6619ae0a2187c29662a87ba392",
 		"src/lib/saleor/fixtures.ts": "505580e3d1b853df1784d8eb86f853ca2eb60d959b4cc2dd46992979f55b0417",
 		"src/lib/saleor/index.ts": "060a090048441e96ed6fb7cfb5af004e9183b2f5d35fa9d14b0c87602ada528b",

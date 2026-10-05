@@ -357,15 +357,17 @@ export async function executeGraphQL<Result, Variables>(
 	options: GraphQLOptions<Variables> & { auth: GraphQLAuth },
 ): Promise<GraphQLResult<Result>> {
 	const { variables, headers, cache, auth, maxRetries, timeoutMs, ledgerMode } = options;
-	const started = Date.now();
 
-	// @saleor/auth-sdk checks JWT expiry with `Date.now()` inside `fetchWithAuth`.
-	// Under Cache Components + partial prefetching that sync clock read must happen in
-	// the dynamic stage — hoist `io()` before the request queue so the boundary is
-	// established in the caller's render frame (Header user menu, account pages, etc.).
-	if (auth === "session") {
+	// `Date.now()` during a page prerender makes the route blocking. Search and other
+	// live reads hit that clock here, and session auth hits it again inside
+	// `@saleor/auth-sdk`'s `fetchWithAuth`. `io()` moves this call into the dynamic
+	// stage first. Cached reads omit `cache: "no-cache"` and must not call `io()` —
+	// they run inside `"use cache"`.
+	if (cache === "no-cache") {
 		await io();
 	}
+
+	const started = Date.now();
 
 	const operationName = operation.toString().match(/(?:query|mutation)\s+(\w+)/)?.[1] || "UnknownOperation";
 	const variablesForLog = variables ? formatVariablesForLog(variables) : undefined;
