@@ -11,7 +11,7 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { CACHE_PROFILES, cachedQuery, liveQuery, type CacheProfile } from "@/lib/saleor";
 import { resolveCategorySlugsToIds } from "@/lib/catalog/resolve-category-slugs";
 import { isCacheableListingQuery } from "@/lib/listing/cacheability";
-import { assertSupportedSort, type ListingProvider } from "@/lib/listing/provider";
+import { listingQueryWithSupportedSort, type ListingProvider } from "@/lib/listing/provider";
 import type { ListingQuery, ListingResult, SortId } from "@/lib/storefront/contract/listing";
 import { buildProductListingConstraints, buildSearchFilter, buildSortVariables } from "./constraints";
 import { sampleFacets } from "./sample-facets";
@@ -70,6 +70,8 @@ function paginationVariables(query: ListingQuery): {
 	before?: string;
 } {
 	if (query.page.mode !== "cursor") {
+		// `?page=1` is the first page. Deeper offset pages are a search-engine shape.
+		if (query.page.number <= 1) return { first: query.pageSize, after: null };
 		throw new Error('Listing provider "saleor" does not support offset pagination.');
 	}
 	if (query.page.direction === "prev" && query.page.cursor) {
@@ -151,8 +153,8 @@ export function createSaleorListingProvider(
 			},
 		},
 		freshness: { kind: "saleor-webhooks" },
-		async load(query) {
-			assertSupportedSort(provider, query);
+		async load(input) {
+			const query = listingQueryWithSupportedSort(provider, input);
 			const kind = query.surface.kind;
 			const slug = kind === "category" || kind === "collection" ? query.surface.slug : undefined;
 

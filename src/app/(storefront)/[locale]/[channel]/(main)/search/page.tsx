@@ -121,6 +121,7 @@ async function SearchContent({
 							facetsPlacement={templates.plp.facets}
 							initialViewKey={listingViewKey(view)}
 							providerId={listingProviderFor("search").id}
+							sorts={payload.sorts}
 						/>
 					),
 				empty: payload.totalCount === 0 ? empty : null,

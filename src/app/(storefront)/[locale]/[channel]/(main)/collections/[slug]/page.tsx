@@ -147,6 +147,7 @@ async function CollectionProducts({ params: paramsPromise }: { params: PageProps
 			totalCount={payload.totalCount}
 			facetsPlacement={templates.plp.facets}
 			providerId={listingProviderFor("collection").id}
+			sorts={payload.sorts}
 		/>
 	);
 }

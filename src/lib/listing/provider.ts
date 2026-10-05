@@ -22,14 +22,16 @@ export type ListingProvider = {
 	load(query: ListingQuery): Promise<ListingResult | null>;
 };
 
-export function assertSupportedSort(provider: ListingProvider, query: ListingQuery): void {
-	if (!query.sort) return;
+/**
+ * A shared URL can ask for a sort this provider does not offer (Bestselling on
+ * search, Name on a category). Fall back to the surface default instead of
+ * failing the page.
+ */
+export function listingQueryWithSupportedSort(provider: ListingProvider, query: ListingQuery): ListingQuery {
+	if (!query.sort) return query;
 	const allowed = provider.capabilities.sorts[query.surface.kind] ?? [];
-	if (!allowed.includes(query.sort)) {
-		throw new Error(
-			`Listing provider "${provider.id}" does not support sort "${query.sort}" on ${query.surface.kind}.`,
-		);
-	}
+	if (allowed.includes(query.sort)) return query;
+	return { ...query, sort: undefined };
 }
 
 export function assertProviderSupportsSurface(provider: ListingProvider, kind: ListingSurfaceKind): void {

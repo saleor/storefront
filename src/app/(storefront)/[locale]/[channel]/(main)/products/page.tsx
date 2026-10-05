@@ -104,6 +104,7 @@ async function ProductsContent({
 			enableCategoryFilter
 			facetsPlacement={templates.plp.facets}
 			providerId={listingProviderFor("all").id}
+			sorts={payload.sorts}
 		/>
 	);
 }

@@ -5,7 +5,7 @@ import { Pagination } from "@/ui/components/pagination";
 import type { ListingPageInfo, ListingSurface } from "@/lib/catalog/listing-query";
 import type { PlpFacetsPlacement } from "@/lib/storefront/templates";
 import { cn } from "@/lib/utils";
-import { FilterBar } from "./filter-bar";
+import { FilterBar, type SortOption } from "./filter-bar";
 import {
 	extractCategoryOptions,
 	extractColorOptions,
@@ -31,7 +31,23 @@ export type PlpListingClientProps = {
 	facetsPlacement?: PlpFacetsPlacement;
 	initialViewKey?: string;
 	providerId?: string;
+	/** Sorts the active provider can apply. The bar always keeps `featured` as the default. */
+	sorts?: readonly string[];
 };
+
+const BAR_SORTS = [
+	"featured",
+	"newest",
+	"price_asc",
+	"price_desc",
+	"bestselling",
+] as const satisfies readonly SortOption[];
+
+function sortOptionsFor(sorts?: readonly string[]): readonly SortOption[] | undefined {
+	if (!sorts) return undefined;
+	const allowed = new Set(sorts);
+	return BAR_SORTS.filter((option) => option === "featured" || allowed.has(option));
+}
 
 function PaginationSkeleton() {
 	return (
@@ -50,16 +66,19 @@ function PlpListingStatic({
 	products,
 	totalCount,
 	enableCategoryFilter,
+	sortOptions,
 }: {
 	products: ProductCardData[];
 	totalCount: number;
 	enableCategoryFilter: boolean;
+	sortOptions?: readonly SortOption[];
 }) {
 	return (
 		<>
 			<FilterBar
 				resultCount={totalCount}
 				sortValue="featured"
+				sortOptions={sortOptions}
 				onSortChange={() => undefined}
 				categoryOptions={enableCategoryFilter ? extractCategoryOptions(products) : undefined}
 				colorOptions={extractColorOptions(products, [])}
@@ -91,7 +110,9 @@ function PlpListingInteractive({
 	facetsPlacement = "bar",
 	initialViewKey,
 	providerId,
+	sorts,
 }: PlpListingClientProps & { enableCategoryFilter: boolean }) {
+	const sortOptions = sortOptionsFor(sorts);
 	const listing = useListingQuery({
 		surface,
 		locale,
@@ -140,6 +161,7 @@ function PlpListingInteractive({
 				<FilterBar
 					resultCount={listing.pending ? resultCount : listing.totalCount}
 					sortValue={sortValue}
+					sortOptions={sortOptions}
 					onSortChange={handleSortChange}
 					categoryOptions={enableCategoryFilter ? categoryOptions : undefined}
 					colorOptions={colorOptions}
@@ -186,6 +208,7 @@ export function PlpListingClient({ enableCategoryFilter = false, ...props }: Plp
 					products={props.products}
 					totalCount={props.totalCount}
 					enableCategoryFilter={enableCategoryFilter}
+					sortOptions={sortOptionsFor(props.sorts)}
 				/>
 			}
 		>

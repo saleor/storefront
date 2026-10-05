@@ -71,8 +71,10 @@ const categoryQuery = {
 } satisfies ListingQuery;
 
 async function runListingProviderContract(provider: ListingProvider, query: ListingQuery) {
-	it("rejects a sort the provider did not declare", async () => {
-		await expect(provider.load({ ...query, sort: "name" })).rejects.toThrow(/does not support sort/);
+	it("ignores a sort the provider did not declare", async () => {
+		const result = await provider.load({ ...query, sort: "name" });
+		expect(result).not.toBeNull();
+		expect(result?.items.length).toBeGreaterThan(0);
 	});
 
 	it("marks selections and includes counts only when the provider says so", async () => {

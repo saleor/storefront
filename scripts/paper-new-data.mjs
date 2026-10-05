@@ -108,7 +108,7 @@ if (command === "provider") {
 	writeFileSync(
 		file,
 		`import type { ListingResult } from "@/lib/storefront/contract/listing";
-import { assertSupportedSort, type ListingProvider } from "@/lib/listing/provider";
+import { listingQueryWithSupportedSort, type ListingProvider } from "@/lib/listing/provider";
 
 export const ${name.replaceAll("-", "")}ListingProvider: ListingProvider = {
 	id: "${name}",
@@ -120,7 +120,7 @@ export const ${name.replaceAll("-", "")}ListingProvider: ListingProvider = {
 	},
 	freshness: { kind: "ttl", profile: "listingTtl" },
 	async load(query): Promise<ListingResult | null> {
-		assertSupportedSort(${name.replaceAll("-", "")}ListingProvider, query);
+		query = listingQueryWithSupportedSort(${name.replaceAll("-", "")}ListingProvider, query);
 		return {
 			items: [],
 			facets: [],

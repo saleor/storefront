@@ -1,5 +1,5 @@
 import type { ListingQuery, ListingResult, ProductCardView, SortId } from "@/lib/storefront/contract/listing";
-import { assertSupportedSort, type ListingProvider } from "@/lib/listing/provider";
+import { listingQueryWithSupportedSort, type ListingProvider } from "@/lib/listing/provider";
 
 const LISTING_SORTS = [
 	"featured",
@@ -121,8 +121,8 @@ export const fixtureListingProvider: ListingProvider = {
 		},
 	},
 	freshness: { kind: "ttl", profile: "listingTtl" },
-	async load(query) {
-		assertSupportedSort(fixtureListingProvider, query);
+	async load(input) {
+		const query = listingQueryWithSupportedSort(fixtureListingProvider, input);
 		if (
 			(query.surface.kind === "category" || query.surface.kind === "collection") &&
 			query.surface.slug === "missing"

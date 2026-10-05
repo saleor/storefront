@@ -151,6 +151,7 @@ async function CategoryProducts({ params: paramsPromise }: { params: PageProps["
 			totalCount={payload.totalCount}
 			facetsPlacement={templates.plp.facets}
 			providerId={listingProviderFor("category").id}
+			sorts={payload.sorts}
 		/>
 	);
 }
