@@ -1,7 +1,13 @@
+import type {
+	ProductCardView,
+	FacetView,
+	SortId,
+	CursorPageInfo,
+	OffsetPageInfo,
+} from "@/lib/storefront/contract/listing";
 import type { ListingViewParams } from "./listing-view";
-import type { ProductCardData } from "@/ui/components/plp/product-card-data";
 
-export type ListingSurface = "all" | "category" | "collection";
+export type ListingSurface = "all" | "category" | "collection" | "search";
 
 export type ListingPageInfo = {
 	hasNextPage: boolean;
@@ -11,13 +17,27 @@ export type ListingPageInfo = {
 };
 
 export type ListingPayload = {
-	products: ProductCardData[];
+	products: ProductCardView[];
 	pageInfo: ListingPageInfo;
 	totalCount: number;
 	resolvedCategories: Array<{ slug: string; id: string; name: string }>;
+	facets?: FacetView[];
+	sorts?: SortId[];
+	page?: CursorPageInfo | OffsetPageInfo;
+	totalExact?: boolean;
 };
 
-const LISTING_QUERY_KEYS = ["cursor", "direction", "sort", "price", "colors", "sizes", "categories"] as const;
+const LISTING_QUERY_KEYS = [
+	"cursor",
+	"direction",
+	"sort",
+	"price",
+	"colors",
+	"sizes",
+	"categories",
+	"query",
+	"page",
+] as const;
 
 function firstString(value: string | string[] | null | undefined): string | undefined {
 	if (value == null) return undefined;
@@ -42,7 +62,9 @@ export function isCanonicalListingView(params: ListingViewParams): boolean {
 		!hasListingValue(params.price) &&
 		!hasListingValue(params.colors) &&
 		!hasListingValue(params.sizes) &&
-		!hasListingValue(params.categories)
+		!hasListingValue(params.categories) &&
+		!hasListingValue(params.query) &&
+		!hasListingValue(params.page)
 	);
 }
 
@@ -55,6 +77,8 @@ export function listingViewFromSearchParams(searchParams: URLSearchParams): List
 		colors: firstString(searchParams.get("colors")),
 		sizes: firstString(searchParams.get("sizes")),
 		categories: firstString(searchParams.get("categories")),
+		query: firstString(searchParams.get("query")),
+		page: firstString(searchParams.get("page")),
 	};
 }
 
@@ -67,7 +91,20 @@ export function listingViewFromRecord(params: ListingViewParams): ListingViewPar
 		colors: firstString(params.colors),
 		sizes: firstString(params.sizes),
 		categories: firstString(params.categories),
+		query: firstString(params.query),
+		page: firstString(params.page),
 	};
+}
+
+/** Stable key of the listing params. Ignores analytics params and key order. */
+export function listingViewKey(params: ListingViewParams): string {
+	const target = new URLSearchParams();
+	const view = listingViewFromRecord(params);
+	for (const key of LISTING_QUERY_KEYS) {
+		const value = view[key];
+		if (typeof value === "string" && value) target.set(key, value);
+	}
+	return target.toString();
 }
 
 /** Append listing + identity keys onto a `/api/listing` URL. */

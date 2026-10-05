@@ -23,7 +23,7 @@ import { paperCacheLifeProfiles as paperCacheLifeProfilesData } from "./life-pro
  */
 
 /** Profile names registered in `next.config.js` → `cacheLife`. */
-export type PaperCacheLifeProfile = "catalog" | "menus" | "channels";
+export type PaperCacheLifeProfile = "catalog" | "menus" | "channels" | "listingTtl";
 
 /** Seconds-based config passed to Next.js `cacheLife` in next.config.js. */
 export type PaperCacheLifeConfig = Record<
@@ -101,5 +101,12 @@ export const paperCacheLifeProfileDocs: Record<
 		stale: "5 min",
 		revalidate: "1 day",
 		expire: "1 week",
+	},
+	listingTtl: {
+		label: "Listing TTL",
+		usedFor: "Search-engine listing providers. No Saleor webhook tag — the index lags the catalog.",
+		stale: "1 min",
+		revalidate: "2 min",
+		expire: "10 min",
 	},
 };

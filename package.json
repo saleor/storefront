@@ -9,6 +9,7 @@
 		"dev:webpack": "next dev --webpack",
 		"dev:theme-editorial": "NEXT_PUBLIC_TYPOGRAPHY_THEME=editorial next dev",
 		"build": "next build",
+		"build:check": "node scripts/check-route-symbols.mjs",
 		"start": "next start",
 		"predev": "pnpm run generate:all",
 		"prebuild": "pnpm run generate:all",

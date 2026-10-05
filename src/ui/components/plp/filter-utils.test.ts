@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 
 import {
-	buildFilterVariables,
-	buildProductListingConstraints,
-	buildSortVariables,
 	extractCategoryOptions,
 	extractColorOptions,
 	extractSizeOptions,
@@ -13,6 +10,11 @@ import {
 	STATIC_PRICE_RANGES,
 	STATIC_PRICE_RANGES_WITH_COUNT,
 } from "./filter-utils";
+import {
+	buildFilterVariables,
+	buildProductListingConstraints,
+	buildSortVariables,
+} from "@/lib/listing/providers/saleor/constraints";
 import {
 	sampleProducts,
 	productsWithoutCategories,

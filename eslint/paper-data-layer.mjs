@@ -34,7 +34,7 @@ function inKernel(file) {
 /** Layers allowed to import the public `@/lib/saleor` barrel. */
 const SALEOR_IMPORT_ALLOW = [
 	/^src\/lib\/saleor\//,
-	/^src\/lib\/(catalog|menus|channels|content|search|account|auth|custom)\//,
+	/^src\/lib\/(catalog|menus|channels|content|listing|account|auth|custom)\//,
 	/^src\/lib\/checkout\.ts$/,
 	/^src\/checkout\/lib\/server\//,
 	/^src\/app\/api\//,
@@ -47,19 +47,14 @@ const SALEOR_IMPORT_ALLOW = [
  * `src/lib` still imports a few presentation helpers. Each path is a deliberate
  * exception until those helpers move into `src/lib/catalog`.
  */
-const LIB_UI_ALLOW = new Set([
-	"src/lib/catalog/fetch-filtered-listing.ts",
-	"src/lib/catalog/listing-query.ts",
-	"src/lib/search/saleor-provider.ts",
-	"src/lib/cart-checkout.ts",
-]);
+const LIB_UI_ALLOW = new Set(["src/lib/cart-checkout.ts"]);
 
 const LOADER_DIRS = [
 	"src/lib/catalog/",
 	"src/lib/menus/",
 	"src/lib/channels/",
 	"src/lib/content/",
-	"src/lib/search/",
+	"src/lib/listing/",
 	"src/lib/account/",
 	"src/lib/custom/",
 ];
@@ -99,9 +94,6 @@ const GQL_UI_ALLOW = new Set([
 	"src/ui/components/nav/components/user-menu/user-menu.tsx",
 	"src/ui/components/order-list-item.tsx",
 	"src/ui/components/payment-status.tsx",
-	"src/ui/components/plp/filter-utils.ts",
-	"src/ui/components/plp/product-grid.tsx",
-	"src/ui/components/plp/utils.ts",
 ]);
 
 const TEMPLATE_REQUEST_IMPORTS = new Set(["cookies", "headers", "draftMode", "connection"]);
@@ -120,6 +112,7 @@ function isGqlOrKernelImport(source) {
 function isTemplateForbiddenImport(source) {
 	if (source === "next/headers" || source === "next/server" || source === "next/cache") return true;
 	if (source.startsWith("@/lib/catalog/")) return true;
+	if (source.startsWith("@/lib/listing")) return true;
 	if (source === "@/app/actions" || source.endsWith("/actions")) return source.startsWith("@/app/");
 	return isGqlOrKernelImport(source);
 }
@@ -171,6 +164,66 @@ function hasUseServer(fileText) {
 /** @param {string} file */
 function hasUseClient(fileText) {
 	return /^\s*["']use client["']/.test(fileText);
+}
+
+const LISTING_GQL_NAMES = new Set([
+	"ProductWhereInput",
+	"ProductFilterInput",
+	"ProductListPaginatedDocument",
+	"ProductListByCategoryProductsDocument",
+	"ProductListByCollectionProductsDocument",
+	"SearchProductsDocument",
+]);
+
+/** @param {string} file */
+function inListingProvider(file) {
+	return /^src\/lib\/listing\/providers\/[^/]+\//.test(file);
+}
+
+/** @param {string} file */
+function isPlpRouteFile(file) {
+	return (
+		/\/\(main\)\/products\/page\.tsx$/.test(file) ||
+		/\/\(main\)\/products\/__canary-page\.tsx$/.test(file) ||
+		/\/\(main\)\/search\/page\.tsx$/.test(file) ||
+		/\/\(main\)\/search\/__canary-page\.tsx$/.test(file) ||
+		/\/\(main\)\/categories\/\[slug\]\/page\.tsx$/.test(file) ||
+		/\/\(main\)\/collections\/\[slug\]\/page\.tsx$/.test(file)
+	);
+}
+
+/** @param {import("eslint").Rule.Node | null | undefined} node */
+function insideRedirectCall(node) {
+	let current = node;
+	while (current) {
+		if (
+			current.type === "CallExpression" &&
+			current.callee.type === "Identifier" &&
+			current.callee.name === "redirectToCanonicalCatalogSlug"
+		) {
+			return true;
+		}
+		current = current.parent;
+	}
+	return false;
+}
+
+/** @param {import("eslint").Rule.Node | null | undefined} node */
+function pageFunction(node) {
+	let current = node?.parent;
+	while (current) {
+		if (
+			(current.type === "FunctionDeclaration" ||
+				current.type === "FunctionExpression" ||
+				current.type === "ArrowFunctionExpression") &&
+			current.id?.type === "Identifier" &&
+			current.id.name === "Page"
+		) {
+			return current;
+		}
+		current = current.parent;
+	}
+	return null;
 }
 
 const plugin = {
@@ -339,7 +392,7 @@ const plugin = {
 				schema: [],
 				messages: {
 					place:
-						'"use cache" belongs on a loader in src/lib/{catalog,menus,channels,content,search,account,custom}. See rules/data-caching.md.',
+						'"use cache" belongs on a loader in src/lib/{catalog,menus,channels,content,listing,account,custom}. See rules/data-caching.md.',
 					request:
 						'{{name}} cannot run inside "use cache" (it reads the request or skips the manifest). Pass plain arguments in, and use cachedQuery(). See rules/data-caching.md.',
 				},
@@ -513,6 +566,78 @@ const plugin = {
 						if (callee.type === "Identifier" && TEMPLATE_REQUEST_IMPORTS.has(callee.name)) {
 							context.report({ node, messageId: "request", data: { name: callee.name } });
 						}
+					},
+				};
+			},
+		},
+		"listing-provider-boundary": {
+			meta: {
+				type: "problem",
+				docs: {
+					description:
+						"Listing backends fetch. They do not own the cache, and Saleor filters stay inside a provider.",
+				},
+				schema: [],
+				messages: {
+					cache:
+						'Listing providers cannot use "use cache" or next/cache. Cache policy lives in src/lib/listing/policy.ts.',
+					gql: "Saleor listing filters and listing documents stay in src/lib/listing/providers/<id>/. Add a provider instead of importing {{name}} here.",
+				},
+			},
+			create(context) {
+				const file = rel(context.filename, context.cwd);
+				if (inListingProvider(file)) {
+					return {
+						ImportDeclaration(node) {
+							if (node.source.value === "next/cache") {
+								context.report({ node, messageId: "cache" });
+							}
+						},
+						ExpressionStatement(node) {
+							if (node.expression.type === "Literal" && node.expression.value === "use cache") {
+								context.report({ node, messageId: "cache" });
+							}
+						},
+					};
+				}
+				if (file.includes(".test.")) return {};
+				return {
+					ImportDeclaration(node) {
+						if (node.source.value !== "@/gql/graphql") return;
+						for (const spec of node.specifiers) {
+							if (spec.type !== "ImportSpecifier" || spec.imported.type !== "Identifier") continue;
+							if (LISTING_GQL_NAMES.has(spec.imported.name)) {
+								context.report({ node: spec, messageId: "gql", data: { name: spec.imported.name } });
+							}
+						}
+					},
+				};
+			},
+		},
+		"plp-params-only": {
+			meta: {
+				type: "problem",
+				docs: { description: "Listing pages do not await searchParams in the page component." },
+				schema: [],
+				messages: {
+					params:
+						"Do not await searchParams in the listing Page. Pass the promise into a Suspense child, or into redirectToCanonicalCatalogSlug. Filters go through /api/listing. See rules/plp-listing.md.",
+				},
+			},
+			create(context) {
+				const file = rel(context.filename, context.cwd);
+				if (!isPlpRouteFile(file)) return {};
+				return {
+					AwaitExpression(node) {
+						const arg = node.argument;
+						const isSearchParams =
+							arg.type === "MemberExpression" &&
+							arg.property.type === "Identifier" &&
+							arg.property.name === "searchParams";
+						if (!isSearchParams) return;
+						if (!pageFunction(node)) return;
+						if (insideRedirectCall(node)) return;
+						context.report({ node, messageId: "params" });
 					},
 				};
 			},

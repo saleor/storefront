@@ -107,20 +107,15 @@ describe("manifest tag contract", () => {
 describe("invalidation wiring", () => {
 	it("busts every core cache profile from the revalidate route", () => {
 		const route = readFileSync(join(ROOT, "src/app/api/revalidate/route.ts"), "utf8");
-		const direct = [
-			"products",
-			"categories",
-			"collections",
-			"listingAll",
-			"listingCategory",
-			"listingCollection",
-			"channels",
-		];
+		const direct = ["products", "categories", "collections", "channels"];
 		const viaPlanner: Record<string, string> = {
 			pages: "planPageRevalidation",
 			navigation: "planMenuRevalidation",
 			footerMenu: "planMenuRevalidation",
 			storefrontContent: "planStorefrontContentRevalidation",
+			listingAll: "listingTagsForDelivery",
+			listingCategory: "listingTagsForDelivery",
+			listingCollection: "listingTagsForDelivery",
 		};
 
 		for (const key of Object.keys(CACHE_PROFILES)) {
@@ -131,6 +126,11 @@ describe("invalidation wiring", () => {
 				expect(planner, `${key} has no invalidation plan`).toBeTruthy();
 				expect(route, key).toContain(planner!);
 			}
+		}
+
+		const listing = readFileSync(join(ROOT, "src/lib/listing/invalidate.ts"), "utf8");
+		for (const key of ["listingAll", "listingCategory", "listingCollection"]) {
+			expect(listing, key).toContain(`CACHE_PROFILES.${key}`);
 		}
 	});
 });

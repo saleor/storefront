@@ -2,23 +2,19 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { type Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { searchProducts, parseSearchSortParam } from "@/lib/search";
-import { SearchCommerceEvent } from "@/ui/components/search-commerce-event";
-import { SearchResults } from "@/ui/components/search-results";
-import { Pagination } from "@/ui/components/pagination";
-import { ProductsGridSkeleton } from "@/ui/components/plp";
-import { SearchSort } from "./search-sort";
 import { SearchIcon } from "lucide-react";
+import { listingViewFromRecord, listingViewKey } from "@/lib/catalog/listing-query";
+import { loadListingView } from "@/lib/listing/load";
+import { listingProviderFor } from "@/lib/listing/registry";
+import { templates } from "@/config/templates";
+import { SearchCommerceEvent } from "@/ui/components/search-commerce-event";
+import { PlpListingClient } from "@/ui/components/plp";
 import { buttonClassName } from "@/ui/components/ui/button";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 // Prefetch: default (auto). Search is reached via form submit, not `prefetch={true}` links.
 
-/**
- * Search results are query-dependent and thin — keep them out of the index.
- * Title falls back to the brand template (`%s | Saleor Store`).
- */
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }): Promise<Metadata> {
@@ -32,33 +28,23 @@ export async function generateMetadata(props: {
 	};
 }
 
-type SearchParams = {
-	query?: string | string[];
-	cursor?: string | string[];
-	direction?: string | string[];
-	sort?: string | string[];
-};
+type SearchParams = Record<string, string | string[] | undefined>;
 
 /**
- * Search page with Cache Components.
- * Static shell renders immediately, search results stream in.
+ * Static shell. The results island reads `searchParams` inside Suspense.
+ * Filters and paging then swap through `/api/listing` (`surface=search`), which is never cached.
  */
 export default function Page(props: {
 	searchParams: Promise<SearchParams>;
 	params: Promise<{ locale: string; channel: string }>;
 }) {
 	return (
-		<section className="container-content py-8">
-			<Suspense fallback={<SearchSkeleton />}>
-				<SearchContent searchParams={props.searchParams} params={props.params} />
-			</Suspense>
-		</section>
+		<Suspense fallback={<templates.plp.Skeleton />}>
+			<SearchContent searchParams={props.searchParams} params={props.params} />
+		</Suspense>
 	);
 }
 
-/**
- * Dynamic search content - reads searchParams at request time.
- */
 async function SearchContent({
 	searchParams: searchParamsPromise,
 	params: paramsPromise,
@@ -68,108 +54,78 @@ async function SearchContent({
 }) {
 	const [searchParams, params] = await Promise.all([searchParamsPromise, paramsPromise]);
 	const t = await getTranslations({ locale: params.locale, namespace: "search" });
-
-	// Extract and validate query
 	const queryParam = searchParams.query;
-	if (!queryParam) {
-		notFound();
-	}
-
-	// Handle array values (redirect to first valid)
-	const query = Array.isArray(queryParam) ? queryParam.find((v) => v.length > 0) : queryParam;
-
-	if (!query) {
-		notFound();
-	}
-
+	if (!queryParam) notFound();
+	const query = Array.isArray(queryParam) ? queryParam.find((value) => value.length > 0) : queryParam;
+	if (!query) notFound();
 	if (Array.isArray(queryParam)) {
 		redirect(
 			`${buildStorefrontPath(params.locale, params.channel, "/search")}?query=${encodeURIComponent(query)}`,
 		);
 	}
 
-	// Parse pagination
-	const cursor = Array.isArray(searchParams.cursor) ? searchParams.cursor[0] : searchParams.cursor;
-	const direction = searchParams.direction === "backward" ? "backward" : "forward";
-
-	// Parse sort
-	const sortParam = Array.isArray(searchParams.sort) ? searchParams.sort[0] : searchParams.sort;
-	const sortBy = parseSearchSortParam(sortParam);
-
-	// Search using Saleor
-	const result = await searchProducts({
+	const view = listingViewFromRecord({
 		query,
-		channel: params.channel,
-		locale: params.locale,
-		limit: 20,
-		cursor,
-		direction,
-		sortBy,
+		cursor: searchParams.cursor,
+		direction: searchParams.direction,
+		sort: typeof searchParams.sort === "string" ? searchParams.sort : undefined,
+		price: typeof searchParams.price === "string" ? searchParams.price : undefined,
+		colors: typeof searchParams.colors === "string" ? searchParams.colors : undefined,
+		sizes: typeof searchParams.sizes === "string" ? searchParams.sizes : undefined,
+		categories: typeof searchParams.categories === "string" ? searchParams.categories : undefined,
+		page: typeof searchParams.page === "string" ? searchParams.page : undefined,
 	});
+	const payload = await loadListingView({
+		surface: "search",
+		locale: params.locale,
+		channel: params.channel,
+		view,
+	});
+	if (!payload) notFound();
 
-	const { products, pagination } = result;
-
-	const isFirstPage = !cursor;
-
-	if (pagination.totalCount === 0) {
-		return (
-			<>
-				{isFirstPage && <SearchCommerceEvent channel={params.channel} zero />}
-				<EmptyState
-					title={t("noResultsTitle", { query })}
-					body={t("noResultsBody")}
-					browseAllProducts={t("browseAllProducts")}
-					goToHomepage={t("goToHomepage")}
-				/>
-			</>
-		);
-	}
-
-	return (
-		<div>
-			{isFirstPage && <SearchCommerceEvent channel={params.channel} zero={false} />}
-			{/* Header with count and sort */}
-			<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<div>
-					<h1 className="text-balance text-h1">{t("resultsFor", { query })}</h1>
-					<p className="mt-1 text-sm text-muted-foreground">
-						{t("resultCount", { count: pagination.totalCount })}
-					</p>
-				</div>
-				<SearchSort />
-			</div>
-
-			{/* Results grid */}
-			<SearchResults products={products} />
-
-			{/* Pagination */}
-			{(pagination.hasNextPage || pagination.hasPreviousPage) && (
-				<Pagination
-					pageInfo={{
-						hasNextPage: pagination.hasNextPage ?? false,
-						hasPreviousPage: pagination.hasPreviousPage ?? false,
-						startCursor: pagination.prevCursor,
-						endCursor: pagination.nextCursor,
-					}}
-				/>
-			)}
-		</div>
+	const empty = (
+		<>
+			<SearchCommerceEvent channel={params.channel} zero />
+			<EmptyState
+				title={t("noResultsTitle", { query })}
+				body={t("noResultsBody")}
+				browseAllProducts={t("browseAllProducts")}
+				goToHomepage={t("goToHomepage")}
+			/>
+		</>
 	);
-}
 
-/**
- * Search skeleton with delayed visibility.
- * Matches SearchResults/SearchResultCard dimensions to prevent layout shift.
- */
-function SearchSkeleton() {
 	return (
-		<div className="animate-skeleton-delayed opacity-0">
-			<div className="mb-8">
-				<div className="h-8 w-64 animate-pulse rounded bg-muted" />
-				<div className="mt-2 h-4 w-32 animate-pulse rounded bg-muted" />
-			</div>
-			<ProductsGridSkeleton className="mx-0 max-w-none px-0 py-0" desktopColumns={3} itemCount={6} />
-		</div>
+		<templates.plp.Layout
+			surface={{ kind: "search", title: t("resultsFor", { query }) }}
+			slots={{
+				header:
+					payload.totalCount === 0 ? null : (
+						<div className="container-content pt-8">
+							<SearchCommerceEvent channel={params.channel} zero={false} />
+							<h1 className="text-balance text-h1">{t("resultsFor", { query })}</h1>
+							<p className="mt-1 text-sm text-muted-foreground">
+								{t("resultCount", { count: payload.totalCount })}
+							</p>
+						</div>
+					),
+				results:
+					payload.totalCount === 0 ? null : (
+						<PlpListingClient
+							surface="search"
+							locale={params.locale}
+							channel={params.channel}
+							products={payload.products}
+							pageInfo={payload.pageInfo}
+							totalCount={payload.totalCount}
+							facetsPlacement={templates.plp.facets}
+							initialViewKey={listingViewKey(view)}
+							providerId={listingProviderFor("search").id}
+						/>
+					),
+				empty: payload.totalCount === 0 ? empty : null,
+			}}
+		/>
 	);
 }
 

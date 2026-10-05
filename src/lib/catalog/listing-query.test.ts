@@ -33,6 +33,8 @@ describe("listingViewFromSearchParams", () => {
 			colors: "blue",
 			sizes: undefined,
 			categories: undefined,
+			query: undefined,
+			page: undefined,
 		});
 	});
 });

@@ -377,6 +377,24 @@
 				"src/config/storefront-view.ts"
 			],
 			"detectMarkers": ["ProductView", "definePdpTemplate", "ACTIVE_PDP_TEMPLATE"]
+		},
+		{
+			"id": "2026-10-listing-contract",
+			"title": "Listings are a ListingResult from a per-surface provider",
+			"upstreamSha": "",
+			"landedAt": "2026-10-05T12:00:00+02:00",
+			"introducedIn": "2026.10",
+			"requires": ["2026-10-storefront-templates"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "presentation",
+			"touchPaths": [
+				"src/lib/listing/",
+				"src/config/listing-providers.ts",
+				"src/templates/plp/",
+				"src/app/api/listing/route.ts"
+			],
+			"detectMarkers": ["ListingQuery", "definePlpTemplate", "LISTING_PROVIDERS"]
 		}
 	]
 }

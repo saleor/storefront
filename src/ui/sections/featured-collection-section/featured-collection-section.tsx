@@ -1,4 +1,5 @@
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
+import { toProductCardData } from "@/lib/listing/providers/saleor/to-card";
 import { FEATURED_COLLECTION_IMAGE_SIZES } from "@/lib/images";
 import { ProductGrid, type ProductGridDesktopColumns } from "@/ui/components/plp/product-grid";
 import { Section, type SectionTone, type SectionWidth } from "@/ui/sections/section";
@@ -34,7 +35,9 @@ export async function FeaturedCollectionSection({
 	width = "content",
 	className,
 }: FeaturedCollectionSectionProps) {
-	const products = await getFeaturedProducts(channel, locale, limit, collectionSlug);
+	const products = (await getFeaturedProducts(channel, locale, limit, collectionSlug)).map((product) =>
+		toProductCardData(product, locale, channel),
+	);
 	const headingId = "featured-collection-heading";
 
 	return (
@@ -54,8 +57,6 @@ export async function FeaturedCollectionSection({
 			/>
 			{products.length > 0 ? (
 				<ProductGrid
-					locale={locale}
-					channel={channel}
 					products={products}
 					imageSizes={FEATURED_COLLECTION_IMAGE_SIZES}
 					desktopColumns={desktopColumns}

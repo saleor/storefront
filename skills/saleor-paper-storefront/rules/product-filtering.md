@@ -44,22 +44,21 @@ export const PLP_FACETS = [
 
 ## Key Files
 
-| File                                           | Purpose                                             |
-| ---------------------------------------------- | --------------------------------------------------- |
-| `src/config/facets.ts`                         | Which attributes are facets + slug aliases          |
-| `src/ui/components/plp/filter-utils.ts`        | `buildProductListingConstraints`, option extractors |
-| `src/ui/components/plp/filter-utils.server.ts` | `resolveCategorySlugsToIds`                         |
-| `src/ui/components/plp/use-product-filters.ts` | URL sync, optimistic chips, `useTransition`         |
-| `src/ui/components/plp/use-listing-query.ts`   | Canonical grid vs `GET /api/listing` swap           |
-| `src/lib/catalog/fetch-filtered-listing.ts`    | Shared live / cached listing loader                 |
-| `src/app/api/listing/route.ts`                 | Public listing JSON (pages stay params-only)        |
-| `src/ui/components/plp/filter-bar.tsx`         | Filter UI                                           |
+| File                                              | Purpose                                                      |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| `src/config/facets.ts`                            | Facet ids, URL params, per-provider `source`                 |
+| `src/lib/listing/providers/saleor/constraints.ts` | `buildProductListingConstraints` (Saleor `filter` / `where`) |
+| `src/lib/listing/load.ts`                         | `loadListingView` — codec, cache policy, active provider     |
+| `src/config/listing-providers.ts`                 | Which provider serves each surface                           |
+| `src/app/api/listing/route.ts`                    | Public listing JSON (pages stay params-only)                 |
+| `src/ui/components/plp/filter-bar.tsx`            | Filter UI                                                    |
+| `src/ui/components/plp/use-listing-query.ts`      | Canonical grid vs `GET /api/listing`                         |
 
 ## Building listing constraints
 
 ```typescript
-import { buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
-import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+import { buildProductListingConstraints } from "@/lib/listing/providers/saleor/constraints";
+import { resolveCategorySlugsToIds } from "@/lib/catalog/resolve-category-slugs";
 
 const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
 const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
@@ -100,15 +99,16 @@ const {
 Price ranges are static to avoid UI flicker:
 
 ```typescript
-import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils";
+import { STATIC_PRICE_RANGES } from "@/config/facets";
 ```
 
 ## Adding a New Attribute Facet
 
-1. Add a row to `PLP_FACETS` (`param`, `attributeSlug`, `attributeAliases`, `control`).
-2. Ensure `loadListing` / `fetch-filtered-listing.ts` passes the new param into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map). Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
+1. Add a row to `PLP_FACETS` (`param`, `id`, `attributeSlug`, `attributeAliases`, `control`, `source`).
+2. The Saleor provider reads `query.selections` from the URL codec. Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
 3. Wire FilterBar / `useProductFilters` for that param if it needs a dedicated control.
 4. Prefer value **slugs** in the URL.
+5. A non-Saleor provider maps `source.<id>` itself. See `rules/plp-listing.md`.
 
 ## Anti-patterns
 

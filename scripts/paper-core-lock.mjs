@@ -18,9 +18,18 @@ const OUT = join(ROOT, "paper-core.lock.json");
 const ROOTS = [
 	join(ROOT, "src/lib/saleor"),
 	join(ROOT, "src/lib/storefront"),
+	join(ROOT, "src/lib/listing"),
 	join(ROOT, "src/app/api/revalidate/route.ts"),
 	join(ROOT, "src/app/api/cache-info/route.ts"),
 ];
+
+function isCoreFile(file) {
+	const rel = relative(ROOT, file).replaceAll("\\", "/");
+	if (rel.startsWith("src/lib/listing/providers/") && !rel.startsWith("src/lib/listing/providers/saleor/")) {
+		return false;
+	}
+	return true;
+}
 
 function filesUnder(path, acc = []) {
 	try {
@@ -40,6 +49,7 @@ function hashes() {
 	const out = {};
 	for (const root of ROOTS) {
 		for (const file of filesUnder(root)) {
+			if (!isCoreFile(file)) continue;
 			const rel = relative(ROOT, file);
 			out[rel] = createHash("sha256").update(readFileSync(file)).digest("hex");
 		}

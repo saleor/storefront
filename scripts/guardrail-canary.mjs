@@ -40,6 +40,16 @@ const canaries = [
 		file: join(ROOT, "src/templates/__canary__.tsx"),
 		body: 'import { cookies } from "next/headers";\nexport const read = () => cookies();\n',
 	},
+	{
+		id: "paper/listing-provider-boundary",
+		file: join(ROOT, "src/lib/listing/providers/__canary__/provider.ts"),
+		body: '"use cache";\nexport const cached = true;\n',
+	},
+	{
+		id: "paper/plp-params-only",
+		file: join(ROOT, "src/app/(storefront)/[locale]/[channel]/(main)/products/__canary-page.tsx"),
+		body: "export default async function Page(props: { searchParams: Promise<unknown> }) {\n\treturn await props.searchParams;\n}\n",
+	},
 ];
 
 mkdirSync(dir, { recursive: true });

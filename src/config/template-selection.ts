@@ -14,3 +14,13 @@
 export const ACTIVE_PDP_TEMPLATE = "immersive" as const;
 
 export const ACTIVE_PDP_GALLERY = "immersive" as const;
+
+/**
+ * Fork-owned PLP selection. One shop, one listing layout.
+ *
+ * `ACTIVE_PLP_FACETS` must equal the template's `facets` field (`bar` or `sidebar`).
+ * The results island reads that value. The template cannot rewire the query.
+ */
+export const ACTIVE_PLP_TEMPLATE = "bar" as const;
+
+export const ACTIVE_PLP_FACETS = "bar" as const;

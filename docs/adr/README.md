@@ -10,5 +10,6 @@ Informal north-star for day-to-day conventions: [`skills/saleor-paper-storefront
 | [0004](./0004-translatable-slugs.md)                | Saleor translatable catalog slugs                       | Accepted (phases 1–2 shipped) |
 | [0005](./0005-data-kernel-and-access-modes.md)      | Saleor data kernel and access modes                     | Accepted                      |
 | [0006](./0006-storefront-contract-and-templates.md) | Storefront contract and PDP templates                   | Accepted                      |
+| [0007](./0007-listing-contract-and-providers.md)    | Listing contract and per-surface providers              | Accepted                      |
 
 **Human overview:** [`docs/international-storefront.md`](../international-storefront.md) — how routing, Saleor translations, CMS copy, and `messages/*.json` fit together.

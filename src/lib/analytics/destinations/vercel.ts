@@ -27,5 +27,8 @@ export function projectVercel(event: PaperCommerceEvent): VercelCustomEvent | nu
 		case "search_submitted":
 			if (!event.channel) return null;
 			return { name: "search", props: { zero: event.zero, channel: event.channel } };
+		case "listing_filtered":
+			if (!event.channel) return null;
+			return { name: "listing_filtered", props: { channel: event.channel, facet: event.facet } };
 	}
 }

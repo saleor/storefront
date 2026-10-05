@@ -5,7 +5,7 @@ Saleor Paper
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 36 rules (~75k tokens) and exists only for humans reading offline and for
+> all 37 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 36 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 37 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -41,6 +41,7 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
    - 2.2 [Variant Selection](#22-variant-selection)
    - 2.3 [High-Cardinality Attributes](#23-high-cardinality-attributes)
    - 2.4 [Product Filtering](#24-product-filtering)
+   - 2.5 [PLP Listing](#25-plp-listing)
 
 3. [Checkout Flow](#3-checkout-flow) — **HIGH**
    - 3.1 [Paper Surfaces](#31-paper-surfaces)
@@ -1882,22 +1883,21 @@ export const PLP_FACETS = [
 
 ## Key Files
 
-| File                                           | Purpose                                             |
-| ---------------------------------------------- | --------------------------------------------------- |
-| `src/config/facets.ts`                         | Which attributes are facets + slug aliases          |
-| `src/ui/components/plp/filter-utils.ts`        | `buildProductListingConstraints`, option extractors |
-| `src/ui/components/plp/filter-utils.server.ts` | `resolveCategorySlugsToIds`                         |
-| `src/ui/components/plp/use-product-filters.ts` | URL sync, optimistic chips, `useTransition`         |
-| `src/ui/components/plp/use-listing-query.ts`   | Canonical grid vs `GET /api/listing` swap           |
-| `src/lib/catalog/fetch-filtered-listing.ts`    | Shared live / cached listing loader                 |
-| `src/app/api/listing/route.ts`                 | Public listing JSON (pages stay params-only)        |
-| `src/ui/components/plp/filter-bar.tsx`         | Filter UI                                           |
+| File                                              | Purpose                                                      |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| `src/config/facets.ts`                            | Facet ids, URL params, per-provider `source`                 |
+| `src/lib/listing/providers/saleor/constraints.ts` | `buildProductListingConstraints` (Saleor `filter` / `where`) |
+| `src/lib/listing/load.ts`                         | `loadListingView` — codec, cache policy, active provider     |
+| `src/config/listing-providers.ts`                 | Which provider serves each surface                           |
+| `src/app/api/listing/route.ts`                    | Public listing JSON (pages stay params-only)                 |
+| `src/ui/components/plp/filter-bar.tsx`            | Filter UI                                                    |
+| `src/ui/components/plp/use-listing-query.ts`      | Canonical grid vs `GET /api/listing`                         |
 
 ## Building listing constraints
 
 ```typescript
-import { buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
-import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+import { buildProductListingConstraints } from "@/lib/listing/providers/saleor/constraints";
+import { resolveCategorySlugsToIds } from "@/lib/catalog/resolve-category-slugs";
 
 const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
 const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
@@ -1938,15 +1938,16 @@ const {
 Price ranges are static to avoid UI flicker:
 
 ```typescript
-import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils";
+import { STATIC_PRICE_RANGES } from "@/config/facets";
 ```
 
 ## Adding a New Attribute Facet
 
-1. Add a row to `PLP_FACETS` (`param`, `attributeSlug`, `attributeAliases`, `control`).
-2. Ensure `loadListing` / `fetch-filtered-listing.ts` passes the new param into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map). Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
+1. Add a row to `PLP_FACETS` (`param`, `id`, `attributeSlug`, `attributeAliases`, `control`, `source`).
+2. The Saleor provider reads `query.selections` from the URL codec. Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
 3. Wire FilterBar / `useProductFilters` for that param if it needs a dedicated control.
 4. Prefer value **slugs** in the URL.
+5. A non-Saleor provider maps `source.<id>` itself. See `rules/plp-listing.md`.
 
 ## Anti-patterns
 
@@ -1956,6 +1957,67 @@ import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils
 ❌ **Don't treat the PLP variant sample as filter truth** — sample is for swatches/hints  
 ❌ **Don't filter only `size` when sneakers use `shoe-size`** — configure aliases  
 ❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination
+
+---
+
+### 2.5 PLP Listing
+
+A listing page is a `ListingQuery` for one surface. Core picks the provider for that surface, then decides whether the result is cached. The provider only fetches. The same PLP template renders every surface.
+
+Categories can stay on Saleor while `/search` uses a search engine. Do not split one surface across two backends — the ranking would jump when the first filter is applied.
+
+## What you may edit
+
+| Change                         | Where                                                                              |
+| ------------------------------ | ---------------------------------------------------------------------------------- |
+| Which backend serves a surface | `LISTING_PROVIDERS` in `src/config/listing-providers.ts`                           |
+| A new backend                  | `src/lib/listing/providers/<id>/`, then register it in that config                 |
+| Which attributes are facets    | `src/config/facets.ts` (`source` per provider)                                     |
+| Rearrange the listing page     | `src/templates/plp/<name>.tsx`, then `ACTIVE_PLP_TEMPLATE` and `ACTIVE_PLP_FACETS` |
+
+`LISTING_PROVIDER_SEARCH=fixture` (and the same shape for `ALL`, `CATEGORY`, `COLLECTION`) overrides one surface at runtime. Bracket access on `process.env` — do not write `process.env.LISTING_PROVIDER_SEARCH`.
+
+## What a provider returns
+
+`ListingResult`: card views, facets, the sorts that provider supports, a cursor or offset page, and a total. `count` is optional. Templates and the filter bar must render when it is missing. Saleor builds facet values from the current page sample and sets no counts. A search engine sets counts.
+
+`load` returns `null` when a category or collection slug does not exist. Transport failures throw.
+
+## What core keeps
+
+- URL codec (`src/lib/listing/query.ts`) and `/api/listing`
+- `isCacheableListingQuery` — unfiltered first page only, any sort. Search, filters, and cursors are live
+- Saleor webhook tags for `freshness: "saleor-webhooks"`
+- `listingTtl` (no tag) for `freshness: "ttl"`
+- The route files. They do not await `searchParams` in `Page` except to pass them into `redirectToCanonicalCatalogSlug`. Search reads them inside the Suspense child.
+
+Do not edit `src/lib/listing/policy.ts` to change a layout or to plug in a backend.
+
+## Add a provider
+
+```ts
+export const algoliaListingProvider: ListingProvider = {
+	id: "algolia",
+	capabilities: {
+		surfaces: ["search"],
+		facetCounts: true,
+		pagination: "offset",
+		sorts: { search: ["relevance", "newest", "price_asc", "price_desc"] },
+	},
+	freshness: { kind: "ttl", profile: "listingTtl" },
+	async load(query) {
+		// map ListingQuery to the engine and return ListingResult
+	},
+};
+```
+
+Register it and set `search: "algolia"`. `pnpm paper:new provider listing <id>` scaffolds the file. Run `runListingProviderContract` against it.
+
+Saleor-only types (`ProductWhereInput`, listing documents) are a lint error outside `src/lib/listing/providers/<id>/`. Providers cannot use `"use cache"`.
+
+## Add a template
+
+Same slots on every preset: `header`, `results`, `empty`. Place each once. `facets` is `bar` or `sidebar` and must match `ACTIVE_PLP_FACETS`. The results island owns the grid, filters, sort, and pagination. A template does not import `@/lib/listing`, `@/lib/saleor`, or `@/gql`.
 
 ---
 
@@ -3683,7 +3745,11 @@ Built-in presets are `standard`, `immersive`, `mosaic`, and `columns` in `src/te
 
 ## Contract version
 
-`STOREFRONT_CONTRACT_VERSION` in `src/lib/storefront/contract/version.ts`. Adding an optional field is not a bump. Removing or renaming a field is.
+`STOREFRONT_CONTRACT_VERSION` in `src/lib/storefront/contract/version.ts`. Adding an optional field is not a bump. Removing or renaming a field is. Version 2 adds the listing contract.
+
+## PLP templates
+
+Category, collection, all-products, and search share one template. Slots are `header`, `results`, and `empty`. Place each once. `ACTIVE_PLP_TEMPLATE` and `ACTIVE_PLP_FACETS` (`bar` or `sidebar`) must match the template's `facets` field. The results island owns filters and pagination. Which backend fills the grid is not a template concern — see `rules/plp-listing.md`.
 
 ---
 

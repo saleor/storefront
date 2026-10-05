@@ -49,4 +49,7 @@ jobs:
       - name: Test
         run: pnpm run test:run
       - name: Build
-        run: pnpm run build
+        run: |
+          set -o pipefail
+          pnpm run build | tee build-output.txt
+          node scripts/check-route-symbols.mjs build-output.txt

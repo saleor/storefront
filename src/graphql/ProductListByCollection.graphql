@@ -5,6 +5,8 @@ query ProductListByCollection(
 	$slugLanguageCode: LanguageCodeEnum
 	$first: Int
 	$after: String
+	$last: Int
+	$before: String
 	$sortBy: ProductOrder
 	$filter: ProductFilterInput
 	$where: ProductWhereInput
@@ -30,7 +32,15 @@ query ProductListByCollection(
 			url
 			alt
 		}
-		products(first: $first, after: $after, sortBy: $sortBy, filter: $filter, where: $where) {
+		products(
+			first: $first
+			after: $after
+			last: $last
+			before: $before
+			sortBy: $sortBy
+			filter: $filter
+			where: $where
+		) {
 			edges {
 				node {
 					...ProductListItem

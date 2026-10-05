@@ -78,4 +78,8 @@ Built-in presets are `standard`, `immersive`, `mosaic`, and `columns` in `src/te
 
 ## Contract version
 
-`STOREFRONT_CONTRACT_VERSION` in `src/lib/storefront/contract/version.ts`. Adding an optional field is not a bump. Removing or renaming a field is.
+`STOREFRONT_CONTRACT_VERSION` in `src/lib/storefront/contract/version.ts`. Adding an optional field is not a bump. Removing or renaming a field is. Version 2 adds the listing contract.
+
+## PLP templates
+
+Category, collection, all-products, and search share one template. Slots are `header`, `results`, and `empty`. Place each once. `ACTIVE_PLP_TEMPLATE` and `ACTIVE_PLP_FACETS` (`bar` or `sidebar`) must match the template's `facets` field. The results island owns filters and pagination. Which backend fills the grid is not a template concern — see `rules/plp-listing.md`.

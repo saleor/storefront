@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import { Pagination } from "@/ui/components/pagination";
 import type { ListingPageInfo, ListingSurface } from "@/lib/catalog/listing-query";
+import type { PlpFacetsPlacement } from "@/lib/storefront/templates";
 import { cn } from "@/lib/utils";
 import { FilterBar } from "./filter-bar";
 import {
@@ -27,6 +28,9 @@ export type PlpListingClientProps = {
 	pageInfo: ListingPageInfo;
 	totalCount: number;
 	enableCategoryFilter?: boolean;
+	facetsPlacement?: PlpFacetsPlacement;
+	initialViewKey?: string;
+	providerId?: string;
 };
 
 function PaginationSkeleton() {
@@ -84,6 +88,9 @@ function PlpListingInteractive({
 	pageInfo,
 	totalCount,
 	enableCategoryFilter,
+	facetsPlacement = "bar",
+	initialViewKey,
+	providerId,
 }: PlpListingClientProps & { enableCategoryFilter: boolean }) {
 	const listing = useListingQuery({
 		surface,
@@ -93,6 +100,8 @@ function PlpListingInteractive({
 		initialProducts: products,
 		initialPageInfo: pageInfo,
 		initialTotalCount: totalCount,
+		initialViewKey,
+		providerId,
 	});
 
 	const {
@@ -123,30 +132,34 @@ function PlpListingInteractive({
 		totalCount: listing.pending ? totalCount : listing.totalCount,
 	});
 
+	const sidebar = facetsPlacement === "sidebar";
+
 	return (
-		<>
-			<FilterBar
-				resultCount={listing.pending ? resultCount : listing.totalCount}
-				sortValue={sortValue}
-				onSortChange={handleSortChange}
-				categoryOptions={enableCategoryFilter ? categoryOptions : undefined}
-				colorOptions={colorOptions}
-				sizeOptions={sizeOptions}
-				priceRanges={priceRanges}
-				selectedCategories={selectedCategories}
-				selectedColors={selectedColors}
-				selectedSizes={selectedSizes}
-				selectedPriceRange={selectedPriceRange}
-				onCategoryToggle={enableCategoryFilter ? handleCategoryToggle : undefined}
-				onColorToggle={handleColorToggle}
-				onSizeToggle={handleSizeToggle}
-				onPriceRangeChange={handlePriceRangeChange}
-				activeFilters={activeFilters}
-				onRemoveFilter={handleRemoveFilter}
-				onClearFilters={handleClearFilters}
-			/>
+		<div className={cn(sidebar && "container-content lg:flex lg:items-start lg:gap-10")}>
+			<div className={cn(sidebar && "lg:sticky lg:top-24 lg:w-64 lg:shrink-0")}>
+				<FilterBar
+					resultCount={listing.pending ? resultCount : listing.totalCount}
+					sortValue={sortValue}
+					onSortChange={handleSortChange}
+					categoryOptions={enableCategoryFilter ? categoryOptions : undefined}
+					colorOptions={colorOptions}
+					sizeOptions={sizeOptions}
+					priceRanges={priceRanges}
+					selectedCategories={selectedCategories}
+					selectedColors={selectedColors}
+					selectedSizes={selectedSizes}
+					selectedPriceRange={selectedPriceRange}
+					onCategoryToggle={enableCategoryFilter ? handleCategoryToggle : undefined}
+					onColorToggle={handleColorToggle}
+					onSizeToggle={handleSizeToggle}
+					onPriceRangeChange={handlePriceRangeChange}
+					activeFilters={activeFilters}
+					onRemoveFilter={handleRemoveFilter}
+					onClearFilters={handleClearFilters}
+				/>
+			</div>
 			<div className={cn("w-full transition-opacity", (isPending || listing.pending) && "opacity-60")}>
-				<div className="container-content py-8">
+				<div className={cn(!sidebar && "container-content", "py-8")}>
 					{listing.pending ? (
 						<ProductsGridSkeleton className="px-0 py-0" />
 					) : listing.error || filteredProducts.length === 0 ? (
@@ -161,7 +174,7 @@ function PlpListingInteractive({
 					)}
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
 

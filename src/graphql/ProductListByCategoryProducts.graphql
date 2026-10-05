@@ -1,0 +1,39 @@
+query ProductListByCategoryProducts(
+	$slug: String!
+	$channel: String!
+	$languageCode: LanguageCodeEnum!
+	$first: Int
+	$after: String
+	$last: Int
+	$before: String
+	$sortBy: ProductOrder
+	$filter: ProductFilterInput
+	$where: ProductWhereInput
+) {
+	category(slug: $slug) {
+		products(
+			first: $first
+			after: $after
+			last: $last
+			before: $before
+			channel: $channel
+			sortBy: $sortBy
+			filter: $filter
+			where: $where
+		) {
+			edges {
+				node {
+					...ProductListItem
+				}
+				cursor
+			}
+			pageInfo {
+				hasNextPage
+				hasPreviousPage
+				startCursor
+				endCursor
+			}
+			totalCount
+		}
+	}
+}

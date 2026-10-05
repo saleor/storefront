@@ -2,15 +2,16 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { OrderDirection, ProductOrderField } from "@/gql/graphql";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCollectionData } from "@/lib/catalog/get-collection-data";
-import { getCollectionListingPage } from "@/lib/catalog/get-product-listing";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { CategoryHero, PlpListingClient, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
+import { loadListingView } from "@/lib/listing/load";
+import { listingProviderFor } from "@/lib/listing/registry";
+import { templates } from "@/config/templates";
+import { CategoryHero, PlpListingClient } from "@/ui/components/plp";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 
@@ -93,16 +94,26 @@ export default async function Page(props: PageProps) {
 				primarySlug={collection.slug}
 				localeSlugs={buildLocaleSlugMap(collection)}
 			/>
-			<CategoryHero
-				title={collection.name}
-				description={plainDescription}
-				backgroundImage={collection.backgroundImage?.url}
-				breadcrumbs={breadcrumbs}
-				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
+			<templates.plp.Layout
+				surface={{ kind: "collection", title: collection.name, description: plainDescription }}
+				slots={{
+					header: (
+						<CategoryHero
+							title={collection.name}
+							description={plainDescription}
+							backgroundImage={collection.backgroundImage?.url}
+							breadcrumbs={breadcrumbs}
+							breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
+						/>
+					),
+					results: (
+						<Suspense fallback={<templates.plp.Skeleton />}>
+							<CollectionProducts params={props.params} />
+						</Suspense>
+					),
+					empty: null,
+				}}
 			/>
-			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CollectionProducts params={props.params} />
-			</Suspense>
 		</>
 	);
 }
@@ -114,15 +125,16 @@ async function CollectionProducts({ params: paramsPromise }: { params: PageProps
 		notFound();
 	}
 
-	const products = await getCollectionListingPage(collection.slug, params.channel, params.locale, {
-		field: ProductOrderField.Collection,
-		direction: OrderDirection.Asc,
+	const payload = await loadListingView({
+		surface: "collection",
+		locale: params.locale,
+		channel: params.channel,
+		slug: collection.slug,
+		view: {},
 	});
-	if (!products) {
+	if (!payload) {
 		notFound();
 	}
-
-	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
 	return (
 		<PlpListingClient
@@ -130,9 +142,11 @@ async function CollectionProducts({ params: paramsPromise }: { params: PageProps
 			locale={params.locale}
 			channel={params.channel}
 			slug={collection.slug}
-			products={productCards}
-			pageInfo={products.pageInfo}
-			totalCount={products.totalCount ?? productCards.length}
+			products={payload.products}
+			pageInfo={payload.pageInfo}
+			totalCount={payload.totalCount}
+			facetsPlacement={templates.plp.facets}
+			providerId={listingProviderFor("collection").id}
 		/>
 	);
 }

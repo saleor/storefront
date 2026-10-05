@@ -138,6 +138,8 @@ const config = [
 			"paper/no-lib-ui": "error",
 			"paper/ui-no-gql": "error",
 			"paper/template-purity": "error",
+			"paper/listing-provider-boundary": "error",
+			"paper/plp-params-only": "error",
 		},
 	},
 ];

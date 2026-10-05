@@ -5,11 +5,13 @@ import { type Metadata } from "next";
 import { catalogPathSuffix, redirectToCanonicalCatalogSlug } from "@/lib/catalog/canonical-slug";
 import { CatalogIdentityBridge } from "@/lib/catalog/catalog-identity-bridge";
 import { getCategoryData } from "@/lib/catalog/get-category-data";
-import { getCategoryListingPage } from "@/lib/catalog/get-product-listing";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildBrowsePageMetadata } from "@/lib/seo";
-import { CategoryHero, PlpListingClient, ProductsGridSkeleton, toProductCardData } from "@/ui/components/plp";
+import { loadListingView } from "@/lib/listing/load";
+import { listingProviderFor } from "@/lib/listing/registry";
+import { templates } from "@/config/templates";
+import { CategoryHero, PlpListingClient } from "@/ui/components/plp";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 
@@ -96,16 +98,26 @@ export default async function Page(props: PageProps) {
 				primarySlug={category.slug}
 				localeSlugs={buildLocaleSlugMap(category)}
 			/>
-			<CategoryHero
-				title={category.name}
-				description={plainDescription}
-				backgroundImage={category.backgroundImage?.url}
-				breadcrumbs={breadcrumbs}
-				breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
+			<templates.plp.Layout
+				surface={{ kind: "category", title: category.name, description: plainDescription }}
+				slots={{
+					header: (
+						<CategoryHero
+							title={category.name}
+							description={plainDescription}
+							backgroundImage={category.backgroundImage?.url}
+							breadcrumbs={breadcrumbs}
+							breadcrumbAriaLabel={tNav("breadcrumbAriaLabel")}
+						/>
+					),
+					results: (
+						<Suspense fallback={<templates.plp.Skeleton />}>
+							<CategoryProducts params={props.params} />
+						</Suspense>
+					),
+					empty: null,
+				}}
 			/>
-			<Suspense fallback={<ProductsGridSkeleton />}>
-				<CategoryProducts params={props.params} />
-			</Suspense>
 		</>
 	);
 }
@@ -117,12 +129,16 @@ async function CategoryProducts({ params: paramsPromise }: { params: PageProps["
 		notFound();
 	}
 
-	const products = await getCategoryListingPage(category.slug, params.channel, params.locale, undefined);
-	if (!products) {
+	const payload = await loadListingView({
+		surface: "category",
+		locale: params.locale,
+		channel: params.channel,
+		slug: category.slug,
+		view: {},
+	});
+	if (!payload) {
 		notFound();
 	}
-
-	const productCards = products.edges.map((e) => toProductCardData(e.node, params.locale, params.channel));
 
 	return (
 		<PlpListingClient
@@ -130,9 +146,11 @@ async function CategoryProducts({ params: paramsPromise }: { params: PageProps["
 			locale={params.locale}
 			channel={params.channel}
 			slug={category.slug}
-			products={productCards}
-			pageInfo={products.pageInfo}
-			totalCount={products.totalCount ?? productCards.length}
+			products={payload.products}
+			pageInfo={payload.pageInfo}
+			totalCount={payload.totalCount}
+			facetsPlacement={templates.plp.facets}
+			providerId={listingProviderFor("category").id}
 		/>
 	);
 }
