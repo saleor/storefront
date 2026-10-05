@@ -1,6 +1,5 @@
 import "server-only";
 
-import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -14,28 +13,81 @@ export type SaleorFixture = {
 
 const ROOT = join(process.cwd(), "e2e/fixtures/saleor");
 
+const SECRET_KEYS = new Set([
+	"password",
+	"oldPassword",
+	"newPassword",
+	"confirmPassword",
+	"token",
+	"refreshToken",
+	"accessToken",
+	"csrfToken",
+	"secret",
+	"authorization",
+]);
+
 export function fixtureMode(raw: string | undefined = process.env.SALEOR_FIXTURES): FixtureMode {
 	if (raw === "record" || raw === "replay") return raw;
 	return "off";
 }
 
-export function fixtureKey(operationName: string, body: string | undefined): string {
-	const hash = createHash("sha256")
-		.update(`${operationName}\n${body ?? ""}`)
-		.digest("hex")
-		.slice(0, 16);
-	return `${operationName}.${hash}.json`;
+function containsSecret(value: unknown): boolean {
+	if (!value || typeof value !== "object") return false;
+	if (Array.isArray(value)) return value.some(containsSecret);
+	for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+		if (SECRET_KEYS.has(key) || containsSecret(child)) return true;
+	}
+	return false;
+}
+
+/**
+ * Text that may identify a public query fixture.
+ * Mutations and any body carrying a password or token return null so those
+ * bytes are never hashed or written to disk.
+ */
+function publicQueryIdentity(body: string | undefined): string | null {
+	if (!body) return null;
+	try {
+		const parsed = JSON.parse(body) as { query?: unknown; variables?: unknown };
+		if (typeof parsed.query !== "string" || !/^\s*query\b/.test(parsed.query)) return null;
+		if (containsSecret(parsed.variables)) return null;
+		return `${parsed.query}\n${JSON.stringify(parsed.variables ?? null)}`;
+	} catch {
+		return null;
+	}
+}
+
+/** Filename disambiguator. Not a password hash — secrets never reach this. */
+function fingerprint(value: string): string {
+	let h1 = 0x811c9dc5;
+	let h2 = 0x01000193;
+	for (let i = 0; i < value.length; i++) {
+		const code = value.charCodeAt(i);
+		h1 = Math.imul(h1 ^ code, 0x01000193);
+		h2 = Math.imul(h2 ^ (code + 1), 0x01000193);
+	}
+	return (h1 >>> 0).toString(16).padStart(8, "0") + (h2 >>> 0).toString(16).padStart(8, "0");
+}
+
+export function fixtureKey(operationName: string, body: string | undefined): string | null {
+	const identity = publicQueryIdentity(body);
+	if (identity === null) return null;
+	return `${operationName}.${fingerprint(`${operationName}\n${identity}`)}.json`;
 }
 
 export function readFixture(operationName: string, body: string | undefined): SaleorFixture | null {
-	const path = join(ROOT, fixtureKey(operationName, body));
+	const key = fixtureKey(operationName, body);
+	if (!key) return null;
+	const path = join(ROOT, key);
 	if (!existsSync(path)) return null;
 	return JSON.parse(readFileSync(path, "utf8")) as SaleorFixture;
 }
 
 export function writeFixture(operationName: string, body: string | undefined, fixture: SaleorFixture): void {
+	const key = fixtureKey(operationName, body);
+	if (!key) return;
 	mkdirSync(ROOT, { recursive: true });
-	writeFileSync(join(ROOT, fixtureKey(operationName, body)), JSON.stringify(fixture, null, 2));
+	writeFileSync(join(ROOT, key), JSON.stringify(fixture, null, 2));
 }
 
 /**
@@ -43,13 +95,7 @@ export function writeFixture(operationName: string, body: string | undefined, fi
  * and customer payloads — never write those into a fixture file.
  */
 export function canRecordFixture(auth: string, requestBody: string | undefined): boolean {
-	if (auth !== "none" || !requestBody) return false;
-	try {
-		const parsed = JSON.parse(requestBody) as { query?: string };
-		return typeof parsed.query === "string" && /^\s*query\b/.test(parsed.query);
-	} catch {
-		return false;
-	}
+	return auth === "none" && publicQueryIdentity(requestBody) !== null;
 }
 
 export type ReplayResult =
@@ -61,6 +107,8 @@ export type ReplayResult =
 export function takeReplay(operationName: string, body: string | undefined): ReplayResult {
 	const mode = fixtureMode();
 	if (mode !== "replay") return { status: "off" };
+	const key = fixtureKey(operationName, body);
+	if (!key) return { status: "off" };
 
 	const fixture = readFixture(operationName, body);
 	if (!fixture) {
@@ -68,7 +116,7 @@ export function takeReplay(operationName: string, body: string | undefined): Rep
 			status: "miss",
 			message:
 				`No fixture for ${operationName}. Record one with SALEOR_FIXTURES=record ` +
-				`(e2e/fixtures/saleor/${fixtureKey(operationName, body)}).`,
+				`(e2e/fixtures/saleor/${key}).`,
 		};
 	}
 
