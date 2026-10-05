@@ -44,23 +44,39 @@ describe("PDP templates", () => {
 		expect(templates.pdp.gallery).toBe(ACTIVE_PDP_GALLERY);
 	});
 
-	it("places the gallery and buy box slots once", () => {
-		const html = renderToStaticMarkup(
-			createElement(templates.pdp.Layout, {
-				product,
-				slots: {
-					gallery: slot("pdp-slot-gallery"),
-					buyBox: slot("pdp-slot-buybox"),
-					breadcrumbs: slot("pdp-slot-breadcrumbs"),
-					attributes: slot("pdp-slot-attributes"),
-				},
-			}),
-		);
+	it("places the gallery and buy box slots once in every preset", () => {
+		const width: Record<string, string> = {
+			immersive: "container-super-wide",
+			standard: "container-content",
+			mosaic: "container-content",
+			columns: "container-content",
+		};
 
-		for (const id of ["pdp-slot-gallery", "pdp-slot-buybox", "pdp-slot-breadcrumbs", "pdp-slot-attributes"]) {
-			expect(html.match(new RegExp(`id="${id}"`, "g"))).toHaveLength(1);
+		for (const template of Object.values(PDP_TEMPLATES)) {
+			const html = renderToStaticMarkup(
+				createElement(template.Layout, {
+					product,
+					slots: {
+						gallery: slot("pdp-slot-gallery"),
+						buyBox: slot("pdp-slot-buybox"),
+						breadcrumbs: slot("pdp-slot-breadcrumbs"),
+						attributes: slot("pdp-slot-attributes"),
+					},
+				}),
+			);
+
+			for (const id of [
+				"pdp-slot-gallery",
+				"pdp-slot-buybox",
+				"pdp-slot-breadcrumbs",
+				"pdp-slot-attributes",
+			]) {
+				expect(html.match(new RegExp(`id="${id}"`, "g")), template.id).toHaveLength(1);
+			}
+			expect(html).toContain("Tee");
+			const expectedWidth = width[template.id];
+			expect(expectedWidth, `${template.id} needs a width assertion`).toBeTruthy();
+			expect(html).toContain(expectedWidth);
 		}
-		expect(html).toContain("Tee");
-		expect(html).toContain("container-super-wide");
 	});
 });

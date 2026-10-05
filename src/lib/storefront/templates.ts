@@ -1,6 +1,6 @@
 import type { ComponentType, ReactNode } from "react";
 
-import type { PdpGalleryLayout } from "@/ui/components/pdp/gallery-layout";
+import type { PdpGalleryLayout } from "@/lib/storefront/contract/gallery";
 import type { ProductView } from "@/lib/storefront/contract/product";
 
 /**

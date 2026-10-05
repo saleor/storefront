@@ -5,9 +5,25 @@
  * Adding a path to an allowlist is a reviewed exception, same as NEXT_IMAGE_ALLOWED_FILES.
  */
 
-/** @param {string} filename */
-function rel(filename) {
-	return filename.replaceAll("\\", "/").replace(/^.*\/storefront\//, "");
+/**
+ * Repo-relative path.
+ *
+ * Worktrees are not always a directory named `storefront`, and `src/lib/storefront/`
+ * contains that name again. Prefer ESLint's cwd. Fall back to the last `/src/`
+ * segment so a greedy match cannot swallow `src/lib/storefront/`.
+ *
+ * @param {string} filename
+ * @param {string} [cwd]
+ */
+function rel(filename, cwd) {
+	const normalized = filename.replaceAll("\\", "/");
+	const root = (cwd ?? "").replaceAll("\\", "/").replace(/\/$/, "");
+	if (root && (normalized === root || normalized.startsWith(`${root}/`))) {
+		return normalized.slice(root.length + 1);
+	}
+	const srcAt = normalized.lastIndexOf("/src/");
+	if (srcAt !== -1) return normalized.slice(srcAt + 1);
+	return normalized;
 }
 
 /** @param {string} file */
@@ -173,7 +189,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				return {
 					ImportDeclaration(node) {
 						const source = node.source.value;
@@ -211,7 +227,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				if (file.startsWith("src/checkout/graphql/generated/")) return {};
 				return {
 					ImportDeclaration(node) {
@@ -277,7 +293,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				const sourceText = context.sourceCode.getText();
 				return {
 					ImportDeclaration(node) {
@@ -329,7 +345,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				const allowed = LOADER_DIRS.some((dir) => file.startsWith(dir)) || file.includes(".test.");
 				return {
 					ExpressionStatement(node) {
@@ -363,7 +379,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				const storefront =
 					file.startsWith("src/app/(storefront)/") ||
 					file.startsWith("src/ui/") ||
@@ -419,7 +435,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				if (!file.startsWith("src/lib/") || LIB_UI_ALLOW.has(file)) return {};
 				return {
 					ImportDeclaration(node) {
@@ -441,7 +457,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				const inSurface = file.startsWith("src/ui/") || file.startsWith("src/templates/");
 				if (!inSurface || GQL_UI_ALLOW.has(file)) return {};
 				return {
@@ -469,7 +485,7 @@ const plugin = {
 				},
 			},
 			create(context) {
-				const file = rel(context.filename);
+				const file = rel(context.filename, context.cwd);
 				if (!file.startsWith("src/templates/")) return {};
 				return {
 					ImportDeclaration(node) {

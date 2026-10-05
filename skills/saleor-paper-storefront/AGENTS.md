@@ -3628,7 +3628,7 @@ A Paper shop picks one PDP layout at build time. The route owns data, caching, a
 `PdpTemplateProps` is the whole API:
 
 - `product` — a `ProductView`. Name, price range, images, description HTML, specs, care, bestseller flag, and `extensions`.
-- `slots.gallery` — the variant gallery, already inside Suspense. Place it exactly once.
+- `slots.gallery` — the variant gallery, already inside Suspense. Place it exactly once. Thumbnails and the hero stay inside this slot. Set the template `gallery` field to `standard` (thumbs under the hero), `immersive`, `mosaic`, or `columns` (thumbs on the left, hero in the center, buy box on the right). `ACTIVE_PDP_GALLERY` must equal that field.
 - `slots.buyBox` — price, variant pickers, add to cart. Already inside Suspense and an error boundary. Place it exactly once.
 - `slots.breadcrumbs` and `slots.attributes` — ready-made chrome. Place `attributes` or draw `product.attributes` yourself.
 
@@ -3679,7 +3679,7 @@ Register `editorial: editorialPdp` in `src/templates/pdp/registry.ts`. Set `ACTI
 
 Style with `brand.css` tokens (`bg-background`, `text-foreground`, `text-h1`). The outer wrapper stays `flex min-h-screen flex-col` so the route skeleton matches. The browse layout already renders `<main>`; the template does not.
 
-Switching among `standard`, `immersive`, and `mosaic` is the `gallery` field plus `ACTIVE_PDP_GALLERY`. Their column classes live in `PDP_LAYOUT_CLASSES` and can be reused. A page that is not one of those three is still just a template: arrange the same slots differently.
+Built-in presets are `standard`, `immersive`, `mosaic`, and `columns` in `src/templates/pdp/`. Select one with `ACTIVE_PDP_TEMPLATE` and the matching `ACTIVE_PDP_GALLERY`. A page that is none of those is still just a template: arrange the same slots differently. Do not paint `product.images[0]` above `slots.gallery`. That second image becomes the LCP frame and the gallery slot already carries the preloaded hero.
 
 ## Contract version
 
