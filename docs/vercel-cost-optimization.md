@@ -4,8 +4,6 @@ A migration checklist for anyone running a Next.js + Saleor storefront on Vercel
 below shipped on Paper's `feat/better-cost-control` branch; file paths reference Paper, but the
 reasoning applies to any fork.
 
-Living backlog for this repo: [`docs/plans/paper-cost-efficiency.md`](plans/paper-cost-efficiency.md).
-
 Ordered by leverage. Items 1–4 are one-line config changes worth doing today. Item 5 is the
 structural one. Items 6–11 are caching and compute.
 

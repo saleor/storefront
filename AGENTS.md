@@ -45,6 +45,8 @@ External skills are pinned in `skills-lock.json`; run `pnpm skills:bootstrap` af
 5. Import via the `@/` alias. The storefront must not import `@/checkout/*` — cross-surface URLs go through `@paper/session-bridge`.
 6. Saleor only through loaders on `@/lib/saleor` (`cachedQuery`, `liveQuery`, `sessionQuery`, `mutate`). Run `pnpm data:lock` after a data change and review `data-layer.lock.md`.
 
+Do not add `docs/plans/` or other plan writeups to the repo unless the user explicitly asks to publish one.
+
 ## Key locations
 
 | Purpose                                 | Path                                                                               |
