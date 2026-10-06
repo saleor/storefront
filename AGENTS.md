@@ -33,7 +33,7 @@ External skills are pinned in `skills-lock.json`; run `pnpm skills:bootstrap` af
 - `pnpm run build` — only gate that catches PPR dynamic-hole regressions; run on PPR-sensitive layout changes.
 - After editing `skills/.../rules/*.md`, run `pnpm run docs:compile` (or `verify` will flag the drift).
 - `pnpm run doctor` — verify the agent setup is actually healthy (project skill linked, external skills installed, docs in sync, compiled doc quarantined). Run it if a session seems off; `pnpm doctor --env` also checks required env.
-- A `stop` hook (`.cursor/hooks.json`) runs `lint:design-tokens` when you finish a turn and nudges you if banned color literals slipped in — fix them before declaring done. Fail-open; disable by removing the entry.
+- A `stop` hook (`.cursor/hooks.json` → `scripts/agent-stop-hook.sh`) runs `lint:design-tokens` when you finish a turn and nudges you if banned color literals slipped in — fix them before declaring done. Fail-open; disable by removing the entry.
 - **Opt-in workflow skills** (PPR/build & cache-tightening work): `next-dev-loop`, `next-cache-components-optimizer` — see `skills/saleor-paper-storefront/README.md` for install + preconditions. Not installed by `skills:bootstrap`.
 
 ## Non-negotiable rules

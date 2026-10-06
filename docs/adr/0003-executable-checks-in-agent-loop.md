@@ -137,7 +137,7 @@ making a check impossible to get wrong, and `verify` inherits it.
    `AGENTS.md` and `design-verification.md` now point at `verify`.
 2. Decide the Cursor `hooks.json` question (see Open questions) — prototype, measure latency/noise,
    then accept or reject in a follow-up to this ADR. **In trial (2026-06-29):** a conservative `stop`
-   hook running `lint:design-tokens` only (fail-open) is live in `.cursor/hooks.json`; accept/reject
+   hook running `lint:design-tokens` only (fail-open) is live in `.cursor/hooks.json` → `scripts/agent-stop-hook.sh`; accept/reject
    pending measured noise/latency across real sessions.
 3. Keep `verify` mirrored with `.github/workflows/build.yml` so local and CI truth match.
 
@@ -145,7 +145,7 @@ making a check impossible to get wrong, and `verify` inherits it.
 
 > The ADR is **Accepted**; `verify` and `doctor` shipped. The Cursor-hook question is now being **trialed** rather than left open — see below. Items still genuinely unresolved are marked.
 
-- **Hook or no hook? — TRIALING (2026-06-29).** A `stop` hook was added (`.cursor/hooks.json` + `.cursor/hooks/verify-quick.sh`). To respect this ADR's "measure first, stay opt-in" stance, it is configured conservatively: fires on `stop` (not `afterFileEdit`), runs **only `lint:design-tokens`** (fast, local, no network/codegen — `tsc`/`build` are too heavy for a per-turn hook), is **fail-open** (nudges via `followup_message`, never blocks stop), and is silent on a clean tree. Disable by removing the entry from `.cursor/hooks.json`. **Accept or reject in a follow-up once we have measured noise/latency across real sessions.**
+- **Hook or no hook? — TRIALING (2026-06-29).** A `stop` hook was added (`.cursor/hooks.json` points at `scripts/agent-stop-hook.sh`). To respect this ADR's "measure first, stay opt-in" stance, it is configured conservatively: fires on `stop` (not `afterFileEdit`), runs **only `lint:design-tokens`** (fast, local, no network/codegen — `tsc`/`build` are too heavy for a per-turn hook), is **fail-open** (nudges via `followup_message`, never blocks stop), and is silent on a clean tree. Disable by removing the entry from `.cursor/hooks.json`. **Accept or reject in a follow-up once we have measured noise/latency across real sessions.**
 - **Scope of the hook — resolved for the trial.** `lint:design-tokens` only. `tsc`/tests stay in the agent-driven `verify`/`verify:quick`, not the automatic hook. Change-scoped test selection is still open but out of scope for this trial.
 - **Where does the build fit? — still open.** Build remains CI-only + advisory ("run `pnpm run build` on PPR-sensitive layout changes", per `design-verification.md`). The faster proxy question may be revisited via the opt-in `next-dev-loop` workflow skill (see `skills/saleor-paper-storefront/README.md`) for PPR debugging, but that is per-task machinery, not an inner-loop gate.
 - **Failure interpretation — addressed by the hook's design.** The hook embeds the actionable next step (use a `brand.css` token; `design-tokens-allow` for rare exceptions) in the followup, not just raw output. `verify` itself still surfaces raw tool output, which has been sufficient.
@@ -163,7 +163,7 @@ making a check impossible to get wrong, and `verify` inherits it.
 - CI backstop: `.github/workflows/build.yml`
 - Thin local gate: `.husky/pre-commit`, `.lintstagedrc.js`
 - Codegen prehooks: `package.json` (`predev` / `prebuild` / `pretypecheck`)
-- Cursor `stop` hook (trial): `.cursor/hooks.json`, `.cursor/hooks/verify-quick.sh`
+- Cursor `stop` hook (trial): `.cursor/hooks.json`, `scripts/agent-stop-hook.sh`
 - Agent-setup health check: `scripts/paper-doctor.mjs` (`pnpm doctor`)
 - Opt-in Next.js workflow skills: `skills/saleor-paper-storefront/README.md`
 - ADR 0001: Locale and channel URL routing — `docs/adr/0001-locale-channel-url-routing.md`

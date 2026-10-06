@@ -1,5 +1,5 @@
 #!/bin/bash
-# Cursor "stop" hook — the cheapest deterministic gate, run when the agent
+# Agent "stop" hook — the cheapest deterministic gate, run when the agent
 # finishes a turn. Catches the most common agent mistake (hardcoded color
 # literals) and nudges the agent to fix them before the session ends.
 #
@@ -11,7 +11,9 @@
 #     no output. This hook never blocks the agent from stopping; it only nudges.
 #   - silent on success — zero noise when the codebase is clean.
 #
-# Disable: delete this file's entry from .cursor/hooks.json (or the whole file).
+# Cursor loads project hooks only from `.cursor/hooks.json`. That file points
+# here so the script stays with the other repo scripts. Disable by removing
+# the entry from `.cursor/hooks.json`.
 set -u
 
 # Consume the stop-event JSON on stdin (we don't need it, but it must be drained).

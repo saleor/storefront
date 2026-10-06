@@ -1,18 +1,6 @@
----
-description: Saleor access, caching, and invalidation. Use when editing loaders, GraphQL documents, server actions, or /api routes.
-globs:
-  - src/lib/**/*
-  - src/graphql/**/*
-  - src/checkout/lib/server/**/*
-  - src/checkout/graphql/**/*
-  - src/app/**/actions.ts
-  - src/app/api/**/*
-alwaysApply: false
----
+# Storefront data
 
-# Data layer
-
-Read `skills/saleor-paper-storefront/rules/data-access.md` before changing how Paper calls Saleor.
+Saleor is reached through `@/lib/saleor`. Read `skills/saleor-paper-storefront/rules/data-access.md` before changing how Paper calls Saleor.
 
 - Catalog reads: `cachedQuery` inside `"use cache"`, profile from `CACHE_PROFILES`.
 - Search and filtered listings: `liveQuery`. Do not cache filter permutations.
