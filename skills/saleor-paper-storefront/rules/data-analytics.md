@@ -117,7 +117,7 @@ A new destination is a projector over the same union. Do not retouch PDP or chec
 
 ## Commerce Context (order attribution)
 
-Sectioned **public metadata** `commerce.context.{origin,marketing,actors,experiment,session}` + `commerce.context.ext.<vendor>`. Paper writes on the **checkout**; Saleor copies checkout public metadata onto the order at `checkoutComplete`, so there is no order-side write. Pulse composes those keys on `ORDER_CREATED` and ranks **Origins** on Financial. Public recipe: [Pulse Commerce Context](https://docs.saleor.io/developer/app-store/apps/pulse/commerce-context) (source: `saleor-docs` `docs/developer/app-store/apps/pulse/commerce-context.mdx`).
+Sectioned **public metadata** `commerce.context.{origin,marketing,actors,experiment,session}` + `commerce.context.ext.<vendor>`. Paper writes on the **checkout**; Saleor copies checkout public metadata onto the order at `checkoutComplete`, so there is no order-side write. Pulse composes those keys on `ORDER_CREATED` and ranks **Origins** on Financial. Public recipe: [Pulse Commerce Context](https://docs.saleor.io/developer/app-store/apps/pulse/commerce-context) (source: the `saleor-docs` repo, `developer/app-store/apps/pulse/commerce-context.mdx`).
 
 ```
 src/lib/commerce-context/keys.ts                      key names + owner notes (spec copy)

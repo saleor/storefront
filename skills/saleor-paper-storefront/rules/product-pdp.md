@@ -108,7 +108,7 @@ export async function VariantGalleryDynamic({ product, searchParams }) {
 
 ## Caching (PDP-specific notes)
 
-`getProductData()` is a `"use cache"` fetch using `applyCacheProfile(CACHE_PROFILES.products, slug)` + `graphqlLanguageCodeVariables(localeSlug)`, merged with `withTranslatedProductFields()`. `localeSlug` is part of the cache key (per-language entry); the tag stays `product:{slug}` so a webhook busts all locales. Do **not** add fetch-level `revalidate`. Full model: `data-caching.md`.
+`getProductData()` is a `"use cache"` loader calling `cachedQuery(ProductDetailsDocument, { profile: CACHE_PROFILES.products, tag: slug, … })` with `graphqlLanguageCodeVariables(localeSlug)`, merged with `withTranslatedProductFields()`. `localeSlug` is part of the cache key (per-language entry); the tag stays `product:{slug}` so a webhook busts all locales. Do **not** add fetch-level `revalidate`. Full model: `data-caching.md`.
 
 Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic (searchParams): gallery images, variant section/price.
 

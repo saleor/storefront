@@ -60,21 +60,21 @@ Saleor: leave `announcement-id` unset for content-hash behavior; set it only whe
 
 ## Key Files
 
-| Purpose                     | Location                                                              |
-| --------------------------- | --------------------------------------------------------------------- |
-| Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)               |
-| Code fallback copy          | `src/lib/content/defaults.ts`                                         |
-| Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
-| Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                         |
-| Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
-| Announcement policy copy    | `src/lib/content/get-announcement-bar-props.ts`                       |
-| Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
-| Deep merge                  | `src/lib/content/merge.ts`                                            |
-| Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |
-| Client-safe exports         | `src/lib/content/index.ts`                                            |
-| Server-only export          | `src/lib/content/server.ts`                                           |
-| Saleor fetch + mappers      | `src/lib/content/saleor/`                                             |
-| Cache profile + tags        | `src/lib/cache-manifest.ts` (`storefront-content:{channel}:{locale}`) |
+| Purpose                     | Location                                                                     |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)                      |
+| Code fallback copy          | `src/lib/content/defaults.ts`                                                |
+| Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)                |
+| Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                                |
+| Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                               |
+| Announcement policy copy    | `src/lib/content/get-announcement-bar-props.ts`                              |
+| Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                       |
+| Deep merge                  | `src/lib/content/merge.ts`                                                   |
+| Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                                  |
+| Client-safe exports         | `src/lib/content/index.ts`                                                   |
+| Server-only export          | `src/lib/content/server.ts`                                                  |
+| Saleor fetch + mappers      | `src/lib/content/saleor/`                                                    |
+| Cache profile + tags        | `src/lib/saleor/cache/manifest.ts` (`storefront-content:{channel}:{locale}`) |
 
 **Do not** import `getStorefrontContent` from the client barrel — `"use cache"` must stay server-only.
 

@@ -8,8 +8,8 @@ Informal north-star for day-to-day conventions: [`skills/saleor-paper-storefront
 | [0002](./0002-cms-copy-vs-code-owned-ui-strings.md) | CMS editorial copy vs code-owned UI strings (next-intl) | Accepted (implemented)        |
 | [0003](./0003-executable-checks-in-agent-loop.md)   | Executable checks in the agent's feedback loop          | Accepted (implemented)        |
 | [0004](./0004-translatable-slugs.md)                | Saleor translatable catalog slugs                       | Accepted (phases 1–2 shipped) |
-| [0005](./0005-data-kernel-and-access-modes.md)      | Saleor data kernel and access modes                     | Accepted                      |
-| [0006](./0006-storefront-contract-and-templates.md) | Storefront contract and PDP templates                   | Accepted                      |
-| [0007](./0007-listing-contract-and-providers.md)    | Listing contract and per-surface providers              | Accepted                      |
+| [0005](./0005-data-kernel-and-access-modes.md)      | Saleor data kernel and access modes                     | Accepted (implemented)        |
+| [0006](./0006-storefront-contract-and-templates.md) | Storefront contract and PDP templates                   | Accepted (implemented)        |
+| [0007](./0007-listing-contract-and-providers.md)    | Listing contract and per-surface providers              | Accepted (implemented)        |
 
 **Human overview:** [`docs/international-storefront.md`](../international-storefront.md) — how routing, Saleor translations, CMS copy, and `messages/*.json` fit together.

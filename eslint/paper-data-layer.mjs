@@ -59,7 +59,6 @@ const LOADER_DIRS = [
 	"src/lib/custom/",
 ];
 
-/** Presence checks and the one raw app-token query that is not a codegen document. */
 /** Untyped queries. Anywhere else must use mutate() so the registry applies. */
 const RAW_MUTATION_ALLOW = new Set([
 	"src/lib/auth/confirm-account.ts",
@@ -69,12 +68,24 @@ const RAW_MUTATION_ALLOW = new Set([
 	"src/checkout/lib/server/fetch-channel-default-country.ts",
 ]);
 
+/**
+ * Documents whose operation is registered with `auth: "app"` in src/lib/saleor/operations.ts.
+ * The kernel attaches SALEOR_APP_TOKEN by operation name, so importing one of these
+ * is the privilege. `data-layer.contract.test.ts` keeps this set equal to the registry.
+ */
+export const APP_AUTH_DOCUMENTS = new Set(["ChannelsListDocument", "OrdersByNumberDocument"]);
+
+/** The only files that may run an app-token operation. Adding one is a reviewed exception. */
+export const APP_AUTH_CALLERS = new Set([
+	"src/lib/channels/get-channels-data.ts",
+	"src/checkout/lib/server/fetch-order-by-number.ts",
+]);
+
 const TOKEN_READ_ALLOW = new Set([
 	"src/lib/channels/get-channels-data.ts",
 	"src/checkout/lib/server/fetch-order-by-number.ts",
 	"src/checkout/lib/server/fetch-channel-default-country.ts",
 	"src/config/channels.ts",
-	"src/config/channels.test.ts",
 ]);
 
 /**
@@ -315,7 +326,7 @@ const plugin = {
 						}
 					},
 					MemberExpression(node) {
-						if (inKernel(file) || TOKEN_READ_ALLOW.has(file)) return;
+						if (inKernel(file) || TOKEN_READ_ALLOW.has(file) || /\.test\.tsx?$/.test(file)) return;
 						if (
 							node.property.type === "Identifier" &&
 							node.property.name === "SALEOR_APP_TOKEN" &&
@@ -324,6 +335,33 @@ const plugin = {
 							node.object.property.name === "env"
 						) {
 							context.report({ node, messageId: "token" });
+						}
+					},
+				};
+			},
+		},
+		"app-auth-callers": {
+			meta: {
+				type: "problem",
+				docs: { description: "App-token operations run only from an allowlist of files." },
+				schema: [],
+				messages: {
+					caller:
+						"{{name}} runs with SALEOR_APP_TOKEN (auth: app in src/lib/saleor/operations.ts). Call the existing loader instead. To allow this file, add it to APP_AUTH_CALLERS in eslint/paper-data-layer.mjs.",
+				},
+			},
+			create(context) {
+				const file = rel(context.filename, context.cwd);
+				if (inKernel(file) || /\.test\.tsx?$/.test(file) || APP_AUTH_CALLERS.has(file)) return {};
+				if (file.startsWith("src/gql/") || file.startsWith("src/checkout/graphql/generated/")) return {};
+				return {
+					ImportDeclaration(node) {
+						for (const spec of node.specifiers) {
+							if (spec.type !== "ImportSpecifier") continue;
+							const name = spec.imported.type === "Identifier" ? spec.imported.name : spec.imported.value;
+							if (APP_AUTH_DOCUMENTS.has(name)) {
+								context.report({ node: spec, messageId: "caller", data: { name } });
+							}
 						}
 					},
 				};

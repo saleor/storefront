@@ -12,15 +12,18 @@ Product list filtering and sorting. Attribute facets (colors/sizes/…) are **se
 
 ## Filter Architecture
 
-| Filter         | Processing     | Mechanism                                                                |
-| -------------- | -------------- | ------------------------------------------------------------------------ |
-| **Categories** | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
-| **Price**      | ✅ Server-side | `filter.price` or `where.price.range`                                    |
-| **Sort**       | ✅ Server-side | `ProductOrder`                                                           |
-| **Colors**     | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
-| **Sizes**      | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
+| Filter          | Processing     | Mechanism                                                                |
+| --------------- | -------------- | ------------------------------------------------------------------------ |
+| **Categories**  | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
+| **Price**       | ✅ Server-side | `filter.price` or `where.price.range`                                    |
+| **Sort**        | ✅ Server-side | `ProductOrder` (search "relevance" = `RANK`)                             |
+| **Search text** | ✅ Server-side | Top-level `search` argument — combines with `where`                      |
+| **Colors**      | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
+| **Sizes**       | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
 
 Saleor allows **only one** of `filter` or `where` per products query. When any attribute facet is selected, Paper puts the whole constraint set into `where` so aliases can OR correctly.
+
+Search text is the top-level `search` argument, not `filter.search`. It combines with `where`, so the search surface uses the same constraints (and the same alias OR) as category grids. "Relevance" sorts by `RANK`, which Saleor allows only together with search text.
 
 > The old claim “Saleor needs attribute IDs” is **false** for modern schemas — `AttributeInput` filters by attribute slug + value slugs.
 
@@ -56,25 +59,25 @@ export const PLP_FACETS = [
 
 ## Building listing constraints
 
-```typescript
-import { buildProductListingConstraints } from "@/lib/listing/providers/saleor/constraints";
-import { resolveCategorySlugsToIds } from "@/lib/catalog/resolve-category-slugs";
+Only the Saleor listing provider (`src/lib/listing/providers/saleor/`) builds Saleor listing variables. Pages and UI hand it a `ListingQuery`; `loadListing` decides whether the read is cached.
 
-const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
-const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+```typescript
+// Inside src/lib/listing/providers/saleor/
+import { buildProductListingConstraints } from "./constraints";
 
 const { filter, where } = buildProductListingConstraints({
-	priceRange: searchParams.price,
-	categoryIds,
-	colors: searchParams.colors,
-	sizes: searchParams.sizes,
+	priceRange,
+	categoryIds, // resolved from slugs with resolveCategorySlugsToIds
+	facets: query.selections,
 });
 
-// Pass exactly one of filter / where (the other is undefined)
-await executePublicGraphQL(ProductListPaginatedDocument, {
-	variables: { channel, sortBy, filter, where, ... },
+// Exactly one of filter / where is set. Search text rides in the top-level `search` argument.
+const result = await liveQuery(ProductListPaginatedDocument, {
+	variables: { channel, first, sortBy, filter, where, ...(search ? { search } : {}) },
 });
 ```
+
+A cacheable first page goes through `cachedQuery` with the listing profile instead. The provider gets that decision from core; it does not make it.
 
 `buildFilterVariables` remains for **category/price only** — do not hang attribute facets on it (single-slug `filter.attributes` cannot OR `shoe-size`).
 
@@ -117,4 +120,6 @@ import { STATIC_PRICE_RANGES } from "@/config/facets";
 ❌ **Don't hide selected filters** — always show so users can deselect  
 ❌ **Don't treat the PLP variant sample as filter truth** — sample is for swatches/hints  
 ❌ **Don't filter only `size` when sneakers use `shoe-size`** — configure aliases  
-❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination
+❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination  
+❌ **Don't put search text in `filter.search`** — the top-level `search` argument combines with `where`, so facet aliases still OR  
+❌ **Don't sort relevance by `RATING`** — it is deprecated and is not relevance; use `RANK` with search text

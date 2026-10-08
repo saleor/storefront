@@ -71,7 +71,7 @@ function parseIntEnv(name, fallback) {
 }
 
 /**
- * Throttle/retry config — mirrors src/lib/graphql.ts so catalog scripts respect the same
+ * Throttle/retry config — mirrors src/lib/saleor/client.ts so catalog scripts respect the same
  * env knobs as the storefront. Defaults are deliberately gentle so a deploy can never
  * stampede a Saleor instance.
  */

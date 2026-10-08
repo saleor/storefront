@@ -98,7 +98,7 @@ Paper follows **canonical Next.js App Router** patterns (Next.js 16):
 
 - **Server Components by default** — `"use client"` only for interactivity, browser APIs, or client hooks.
 - **Server Actions** for cart, checkout, and account mutations — not client-side GraphQL.
-- **RSC data fetching** on the server via `executePublicGraphQL` / `executeAuthenticatedGraphQL` — not urql, not browser Saleor SDK.
+- **RSC data fetching** on the server through the Saleor kernel (`@/lib/saleor`: `cachedQuery`, `liveQuery`, `sessionQuery`, `mutate`) — not urql, not browser Saleor SDK. See [`data-access.md`](data-access.md).
 - **Cache Components (PPR)** for browse/catalog — `"use cache"` at the data boundary, `Suspense` for runtime holes.
 - **BFF auth** — login/session via `/api/auth/*` and HttpOnly cookies, shared across storefront and checkout.
 
@@ -117,7 +117,7 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 | **Page boundaries** | Static page renders cached shell directly; hybrid wraps only islands | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
 | **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)                   | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
 | **Auth**            | BFF + PPR-safe account routes                                        | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
-| **GraphQL**         | Codegen + server helpers                                             | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
+| **GraphQL**         | Codegen + the `@/lib/saleor` kernel                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
 | **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional            | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
 | **Copy & i18n**     | Three string systems                                                 | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
 | **Channels**        | Explicit storefront allowlist                                        | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
@@ -130,9 +130,10 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 Browse (storefront)                    Commerce (cart / checkout / account)
 ─────────────────                    ─────────────────────────────────────
 RSC page (sync export)               RSC loader or Server Action
-  └── Suspense                         └── executeAuthenticatedGraphQL
-        └── Shell ("use cache" data)         cache: "no-cache"
-              └── Suspense islands           mutations → revalidatePath / refresh
+  └── Suspense                         └── sessionQuery / liveQuery (reads)
+        └── Shell ("use cache"               mutate (writes), never cached
+              + cachedQuery)                 then refresh()
+              └── Suspense islands
                     searchParams, cookies
 ```
 
@@ -146,15 +147,15 @@ Patterns we **do not** use — regressions to avoid:
 
 | Avoid                                                | Use instead                                          |
 | ---------------------------------------------------- | ---------------------------------------------------- |
-| Client-side Saleor GraphQL (urql, Apollo in browser) | Server helpers + Server Actions                      |
+| Client-side Saleor GraphQL (urql, Apollo in browser) | `@/lib/saleor` loaders + Server Actions              |
 | Browser Saleor SDK for login                         | BFF `/api/auth/*`                                    |
-| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cache-manifest.ts` + webhooks       |
+| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cachedQuery` + webhooks             |
 | `searchParams` / `cookies()` inside `"use cache"`    | Dynamic islands in nested `Suspense`                 |
 | Page-level skeleton on a non-dynamic route           | Render the cached shell directly; no page `Suspense` |
 | `Suspense fallback={null}` on `<main>`               | Route `loading.tsx` + section skeletons              |
 | `router.replace` for checkout step-only changes      | `updateCheckoutQuery()` (shallow history)            |
 | Storefront importing `@/checkout/*`                  | `@paper/session-bridge` for cross-surface URLs only  |
-| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `applyCacheProfile` from `cache-manifest.ts`         |
+| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `cachedQuery` with a `CACHE_PROFILES` profile        |
 
 ---
 
@@ -249,23 +250,23 @@ This rule holds **Paper's caching decisions** — what we cache, the contracts t
 
 > **Display pages are cached for performance. Transactional flows are always real-time.**
 
-| Surface                                | Data source                                                         | Freshness                              |
-| -------------------------------------- | ------------------------------------------------------------------- | -------------------------------------- |
-| PDP / category / collection / homepage | `getProductData()`, `getCategoryData()`, `getFeaturedProducts()`, … | Webhook-invalidated (1 hr backstop)    |
-| Listing grids (unfiltered first page)  | `getProductListingPage()` and siblings                              | Webhook-invalidated (1 hr backstop)    |
-| Filtered / paginated listing views     | inline `executePublicGraphQL`                                       | **Always fresh** (uncached long tail)  |
-| Navigation / footer menus              | `getNavbarMenuItems()` / `getFooterMenuItems()`                     | Cached (~1 hr)                         |
-| Cart drawer, checkout, add-to-cart     | `Checkout.find()`, server actions, Saleor mutations                 | **Always fresh** (`cache: "no-cache"`) |
+| Surface                                | Data source                                                         | Freshness                               |
+| -------------------------------------- | ------------------------------------------------------------------- | --------------------------------------- |
+| PDP / category / collection / homepage | `getProductData()`, `getCategoryData()`, `getFeaturedProducts()`, … | Webhook-invalidated (1 hr backstop)     |
+| Listing grids (first page, any sort)   | `loadListing()` in `src/lib/listing/policy.ts`                      | Webhook-invalidated (1 hr backstop)     |
+| Search, filtered, and paged listings   | `loadListing()` → provider `load()` (Saleor: `liveQuery`)           | **Always fresh** (uncached long tail)   |
+| Navigation / footer menus              | `getNavbarMenuItems()` / `getFooterMenuItems()`                     | Cached (~1 hr)                          |
+| Cart drawer, checkout, add-to-cart     | `Checkout.find()`, server actions, `mutate`                         | **Always fresh** (`liveQuery`/`mutate`) |
 
-**Why a stale PDP price is safe:** Saleor is the source of truth. Cart fetches fresh (`cache: "no-cache"`), `checkoutLinesAdd`/`checkoutComplete` recalculate server-side, and webhooks bust the cache on change. A shopper may see a stale price on the PDP but **cannot check out at it**.
+**Why a stale PDP price is safe:** Saleor is the source of truth. Cart fetches fresh (`liveQuery`), `checkoutLinesAdd`/`checkoutComplete` recalculate server-side, and webhooks bust the cache on change. A shopper may see a stale price on the PDP but **cannot check out at it**.
 
-Paper runs Next.js 16 with [`cacheComponents: true`](../../../next.config.js) (stable — not the Next 15 `experimental.ppr`/`dynamicIO` flags). **Nothing is cached by default**; catalog speed is opt-in via `"use cache"` at the data boundary (`src/lib/catalog/`, `src/lib/menus/`, `src/lib/channels/`, `src/lib/content/`). Paper does **not** use `"use cache: private"` — locale/channel are passed as function args instead.
+Paper runs Next.js 16 with [`cacheComponents: true`](../../../next.config.js) (stable — not the Next 15 `experimental.ppr`/`dynamicIO` flags). **Nothing is cached by default**; catalog speed is opt-in via `"use cache"` at the data boundary (`src/lib/catalog/`, `src/lib/menus/`, `src/lib/channels/`, `src/lib/content/`, `src/lib/listing/`). Saleor is reached only through the kernel in `src/lib/saleor/` — see [`data-access.md`](data-access.md). Paper does **not** use `"use cache: private"` — locale/channel are passed as function args instead.
 
 ---
 
 ## Cache manifest — single source of truth
 
-All TTLs and tags are defined in **`src/lib/cache-manifest.ts`**. Cached functions read it via `applyCacheProfile()`; `/api/cache-info` serves it to the saleor-paper-app. Change a TTL or tag pattern in **one** place and both behavior and the Dashboard view update.
+All TTLs and tags are defined in **`src/lib/saleor/cache/manifest.ts`** (kernel; forks add profiles in `src/config/data-extensions.ts`). `cachedQuery` applies the profile and tag inside `"use cache"`. A cached loader that does not call Saleor uses `bindCacheProfile`. `/api/cache-info` serves the manifest to the saleor-paper-app. Change a TTL or tag pattern in **one** place and both behavior and the Dashboard view update.
 
 ```typescript
 import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
@@ -284,23 +285,25 @@ async function getProductData(slug: string, channel: string, localeSlug: string)
 
 Always use `cachedQuery` (it applies the manifest profile) — **never** raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings that drift from the manifest. Do **not** add fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness.
 
+**Failures are not cached.** `cachedQuery` throws `SaleorDataError` on a transport failure and on any GraphQL `errors`, even when Saleor also returned partial data. A resolver failure looks like `{ product: null, errors: [...] }`; caching it would serve a 404 or a priceless PDP for the catalog TTL. Next.js does not cache a thrown error, so the next request retries. A missing entity (`null` with no errors) is still `null`. `liveQuery`, `sessionQuery`, and `mutate` return partial data as `ok: true` with `partialErrors` and log them.
+
 ### Tag registry
 
-| Tag pattern                                                           | Profile                 | Used by                                                   | Invalidated when                                                                             |
-| --------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `product:{slug}`                                                      | `products`              | `getProductData()`                                        | Product updated                                                                              |
-| `category:{slug}`                                                     | `categories`            | `getCategoryData()`                                       | Category updated                                                                             |
-| `collection:{slug}`                                                   | `collections`           | `getCollectionData()`, `getFeaturedProducts()`            | Collection updated                                                                           |
-| `page:{slug}`                                                         | `pages`                 | `getPageData()` (CMS)                                     | Page updated                                                                                 |
-| `products` / `categories` / `collections` / `pages`                   | same (sharedTag)        | Applied alongside each entity tag via `applyCacheProfile` | Full purge (`?all=1`), promotions                                                            |
-| `listing:all:{channel}`                                               | `listingAll`            | `getProductListingPage()` (/products grid)                | Listing-affecting product event (`PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0` skips this tag) |
-| `listing:category:{channel}:{slug}`                                   | `listingCategory`       | `getCategoryListingPage()`                                | Product event in that category; category event                                               |
-| `listing:collection:{channel}:{slug}`                                 | `listingCollection`     | `getCollectionListingPage()`                              | Enriched product event naming the collection; collection event                               |
-| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | same (sharedTagPattern) | Applied alongside each category/collection grid tag       | Fallback when the payload can't name the grid; full purge                                    |
-| `navigation:{channel}`                                                | `navigation`            | `getNavbarMenuItems()`                                    | Navbar changed                                                                               |
-| `footer-menu:{channel}`                                               | `footerMenu`            | `getFooterMenuItems()`                                    | Footer changed                                                                               |
-| `storefront-content:{channel}:{locale}`                               | `storefront-content`    | `getStorefrontContent()`                                  | `storefront-*` Page updated                                                                  |
-| `channels`                                                            | `channels`              | `getCachedChannelsList()`                                 | Channel list changed                                                                         |
+| Tag pattern                                                           | Profile                 | Used by                                             | Invalidated when                                                                             |
+| --------------------------------------------------------------------- | ----------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `product:{slug}`                                                      | `products`              | `getProductData()`                                  | Product updated                                                                              |
+| `category:{slug}`                                                     | `categories`            | `getCategoryData()`                                 | Category updated                                                                             |
+| `collection:{slug}`                                                   | `collections`           | `getCollectionData()`, `getFeaturedProducts()`      | Collection updated                                                                           |
+| `page:{slug}`                                                         | `pages`                 | `getPageData()` (CMS)                               | Page updated                                                                                 |
+| `products` / `categories` / `collections` / `pages`                   | same (sharedTag)        | Applied alongside each entity tag via `cachedQuery` | Full purge (`?all=1`), promotions                                                            |
+| `listing:all:{channel}`                                               | `listingAll`            | `loadListing()` — all-products surface              | Listing-affecting product event (`PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0` skips this tag) |
+| `listing:category:{channel}:{slug}`                                   | `listingCategory`       | `loadListing()` — category surface                  | Product event in that category; category event                                               |
+| `listing:collection:{channel}:{slug}`                                 | `listingCollection`     | `loadListing()` — collection surface                | Enriched product event naming the collection; collection event                               |
+| `listing:category-any:{channel}` / `listing:collection-any:{channel}` | same (sharedTagPattern) | Applied alongside each category/collection grid tag | Fallback when the payload can't name the grid; full purge                                    |
+| `navigation:{channel}`                                                | `navigation`            | `getNavbarMenuItems()`                              | Navbar changed                                                                               |
+| `footer-menu:{channel}`                                               | `footerMenu`            | `getFooterMenuItems()`                              | Footer changed                                                                               |
+| `storefront-content:{channel}:{locale}`                               | `storefront-content`    | `getStorefrontContent()`                            | `storefront-*` Page updated                                                                  |
+| `channels`                                                            | `channels`              | `getCachedChannelsList()`                           | Channel list changed                                                                         |
 
 Slug-scoped catalog entries carry **two** tags: the entity tag (`product:{slug}`) and the profile `sharedTag` (`products`). Entity webhooks bust the precise tag; `?all=1` revalidates shared tags so the whole catalog clears without enumerating slugs.
 Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/categories/collections/listings/CMS pages) is `stale 5 min / revalidate 1 hr / expire 1 day`, `menus` ~1 hr (nav/footer) and ~5 min (storefront-content), `channels` longer.
@@ -309,7 +312,16 @@ Named `cacheLife` tiers (configured in `next.config.js`): `catalog` (products/ca
 
 ### Listing grids
 
-Listing **pages** do not await `searchParams`. The HTML is always the unfiltered first page from `getProductListingPage` / `getCategoryListingPage` / `getCollectionListingPage`. Filtered, sorted, and paginated views are `GET /api/listing` (`loadListing` in `fetch-filtered-listing.ts`): sort-only still uses the `"use cache"` helpers (`isCacheableListingView`); filters and cursors stay live. Caching every filter permutation would add entries that are written once and rarely read again. Category/collection slugs are cache-key arguments, so the entry upper bound is `(1 + categories + collections) × sorts × locales × channels` — only _visited_ grids materialize, and the **sharded tags** above keep invalidation per-grid: one product edit busts its own category/collection grids plus `listing:all` (unless `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`), never every grid in the channel. Product webhook payloads carry `category.slug`; collection membership comes from the saleor-paper-app **enriched payload** (`collections { slug }` in the subscription) — without it the channel catch-all keeps correctness at the cost of precision.
+Listing **pages** do not await `searchParams`. Each page renders the first page of its surface through `loadListing` (`src/lib/listing/policy.ts`) with an empty view. Every other view — filters, sort, cursor, search paging — is `GET /api/listing`, which calls the same `loadListing`. Rules for providers and templates: [`plp-listing.md`](plp-listing.md).
+
+`loadListing` first normalizes the query for the surface's provider: an unsupported sort falls back to the surface default, and a page request in the wrong pagination mode (`?page=2` on a cursor provider) falls back to the first page. Then `isCacheableListingQuery` (`src/lib/listing/cacheability.ts`) picks the wrapper:
+
+- **First page, any sort, not search → cached.** Saleor (`freshness: "saleor-webhooks"`) entries carry the sharded listing tags above. TTL providers use `listingTtl` and no tag.
+- **Filters, cursors, deeper pages, and search → live.** A filter permutation is written once and rarely read again.
+
+Category and collection slugs are cache-key arguments, so the entry upper bound is `(1 + categories + collections) × sorts × locales × channels`, and only visited grids materialize. Inside a route handler (`/api/listing`), a `"use cache"` hit is per instance on serverless. The durable cache for a canonical grid is the page's static shell.
+
+The **sharded tags** keep invalidation per grid. `src/lib/listing/invalidate.ts` plans them: one product edit busts its own category and collection grids plus `listing:all` (unless `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT=0`), never every grid in the channel. Product webhook payloads carry `category.slug`. Collection membership comes from the saleor-paper-app **enriched payload** (`collections { slug }` in the subscription). Without it, the channel catch-all keeps correctness at the cost of precision.
 
 `GET /api/cache-info` returns the machine-readable manifest (Bearer `REVALIDATE_SECRET`, timing-safe) so the saleor-paper-app can build its invalidation UI dynamically. Manifest **v6+** includes an optional `identity` block (`saleorApiUrl`, `environment`, deploy metadata) for the Paper handshake. `saleorApiUrl` comes from `NEXT_PUBLIC_SALEOR_API_URL`. `environment` defaults from `VERCEL_ENV` / `NODE_ENV`; set `PAPER_STOREFRONT_ENVIRONMENT` only when those lie (true staging, or non-Vercel hosts that aren't prod).
 
@@ -317,10 +329,10 @@ Listing **pages** do not await `searchParams`. The HTML is always the unfiltered
 
 ## The page-boundary model (Paper convention)
 
-The PPR layer stack — pick the page shape by **whether the route reads runtime data** (`searchParams`/`cookies`/uncached fetch): a **cached page** (no runtime data) uses a sync shell + page-level `Suspense` around an async body that awaits `params` + `"use cache"` (homepage — required for Partial Prefetching App Shell sharing); a **hybrid page** renders the cached shell **eagerly** and wraps **only** the dynamic island (`searchParams`/cookies) in `Suspense` (e.g. PDP variant section). Listing pages are params-only — the unfiltered grid is `"use cache"`; filters/sort/cursor swap via `GET /api/listing`, not a page `searchParams` await. A skeleton is a **per-hole** affordance, never a blanket page default — the homepage fold fallback is the App Shell exception. Documented in [`paper-architecture.md`](paper-architecture.md) and [`page-composition.md`](page-composition.md); PDP specifics in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
+The PPR layer stack — pick the page shape by **whether the route reads runtime data** (`searchParams`/`cookies`/uncached fetch): a **cached page** (no runtime data) uses a sync shell + page-level `Suspense` around an async body that awaits `params` + `"use cache"` (homepage — required for Partial Prefetching App Shell sharing); a **hybrid page** renders the cached shell **eagerly** and wraps **only** the dynamic island (`searchParams`/cookies) in `Suspense` (e.g. PDP variant section). Listing pages are params-only — the first-page grid is cached by `loadListing`; filters/sort/cursor swap via `GET /api/listing`, not a page `searchParams` await. A skeleton is a **per-hole** affordance, never a blanket page default — the homepage fold fallback is the App Shell exception. Documented in [`paper-architecture.md`](paper-architecture.md) and [`page-composition.md`](page-composition.md); PDP specifics in [`product-pdp.md`](product-pdp.md); auth routes in [`data-auth-routes.md`](data-auth-routes.md). The essentials here:
 
-- **Catalog fetches live in modules**, not inline in pages long-term: `src/lib/catalog/`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/`.
-- **`executePublicGraphQL`** is safe inside `"use cache"`; **`executeAuthenticatedGraphQL`** is **not** (needs cookies) — keep it out of cached functions.
+- **Catalog fetches live in modules**, not inline in pages: `src/lib/catalog/`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/`, `src/lib/listing/`.
+- **`cachedQuery`** belongs inside `"use cache"`. **`sessionQuery`**, **`liveQuery`**, and **`mutate`** do not — `paper/use-cache-shape` rejects them there (session reads need cookies; live reads would be frozen into the cache).
 - **Don't re-export server cached helpers from client-mixed barrels** (import catalog/menu modules directly; e.g. `ProductGalleryLcp` directly, not via a mixed `pdp/index.ts`).
 - **CSS `order`** lets dynamic content appear above static `<h1>` while keeping the `h1` in the cached shell for SEO (PDP uses `order-1..4`).
 
@@ -343,7 +355,7 @@ When you hit an “uncached data accessed outside `<Suspense>`” error, the ove
 
 | Situation                                                                   | Paper choice                                                                     |
 | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Catalog display data (product, category, menus)                             | **Cache** — `"use cache"` + `applyCacheProfile`                                  |
+| Catalog display data (product, category, menus)                             | **Cache** — `"use cache"` + `cachedQuery`                                        |
 | `searchParams`/cookies UI (variant gallery, cart badge, user menu)          | **Stream** — nested `<Suspense>` island                                          |
 | Awaiting `searchParams`/`cookies()` in a page shell or inside `"use cache"` | Don't — it collapses the route into a dynamic hole; move the read into an island |
 
@@ -364,7 +376,7 @@ Browse routes are `/{locale}/{channel}/…` (see `ui-locale-routing.md`). Locale
 ```typescript
 getProductData("hoodie", "default-channel", "en"); // English entry
 getProductData("hoodie", "default-channel", "pl"); // Polish entry
-applyCacheProfile(CACHE_PROFILES.products, slug); // single tag product:hoodie clears both
+// cachedQuery(..., { profile: CACHE_PROFILES.products, tag: "hoodie" }) — one tag, product:hoodie, clears both
 ```
 
 - Cached fetches pass `graphqlLanguageCodeVariables(localeSlug)`; map URL slugs to Saleor **base** codes in `src/config/locale.ts` (`pl` → `PL`, not `PL_PL`). Merge translations with `withTranslatedProductFields()` (`src/lib/saleor-translations.ts`) after the fetch.
@@ -381,7 +393,7 @@ applyCacheProfile(CACHE_PROFILES.products, slug); // single tag product:hoodie c
 Saleor event → saleor-paper-app → POST /api/revalidate → revalidateTag (+ revalidatePath for CMS pages)
 ```
 
-**The `saleor-event` header drives the scope.** `src/lib/webhook-events.ts` maps each event Paper acts on to an entity and an `affectsListing` flag; anything absent from that map is logged and skipped. Opting a new event into invalidation means adding it there. Never reintroduce a catch-all fallback — an unmapped event (orders, checkouts, customers) firing a catalog purge is a self-inflicted cost and cache-hit-rate problem.
+**The `saleor-event` header drives the scope.** `src/lib/saleor/invalidation/webhook-events.ts` (`WEBHOOK_EVENT_SCOPES`; forks add events in `src/config/data-extensions.ts`) maps each event Paper acts on to an entity and an `affectsListing` flag; anything absent from that map is logged and skipped. Opting a new event into invalidation means adding it there. Never reintroduce a catch-all fallback — an unmapped event (orders, checkouts, customers) firing a catalog purge is a self-inflicted cost and cache-hit-rate problem.
 
 saleor-paper-app forwards that header on every entity POST. A POST without it (manual curl, older app) is treated as listing-affecting. After upgrading the app, click **Sync Webhooks** so Saleor delivers variant CRUD, stock, and metadata — stock events must arrive _with_ `saleor-event` or they bust the listing tags. Do not also subscribe the app to `PRODUCT_MEDIA_*`; Saleor already emits `PRODUCT_UPDATED` for media edits.
 
@@ -397,7 +409,7 @@ saleor-paper-app forwards that header on every entity POST. A POST without it (m
 
 **Known sharding gap — removals.** Payloads name only a product's _current_ memberships, so moving a product out of a category/collection leaves the **old** grid's cache untouched: it keeps showing the product until the `catalog` cacheLife backstop expires it. Editing the source category/collection itself (a `CATEGORY_*`/`COLLECTION_*` event) busts its grid immediately. Accepted trade-off: a bounded staleness window on a rare operation, versus busting every grid in the channel on every product edit.
 
-Catalog entries are **tag-addressable** — `applyCacheProfile` attaches the entity tag inside every `"use cache"` function, so `revalidateTag` alone busts every locale. Per-locale `revalidatePath` fan-out is therefore redundant for catalog data and is only used for CMS pages. `revalidateTag` takes the manifest profile (`resolveRevalidateCacheLifeProfile("products")`).
+Catalog entries are **tag-addressable** — `cachedQuery` attaches the entity tag inside every `"use cache"` function, so `revalidateTag` alone busts every locale. Per-locale `revalidatePath` fan-out is therefore redundant for catalog data and is only used for CMS pages. `revalidateTag` takes the manifest profile (`resolveRevalidateProfileForTag`).
 
 **Don't** point Saleor webhooks directly at `/api/revalidate` while the app is installed (duplicate deliveries, doubled invalidation cost). Each delivery logs its `saleor-event` and `saleor-api-url`, so duplicates show up as two identical log lines per change — check there first if invalidation looks twice as busy as expected. Direct webhooks remain valid for self-hosted setups without the app (set `SALEOR_WEBHOOK_SECRET`).
 
@@ -428,14 +440,14 @@ Without webhooks, TTL takes over (catalog 1 hr, menus 1 hr).
 
 Paper runs on Vercel, where the meters that matter are **function invocations + active CPU**, **edge middleware invocations**, **image transformations**, and **cache writes/bandwidth**. Caching decisions are cost decisions; these are the knobs, and each trades money against freshness. The full billing model, cost invariants, and scaling playbook live in [`paper-vercel-cost.md`](paper-vercel-cost.md).
 
-| Knob                                                   | Default        | Raises cost when…                     | Trade-off when tightened                         |
-| ------------------------------------------------------ | -------------- | ------------------------------------- | ------------------------------------------------ |
-| `catalog.revalidate` (`cache-life-profiles.data.mjs`)  | 1 hr           | Lowered — request-triggered backstop  | Staler catalog if webhooks are not configured    |
-| `isCacheableListingView()` allowlist                   | first page     | Widened — one entry per permutation   | Filtered views stay uncached (a live fetch each) |
-| `NEXT_IMAGE_MIN_CACHE_TTL`                             | 31 days        | Lowered — re-optimizes the same image | In-place image replacements are served stale     |
-| `images.deviceSizes` / `imageSizes` (`next.config.js`) | trimmed ladder | Widened — a transformation per width  | No >1920px variants for 4K displays              |
-| `IMAGE_ALLOWED_HOSTS`                                  | unset          | Widened — third parties can bill you  | Non-Saleor image sources must be listed          |
-| `SALEOR_MIN_REQUEST_DELAY_MS`                          | 0 at runtime   | Raised — billed idle CPU per request  | Less protection against Saleor API rate limits   |
+| Knob                                                         | Default        | Raises cost when…                     | Trade-off when tightened                         |
+| ------------------------------------------------------------ | -------------- | ------------------------------------- | ------------------------------------------------ |
+| `catalog.revalidate` (`saleor/cache/life-profiles.data.mjs`) | 1 hr           | Lowered — request-triggered backstop  | Staler catalog if webhooks are not configured    |
+| `isCacheableListingQuery()` allowlist                        | first page     | Widened — one entry per permutation   | Filtered views stay uncached (a live fetch each) |
+| `NEXT_IMAGE_MIN_CACHE_TTL`                                   | 31 days        | Lowered — re-optimizes the same image | In-place image replacements are served stale     |
+| `images.deviceSizes` / `imageSizes` (`next.config.js`)       | trimmed ladder | Widened — a transformation per width  | No >1920px variants for 4K displays              |
+| `IMAGE_ALLOWED_HOSTS`                                        | unset          | Widened — third parties can bill you  | Non-Saleor image sources must be listed          |
+| `SALEOR_MIN_REQUEST_DELAY_MS`                                | 0 at runtime   | Raised — billed idle CPU per request  | Less protection against Saleor API rate limits   |
 
 Rules of thumb:
 
@@ -449,9 +461,9 @@ Rules of thumb:
 
 ❌ `cache: "no-cache"` on display pages — destroys performance
 ❌ Skipping webhook setup in production — users see stale prices
-❌ `executeAuthenticatedGraphQL` (or `cookies()`/`searchParams`) inside `"use cache"` — needs runtime data
+❌ `sessionQuery` / `liveQuery` (or `cookies()`/`searchParams`) inside `"use cache"` — needs runtime data
 ❌ Awaiting `searchParams` in a shell — collapses the route into a dynamic hole (move to an island)
-❌ Raw `cacheLife("minutes")` / hand-rolled `cacheTag` — use `applyCacheProfile(CACHE_PROFILES.*)`
+❌ Raw `cacheLife("minutes")` / hand-rolled `cacheTag` — use `cachedQuery` with `CACHE_PROFILES.*` (or `bindCacheProfile`)
 ❌ Fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness
 ❌ A catch-all `default:` in the webhook switch — unmapped events must log and skip, not purge
 ❌ Busting listing tags on stock/metadata events — inventory sync would keep the grids permanently cold
@@ -466,16 +478,18 @@ Rules of thumb:
 
 ## Key files
 
-| File                                                                                              | Purpose                                               |
-| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `src/lib/cache-manifest.ts`                                                                       | Cache profiles — **single source of truth**           |
-| `src/app/api/revalidate/route.ts`                                                                 | Webhook endpoint + manual revalidation                |
-| `src/app/api/cache-info/route.ts`                                                                 | Manifest introspection for the Dashboard app          |
-| `src/lib/catalog/*.ts`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/get-channels-data.ts` | `"use cache"` data boundaries                         |
-| `src/lib/graphql-locale.ts`, `src/lib/saleor-translations.ts`, `src/config/locale.ts`             | Locale → GraphQL `languageCode` + translation merge   |
-| `src/lib/channel-slugs.ts`                                                                        | Storefront channel allowlist for invalidation fan-out |
+| File                                                                                              | Purpose                                                 |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `src/lib/saleor/cache/manifest.ts`                                                                | Cache profiles — **single source of truth**             |
+| `src/lib/saleor/access.ts`                                                                        | `cachedQuery` / `liveQuery` / `sessionQuery` / `mutate` |
+| `src/lib/listing/policy.ts`, `src/lib/listing/invalidate.ts`                                      | Listing cache policy + sharded listing tags             |
+| `src/app/api/revalidate/route.ts`                                                                 | Webhook endpoint + manual revalidation                  |
+| `src/app/api/cache-info/route.ts`                                                                 | Manifest introspection for the Dashboard app            |
+| `src/lib/catalog/*.ts`, `src/lib/menus/get-menu-data.ts`, `src/lib/channels/get-channels-data.ts` | `"use cache"` data boundaries                           |
+| `src/lib/graphql-locale.ts`, `src/lib/saleor-translations.ts`, `src/config/locale.ts`             | Locale → GraphQL `languageCode` + translation merge     |
+| `src/lib/channel-slugs.ts`                                                                        | Storefront channel allowlist for invalidation fan-out   |
 
-**Rolling back to plain ISR** (rarely needed): set `cacheComponents: false`, remove `"use cache"` + `applyCacheProfile` from the data modules above, and drop the profile argument from `revalidateTag` calls. Suspense boundaries, CSS-order layout, and the public/authenticated GraphQL split stay useful regardless.
+**Rolling back to plain ISR** (rarely needed): set `cacheComponents: false`, remove `"use cache"` from the data modules above, stop `cachedQuery` from applying the profile (a kernel edit, declared in `paper-version.json` `coreOverrides`), and drop the profile argument from `revalidateTag` calls. Suspense boundaries, CSS-order layout, and the access-mode split stay useful regardless.
 
 ---
 
@@ -497,7 +511,7 @@ Modifying GraphQL queries and regenerating types correctly ensures type safety, 
 | Storefront (products, cart, etc.) | `src/graphql/*.graphql`          | `src/gql/`                        | `pnpm generate`          |
 | Checkout flow                     | `src/checkout/graphql/*.graphql` | `src/checkout/graphql/generated/` | `pnpm generate:checkout` |
 
-> **Note**: Storefront and checkout have **separate codegen setups** (`src/gql/` vs `src/checkout/graphql/generated/`). Both surfaces fetch at runtime via server helpers (`executePublicGraphQL` / `executeAuthenticatedGraphQL`) and checkout server actions — not browser GraphQL. Auth mutations use BFF routes (`/api/auth/*`), not the GraphQL documents directly from the client.
+> **Note**: Storefront and checkout have **separate codegen setups** (`src/gql/` vs `src/checkout/graphql/generated/`). Both surfaces call Saleor at runtime through the kernel (`@/lib/saleor`: `cachedQuery`, `liveQuery`, `sessionQuery`, `mutate`) from loaders and server actions — not browser GraphQL. Every named operation must be registered in `src/lib/saleor/operations.ts` (or `src/config/data-extensions.ts` on a fork); see [`data-access.md`](data-access.md). Auth mutations use BFF routes (`/api/auth/*`), not the GraphQL documents directly from the client.
 
 ---
 
@@ -633,36 +647,45 @@ if (!product.defaultVariant) {
 
 ### 1.2.1 Saleor Access Modes
 
-Saleor is reached through `src/lib/saleor`. Loaders keep the `"use cache"` directive. The kernel applies the manifest profile, so a cached read outside `"use cache"` throws, and a transport failure is not cached.
+Saleor is reached through `src/lib/saleor`. Loaders keep the `"use cache"` directive. The kernel applies the manifest profile, so a cached read outside `"use cache"` throws.
 
-| You need                                   | Call                                            | Where                                                                                    |
-| ------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Catalog, menus, content that webhooks bust | `cachedQuery(doc, { profile, tag, variables })` | Inside `"use cache"` in `src/lib/{catalog,menus,channels,content,search,account,custom}` |
-| Search, filtered listings, checkout-by-id  | `liveQuery`                                     | Server, not inside `"use cache"`                                                         |
-| `me`, orders, account reads                | `sessionQuery`                                  | Server. Request-memoized. Never cached                                                   |
-| Cart, checkout, account writes             | `mutate`                                        | `"use server"` modules only. Then `refresh()`, never `revalidatePath`                    |
-| Auth BFF without a document                | `rawMutation`                                   | `src/app/api/auth/*` only                                                                |
+`cachedQuery` throws `SaleorDataError` on a transport failure and on any GraphQL `errors`, even when Saleor also sent partial data. A resolver failure arrives as `{ product: null, errors }`; caching it would serve a 404 for the catalog TTL. Next.js does not cache a throw. A missing entity with no errors is still `null`. `liveQuery`, `sessionQuery`, and `mutate` return partial data as `ok: true` with `partialErrors`, and log them.
+
+Do not wrap a cached loader in try/catch to make it optional: Next.js fails the prerender when a `"use cache"` fill throws, even if the caller catches it. An optional read whose degraded result is safe for the whole profile TTL passes `allowPartialData: true` (today only `ChannelsList`, where a token without channel permissions is a deployment setting). The lock marks those rows `(allows partial data)`. Never use it for catalog entities.
+
+| You need                                   | Call                                            | Where                                                                                          |
+| ------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Catalog, menus, content that webhooks bust | `cachedQuery(doc, { profile, tag, variables })` | Inside `"use cache"` in `src/lib/{catalog,menus,channels,content,listing,account,custom}`      |
+| Search, filtered listings, checkout-by-id  | `liveQuery`                                     | Server, not inside `"use cache"`. Listings go through `loadListing`, not a direct call         |
+| `me`, orders, account reads                | `sessionQuery`                                  | Server. Request-memoized. Never cached                                                         |
+| Cart, checkout, account writes             | `mutate`                                        | `"use server"` modules only. Then `refresh()`, never `revalidatePath`                          |
+| Auth BFF without a document                | `rawMutation`                                   | `src/app/api/auth/*` and the few files in `RAW_MUTATION_ALLOW` (`eslint/paper-data-layer.mjs`) |
 
 Auth comes from `src/lib/saleor/operations.ts`, not from the call. A cached operation may also be read live (the listing long tail). A session read or a mutation cannot be cached.
+
+**App-token operations** (`auth: "app"`, today `ChannelsList` and `ordersByNumber`) run with `SALEOR_APP_TOKEN`. Only files in `APP_AUTH_CALLERS` (`eslint/paper-data-layer.mjs`, rule `paper/app-auth-callers`) may call them. A contract test keeps that rule's document list in sync with the registry. Adding a caller is a reviewed exception: the token can read data no shopper should see.
 
 ## Recipes
 
 **Add a field a fork owns.** Edit `src/graphql/extensions/*.graphql`. Do not edit the core operation. Run `pnpm generate`.
 
-**Add a cached entity.** Add a profile to `src/lib/saleor/cache/manifest.ts` (or `src/config/data-extensions.ts` on a fork), a loader that calls `cachedQuery`, and a webhook scope in `webhook-events.ts`. Run `pnpm data:lock`.
+**Add a cached entity.** Add a profile to `src/lib/saleor/cache/manifest.ts` (or `src/config/data-extensions.ts` on a fork), a loader that calls `cachedQuery`, and a webhook scope in `src/lib/saleor/invalidation/webhook-events.ts` (or `data-extensions.ts`). Run `pnpm data:lock`.
 
-**Add a mutation.** Add the `.graphql` document, register it as `mutate` in `operations.ts`, call `mutate` from a server action.
+**Add a mutation.** Add the `.graphql` document, register it as `mutate` in `src/lib/saleor/operations.ts` (or `data-extensions.ts`), call `mutate` from a server action.
 
 **Opt in a webhook.** Add the event to `WEBHOOK_EVENT_SCOPES`. Unmapped events skip. There is no catch-all purge.
 
 ## After a data change
 
-`pnpm data:lock` rewrites `data-layer.lock.md`. Review that diff: it is the cost surface. `pnpm core:lock` only when `src/lib/saleor/` itself changed on purpose.
+`pnpm data:lock` rewrites `data-layer.lock.md`. Review that diff: it is the cost surface. Rows are keyed by file and enclosing function (`file › function`), not line numbers, so a formatting change does not touch the lock. `pnpm core:lock` only when `src/lib/saleor/` itself changed on purpose.
+
+CI runs `data:lock:check`, `core:lock:check`, and `guardrails:canary` (each data-layer lint rule must still fire on a known-bad file). Run `pnpm run verify` locally; it covers the first two.
 
 ## Anti-patterns
 
 - `cache` / `revalidate` on a Saleor call. Freshness is the manifest profile plus webhooks.
 - `executeGraphQL` or `fetch` to `NEXT_PUBLIC_SALEOR_API_URL` outside the kernel.
+- Calling an app-token operation from a file outside `APP_AUTH_CALLERS`.
 - `cacheTag` / `cacheLife` / `revalidateTag` / `revalidatePath` outside the kernel.
 - Returning `null` or `[]` from `"use cache"` when Saleor failed. Throw. A missing entity is still `null`.
 - Importing `@/checkout/*` from storefront code. URLs go through `@paper/session-bridge`.
@@ -671,7 +694,7 @@ Auth comes from `src/lib/saleor/operations.ts`, not from the call. A cached oper
 
 ### 1.3 Auth Routes (BFF)
 
-**CRITICAL** when `cacheComponents: true` and routes read session cookies. Reference implementation: `src/app/[channel]/(main)/account/`. The PPR boundary model and the generic "uncached data outside `<Suspense>`" fix menu live in [`data-caching.md`](data-caching.md); this rule covers what's auth-specific.
+**CRITICAL** when `cacheComponents: true` and routes read session cookies. Reference implementation: `src/app/(storefront)/[locale]/[channel]/(main)/account/`. The PPR boundary model and the generic "uncached data outside `<Suspense>`" fix menu live in [`data-caching.md`](data-caching.md); this rule covers what's auth-specific.
 
 > **Fork upgrades:** apply migration `2026-06-account-ppr-auth` in [`../migrations/manifest.json`](../migrations/manifest.json) when catching up from pre–June 2026 Paper.
 
@@ -883,21 +906,21 @@ Saleor: leave `announcement-id` unset for content-hash behavior; set it only whe
 
 ## Key Files
 
-| Purpose                     | Location                                                              |
-| --------------------------- | --------------------------------------------------------------------- |
-| Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)               |
-| Code fallback copy          | `src/lib/content/defaults.ts`                                         |
-| Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)         |
-| Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                         |
-| Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                        |
-| Announcement policy copy    | `src/lib/content/get-announcement-bar-props.ts`                       |
-| Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                |
-| Deep merge                  | `src/lib/content/merge.ts`                                            |
-| Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                           |
-| Client-safe exports         | `src/lib/content/index.ts`                                            |
-| Server-only export          | `src/lib/content/server.ts`                                           |
-| Saleor fetch + mappers      | `src/lib/content/saleor/`                                             |
-| Cache profile + tags        | `src/lib/cache-manifest.ts` (`storefront-content:{channel}:{locale}`) |
+| Purpose                     | Location                                                                     |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| Typed contract              | `src/lib/content/types.ts` (incl. `StorefrontPolicies`)                      |
+| Code fallback copy          | `src/lib/content/defaults.ts`                                                |
+| Policy token formatting     | `src/lib/content/policy-format.ts` (`buildPolicyLabelValues`)                |
+| Announcement dismiss keys   | `src/lib/content/announcement-dismiss-key.ts`                                |
+| Channel currency (chrome)   | `src/lib/channels/resolve-channel-currency.ts`                               |
+| Announcement policy copy    | `src/lib/content/get-announcement-bar-props.ts`                              |
+| Provider switch             | `src/lib/content/provider.ts` (`CONTENT_PROVIDER` env)                       |
+| Deep merge                  | `src/lib/content/merge.ts`                                                   |
+| Cached entry point (server) | `src/lib/content/get-storefront-content.ts`                                  |
+| Client-safe exports         | `src/lib/content/index.ts`                                                   |
+| Server-only export          | `src/lib/content/server.ts`                                                  |
+| Saleor fetch + mappers      | `src/lib/content/saleor/`                                                    |
+| Cache profile + tags        | `src/lib/saleor/cache/manifest.ts` (`storefront-content:{channel}:{locale}`) |
 
 **Do not** import `getStorefrontContent` from the client barrel — `"use cache"` must stay server-only.
 
@@ -1290,7 +1313,7 @@ A new destination is a projector over the same union. Do not retouch PDP or chec
 
 ## Commerce Context (order attribution)
 
-Sectioned **public metadata** `commerce.context.{origin,marketing,actors,experiment,session}` + `commerce.context.ext.<vendor>`. Paper writes on the **checkout**; Saleor copies checkout public metadata onto the order at `checkoutComplete`, so there is no order-side write. Pulse composes those keys on `ORDER_CREATED` and ranks **Origins** on Financial. Public recipe: [Pulse Commerce Context](https://docs.saleor.io/developer/app-store/apps/pulse/commerce-context) (source: `saleor-docs` `docs/developer/app-store/apps/pulse/commerce-context.mdx`).
+Sectioned **public metadata** `commerce.context.{origin,marketing,actors,experiment,session}` + `commerce.context.ext.<vendor>`. Paper writes on the **checkout**; Saleor copies checkout public metadata onto the order at `checkoutComplete`, so there is no order-side write. Pulse composes those keys on `ORDER_CREATED` and ranks **Origins** on Financial. Public recipe: [Pulse Commerce Context](https://docs.saleor.io/developer/app-store/apps/pulse/commerce-context) (source: the `saleor-docs` repo, `developer/app-store/apps/pulse/commerce-context.mdx`).
 
 ```
 src/lib/commerce-context/keys.ts                      key names + owner notes (spec copy)
@@ -1483,7 +1506,7 @@ export async function VariantGalleryDynamic({ product, searchParams }) {
 
 ## Caching (PDP-specific notes)
 
-`getProductData()` is a `"use cache"` fetch using `applyCacheProfile(CACHE_PROFILES.products, slug)` + `graphqlLanguageCodeVariables(localeSlug)`, merged with `withTranslatedProductFields()`. `localeSlug` is part of the cache key (per-language entry); the tag stays `product:{slug}` so a webhook busts all locales. Do **not** add fetch-level `revalidate`. Full model: `data-caching.md`.
+`getProductData()` is a `"use cache"` loader calling `cachedQuery(ProductDetailsDocument, { profile: CACHE_PROFILES.products, tag: slug, … })` with `graphqlLanguageCodeVariables(localeSlug)`, merged with `withTranslatedProductFields()`. `localeSlug` is part of the cache key (per-language entry); the tag stays `product:{slug}` so a webhook busts all locales. Do **not** add fetch-level `revalidate`. Full model: `data-caching.md`.
 
 Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic (searchParams): gallery images, variant section/price.
 
@@ -1851,15 +1874,18 @@ Product list filtering and sorting. Attribute facets (colors/sizes/…) are **se
 
 ## Filter Architecture
 
-| Filter         | Processing     | Mechanism                                                                |
-| -------------- | -------------- | ------------------------------------------------------------------------ |
-| **Categories** | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
-| **Price**      | ✅ Server-side | `filter.price` or `where.price.range`                                    |
-| **Sort**       | ✅ Server-side | `ProductOrder`                                                           |
-| **Colors**     | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
-| **Sizes**      | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
+| Filter          | Processing     | Mechanism                                                                |
+| --------------- | -------------- | ------------------------------------------------------------------------ |
+| **Categories**  | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
+| **Price**       | ✅ Server-side | `filter.price` or `where.price.range`                                    |
+| **Sort**        | ✅ Server-side | `ProductOrder` (search "relevance" = `RANK`)                             |
+| **Search text** | ✅ Server-side | Top-level `search` argument — combines with `where`                      |
+| **Colors**      | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
+| **Sizes**       | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
 
 Saleor allows **only one** of `filter` or `where` per products query. When any attribute facet is selected, Paper puts the whole constraint set into `where` so aliases can OR correctly.
+
+Search text is the top-level `search` argument, not `filter.search`. It combines with `where`, so the search surface uses the same constraints (and the same alias OR) as category grids. "Relevance" sorts by `RANK`, which Saleor allows only together with search text.
 
 > The old claim “Saleor needs attribute IDs” is **false** for modern schemas — `AttributeInput` filters by attribute slug + value slugs.
 
@@ -1895,25 +1921,25 @@ export const PLP_FACETS = [
 
 ## Building listing constraints
 
-```typescript
-import { buildProductListingConstraints } from "@/lib/listing/providers/saleor/constraints";
-import { resolveCategorySlugsToIds } from "@/lib/catalog/resolve-category-slugs";
+Only the Saleor listing provider (`src/lib/listing/providers/saleor/`) builds Saleor listing variables. Pages and UI hand it a `ListingQuery`; `loadListing` decides whether the read is cached.
 
-const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
-const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+```typescript
+// Inside src/lib/listing/providers/saleor/
+import { buildProductListingConstraints } from "./constraints";
 
 const { filter, where } = buildProductListingConstraints({
-	priceRange: searchParams.price,
-	categoryIds,
-	colors: searchParams.colors,
-	sizes: searchParams.sizes,
+	priceRange,
+	categoryIds, // resolved from slugs with resolveCategorySlugsToIds
+	facets: query.selections,
 });
 
-// Pass exactly one of filter / where (the other is undefined)
-await executePublicGraphQL(ProductListPaginatedDocument, {
-	variables: { channel, sortBy, filter, where, ... },
+// Exactly one of filter / where is set. Search text rides in the top-level `search` argument.
+const result = await liveQuery(ProductListPaginatedDocument, {
+	variables: { channel, first, sortBy, filter, where, ...(search ? { search } : {}) },
 });
 ```
+
+A cacheable first page goes through `cachedQuery` with the listing profile instead. The provider gets that decision from core; it does not make it.
 
 `buildFilterVariables` remains for **category/price only** — do not hang attribute facets on it (single-slug `filter.attributes` cannot OR `shoe-size`).
 
@@ -1956,7 +1982,9 @@ import { STATIC_PRICE_RANGES } from "@/config/facets";
 ❌ **Don't hide selected filters** — always show so users can deselect  
 ❌ **Don't treat the PLP variant sample as filter truth** — sample is for swatches/hints  
 ❌ **Don't filter only `size` when sneakers use `shoe-size`** — configure aliases  
-❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination
+❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination  
+❌ **Don't put search text in `filter.search`** — the top-level `search` argument combines with `where`, so facet aliases still OR  
+❌ **Don't sort relevance by `RATING`** — it is deprecated and is not relevance; use `RANK` with search text
 
 ---
 
@@ -1975,7 +2003,7 @@ Categories can stay on Saleor while `/search` uses a search engine. Do not split
 | Which attributes are facets    | `src/config/facets.ts` (`source` per provider)                                     |
 | Rearrange the listing page     | `src/templates/plp/<name>.tsx`, then `ACTIVE_PLP_TEMPLATE` and `ACTIVE_PLP_FACETS` |
 
-`LISTING_PROVIDER_SEARCH=fixture` (and the same shape for `ALL`, `CATEGORY`, `COLLECTION`) overrides one surface at runtime. Bracket access on `process.env` — do not write `process.env.LISTING_PROVIDER_SEARCH`.
+`LISTING_PROVIDER_SEARCH=fixture` (and the same shape for `ALL`, `CATEGORY`, `COLLECTION`) overrides one surface at runtime for local runs, tests, and previews. It is ignored when `VERCEL_ENV=production`: production picks providers in `src/config/listing-providers.ts`. Bracket access on `process.env` — do not write `process.env.LISTING_PROVIDER_SEARCH`.
 
 ## What a provider returns
 
@@ -1983,10 +2011,13 @@ Categories can stay on Saleor while `/search` uses a search engine. Do not split
 
 `load` returns `null` when a category or collection slug does not exist. Transport failures throw.
 
+`load` receives a query core has already normalized for it. The sort is one the provider declared for that surface (or `undefined` for the surface default). The page is in the provider's pagination mode. A provider does not re-check either.
+
 ## What core keeps
 
 - URL codec (`src/lib/listing/query.ts`) and `/api/listing`
-- `isCacheableListingQuery` — unfiltered first page only, any sort. Search, filters, and cursors are live
+- Normalization in `loadListing`, before the cache key. A sort the provider did not declare falls back to the surface default. A page in the wrong mode (`?page=2` on a cursor provider, a cursor on an offset provider) falls back to the first page. A shared URL from another backend never breaks the page
+- `isCacheableListingQuery` — first page only, any sort. Search, filters, cursors, and deeper pages are live
 - Saleor webhook tags for `freshness: "saleor-webhooks"`
 - `listingTtl` (no tag) for `freshness: "ttl"`
 - The route files. They do not await `searchParams` in `Page` except to pass them into `redirectToCanonicalCatalogSlug`. Search reads them inside the Suspense child.
@@ -2011,9 +2042,13 @@ export const algoliaListingProvider: ListingProvider = {
 };
 ```
 
-Register it and set `search: "algolia"`. `pnpm paper:new provider listing <id>` scaffolds the file. Run `runListingProviderContract` against it.
+Register it and set `search: "algolia"`. `pnpm paper:new provider listing <id>` scaffolds the provider and its contract test (`src/lib/listing/providers/<id>/contract.test.ts`). That test calls `runListingProviderContract` from `src/lib/listing/testing.ts` with a stub transport, so it runs without the engine. A core test fails when a registered provider has no contract test.
 
 Saleor-only types (`ProductWhereInput`, listing documents) are a lint error outside `src/lib/listing/providers/<id>/`. Providers cannot use `"use cache"`.
+
+## Saleor provider
+
+`src/lib/listing/providers/saleor/` serves every surface by default. Category, collection, and all-products grids use `where` (or `filter` with no facets). Search uses the top-level `search` argument with the same constraints as the grids, so facet aliases (`color` | `colour`, `size` | `shoe-size`) OR the same way on every surface. Search "relevance" sorts by `RANK`. Facet values come from the current page sample; Saleor sets no counts.
 
 ## Add a template
 
@@ -2087,11 +2122,11 @@ actions.ts (server)             ← mutations, payment transactions, checkoutCom
 
 ## Data and caching
 
-| Surface    | GraphQL                                                         | Freshness                          |
-| ---------- | --------------------------------------------------------------- | ---------------------------------- |
-| Storefront | `executePublicGraphQL` / `executeAuthenticatedGraphQL`          | Display cached (`"use cache"`)     |
-| Checkout   | RSC page + server actions (`execute*GraphQL`)                   | Always fresh (`cache: "no-cache"`) |
-| Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                       |
+| Surface    | GraphQL                                                         | Freshness                      |
+| ---------- | --------------------------------------------------------------- | ------------------------------ |
+| Storefront | `cachedQuery` (catalog) / `sessionQuery` / `mutate`             | Display cached (`"use cache"`) |
+| Checkout   | RSC page + server actions (`liveQuery` / `mutate`)              | Always fresh (never cached)    |
+| Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                   |
 
 `CheckoutSessionLoader` passes `initialCheckout` when `loadState === "ready"`. Guest order status is a separate route (`order/[key]/page.tsx` + `OrderConfirmationApp` — no cart context). Client `syncCheckoutFromServer` is a narrow fallback; normal path is RSC hydrate + `adoptCheckoutSnapshot` on refresh.
 
@@ -3364,7 +3399,7 @@ Rules for new sections:
 
 - **Compose `Section` + `SectionHeader`** — don't re-implement the band, tone map, rhythm, or `aria-labelledby` wiring by hand. `Section` defaults to `container-content`; use `width="wide"`/`"full"` for immersive, `"prose"` for copy, or `bleed` to own the full width.
 - **Tokens only** — colors, spacing, radius, shadow, motion from `ui-design-system`. No hardcoded values.
-- **Server Component** unless it needs interactivity; if it fetches catalog data, use `"use cache"` + `applyCacheProfile` and expose a matching skeleton for Suspense (see `page-composition`, `data-caching`).
+- **Server Component** unless it needs interactivity; if it fetches catalog data, use a `"use cache"` loader that calls `cachedQuery` and expose a matching skeleton for Suspense (see `page-composition`, `data-caching`).
 - **Content via props** — copy comes from `getStorefrontContent()` upstream (the page passes it down), not fetched inside the section. Functional labels use next-intl (`ui-i18n`). Don't hardcode marketing strings.
 - **Accessible** — one `h2` per section linked via `aria-labelledby`; meaningful image `alt`; mobile-first per `design-quality-rubric`.
 - **Variants via props** (`tone`, `width`, `align`, `imagePosition`) using small `Record` maps or `cva` — keep the surface small and composable.
@@ -3420,7 +3455,7 @@ Listing pages are params-only: the cached first-page grid is not a `searchParams
 Hard constraints (never violate when redesigning):
 
 - Never `await searchParams`/`cookies()` in the shell or inside `"use cache"` — it collapses the whole page into a dynamic hole.
-- Catalog/content fetches use `applyCacheProfile(CACHE_PROFILES.*)` — never raw `cacheLife`/`cacheTag`.
+- Catalog/content fetches use `cachedQuery` with a `CACHE_PROFILES.*` profile — never raw `cacheLife`/`cacheTag`.
 - Server Components by default; add `"use client"` only for genuine interactivity.
 - Don't fix a PPR build error by wrapping `<main>` in Suspense — fix the segment that owns the dynamic work.
 
@@ -3642,7 +3677,7 @@ The design-token gate (`scripts/check-design-tokens.mjs`) scans component stylin
 Fix these when molding; they are judgment calls, so they stay manual rather than failing CI:
 
 - **Unnecessary `"use client"`** — did a section/component become a Client Component without needing state, effects, event handlers, or browser APIs? Default to Server Components (`paper-architecture`, `page-composition`). Grep new `"use client"` directives and justify each.
-- **PPR / cache boundaries** — no `await searchParams` / `cookies()` in the shell or inside `"use cache"`; runtime UI lives in nested `<Suspense>` islands; catalog/content fetches use `applyCacheProfile` (`data-caching`). Verify with a build for PPR-sensitive routes: `pnpm run build`.
+- **PPR / cache boundaries** — no `await searchParams` / `cookies()` in the shell or inside `"use cache"`; runtime UI lives in nested `<Suspense>` islands; catalog/content fetches use `cachedQuery` from `@/lib/saleor` (`data-caching`, `data-access`). Verify with a build for PPR-sensitive routes: `pnpm run build`.
 - **LCP** — PDP keeps the default-image `<link rel="preload">` + `priority` on the first gallery image; no heavier hero displacing it (`product-pdp`).
 - **Client JS budget** — prefer composition over shipping large client components; isolate the interactive part.
 - **Content boundary** — marketing copy comes from `getStorefrontContent()`; functional strings from next-intl — not hardcoded (`data-storefront-content`, `ui-i18n`).
@@ -3683,7 +3718,7 @@ A Paper shop picks one PDP layout at build time. The route owns data, caching, a
 | Which gallery island that template uses  | The template's `gallery` field, and the same value in `ACTIVE_PDP_GALLERY`                     |
 | A field the view model does not have yet | `src/graphql/extensions/ProductDetailsExtension.graphql`, then `src/config/storefront-view.ts` |
 
-`ACTIVE_PDP_GALLERY` must equal the active template's `gallery` (`standard`, `immersive`, or `mosaic`). `pnpm test` fails when they disagree. The gallery island and the route skeleton follow `ACTIVE_PDP_GALLERY`.
+`ACTIVE_PDP_GALLERY` must equal the active template's `gallery` (`standard`, `immersive`, `mosaic`, or `columns`). A mismatch is a TypeScript error in `pnpm typecheck`; the app also throws at startup as a backstop. The gallery island and the route skeleton follow `ACTIVE_PDP_GALLERY`.
 
 ## What a template receives
 
@@ -3704,6 +3739,8 @@ These are lint errors (`paper/template-purity`, `paper/ui-no-gql`):
 - Call `cookies()`, `headers()`, `draftMode()`, or `connection()`.
 - Use `"use cache"` or `cacheLife`.
 - Read `searchParams`. The route already did, inside the slots.
+
+Lint checks direct imports only. A template can still collapse the static shell by rendering a component that reads cookies or `searchParams` further down. The route stays ◐ in `pnpm build` because the page-level Suspense keeps it partial, so the build cannot see it. The check that does is the instant-navigation e2e (`e2e/instant-navigation.spec.ts`): the PDP title must render inside `instant()`. CI runs it after every build against `next start` (`.github/workflows/build.yml`, browsing `NEXT_PUBLIC_DEFAULT_CHANNEL`; `E2E_BROWSE_PATH` overrides it, see `e2e/helpers/browse-path.ts`) and against each Vercel preview (`.github/workflows/e2e-preview.yml`). CI also runs `pnpm check:ppr-resume` (`scripts/check-ppr-resume.mjs`), which blocks: it fails when a prerendered shell no longer resumes at request time, for example because a template or the chrome reads `new Date()` during render. Read the clock behind `io()` inside `<Suspense>` (see `src/ui/components/copyright-text.tsx`). Locally: `pnpm build && pnpm test:e2e:instant`.
 
 Do not edit these to change layout:
 
@@ -3749,7 +3786,7 @@ Built-in presets are `standard`, `immersive`, `mosaic`, and `columns` in `src/te
 
 ## PLP templates
 
-Category, collection, all-products, and search share one template. Slots are `header`, `results`, and `empty`. Place each once. `ACTIVE_PLP_TEMPLATE` and `ACTIVE_PLP_FACETS` (`bar` or `sidebar`) must match the template's `facets` field. The results island owns filters and pagination. Which backend fills the grid is not a template concern — see `rules/plp-listing.md`.
+Category, collection, all-products, and search share one template. Slots are `header`, `results`, and `empty`. Place each once. `ACTIVE_PLP_FACETS` (`bar` or `sidebar`) must equal the `facets` field of the template named by `ACTIVE_PLP_TEMPLATE`; a mismatch fails `pnpm typecheck`. The results island owns filters and pagination. Which backend fills the grid is not a template concern — see `rules/plp-listing.md`.
 
 ---
 
@@ -4135,7 +4172,7 @@ SALEOR_APP_TOKEN=your-app-token
 
 **Security:** This token is used server-side only. Keep it in `.env.local` for development and set it as a secret environment variable in production (e.g., Vercel environment variables).
 
-**Without this token:** The channel list cannot be fetched. Channels would need to be hardcoded in `src/config/static-pages.ts` or the selector won't appear.
+**Without this token:** Channel metadata cannot be fetched. Routes still come from `STOREFRONT_CHANNELS` in `src/config/channels.ts`, but the footer channel selector does not render (`shouldFetchChannelMetadata` needs more than one channel and the token).
 
 ### Creating the App Token
 
@@ -4173,11 +4210,11 @@ STOREFRONT_DISCOVER_CHANNELS=true
 
 ### Where the allowlist is enforced
 
-| Location                          | Behavior                                                |
-| --------------------------------- | ------------------------------------------------------- |
-| `src/app/[channel]/layout.tsx`    | `generateStaticParams` + `notFound()` for unknown slugs |
-| `src/app/api/revalidate/route.ts` | Path revalidation loops over allowed channels only      |
-| `src/ui/components/footer.tsx`    | Channel selector lists allowed channels                 |
+| Location                                             | Behavior                                                |
+| ---------------------------------------------------- | ------------------------------------------------------- |
+| `src/app/(storefront)/[locale]/[channel]/layout.tsx` | `generateStaticParams` + `notFound()` for unknown slugs |
+| `src/app/api/revalidate/route.ts`                    | Path revalidation loops over allowed channels only      |
+| `src/ui/components/footer.tsx`                       | Channel selector lists allowed channels                 |
 
 See `data-caching.md` for how webhooks use `getStorefrontChannelSlugs()` during invalidation.
 
@@ -4211,15 +4248,15 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 
 ## Key Files
 
-| File                                   | Purpose                                     |
-| -------------------------------------- | ------------------------------------------- |
-| `src/config/channels.ts`               | Allowlist env parsing + validation          |
-| `src/lib/channel-slugs.ts`             | `getStorefrontChannelSlugs()` (React.cache) |
-| `src/app/[channel]/layout.tsx`         | Route guard + `generateStaticParams`        |
-| `src/ui/components/channel-select.tsx` | Channel switcher dropdown                   |
-| `src/ui/components/footer.tsx`         | Renders channel selector                    |
-| `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
-| `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
+| File                                                 | Purpose                                     |
+| ---------------------------------------------------- | ------------------------------------------- |
+| `src/config/channels.ts`                             | Allowlist env parsing + validation          |
+| `src/lib/channel-slugs.ts`                           | `getStorefrontChannelSlugs()` (React.cache) |
+| `src/app/(storefront)/[locale]/[channel]/layout.tsx` | Route guard + `generateStaticParams`        |
+| `src/ui/components/channel-select.tsx`               | Channel switcher dropdown                   |
+| `src/ui/components/footer.tsx`                       | Renders channel selector                    |
+| `src/graphql/ChannelsList.graphql`                   | Query for fetching channels                 |
+| `src/app/config.ts`                                  | `DefaultChannelSlug` fallback               |
 
 ## Locale & routing
 
@@ -4485,7 +4522,7 @@ Client-side validation should use the same `account.errors.*` keys before callin
 
 ## Import boundaries
 
-❌ Client components must **not** import barrels that pull `server-only` modules (e.g. search sort importing `@/lib/search` instead of `@/lib/search/sort-options`).
+❌ Client components must **not** import barrels that pull `server-only` modules (e.g. a sort control importing the server-only `@/lib/listing/policy` instead of the `SORT_IDS` contract in `@/lib/storefront/contract/listing`).
 
 ❌ Do not use next-intl middleware or `next-intl` navigation — ADR 0001 URL segment is authoritative.
 

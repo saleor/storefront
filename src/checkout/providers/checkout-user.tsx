@@ -15,7 +15,7 @@ type CheckoutUserContextValue = {
 const CheckoutUserContext = createContext<CheckoutUserContextValue | null>(null);
 
 /**
- * Customer session hydrated from the RSC page (executeAuthenticatedGraphQL).
+ * Customer session hydrated from the RSC page (sessionQuery).
  * Sign-in uses syncAuthSurfacesAfterSignIn; sign-out uses logout() + `useRefreshCheckoutRsc()`.
  */
 export function CheckoutUserProvider({

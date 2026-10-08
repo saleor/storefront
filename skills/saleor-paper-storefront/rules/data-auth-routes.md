@@ -5,7 +5,7 @@ description: BFF auth and PPR-safe account routes: /api/auth/*, HttpOnly cookies
 
 # Authenticated Route Segments (PPR / Cache Components)
 
-**CRITICAL** when `cacheComponents: true` and routes read session cookies. Reference implementation: `src/app/[channel]/(main)/account/`. The PPR boundary model and the generic "uncached data outside `<Suspense>`" fix menu live in [`data-caching.md`](data-caching.md); this rule covers what's auth-specific.
+**CRITICAL** when `cacheComponents: true` and routes read session cookies. Reference implementation: `src/app/(storefront)/[locale]/[channel]/(main)/account/`. The PPR boundary model and the generic "uncached data outside `<Suspense>`" fix menu live in [`data-caching.md`](data-caching.md); this rule covers what's auth-specific.
 
 > **Fork upgrades:** apply migration `2026-06-account-ppr-auth` in [`../migrations/manifest.json`](../migrations/manifest.json) when catching up from pre–June 2026 Paper.
 

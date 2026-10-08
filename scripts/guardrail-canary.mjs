@@ -31,6 +31,10 @@ const canaries = [
 		body: 'import { rawMutation } from "@/lib/saleor";\nexport const run = () => rawMutation({ query: "mutation X { x }" });\n',
 	},
 	{
+		id: "paper/app-auth-callers",
+		body: 'import { ChannelsListDocument } from "@/gql/graphql";\nexport const doc = ChannelsListDocument;\n',
+	},
+	{
 		id: "paper/ui-no-gql",
 		file: join(ROOT, "src/templates/__canary__.tsx"),
 		body: 'import { ProductDetailsDocument } from "@/gql/graphql";\nexport const doc = ProductDetailsDocument;\n',

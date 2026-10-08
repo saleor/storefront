@@ -68,7 +68,7 @@ const config = {
 	// See: https://nextjs.org/blog/next-16-3-instant-navigations
 	partialPrefetching: true,
 
-	// Named cacheLife tiers for `"use cache"` — see src/lib/cache-life-profiles.ts
+	// Named cacheLife tiers for `"use cache"` — see src/lib/saleor/cache/life-profiles.ts
 	cacheLife: paperCacheLifeProfiles,
 
 	// Optimize barrel file imports for better bundle size and cold start performance

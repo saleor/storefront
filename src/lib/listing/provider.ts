@@ -18,7 +18,11 @@ export type ListingProvider = {
 		sorts: Partial<Record<ListingSurfaceKind, readonly SortId[]>>;
 	};
 	freshness: { kind: "saleor-webhooks" } | { kind: "ttl"; profile: "listingTtl" };
-	/** `null` means the category or collection slug does not exist. Transport failures throw. */
+	/**
+	 * `query` is already normalized by core (`normalizeListingQuery`): the sort is one this
+	 * provider declared for the surface, and the page is in its pagination mode.
+	 * `null` means the category or collection slug does not exist. Transport failures throw.
+	 */
 	load(query: ListingQuery): Promise<ListingResult | null>;
 };
 
@@ -32,6 +36,29 @@ export function listingQueryWithSupportedSort(provider: ListingProvider, query: 
 	const allowed = provider.capabilities.sorts[query.surface.kind] ?? [];
 	if (allowed.includes(query.sort)) return query;
 	return { ...query, sort: undefined };
+}
+
+/**
+ * A page request in the other pagination mode (`?page=2` from a search engine on a
+ * cursor provider, or a Saleor cursor on an offset provider) cannot be honored.
+ * Serve the first page instead of failing the page.
+ */
+export function listingQueryWithSupportedPage(provider: ListingProvider, query: ListingQuery): ListingQuery {
+	const mode = provider.capabilities.pagination;
+	if (query.page.mode === mode) return query;
+	return {
+		...query,
+		page: mode === "offset" ? { mode: "offset", number: 1 } : { mode: "cursor", direction: "next" },
+	};
+}
+
+/**
+ * Fit a URL-derived query to what the provider declares. Core calls this before
+ * choosing the cache key, so a provider never sees a query it cannot serve and an
+ * unsupported sort does not create its own cache entry.
+ */
+export function normalizeListingQuery(provider: ListingProvider, query: ListingQuery): ListingQuery {
+	return listingQueryWithSupportedPage(provider, listingQueryWithSupportedSort(provider, query));
 }
 
 export function assertProviderSupportsSurface(provider: ListingProvider, kind: ListingSurfaceKind): void {

@@ -1,0 +1,43 @@
+name: E2E (Vercel preview)
+
+# Runs the shell checks against the real preview deployment (CDN, PPR resume,
+# partial prefetching) after Vercel reports it ready. `build.yml` runs the same
+# specs against `next start`; this one catches what only the platform does.
+#
+# Protected previews need the repo secret VERCEL_AUTOMATION_BYPASS_SECRET
+# (Vercel → Project → Settings → Deployment Protection → Protection Bypass for Automation).
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.creator.login == 'vercel[bot]' &&
+      !startsWith(github.event.deployment.environment, 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: ${{ github.event.deployment.sha }}
+      - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: "package.json"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Instant navigation and PLP e2e
+        run: pnpm exec playwright test e2e/instant-navigation.spec.ts e2e/plp-filters.spec.ts
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          # Optional repo variable, e.g. /en/default-channel. Needs products in that channel.
+          E2E_BROWSE_PATH: ${{ vars.E2E_BROWSE_PATH }}

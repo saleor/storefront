@@ -42,7 +42,6 @@ const CORE_OPERATIONS = {
 	StorefrontContentPages: cached("channel-locale"),
 	CategoriesBySlug: cached("global"),
 	ChannelsList: cached("global", "app"),
-	SearchProducts: live(),
 
 	// Storefront session reads.
 	CurrentUser: session(),

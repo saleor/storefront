@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { paperCacheLifeProfiles } from "../cache/life-profiles";
 import { CACHE_PROFILE_LIST, CACHE_PROFILES } from "../cache/manifest";
 import { getOperation, listCoreOperations } from "../operations";
+import { APP_AUTH_DOCUMENTS } from "../../../../eslint/paper-data-layer.mjs";
 
 const ROOT = join(import.meta.dirname, "../../../..");
 
@@ -80,6 +81,16 @@ describe("operation registry", () => {
 			}
 			expect(spec.scope, `${name} needs an explicit scope`).toBeTruthy();
 		}
+	});
+
+	it("lists every app-token operation in the app-auth-callers lint rule", () => {
+		const appDocuments = Object.entries(listCoreOperations())
+			.filter(([, spec]) => spec.auth === "app")
+			.map(([name]) => `${name[0]!.toUpperCase()}${name.slice(1)}Document`)
+			.sort();
+		expect(appDocuments, "update APP_AUTH_DOCUMENTS in eslint/paper-data-layer.mjs").toEqual(
+			[...APP_AUTH_DOCUMENTS].sort(),
+		);
 	});
 });
 

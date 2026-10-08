@@ -131,6 +131,7 @@ const config = [
 		rules: {
 			"paper/saleor-access": "error",
 			"paper/no-direct-saleor": "error",
+			"paper/app-auth-callers": "error",
 			"paper/cache-api": "error",
 			"paper/use-cache-shape": "error",
 			"paper/surface-boundary": "error",

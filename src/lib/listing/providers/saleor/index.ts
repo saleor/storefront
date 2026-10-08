@@ -11,9 +11,9 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { CACHE_PROFILES, cachedQuery, liveQuery, type CacheProfile } from "@/lib/saleor";
 import { resolveCategorySlugsToIds } from "@/lib/catalog/resolve-category-slugs";
 import { isCacheableListingQuery } from "@/lib/listing/cacheability";
-import { listingQueryWithSupportedSort, type ListingProvider } from "@/lib/listing/provider";
+import type { ListingProvider } from "@/lib/listing/provider";
 import type { ListingQuery, ListingResult, SortId } from "@/lib/storefront/contract/listing";
-import { buildProductListingConstraints, buildSearchFilter, buildSortVariables } from "./constraints";
+import { buildProductListingConstraints, buildSortVariables } from "./constraints";
 import { sampleFacets } from "./sample-facets";
 import { toProductCardData } from "./to-card";
 
@@ -70,7 +70,8 @@ function paginationVariables(query: ListingQuery): {
 	before?: string;
 } {
 	if (query.page.mode !== "cursor") {
-		// `?page=1` is the first page. Deeper offset pages are a search-engine shape.
+		// Core normalizes pages to cursor mode first (`normalizeListingQuery`). A direct
+		// caller may still pass `?page=1`; deeper offset pages are a search-engine shape.
 		if (query.page.number <= 1) return { first: query.pageSize, after: null };
 		throw new Error('Listing provider "saleor" does not support offset pagination.');
 	}
@@ -81,8 +82,9 @@ function paginationVariables(query: ListingQuery): {
 }
 
 function saleorSort(query: ListingQuery) {
+	// `RANK` is Saleor's search relevance. It is valid only together with `search`.
 	if (query.surface.kind === "search" && (!query.sort || query.sort === "relevance")) {
-		return { field: ProductOrderField.Rating, direction: OrderDirection.Desc };
+		return { field: ProductOrderField.Rank, direction: OrderDirection.Desc };
 	}
 	const fromUrl = buildSortVariables(query.sort);
 	if (fromUrl) return fromUrl;
@@ -153,8 +155,7 @@ export function createSaleorListingProvider(
 			},
 		},
 		freshness: { kind: "saleor-webhooks" },
-		async load(input) {
-			const query = listingQueryWithSupportedSort(provider, input);
+		async load(query) {
 			const kind = query.surface.kind;
 			const slug = kind === "category" || kind === "collection" ? query.surface.slug : undefined;
 
@@ -169,13 +170,10 @@ export function createSaleorListingProvider(
 				categoryIds: kind === "all" ? categoryIds : undefined,
 				facets: query.selections,
 			};
-			const constraints =
-				kind === "search" && query.surface.kind === "search"
-					? {
-							filter: buildSearchFilter({ ...constraintInput, search: query.surface.text }),
-							where: undefined,
-						}
-					: buildProductListingConstraints(constraintInput);
+			// Search text is the top-level `search` argument, so search shares the grid's
+			// `where` constraints (facet aliases OR the same way on every surface).
+			const constraints = buildProductListingConstraints(constraintInput);
+			const search = query.surface.kind === "search" ? query.surface.text : undefined;
 
 			const cached = isCacheableListingQuery(query);
 			const profile =
@@ -198,6 +196,7 @@ export function createSaleorListingProvider(
 					sortBy: saleorSort(query),
 					...(constraints.filter ? { filter: constraints.filter } : {}),
 					...(constraints.where ? { where: constraints.where } : {}),
+					...(search ? { search } : {}),
 					...graphqlLanguageCodeVariables(query.locale),
 				},
 			});

@@ -30,7 +30,7 @@ The design-token gate (`scripts/check-design-tokens.mjs`) scans component stylin
 Fix these when molding; they are judgment calls, so they stay manual rather than failing CI:
 
 - **Unnecessary `"use client"`** — did a section/component become a Client Component without needing state, effects, event handlers, or browser APIs? Default to Server Components (`paper-architecture`, `page-composition`). Grep new `"use client"` directives and justify each.
-- **PPR / cache boundaries** — no `await searchParams` / `cookies()` in the shell or inside `"use cache"`; runtime UI lives in nested `<Suspense>` islands; catalog/content fetches use `applyCacheProfile` (`data-caching`). Verify with a build for PPR-sensitive routes: `pnpm run build`.
+- **PPR / cache boundaries** — no `await searchParams` / `cookies()` in the shell or inside `"use cache"`; runtime UI lives in nested `<Suspense>` islands; catalog/content fetches use `cachedQuery` from `@/lib/saleor` (`data-caching`, `data-access`). Verify with a build for PPR-sensitive routes: `pnpm run build`.
 - **LCP** — PDP keeps the default-image `<link rel="preload">` + `priority` on the first gallery image; no heavier hero displacing it (`product-pdp`).
 - **Client JS budget** — prefer composition over shipping large client components; isolate the interactive part.
 - **Content boundary** — marketing copy comes from `getStorefrontContent()`; functional strings from next-intl — not hardcoded (`data-storefront-content`, `ui-i18n`).

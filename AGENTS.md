@@ -30,7 +30,7 @@ External skills are pinned in `skills-lock.json`; run `pnpm skills:bootstrap` af
 
 - **`pnpm run verify`** — the single "am I done?" gate (docs drift + design-tokens + typecheck + lint + tests, fail-fast). Iterate until green before declaring done. `pnpm run verify:quick` = design-tokens + typecheck for a fast styling loop.
 - `pnpm generate` / `pnpm generate:checkout` — **required** after editing `src/graphql/*.graphql` / `src/checkout/graphql/*.graphql` (`verify`/`typecheck` auto-run this via prehook).
-- `pnpm run build` — only gate that catches PPR dynamic-hole regressions; run on PPR-sensitive layout changes.
+- `pnpm run build` — only gate that catches PPR dynamic-hole regressions; run on PPR-sensitive layout changes. Then `pnpm check:ppr-resume`: a route can build ◐ and still fail to resume at request time (a `new Date()` during render), which empties the nav or `<main>` in the browser.
 - After editing `skills/.../rules/*.md`, run `pnpm run docs:compile` (or `verify` will flag the drift).
 - `pnpm run doctor` — verify the agent setup is actually healthy (project skill linked, external skills installed, docs in sync, compiled doc quarantined). Run it if a session seems off; `pnpm doctor --env` also checks required env.
 - A `stop` hook (`.cursor/hooks.json` → `scripts/agent-stop-hook.sh`) runs `lint:design-tokens` when you finish a turn and nudges you if banned color literals slipped in — fix them before declaring done. Fail-open; disable by removing the entry.
@@ -57,7 +57,9 @@ Do not add `docs/plans/` or other plan writeups to the repo unless the user expl
 | Checkout GraphQL → generated            | `src/checkout/graphql/*.graphql` → `src/checkout/graphql/generated/` (do not edit) |
 | UI components / sections / tokens       | `src/ui/components/` · `src/ui/sections/` · `src/styles/brand.css`                 |
 | PDP layout templates                    | `src/templates/pdp/` · `src/config/template-selection.ts`                          |
-| Cache manifest (single source of truth) | `src/lib/cache-manifest.ts`                                                        |
+| Saleor kernel (all Saleor calls)        | `src/lib/saleor/` · operation registry `src/lib/saleor/operations.ts`              |
+| Cache manifest (single source of truth) | `src/lib/saleor/cache/manifest.ts`                                                 |
+| Listing contract / providers            | `src/lib/listing/` · `src/config/listing-providers.ts` · `src/templates/plp/`      |
 | SEO helpers                             | `src/lib/seo/`                                                                     |
 
 <!-- BEGIN:nextjs-agent-rules -->

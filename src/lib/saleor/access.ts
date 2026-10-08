@@ -37,7 +37,11 @@ export class SaleorDataError extends Error {
  * Cached catalog read. Call only from inside `"use cache"`.
  * Applies the manifest profile (so a call outside `"use cache"` throws) and
  * throws on transport or GraphQL failure so Next does not cache the outage.
- * A missing entity is `null` on the payload, not an error.
+ * Partial data with `errors` also throws. A missing entity (no errors) is `null`.
+ *
+ * Note: Next.js fails a prerender when a `"use cache"` fill throws, even if a caller
+ * catches it. An optional read that must not break the build opts in to
+ * `allowPartialData` instead of wrapping the loader in try/catch.
  */
 export async function cachedQuery<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
@@ -45,6 +49,13 @@ export async function cachedQuery<Result, Variables>(
 		profile: CacheProfile;
 		tag?: string | CacheTagParams;
 		variables?: Variables;
+		/**
+		 * Cache partial data (failed fields are `null`) instead of throwing. Only for
+		 * optional reads whose degraded result is safe for the whole profile TTL, such as
+		 * channel metadata behind an app token that lacks a permission. Never for catalog
+		 * entities. Shows up in `data-layer.lock.md`.
+		 */
+		allowPartialData?: boolean;
 	} & CallExtras,
 ): Promise<Result> {
 	const spec = resolveOperationCall(operationNameFromDocument(operation), "cached");
@@ -61,6 +72,16 @@ export async function cachedQuery<Result, Variables>(
 
 	if (!result.ok) {
 		throw new SaleorDataError(result.error);
+	}
+	// A resolver failure comes back as `{ product: null, errors }`. Caching that would
+	// serve a 404 (or a price-less card) until the profile revalidates.
+	if (result.partialErrors?.length && !options.allowPartialData) {
+		throw new SaleorDataError({
+			type: "graphql",
+			message: result.partialErrors.map((e) => e.message).join("\n"),
+			isRetryable: false,
+			codes: result.partialErrors.flatMap((e) => (e.code ? [e.code] : [])),
+		});
 	}
 	return result.data;
 }

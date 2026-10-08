@@ -16,7 +16,7 @@ A Paper shop picks one PDP layout at build time. The route owns data, caching, a
 | Which gallery island that template uses  | The template's `gallery` field, and the same value in `ACTIVE_PDP_GALLERY`                     |
 | A field the view model does not have yet | `src/graphql/extensions/ProductDetailsExtension.graphql`, then `src/config/storefront-view.ts` |
 
-`ACTIVE_PDP_GALLERY` must equal the active template's `gallery` (`standard`, `immersive`, or `mosaic`). `pnpm test` fails when they disagree. The gallery island and the route skeleton follow `ACTIVE_PDP_GALLERY`.
+`ACTIVE_PDP_GALLERY` must equal the active template's `gallery` (`standard`, `immersive`, `mosaic`, or `columns`). A mismatch is a TypeScript error in `pnpm typecheck`; the app also throws at startup as a backstop. The gallery island and the route skeleton follow `ACTIVE_PDP_GALLERY`.
 
 ## What a template receives
 
@@ -37,6 +37,8 @@ These are lint errors (`paper/template-purity`, `paper/ui-no-gql`):
 - Call `cookies()`, `headers()`, `draftMode()`, or `connection()`.
 - Use `"use cache"` or `cacheLife`.
 - Read `searchParams`. The route already did, inside the slots.
+
+Lint checks direct imports only. A template can still collapse the static shell by rendering a component that reads cookies or `searchParams` further down. The route stays ◐ in `pnpm build` because the page-level Suspense keeps it partial, so the build cannot see it. The check that does is the instant-navigation e2e (`e2e/instant-navigation.spec.ts`): the PDP title must render inside `instant()`. CI runs it after every build against `next start` (`.github/workflows/build.yml`, browsing `NEXT_PUBLIC_DEFAULT_CHANNEL`; `E2E_BROWSE_PATH` overrides it, see `e2e/helpers/browse-path.ts`) and against each Vercel preview (`.github/workflows/e2e-preview.yml`). CI also runs `pnpm check:ppr-resume` (`scripts/check-ppr-resume.mjs`), which blocks: it fails when a prerendered shell no longer resumes at request time, for example because a template or the chrome reads `new Date()` during render. Read the clock behind `io()` inside `<Suspense>` (see `src/ui/components/copyright-text.tsx`). Locally: `pnpm build && pnpm test:e2e:instant`.
 
 Do not edit these to change layout:
 
@@ -82,4 +84,4 @@ Built-in presets are `standard`, `immersive`, `mosaic`, and `columns` in `src/te
 
 ## PLP templates
 
-Category, collection, all-products, and search share one template. Slots are `header`, `results`, and `empty`. Place each once. `ACTIVE_PLP_TEMPLATE` and `ACTIVE_PLP_FACETS` (`bar` or `sidebar`) must match the template's `facets` field. The results island owns filters and pagination. Which backend fills the grid is not a template concern — see `rules/plp-listing.md`.
+Category, collection, all-products, and search share one template. Slots are `header`, `results`, and `empty`. Place each once. `ACTIVE_PLP_FACETS` (`bar` or `sidebar`) must equal the `facets` field of the template named by `ACTIVE_PLP_TEMPLATE`; a mismatch fails `pnpm typecheck`. The results island owns filters and pagination. Which backend fills the grid is not a template concern — see `rules/plp-listing.md`.

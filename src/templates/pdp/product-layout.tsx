@@ -43,7 +43,9 @@ export function PdpPresetLayout({
 	);
 }
 
-export function definePresetTemplate(gallery: PdpGalleryLayout): PdpTemplate {
+export function definePresetTemplate<const G extends PdpGalleryLayout>(
+	gallery: G,
+): PdpTemplate & { gallery: G } {
 	const layout = PDP_LAYOUT_CLASSES[gallery];
 	function Layout(props: PdpTemplateProps) {
 		return <PdpPresetLayout {...props} layout={layout} />;

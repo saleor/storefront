@@ -40,10 +40,22 @@ export interface GraphQLError {
 	}>;
 }
 
+/** One entry of a GraphQL `errors` array that arrived next to partial `data`. */
+export interface GraphQLPartialError {
+	message: string;
+	code?: string;
+	path?: readonly (string | number)[];
+}
+
 /** Success result with data */
 export interface GraphQLSuccess<T> {
 	ok: true;
 	data: T;
+	/**
+	 * Saleor resolved part of the query and failed the rest. The failed fields are
+	 * `null` in `data`. `cachedQuery` throws on these; uncached reads may render them.
+	 */
+	partialErrors?: readonly GraphQLPartialError[];
 }
 
 /** Error result with typed error */
@@ -341,12 +353,24 @@ export type GraphQLOptions<Variables> = {
 
 type GraphQLResponseBody<T> = {
 	data?: T | null;
-	errors?: readonly { message?: string | null; extensions?: { code?: string | null } | null }[];
+	errors?: readonly {
+		message?: string | null;
+		path?: readonly (string | number)[] | null;
+		extensions?: { code?: string | null } | null;
+	}[];
 };
 
 /** Extract Saleor error codes from `errors[].extensions.code` (e.g. `ExpiredSignatureError`). */
 function extractErrorCodes(errors: GraphQLResponseBody<unknown>["errors"]): string[] {
 	return errors?.map((e) => e.extensions?.code).filter((c): c is string => Boolean(c)) ?? [];
+}
+
+function toPartialErrors(errors: GraphQLResponseBody<unknown>["errors"]): GraphQLPartialError[] {
+	return (errors ?? []).map((e) => ({
+		message: e.message || "Unknown GraphQL error",
+		...(e.extensions?.code ? { code: e.extensions.code } : {}),
+		...(e.path ? { path: e.path } : {}),
+	}));
 }
 
 /**
@@ -434,8 +458,18 @@ export async function executeGraphQL<Result, Variables>(
 	const body = (await response.json()) as GraphQLResponseBody<Result>;
 	const messages = body.errors?.map((e) => e.message).filter((m): m is string => Boolean(m)) ?? [];
 
-	// GraphQL allows partial success — return data when Saleor included it.
+	// GraphQL allows partial success — return data when Saleor included it, and keep
+	// the errors: a failed resolver reads as `null`, which a cached read must not keep.
 	if (body.data !== null && body.data !== undefined) {
+		if (body.errors?.length) {
+			const partialErrors = toPartialErrors(body.errors);
+			console.warn(
+				`[GraphQL] ${operationName}${variablesForLog ? ` ${variablesForLog}` : ""}: partial data with ${
+					partialErrors.length
+				} error(s): ${partialErrors.map((e) => e.message).join(" | ")}`,
+			);
+			return finish({ ...success(body.data), partialErrors });
+		}
 		return finish(success(body.data));
 	}
 

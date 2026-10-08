@@ -19,8 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_SALEOR_API_URL: https://storefront1.saleor.cloud/graphql/
-      NEXT_PUBLIC_DEFAULT_CHANNEL: default-channel
-      STOREFRONT_CHANNELS: aud,default-channel
+      # storefront1 publishes its catalog in eu and uk; default-channel and aud are empty.
+      NEXT_PUBLIC_DEFAULT_CHANNEL: eu
+      STOREFRONT_CHANNELS: eu,uk
       CONTENT_PROVIDER: saleor
 
     steps:
@@ -38,12 +39,16 @@ jobs:
         run: pnpm run doctor:check
       - name: Verify agent docs (frontmatter + AGENTS.md in sync)
         run: pnpm run docs:check
+      - name: Data-layer and core locks
+        run: pnpm run data:lock:check && pnpm run core:lock:check
       - name: Design tokens
         run: pnpm run lint:design-tokens
       - name: Forbid deprecated Product.variants in storefront GraphQL
         run: pnpm run lint:graphql-variants
       - name: Lint
         run: pnpm run lint
+      - name: Guardrail canaries (each data-layer rule still fires)
+        run: pnpm run guardrails:canary
       - name: Typecheck
         run: pnpm run typecheck
       - name: Test
@@ -53,3 +58,14 @@ jobs:
           set -o pipefail
           pnpm run build | tee build-output.txt
           node scripts/check-route-symbols.mjs build-output.txt
+      # ◐ only proves a fallback shell exists. A shell that no longer resumes (a clock read
+      # during prerender, data that differs at request time) still builds ◐ and then renders
+      # an empty nav or <main> in the browser. This starts the app and fails on that.
+      - name: PPR resume check
+        run: pnpm run check:ppr-resume
+      # These specs prove the PDP and category shells carry the title inside instant().
+      # They browse NEXT_PUBLIC_DEFAULT_CHANNEL, which needs products (more than one page).
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Instant navigation and PLP e2e
+        run: pnpm exec playwright test e2e/instant-navigation.spec.ts e2e/plp-filters.spec.ts

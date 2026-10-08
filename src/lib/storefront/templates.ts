@@ -38,7 +38,10 @@ export interface PdpTemplate {
 	Skeleton: ComponentType<PdpTemplateSkeletonProps>;
 }
 
-export function definePdpTemplate(template: PdpTemplate): PdpTemplate {
+/**
+ * Keeps the literal `gallery` so the registry can check `ACTIVE_PDP_GALLERY` at compile time.
+ */
+export function definePdpTemplate<const T extends PdpTemplate>(template: T): T {
 	return template;
 }
 
@@ -76,6 +79,9 @@ export interface PlpTemplate {
 	Skeleton: ComponentType;
 }
 
-export function definePlpTemplate(template: PlpTemplate): PlpTemplate {
+/**
+ * Keeps the literal `facets` so the registry can check `ACTIVE_PLP_FACETS` at compile time.
+ */
+export function definePlpTemplate<const T extends PlpTemplate>(template: T): T {
 	return template;
 }

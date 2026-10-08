@@ -2,12 +2,12 @@
  * Saleor listing constraints.
  *
  * Saleor allows only one of `filter` or `where`. Attribute facets use `where`
- * so aliases (`size` | `shoe-size`) can OR. Search text exists only on
- * `ProductFilterInput.search`, so the search surface stays on `filter` and
- * uses the primary attribute slug (no alias OR).
+ * so aliases (`size` | `shoe-size`) can OR. Search text is the top-level
+ * `products(search:)` argument, which combines with either, so every surface
+ * (search included) uses the same constraints.
  */
 
-import type { AttributeInput, ProductFilterInput, ProductOrder, ProductWhereInput } from "@/gql/graphql";
+import type { ProductFilterInput, ProductOrder, ProductWhereInput } from "@/gql/graphql";
 import { OrderDirection, ProductOrderField } from "@/gql/graphql";
 import { PLP_FACETS, normalizeFacetValueSlug, parseFacetParam, type PlpFacetConfig } from "@/config/facets";
 
@@ -26,7 +26,6 @@ type ListingFilterParams = {
 	facets?: AttributeFacetSelections;
 	colors?: string[] | string | null;
 	sizes?: string[] | string | null;
-	search?: string | null;
 };
 
 function resolveFacetSelections(params: ListingFilterParams): AttributeFacetSelections {
@@ -49,21 +48,6 @@ function parsePriceRange(priceRange: string): { gte: number; lte?: number } {
 
 function facetAttributeSlugs(facet: PlpFacetConfig): string[] {
 	return [...facet.source.saleor.attributes];
-}
-
-export function buildAttributeFilterInputs(
-	facets: AttributeFacetSelections | undefined,
-): AttributeInput[] | undefined {
-	if (!facets) return undefined;
-	const attributes: AttributeInput[] = [];
-	for (const facet of PLP_FACETS) {
-		const raw = facets[facet.param];
-		if (!raw?.length) continue;
-		const values = [...new Set(raw.map(normalizeFacetValueSlug).filter(Boolean))].sort();
-		if (values.length === 0) continue;
-		attributes.push({ slug: facet.attributeSlug, values });
-	}
-	return attributes.length > 0 ? attributes : undefined;
 }
 
 function hasSelectedFacets(facets: AttributeFacetSelections): boolean {
@@ -137,23 +121,6 @@ export function buildProductListingConstraints(params: ListingFilterParams): Pro
 		categoryIds: params.categoryIds,
 	});
 	return filter ? { filter } : {};
-}
-
-/**
- * Search text cannot be combined with `where`. Keep the whole search constraint
- * set on `filter`, including attribute facets on their primary slug.
- */
-export function buildSearchFilter(params: ListingFilterParams & { search: string }): ProductFilterInput {
-	const facets = resolveFacetSelections(params);
-	const filter: ProductFilterInput = { search: params.search };
-	if (params.categoryIds?.length) filter.categories = params.categoryIds;
-	if (params.priceRange) {
-		const { gte, lte } = parsePriceRange(params.priceRange);
-		filter.price = { gte, ...(lte !== undefined ? { lte } : {}) };
-	}
-	const attributes = buildAttributeFilterInputs(facets);
-	if (attributes) filter.attributes = attributes;
-	return filter;
 }
 
 export function buildSortVariables(sort: string | undefined): ProductOrder | undefined {

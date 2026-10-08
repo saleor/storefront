@@ -103,7 +103,7 @@ Rules for new sections:
 
 - **Compose `Section` + `SectionHeader`** — don't re-implement the band, tone map, rhythm, or `aria-labelledby` wiring by hand. `Section` defaults to `container-content`; use `width="wide"`/`"full"` for immersive, `"prose"` for copy, or `bleed` to own the full width.
 - **Tokens only** — colors, spacing, radius, shadow, motion from `ui-design-system`. No hardcoded values.
-- **Server Component** unless it needs interactivity; if it fetches catalog data, use `"use cache"` + `applyCacheProfile` and expose a matching skeleton for Suspense (see `page-composition`, `data-caching`).
+- **Server Component** unless it needs interactivity; if it fetches catalog data, use a `"use cache"` loader that calls `cachedQuery` and expose a matching skeleton for Suspense (see `page-composition`, `data-caching`).
 - **Content via props** — copy comes from `getStorefrontContent()` upstream (the page passes it down), not fetched inside the section. Functional labels use next-intl (`ui-i18n`). Don't hardcode marketing strings.
 - **Accessible** — one `h2` per section linked via `aria-labelledby`; meaningful image `alt`; mobile-first per `design-quality-rubric`.
 - **Variants via props** (`tone`, `width`, `align`, `imagePosition`) using small `Record` maps or `cva` — keep the surface small and composable.

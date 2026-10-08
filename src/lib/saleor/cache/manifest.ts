@@ -16,7 +16,7 @@ import {
 // ============================================================================
 // Cache Profile Definitions — single source of truth
 //
-// **cacheLife profile names** live in src/lib/cache-life-profiles.ts (with docs).
+// **cacheLife profile names** live in src/lib/saleor/cache/life-profiles.ts (with docs).
 // This file maps Saleor cache *tags* to those profiles and builds invalidation paths.
 //
 // Imported by:
@@ -32,7 +32,7 @@ export type CacheLifeProfile = PaperCacheLifeProfile;
 export interface CacheProfile {
 	readonly id: string;
 	readonly label: string;
-	/** Paper cacheLife tier — see src/lib/cache-life-profiles.ts */
+	/** Paper cacheLife tier — see src/lib/saleor/cache/life-profiles.ts */
 	readonly cacheProfile: CacheLifeProfile;
 	/** Tag pattern — use {slug} and/or {channel} placeholders */
 	readonly tagPattern: string;
@@ -106,7 +106,7 @@ const profiles = {
 	 * payload doesn't name the affected grids (unenriched webhooks).
 	 *
 	 * Only product events that can change a listing card revalidate these
-	 * (`affectsListing` in src/lib/webhook-events.ts) — stock and metadata
+	 * (`affectsListing` in src/lib/saleor/invalidation/webhook-events.ts) — stock and metadata
 	 * churn must not, or the cache never stays warm.
 	 */
 	listingAll: {
@@ -515,7 +515,7 @@ export function resolveManualRevalidateTag(tag: string, channel?: string | null)
  * Slug-scoped profiles also receive `sharedTag` (and channel+slug profiles their
  * channel catch-all) so full purge can bust the whole set without enumerating slugs.
  *
- * Profile timings are defined in src/lib/cache-life-profiles.ts (registered in next.config.js).
+ * Profile timings are defined in src/lib/saleor/cache/life-profiles.ts (registered in next.config.js).
  */
 /**
  * TTL-only listing cache. Search-engine providers have no Saleor tag to bust,

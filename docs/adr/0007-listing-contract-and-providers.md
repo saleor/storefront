@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted (implemented)
 
 ## Context
 
@@ -12,7 +12,9 @@ Shops need Saleor for category grids and a search engine for `/search` without f
 
 ## Decision
 
-`ListingQuery` and `ListingResult` are the storefront contract (`STOREFRONT_CONTRACT_VERSION` 2). `src/config/listing-providers.ts` assigns one provider per surface. Core (`src/lib/listing/policy.ts`) caches only the unfiltered first page of non-search surfaces. Saleor-webhook providers use the sharded listing tags. TTL providers use `listingTtl` and no tag.
+`ListingQuery` and `ListingResult` are the storefront contract (`STOREFRONT_CONTRACT_VERSION` 2). `src/config/listing-providers.ts` assigns one provider per surface. Core (`src/lib/listing/policy.ts`) normalizes the query for that provider before the cache key: an undeclared sort falls back to the surface default, and a page in the wrong pagination mode falls back to the first page. Core then caches only the first page of non-search surfaces, in any sort. Saleor-webhook providers use the sharded listing tags. TTL providers use `listingTtl` and no tag.
+
+Every registered provider has a contract test built on the exported `runListingProviderContract`. `LISTING_PROVIDER_<SURFACE>` overrides are for local runs and previews and are ignored on Vercel production.
 
 PLP layout is a template over `header`, `results`, and `empty` slots, the same way the PDP is a template over `ProductView`.
 
@@ -22,3 +24,5 @@ PLP layout is a template over `header`, `results`, and `empty` slots, the same w
 - Saleor still has no facet counts. The contract makes `count` optional.
 - Going back a page on category and collection listings uses `$last` / `$before` on a products-only query, so the hero image is not refetched with every filter.
 - Search paging and filters use `/api/listing` and stay uncached.
+- Saleor search uses the top-level `search` argument with the same constraints as category grids, so facet aliases behave the same on every surface. Relevance sorts by `RANK`, not the deprecated `RATING`.
+- A shared URL from another backend (an offset page, an unsupported sort) renders the first page instead of failing.

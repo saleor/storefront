@@ -18,7 +18,7 @@ Categories can stay on Saleor while `/search` uses a search engine. Do not split
 | Which attributes are facets    | `src/config/facets.ts` (`source` per provider)                                     |
 | Rearrange the listing page     | `src/templates/plp/<name>.tsx`, then `ACTIVE_PLP_TEMPLATE` and `ACTIVE_PLP_FACETS` |
 
-`LISTING_PROVIDER_SEARCH=fixture` (and the same shape for `ALL`, `CATEGORY`, `COLLECTION`) overrides one surface at runtime. Bracket access on `process.env` — do not write `process.env.LISTING_PROVIDER_SEARCH`.
+`LISTING_PROVIDER_SEARCH=fixture` (and the same shape for `ALL`, `CATEGORY`, `COLLECTION`) overrides one surface at runtime for local runs, tests, and previews. It is ignored when `VERCEL_ENV=production`: production picks providers in `src/config/listing-providers.ts`. Bracket access on `process.env` — do not write `process.env.LISTING_PROVIDER_SEARCH`.
 
 ## What a provider returns
 
@@ -26,10 +26,13 @@ Categories can stay on Saleor while `/search` uses a search engine. Do not split
 
 `load` returns `null` when a category or collection slug does not exist. Transport failures throw.
 
+`load` receives a query core has already normalized for it. The sort is one the provider declared for that surface (or `undefined` for the surface default). The page is in the provider's pagination mode. A provider does not re-check either.
+
 ## What core keeps
 
 - URL codec (`src/lib/listing/query.ts`) and `/api/listing`
-- `isCacheableListingQuery` — unfiltered first page only, any sort. Search, filters, and cursors are live
+- Normalization in `loadListing`, before the cache key. A sort the provider did not declare falls back to the surface default. A page in the wrong mode (`?page=2` on a cursor provider, a cursor on an offset provider) falls back to the first page. A shared URL from another backend never breaks the page
+- `isCacheableListingQuery` — first page only, any sort. Search, filters, cursors, and deeper pages are live
 - Saleor webhook tags for `freshness: "saleor-webhooks"`
 - `listingTtl` (no tag) for `freshness: "ttl"`
 - The route files. They do not await `searchParams` in `Page` except to pass them into `redirectToCanonicalCatalogSlug`. Search reads them inside the Suspense child.
@@ -54,9 +57,13 @@ export const algoliaListingProvider: ListingProvider = {
 };
 ```
 
-Register it and set `search: "algolia"`. `pnpm paper:new provider listing <id>` scaffolds the file. Run `runListingProviderContract` against it.
+Register it and set `search: "algolia"`. `pnpm paper:new provider listing <id>` scaffolds the provider and its contract test (`src/lib/listing/providers/<id>/contract.test.ts`). That test calls `runListingProviderContract` from `src/lib/listing/testing.ts` with a stub transport, so it runs without the engine. A core test fails when a registered provider has no contract test.
 
 Saleor-only types (`ProductWhereInput`, listing documents) are a lint error outside `src/lib/listing/providers/<id>/`. Providers cannot use `"use cache"`.
+
+## Saleor provider
+
+`src/lib/listing/providers/saleor/` serves every surface by default. Category, collection, and all-products grids use `where` (or `filter` with no facets). Search uses the top-level `search` argument with the same constraints as the grids, so facet aliases (`color` | `colour`, `size` | `shoe-size`) OR the same way on every surface. Search "relevance" sorts by `RANK`. Facet values come from the current page sample; Saleor sets no counts.
 
 ## Add a template
 
