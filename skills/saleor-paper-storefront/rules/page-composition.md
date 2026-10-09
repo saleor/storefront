@@ -38,7 +38,7 @@ Listing pages are params-only: the cached first-page grid is not a `searchParams
 Hard constraints (never violate when redesigning):
 
 - Never `await searchParams`/`cookies()` in the shell or inside `"use cache"` — it collapses the whole page into a dynamic hole.
-- Catalog/content fetches use `applyCacheProfile(CACHE_PROFILES.*)` — never raw `cacheLife`/`cacheTag`.
+- Catalog/content fetches use `cachedQuery` with a `CACHE_PROFILES.*` profile — never raw `cacheLife`/`cacheTag`.
 - Server Components by default; add `"use client"` only for genuine interactivity.
 - Don't fix a PPR build error by wrapping `<main>` in Suspense — fix the segment that owns the dynamic work.
 

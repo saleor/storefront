@@ -35,5 +35,10 @@ export function projectGa4(event: PaperCommerceEvent): Ga4Event | null {
 			};
 		case "search_submitted":
 			return { name: "search", params: {} };
+		case "listing_filtered":
+			return {
+				name: "view_item_list",
+				params: { item_list_name: event.surface, facet: event.facet },
+			};
 	}
 }

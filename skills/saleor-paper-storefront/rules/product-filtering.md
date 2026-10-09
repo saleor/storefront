@@ -12,15 +12,18 @@ Product list filtering and sorting. Attribute facets (colors/sizes/…) are **se
 
 ## Filter Architecture
 
-| Filter         | Processing     | Mechanism                                                                |
-| -------------- | -------------- | ------------------------------------------------------------------------ |
-| **Categories** | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
-| **Price**      | ✅ Server-side | `filter.price` or `where.price.range`                                    |
-| **Sort**       | ✅ Server-side | `ProductOrder`                                                           |
-| **Colors**     | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
-| **Sizes**      | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
+| Filter          | Processing     | Mechanism                                                                |
+| --------------- | -------------- | ------------------------------------------------------------------------ |
+| **Categories**  | ✅ Server-side | `ProductFilterInput.categories` (IDs) or `where.category` when facets on |
+| **Price**       | ✅ Server-side | `filter.price` or `where.price.range`                                    |
+| **Sort**        | ✅ Server-side | `ProductOrder` (search "relevance" = `RANK`)                             |
+| **Search text** | ✅ Server-side | Top-level `search` argument — combines with `where`                      |
+| **Colors**      | ✅ Server-side | Facet config → `where` OR across `color` / `colour` value slugs          |
+| **Sizes**       | ✅ Server-side | Facet config → `where` OR across `size` / `shoe-size` / `clothing-size`  |
 
 Saleor allows **only one** of `filter` or `where` per products query. When any attribute facet is selected, Paper puts the whole constraint set into `where` so aliases can OR correctly.
+
+Search text is the top-level `search` argument, not `filter.search`. It combines with `where`, so the search surface uses the same constraints (and the same alias OR) as category grids. "Relevance" sorts by `RANK`, which Saleor allows only together with search text.
 
 > The old claim “Saleor needs attribute IDs” is **false** for modern schemas — `AttributeInput` filters by attribute slug + value slugs.
 
@@ -44,38 +47,37 @@ export const PLP_FACETS = [
 
 ## Key Files
 
-| File                                           | Purpose                                             |
-| ---------------------------------------------- | --------------------------------------------------- |
-| `src/config/facets.ts`                         | Which attributes are facets + slug aliases          |
-| `src/ui/components/plp/filter-utils.ts`        | `buildProductListingConstraints`, option extractors |
-| `src/ui/components/plp/filter-utils.server.ts` | `resolveCategorySlugsToIds`                         |
-| `src/ui/components/plp/use-product-filters.ts` | URL sync, optimistic chips, `useTransition`         |
-| `src/ui/components/plp/use-listing-query.ts`   | Canonical grid vs `GET /api/listing` swap           |
-| `src/lib/catalog/fetch-filtered-listing.ts`    | Shared live / cached listing loader                 |
-| `src/app/api/listing/route.ts`                 | Public listing JSON (pages stay params-only)        |
-| `src/ui/components/plp/filter-bar.tsx`         | Filter UI                                           |
+| File                                              | Purpose                                                      |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| `src/config/facets.ts`                            | Facet ids, URL params, per-provider `source`                 |
+| `src/lib/listing/providers/saleor/constraints.ts` | `buildProductListingConstraints` (Saleor `filter` / `where`) |
+| `src/lib/listing/load.ts`                         | `loadListingView` — codec, cache policy, active provider     |
+| `src/config/listing-providers.ts`                 | Which provider serves each surface                           |
+| `src/app/api/listing/route.ts`                    | Public listing JSON (pages stay params-only)                 |
+| `src/ui/components/plp/filter-bar.tsx`            | Filter UI                                                    |
+| `src/ui/components/plp/use-listing-query.ts`      | Canonical grid vs `GET /api/listing`                         |
 
 ## Building listing constraints
 
-```typescript
-import { buildProductListingConstraints } from "@/ui/components/plp/filter-utils";
-import { resolveCategorySlugsToIds } from "@/ui/components/plp/filter-utils.server";
+Only the Saleor listing provider (`src/lib/listing/providers/saleor/`) builds Saleor listing variables. Pages and UI hand it a `ListingQuery`; `loadListing` decides whether the read is cached.
 
-const categoryMap = await resolveCategorySlugsToIds(categorySlugs);
-const categoryIds = Array.from(categoryMap.values()).map((c) => c.id);
+```typescript
+// Inside src/lib/listing/providers/saleor/
+import { buildProductListingConstraints } from "./constraints";
 
 const { filter, where } = buildProductListingConstraints({
-	priceRange: searchParams.price,
-	categoryIds,
-	colors: searchParams.colors,
-	sizes: searchParams.sizes,
+	priceRange,
+	categoryIds, // resolved from slugs with resolveCategorySlugsToIds
+	facets: query.selections,
 });
 
-// Pass exactly one of filter / where (the other is undefined)
-await executePublicGraphQL(ProductListPaginatedDocument, {
-	variables: { channel, sortBy, filter, where, ... },
+// Exactly one of filter / where is set. Search text rides in the top-level `search` argument.
+const result = await liveQuery(ProductListPaginatedDocument, {
+	variables: { channel, first, sortBy, filter, where, ...(search ? { search } : {}) },
 });
 ```
+
+A cacheable first page goes through `cachedQuery` with the listing profile instead. The provider gets that decision from core; it does not make it.
 
 `buildFilterVariables` remains for **category/price only** — do not hang attribute facets on it (single-slug `filter.attributes` cannot OR `shoe-size`).
 
@@ -100,15 +102,16 @@ const {
 Price ranges are static to avoid UI flicker:
 
 ```typescript
-import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils";
+import { STATIC_PRICE_RANGES } from "@/config/facets";
 ```
 
 ## Adding a New Attribute Facet
 
-1. Add a row to `PLP_FACETS` (`param`, `attributeSlug`, `attributeAliases`, `control`).
-2. Ensure `loadListing` / `fetch-filtered-listing.ts` passes the new param into `buildProductListingConstraints` (extend the helper’s convenience fields or `facets` map). Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
+1. Add a row to `PLP_FACETS` (`param`, `id`, `attributeSlug`, `attributeAliases`, `control`, `source`).
+2. The Saleor provider reads `query.selections` from the URL codec. Listing pages stay params-only — the query is read by `GET /api/listing`, not the page.
 3. Wire FilterBar / `useProductFilters` for that param if it needs a dedicated control.
 4. Prefer value **slugs** in the URL.
+5. A non-Saleor provider maps `source.<id>` itself. See `rules/plp-listing.md`.
 
 ## Anti-patterns
 
@@ -117,4 +120,6 @@ import { STATIC_PRICE_RANGES_WITH_COUNT } from "@/ui/components/plp/filter-utils
 ❌ **Don't hide selected filters** — always show so users can deselect  
 ❌ **Don't treat the PLP variant sample as filter truth** — sample is for swatches/hints  
 ❌ **Don't filter only `size` when sneakers use `shoe-size`** — configure aliases  
-❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination
+❌ **Don't pass both `filter` and `where`** — Saleor rejects the combination  
+❌ **Don't put search text in `filter.search`** — the top-level `search` argument combines with `where`, so facet aliases still OR  
+❌ **Don't sort relevance by `RATING`** — it is deprecated and is not relevance; use `RANK` with search text

@@ -74,6 +74,8 @@ interface FilterBarProps {
 	resultCount: number;
 	sortValue: SortOption;
 	onSortChange: (value: SortOption) => void;
+	/** Sorts this listing provider can apply. `featured` stays, it means the surface default. */
+	sortOptions?: readonly SortOption[];
 	activeFilters?: readonly ActiveFilter[];
 	onRemoveFilter?: (key: string, value: string) => void;
 	onClearFilters?: () => void;
@@ -97,6 +99,7 @@ interface FilterBarProps {
 export function FilterBar({
 	resultCount,
 	sortValue,
+	sortOptions = SORT_OPTIONS,
 	onSortChange,
 	activeFilters = [],
 	onRemoveFilter,
@@ -477,7 +480,7 @@ export function FilterBar({
 									value={sortValue}
 									onValueChange={(v) => onSortChange(v as SortOption)}
 								>
-									{SORT_OPTIONS.map((option) => (
+									{sortOptions.map((option) => (
 										<DropdownMenuRadioItem key={option} value={option}>
 											{tSort(option)}
 										</DropdownMenuRadioItem>

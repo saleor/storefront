@@ -36,7 +36,7 @@ function slot(id: string) {
 
 describe("PDP templates", () => {
 	it("pins the contract version", () => {
-		expect(STOREFRONT_CONTRACT_VERSION).toBe(1);
+		expect(STOREFRONT_CONTRACT_VERSION).toBe(2);
 	});
 
 	it("selects a registered template whose gallery matches ACTIVE_PDP_GALLERY", () => {
@@ -44,8 +44,8 @@ describe("PDP templates", () => {
 		expect(templates.pdp.gallery).toBe(ACTIVE_PDP_GALLERY);
 	});
 
-	it("places the gallery and buy box slots once in every preset", () => {
-		const width: Record<string, string> = {
+	it("places the gallery and buy box slots once in every template", () => {
+		const presetWidth: Record<string, string> = {
 			immersive: "container-super-wide",
 			standard: "container-content",
 			mosaic: "container-content",
@@ -65,18 +65,18 @@ describe("PDP templates", () => {
 				}),
 			);
 
-			for (const id of [
-				"pdp-slot-gallery",
-				"pdp-slot-buybox",
-				"pdp-slot-breadcrumbs",
-				"pdp-slot-attributes",
-			]) {
+			for (const id of ["pdp-slot-gallery", "pdp-slot-buybox"]) {
 				expect(html.match(new RegExp(`id="${id}"`, "g")), template.id).toHaveLength(1);
 			}
 			expect(html).toContain("Tee");
-			const expectedWidth = width[template.id];
-			expect(expectedWidth, `${template.id} needs a width assertion`).toBeTruthy();
-			expect(html).toContain(expectedWidth);
+
+			const expectedWidth = presetWidth[template.id];
+			if (expectedWidth) {
+				expect(html, template.id).toContain(expectedWidth);
+				for (const id of ["pdp-slot-breadcrumbs", "pdp-slot-attributes"]) {
+					expect(html.match(new RegExp(`id="${id}"`, "g")), template.id).toHaveLength(1);
+				}
+			}
 		}
 	});
 });

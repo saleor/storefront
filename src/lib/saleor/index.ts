@@ -2,8 +2,15 @@ import "server-only";
 
 export { cachedQuery, liveQuery, mutate, SaleorDataError, sessionQuery } from "./access";
 export { asValidationError, getUserMessage, SaleorError } from "./client";
-export type { GraphQLError, GraphQLFailure, GraphQLResult, GraphQLSuccess, SaleorErrorType } from "./client";
-export { applyCacheProfile as bindCacheProfile } from "./cache/manifest";
+export type {
+	GraphQLError,
+	GraphQLFailure,
+	GraphQLPartialError,
+	GraphQLResult,
+	GraphQLSuccess,
+	SaleorErrorType,
+} from "./client";
+export { applyCacheProfile as bindCacheProfile, applyListingTtl } from "./cache/manifest";
 export {
 	buildCatchAllTag,
 	buildManifest,

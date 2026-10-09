@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 36;
+const RULE_COUNT = 37;
 
 const catalog = [
 	{
@@ -52,6 +52,7 @@ const catalog = [
 			{ num: "2.2", file: "product-variants.md", title: "Variant Selection" },
 			{ num: "2.3", file: "product-high-cardinality.md", title: "High-Cardinality Attributes" },
 			{ num: "2.4", file: "product-filtering.md", title: "Product Filtering" },
+			{ num: "2.5", file: "plp-listing.md", title: "PLP Listing" },
 		],
 	},
 	{

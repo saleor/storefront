@@ -18,7 +18,7 @@ Paper follows **canonical Next.js App Router** patterns (Next.js 16):
 
 - **Server Components by default** — `"use client"` only for interactivity, browser APIs, or client hooks.
 - **Server Actions** for cart, checkout, and account mutations — not client-side GraphQL.
-- **RSC data fetching** on the server via `executePublicGraphQL` / `executeAuthenticatedGraphQL` — not urql, not browser Saleor SDK.
+- **RSC data fetching** on the server through the Saleor kernel (`@/lib/saleor`: `cachedQuery`, `liveQuery`, `sessionQuery`, `mutate`) — not urql, not browser Saleor SDK. See [`data-access.md`](data-access.md).
 - **Cache Components (PPR)** for browse/catalog — `"use cache"` at the data boundary, `Suspense` for runtime holes.
 - **BFF auth** — login/session via `/api/auth/*` and HttpOnly cookies, shared across storefront and checkout.
 
@@ -37,7 +37,7 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 | **Page boundaries** | Static page renders cached shell directly; hybrid wraps only islands | Never await `searchParams` in cached shells → [`data-caching.md`](data-caching.md)                                                                                                                                              |
 | **Layout shells**   | Sync layout → per-chrome Suspense islands (browse)                   | `(main)/layout.tsx` + `browse-chrome-slots.tsx` — [`data-caching.md`](data-caching.md) (page-boundary model); account uses layout-shell gate for auth                                                                           |
 | **Auth**            | BFF + PPR-safe account routes                                        | No `cookies()` in async pages without Suspense → [`data-auth-routes.md`](data-auth-routes.md)                                                                                                                                   |
-| **GraphQL**         | Codegen + server helpers                                             | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
+| **GraphQL**         | Codegen + the `@/lib/saleor` kernel                                  | Two codegen trees; regenerate after `.graphql` edits → [`data-graphql.md`](data-graphql.md)                                                                                                                                     |
 | **URLs**            | `/{locale}/{channel}/…` browse; `/checkout` transactional            | Orthogonal locale + channel → [`ui-locale-routing.md`](ui-locale-routing.md), [ADR 0001](../../../docs/adr/0001-locale-channel-url-routing.md)                                                                                  |
 | **Copy & i18n**     | Three string systems                                                 | Saleor catalog + CMS content + next-intl → [`ui-i18n.md`](ui-i18n.md), [ADR 0002](../../../docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md), [`docs/international-storefront.md`](../../../docs/international-storefront.md) |
 | **Channels**        | Explicit storefront allowlist                                        | Not every Saleor channel is a route → [`ui-channels.md`](ui-channels.md)                                                                                                                                                        |
@@ -50,9 +50,10 @@ We align with upstream Next.js docs rather than inventing parallel data layers. 
 Browse (storefront)                    Commerce (cart / checkout / account)
 ─────────────────                    ─────────────────────────────────────
 RSC page (sync export)               RSC loader or Server Action
-  └── Suspense                         └── executeAuthenticatedGraphQL
-        └── Shell ("use cache" data)         cache: "no-cache"
-              └── Suspense islands           mutations → revalidatePath / refresh
+  └── Suspense                         └── sessionQuery / liveQuery (reads)
+        └── Shell ("use cache"               mutate (writes), never cached
+              + cachedQuery)                 then refresh()
+              └── Suspense islands
                     searchParams, cookies
 ```
 
@@ -66,15 +67,15 @@ Patterns we **do not** use — regressions to avoid:
 
 | Avoid                                                | Use instead                                          |
 | ---------------------------------------------------- | ---------------------------------------------------- |
-| Client-side Saleor GraphQL (urql, Apollo in browser) | Server helpers + Server Actions                      |
+| Client-side Saleor GraphQL (urql, Apollo in browser) | `@/lib/saleor` loaders + Server Actions              |
 | Browser Saleor SDK for login                         | BFF `/api/auth/*`                                    |
-| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cache-manifest.ts` + webhooks       |
+| `cache: "no-cache"` on catalog display data          | `"use cache"` + `cachedQuery` + webhooks             |
 | `searchParams` / `cookies()` inside `"use cache"`    | Dynamic islands in nested `Suspense`                 |
 | Page-level skeleton on a non-dynamic route           | Render the cached shell directly; no page `Suspense` |
 | `Suspense fallback={null}` on `<main>`               | Route `loading.tsx` + section skeletons              |
 | `router.replace` for checkout step-only changes      | `updateCheckoutQuery()` (shallow history)            |
 | Storefront importing `@/checkout/*`                  | `@paper/session-bridge` for cross-surface URLs only  |
-| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `applyCacheProfile` from `cache-manifest.ts`         |
+| Raw `cacheLife` / hand-rolled `cacheTag` strings     | `cachedQuery` with a `CACHE_PROFILES` profile        |
 
 ---
 

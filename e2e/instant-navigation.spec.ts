@@ -1,7 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { instant } from "@next/playwright";
-
-const browsePath = "/en/default-channel";
+import { browsePath } from "./helpers/browse-path";
 
 test.describe("instant navigations (Next.js 16.3)", () => {
 	test("PLP → PDP shows product title immediately after click", async ({ page }) => {

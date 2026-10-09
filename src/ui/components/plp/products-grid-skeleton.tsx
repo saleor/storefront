@@ -14,7 +14,7 @@ export function ProductsGridSkeleton({
 		<div className={cn("container-content py-8", className)}>
 			<div
 				className={cn("grid grid-cols-2 gap-4 lg:gap-6", productGridDesktopClassName[desktopColumns])}
-				data-testid="ProductList"
+				data-testid="ProductListSkeleton"
 			>
 				{Array.from({ length: itemCount }).map((_, i) => (
 					<div key={i} className="animate-pulse">

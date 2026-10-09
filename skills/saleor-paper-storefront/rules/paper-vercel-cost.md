@@ -125,7 +125,7 @@ Catalog imagery renders as plain `<img srcset>` against Saleor's CDN (`SaleorIma
 
 ### 7. Existing discipline that must not regress
 
-- Only the **unfiltered first page** of listings is cached (`isCacheableListingView`) — never cache filter/cursor permutations.
+- Only the **first page** of a non-search listing is cached, in any sort (`isCacheableListingQuery` in `src/lib/listing/cacheability.ts`) — never cache filter/cursor permutations or search.
 - Stock/metadata events **never** bust listing tags (`affectsListing`).
 - No `prefetch={true}` on grids of links (per-card runtime prefetch = invocation fan-out); global `partialPrefetching` shares one App Shell per route.
 - No `prefetch={true}` on persistent chrome **or homepage CTAs**. That full-resolves URL data (`params` / `searchParams`) on every view of the linking page — a per-visit invocation. Listing pages are params-only (canonical grid is cached); `prefetch={true}` from the header or hero is still wasted RSC. Footer and secondary nav stay `prefetch={false}` so a fat unique-path menu does not fan out `_rsc` fetches on first paint. `eslint.config.mjs` bans new `prefetch={true}`.
@@ -138,13 +138,13 @@ Catalog imagery renders as plain `<img srcset>` against Saleor's CDN (`SaleorIma
 
 When traffic grows, apply these **before** considering leaving Vercel:
 
-1. **Widen the anonymous static path.** Most visitors carry no cookies; their browse chrome and canonical PLP responses should be full CDN hits. Audit which holes really need cookies. Listing pages do **not** await `searchParams` — the empty-query first page is `"use cache"` HTML. Filters / sort / cursor swap the grid via `GET /api/listing` (`useListingQuery`). Measure the dynamic-request share first.
-2. **Raise catalog backstops** toward 1 d `revalidate` / 1 w `expire` once webhook delivery is proven reliable (`cache-life-profiles.data.mjs`) — the backstop's only job is surviving a dropped webhook.
+1. **Widen the anonymous static path.** Most visitors carry no cookies; their browse chrome and canonical PLP responses should be full CDN hits. Audit which holes really need cookies. Listing pages do **not** await `searchParams` — the empty-query first page is cached HTML (`loadListing`). Filters / sort / cursor swap the grid via `GET /api/listing` (`useListingQuery`). Measure the dynamic-request share first.
+2. **Raise catalog backstops** toward 1 d `revalidate` / 1 w `expire` once webhook delivery is proven reliable (`src/lib/saleor/cache/life-profiles.data.mjs`) — the backstop's only job is surviving a dropped webhook.
 3. **Co-locate compute with Saleor.** Function region next to the Saleor API cuts GraphQL wait = provisioned-memory GB-hours (memory bills during I/O waits). Transatlantic hops cost more in memory-time and conversion than regional price deltas save.
 4. **Test 2 GB vs 4 GB memory.** I/O-bound GraphQL rendering usually wins at the default 2 GB; CPU-heavy serialization may finish enough faster at 4 GB. Measure, don't guess.
 5. **Retry budgets + circuit breakers on Saleor calls.** Retries during a Saleor incident multiply upstream load while holding instance memory open for responses that will fail anyway.
 6. **Warm only the top-N routes** after deploy/purge (top categories, best-selling PDPs). Never warm the catalog — dormant SKUs are free precisely because nothing renders them.
-7. **Cache admission for hot filters:** if analytics show a few filter combinations dominate, cache those on 2nd/3rd hit with a hard cardinality cap and aggressive expiry — don't widen `isCacheableListingView` wholesale.
+7. **Cache admission for hot filters:** if analytics show a few filter combinations dominate, cache those on 2nd/3rd hit with a hard cardinality cap and aggressive expiry — don't widen `isCacheableListingQuery` wholesale.
 8. **`assetPrefix` CDN offload:** serve `_next/static` (immutable JS/CSS) from an external CDN when FDT overage is material; RSC/ISR stay on Vercel.
 9. **External CDN in front of Next** only with care: preserve RSC cache keys and remember Next's on-demand revalidation does **not** purge a foreign CDN — you own that purge path.
 10. **Committed-use pricing** once optimized FDT/compute is predictable — negotiate before overage becomes routine.
@@ -198,7 +198,8 @@ The script buckets HTML, `/_next/static`, RSC/prefetch, `/_next/image`, Saleor m
 | -------------------------------------------------- | ----------------------------------------------------------- |
 | `src/lib/chrome-sync.ts`, `header-chrome-sync.tsx` | Cross-tab chrome sync without server work                   |
 | `src/app/actions.ts`, `account/actions.ts`         | `refresh()`-based per-user mutations                        |
-| `src/lib/cache-manifest.ts`                        | Sharded listing tags + catch-alls (manifest v7)             |
+| `src/lib/saleor/cache/manifest.ts`                 | Sharded listing tags + catch-alls (manifest v7)             |
+| `src/lib/listing/invalidate.ts`                    | Which listing tags one webhook delivery busts               |
 | `src/app/api/revalidate/route.ts`                  | Per-grid webhook invalidation, enriched payload contract    |
 | `src/lib/checkout.ts`                              | Request-memoized `Checkout.find`                            |
 | `src/lib/speed-insights.ts`                        | Sample-rate env parsing (default 0.01)                      |
@@ -206,7 +207,7 @@ The script buckets HTML, `/_next/static`, RSC/prefetch, `/_next/image`, Saleor m
 | `src/app/api/listing/route.ts`                     | Filtered PLP JSON — pages stay params-only                  |
 | `src/lib/fonts.ts`                                 | Browse `<html>` sans (+ editorial) — no Geist Mono          |
 | `src/app/(checkout)/layout.tsx`                    | Geist Mono on checkout only                                 |
-| `src/lib/webhook-events.ts`                        | Event allowlist + `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT` |
+| `src/lib/saleor/invalidation/webhook-events.ts`    | Event allowlist + `PAPER_BUST_LISTING_ALL_ON_PRODUCT_EVENT` |
 | `eslint.config.mjs`                                | `next/image` allowlist + `prefetch={true}` ban              |
 | `next.config.js`                                   | Image ladder/TTL/allowlist, cacheLife tiers                 |
 

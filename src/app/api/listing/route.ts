@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
 import { isStorefrontLocaleSlug } from "@/config/locale";
 import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
-import { loadListing } from "@/lib/catalog/fetch-filtered-listing";
 import { listingViewFromSearchParams, type ListingSurface } from "@/lib/catalog/listing-query";
+import { loadListingView } from "@/lib/listing/load";
 
-const SURFACES = new Set<ListingSurface>(["all", "category", "collection"]);
+const SURFACES = new Set<ListingSurface>(["all", "category", "collection", "search"]);
 
 function parseSurface(value: string | null): ListingSurface | null {
 	if (value && SURFACES.has(value as ListingSurface)) return value as ListingSurface;
@@ -15,7 +15,8 @@ function parseSurface(value: string | null): ListingSurface | null {
  * Filtered / sorted / paginated listing JSON.
  *
  * Canonical (empty-query) HTML is rendered by the listing pages and must not
- * await `searchParams`. This route is the hole for every other view.
+ * await `searchParams`. This route is the hole for every other view, including
+ * search. It is `private, no-store` so filter permutations are not cached at the edge.
  */
 export async function GET(request: NextRequest) {
 	const url = request.nextUrl;
@@ -35,11 +36,11 @@ export async function GET(request: NextRequest) {
 	if (!channels.includes(channel)) {
 		return Response.json({ error: "Invalid channel" }, { status: 400 });
 	}
-	if (surface !== "all" && !slug) {
+	if (surface !== "all" && surface !== "search" && !slug) {
 		return Response.json({ error: "Missing slug" }, { status: 400 });
 	}
 
-	const payload = await loadListing({
+	const payload = await loadListingView({
 		surface,
 		locale,
 		channel,

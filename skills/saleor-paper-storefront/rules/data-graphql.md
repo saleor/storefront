@@ -21,7 +21,7 @@ Modifying GraphQL queries and regenerating types correctly ensures type safety, 
 | Storefront (products, cart, etc.) | `src/graphql/*.graphql`          | `src/gql/`                        | `pnpm generate`          |
 | Checkout flow                     | `src/checkout/graphql/*.graphql` | `src/checkout/graphql/generated/` | `pnpm generate:checkout` |
 
-> **Note**: Storefront and checkout have **separate codegen setups** (`src/gql/` vs `src/checkout/graphql/generated/`). Both surfaces fetch at runtime via server helpers (`executePublicGraphQL` / `executeAuthenticatedGraphQL`) and checkout server actions — not browser GraphQL. Auth mutations use BFF routes (`/api/auth/*`), not the GraphQL documents directly from the client.
+> **Note**: Storefront and checkout have **separate codegen setups** (`src/gql/` vs `src/checkout/graphql/generated/`). Both surfaces call Saleor at runtime through the kernel (`@/lib/saleor`: `cachedQuery`, `liveQuery`, `sessionQuery`, `mutate`) from loaders and server actions — not browser GraphQL. Every named operation must be registered in `src/lib/saleor/operations.ts` (or `src/config/data-extensions.ts` on a fork); see [`data-access.md`](data-access.md). Auth mutations use BFF routes (`/api/auth/*`), not the GraphQL documents directly from the client.
 
 ---
 

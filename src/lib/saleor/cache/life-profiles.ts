@@ -7,7 +7,7 @@ import { paperCacheLifeProfiles as paperCacheLifeProfilesData } from "./life-pro
  *
  * Next.js `"use cache"` functions call `cacheLife(name)` to set how long cached
  * data lives. These names are **custom profiles** declared in `next.config.js`
- * (via `paperCacheLifeProfiles` in cache-life-profiles.data.mjs) and referenced from `cache-manifest.ts`.
+ * (via `paperCacheLifeProfiles` in life-profiles.data.mjs) and referenced from `manifest.ts`.
  *
  * ## You usually do NOT touch this file
  *
@@ -15,15 +15,15 @@ import { paperCacheLifeProfiles as paperCacheLifeProfilesData } from "./life-pro
  *   (instant invalidation via `cacheTag`, regardless of TTL).
  * - **Cart/checkout prices?** Always live (`cache: "no-cache"`) — not affected here.
  *
- * Change timings in `cache-life-profiles.data.mjs` only when you intentionally want different **fallback**
+ * Change timings in `life-profiles.data.mjs` only when you intentionally want different **fallback**
  * TTLs (e.g. slower background refresh when webhooks are missing).
  *
  * @see https://nextjs.org/docs/app/api-reference/functions/cacheLife
- * @see src/lib/cache-manifest.ts — maps each cache tag to a profile
+ * @see src/lib/saleor/cache/manifest.ts — maps each cache tag to a profile
  */
 
 /** Profile names registered in `next.config.js` → `cacheLife`. */
-export type PaperCacheLifeProfile = "catalog" | "menus" | "channels";
+export type PaperCacheLifeProfile = "catalog" | "menus" | "channels" | "listingTtl";
 
 /** Seconds-based config passed to Next.js `cacheLife` in next.config.js. */
 export type PaperCacheLifeConfig = Record<
@@ -33,7 +33,7 @@ export type PaperCacheLifeConfig = Record<
 
 /**
  * Custom cacheLife profiles for Paper.
- * Values live in cache-life-profiles.data.mjs (imported by next.config.js).
+ * Values live in life-profiles.data.mjs (imported by next.config.js).
  */
 export const paperCacheLifeProfiles: PaperCacheLifeConfig = paperCacheLifeProfilesData;
 
@@ -101,5 +101,12 @@ export const paperCacheLifeProfileDocs: Record<
 		stale: "5 min",
 		revalidate: "1 day",
 		expire: "1 week",
+	},
+	listingTtl: {
+		label: "Listing TTL",
+		usedFor: "Search-engine listing providers. No Saleor webhook tag — the index lags the catalog.",
+		stale: "1 min",
+		revalidate: "2 min",
+		expire: "10 min",
 	},
 };

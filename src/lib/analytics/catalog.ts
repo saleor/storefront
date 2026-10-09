@@ -40,4 +40,12 @@ export type PaperCommerceEvent =
 			channel: string;
 			/** True when the result set is empty. Search text never leaves the browser. */
 			zero: boolean;
+	  }
+	| {
+			name: "listing_filtered";
+			channel: string;
+			surface: "all" | "category" | "collection" | "search";
+			/** Which control changed. Low cardinality: colors, sizes, price, categories, sort, page, query, mixed. */
+			facet: string;
+			provider: string;
 	  };

@@ -251,11 +251,16 @@ export function useProductFilters({
 			setOptimisticColors([]);
 			setOptimisticSizes([]);
 			setOptimisticPriceRange(null);
-			router.push(pathname, { scroll: false });
+			const query = searchParams.get("query");
+			const next = new URLSearchParams();
+			if (query) next.set("query", query);
+			const qs = next.toString();
+			router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
 		});
 	}, [
 		router,
 		pathname,
+		searchParams,
 		startTransition,
 		setOptimisticCategories,
 		setOptimisticColors,

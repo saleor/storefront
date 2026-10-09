@@ -5,7 +5,7 @@
  * GraphQL layer. Forks override this file to change which attribute slugs are
  * facets, URL param names, or alias lists.
  *
- * Listing queries use `buildProductListingConstraints` in filter-utils: when
+ * Listing queries use `buildProductListingConstraints` in the Saleor listing provider: when
  * facets are selected, Saleor `ProductWhereInput` ORs every slug in
  * `attributeSlug` + `attributeAliases` (e.g. `size` | `shoe-size`). URL tokens
  * are value slugs (normalized), not display names.
@@ -16,8 +16,12 @@
 export type PlpFacetControl = "swatch" | "chip";
 
 export type PlpFacetConfig = {
-	/** URL search-param key (e.g. `colors`, `sizes`). */
+	/** URL search-param key (e.g. `colors`, `sizes`). Same as `id`. */
 	param: string;
+	/** Facet id on `ListingQuery.selections`. */
+	id: string;
+	/** next-intl key under the listing namespace. Falls back to `param`. */
+	labelKey: string;
 	/**
 	 * Primary Saleor attribute slug (first OR branch in listing `where`).
 	 * Always include real catalog slugs in `attributeAliases` too — e.g. sneakers
@@ -30,21 +34,46 @@ export type PlpFacetConfig = {
 	 */
 	attributeAliases: readonly string[];
 	control: PlpFacetControl;
+	/** Per-provider field mapping. A provider ignores sources it does not own. */
+	source: {
+		saleor: { attributes: readonly string[] };
+		fixture: { field: string };
+	};
 };
 
 export const PLP_FACETS: readonly PlpFacetConfig[] = [
 	{
 		param: "colors",
+		id: "colors",
+		labelKey: "colors",
 		attributeSlug: "color",
 		attributeAliases: ["colour"],
 		control: "swatch",
+		source: {
+			saleor: { attributes: ["color", "colour"] },
+			fixture: { field: "color" },
+		},
 	},
 	{
 		param: "sizes",
+		id: "sizes",
+		labelKey: "sizes",
 		attributeSlug: "size",
 		attributeAliases: ["shoe-size", "clothing-size"],
 		control: "chip",
+		source: {
+			saleor: { attributes: ["size", "shoe-size", "clothing-size"] },
+			fixture: { field: "size" },
+		},
 	},
+] as const;
+
+/** Static price buckets. Dynamic ranges flicker as the page sample changes. */
+export const STATIC_PRICE_RANGES = [
+	{ label: "Under $50", value: "0-50" },
+	{ label: "$50 - $100", value: "50-100" },
+	{ label: "$100 - $200", value: "100-200" },
+	{ label: "$200+", value: "200-" },
 ] as const;
 
 export function getPlpFacetByParam(param: string): PlpFacetConfig | undefined {

@@ -5,6 +5,8 @@ query ProductListByCategory(
 	$slugLanguageCode: LanguageCodeEnum
 	$first: Int
 	$after: String
+	$last: Int
+	$before: String
 	$sortBy: ProductOrder
 	$filter: ProductFilterInput
 	$where: ProductWhereInput
@@ -34,6 +36,8 @@ query ProductListByCategory(
 		products(
 			first: $first
 			after: $after
+			last: $last
+			before: $before
 			channel: $channel
 			sortBy: $sortBy
 			filter: $filter

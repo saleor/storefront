@@ -63,11 +63,11 @@ actions.ts (server)             ← mutations, payment transactions, checkoutCom
 
 ## Data and caching
 
-| Surface    | GraphQL                                                         | Freshness                          |
-| ---------- | --------------------------------------------------------------- | ---------------------------------- |
-| Storefront | `executePublicGraphQL` / `executeAuthenticatedGraphQL`          | Display cached (`"use cache"`)     |
-| Checkout   | RSC page + server actions (`execute*GraphQL`)                   | Always fresh (`cache: "no-cache"`) |
-| Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                       |
+| Surface    | GraphQL                                                         | Freshness                      |
+| ---------- | --------------------------------------------------------------- | ------------------------------ |
+| Storefront | `cachedQuery` (catalog) / `sessionQuery` / `mutate`             | Display cached (`"use cache"`) |
+| Checkout   | RSC page + server actions (`liveQuery` / `mutate`)              | Always fresh (never cached)    |
+| Auth       | `POST /api/auth/*` + `getServerAuthClient()` (HttpOnly cookies) | Always fresh                   |
 
 `CheckoutSessionLoader` passes `initialCheckout` when `loadState === "ready"`. Guest order status is a separate route (`order/[key]/page.tsx` + `OrderConfirmationApp` — no cart context). Client `syncCheckoutFromServer` is a narrow fallback; normal path is RSC hydrate + `adoptCheckoutSnapshot` on refresh.
 

@@ -34,13 +34,14 @@ const CORE_OPERATIONS = {
 	ProductList: cached("channel-locale"),
 	ProductListPaginated: cached("channel-locale"),
 	ProductListByCategory: cached("channel-locale"),
+	ProductListByCategoryProducts: cached("channel-locale"),
 	ProductListByCollection: cached("channel-locale"),
+	ProductListByCollectionProducts: cached("channel-locale"),
 	PageGetBySlug: cached("locale"),
 	MenuGetBySlug: cached("channel-locale"),
 	StorefrontContentPages: cached("channel-locale"),
 	CategoriesBySlug: cached("global"),
 	ChannelsList: cached("global", "app"),
-	SearchProducts: live(),
 
 	// Storefront session reads.
 	CurrentUser: session(),

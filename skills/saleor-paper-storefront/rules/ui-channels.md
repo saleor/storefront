@@ -74,7 +74,7 @@ SALEOR_APP_TOKEN=your-app-token
 
 **Security:** This token is used server-side only. Keep it in `.env.local` for development and set it as a secret environment variable in production (e.g., Vercel environment variables).
 
-**Without this token:** The channel list cannot be fetched. Channels would need to be hardcoded in `src/config/static-pages.ts` or the selector won't appear.
+**Without this token:** Channel metadata cannot be fetched. Routes still come from `STOREFRONT_CHANNELS` in `src/config/channels.ts`, but the footer channel selector does not render (`shouldFetchChannelMetadata` needs more than one channel and the token).
 
 ### Creating the App Token
 
@@ -112,11 +112,11 @@ STOREFRONT_DISCOVER_CHANNELS=true
 
 ### Where the allowlist is enforced
 
-| Location                          | Behavior                                                |
-| --------------------------------- | ------------------------------------------------------- |
-| `src/app/[channel]/layout.tsx`    | `generateStaticParams` + `notFound()` for unknown slugs |
-| `src/app/api/revalidate/route.ts` | Path revalidation loops over allowed channels only      |
-| `src/ui/components/footer.tsx`    | Channel selector lists allowed channels                 |
+| Location                                             | Behavior                                                |
+| ---------------------------------------------------- | ------------------------------------------------------- |
+| `src/app/(storefront)/[locale]/[channel]/layout.tsx` | `generateStaticParams` + `notFound()` for unknown slugs |
+| `src/app/api/revalidate/route.ts`                    | Path revalidation loops over allowed channels only      |
+| `src/ui/components/footer.tsx`                       | Channel selector lists allowed channels                 |
 
 See `data-caching.md` for how webhooks use `getStorefrontChannelSlugs()` during invalidation.
 
@@ -150,15 +150,15 @@ Requires `SALEOR_APP_TOKEN` to fetch channel list via `ChannelsListDocument` que
 
 ## Key Files
 
-| File                                   | Purpose                                     |
-| -------------------------------------- | ------------------------------------------- |
-| `src/config/channels.ts`               | Allowlist env parsing + validation          |
-| `src/lib/channel-slugs.ts`             | `getStorefrontChannelSlugs()` (React.cache) |
-| `src/app/[channel]/layout.tsx`         | Route guard + `generateStaticParams`        |
-| `src/ui/components/channel-select.tsx` | Channel switcher dropdown                   |
-| `src/ui/components/footer.tsx`         | Renders channel selector                    |
-| `src/graphql/ChannelsList.graphql`     | Query for fetching channels                 |
-| `src/app/config.ts`                    | `DefaultChannelSlug` fallback               |
+| File                                                 | Purpose                                     |
+| ---------------------------------------------------- | ------------------------------------------- |
+| `src/config/channels.ts`                             | Allowlist env parsing + validation          |
+| `src/lib/channel-slugs.ts`                           | `getStorefrontChannelSlugs()` (React.cache) |
+| `src/app/(storefront)/[locale]/[channel]/layout.tsx` | Route guard + `generateStaticParams`        |
+| `src/ui/components/channel-select.tsx`               | Channel switcher dropdown                   |
+| `src/ui/components/footer.tsx`                       | Renders channel selector                    |
+| `src/graphql/ChannelsList.graphql`                   | Query for fetching channels                 |
+| `src/app/config.ts`                                  | `DefaultChannelSlug` fallback               |
 
 ## Locale & routing
 

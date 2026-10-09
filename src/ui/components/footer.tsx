@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { StorefrontRegionPicker } from "./storefront-region-picker";
 import {
@@ -65,7 +66,10 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-inverse pt-8 sm:flex-row">
 					<div className="flex flex-col items-center gap-2 text-center sm:items-start sm:text-left">
 						<p className="text-xs text-inverse-muted">
-							<CopyrightText />
+							{/* The year is read at request time; the shell keeps the line's height. */}
+							<Suspense fallback={"\u00a0"}>
+								<CopyrightText />
+							</Suspense>
 						</p>
 						<FooterAttribution />
 						<FooterPhotoCredits credits={content.surfaces.homepage.photoCredits} />

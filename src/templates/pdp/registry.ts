@@ -18,11 +18,18 @@ export const PDP_TEMPLATES = {
 
 const activeId: keyof typeof PDP_TEMPLATES = ACTIVE_PDP_TEMPLATE;
 
+/**
+ * Compile-time selection check. A type error on this line means `ACTIVE_PDP_GALLERY`
+ * is not the active template's `gallery`. Set both in src/config/template-selection.ts.
+ * (A template typed as plain `PdpTemplate` widens `gallery`; the runtime check below still holds.)
+ */
+const activeGallery: (typeof PDP_TEMPLATES)[typeof ACTIVE_PDP_TEMPLATE]["gallery"] = ACTIVE_PDP_GALLERY;
+
 export function activePdpTemplate(): PdpTemplate {
 	const template = PDP_TEMPLATES[activeId];
 	// The template's own classes and the gallery island read different constants.
 	// A mismatch renders the columns shell with the immersive filmstrip.
-	if (template.gallery !== ACTIVE_PDP_GALLERY) {
+	if (template.gallery !== activeGallery) {
 		throw new Error(
 			`ACTIVE_PDP_TEMPLATE "${activeId}" uses gallery "${template.gallery}", but ACTIVE_PDP_GALLERY is "${ACTIVE_PDP_GALLERY}". Set both in src/config/template-selection.ts.`,
 		);

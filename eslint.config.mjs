@@ -131,6 +131,7 @@ const config = [
 		rules: {
 			"paper/saleor-access": "error",
 			"paper/no-direct-saleor": "error",
+			"paper/app-auth-callers": "error",
 			"paper/cache-api": "error",
 			"paper/use-cache-shape": "error",
 			"paper/surface-boundary": "error",
@@ -138,6 +139,8 @@ const config = [
 			"paper/no-lib-ui": "error",
 			"paper/ui-no-gql": "error",
 			"paper/template-purity": "error",
+			"paper/listing-provider-boundary": "error",
+			"paper/plp-params-only": "error",
 		},
 	},
 ];

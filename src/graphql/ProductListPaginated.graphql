@@ -8,6 +8,7 @@ query ProductListPaginated(
 	$sortBy: ProductOrder
 	$filter: ProductFilterInput
 	$where: ProductWhereInput
+	$search: String
 ) {
 	products(
 		first: $first
@@ -18,6 +19,7 @@ query ProductListPaginated(
 		sortBy: $sortBy
 		filter: $filter
 		where: $where
+		search: $search
 	) {
 		totalCount
 		edges {

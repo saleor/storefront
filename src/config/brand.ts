@@ -9,7 +9,7 @@
  * import { brandConfig } from "@/config/brand";
  *
  * <title>{brandConfig.siteName}</title>
- * <p>© {new Date().getFullYear()} {brandConfig.copyrightHolder}</p>
+ * <Suspense><CopyrightText /></Suspense> // never `new Date()` during render (sync IO under Cache Components)
  * ```
  */
 
@@ -58,7 +58,7 @@ export function formatPageTitle(title: string): string {
 
 /**
  * Get copyright text with specified year.
- * Use CopyrightText component for dynamic year in Server Components.
+ * Render through `CopyrightText` inside `<Suspense>`: it calls `io()` before reading the clock.
  */
 export function getCopyrightText(year: number = new Date().getFullYear()): string {
 	return `© ${year} ${brandConfig.copyrightHolder}. All rights reserved.`;

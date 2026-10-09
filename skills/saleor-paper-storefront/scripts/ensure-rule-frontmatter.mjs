@@ -60,6 +60,8 @@ const DESCRIPTIONS = {
 		"High-cardinality catalogs on Paper — PDP_VARIANT_CAP, per-group control ladder, buy-box strategies, ?variant=/?sku= deep links, selection-index, PLP_FACETS alias OR. Use when products have many variants/options, over-cap PDPs, or facet config.",
 	"product-filtering.md":
 		"PLP filtering/sorting — server-side categories/price/sort plus attribute facets via PLP_FACETS and ProductWhereInput alias OR. Use when changing product list filters, facet config, or sort.",
+	"plp-listing.md":
+		"PLP and search listings. ListingQuery in, ListingResult out, one provider per surface (Saleor or a search engine). Use when changing category, collection, all-products, or search pages, facets, or /api/listing.",
 	"paper-surfaces.md":
 		"The two-surface model (storefront vs checkout): route groups, import boundaries, @paper/session-bridge handoff, checkout entry/data flow. Use when working across the storefront/checkout boundary.",
 	"checkout-design-principles.md":

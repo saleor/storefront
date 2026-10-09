@@ -20,7 +20,7 @@ export function activeChannelSlugsFromList(
 }
 
 async function discoverActiveChannelsFromApi(): Promise<string[]> {
-	// Reuse "use cache" ChannelsList fetch — safe during PPR (unlike raw executePublicGraphQL in layout).
+	// Reuse the "use cache" ChannelsList fetch — safe during PPR (unlike a live Saleor read in the layout).
 	const data = await getCachedChannelsList();
 
 	if (!data?.channels) {

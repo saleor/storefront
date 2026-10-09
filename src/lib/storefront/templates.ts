@@ -2,6 +2,7 @@ import type { ComponentType, ReactNode } from "react";
 
 import type { PdpGalleryLayout } from "@/lib/storefront/contract/gallery";
 import type { ProductView } from "@/lib/storefront/contract/product";
+import type { ListingSurfaceKind } from "@/lib/storefront/contract/listing";
 
 /**
  * What a PDP template is allowed to see.
@@ -37,6 +38,50 @@ export interface PdpTemplate {
 	Skeleton: ComponentType<PdpTemplateSkeletonProps>;
 }
 
-export function definePdpTemplate(template: PdpTemplate): PdpTemplate {
+/**
+ * Keeps the literal `gallery` so the registry can check `ACTIVE_PDP_GALLERY` at compile time.
+ */
+export function definePdpTemplate<const T extends PdpTemplate>(template: T): T {
+	return template;
+}
+
+export type PlpFacetsPlacement = "bar" | "sidebar";
+
+export interface PlpSurfaceView {
+	kind: ListingSurfaceKind;
+	title: string;
+	description?: string | null;
+}
+
+/**
+ * A PLP template arranges slots. It does not fetch.
+ * Facet placement is a property of the results island, declared on the template
+ * so the route and the island cannot disagree.
+ */
+export interface PlpTemplateSlots {
+	/** Cached hero (title, breadcrumbs, image). Place exactly once. */
+	header: ReactNode;
+	/** Grid, facets, sort, and pagination. Place exactly once. */
+	results: ReactNode;
+	/** Empty state. Place once. The route may pass null when the grid has items. */
+	empty: ReactNode;
+}
+
+export interface PlpTemplateProps {
+	surface: PlpSurfaceView;
+	slots: PlpTemplateSlots;
+}
+
+export interface PlpTemplate {
+	id: string;
+	facets: PlpFacetsPlacement;
+	Layout: ComponentType<PlpTemplateProps>;
+	Skeleton: ComponentType;
+}
+
+/**
+ * Keeps the literal `facets` so the registry can check `ACTIVE_PLP_FACETS` at compile time.
+ */
+export function definePlpTemplate<const T extends PlpTemplate>(template: T): T {
 	return template;
 }

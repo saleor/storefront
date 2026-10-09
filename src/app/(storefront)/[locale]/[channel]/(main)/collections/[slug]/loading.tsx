@@ -1,5 +1,5 @@
-import { PlpPageLoading } from "@/ui/components/plp/plp-page-loading";
+import { templates } from "@/config/templates";
 
-export default function CollectionLoading() {
-	return <PlpPageLoading />;
+export default function Loading() {
+	return <templates.plp.Skeleton />;
 }

@@ -111,7 +111,7 @@ Client-side validation should use the same `account.errors.*` keys before callin
 
 ## Import boundaries
 
-❌ Client components must **not** import barrels that pull `server-only` modules (e.g. search sort importing `@/lib/search` instead of `@/lib/search/sort-options`).
+❌ Client components must **not** import barrels that pull `server-only` modules (e.g. a sort control importing the server-only `@/lib/listing/policy` instead of the `SORT_IDS` contract in `@/lib/storefront/contract/listing`).
 
 ❌ Do not use next-intl middleware or `next-intl` navigation — ADR 0001 URL segment is authoritative.
 
