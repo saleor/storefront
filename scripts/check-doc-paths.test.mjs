@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -46,5 +47,16 @@ describe("checkDocs", () => {
 			"AGENTS.md:2  missing path `src/lib/gone.ts`",
 			"AGENTS.md:4  missing path `src/nope/new.ts`",
 		]);
+	});
+
+	it("allows a gitignored path that a clean checkout does not have yet", () => {
+		const root = mkdtempSync(join(tmpdir(), "doc-paths-"));
+		execFileSync("git", ["init", "-q"], { cwd: root });
+		writeFileSync(join(root, ".gitignore"), "src/gql/\n");
+		const doc = join(root, "AGENTS.md");
+		writeFileSync(doc, ["`src/gql/graphql.ts`", "`src/gql/`", "`src/lib/gone.ts`"].join("\n"));
+
+		const { problems } = checkDocs([doc], root);
+		expect(problems).toEqual(["AGENTS.md:3  missing path `src/lib/gone.ts`"]);
 	});
 });

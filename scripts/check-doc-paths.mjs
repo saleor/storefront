@@ -10,7 +10,9 @@
  *
  * A line that also contains `removed:` may name a removed API (migration notes).
  * On a line that says "Create", a path only needs its parent directory to exist.
+ * A gitignored path (generated code, local plans) passes: a clean checkout does not have it yet.
  */
+import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -100,6 +102,16 @@ export function pathsInLine(line) {
 	return out;
 }
 
+/** True when git ignores `path`. Outside a git checkout nothing counts as ignored. */
+function isGitIgnored(path, root) {
+	try {
+		execFileSync("git", ["check-ignore", "-q", path], { cwd: root, stdio: "ignore" });
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 export function removedSymbolsInLine(line) {
 	if (line.includes("removed:")) return [];
 	return REMOVED_SYMBOLS.filter((symbol) => line.includes(symbol));
@@ -118,6 +130,7 @@ export function checkDocs(files = docFiles(), root = ROOT) {
 				const target = join(root, path.replace(/\/$/, ""));
 				if (existsSync(target)) continue;
 				if (createsPath && existsSync(dirname(target))) continue;
+				if (isGitIgnored(path, root)) continue;
 				problems.push(`${rel}:${index + 1}  missing path \`${path}\``);
 			}
 			for (const symbol of removedSymbolsInLine(line)) {
