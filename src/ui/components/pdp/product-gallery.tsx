@@ -7,12 +7,13 @@ import { useProductImageViewer } from "./use-product-image-viewer";
 interface ProductGalleryProps {
 	images: ImageCarouselImage[];
 	productName: string;
+	thumbnailPlacement?: "below" | "start";
 }
 
 /**
  * Standard PDP gallery — Embla carousel with fullscreen pinch-to-zoom.
  */
-export function ProductGallery({ images, productName }: ProductGalleryProps) {
+export function ProductGallery({ images, productName, thumbnailPlacement = "below" }: ProductGalleryProps) {
 	const imagesKey = images.map((image) => image.url).join(",");
 	const { viewerIndex, isViewerOpen, openViewer, onViewerOpenChange } = useProductImageViewer(imagesKey);
 
@@ -24,6 +25,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 				showArrows={true}
 				showDots={true}
 				showThumbnails={true}
+				thumbnailPlacement={thumbnailPlacement}
 				onImageClick={openViewer}
 			/>
 			<GalleryZoomLayer

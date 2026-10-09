@@ -1,5 +1,10 @@
 import type { ProductShell, PdpVariant } from "@/lib/catalog/get-product-data";
-import { buildSaleorSrcSet } from "@/lib/images";
+import {
+	defaultProductImages,
+	mediaToProductViewImage,
+	type RungMedia,
+} from "@/lib/storefront/mappers/gallery-images";
+import type { ProductViewImage } from "@/lib/storefront/contract/product";
 
 /**
  * PDP product shape: shell fields from ProductDetails, plus variants merged by
@@ -17,44 +22,17 @@ export type Product = ProductShell & {
 };
 export type Variant = PdpVariant;
 
-export interface GalleryImage {
-	url: string;
-	alt: string | null | undefined;
-	/** Saleor rung `srcset`; absent means the surface falls back to `next/image`. */
-	srcSet?: string;
-	/** 256 (or 512) CDN URL for the 80px thumb strip — never the 2048 gallery URL. */
-	thumbSrc?: string;
-	thumbSrcSet?: string;
-}
+export type GalleryImage = ProductViewImage;
 
 /**
  * Aliased rungs from the ProductDetails / VariantDetailsFragment media selections.
  * Required, not optional: if a fragment loses an alias this must fail typecheck rather
  * than quietly fall back to `/_next/image` and start billing transformations again.
  */
-type GalleryMedia = {
-	url: string;
-	url256: string;
-	url512: string;
-	url1024: string;
-	alt?: string | null;
-};
+type GalleryMedia = RungMedia;
 
 function toGalleryImage(media: GalleryMedia): GalleryImage {
-	return {
-		url: media.url,
-		alt: media.alt,
-		srcSet: buildSaleorSrcSet([
-			{ width: 512, url: media.url512 },
-			{ width: 1024, url: media.url1024 },
-			{ width: 2048, url: media.url },
-		]),
-		thumbSrc: media.url256 || media.url512,
-		thumbSrcSet: buildSaleorSrcSet([
-			{ width: 256, url: media.url256 },
-			{ width: 512, url: media.url512 },
-		]),
-	};
+	return mediaToProductViewImage(media);
 }
 
 export function getGalleryImages(
@@ -68,15 +46,7 @@ export function getGalleryImages(
 		}
 	}
 
-	if (product.media && product.media.length > 0) {
-		return product.media.filter((m) => m.type === "IMAGE").map(toGalleryImage);
-	}
-
-	if (product.thumbnail) {
-		return [{ url: product.thumbnail.url, alt: product.thumbnail.alt }];
-	}
-
-	return [];
+	return defaultProductImages(product);
 }
 
 /** Default gallery images for the static shell (no searchParams, no variant payloads). */

@@ -37,6 +37,7 @@ import type { ImageCarouselImage } from "@/ui/components/ui/image-carousel";
 import { PDP_GALLERY_LAYOUT, type PdpGalleryLayout } from "./gallery-layout";
 import { galleryImageFrameClass } from "@/ui/components/shared/gallery-image-frame";
 import { MosaicGalleryFallback, MosaicGallerySkeleton } from "./mosaic-gallery-fallback";
+import { ColumnsGalleryFallback, ColumnsGallerySkeleton } from "./columns-gallery-fallback";
 import { ProductGalleryFallback } from "./product-gallery-fallback";
 import { ProductGalleryShell } from "./product-gallery-shell";
 import { ImmersiveGalleryFallback, ImmersiveGallerySkeleton } from "./immersive-gallery-fallback";
@@ -83,6 +84,10 @@ const LazyImmersiveGallery = dynamic(
 	},
 );
 
+const LazyColumnsGallery = dynamic(() => import("./columns-gallery").then((mod) => mod.ColumnsGallery), {
+	loading: () => <ColumnsGallerySkeleton />,
+});
+
 const LazyMosaicGallery = dynamic(() => import("./mosaic-gallery").then((mod) => mod.MosaicGallery), {
 	loading: () => <MosaicGallerySkeleton />,
 });
@@ -103,6 +108,11 @@ export const GALLERY_REGISTRY: Record<PdpGalleryLayout, GalleryVariant> = {
 		Gallery: LazyMosaicGallery,
 		Fallback: MosaicGalleryFallback,
 		Skeleton: MosaicGallerySkeleton,
+	},
+	columns: {
+		Gallery: LazyColumnsGallery,
+		Fallback: ColumnsGalleryFallback,
+		Skeleton: ColumnsGallerySkeleton,
 	},
 };
 

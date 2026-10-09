@@ -1,6 +1,6 @@
 ---
 name: product-pdp
-description: PDP architecture: ProductShell + dynamic gallery/variant islands, gallery registry/layouts, LCP strategy, add-to-cart Server Action. Use when changing the product detail page layout, gallery, or buy box.
+description: PDP architecture: ProductShell + dynamic gallery/variant islands, gallery registry, LCP strategy, add-to-cart Server Action. Use when changing the buy box, gallery renderer, or PDP caching. For a new page layout, use ui-templates instead of editing the route.
 ---
 
 # Product Detail Page
@@ -102,7 +102,7 @@ export async function VariantGalleryDynamic({ product, searchParams }) {
 
 ### Knobs
 
-- **Switch layout (whole shop):** `PDP_GALLERY_LAYOUT` in `gallery-layout.ts` — shell, island, fallbacks, and `ProductRouteSkeleton` all follow.
+- **Switch layout (whole shop):** `ACTIVE_PDP_TEMPLATE` and `ACTIVE_PDP_GALLERY` in `src/config/template-selection.ts`. A structurally different page is a new file in `src/templates/pdp/`. See [`ui-templates`](ui-templates.md). Do not edit the product route to rearrange it.
 - **Immersive frame height:** `PDP_IMMERSIVE_IMAGE_HEIGHT` (`--chrome-offset` + `--pdp-immersive-reserved` from `brand.css`).
 - **Standard gallery chrome:** `ImageCarousel` props `showArrows` / `showDots` / `showThumbnails` / `onImageClick` (the last reserved for a future lightbox).
 
@@ -118,7 +118,7 @@ Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic
 
 ## Common tasks
 
-- **New attribute display:** add the field to `ProductDetails.graphql` (run `pnpm run generate`), extract in `page.tsx`, pass to `ProductAttributes`.
+- **New attribute display:** if it is already an assigned attribute, it is on `ProductView.attributes`. Otherwise add it to `src/graphql/extensions/ProductDetailsExtension.graphql`, run `pnpm generate`, and map it in `src/config/storefront-view.ts`. Do not extract it in `page.tsx`.
 - **Sticky bar threshold:** `SCROLL_THRESHOLD` in `sticky-bar.tsx`.
 - **Badges (New/Sale):** rendered in `VariantSectionDynamic`.
 - **Queries:** `ProductDetails.graphql`, `VariantDetailsFragment.graphql` (regenerate after edits).
@@ -130,6 +130,7 @@ Cached: product data, `h1`/breadcrumbs/JSON-LD, default LCP preload URL. Dynamic
 ❌ Passing a Server-Component function as a Client `ErrorBoundary` fallback — keep `VariantSectionError` in its own `"use client"` file.
 ❌ Suspense without an `ErrorBoundary` around the variant section — a throw would crash the page instead of degrading.
 ❌ Re-exporting gallery renderers from `index.ts` — bloats the bundle across the client boundary.
+❌ Editing `products/[slug]/page.tsx` to rearrange the PDP — add a template (`ui-templates.md`). The route owns data and islands only.
 
 ## Testing
 

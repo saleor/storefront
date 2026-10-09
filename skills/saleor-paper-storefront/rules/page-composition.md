@@ -1,11 +1,11 @@
 ---
 name: page-composition
-description: Molding PDP/homepage by editing page files within the PPR layer model (static shell vs dynamic islands), width and rhythm. Use when adding, reordering, or re-widthing sections without breaking PPR/caching/LCP.
+description: Molding the homepage within the PPR layer model (static shell vs dynamic islands), width and rhythm. PDP layout changes use ui-templates, not the product route. Use when adding, reordering, or re-widthing homepage sections without breaking PPR/caching/LCP.
 ---
 
 # Page Composition (PDP & Homepage)
 
-How to mold PDP and homepage layouts by editing the page files — adding, removing, reordering, and re-widthing sections — **without breaking PPR, caching, or LCP**. This is the bridge between "design freely" ([`design-quality-rubric`](design-quality-rubric.md)) and "respect the architecture" ([`paper-architecture`](paper-architecture.md), [`data-caching`](data-caching.md)).
+How to mold the homepage by editing the page file — adding, removing, reordering, and re-widthing sections — **without breaking PPR, caching, or LCP**. PDP layout is a template ([`ui-templates`](ui-templates.md)); this rule is the PPR layer model both surfaces share. This is the bridge between "design freely" ([`design-quality-rubric`](design-quality-rubric.md)) and "respect the architecture" ([`paper-architecture`](paper-architecture.md), [`data-caching`](data-caching.md)).
 
 > Molding in Paper is **code-level composition**: edit the page's section list and props. There is no runtime page-builder — and that is deliberate (keeps PPR, performance, and fork divergence under control).
 > Sections: [`ui-sections`](ui-sections.md) · Tokens/width: [`ui-design-system`](ui-design-system.md) · PDP mechanics: [`product-pdp`](product-pdp.md)
@@ -80,45 +80,17 @@ return (
 
 ## PDP molding
 
-File: [`src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx`](<../../../src/app/(storefront)/[locale]/[channel]/(main)/products/[slug]/page.tsx>)
+PDP layout is a template. Read [`ui-templates`](ui-templates.md) and edit `src/templates/pdp/`, not the product route.
 
-PDP is `ProductShell` (cached product) + two dynamic islands (`VariantGalleryDynamic`, `VariantSectionDynamic`). **Layout width, grid ratio, and gallery style** are centralized in [`gallery-layout.ts`](../../../src/ui/components/pdp/gallery-layout.ts) (`PDP_GALLERY_LAYOUT`). To mold the PDP:
+The route still owns the PPR split: cached `ProductView` in the shell, `slots.gallery` and `slots.buyBox` as dynamic islands. A template only places those slots and renders `product`.
 
-1. **Static design** (gallery column shell, name, breadcrumbs, new editorial/spec/related bands) lives in `ProductShell` from cached `product` data.
-2. **Variant-dependent UI** stays in the dynamic islands (they read `searchParams.variant`) — don't lift variant state into the shell.
-3. **Layout width / columns**: flip `PDP_GALLERY_LAYOUT` for shop-wide immersive vs standard, or extend `PDP_LAYOUT_CLASSES` for a new ratio. Immersive defaults to `container-super-wide` (full-bleed up to 2560px); use `container-full` in `gallery-layout.ts` for true edge-to-edge at any resolution.
-4. **Add a new PDP section** (related products, reviews, story, spec table): render it in `ProductShell` from cached data, or as its own nested `<Suspense>` island if it needs runtime/searchParams data. Keep the buy box (`VariantSectionDynamic`) and its add-to-cart Server Action intact.
-5. **Preserve LCP**: keep the gallery Suspense fallback (`ImmersiveGalleryFallback` / `ProductGalleryFallback`) with `priority` on the default hero — don't add a heavier hero above the gallery.
-6. **Preserve mobile commerce UX**: keep the sticky add-to-cart bar (`sticky-bar.tsx`); use CSS `order-*` (see `data-caching` §CSS order) when dynamic content must appear above static `h1` while keeping `h1` in the static shell for SEO.
-7. **Route skeletons**: use `ProductRouteSkeleton` in `loading.tsx` — never hand-roll a 2-column skeleton that disagrees with `PDP_GALLERY_LAYOUT`.
-
-```tsx
-// Sketch: immersive PDP (default) — attributes below gallery, buy box sticky right
-const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
-
-<main className={layout.main}>
-	<div className={layout.grid}>
-		<div className={layout.galleryColumn}>
-			<Suspense fallback={<ImmersiveGalleryFallback src={lcpUrl} alt={product.name} />}>
-				<VariantGalleryDynamic product={product} searchParams={searchParams} />
-			</Suspense>
-		</div>
-		<div className={layout.infoColumn}>
-			<h1 className="order-2 text-balance text-h1">{product.name}</h1>
-			<ErrorBoundary FallbackComponent={VariantSectionError}>
-				<Suspense fallback={<VariantSectionSkeleton />}>
-					<VariantSectionDynamic product={product} searchParams={searchParams} />
-				</Suspense>
-			</ErrorBoundary>
-		</div>
-		{layout.attributesPlacement === "gallery" && (
-			<div className={layout.attributesGalleryBlock}>
-				<ProductAttributes ... />
-			</div>
-		)}
-	</div>
-</main>
-```
+1. **A different arrangement** is a new template file plus `ACTIVE_PDP_TEMPLATE` / `ACTIVE_PDP_GALLERY` in `src/config/template-selection.ts`.
+2. **Variant-dependent UI** stays in the islands (they read `searchParams`). Do not lift it into the template.
+3. **`standard` / `immersive` / `mosaic`** are the `gallery` field. Immersive uses `container-super-wide`. A page that is none of those three is still a template that places the same slots.
+4. **A new section** (story, spec table) renders from `product` inside the template. If it needs `searchParams`, it belongs in a slot the route builds, not in the template.
+5. **Preserve LCP**: the gallery slot already includes the Suspense fallback with the default hero. Do not add a heavier image above `slots.gallery`.
+6. **Preserve mobile commerce UX**: the buy box slot includes the sticky add-to-cart bar. Keep `slots.buyBox` on the page.
+7. **Route skeleton** is `templates.pdp.Skeleton`. Do not hand-roll a skeleton that disagrees with `ACTIVE_PDP_GALLERY`.
 
 ## Workflow for a layout change
 
@@ -137,4 +109,5 @@ const layout = PDP_LAYOUT_CLASSES[PDP_GALLERY_LAYOUT];
 ❌ Making a whole section a Client Component for one interactive child — isolate the client part
 ❌ Hardcoding section copy in the page instead of `getStorefrontContent()` / next-intl
 ❌ Turning the page into a runtime block renderer to "reorder" — reorder in code; that is the supported mold surface
+❌ Rearranging the PDP by editing `products/[slug]/page.tsx` — add or edit a template (`ui-templates.md`)
 ❌ Fixing PPR build errors by wrapping `<main>` in Suspense

@@ -2,9 +2,10 @@
  * PDP gallery layout — single, developer-owned choice for the whole shop.
  *
  * This is intentionally a build-time constant, not a runtime/per-product
- * decision: a Paper shop has one PDP style. To change the gallery for the
- * entire storefront, flip {@link PDP_GALLERY_LAYOUT} below. Reverting is a
- * one-line change back to `"standard"`.
+ * decision: a Paper shop has one PDP style. The value comes from
+ * `ACTIVE_PDP_GALLERY` in `src/config/template-selection.ts`. Do not edit this
+ * file to change the shop layout — add a template under `src/templates/pdp/`
+ * and select it there. See `rules/ui-templates.md`.
  *
  * Each layout bundles:
  * - the gallery renderer used by `VariantGalleryDynamic` (the swap, "like the
@@ -15,17 +16,23 @@
  * Keeping both in one place means the shell, the dynamic island, the Suspense
  * fallback, and the skeleton can never disagree about the active layout.
  *
- * Agent note: when asked to make the PDP immersive (wide gallery + sticky buy box), set this to
- * `"immersive"`; to restore the classic split layout, set it to `"standard"`; for
- * an editorial grid where every image is visible at once, set it to `"mosaic"`.
+ * Agent note: do not change the active layout here. Select a template in
+ * `src/config/template-selection.ts` (`ACTIVE_PDP_TEMPLATE` + `ACTIVE_PDP_GALLERY`).
+ * `"immersive"` is the wide gallery + sticky buy box; `"standard"` is the classic
+ * split; `"mosaic"` is the editorial grid; `"columns"` puts thumbnails left of the
+ * hero. A structurally different page is a new
+ * file in `src/templates/pdp/`, not an edit to the product route.
  * Immersive uses `container-super-wide` (full-bleed up to 2560px, capped on ultrawide).
  * Standard and mosaic use `container-content` — same body width as PLP/cart/search.
  * For true edge-to-edge at every resolution, change immersive `main` to `container-full`.
  */
-export type PdpGalleryLayout = "standard" | "immersive" | "mosaic";
+import { ACTIVE_PDP_GALLERY } from "@/config/template-selection";
+import type { PdpGalleryLayout } from "@/lib/storefront/contract/gallery";
 
-/** Active gallery layout for the whole storefront. */
-export const PDP_GALLERY_LAYOUT: PdpGalleryLayout = "immersive";
+export type { PdpGalleryLayout };
+
+/** Active gallery island. Follows `ACTIVE_PDP_GALLERY` so the shell and skeleton agree. */
+export const PDP_GALLERY_LAYOUT: PdpGalleryLayout = ACTIVE_PDP_GALLERY;
 
 export interface PdpLayoutClasses {
 	/** `<main>` wrapper. */
@@ -91,6 +98,17 @@ export const PDP_LAYOUT_CLASSES: Record<PdpGalleryLayout, PdpLayoutClasses> = {
 	mosaic: {
 		main: "container-content flex-1 py-4 sm:py-6 lg:py-10",
 		grid: "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,28rem)] lg:items-start lg:gap-12",
+		galleryColumn: "min-w-0",
+		infoColumn: `flex flex-col gap-3 lg:sticky ${STICKY_BELOW_HEADER} lg:self-start`,
+		attributesPlacement: "info",
+	},
+	/**
+	 * Thumbnails sit inside the gallery island, to the left of the hero.
+	 * The page grid is hero-group plus buy box, which reads as three columns.
+	 */
+	columns: {
+		main: "container-content flex-1 py-4 sm:py-6 lg:py-10",
+		grid: "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,24rem)] lg:items-start lg:gap-12",
 		galleryColumn: "min-w-0",
 		infoColumn: `flex flex-col gap-3 lg:sticky ${STICKY_BELOW_HEADER} lg:self-start`,
 		attributesPlacement: "info",

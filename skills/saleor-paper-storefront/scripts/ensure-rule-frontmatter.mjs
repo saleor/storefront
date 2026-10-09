@@ -100,6 +100,8 @@ const DESCRIPTIONS = {
 		"Local dev gotchas for real-device testing via ngrok/LAN (ALLOWED_DEV_ORIGINS) and Chrome-iOS hydration noise. Use when client components seem broken over a tunnel or on a phone.",
 	"dev-investigation.md":
 		"Investigating Saleor API behavior via generated types (src/gql/graphql.ts) and Saleor source. Use when unsure about a field, enum, nullability, or storefront auto-filtering behavior.",
+	"ui-templates.md":
+		"PDP layout templates. Use when molding, restyling, or replacing the product page layout. Edit src/templates and src/config/template-selection.ts. Do not edit the product route, gallery-layout.ts, or Saleor queries for a layout change.",
 	"third-party-embeds.md":
 		"Embedding external marketing widgets (reviews/ratings) without breaking Server Components/PPR: next/script in a client leaf, env keys, placement. Use when adding a vendor widget like Yotpo.",
 };

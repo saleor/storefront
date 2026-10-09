@@ -12,7 +12,7 @@ const skillRoot = join(__dirname, "..");
 const rulesDir = join(skillRoot, "rules");
 const outPath = join(skillRoot, "AGENTS.md");
 
-const RULE_COUNT = 35;
+const RULE_COUNT = 36;
 
 const catalog = [
 	{
@@ -82,6 +82,7 @@ const catalog = [
 			{ num: "4.4", file: "page-composition.md", title: "Page Composition (PDP & Homepage)" },
 			{ num: "4.5", file: "design-from-image.md", title: "Design From Prompt or Image" },
 			{ num: "4.6", file: "design-verification.md", title: "Design Verification Gates" },
+			{ num: "4.7", file: "ui-templates.md", title: "UI Templates" },
 		],
 	},
 	{

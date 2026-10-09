@@ -42,6 +42,8 @@ interface ImageCarouselProps {
 	showDots?: boolean;
 	/** Show thumbnail strip (default: true on desktop) */
 	showThumbnails?: boolean;
+	/** `start` stacks thumbnails to the left of the hero from the `md` breakpoint. */
+	thumbnailPlacement?: "below" | "start";
 	/** Callback when active index changes */
 	onIndexChange?: (index: number) => void;
 	/** Callback when image is tapped/clicked (for lightbox integration) */
@@ -71,6 +73,7 @@ export function ImageCarousel({
 	showArrows = true,
 	showDots = true,
 	showThumbnails = true,
+	thumbnailPlacement = "below",
 	onIndexChange,
 	onImageClick,
 	className,
@@ -117,8 +120,45 @@ export function ImageCarousel({
 		);
 	}
 
+	const thumbs =
+		showThumbnails && images.length > 1 ? (
+			<div
+				className={cn(
+					"scrollbar-hide hidden gap-2 px-1 py-1 focus-visible:outline-none md:flex",
+					thumbnailPlacement === "start" ? "max-h-[40rem] flex-col overflow-y-auto" : "overflow-x-auto",
+				)}
+			>
+				{images.map((image, index) => (
+					<GalleryImageThumbTrigger
+						key={image.url}
+						selected={selectedIndex === index}
+						onClick={() => scrollToImage(index)}
+						aria-label={`${productName} - Thumbnail ${index + 1}`}
+						aria-current={selectedIndex === index ? "true" : undefined}
+					>
+						{/* 256/512 Saleor rungs — never the 2048 gallery URL through next/image. */}
+						<SaleorImage
+							src={image.thumbSrc ?? image.url}
+							srcSet={image.thumbSrcSet}
+							alt=""
+							className="object-cover"
+							sizes={PDP_THUMBNAIL_IMAGE_SIZES}
+							loading="lazy"
+						/>
+					</GalleryImageThumbTrigger>
+				))}
+			</div>
+		) : null;
+
 	return (
-		<div className={cn("flex flex-col gap-4", className)}>
+		<div
+			className={cn(
+				"flex gap-4",
+				thumbnailPlacement === "start" ? "flex-col md:flex-row md:items-start" : "flex-col",
+				className,
+			)}
+		>
+			{thumbnailPlacement === "start" ? thumbs : null}
 			{/* Main Image Carousel */}
 			<Carousel
 				setApi={setApi}
@@ -126,7 +166,7 @@ export function ImageCarousel({
 					align: "start",
 					loop: images.length > 1,
 				}}
-				className="group w-full"
+				className={cn("group w-full", thumbnailPlacement === "start" && "min-w-0 flex-1")}
 			>
 				<div className={galleryImageFrameClass("aspect-[4/5] w-full")}>
 					<CarouselContent className="ml-0 h-full" viewportClassName="absolute inset-0 h-full w-full">
@@ -187,31 +227,7 @@ export function ImageCarousel({
 				{/* Dot indicators for mobile */}
 				{showDots && images.length > 1 && <CarouselDots className="mt-4 md:hidden" count={images.length} />}
 			</Carousel>
-
-			{/* Thumbnail Strip for desktop */}
-			{showThumbnails && images.length > 1 && (
-				<div className="scrollbar-hide hidden gap-2 overflow-x-auto px-1 py-1 focus-visible:outline-none md:flex">
-					{images.map((image, index) => (
-						<GalleryImageThumbTrigger
-							key={image.url}
-							selected={selectedIndex === index}
-							onClick={() => scrollToImage(index)}
-							aria-label={`${productName} - Thumbnail ${index + 1}`}
-							aria-current={selectedIndex === index ? "true" : undefined}
-						>
-							{/* 256/512 Saleor rungs — never the 2048 gallery URL through next/image. */}
-							<SaleorImage
-								src={image.thumbSrc ?? image.url}
-								srcSet={image.thumbSrcSet}
-								alt=""
-								className="object-cover"
-								sizes={PDP_THUMBNAIL_IMAGE_SIZES}
-								loading="lazy"
-							/>
-						</GalleryImageThumbTrigger>
-					))}
-				</div>
-			)}
+			{thumbnailPlacement === "below" ? thumbs : null}
 		</div>
 	);
 }

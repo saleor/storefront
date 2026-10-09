@@ -358,6 +358,25 @@
 				"paper-core.lock.json"
 			],
 			"detectMarkers": ["cachedQuery", "liveQuery", "sessionQuery", "data-layer.lock.md"]
+		},
+		{
+			"id": "2026-10-storefront-templates",
+			"title": "PDP layout is a template over ProductView, not Saleor types",
+			"upstreamSha": "",
+			"landedAt": "2026-10-05T01:10:00+02:00",
+			"introducedIn": "2026.10",
+			"requires": ["2026-10-data-kernel"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "presentation",
+			"touchPaths": [
+				"src/lib/storefront/",
+				"src/templates/pdp/",
+				"src/config/template-selection.ts",
+				"src/config/templates.ts",
+				"src/config/storefront-view.ts"
+			],
+			"detectMarkers": ["ProductView", "definePdpTemplate", "ACTIVE_PDP_TEMPLATE"]
 		}
 	]
 }
