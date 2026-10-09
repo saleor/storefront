@@ -39,5 +39,6 @@ jobs:
         env:
           PLAYWRIGHT_BASE_URL: ${{ github.event.deployment_status.environment_url }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-          # Optional repo variable, e.g. /en/default-channel. Needs products in that channel.
-          E2E_BROWSE_PATH: ${{ vars.E2E_BROWSE_PATH }}
+          # Previews use storefront1, which publishes its catalog in eu and uk (default-channel
+          # is empty). The repo variable E2E_BROWSE_PATH overrides this.
+          E2E_BROWSE_PATH: ${{ vars.E2E_BROWSE_PATH || '/en/eu' }}

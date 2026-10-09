@@ -47,4 +47,29 @@ describe("checkDocs", () => {
 			"AGENTS.md:4  missing path `src/nope/new.ts`",
 		]);
 	});
+
+	it("skips codegen output until codegen has run, then checks it", () => {
+		const root = mkdtempSync(join(tmpdir(), "doc-paths-"));
+		const doc = join(root, "AGENTS.md");
+		writeFileSync(doc, ["`src/gql/graphql.ts`", "`src/gql/graphqI.ts`", "`src/lib/gone.ts`"].join("\n"));
+
+		expect(checkDocs([doc], root).problems).toEqual(["AGENTS.md:3  missing path `src/lib/gone.ts`"]);
+
+		mkdirSync(join(root, "src/gql"), { recursive: true });
+		writeFileSync(join(root, "src/gql/graphql.ts"), "");
+		expect(checkDocs([doc], root).problems).toEqual([
+			"AGENTS.md:2  missing path `src/gql/graphqI.ts`",
+			"AGENTS.md:3  missing path `src/lib/gone.ts`",
+		]);
+	});
+
+	it("skips a path the line says not to add", () => {
+		const root = mkdtempSync(join(tmpdir(), "doc-paths-"));
+		const doc = join(root, "AGENTS.md");
+		writeFileSync(doc, ["Do not add `docs/plans/` to the repo.", "See `docs/plans/v2.md`."].join("\n"));
+
+		const { problems, skipped } = checkDocs([doc], root);
+		expect(problems).toEqual(["AGENTS.md:2  missing path `docs/plans/v2.md`"]);
+		expect(skipped).toBe(1);
+	});
 });

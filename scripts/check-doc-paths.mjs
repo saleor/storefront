@@ -10,6 +10,8 @@
  *
  * A line that also contains `removed:` may name a removed API (migration notes).
  * On a line that says "Create", a path only needs its parent directory to exist.
+ * A line that says "Do not add" or "Do not create" names a path that must not exist.
+ * A path under a codegen output root passes until codegen has run (a clean checkout has none).
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
@@ -30,6 +32,9 @@ const ROOT_FILES = new Set([
 	"eslint.config.mjs",
 	".graphqlrc.ts",
 ]);
+
+/** Codegen output (gitignored). Checked like any path once codegen has created the root. */
+export const GENERATED_ROOTS = ["src/gql/", "src/checkout/graphql/generated/"];
 
 /**
  * Removed APIs, and kernel internals agents cannot import (`applyCacheProfile` is
@@ -100,6 +105,12 @@ export function pathsInLine(line) {
 	return out;
 }
 
+/** True when `path` is codegen output and codegen has not run, so nothing can be checked yet. */
+function isUngenerated(path, root) {
+	const generatedRoot = GENERATED_ROOTS.find((dir) => `${path.replace(/\/$/, "")}/`.startsWith(dir));
+	return generatedRoot !== undefined && !existsSync(join(root, generatedRoot));
+}
+
 export function removedSymbolsInLine(line) {
 	if (line.includes("removed:")) return [];
 	return REMOVED_SYMBOLS.filter((symbol) => line.includes(symbol));
@@ -108,12 +119,18 @@ export function removedSymbolsInLine(line) {
 export function checkDocs(files = docFiles(), root = ROOT) {
 	const problems = [];
 	let checked = 0;
+	let skipped = 0;
 	for (const file of files) {
 		const rel = relative(root, file);
 		const lines = readFileSync(file, "utf8").split("\n");
 		lines.forEach((line, index) => {
+			const forbidsPath = /\b(?:do not|don't|never) (?:add|create)\b/i.test(line);
 			const createsPath = /\bcreate\b/i.test(line);
 			for (const path of pathsInLine(line)) {
+				if (forbidsPath || isUngenerated(path, root)) {
+					skipped++;
+					continue;
+				}
 				checked++;
 				const target = join(root, path.replace(/\/$/, ""));
 				if (existsSync(target)) continue;
@@ -125,15 +142,16 @@ export function checkDocs(files = docFiles(), root = ROOT) {
 			}
 		});
 	}
-	return { problems, checked, files: files.length };
+	return { problems, checked, skipped, files: files.length };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-	const { problems, checked, files } = checkDocs();
+	const { problems, checked, skipped, files } = checkDocs();
 	if (problems.length > 0) {
 		console.error(problems.join("\n"));
 		console.error(`\n${problems.length} stale doc reference(s). Fix the doc or the path.`);
 		process.exit(1);
 	}
-	console.log(`Doc paths: ${checked} path(s) in ${files} file(s) exist; no removed APIs.`);
+	const skippedNote = skipped > 0 ? ` (${skipped} skipped: not generated yet or marked do-not-add)` : "";
+	console.log(`Doc paths: ${checked} path(s) in ${files} file(s) exist${skippedNote}; no removed APIs.`);
 }
