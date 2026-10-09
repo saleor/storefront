@@ -47,7 +47,7 @@ External skills are pinned in `skills-lock.json`; run `pnpm skills:bootstrap` af
 7. A new PDP layout is a template in `src/templates/pdp/`, selected in `src/config/template-selection.ts`. Do not edit the product route or `src/lib/storefront` to change layout. Read `rules/ui-templates.md`.
 8. A new listing backend is a provider in `src/lib/listing/providers/`, selected per surface in `src/config/listing-providers.ts`. A new PLP layout is a template in `src/templates/plp/`. Do not edit the listing routes or `src/lib/listing/policy.ts` for either. Read `rules/plp-listing.md`.
 
-Do not add `docs/plans/` or other plan writeups to the repo unless the user explicitly asks to publish one.
+Do not add plan writeups to the repo (forbidden: `docs/plans/`) unless the user explicitly asks to publish one.
 
 ## Key locations
 

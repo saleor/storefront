@@ -1,8 +1,14 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { checkDocs, pathsInLine, removedSymbolsInLine } from "./check-doc-paths.mjs";
+import {
+	GENERATED_ROOTS,
+	checkDocs,
+	forbiddenPathsInLine,
+	pathsInLine,
+	removedSymbolsInLine,
+} from "./check-doc-paths.mjs";
 
 describe("pathsInLine", () => {
 	it("reads backticked repo paths and strips line suffixes and punctuation", () => {
@@ -63,13 +69,51 @@ describe("checkDocs", () => {
 		]);
 	});
 
-	it("skips a path the line says not to add", () => {
+	it("fails on missing codegen output when generated paths are required", () => {
 		const root = mkdtempSync(join(tmpdir(), "doc-paths-"));
 		const doc = join(root, "AGENTS.md");
-		writeFileSync(doc, ["Do not add `docs/plans/` to the repo.", "See `docs/plans/v2.md`."].join("\n"));
+		writeFileSync(doc, "`src/gql/graphql.ts`");
+
+		const { problems } = checkDocs([doc], root, { requireGenerated: true });
+		expect(problems).toContain("src/gql/ does not exist; run pnpm generate:all first");
+		expect(problems).toContain("AGENTS.md:1  missing path `src/gql/graphql.ts`");
+	});
+
+	it("exempts only the path marked forbidden and checks the rest of the line", () => {
+		const root = mkdtempSync(join(tmpdir(), "doc-paths-"));
+		const doc = join(root, "AGENTS.md");
+		writeFileSync(
+			doc,
+			[
+				"Do not add plans (forbidden: `docs/plans/`); loaders live in `src/lib/gone.ts`.",
+				"Do not add `src/lib/legacy/` without a marker.",
+				"See `docs/plans/v2.md`.",
+			].join("\n"),
+		);
 
 		const { problems, skipped } = checkDocs([doc], root);
-		expect(problems).toEqual(["AGENTS.md:2  missing path `docs/plans/v2.md`"]);
-		expect(skipped).toBe(1);
+		expect(problems).toEqual([
+			"AGENTS.md:1  missing path `src/lib/gone.ts`",
+			"AGENTS.md:2  missing path `src/lib/legacy/`",
+			"AGENTS.md:3  missing path `docs/plans/v2.md`",
+		]);
+		expect(skipped).toEqual({ ungenerated: 0, forbidden: 1 });
+	});
+});
+
+describe("forbiddenPathsInLine", () => {
+	it("reads only backticked paths right after the marker", () => {
+		expect(forbiddenPathsInLine("forbidden: `docs/plans/` and `src/lib/x.ts`")).toEqual(["docs/plans/"]);
+	});
+});
+
+describe("GENERATED_ROOTS", () => {
+	it("matches the codegen output directories", () => {
+		const root = join(import.meta.dirname, "..");
+		const storefront = readFileSync(join(root, ".graphqlrc.ts"), "utf8");
+		const checkout = readFileSync(join(root, "src/checkout/graphql/codegen.ts"), "utf8");
+		expect(GENERATED_ROOTS).toEqual(["src/gql/", "src/checkout/graphql/generated/"]);
+		expect(storefront).toContain('"src/gql/": {');
+		expect(checkout).toContain('"src/checkout/graphql/generated/');
 	});
 });
