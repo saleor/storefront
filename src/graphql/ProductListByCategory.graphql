@@ -10,6 +10,7 @@ query ProductListByCategory(
 	$where: ProductWhereInput
 ) {
 	category(slug: $slug, slugLanguageCode: $slugLanguageCode) {
+		...CategoryDetailsExtension
 		id
 		name
 		slug

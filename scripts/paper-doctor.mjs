@@ -122,7 +122,19 @@ if (!agentsMd.includes("BEGIN:nextjs-agent-rules")) {
 	ok("Always-on AGENTS.md carries the managed Next.js agent-rules block");
 }
 
-// 6. Required env (opt-in) ---------------------------------------------------
+// 6. Paper core hashes -------------------------------------------------------
+try {
+	execSync("node scripts/paper-core-lock.mjs --check", { cwd: ROOT, stdio: "pipe" });
+	ok("Paper core hashes match paper-core.lock.json (or drift is declared)");
+} catch (error) {
+	const detail = error.stdout?.toString() || error.stderr?.toString() || "";
+	fail(
+		`Paper core drift.\n${detail.trim()}`,
+		"pnpm core:lock on upstream, or declare the path in paper-version.json coreOverrides",
+	);
+}
+
+// 7. Required env (opt-in) ---------------------------------------------------
 if (checkEnv) {
 	const saleorUrl = checksEnv.NEXT_PUBLIC_SALEOR_API_URL;
 	if (!saleorUrl) {

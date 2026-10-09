@@ -20,8 +20,8 @@ import {
 	planMenuRevalidation,
 	planPageRevalidation,
 	planStorefrontContentRevalidation,
-} from "./cache-manifest";
-import { PAPER_CACHE_LIFE_PROFILE_NAMES, paperCacheLifeProfiles } from "./cache-life-profiles";
+} from "./manifest";
+import { PAPER_CACHE_LIFE_PROFILE_NAMES, paperCacheLifeProfiles } from "./life-profiles";
 
 describe("buildTag", () => {
 	it("resolves slug placeholders", () => {

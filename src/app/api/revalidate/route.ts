@@ -6,6 +6,8 @@ import {
 	CACHE_PROFILES,
 	buildCatchAllTag,
 	buildTag,
+	bustListingAllOnProductEvent,
+	deliveryFingerprint,
 	extractMenuSlugFromWebhookPayload,
 	extractPageSlugFromWebhookPayload,
 	planFullPurgeTagEntries,
@@ -14,15 +16,11 @@ import {
 	planStorefrontContentRevalidation,
 	resolveManualRevalidateTag,
 	resolveRevalidateProfileForTag,
-	type CacheProfile,
-} from "@/lib/cache-manifest";
-import { revalidateTags } from "@/lib/revalidate-tags";
-import {
-	bustListingAllOnProductEvent,
-	deliveryFingerprint,
 	resolveWebhookEventScope,
+	revalidateTags,
 	sanitizeLogValue,
-} from "@/lib/webhook-events";
+	type CacheProfile,
+} from "@/lib/saleor";
 import { extractBearerToken, verifySecret, verifyWebhookSignature } from "@/lib/api-auth";
 
 /**

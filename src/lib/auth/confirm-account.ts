@@ -2,7 +2,7 @@ import "server-only";
 
 import { mapSaleorAuthErrors } from "./auth-api-utils";
 import type { AuthApiError } from "./auth-api-types";
-import { executeRawGraphQL } from "@/lib/graphql";
+import { rawMutation } from "@/lib/saleor";
 
 const CONFIRM_ACCOUNT_MUTATION = `
   mutation ConfirmAccount($email: String!, $token: String!, $password: String!) {
@@ -35,7 +35,7 @@ export async function confirmAccountWithToken(
 	token: string,
 	password: string,
 ): Promise<{ ok: true } | { ok: false; errors: AuthApiError[] }> {
-	const result = await executeRawGraphQL<ConfirmAccountResult>({
+	const result = await rawMutation<ConfirmAccountResult>({
 		query: CONFIRM_ACCOUNT_MUTATION,
 		variables: { email, token, password },
 	});

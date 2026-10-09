@@ -7,10 +7,13 @@ import {
 	type ProductListPaginatedQuery,
 	type ProductOrder,
 } from "@/gql/graphql";
+import "server-only";
+
 import { ProductsPerPage } from "@/app/config";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
+
+export { isCacheableListingView, type ListingViewParams } from "./listing-view";
 
 /**
  * Cached listing grids for the high-traffic views.
@@ -48,26 +51,6 @@ import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
  * returns null, which is a real result and safe to cache.
  */
 
-export type ListingViewParams = {
-	cursor?: string | string[];
-	direction?: string | string[];
-	sort?: string;
-	price?: string;
-	colors?: string;
-	sizes?: string;
-	categories?: string;
-};
-
-/**
- * True when a listing view is safe and worthwhile to cache.
- *
- * Any active filter, or any cursor, makes the view long-tail: it would add a cache
- * entry that is unlikely to be read again before it expires.
- */
-export function isCacheableListingView(params: ListingViewParams): boolean {
-	return !params.cursor && !params.price && !params.colors && !params.sizes && !params.categories;
-}
-
 type ListingConnection = NonNullable<ProductListPaginatedQuery["products"]>;
 
 /** Cached first page of the all-products grid. */
@@ -77,9 +60,10 @@ export async function getProductListingPage(
 	sortBy: ProductOrder | undefined,
 ): Promise<ListingConnection | null> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.listingAll, { channel });
 
-	const result = await executePublicGraphQL(ProductListPaginatedDocument, {
+	const data = await cachedQuery(ProductListPaginatedDocument, {
+		profile: CACHE_PROFILES.listingAll,
+		tag: { channel },
 		variables: {
 			first: ProductsPerPage,
 			after: null,
@@ -89,13 +73,7 @@ export async function getProductListingPage(
 		},
 	});
 
-	if (!result.ok) {
-		throw new Error(
-			`[getProductListingPage] Failed to fetch listing for ${channel}: ${result.error.message}`,
-		);
-	}
-
-	return result.data.products ?? null;
+	return data.products ?? null;
 }
 
 type CategoryListing = NonNullable<ProductListByCategoryQuery["category"]>;
@@ -112,9 +90,10 @@ export async function getCategoryListingPage(
 	sortBy: ProductOrder | undefined,
 ): Promise<CategoryListing["products"] | null> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.listingCategory, { channel, slug: categorySlug });
 
-	const result = await executePublicGraphQL(ProductListByCategoryDocument, {
+	const data = await cachedQuery(ProductListByCategoryDocument, {
+		profile: CACHE_PROFILES.listingCategory,
+		tag: { channel, slug: categorySlug },
 		variables: {
 			slug: categorySlug,
 			channel,
@@ -125,13 +104,7 @@ export async function getCategoryListingPage(
 		},
 	});
 
-	if (!result.ok) {
-		throw new Error(
-			`[getCategoryListingPage] Failed to fetch category ${categorySlug} for ${channel}: ${result.error.message}`,
-		);
-	}
-
-	return result.data.category?.products ?? null;
+	return data.category?.products ?? null;
 }
 
 type CollectionListing = NonNullable<ProductListByCollectionQuery["collection"]>;
@@ -144,9 +117,10 @@ export async function getCollectionListingPage(
 	sortBy: ProductOrder | undefined,
 ): Promise<CollectionListing["products"] | null> {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.listingCollection, { channel, slug: collectionSlug });
 
-	const result = await executePublicGraphQL(ProductListByCollectionDocument, {
+	const data = await cachedQuery(ProductListByCollectionDocument, {
+		profile: CACHE_PROFILES.listingCollection,
+		tag: { channel, slug: collectionSlug },
 		variables: {
 			slug: collectionSlug,
 			channel,
@@ -157,11 +131,5 @@ export async function getCollectionListingPage(
 		},
 	});
 
-	if (!result.ok) {
-		throw new Error(
-			`[getCollectionListingPage] Failed to fetch collection ${collectionSlug} for ${channel}: ${result.error.message}`,
-		);
-	}
-
-	return result.data.collection?.products ?? null;
+	return data.collection?.products ?? null;
 }

@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { extensionCacheProfiles } from "../extensions";
 import { getStaticStorefrontChannelSlugs } from "@/config/channels";
 import { getDefaultLocaleSlug, getLocaleBcp47List, getStorefrontLocaleSlugs } from "@/config/locale";
 import {
@@ -6,7 +7,7 @@ import {
 	type PaperCacheLifeProfile,
 	paperCacheLifeProfileDocs,
 	resolveRevalidateCacheLifeProfile,
-} from "@/lib/cache-life-profiles";
+} from "./life-profiles";
 import {
 	isStorefrontContentPageSlug,
 	resolveStorefrontContentChannelsForPageSlug,
@@ -163,7 +164,10 @@ const profiles = {
 
 export const CACHE_PROFILES = profiles;
 
-export const CACHE_PROFILE_LIST: readonly CacheProfile[] = Object.values(profiles);
+export const CACHE_PROFILE_LIST: readonly CacheProfile[] = [
+	...Object.values(profiles),
+	...Object.values(extensionCacheProfiles),
+];
 
 /** Saleor menu slugs used by cached layout components — keep in sync with saleor-paper-app storefront-menus.ts */
 export const NAVBAR_MENU_SLUG = "navbar" as const;

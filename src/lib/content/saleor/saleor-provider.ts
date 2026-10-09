@@ -1,10 +1,11 @@
+import { resolveLocaleFromSlug } from "@/config/locale";
 import { StorefrontContentPagesDocument } from "@/gql/graphql";
 import { defaultStorefrontContent } from "@/lib/content/defaults";
 import { STOREFRONT_PAGE_TYPES } from "@/lib/content/constants";
 import type { ContentProvider } from "@/lib/content/provider";
 import type { StorefrontContent } from "@/lib/content/types";
 import { mergeStorefrontContent } from "@/lib/content/merge";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { mapCartPage } from "@/lib/content/saleor/mappers/cart";
 import { mapCheckoutPage } from "@/lib/content/saleor/mappers/checkout";
@@ -20,21 +21,13 @@ import {
 
 async function fetchStorefrontPages(channel: string, localeSlug: string) {
 	const slugs = collectStorefrontContentPageSlugs(channel);
-	const result = await executePublicGraphQL(StorefrontContentPagesDocument, {
+	const data = await cachedQuery(StorefrontContentPagesDocument, {
+		profile: CACHE_PROFILES.storefrontContent,
+		tag: { channel, locale: resolveLocaleFromSlug(localeSlug).bcp47 },
 		variables: { channel, slugs, ...graphqlLanguageCodeVariables(localeSlug) },
 	});
 
-	if (!result.ok) {
-		const message = `[content/saleor] Failed to fetch storefront pages for ${channel}: ${result.error.message}`;
-		if (process.env.NODE_ENV === "production") {
-			console.error(message);
-		} else {
-			console.warn(message);
-		}
-		return [];
-	}
-
-	return result.data.pages?.edges?.map((edge) => edge.node) ?? [];
+	return data.pages?.edges?.map((edge) => edge.node) ?? [];
 }
 
 export const saleorContentProvider: ContentProvider = {

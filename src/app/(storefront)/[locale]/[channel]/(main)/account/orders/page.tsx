@@ -1,9 +1,7 @@
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { getCurrentUserOrders } from "@/lib/account/get-orders";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { buildOrderRowLabels } from "@/ui/components/account/order-row-labels";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
@@ -37,14 +35,7 @@ async function AccountOrdersContent({ params, searchParams }: Props) {
 		return <AccountOrdersError title={t("title")} message={t("signInRequired")} />;
 	}
 
-	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
-		variables: {
-			first: ORDERS_PER_PAGE,
-			after: after || null,
-			...graphqlLanguageCodeVariables(locale),
-		},
-		cache: "no-cache",
-	});
+	const result = await getCurrentUserOrders(locale, ORDERS_PER_PAGE, after);
 
 	if (!result.ok) {
 		return <AccountOrdersError title={t("title")} message={tErrors("loadOrdersFailed")} />;

@@ -36,6 +36,8 @@ const DESCRIPTIONS = {
 		"Canonical Next.js 16 App Router stance for Paper: Server Components by default, Server Actions, Cache Components (PPR), BFF auth, two surfaces. Read first when unfamiliar with the codebase or making cross-cutting architectural changes.",
 	"data-caching.md":
 		"Paper caching decisions: Cache Components (PPR), the sync page → Suspense → cached shell → islands model, cache-manifest.ts as source of truth, webhook revalidation, per-locale cache keys. Use when touching catalog data fetching, ISR, stale content, or revalidation.",
+	"data-access.md":
+		"Canonical Saleor access. Use cachedQuery, liveQuery, sessionQuery, or mutate from @/lib/saleor. Use when adding a GraphQL field, a cached entity, a live query, a mutation, or a webhook invalidation.",
 	"data-graphql.md":
 		"GraphQL codegen workflow: edit src/graphql/*.graphql or src/checkout/graphql/*.graphql then run pnpm generate / generate:checkout. Use when adding GraphQL fields, hitting missing generated types, permission errors, or the assignedAttribute API.",
 	"data-auth-routes.md":

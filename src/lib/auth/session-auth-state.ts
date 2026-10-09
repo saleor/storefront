@@ -1,4 +1,4 @@
-import type { GraphQLError, GraphQLResult } from "@/lib/graphql";
+import type { GraphQLError, GraphQLResult } from "@/lib/saleor";
 
 export type SessionAuthState<User> =
 	| { status: "guest" }

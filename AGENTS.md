@@ -15,7 +15,7 @@ Paper rules are **authoritative on architecture**: Server Components by default,
 ## Project skill index (read `SKILL.md`, then the one matching rule)
 
 - **Architecture:** `paper-architecture`, `paper-vercel-cost`
-- **Data:** `data-caching`, `data-graphql`, `data-auth-routes`, `data-analytics`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes`
+- **Data:** `data-access`, `data-caching`, `data-graphql`, `data-auth-routes`, `data-analytics`, `data-storefront-content`, `data-storefront-content-saleor`, `data-storefront-content-attributes`
 - **Product:** `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`
 - **Checkout:** `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
 - **Design:** `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `design-from-image`, `design-verification`
@@ -33,7 +33,7 @@ External skills are pinned in `skills-lock.json`; run `pnpm skills:bootstrap` af
 - `pnpm run build` — only gate that catches PPR dynamic-hole regressions; run on PPR-sensitive layout changes.
 - After editing `skills/.../rules/*.md`, run `pnpm run docs:compile` (or `verify` will flag the drift).
 - `pnpm run doctor` — verify the agent setup is actually healthy (project skill linked, external skills installed, docs in sync, compiled doc quarantined). Run it if a session seems off; `pnpm doctor --env` also checks required env.
-- A `stop` hook (`.cursor/hooks.json`) runs `lint:design-tokens` when you finish a turn and nudges you if banned color literals slipped in — fix them before declaring done. Fail-open; disable by removing the entry.
+- A `stop` hook (`.cursor/hooks.json` → `scripts/agent-stop-hook.sh`) runs `lint:design-tokens` when you finish a turn and nudges you if banned color literals slipped in — fix them before declaring done. Fail-open; disable by removing the entry.
 - **Opt-in workflow skills** (PPR/build & cache-tightening work): `next-dev-loop`, `next-cache-components-optimizer` — see `skills/saleor-paper-storefront/README.md` for install + preconditions. Not installed by `skills:bootstrap`.
 
 ## Non-negotiable rules
@@ -43,6 +43,9 @@ External skills are pinned in `skills-lock.json`; run `pnpm skills:bootstrap` af
 3. Style with `brand.css` tokens (`bg-background`, `text-foreground`) — never hardcoded colors.
 4. Handle nullable Saleor fields intentionally — optional-chain for display, guard/throw when null is a real bug.
 5. Import via the `@/` alias. The storefront must not import `@/checkout/*` — cross-surface URLs go through `@paper/session-bridge`.
+6. Saleor only through loaders on `@/lib/saleor` (`cachedQuery`, `liveQuery`, `sessionQuery`, `mutate`). Run `pnpm data:lock` after a data change and review `data-layer.lock.md`.
+
+Do not add `docs/plans/` or other plan writeups to the repo unless the user explicitly asks to publish one.
 
 ## Key locations
 

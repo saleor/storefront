@@ -16,6 +16,7 @@
  */
 
 import { createHash } from "crypto";
+import { extensionWebhookScopes } from "../extensions";
 
 /** Entities Paper caches and can therefore invalidate. */
 export type WebhookEntity = "product" | "category" | "collection" | "page" | "menu" | "channel";
@@ -84,6 +85,7 @@ const WEBHOOK_EVENT_SCOPES: Readonly<Record<string, WebhookEventScope>> = {
 	channel_deleted: { entity: "channel", affectsListing: false },
 	channel_status_changed: { entity: "channel", affectsListing: false },
 	channel_metadata_updated: { entity: "channel", affectsListing: false },
+	...extensionWebhookScopes,
 };
 
 /**

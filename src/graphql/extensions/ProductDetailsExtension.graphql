@@ -1,0 +1,4 @@
+# Fork-owned fields on the PDP shell. Add selections here; do not edit ProductDetails.graphql.
+fragment ProductDetailsExtension on Product {
+	__typename
+}

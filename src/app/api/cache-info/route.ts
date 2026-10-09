@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { buildManifest } from "@/lib/cache-manifest";
+import { buildManifest } from "@/lib/saleor";
 import { extractBearerToken, verifySecret } from "@/lib/api-auth";
 
 /**

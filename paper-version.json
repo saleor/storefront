@@ -85,6 +85,25 @@
 			"upstreamSha": "de64bb05",
 			"appliedAt": "2026-06-12",
 			"skipped": false
+		},
+		{
+			"id": "2026-06-pdp-swatch-selectors",
+			"upstreamSha": "df9dd13b",
+			"appliedAt": "2026-10-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-06-checkout-v2",
+			"upstreamSha": "8c415655",
+			"appliedAt": "2026-10-04",
+			"skipped": false
+		},
+		{
+			"id": "2026-08-cost-invariants",
+			"upstreamSha": "9cd9c5aa",
+			"appliedAt": "2026-10-04",
+			"skipped": false
 		}
-	]
+	],
+	"coreOverrides": []
 }

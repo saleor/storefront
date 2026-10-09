@@ -5,7 +5,7 @@ Saleor Paper
 June 2026
 
 > ⚠️ **Generated artifact — do not load this file in an agent session.** It concatenates
-> all 34 rules (~75k tokens) and exists only for humans reading offline and for
+> all 35 rules (~75k tokens) and exists only for humans reading offline and for
 > single-file skill export. **Agents:** read `SKILL.md`, then the **one** `rules/<task>.md`
 > whose frontmatter `description` matches the task. Never read this compiled file to "get oriented".
 >
@@ -16,7 +16,7 @@ June 2026
 
 ## Abstract
 
-Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 34 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
+Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefront — a Next.js 16 e-commerce application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Covers 35 rules across 8 categories: architecture (canonical Next.js), data layer (caching, auth, GraphQL), product pages (PDP, variants, high-cardinality, filtering), checkout flow (surfaces, management, payments, components, guest order), design & composition (token system, design quality, section catalog, page composition, design-from-image, verification), UI & i18n, SEO, and development practices. Each rule includes architecture diagrams, code examples, file locations, and anti-patterns.
 
 ---
 
@@ -28,6 +28,7 @@ Comprehensive guide for AI agents and LLMs maintaining the Saleor Paper storefro
 1. [Data Layer](#1-data-layer) — **CRITICAL**
    - 1.1 [Caching Strategy](#11-caching-strategy)
    - 1.2 [GraphQL Workflow](#12-graphql-workflow)
+   - 1.2.1 [Saleor Access Modes](#12.1-saleor-access-modes)
    - 1.3 [Auth Routes (BFF)](#13-auth-routes-bff)
    - 1.4 [Redirect URL Security](#14-redirect-url-security)
    - 1.5 [Storefront Content Layer](#15-storefront-content-layer)
@@ -265,20 +266,21 @@ Paper runs Next.js 16 with [`cacheComponents: true`](../../../next.config.js) (s
 All TTLs and tags are defined in **`src/lib/cache-manifest.ts`**. Cached functions read it via `applyCacheProfile()`; `/api/cache-info` serves it to the saleor-paper-app. Change a TTL or tag pattern in **one** place and both behavior and the Dashboard view update.
 
 ```typescript
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
 async function getProductData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
-	applyCacheProfile(CACHE_PROFILES.products, slug); // sets cacheLife tier + cacheTag
 
-	return executePublicGraphQL(ProductDetailsDocument, {
+	return cachedQuery(ProductDetailsDocument, {
+		profile: CACHE_PROFILES.products,
+		tag: slug,
 		variables: { slug, channel, ...graphqlLanguageCodeVariables(localeSlug) },
 	});
 }
 ```
 
-Always use `applyCacheProfile(CACHE_PROFILES.*, slugOrChannel)` — **never** raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings that drift from the manifest. Do **not** add fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness.
+Always use `cachedQuery` (it applies the manifest profile) — **never** raw `cacheLife("minutes")` or hand-rolled `cacheTag` strings that drift from the manifest. Do **not** add fetch-level `revalidate` inside `"use cache"` — `cacheLife` + webhooks own freshness.
 
 ### Tag registry
 
@@ -534,11 +536,12 @@ This regenerates TypeScript types. **Always run the appropriate command after an
 
 ```typescript
 import { ProductDetailsDocument } from "@/gql/graphql";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 
-const { product } = await executePublicGraphQL(ProductDetailsDocument, {
+const product = await cachedQuery(ProductDetailsDocument, {
+	profile: CACHE_PROFILES.products,
+	tag: slug,
 	variables: { slug, channel },
-	revalidate: 60,
 });
 // TypeScript now recognizes product.newField
 ```
@@ -623,6 +626,44 @@ if (!product.defaultVariant) {
 ❌ **Don't forget to regenerate types** - Run the appropriate `generate` command  
 ❌ **Don't assume fields are non-null** - Check generated types and handle nulls explicitly  
 ❌ **Don't mix up the two codegen setups** - Storefront ≠ Checkout
+
+---
+
+### 1.2.1 Saleor Access Modes
+
+Saleor is reached through `src/lib/saleor`. Loaders keep the `"use cache"` directive. The kernel applies the manifest profile, so a cached read outside `"use cache"` throws, and a transport failure is not cached.
+
+| You need                                   | Call                                            | Where                                                                                    |
+| ------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Catalog, menus, content that webhooks bust | `cachedQuery(doc, { profile, tag, variables })` | Inside `"use cache"` in `src/lib/{catalog,menus,channels,content,search,account,custom}` |
+| Search, filtered listings, checkout-by-id  | `liveQuery`                                     | Server, not inside `"use cache"`                                                         |
+| `me`, orders, account reads                | `sessionQuery`                                  | Server. Request-memoized. Never cached                                                   |
+| Cart, checkout, account writes             | `mutate`                                        | `"use server"` modules only. Then `refresh()`, never `revalidatePath`                    |
+| Auth BFF without a document                | `rawMutation`                                   | `src/app/api/auth/*` only                                                                |
+
+Auth comes from `src/lib/saleor/operations.ts`, not from the call. A cached operation may also be read live (the listing long tail). A session read or a mutation cannot be cached.
+
+## Recipes
+
+**Add a field a fork owns.** Edit `src/graphql/extensions/*.graphql`. Do not edit the core operation. Run `pnpm generate`.
+
+**Add a cached entity.** Add a profile to `src/lib/saleor/cache/manifest.ts` (or `src/config/data-extensions.ts` on a fork), a loader that calls `cachedQuery`, and a webhook scope in `webhook-events.ts`. Run `pnpm data:lock`.
+
+**Add a mutation.** Add the `.graphql` document, register it as `mutate` in `operations.ts`, call `mutate` from a server action.
+
+**Opt in a webhook.** Add the event to `WEBHOOK_EVENT_SCOPES`. Unmapped events skip. There is no catch-all purge.
+
+## After a data change
+
+`pnpm data:lock` rewrites `data-layer.lock.md`. Review that diff: it is the cost surface. `pnpm core:lock` only when `src/lib/saleor/` itself changed on purpose.
+
+## Anti-patterns
+
+- `cache` / `revalidate` on a Saleor call. Freshness is the manifest profile plus webhooks.
+- `executeGraphQL` or `fetch` to `NEXT_PUBLIC_SALEOR_API_URL` outside the kernel.
+- `cacheTag` / `cacheLife` / `revalidateTag` / `revalidatePath` outside the kernel.
+- Returning `null` or `[]` from `"use cache"` when Saleor failed. Throw. A missing entity is still `null`.
+- Importing `@/checkout/*` from storefront code. URLs go through `@paper/session-bridge`.
 
 ---
 

@@ -12,7 +12,7 @@ import {
 import type { ServerOrder } from "@/checkout/lib/checkout-types";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
-import { executeAppGraphQL } from "@/lib/graphql";
+import { liveQuery } from "@/lib/saleor";
 import type { LocaleSlug } from "@/config/locale";
 
 const ordersByNumberDocument = toTypedDocument<OrdersByNumberQuery, OrdersByNumberQueryVariables>(
@@ -30,12 +30,11 @@ export async function fetchOrderByNumberOnServer(
 		return { status: "unavailable" };
 	}
 
-	const result = await executeAppGraphQL(ordersByNumberDocument, {
+	const result = await liveQuery(ordersByNumberDocument, {
 		variables: {
 			number,
 			...(await checkoutGraphqlLocaleVariables(localeSlug)),
 		},
-		cache: "no-cache",
 	});
 
 	return classifyOrdersByNumberQuery(result);

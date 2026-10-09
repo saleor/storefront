@@ -1,13 +1,14 @@
+import "server-only";
+
 import { MenuGetBySlugDocument, type MenuGetBySlugQuery } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { executePublicGraphQL } from "@/lib/graphql";
 import {
-	applyCacheProfile,
+	cachedQuery,
 	FOOTER_MENU_SLUG,
 	NAVBAR_MENU_SLUG,
 	STOREFRONT_MENU_SLUGS,
 	type StorefrontMenuSlug,
-} from "@/lib/cache-manifest";
+} from "@/lib/saleor";
 
 export type MenuItem = NonNullable<NonNullable<NonNullable<MenuGetBySlugQuery["menu"]>["items"]>[number]>;
 
@@ -17,18 +18,14 @@ async function getCachedMenuItems(
 	localeSlug: string,
 ): Promise<MenuItem[] | null> {
 	"use cache";
-	applyCacheProfile(STOREFRONT_MENU_SLUGS[slug], { channel });
 
-	const result = await executePublicGraphQL(MenuGetBySlugDocument, {
+	const data = await cachedQuery(MenuGetBySlugDocument, {
+		profile: STOREFRONT_MENU_SLUGS[slug],
+		tag: { channel },
 		variables: { slug, channel, ...graphqlLanguageCodeVariables(localeSlug) },
 	});
 
-	if (!result.ok) {
-		console.warn(`[getCachedMenuItems] Failed to fetch menu "${slug}" for ${channel}:`, result.error.message);
-		return null;
-	}
-
-	return result.data.menu?.items ?? [];
+	return data.menu?.items ?? [];
 }
 
 export async function getNavbarMenuItems(channel: string, localeSlug: string) {

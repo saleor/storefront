@@ -92,7 +92,7 @@ import { emitCommerceEvent } from "@/lib/analytics/emit.server";
 import { checkoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create-context";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
-import { executeAuthenticatedGraphQL, executePublicGraphQL, executeRawGraphQL } from "@/lib/graphql";
+import { liveQuery, mutate, rawMutation } from "@/lib/saleor";
 import * as Checkout from "@/lib/checkout";
 import { saveCheckoutId } from "@/app/actions";
 import { setOrderViewCookie, signOrderViewToken } from "@/lib/order-view";
@@ -195,13 +195,12 @@ export async function syncCheckoutFromServer(checkoutId: string): Promise<Checko
 }
 
 export async function updateCheckoutEmail(checkoutId: string, email: string): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutEmailUpdateDocument, {
+	const result = await mutate(checkoutEmailUpdateDocument, {
 		variables: {
 			checkoutId,
 			email,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -216,12 +215,11 @@ export async function updateCheckoutMarketingConsent(
 	checkoutId: string,
 	optedIn: boolean,
 ): Promise<SimpleActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutMetadataUpdateDocument, {
+	const result = await mutate(checkoutMetadataUpdateDocument, {
 		variables: {
 			id: checkoutId,
 			input: buildMarketingConsentMetadata(optedIn),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -245,14 +243,13 @@ export async function updateCheckoutShippingAddress(
 	shippingAddress: AddressInput,
 	saveAddress?: boolean,
 ): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutShippingAddressUpdateDocument, {
+	const result = await mutate(checkoutShippingAddressUpdateDocument, {
 		variables: {
 			checkoutId,
 			shippingAddress,
 			saveAddress,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -263,12 +260,11 @@ export async function updateCheckoutShippingAddress(
 }
 
 export async function attachCustomerToCheckout(checkoutId: string): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutCustomerAttachDocument, {
+	const result = await mutate(checkoutCustomerAttachDocument, {
 		variables: {
 			checkoutId,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -296,7 +292,7 @@ export async function registerCheckoutAccount(input: {
 		return { ok: false, error: t("invalidRedirectUrl") };
 	}
 
-	const result = await executeRawGraphQL<{
+	const result = await rawMutation<{
 		accountRegister?: {
 			errors: Array<{ field?: string | null; message?: string | null; code?: string | null }>;
 		};
@@ -343,13 +339,12 @@ export async function recoverOrphanedCheckout(
 	lines: RecoverLine[],
 ): Promise<CheckoutActionResult & { checkoutId?: string }> {
 	const locale = await resolveCheckoutLocaleSlug();
-	const createResult = await executeAuthenticatedGraphQL(checkoutCreateDocument, {
+	const createResult = await mutate(checkoutCreateDocument, {
 		variables: {
 			channel,
 			languageCode: graphqlLanguageCodeVariables(locale).languageCode,
 			metadata: await checkoutCreateContextMetadata(locale),
 		},
-		cache: "no-cache",
 	});
 
 	if (!createResult.ok) {
@@ -364,13 +359,12 @@ export async function recoverOrphanedCheckout(
 	let checkout = created.checkout;
 
 	if (lines.length > 0) {
-		const linesResult = await executeAuthenticatedGraphQL(checkoutLinesAddDocument, {
+		const linesResult = await mutate(checkoutLinesAddDocument, {
 			variables: {
 				checkoutId: checkout.id,
 				lines,
 				languageCode: await checkoutGraphqlLanguageCode(),
 			},
-			cache: "no-cache",
 		});
 
 		if (!linesResult.ok) {
@@ -395,9 +389,8 @@ export async function detachCheckoutCustomer(checkoutId: string): Promise<void> 
 }
 
 export async function calculateDeliveryOptions(checkoutId: string): Promise<DeliveryOptionsActionResult> {
-	const result = await executeAuthenticatedGraphQL(deliveryOptionsCalculateDocument, {
+	const result = await mutate(deliveryOptionsCalculateDocument, {
 		variables: { id: checkoutId },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -422,13 +415,12 @@ export async function updateCheckoutDeliveryMethod(
 	checkoutId: string,
 	deliveryMethodId: string,
 ): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutDeliveryMethodUpdateDocument, {
+	const result = await mutate(checkoutDeliveryMethodUpdateDocument, {
 		variables: {
 			checkoutId,
 			deliveryMethodId,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -443,14 +435,13 @@ export async function updateCheckoutBillingAddress(input: {
 	billingAddress: AddressInput;
 	saveAddress: boolean;
 }): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutBillingAddressUpdateDocument, {
+	const result = await mutate(checkoutBillingAddressUpdateDocument, {
 		variables: {
 			checkoutId: input.checkoutId,
 			billingAddress: input.billingAddress,
 			saveAddress: input.saveAddress,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -463,9 +454,8 @@ export async function updateCheckoutBillingAddress(input: {
 export async function initializePaymentGateways(
 	variables: PaymentGatewaysInitializeMutationVariables,
 ): Promise<PaymentGatewaysInitializeActionResult> {
-	const result = await executeAuthenticatedGraphQL(paymentGatewaysInitializeDocument, {
+	const result = await mutate(paymentGatewaysInitializeDocument, {
 		variables,
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -518,9 +508,8 @@ export async function initializeCheckoutTransaction(
 		}
 	}
 
-	const result = await executeAuthenticatedGraphQL(transactionInitializeDocument, {
+	const result = await mutate(transactionInitializeDocument, {
 		variables,
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -550,9 +539,8 @@ export async function processCheckoutTransaction(
 		return { ok: false, error: t("paymentsDisabled") };
 	}
 
-	const result = await executeAuthenticatedGraphQL(transactionProcessDocument, {
+	const result = await mutate(transactionProcessDocument, {
 		variables,
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -577,9 +565,8 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 	// Before complete — Saleor copies checkout public metadata onto the order.
 	await enrichCheckoutCommerceContext(checkoutId);
 
-	const result = await executeAuthenticatedGraphQL(checkoutCompleteDocument, {
+	const result = await mutate(checkoutCompleteDocument, {
 		variables: { checkoutId },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -642,9 +629,8 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 export async function getAddressValidationRules(
 	countryCode: CountryCode,
 ): Promise<AddressValidationRulesActionResult> {
-	const result = await executePublicGraphQL(addressValidationRulesDocument, {
+	const result = await liveQuery(addressValidationRulesDocument, {
 		variables: { countryCode },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -660,13 +646,12 @@ export async function getAddressValidationRules(
 }
 
 export async function removeCheckoutLine(checkoutId: string, lineId: string): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutLineDeleteDocument, {
+	const result = await mutate(checkoutLineDeleteDocument, {
 		variables: {
 			checkoutId,
 			lineId,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -680,13 +665,12 @@ export async function applyCheckoutPromoCode(
 	checkoutId: string,
 	promoCode: string,
 ): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutAddPromoCodeDocument, {
+	const result = await mutate(checkoutAddPromoCodeDocument, {
 		variables: {
 			checkoutId,
 			promoCode,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -700,13 +684,12 @@ export async function removeCheckoutPromoCode(
 	checkoutId: string,
 	promoCode: string,
 ): Promise<CheckoutActionResult> {
-	const result = await executeAuthenticatedGraphQL(checkoutRemovePromoCodeDocument, {
+	const result = await mutate(checkoutRemovePromoCodeDocument, {
 		variables: {
 			checkoutId,
 			promoCode,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -733,7 +716,7 @@ export async function requestCheckoutPasswordReset(input: {
 		return { ok: false, error: t("invalidRedirectUrl") };
 	}
 
-	const result = await executeRawGraphQL<RequestPasswordResetMutation>({
+	const result = await rawMutation<RequestPasswordResetMutation>({
 		query: requestPasswordResetDocument.toString(),
 		variables: input,
 	});
@@ -756,9 +739,8 @@ export async function setUserDefaultAddress(
 	addressId: string,
 	type: AddressTypeEnum,
 ): Promise<SimpleActionResult> {
-	const result = await executeAuthenticatedGraphQL(userSetDefaultAddressDocument, {
+	const result = await mutate(userSetDefaultAddressDocument, {
 		variables: { id: addressId, type },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {

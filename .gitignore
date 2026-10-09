@@ -51,6 +51,10 @@ yarn-error.log*
 # Local HAR captures — often contain cookies and full response bodies
 *.har
 
+# SALEOR_FIXTURES=record output. Public queries only, still local.
+e2e/fixtures/saleor/**
+!e2e/fixtures/saleor/README.md
+
 # vercel
 .vercel
 
@@ -73,5 +77,5 @@ next-env.d.ts
 # Internal/marketing docs — keep local, never commit (strategy lives in the brain)
 docs/marketing/
 
-# Customer-fork cost notes (merchant-identifying — keep local)
-docs/plans/fork-*.md
+# Local notes — never commit
+docs/plans/

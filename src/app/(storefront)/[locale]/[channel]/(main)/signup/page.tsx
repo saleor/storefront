@@ -36,9 +36,7 @@ async function SignUpContent({ params }: { params: Promise<{ locale: string; cha
 	await cookies();
 
 	const { locale, channel } = await params;
-	const auth = await resolveSessionUser(() =>
-		fetchAuthenticatedUserIfSession(CurrentUserDocument, { cache: "no-cache" }),
-	);
+	const auth = await resolveSessionUser(() => fetchAuthenticatedUserIfSession(CurrentUserDocument));
 
 	if (auth.status === "authenticated") {
 		redirect(buildStorefrontPath(locale, channel, "/account"));

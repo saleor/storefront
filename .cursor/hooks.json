@@ -3,7 +3,7 @@
 	"hooks": {
 		"stop": [
 			{
-				"command": ".cursor/hooks/verify-quick.sh",
+				"command": "scripts/agent-stop-hook.sh",
 				"timeout": 30
 			}
 		]

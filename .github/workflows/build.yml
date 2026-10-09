@@ -42,6 +42,8 @@ jobs:
         run: pnpm run lint:design-tokens
       - name: Forbid deprecated Product.variants in storefront GraphQL
         run: pnpm run lint:graphql-variants
+      - name: Lint
+        run: pnpm run lint
       - name: Typecheck
         run: pnpm run typecheck
       - name: Test

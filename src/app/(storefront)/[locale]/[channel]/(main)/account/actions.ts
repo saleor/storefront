@@ -13,7 +13,7 @@ import {
 	type CountryCode,
 	AddressTypeEnum,
 } from "@/gql/graphql";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { mutate } from "@/lib/saleor";
 import { getFormString, getFormStringOptional } from "@/ui/components/account/form-utils";
 import type { AccountActionResult } from "@/ui/components/account/account-action-result";
 
@@ -21,9 +21,8 @@ export async function updateProfile(formData: FormData): Promise<AccountActionRe
 	const firstName = getFormString(formData, "firstName");
 	const lastName = getFormString(formData, "lastName");
 
-	const result = await executeAuthenticatedGraphQL(AccountUpdateDocument, {
+	const result = await mutate(AccountUpdateDocument, {
 		variables: { input: { firstName, lastName } },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -54,9 +53,8 @@ export async function changePassword(formData: FormData): Promise<AccountActionR
 		return { success: false, errorKey: "passwordsMismatch" };
 	}
 
-	const result = await executeAuthenticatedGraphQL(PasswordChangeDocument, {
+	const result = await mutate(PasswordChangeDocument, {
 		variables: { oldPassword, newPassword },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -76,9 +74,8 @@ export async function changePassword(formData: FormData): Promise<AccountActionR
 export async function createAddress(formData: FormData): Promise<AccountActionResult> {
 	const input = extractAddressInput(formData);
 
-	const result = await executeAuthenticatedGraphQL(AccountAddressCreateDocument, {
+	const result = await mutate(AccountAddressCreateDocument, {
 		variables: { input },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -100,9 +97,8 @@ export async function updateAddress(formData: FormData): Promise<AccountActionRe
 	const id = getFormString(formData, "id");
 	const input = extractAddressInput(formData);
 
-	const result = await executeAuthenticatedGraphQL(AccountAddressUpdateDocument, {
+	const result = await mutate(AccountAddressUpdateDocument, {
 		variables: { id, input },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -123,9 +119,8 @@ export async function updateAddress(formData: FormData): Promise<AccountActionRe
 export async function deleteAddress(formData: FormData): Promise<AccountActionResult> {
 	const id = getFormString(formData, "id");
 
-	const result = await executeAuthenticatedGraphQL(AccountAddressDeleteDocument, {
+	const result = await mutate(AccountAddressDeleteDocument, {
 		variables: { id },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -149,9 +144,8 @@ export async function setDefaultAddress(formData: FormData): Promise<AccountActi
 
 	const addressType = type === "BILLING" ? AddressTypeEnum.Billing : AddressTypeEnum.Shipping;
 
-	const result = await executeAuthenticatedGraphQL(AccountSetDefaultAddressDocument, {
+	const result = await mutate(AccountSetDefaultAddressDocument, {
 		variables: { id, type: addressType },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {
@@ -173,9 +167,8 @@ export async function requestAccountDeletion(formData: FormData): Promise<Accoun
 	const redirectUrl = getFormString(formData, "redirectUrl");
 	const channel = getFormStringOptional(formData, "channel");
 
-	const result = await executeAuthenticatedGraphQL(AccountRequestDeletionDocument, {
+	const result = await mutate(AccountRequestDeletionDocument, {
 		variables: { redirectUrl, channel },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {

@@ -1,9 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
-import { executeAuthenticatedGraphQL } from "@/lib/graphql";
+import { getCurrentUserOrders } from "@/lib/account/get-orders";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
-import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { buildOrderRowLabels } from "@/ui/components/account/order-row-labels";
@@ -19,10 +17,7 @@ export async function RecentOrdersSection({ localeSlug }: { localeSlug: string }
 	const tOrder = await getTranslations({ locale: localeSlug, namespace: "account" });
 	const tStatus = await getTranslations({ locale: localeSlug, namespace: "account.orderStatus" });
 
-	const result = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
-		variables: { first: 3, after: null, ...graphqlLanguageCodeVariables(localeSlug) },
-		cache: "no-cache",
-	});
+	const result = await getCurrentUserOrders(localeSlug, 3);
 
 	if (!result.ok) {
 		return (

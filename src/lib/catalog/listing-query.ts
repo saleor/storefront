@@ -1,4 +1,4 @@
-import type { ListingViewParams } from "./get-product-listing";
+import type { ListingViewParams } from "./listing-view";
 import type { ProductCardData } from "@/ui/components/plp/product-card-data";
 
 export type ListingSurface = "all" | "category" | "collection";

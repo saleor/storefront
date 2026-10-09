@@ -13,9 +13,7 @@ const userQueryDocument = toTypedDocument<UserQuery, UserQueryVariables>(UserDoc
 
 /** Customer profile for checkout — same server auth path as storefront account. */
 export async function fetchCheckoutUserOnServer(): Promise<CheckoutUser | null> {
-	const result = await fetchAuthenticatedUserIfSession(userQueryDocument, {
-		cache: "no-cache",
-	});
+	const result = await fetchAuthenticatedUserIfSession(userQueryDocument, {});
 
 	if (!result.ok || !result.data.user) {
 		return null;

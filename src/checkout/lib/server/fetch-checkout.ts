@@ -7,7 +7,7 @@ import {
 } from "@/checkout/graphql/generated/operations";
 import type { CheckoutFetchResult } from "@/checkout/lib/checkout-types";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
-import { executePublicGraphQL } from "@/lib/graphql";
+import { liveQuery } from "@/lib/saleor";
 import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
 import type { LocaleSlug } from "@/config/locale";
 
@@ -22,9 +22,8 @@ export async function fetchCheckoutOnServer(
 	checkoutId: string,
 	localeSlug?: LocaleSlug,
 ): Promise<CheckoutFetchResult> {
-	const result = await executePublicGraphQL(checkoutQueryDocument, {
+	const result = await liveQuery(checkoutQueryDocument, {
 		variables: { id: checkoutId, ...(await checkoutGraphqlLocaleVariables(localeSlug)) },
-		cache: "no-cache",
 	});
 
 	if (!result.ok) {

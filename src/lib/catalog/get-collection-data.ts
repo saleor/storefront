@@ -1,20 +1,21 @@
+import "server-only";
+
 import { ProductListByCollectionDocument, type LanguageCodeEnum } from "@/gql/graphql";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
-import { executePublicGraphQL } from "@/lib/graphql";
 import { withTranslatedCategoryFields } from "@/lib/saleor-translations";
-import { CACHE_PROFILES, applyCacheProfile } from "@/lib/cache-manifest";
+import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 import { resolveByPossiblyTranslatedSlug } from "@/lib/catalog/resolve-by-slug";
 import { tagPrimaryCatalogSlug } from "@/lib/catalog/tag-primary-slug";
 
 export async function getCollectionData(slug: string, channel: string, localeSlug: string) {
 	"use cache";
 	const decodedSlug = decodeURIComponent(slug);
-	applyCacheProfile(CACHE_PROFILES.collections, decodedSlug);
-
 	const languageVariables = graphqlLanguageCodeVariables(localeSlug);
 
 	const fetchCollection = async (vars: { slug: string; slugLanguageCode?: LanguageCodeEnum }) => {
-		const result = await executePublicGraphQL(ProductListByCollectionDocument, {
+		const data = await cachedQuery(ProductListByCollectionDocument, {
+			profile: CACHE_PROFILES.collections,
+			tag: decodedSlug,
 			variables: {
 				slug: vars.slug,
 				channel,
@@ -24,12 +25,7 @@ export async function getCollectionData(slug: string, channel: string, localeSlu
 			},
 		});
 
-		if (!result.ok) {
-			console.error(`[getCollectionData] Failed to fetch collection ${vars.slug}:`, result.error.message);
-			return null;
-		}
-
-		return result.data.collection;
+		return data.collection;
 	};
 
 	const collection = await resolveByPossiblyTranslatedSlug({

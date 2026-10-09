@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
-import { executeRawGraphQL, getUserMessage } from "@/lib/graphql";
+import { rawMutation, getUserMessage } from "@/lib/saleor";
 
 const REQUEST_PASSWORD_RESET_MUTATION = `
   mutation RequestPasswordReset($email: String!, $channel: String!, $redirectUrl: String!) {
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const result = await executeRawGraphQL<RequestPasswordResetResult>({
+	const result = await rawMutation<RequestPasswordResetResult>({
 		query: REQUEST_PASSWORD_RESET_MUTATION,
 		variables: { email, channel, redirectUrl },
 	});

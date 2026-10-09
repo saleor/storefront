@@ -210,4 +210,4 @@ The script buckets HTML, `/_next/static`, RSC/prefetch, `/_next/image`, Saleor m
 | `eslint.config.mjs`                                | `next/image` allowlist + `prefetch={true}` ban              |
 | `next.config.js`                                   | Image ladder/TTL/allowlist, cacheLife tiers                 |
 
-Related: [`data-caching.md`](data-caching.md) (cache manifest, invalidation), [`ui-images.md`](ui-images.md) (image pipeline decision table), [`data-auth-routes.md`](data-auth-routes.md) (chrome freshness). Backlog: [`docs/plans/paper-cost-efficiency.md`](../../../../docs/plans/paper-cost-efficiency.md).
+Related: [`data-caching.md`](data-caching.md) (cache manifest, invalidation), [`ui-images.md`](ui-images.md) (image pipeline decision table), [`data-auth-routes.md`](data-auth-routes.md) (chrome freshness).

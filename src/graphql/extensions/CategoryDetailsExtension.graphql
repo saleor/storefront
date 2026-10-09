@@ -1,0 +1,4 @@
+# Fork-owned fields on category pages. Add selections here; do not edit the core category query.
+fragment CategoryDetailsExtension on Category {
+	__typename
+}

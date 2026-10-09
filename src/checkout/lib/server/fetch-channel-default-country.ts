@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { CountryCode } from "@/checkout/graphql";
-import { executeRawGraphQL } from "@/lib/graphql";
+import { rawMutation } from "@/lib/saleor";
 
 const CHANNEL_DEFAULT_COUNTRY_QUERY = `
 	query ChannelDefaultCountry($slug: String!) {
@@ -34,7 +34,7 @@ export async function fetchChannelDefaultCountryOnServer(channelSlug: string): P
 	}
 
 	try {
-		const result = await executeRawGraphQL<ChannelDefaultCountryData>({
+		const result = await rawMutation<ChannelDefaultCountryData>({
 			query: CHANNEL_DEFAULT_COUNTRY_QUERY,
 			variables: { slug: channelSlug },
 			headers: { Authorization: `Bearer ${token}` },
