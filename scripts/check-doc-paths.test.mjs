@@ -1,4 +1,3 @@
-import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -49,14 +48,28 @@ describe("checkDocs", () => {
 		]);
 	});
 
-	it("allows a gitignored path that a clean checkout does not have yet", () => {
+	it("skips codegen output until codegen has run, then checks it", () => {
 		const root = mkdtempSync(join(tmpdir(), "doc-paths-"));
-		execFileSync("git", ["init", "-q"], { cwd: root });
-		writeFileSync(join(root, ".gitignore"), "src/gql/\n");
 		const doc = join(root, "AGENTS.md");
-		writeFileSync(doc, ["`src/gql/graphql.ts`", "`src/gql/`", "`src/lib/gone.ts`"].join("\n"));
+		writeFileSync(doc, ["`src/gql/graphql.ts`", "`src/gql/graphqI.ts`", "`src/lib/gone.ts`"].join("\n"));
 
-		const { problems } = checkDocs([doc], root);
-		expect(problems).toEqual(["AGENTS.md:3  missing path `src/lib/gone.ts`"]);
+		expect(checkDocs([doc], root).problems).toEqual(["AGENTS.md:3  missing path `src/lib/gone.ts`"]);
+
+		mkdirSync(join(root, "src/gql"), { recursive: true });
+		writeFileSync(join(root, "src/gql/graphql.ts"), "");
+		expect(checkDocs([doc], root).problems).toEqual([
+			"AGENTS.md:2  missing path `src/gql/graphqI.ts`",
+			"AGENTS.md:3  missing path `src/lib/gone.ts`",
+		]);
+	});
+
+	it("skips a path the line says not to add", () => {
+		const root = mkdtempSync(join(tmpdir(), "doc-paths-"));
+		const doc = join(root, "AGENTS.md");
+		writeFileSync(doc, ["Do not add `docs/plans/` to the repo.", "See `docs/plans/v2.md`."].join("\n"));
+
+		const { problems, skipped } = checkDocs([doc], root);
+		expect(problems).toEqual(["AGENTS.md:2  missing path `docs/plans/v2.md`"]);
+		expect(skipped).toBe(1);
 	});
 });
