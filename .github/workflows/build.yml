@@ -51,6 +51,11 @@ jobs:
         run: pnpm run guardrails:canary
       - name: Typecheck
         run: pnpm run typecheck
+      # docs:check above runs before codegen and skips src/gql/ paths; typecheck has generated them now.
+      - name: Doc paths into generated code
+        run: node scripts/check-doc-paths.mjs
+        env:
+          DOC_PATHS_REQUIRE_GENERATED: "1"
       - name: Test
         run: pnpm run test:run
       - name: Build
