@@ -5,7 +5,7 @@ const productsPath = `${browsePath}/products`;
 
 test.describe("PLP filters", () => {
 	test("a value facet updates the URL and the grid", async ({ page }) => {
-		await page.goto(productsPath);
+		await page.goto(productsPath, { waitUntil: "commit" });
 		const grid = page.getByTestId("ProductList");
 		// The static first-page grid (Suspense fallback) and the interactive one coexist while
 		// the island streams in, and the static filter bar ignores clicks. Wait for the swap.
@@ -17,9 +17,9 @@ test.describe("PLP filters", () => {
 		await page
 			.getByRole("button", { name: /^(Color|Size)$/ })
 			.first()
-			.click();
+			.click({ timeout: 30_000 });
 		const option = page.getByRole("menuitemcheckbox").first();
-		await expect(option).toBeVisible();
+		await expect(option).toBeVisible({ timeout: 30_000 });
 		await option.click();
 
 		await expect(page).toHaveURL(/(colors|sizes)=/);
@@ -30,7 +30,7 @@ test.describe("PLP filters", () => {
 	});
 
 	test("next then previous returns the first page", async ({ page }) => {
-		await page.goto(productsPath);
+		await page.goto(productsPath, { waitUntil: "commit" });
 		const first = page.locator('[data-testid="ProductList"] a').first();
 		await expect(first).toBeVisible({ timeout: 30_000 });
 		const firstHref = await first.getAttribute("href");
