@@ -4,7 +4,7 @@ import { browsePath } from "./helpers/browse-path";
 
 test.describe("instant navigations (Next.js 16.3)", () => {
 	test("PLP → PDP shows product title immediately after click", async ({ page }) => {
-		await page.goto(`${browsePath}/products`);
+		await page.goto(`${browsePath}/products`, { waitUntil: "domcontentloaded" });
 
 		const firstProductLink = page.locator('article a[href*="/products/"]').first();
 		await expect(firstProductLink).toBeVisible({ timeout: 30_000 });
@@ -16,7 +16,7 @@ test.describe("instant navigations (Next.js 16.3)", () => {
 	});
 
 	test("homepage category tile → category shows hero immediately", async ({ page }) => {
-		await page.goto(browsePath);
+		await page.goto(browsePath, { waitUntil: "domcontentloaded" });
 
 		const categoryTile = page.locator('a[href*="/categories/"]').first();
 		await expect(categoryTile).toBeVisible({ timeout: 30_000 });
@@ -28,7 +28,7 @@ test.describe("instant navigations (Next.js 16.3)", () => {
 	});
 
 	test("homepage featured product → PDP shows title immediately", async ({ page }) => {
-		await page.goto(browsePath);
+		await page.goto(browsePath, { waitUntil: "domcontentloaded" });
 
 		const featuredProduct = page.locator('a[href*="/products/"]').first();
 		await expect(featuredProduct).toBeVisible({ timeout: 30_000 });
@@ -46,7 +46,7 @@ test.describe("scroll restoration (forward → top, Back → restore)", () => {
 	const scrollY = (page: import("@playwright/test").Page) => page.evaluate(() => window.scrollY);
 
 	test("PLP scroll → PDP (top) → Back (restored) → PDP (top)", async ({ page }) => {
-		await page.goto(`${browsePath}/products`);
+		await page.goto(`${browsePath}/products`, { waitUntil: "domcontentloaded" });
 
 		const products = page.locator('article a[href*="/products/"]');
 		await expect(products.first()).toBeVisible({ timeout: 30_000 });

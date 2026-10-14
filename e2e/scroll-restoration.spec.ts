@@ -8,7 +8,7 @@ test.describe("scroll restoration (forward → top, Back → restore)", () => {
 	const scrollY = (page: import("@playwright/test").Page) => page.evaluate(() => window.scrollY);
 
 	test("PLP scroll → PDP (top) → Back (restored) → PDP (top)", async ({ page }) => {
-		await page.goto(`${browsePath}/products`);
+		await page.goto(`${browsePath}/products`, { waitUntil: "domcontentloaded" });
 
 		const products = page.locator('article a[href*="/products/"]');
 		await expect(products.first()).toBeVisible({ timeout: 30_000 });
