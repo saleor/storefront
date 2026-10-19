@@ -23,7 +23,7 @@ fragment OrderDetails on Order {
 				translation(languageCode: $languageCode) {
 					name
 				}
-				thumbnail(size: 256, format: WEBP) {
+				thumbnail(size: 256, sizeRounding: UP, format: WEBP) {
 					url
 					alt
 				}

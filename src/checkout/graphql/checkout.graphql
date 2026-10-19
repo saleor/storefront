@@ -149,13 +149,13 @@ fragment CheckoutLineFragment on CheckoutLine {
 			media {
 				alt
 				type
-				url(size: 72)
+				url(size: 72, sizeRounding: UP)
 			}
 		}
 		media {
 			alt
 			type
-			url(size: 72)
+			url(size: 72, sizeRounding: UP)
 		}
 	}
 }

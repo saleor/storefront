@@ -45,7 +45,7 @@ fragment OrderLineFragment on OrderLine {
 	}
 	productName
 	variantName
-	thumbnail(size: 128, format: WEBP) {
+	thumbnail(size: 128, sizeRounding: UP, format: WEBP) {
 		alt
 		url
 	}
