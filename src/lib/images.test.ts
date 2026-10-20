@@ -47,7 +47,7 @@ describe("buildSaleorSrcSet", () => {
 });
 
 describe("rung sets", () => {
-	// Off-ladder sizes snap to the nearest rung, so the width descriptor we publish
+	// Off-ladder sizes snap to a ladder rung, so the width descriptor we publish
 	// would not match the pixels Saleor actually returns.
 	it("only request sizes that exist on Saleor's ladder", () => {
 		for (const rung of [...CATALOG_CARD_RUNGS, ...PDP_GALLERY_RUNGS]) {

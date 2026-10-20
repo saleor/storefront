@@ -3951,7 +3951,7 @@ Images are usually the largest line on a Paper storefront's Vercel bill — tran
 
 Saleor's `thumbnail(size:, format:)` field does real work server-side:
 
-- It snaps the requested size to a fixed ladder — `[32, 64, 128, 256, 512, 1024, 2048, 4096]` — and picks the **nearest** entry, not the next one up. Asking for 300 gives you 256.
+- It snaps the requested size to a fixed ladder — `[32, 64, 128, 256, 512, 1024, 2048, 4096]`. By default it picks the **nearest** entry, which can be smaller than asked: 300 gives you 256, and the browser upscales it into a blurry image. Paper passes `sizeRounding: UP` on every selection, so 300 gives 512 instead (Saleor 3.23 backport, default from 3.24).
 - It converts format (`format: WEBP`) and caches the result.
 - The returned URL is one of two shapes, and **this is the part that catches people out**:
   - a **direct storage URL** once the thumbnail has been generated, or
@@ -3987,9 +3987,9 @@ For that leftover set (logo, homepage banners, tiles that are not category `back
 The rung sets live in [`images.ts`](../../../src/lib/images.ts) (`CATALOG_CARD_RUNGS`, `PDP_GALLERY_RUNGS`) and must match the aliased GraphQL fields:
 
 ```graphql
-thumbnail(size: 1024, format: WEBP) { url alt }
-thumbnail256: thumbnail(size: 256, format: WEBP) { url }
-thumbnail512: thumbnail(size: 512, format: WEBP) { url }
+thumbnail(size: 1024, sizeRounding: UP, format: WEBP) { url alt }
+thumbnail256: thumbnail(size: 256, sizeRounding: UP, format: WEBP) { url }
+thumbnail512: thumbnail(size: 512, sizeRounding: UP, format: WEBP) { url }
 ```
 
 Feed those to `buildSaleorSrcSet()` in the mapper, pass the result to [`<SaleorImage>`](../../../src/ui/atoms/saleor-image.tsx), and it renders a plain `<img srcset sizes>`. With no `srcSet` it falls back to `next/image`, so a surface Saleor can't serve degrades on its own rather than breaking.
@@ -4058,12 +4058,12 @@ A `sizes` constant describes a **layout**, not a surface. `PLP_HERO_IMAGE_SIZES`
 
 ---
 
-## Every `thumbnail` selection needs `size:` and `format:`
+## Every `thumbnail` selection needs `size:`, `sizeRounding: UP` and `format:`
 
 A bare `thumbnail { url }` is not "the default, which is fine". Saleor's `resolve_thumbnail` defaults to **256px in the image's original format** — so a PNG product shot arrives as a PNG, and Vercel is then billed to transcode it to WebP on every distinct width. Passing `format: WEBP` moves that conversion to Saleor, where it is free and cached.
 
 ```graphql
-thumbnail(size: 256, format: WEBP) {
+thumbnail(size: 256, sizeRounding: UP, format: WEBP) {
 	url
 	alt
 }
@@ -4085,7 +4085,8 @@ The PDP **thumb strip** is an 80px slot. It must use a 256 (or 512) Saleor rung 
 ❌ Widening `deviceSizes` "just in case" — every entry is a transformation per source image
 ❌ Requesting a huge Saleor `thumbnail(size:)` and letting Vercel shrink it — pay once, at the source
 ❌ A bare `thumbnail { url }` — 256px in the original format, so Vercel pays for the WebP conversion
-❌ Off-ladder sizes in an aliased rung set — Saleor snaps to the nearest rung, so the `srcset` width descriptor lies about the pixels delivered
+❌ Omitting `sizeRounding: UP` — an off-ladder `size:` silently rounds **down** and the image ships blurry
+❌ Off-ladder sizes in an aliased rung set — Saleor snaps them to a ladder rung, so the `srcset` width descriptor lies about the pixels delivered
 ❌ Routing a Saleor-backed catalog image through `next/image` when a rung set exists — that is the duplicated encode this rule exists to prevent
 ❌ Reusing `PLP_HERO_IMAGE_SIZES` on anything that isn't full-bleed — a half-width panel wants `SPLIT_PANEL_IMAGE_SIZES`
 

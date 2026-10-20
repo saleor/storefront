@@ -28,7 +28,7 @@ query ProductListByCollection(
 		}
 		...CollectionLocaleSlugTranslations
 		# Full-bleed hero — see ProductListByCategory for why this must be sized.
-		backgroundImage(size: 2048, format: WEBP) {
+		backgroundImage(size: 2048, sizeRounding: UP, format: WEBP) {
 			url
 			alt
 		}

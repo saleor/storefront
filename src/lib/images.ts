@@ -62,10 +62,10 @@ export const PRODUCT_IMAGE_QUALITY = 75;
 /* -------------------------------------------------------------------------- */
 
 /**
- * Saleor's fixed thumbnail ladder (`saleor/thumbnail/__init__.py`). A requested size
- * snaps to the **nearest** rung, not the next one up — asking for 300 returns 256.
- * Only ever request values from this list, or the width you get back is not the
- * width you put in the `srcset` descriptor.
+ * Saleor's fixed thumbnail ladder (`saleor/thumbnail/__init__.py`). Every selection
+ * passes `sizeRounding: UP`, so an off-ladder size snaps to the next rung up — asking
+ * for 300 returns 512. Only ever request values from this list, or the width you get
+ * back is not the width you put in the `srcset` descriptor.
  */
 export const SALEOR_THUMBNAIL_RUNGS = [32, 64, 128, 256, 512, 1024, 2048, 4096] as const;
 
