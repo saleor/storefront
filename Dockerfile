@@ -26,6 +26,7 @@ COPY \
     ./
 COPY ./messages ./messages/
 COPY ./public ./public/
+COPY ./eslint ./eslint/
 COPY ./src ./src/
 
 # Disable telemetry (build + runtime)
