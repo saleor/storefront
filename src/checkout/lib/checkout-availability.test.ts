@@ -74,6 +74,33 @@ describe("availabilityIssueFromFieldErrors", () => {
 		});
 	});
 
+	it("flags every unavailable line when Saleor returns one error per variant", () => {
+		expect(
+			availabilityIssueFromFieldErrors(
+				[
+					{ id: "line-dahlia", variant: { name: "Pink Dahlia" } },
+					{ id: "line-rose", variant: { name: "Rose Candle" } },
+					{ id: "line-ok", variant: { name: "Vanilla" } },
+				],
+				[
+					{
+						field: "quantity",
+						message: "Could not add items Pink Dahlia. Only 0 remaining in stock.",
+						code: "INSUFFICIENT_STOCK",
+					},
+					{
+						field: "quantity",
+						message: "Could not add items Rose Candle. Only 0 remaining in stock.",
+						code: "INSUFFICIENT_STOCK",
+					},
+				],
+			),
+		).toEqual({
+			message: "Could not add items Pink Dahlia. Only 0 remaining in stock.",
+			lineIds: ["line-dahlia", "line-rose"],
+		});
+	});
+
 	it("returns null when there is no stock error", () => {
 		expect(
 			availabilityIssueFromFieldErrors(
