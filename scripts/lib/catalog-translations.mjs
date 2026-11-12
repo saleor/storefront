@@ -13,40 +13,120 @@ export const RESERVED_LANGUAGE_CODES = new Set(["EN"]);
 // Saleor's *Translate mutations require MANAGE_TRANSLATIONS only.
 const REQUIRED_PERMISSIONS = ["MANAGE_TRANSLATIONS"];
 
-export function parseCatalogCliArgs(argv = process.argv.slice(2)) {
-	const envFlagIndex = argv.indexOf("--env");
-	const envFile = envFlagIndex === -1 ? null : argv[envFlagIndex + 1];
+/** A bad command line or env file. The scripts print the message and exit 1 before any request. */
+export class CliUsageError extends Error {}
 
-	return {
-		dryRun: argv.includes("--dry-run"),
-		failOnSkip: argv.includes("--fail-on-skip"),
-		allowSkip: argv.includes("--allow-skip"),
-		overwrite: argv.includes("--overwrite"),
-		envFile,
+const BOOLEAN_FLAGS = new Map([
+	["--dry-run", "dryRun"],
+	["--fail-on-skip", "failOnSkip"],
+	["--allow-skip", "allowSkip"],
+	["--overwrite", "overwrite"],
+]);
+
+const VALUE_OPTIONS = new Map([
+	["--env", "envFile"],
+	["--locales", "localesDir"],
+]);
+
+/**
+ * Strict on purpose: an argument that is not recognised stops the run. A mistyped `--dryrun`
+ * or an unsupported `--env-file x` must never fall through to a real deploy against the
+ * default instance.
+ *
+ * `flags` lists the boolean flags the calling script accepts (fetch takes none).
+ */
+export function parseCatalogCliArgs(
+	argv = process.argv.slice(2),
+	{ flags = [...BOOLEAN_FLAGS.keys()] } = {},
+) {
+	const options = {
+		dryRun: false,
+		failOnSkip: false,
+		allowSkip: false,
+		overwrite: false,
+		envFile: null,
+		localesDir: null,
+		help: false,
 	};
-}
+	const accepted = new Set(flags);
 
-export function loadEnvFile(name) {
-	const path = resolve(ROOT, name);
-	try {
-		for (const line of readFileSync(path, "utf8").split("\n")) {
-			const trimmed = line.trim();
-			if (!trimmed || trimmed.startsWith("#")) continue;
-			const eq = trimmed.indexOf("=");
-			if (eq === -1) continue;
-			const key = trimmed.slice(0, eq).trim();
-			const value = trimmed.slice(eq + 1).trim();
-			if (!(key in process.env)) process.env[key] = value;
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+		// `pnpm <script> -- --flag` forwards the separator itself.
+		if (arg === "--") continue;
+		if (arg === "--help" || arg === "-h") {
+			options.help = true;
+			continue;
 		}
-	} catch {
-		// optional file
+
+		const eq = arg.indexOf("=");
+		const name = eq === -1 ? arg : arg.slice(0, eq);
+
+		if (VALUE_OPTIONS.has(name)) {
+			const value = eq === -1 ? argv[++i] : arg.slice(eq + 1);
+			if (!value || (eq === -1 && value.startsWith("--"))) {
+				throw new CliUsageError(`${name} needs a value`);
+			}
+			options[VALUE_OPTIONS.get(name)] = value;
+			continue;
+		}
+
+		if (eq === -1 && accepted.has(arg) && BOOLEAN_FLAGS.has(arg)) {
+			options[BOOLEAN_FLAGS.get(arg)] = true;
+			continue;
+		}
+
+		throw new CliUsageError(`Unknown argument: ${arg}`);
 	}
+
+	return options;
 }
 
-export function loadEnvFromArgs(argv = process.argv.slice(2)) {
-	const { envFile } = parseCatalogCliArgs(argv);
+function unquote(value) {
+	const quote = value[0];
+	if (value.length >= 2 && (quote === '"' || quote === "'") && value.endsWith(quote)) {
+		return value.slice(1, -1);
+	}
+	return value;
+}
+
+/**
+ * Loads `KEY=value` lines into process.env without replacing variables that are already set.
+ * A missing file is skipped unless `required` (an explicit `--env <file>`), which throws.
+ */
+export function loadEnvFile(name, { required = false } = {}) {
+	const path = resolve(ROOT, name);
+	let content;
+	try {
+		content = readFileSync(path, "utf8");
+	} catch (error) {
+		if (required) {
+			throw new CliUsageError(`Cannot read env file ${path} (${error.code ?? error.message})`);
+		}
+		return false;
+	}
+
+	for (const line of content.split("\n")) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith("#")) continue;
+		const eq = trimmed.indexOf("=");
+		if (eq === -1) continue;
+		const key = trimmed
+			.slice(0, eq)
+			.replace(/^export\s+/, "")
+			.trim();
+		// Quotes are how dotenv files (and the Configurator's) usually write values.
+		const value = unquote(trimmed.slice(eq + 1).trim());
+		if (!(key in process.env)) process.env[key] = value;
+	}
+	return true;
+}
+
+/** Loads the env file named by `--env`, or the default pair when there is none. */
+export function loadEnvFromArgs(argv = process.argv.slice(2), parseOptions) {
+	const { envFile } = parseCatalogCliArgs(argv, parseOptions);
 	if (envFile) {
-		loadEnvFile(envFile);
+		loadEnvFile(envFile, { required: true });
 		return;
 	}
 	loadEnvFile(".env.local");
@@ -54,8 +134,9 @@ export function loadEnvFromArgs(argv = process.argv.slice(2)) {
 }
 
 export function getSaleorCredentials() {
-	const apiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
-	const token = process.env.SALEOR_CONFIGURATOR_TOKEN;
+	// An empty `KEY=` line counts as not set.
+	const apiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL?.trim() || undefined;
+	const token = process.env.SALEOR_CONFIGURATOR_TOKEN?.trim() || undefined;
 	return { apiUrl, token };
 }
 
@@ -97,25 +178,21 @@ class RequestQueue {
 	}
 
 	async enqueue(fn) {
-		await this.waitForSlot();
-		this.active++;
+		// The slot is taken in the same tick as the check. With an `await` in between, every
+		// caller of one Promise.all saw a free slot and the cap was never applied.
+		if (this.active < this.maxConcurrent) {
+			this.active++;
+		} else {
+			// A finishing request hands its slot over, so `active` stays as it is.
+			await new Promise((resolve) => this.queue.push(resolve));
+		}
 		try {
 			const [result] = await Promise.all([fn(), sleep(this.minDelayMs)]);
 			return result;
 		} finally {
-			this.active--;
-			this.processQueue();
-		}
-	}
-
-	waitForSlot() {
-		if (this.active < this.maxConcurrent) return Promise.resolve();
-		return new Promise((resolve) => this.queue.push(resolve));
-	}
-
-	processQueue() {
-		if (this.queue.length > 0 && this.active < this.maxConcurrent) {
-			this.queue.shift()?.();
+			const next = this.queue.shift();
+			if (next) next();
+			else this.active--;
 		}
 	}
 }
@@ -252,40 +329,90 @@ export async function assertTranslationPermissions(gql) {
 	}
 }
 
-/** Strip HTML and flatten EditorJS JSON to plain text for fixtures. */
+const HTML_ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+
+/** Tags out, entities decoded. Saleor stores `&`, `<` and `>` in EditorJS text as entities. */
+function stripMarkup(text) {
+	return String(text)
+		.replace(/<[^>]+>/g, "")
+		.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity) => {
+			if (entity[0] !== "#") return HTML_ENTITIES[entity.toLowerCase()] ?? match;
+			const code =
+				entity[1].toLowerCase() === "x"
+					? Number.parseInt(entity.slice(2), 16)
+					: Number.parseInt(entity.slice(1), 10);
+			return code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : match;
+		})
+		.trim();
+}
+
+function escapeMarkup(text) {
+	return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/** Text of one EditorJS block: paragraphs, headers and quotes carry `text`, lists carry `items`. */
+function blockText(block) {
+	const data = block?.data ?? {};
+	const parts = [];
+	if (typeof data.text === "string") parts.push(data.text);
+
+	const collectItems = (items) => {
+		for (const item of Array.isArray(items) ? items : []) {
+			if (typeof item === "string") {
+				parts.push(item);
+			} else if (item && typeof item === "object") {
+				// Nested lists (EditorJS 2.30+) and checklists.
+				if (typeof item.content === "string") parts.push(item.content);
+				else if (typeof item.text === "string") parts.push(item.text);
+				collectItems(item.items);
+			}
+		}
+	};
+	collectItems(data.items);
+
+	return parts.map(stripMarkup).filter(Boolean).join("\n");
+}
+
+/**
+ * Strip HTML and flatten EditorJS JSON to plain text for fixtures. Blocks are separated by a
+ * blank line, which plainToEditorJs turns back into blocks.
+ */
 export function editorJsToPlain(value) {
 	if (value == null || value === "") return null;
 	if (typeof value !== "string") return String(value);
 
 	const trimmed = value.trim();
 	if (!trimmed.startsWith("{")) {
-		return trimmed.replace(/<[^>]+>/g, "").trim() || null;
+		return stripMarkup(trimmed) || null;
 	}
 
 	try {
 		const parsed = JSON.parse(trimmed);
-		const text = parsed.blocks
-			?.map((block) =>
-				block.data?.text
-					?.replace(/<[^>]+>/g, "")
-					.replace(/&nbsp;/g, " ")
-					.trim(),
-			)
-			.filter(Boolean)
-			.join(" ");
+		const text = (parsed.blocks ?? []).map(blockText).filter(Boolean).join("\n\n");
 		return text || null;
 	} catch {
-		return trimmed.replace(/<[^>]+>/g, "").trim() || null;
+		return stripMarkup(trimmed) || null;
 	}
 }
 
-/** Convert fixture plain text to Saleor EditorJS JSON. */
+/**
+ * Convert fixture plain text to Saleor EditorJS JSON: one paragraph block per paragraph (blank
+ * lines separate them). The text is escaped, so `&` and `<` in copy are stored as characters
+ * instead of being read as markup.
+ */
 export function plainToEditorJs(text, version = "2.22.2") {
-	const normalized = String(text).trim();
-	if (!normalized) return null;
+	const paragraphs = String(text)
+		.split(/\n\s*\n/)
+		.map((paragraph) => paragraph.trim())
+		.filter(Boolean);
+	if (paragraphs.length === 0) return null;
 	return JSON.stringify({
 		time: Date.now(),
-		blocks: [{ id: "fixture", data: { text: normalized }, type: "paragraph" }],
+		blocks: paragraphs.map((paragraph, index) => ({
+			id: index === 0 ? "fixture" : `fixture-${index + 1}`,
+			data: { text: escapeMarkup(paragraph) },
+			type: "paragraph",
+		})),
 		version,
 	});
 }
@@ -296,12 +423,19 @@ export function normalizeOptionalString(value) {
 	return trimmed.length > 0 ? trimmed : null;
 }
 
+/** Saleor's limit for AttributeValueTranslation.name; a longer name is a validation error. */
+const ATTRIBUTE_VALUE_NAME_MAX = 250;
+
 /** Per-product attribute values — PLAIN_TEXT uses plainText; RICH_TEXT also needs EditorJS richText. */
 export function buildProductAttributeValueInput(text, inputType = "PLAIN_TEXT") {
 	const normalized = normalizeOptionalString(text);
 	if (!normalized) return null;
 
-	const input = { name: normalized, plainText: normalized };
+	// `name` is only a label for the value; the full text travels in plainText / richText.
+	const flat = normalized.replace(/\s+/g, " ");
+	const name =
+		flat.length > ATTRIBUTE_VALUE_NAME_MAX ? `${flat.slice(0, ATTRIBUTE_VALUE_NAME_MAX - 1)}…` : flat;
+	const input = { name, plainText: normalized };
 	if (inputType === "RICH_TEXT") {
 		input.richText = plainToEditorJs(normalized, "2.30.7");
 	}
@@ -385,19 +519,47 @@ export function loadLocaleFixtureFiles(dir = CATALOG_LOCALES_DIR) {
 	}));
 }
 
-export function loadCatalogSourceSnapshot() {
-	if (!existsSync(CATALOG_SOURCE_FILE)) {
+/** Where the locale fixtures and catalog-source.json live: `--locales <dir>` or the default. */
+export function resolveLocalesDir(localesDir) {
+	const dir = localesDir ? resolve(ROOT, localesDir) : CATALOG_LOCALES_DIR;
+	return { dir, sourceFile: localesDir ? resolve(dir, "catalog-source.json") : CATALOG_SOURCE_FILE };
+}
+
+/**
+ * All choices of an attribute. The attribute query brings the first page together with its
+ * pageInfo; `moreChoicesQuery` (variables `$id`, `$after`, plus `variables`) brings the rest.
+ * Without this, values past the first 100 looked unknown.
+ */
+export async function loadAllChoices(gql, attribute, moreChoicesQuery, variables = {}) {
+	const nodes = attribute.choices.edges.map((edge) => edge.node);
+	let { hasNextPage, endCursor } = attribute.choices.pageInfo ?? {};
+	while (hasNextPage) {
+		const data = await gql(moreChoicesQuery, { ...variables, id: attribute.id, after: endCursor });
+		const page = data.attribute.choices;
+		nodes.push(...page.edges.map((edge) => edge.node));
+		({ hasNextPage, endCursor } = page.pageInfo);
+	}
+	return nodes;
+}
+
+export function loadCatalogSourceSnapshot(file = CATALOG_SOURCE_FILE) {
+	if (!existsSync(file)) {
 		return null;
 	}
-	return JSON.parse(readFileSync(CATALOG_SOURCE_FILE, "utf8"));
+	return JSON.parse(readFileSync(file, "utf8"));
 }
 
 /** Entity translation fields compared/written per category, collection, and product. */
 export const ENTITY_TRANSLATION_FIELDS = ["name", "description", "seoTitle", "seoDescription", "slug"];
 
-/** Semantic (plain-text) equality — descriptions are stored as EditorJS, so compare flattened text. */
+/**
+ * Semantic (plain-text) equality — descriptions are stored as EditorJS, so compare flattened
+ * text. Whitespace runs count as one space: where a paragraph or line breaks is not a difference
+ * in the copy, and Saleor may hand the same text back in other blocks than it was sent in.
+ */
 function fieldsEqual(existingPlain, desiredPlain) {
-	return normalizeOptionalString(existingPlain) === normalizeOptionalString(desiredPlain);
+	const flatten = (value) => normalizeOptionalString(value)?.replace(/\s+/g, " ") ?? null;
+	return flatten(existingPlain) === flatten(desiredPlain);
 }
 
 /**
@@ -442,6 +604,12 @@ export function planFixtureTranslations(fixture, indexes, existing = {}, options
 			const id = slugIndex.get(slug);
 			if (!id) {
 				skipped.push({ kind: label, slug, reason: `unknown ${label} in Saleor` });
+				continue;
+			}
+
+			// `some-slug:` with nothing under it parses to null.
+			if (fields == null || typeof fields !== "object") {
+				skipped.push({ kind: label, slug, reason: "empty fixture entry" });
 				continue;
 			}
 
@@ -567,7 +735,7 @@ export function planFixtureTranslations(fixture, indexes, existing = {}, options
 	for (const [productSlug, attributes] of Object.entries(fixture.productAttributes ?? {})) {
 		const productAttributes = indexes.productAttributeIndex.get(productSlug);
 		if (!productAttributes) {
-			for (const attributeSlug of Object.keys(attributes)) {
+			for (const attributeSlug of Object.keys(attributes ?? {})) {
 				skipped.push({
 					kind: "product-attribute",
 					slug: `${productSlug}.${attributeSlug}`,
@@ -577,7 +745,7 @@ export function planFixtureTranslations(fixture, indexes, existing = {}, options
 			continue;
 		}
 
-		for (const [attributeSlug, text] of Object.entries(attributes)) {
+		for (const [attributeSlug, text] of Object.entries(attributes ?? {})) {
 			const valueId = productAttributes.get(attributeSlug);
 			if (!valueId) {
 				skipped.push({
@@ -597,8 +765,10 @@ export function planFixtureTranslations(fixture, indexes, existing = {}, options
 				continue;
 			}
 			const inputType = indexes.attributeIndex.get(attributeSlug)?.inputType ?? "PLAIN_TEXT";
+			// A translation made in the Dashboard for a RICH_TEXT attribute has richText only.
+			const existingEntry = existing.productAttributes?.get(`${productSlug}.${attributeSlug}`);
 			const existingValue =
-				existing.productAttributes?.get(`${productSlug}.${attributeSlug}`)?.plainText ?? null;
+				normalizeOptionalString(existingEntry?.plainText) ?? editorJsToPlain(existingEntry?.richText) ?? null;
 			classifyField({
 				kind: "product-attribute",
 				slug: `${productSlug}.${attributeSlug}`,
