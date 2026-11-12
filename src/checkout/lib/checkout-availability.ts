@@ -55,10 +55,19 @@ export function availabilityIssueFromFieldErrors(
 		return null;
 	}
 
-	const message = first.message ?? fallbackMessage;
+	// Saleor returns one error per unavailable variant ("Could not add items X."), so
+	// collect the lines from every error, not just the first — otherwise only one item
+	// is flagged and the others look purchasable.
+	const lineIds = new Set<string>();
+	for (const error of availability) {
+		for (const id of matchUnavailableLineIds(lines, error.message ?? "")) {
+			lineIds.add(id);
+		}
+	}
+
 	return {
-		message,
-		lineIds: matchUnavailableLineIds(lines, message),
+		message: first.message ?? fallbackMessage,
+		lineIds: [...lineIds],
 	};
 }
 
