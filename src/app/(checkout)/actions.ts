@@ -658,7 +658,7 @@ export async function removeCheckoutLine(checkoutId: string, lineId: string): Pr
 		return { ok: false, error: result.error.message };
 	}
 
-	return toCheckoutActionResult(result.data.checkoutLineDelete);
+	return toCheckoutActionResult(result.data.checkoutLinesDelete);
 }
 
 export async function applyCheckoutPromoCode(
