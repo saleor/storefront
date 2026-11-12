@@ -27,18 +27,23 @@ export function partitionCheckoutFieldErrors(errors: ReadonlyArray<CheckoutField
 	return { address, availability };
 }
 
-function escapeRegExp(value: string): string {
-	return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+/** Saleor copy: "Could not add items {variantName}. Only {n} remaining in stock." */
+const SALEOR_STOCK_MESSAGE = /\bitems?\s+(.+?)\.(?:\s+Only\s+\d+\s+remaining\b.*)?$/i;
 
-/** Saleor copy is "Could not add items {variantName}." — match that token, not a prefix. */
+/**
+ * True when the message names exactly this variant. The whole name must match: an error
+ * about "Pink Dahlia" must not flag a line whose variant is "Pink".
+ *
+ * This error carries no variant or line ids, so the name is the only signal. Two lines
+ * whose variants share a name (size "M" on two products) are both flagged.
+ */
 export function messageMentionsVariant(message: string, variantName: string): boolean {
 	const name = variantName.trim();
 	if (!name) {
 		return false;
 	}
 
-	return new RegExp(`\\bitems?\\s+${escapeRegExp(name)}(?=\\b|[.])`, "i").test(message);
+	return SALEOR_STOCK_MESSAGE.exec(message)?.[1]?.trim() === name;
 }
 
 export function availabilityIssueFromFieldErrors(
@@ -81,4 +86,18 @@ export function matchUnavailableLineIds(
 	return lines
 		.filter((line) => messageMentionsVariant(message, line.variant?.name ?? ""))
 		.map((line) => line.id);
+}
+
+/** Drop removed lines from an issue. The issue is resolved once no flagged line is left. */
+export function availabilityIssueWithoutLines(
+	issue: CheckoutAvailabilityIssue | null,
+	removedLineIds: ReadonlyArray<string>,
+): CheckoutAvailabilityIssue | null {
+	if (!issue) {
+		return null;
+	}
+
+	const removed = new Set(removedLineIds);
+	const lineIds = issue.lineIds.filter((id) => !removed.has(id));
+	return lineIds.length ? { ...issue, lineIds } : null;
 }

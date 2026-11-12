@@ -4,7 +4,7 @@ import { useCallback, useState, type FC } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { removeCheckoutLine } from "@/app/(checkout)/actions";
+import { removeCheckoutLines } from "@/app/(checkout)/actions";
 import { Button } from "@/ui/components/ui/button";
 import { CheckoutIssueBanner } from "@/checkout/components/checkout-issue-banner";
 import { useCheckout } from "@/checkout/hooks/use-checkout";
@@ -14,6 +14,7 @@ import { useCustomerAttach } from "@/checkout/hooks/use-customer-attach";
 import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries";
 import { useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
+import { availabilityIssueWithoutLines } from "@/checkout/lib/checkout-availability";
 import {
 	CheckoutAvailabilityProvider,
 	useCheckoutAvailability,
@@ -51,32 +52,30 @@ const SaleorCheckoutView: FC = () => {
 	const isPaymentFlowActive = transition === "completing";
 	const isCheckoutNavigationLocked = isPaymentFlowActive || isPaymentBusy;
 
-	const removeUnavailableLine = useCallback(
-		async (lineId: string) => {
-			if (!checkout || isRemovingUnavailableLine) {
+	const removeUnavailableLines = useCallback(
+		async (lineIds: readonly string[]) => {
+			if (!checkout || isRemovingUnavailableLine || lineIds.length === 0) {
 				return;
 			}
 
+			const failedMessage = tErrors("itemUnavailableRemoveFailed", { count: lineIds.length });
 			setIsRemovingUnavailableLine(true);
 			setRemoveUnavailableError(null);
 			try {
-				const result = await removeCheckoutLine(checkout.id, lineId);
+				const result = await removeCheckoutLines(checkout.id, [...lineIds]);
 				if (!result.ok) {
-					setRemoveUnavailableError(tErrors("itemUnavailableRemoveFailed"));
+					setRemoveUnavailableError(failedMessage);
 					return;
 				}
 
 				setCheckout(result.checkout);
-				const remainingIds = (availabilityIssue?.lineIds ?? []).filter((id) => id !== lineId);
-				setAvailabilityIssue(
-					remainingIds.length && availabilityIssue ? { ...availabilityIssue, lineIds: remainingIds } : null,
-				);
+				setAvailabilityIssue(availabilityIssueWithoutLines(availabilityIssue, lineIds));
 
 				if (result.checkout.lines.length === 0) {
 					refreshCheckoutRsc();
 				}
 			} catch {
-				setRemoveUnavailableError(tErrors("itemUnavailableRemoveFailed"));
+				setRemoveUnavailableError(failedMessage);
 			} finally {
 				setIsRemovingUnavailableLine(false);
 			}
@@ -90,6 +89,10 @@ const SaleorCheckoutView: FC = () => {
 			setAvailabilityIssue,
 			setCheckout,
 		],
+	);
+	const removeUnavailableLine = useCallback(
+		(lineId: string) => removeUnavailableLines([lineId]),
+		[removeUnavailableLines],
 	);
 
 	useCustomerAttach();
@@ -156,24 +159,29 @@ const SaleorCheckoutView: FC = () => {
 								{availabilityIssue ? (
 									<div className="mb-8">
 										<CheckoutIssueBanner
-											title={tErrors("itemUnavailableTitle")}
+											title={tErrors("itemUnavailableTitle", {
+												// No matched line still means at least one item is unavailable.
+												count: Math.max(availabilityIssue.lineIds.length, 1),
+											})}
 											action={
-												availabilityIssue.lineIds[0] ? (
+												availabilityIssue.lineIds.length ? (
 													<Button
 														type="button"
 														variant="outline-solid"
 														size="sm"
 														disabled={isRemovingUnavailableLine}
-														onClick={() => void removeUnavailableLine(availabilityIssue.lineIds[0])}
+														onClick={() => void removeUnavailableLines(availabilityIssue.lineIds)}
 													>
-														{tErrors("itemUnavailableRemove")}
+														{tErrors("itemUnavailableRemove", { count: availabilityIssue.lineIds.length })}
 													</Button>
 												) : undefined
 											}
 										>
 											<p>
 												{availabilityIssue.lineIds.length
-													? tErrors("itemUnavailableRemoveMessage")
+													? tErrors("itemUnavailableRemoveMessage", {
+															count: availabilityIssue.lineIds.length,
+														})
 													: tErrors("itemUnavailableMessage")}
 											</p>
 											{removeUnavailableError ? (

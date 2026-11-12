@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
 	availabilityIssueFromFieldErrors,
+	availabilityIssueWithoutLines,
 	isAvailabilityFieldError,
 	matchUnavailableLineIds,
 	messageMentionsVariant,
@@ -52,6 +53,30 @@ describe("messageMentionsVariant", () => {
 
 	it("does not match an unrelated mention of the letter", () => {
 		expect(messageMentionsVariant("Missing required field.", "M")).toBe(false);
+	});
+
+	it("requires the whole variant name, not a leading or trailing word of it", () => {
+		const saleor = "Could not add items Pink Dahlia. Only 0 remaining in stock.";
+		expect(messageMentionsVariant(saleor, "Pink Dahlia")).toBe(true);
+		expect(messageMentionsVariant(saleor, "Pink")).toBe(false);
+		expect(messageMentionsVariant(saleor, "Dahlia")).toBe(false);
+	});
+
+	it("keeps periods and regex characters that are part of the name", () => {
+		expect(messageMentionsVariant("Could not add items No. 5. Only 2 remaining in stock.", "No. 5")).toBe(
+			true,
+		);
+		expect(messageMentionsVariant("Could not add items No. 5. Only 2 remaining in stock.", "No")).toBe(false);
+		expect(
+			messageMentionsVariant(
+				"Could not add items 0.5 L (glass). Only 0 remaining in stock.",
+				"0.5 L (glass)",
+			),
+		).toBe(true);
+	});
+
+	it("ignores surrounding whitespace in the line's variant name", () => {
+		expect(messageMentionsVariant("Could not add items M. Only 0 remaining in stock.", " M ")).toBe(true);
 	});
 });
 
@@ -121,5 +146,24 @@ describe("matchUnavailableLineIds", () => {
 		expect(matchUnavailableLineIds(lines, "Could not add items M. Only 0 remaining in stock.")).toEqual([
 			"line-m",
 		]);
+	});
+});
+
+describe("availabilityIssueWithoutLines", () => {
+	const issue = { message: "Could not add items M.", lineIds: ["line-a", "line-b", "line-c"] };
+
+	it("keeps the issue for the lines that are still in the cart", () => {
+		expect(availabilityIssueWithoutLines(issue, ["line-b"])).toEqual({
+			message: "Could not add items M.",
+			lineIds: ["line-a", "line-c"],
+		});
+	});
+
+	it("resolves the issue once every flagged line is removed", () => {
+		expect(availabilityIssueWithoutLines(issue, ["line-a", "line-b", "line-c"])).toBeNull();
+	});
+
+	it("returns null when there is no issue", () => {
+		expect(availabilityIssueWithoutLines(null, ["line-a"])).toBeNull();
 	});
 });
