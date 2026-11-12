@@ -398,7 +398,7 @@ After clone, wire skills for Cursor discovery (repo-root `skills/` is not scanne
 pnpm skills:bootstrap
 ```
 
-Symlinks the project skill into `.agents/skills/`, then runs `npx skills experimental_install` from `skills-lock.json`. Do **not** run `npx skills add . --skill saleor-paper-storefront` — it copies a drifting snapshot.
+Symlinks the project skill into `.agents/skills/`, then restores the external skills from `skills-lock.json`, which pins each one to a commit and a content hash (the skills CLI itself is a pinned devDependency). The CLI also links them into the folders of agents it finds on your machine, such as `.claude/skills/` for Claude Code. Run `pnpm doctor` to check the result. Do **not** run `npx skills add . --skill saleor-paper-storefront` — it copies a drifting snapshot.
 
 ### Environment Variables
 

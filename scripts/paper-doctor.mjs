@@ -7,25 +7,34 @@
  * discover the project skill; an external skill like vercel-react-best-practices
  * is gone). Nothing errors — sessions just get worse and nobody knows why.
  *
- * Run: pnpm doctor   (also a good CI gate: --check exits non-zero on any issue)
+ * Run: pnpm doctor   (--check exits non-zero on any issue)
+ *      --repo        only what the committed tree can answer. Skips checks 1 and 3, which
+ *                    describe this machine's install. Build gates every PR on --check --repo;
+ *                    .github/workflows/agent-skills.yml runs the full check after a real
+ *                    restore, when the lock, the skills CLI or these scripts change.
  *
  * Checks:
  *  1. Project skill symlinked into .agents/skills/ (Cursor scans there, not repo-root skills/)
- *  2. Every external skill pinned in skills-lock.json is installed under .agents/skills/
- *  3. Agent docs are not drifted (frontmatter present + compiled AGENTS.md in sync)
- *  4. The quarantined compiled doc is ignored from agents (.cursorignore)
- *  5. Always-on AGENTS.md carries the managed Next.js agent-rules block
- *  6. Required env present (NEXT_PUBLIC_SALEOR_API_URL) — only when --env
+ *  2. skills-lock.json pins every external skill to a full commit and a content hash
+ *  3. Every pinned skill is installed under .agents/skills/ and its files match the lock
+ *     (skills installed there that the lock does not pin are listed, not failed)
+ *  4. Agent docs are not drifted (frontmatter present + compiled AGENTS.md in sync)
+ *  5. The quarantined compiled doc is ignored from agents (.cursorignore)
+ *  6. Always-on AGENTS.md carries the managed Next.js agent-rules block
+ *  7. Paper core hashes match paper-core.lock.json
+ *  8. Required env present (NEXT_PUBLIC_SALEOR_API_URL) — only when --env
  *
  * Exit code 0 = healthy, 1 = something needs fixing. Every failure prints the fix.
  */
 import { execSync } from "node:child_process";
-import { existsSync, lstatSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readSkillsLock, skillContentHash, unpinnedReasons } from "./lib/skills-lock.mjs";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const checkOnly = process.argv.includes("--check");
 const checkEnv = process.argv.includes("--env");
+const repoOnly = process.argv.includes("--repo");
 
 const checksEnv = checkEnv ? readEnv() : {};
 
@@ -38,8 +47,13 @@ function fail(msg, fix) {
 function ok(msg) {
 	console.log(`  ✓ ${msg}`);
 }
+function note(msg) {
+	console.log(`  • ${msg}`);
+}
 
-console.log("paper doctor — agent setup health check\n");
+console.log(
+	`paper doctor — agent setup health check${repoOnly ? " (repo only: this machine's install is not checked)" : ""}\n`,
+);
 
 // 1. Project skill symlink ---------------------------------------------------
 const paperLink = resolve(ROOT, ".agents/skills/saleor-paper-storefront");
@@ -49,6 +63,8 @@ if (!existsSync(paperSrc)) {
 		"skills/saleor-paper-storefront/ is missing — the project skill is gone.",
 		"git restore skills/saleor-paper-storefront",
 	);
+} else if (repoOnly) {
+	ok("Project skill present in skills/saleor-paper-storefront/");
 } else if (!existsSync(paperLink) || !lstatSync(paperLink).isSymbolicLink()) {
 	fail(
 		"Project skill is not symlinked into .agents/skills/ — Cursor can't discover it.",
@@ -58,28 +74,68 @@ if (!existsSync(paperSrc)) {
 	ok("Project skill symlinked into .agents/skills/");
 }
 
-// 2. External skills installed ----------------------------------------------
-const lockPath = resolve(ROOT, "skills-lock.json");
-if (!existsSync(lockPath)) {
+// 2. External skills pinned --------------------------------------------------
+const lock = readSkillsLock(ROOT);
+const pinned = Object.keys(lock?.skills ?? {});
+let lockIsPinned = false;
+if (!lock) {
 	fail("skills-lock.json is missing — external skills can't be restored.", "git restore skills-lock.json");
+} else if (pinned.length === 0) {
+	fail(
+		"skills-lock.json pins no external skills.",
+		"pnpm exec skills add <org/repo>@<full commit> --skill <name>",
+	);
 } else {
-	const lock = JSON.parse(readFileSync(lockPath, "utf8"));
-	const agentsDir = resolve(ROOT, ".agents/skills");
-	const pinned = Object.keys(lock.skills ?? {});
-	const missing = pinned.filter((name) => !existsSync(resolve(agentsDir, name)));
-	if (pinned.length === 0) {
-		fail("skills-lock.json pins no external skills.", "npx skills add <org/repo> --skill <name>");
-	} else if (missing.length > 0) {
-		fail(
-			`External skills not installed: ${missing.join(", ")}`,
-			"pnpm skills:bootstrap  (runs npx skills experimental_install from the lockfile)",
-		);
+	const unpinned = unpinnedReasons(lock);
+	lockIsPinned = unpinned.length === 0;
+	if (lockIsPinned) {
+		ok(`All ${pinned.length} external skill(s) pinned to a commit and a content hash`);
 	} else {
-		ok(`All ${pinned.length} external skill(s) installed: ${pinned.join(", ")}`);
+		fail(
+			`skills-lock.json leaves external skills free to change under agents:\n      - ${unpinned.join("\n      - ")}`,
+			"pnpm skills:update  (re-pins each source to its current commit and records the hashes)",
+		);
 	}
 }
 
-// 3. Agent docs not drifted --------------------------------------------------
+// 3. External skills installed as pinned -------------------------------------
+if (lockIsPinned && !repoOnly) {
+	const agentsDir = resolve(ROOT, ".agents/skills");
+	const missing = pinned.filter((name) => !existsSync(resolve(agentsDir, name)));
+	const changed = pinned.filter(
+		(name) =>
+			!missing.includes(name) &&
+			skillContentHash(resolve(agentsDir, name)) !== lock.skills[name].computedHash,
+	);
+	if (missing.length > 0 || changed.length > 0) {
+		fail(
+			[
+				missing.length > 0 && `External skills not installed: ${missing.join(", ")}`,
+				changed.length > 0 &&
+					`External skills differ from skills-lock.json (stale or edited): ${changed.join(", ")}`,
+			]
+				.filter(Boolean)
+				.join("\n    "),
+			"pnpm skills:bootstrap  (restores exactly what skills-lock.json pins)",
+		);
+	} else {
+		ok(`All ${pinned.length} external skill(s) installed and matching the lock: ${pinned.join(", ")}`);
+	}
+	// A restore never deletes, so a skill dropped from the lock stays installed. It cannot be
+	// told apart from one this developer added on purpose, so it is named, not failed.
+	const unlocked = !existsSync(agentsDir)
+		? []
+		: readdirSync(agentsDir).filter(
+				(name) => !name.startsWith(".") && name !== "saleor-paper-storefront" && !pinned.includes(name),
+			);
+	if (unlocked.length > 0) {
+		note(
+			`Agents here also load skills that skills-lock.json does not pin: ${unlocked.join(", ")}\n      keep the ones you installed yourself; remove a leftover with: pnpm exec skills remove <name>`,
+		);
+	}
+}
+
+// 4. Agent docs not drifted --------------------------------------------------
 try {
 	execSync("node skills/saleor-paper-storefront/scripts/ensure-rule-frontmatter.mjs --check", {
 		cwd: ROOT,
@@ -97,7 +153,7 @@ try {
 	);
 }
 
-// 4. Compiled doc quarantined from agents -----------------------------------
+// 5. Compiled doc quarantined from agents -----------------------------------
 const cursorignorePath = resolve(ROOT, ".cursorignore");
 const cursorignore = existsSync(cursorignorePath) ? readFileSync(cursorignorePath, "utf8") : "";
 const compiledRel = "skills/saleor-paper-storefront/AGENTS.md";
@@ -110,7 +166,7 @@ if (!cursorignore.includes(compiledRel)) {
 	ok("Compiled AGENTS.md quarantined from agents via .cursorignore");
 }
 
-// 5. Managed Next.js agent-rules block in always-on AGENTS.md ----------------
+// 6. Managed Next.js agent-rules block in always-on AGENTS.md ----------------
 const agentsMdPath = resolve(ROOT, "AGENTS.md");
 const agentsMd = existsSync(agentsMdPath) ? readFileSync(agentsMdPath, "utf8") : "";
 if (!agentsMd.includes("BEGIN:nextjs-agent-rules")) {
@@ -122,7 +178,7 @@ if (!agentsMd.includes("BEGIN:nextjs-agent-rules")) {
 	ok("Always-on AGENTS.md carries the managed Next.js agent-rules block");
 }
 
-// 6. Paper core hashes -------------------------------------------------------
+// 7. Paper core hashes -------------------------------------------------------
 try {
 	execSync("node scripts/paper-core-lock.mjs --check", { cwd: ROOT, stdio: "pipe" });
 	ok("Paper core hashes match paper-core.lock.json (or drift is declared)");
@@ -134,7 +190,7 @@ try {
 	);
 }
 
-// 7. Required env (opt-in) ---------------------------------------------------
+// 8. Required env (opt-in) ---------------------------------------------------
 if (checkEnv) {
 	const saleorUrl = checksEnv.NEXT_PUBLIC_SALEOR_API_URL;
 	if (!saleorUrl) {
