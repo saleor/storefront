@@ -3,3 +3,6 @@ pnpm-lock.yaml
 # Machine-written SoT — formatting is owned by formatStorefrontContentSnapshotJson
 # (JSON.stringify + tabs). Prettier collapses short arrays and breaks content:verify-seed.
 config/saleor/storefront-content.snapshot.json
+# Machine-written by the skills CLI (`pnpm skills:update`). Left as the CLI writes it, so the
+# diff of a re-pin shows only the pins that moved.
+skills-lock.json

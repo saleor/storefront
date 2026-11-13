@@ -17,7 +17,7 @@ pnpm skills:bootstrap
 That command:
 
 1. Symlinks `skills/saleor-paper-storefront/` → `.agents/skills/saleor-paper-storefront` (Paper-specific; the skills CLI does not do this)
-2. Runs `npx skills experimental_install` to restore external skills from `skills-lock.json` (official CLI — same idea as `npm install` from a lockfile)
+2. Restores the external skills from `skills-lock.json` with the skills CLI, a pinned devDependency. The lock names a full commit and a content hash for each skill, so every clone gets the same files (same idea as `pnpm install --frozen-lockfile`). The CLI also links them into the folder of each agent it finds on your machine, for example `.claude/skills/` for Claude Code, which does not read `.agents/skills/`
 
 Do **not** run `npx skills add . --skill saleor-paper-storefront` here — it copies a snapshot that drifts from `skills/`.
 
@@ -116,15 +116,24 @@ These first-party **Next.js workflow skills** are heavy and task-specific, so th
 - A headed browser session you open and navigate first — the skills don't drive auth/SSO; you log in, navigate to the start page, then invoke the skill.
 - `cacheComponents: true` (already set in Paper's `next.config.js`) for the optimizer.
 
+Installing one in the project adds an entry to `skills-lock.json`. Leave that change out of your commits (`git restore skills-lock.json`), or install for your user with `-g`: `pnpm doctor` and Build reject a lock entry that is not pinned to a commit.
+
 When to reach for them: PPR/build debugging and cache-tightening tasks — the exact surfaces Paper's `data-caching` / `paper-architecture` rules describe. They're machinery for those workflows, not always-on context. **Paper's rules stay authoritative** on architecture; use these skills to execute within Paper's boundaries.
 
 **Add or update a shared external skill** (maintainers — updates the lockfile):
 
 ```shell
-npx skills add saleor/agent-skills --skill saleor-storefront
-npx skills add vercel-labs/agent-skills --skill react-best-practices
-# commit skills-lock.json
+# Update: re-pin every source, or only the named ones, to its current upstream commit
+pnpm skills:update
+pnpm skills:update saleor/agent-skills
+
+# Add: pin a new skill to a full commit (a branch or tag can move, so doctor rejects it)
+pnpm exec skills add saleor/agent-skills@<full-commit-sha> --skill saleor-core
+
+# read what changed upstream (skills:update prints the compare links), then commit skills-lock.json
 ```
+
+The pins move only when you run these, so an upstream edit or a new CLI release cannot change what agents read or break a build. `pnpm doctor` fails when an installed skill no longer matches the lock, and `.github/workflows/agent-skills.yml` restores the lock from a clean checkout on every PR that changes it, the CLI version, or the bootstrap scripts.
 
 **After clone** (everyone):
 

@@ -33,10 +33,11 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Bootstrap agent skills
-        run: pnpm skills:bootstrap
-      - name: paper doctor (agent setup healthy)
-        run: pnpm run doctor:check
+      # Restoring the external skills needs GitHub, and no step below reads them, so Build only
+      # checks what the repo commits: the lock pins every skill, agent docs and guards are intact.
+      # agent-skills.yml restores them for real when the lock, the CLI or the scripts change.
+      - name: paper doctor (agent setup the repo ships)
+        run: pnpm run doctor:check --repo
       - name: Verify agent docs (frontmatter + AGENTS.md in sync)
         run: pnpm run docs:check
       - name: Data-layer and core locks

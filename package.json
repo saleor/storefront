@@ -58,6 +58,7 @@
 		"content:export-seed": "node scripts/export-storefront-content-seed.mjs",
 		"orders:seed": "node scripts/seed-paid-orders.mjs",
 		"skills:bootstrap": "node scripts/bootstrap-agent-skills.mjs",
+		"skills:update": "node scripts/update-agent-skills.mjs",
 		"har:analyze": "node scripts/analyze-storefront-har.mjs"
 	},
 	"dependencies": {
@@ -125,6 +126,7 @@
 		"prettier": "3.8.4",
 		"prettier-plugin-tailwindcss": "0.5.9",
 		"schema-dts": "1.1.2",
+		"skills": "1.8.1",
 		"tailwindcss": "3.4.19",
 		"typescript": "5.3.3",
 		"vitest": "4.1.9",
