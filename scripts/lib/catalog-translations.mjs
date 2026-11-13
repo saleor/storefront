@@ -331,10 +331,23 @@ export async function assertTranslationPermissions(gql) {
 
 const HTML_ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
 
+/**
+ * Removes tags until none are left: one pass over `<scr<b></b>ipt>` would leave `<script>`.
+ * Repeating until nothing changes is also what CodeQL accepts as complete sanitization.
+ */
+function stripTags(html) {
+	let text = html;
+	let previous;
+	do {
+		previous = text;
+		text = text.replace(/<[^<>]*>/g, "");
+	} while (text !== previous);
+	return text;
+}
+
 /** Tags out, entities decoded. Saleor stores `&`, `<` and `>` in EditorJS text as entities. */
 function stripMarkup(text) {
-	return String(text)
-		.replace(/<[^>]+>/g, "")
+	return stripTags(String(text))
 		.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity) => {
 			if (entity[0] !== "#") return HTML_ENTITIES[entity.toLowerCase()] ?? match;
 			const code =

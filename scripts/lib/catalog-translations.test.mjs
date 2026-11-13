@@ -96,6 +96,11 @@ describe("EditorJS conversion", () => {
 		expect(editorJsToPlain(stored)).toBe("Hats & caps, all sizes\n\n5 < 6 cm");
 	});
 
+	it("removes tags nested inside tags, which one pass would leave behind", () => {
+		expect(editorJsToPlain("<scr<b></b>ipt>alert(1)</script> done")).toBe("alert(1) done");
+		expect(editorJsToPlain(editorJs([paragraph("<scr<script>ipt>Warm</b>")]))).toBe("Warm");
+	});
+
 	it("reads the text of lists, which have no `text`", () => {
 		const flat = editorJs([{ type: "list", data: { style: "unordered", items: ["One", "Two"] } }]);
 		const nested = editorJs([
