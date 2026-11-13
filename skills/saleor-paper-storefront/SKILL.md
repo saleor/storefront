@@ -124,7 +124,7 @@ Reference these guidelines when:
 
 ### 7. Development (MEDIUM)
 
-- `dev-local` - ngrok/LAN mobile testing, `allowedDevOrigins`, dev vs production QA
+- `dev-local` - ngrok/LAN mobile testing, `allowedDevOrigins`, dev vs production QA, test orders for the account pages
 - `dev-investigation` - Saleor API source code investigation methodology
 - `third-party-embeds` - External widget scripts (reviews, Yotpo) via `next/script`, env keys, client leaf components
 

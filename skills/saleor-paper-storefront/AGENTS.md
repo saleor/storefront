@@ -4902,6 +4902,29 @@ Do **not** refactor `SearchBar` or disable SSR on the header to silence this.
 
 ---
 
+## Test orders for the account pages
+
+The storefront shows orders only to the signed-in customer: recent orders on the account overview, `/account/orders` and `/account/orders/{number}`. A new account has none, and guest orders never appear there.
+
+```bash
+pnpm orders:seed -- --email you@example.com              # 10 paid orders on that account
+pnpm orders:seed -- --email you@example.com --count 12   # a second page (the list shows 10)
+pnpm orders:seed -- --help
+```
+
+| Need    | Detail                                                                                                                                                             |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Account | Must exist and be active: register it in the storefront first. The script stops after one order if Saleor did not put that order on the account.                   |
+| Token   | `SALEOR_APP_TOKEN` in `.env.local`; orders are paid through the Dummy Payment app. Without that app: `--mode draft` and `SALEOR_ADMIN_TOKEN` with `MANAGE_ORDERS`. |
+| Channel | `--channel <slug>`, default `NEXT_PUBLIC_DEFAULT_CHANNEL`. The channel needs purchasable products and a shipping method for its default country.                   |
+| Result  | Paid, unfulfilled orders of 1–3 lines with a sample address. The account's address book is not changed.                                                            |
+
+To see the other status labels, fulfil or cancel an order in the Dashboard.
+
+The script writes to the instance in `NEXT_PUBLIC_SALEOR_API_URL`: use a dev or staging instance. Saleor sends its usual order confirmation to the account's email when the instance has email set up.
+
+---
+
 ### 7.2 Saleor API Investigation
 
 Investigate Saleor API behavior by checking source code when documentation is unclear or you need to understand exact data models.

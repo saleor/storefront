@@ -354,6 +354,7 @@ pnpm dev                    # Start dev server
 pnpm build                  # Production build
 pnpm run generate           # Regenerate GraphQL types (storefront)
 pnpm run generate:checkout  # Regenerate GraphQL types (checkout)
+pnpm orders:seed -- --help  # Test orders for the account pages (dev/staging instance)
 ```
 
 ### Project Structure
