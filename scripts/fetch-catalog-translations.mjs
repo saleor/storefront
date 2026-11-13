@@ -6,23 +6,49 @@
  *
  * Usage:
  *   node scripts/fetch-catalog-translations.mjs
+ *   node scripts/fetch-catalog-translations.mjs --help
  *
  * Requires NEXT_PUBLIC_SALEOR_API_URL and SALEOR_CONFIGURATOR_TOKEN
  * (.env.configurator.local — same as other configurator scripts).
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import {
-	CATALOG_LOCALES_DIR,
-	CATALOG_SOURCE_FILE,
+	CliUsageError,
 	createGqlClient,
 	editorJsToPlain,
 	getSaleorCredentials,
 	getThrottleConfig,
+	loadAllChoices,
 	loadEnvFromArgs,
 	normalizeOptionalString,
+	parseCatalogCliArgs,
+	resolveLocalesDir,
 } from "./lib/catalog-translations.mjs";
 
-loadEnvFromArgs();
+const USAGE = `Usage: node scripts/fetch-catalog-translations.mjs [options]
+
+Options:
+  --env <file>     Load credentials from this env file only (default: .env.local, .env.configurator.local)
+  --locales <dir>  Write catalog-source.json to this directory (default: config/saleor/fixtures/catalog-translations/locales)
+  --help, -h       Show this help`;
+
+// Fetch takes none of the deploy flags; anything it does not know stops the run.
+const CLI_OPTIONS = { flags: [] };
+let cli;
+try {
+	cli = parseCatalogCliArgs(process.argv.slice(2), CLI_OPTIONS);
+	if (!cli.help) loadEnvFromArgs(process.argv.slice(2), CLI_OPTIONS);
+} catch (error) {
+	if (!(error instanceof CliUsageError)) throw error;
+	console.error(`[catalog:fetch] ${error.message}\n\n${USAGE}`);
+	process.exit(1);
+}
+if (cli.help) {
+	console.log(USAGE);
+	process.exit(0);
+}
+
+const { dir: localesDir, sourceFile } = resolveLocalesDir(cli.localesDir);
 
 const { apiUrl, token } = getSaleorCredentials();
 const channel = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL?.trim() || "default-channel";
@@ -104,6 +130,7 @@ const LIST_PRODUCTS = /* GraphQL */ `
 							id
 							name
 							plainText
+							richText
 						}
 					}
 				}
@@ -121,16 +148,40 @@ const LIST_ATTRIBUTES = /* GraphQL */ `
 			}
 			edges {
 				node {
+					id
 					slug
 					name
 					inputType
 					choices(first: 100) {
+						pageInfo {
+							hasNextPage
+							endCursor
+						}
 						edges {
 							node {
 								slug
 								name
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+`;
+
+const MORE_ATTRIBUTE_CHOICES = /* GraphQL */ `
+	query MoreAttributeChoices($id: ID!, $after: String) {
+		attribute(id: $id) {
+			choices(first: 100, after: $after) {
+				pageInfo {
+					hasNextPage
+					endCursor
+				}
+				edges {
+					node {
+						slug
+						name
 					}
 				}
 			}
@@ -164,17 +215,17 @@ function indexBySlug(items) {
 	return Object.fromEntries(items.map((item) => [item.slug, toFixtureRecord(item)]));
 }
 
-function indexAttributes(items) {
-	return Object.fromEntries(
-		items.map((attribute) => [
-			attribute.slug,
-			{
-				name: attribute.name,
-				inputType: attribute.inputType,
-				values: Object.fromEntries(attribute.choices.edges.map((edge) => [edge.node.slug, edge.node.name])),
-			},
-		]),
-	);
+async function indexAttributes(items) {
+	const result = {};
+	for (const attribute of items) {
+		const choices = await loadAllChoices(gql, attribute, MORE_ATTRIBUTE_CHOICES);
+		result[attribute.slug] = {
+			name: attribute.name,
+			inputType: attribute.inputType,
+			values: Object.fromEntries(choices.map((choice) => [choice.slug, choice.name])),
+		};
+	}
+	return result;
 }
 
 function indexProductAttributeValues(products) {
@@ -186,7 +237,11 @@ function indexProductAttributeValues(products) {
 		for (const assignment of product.attributes ?? []) {
 			if (!PLAIN_TEXT_TYPES.has(assignment.attribute.inputType)) continue;
 			const value = assignment.values[0];
-			const text = normalizeOptionalString(value?.plainText) ?? normalizeOptionalString(value?.name);
+			// A RICH_TEXT value keeps its text in richText; its name is that text cut at 250 characters.
+			const text =
+				normalizeOptionalString(value?.plainText) ??
+				editorJsToPlain(value?.richText) ??
+				normalizeOptionalString(value?.name);
 			if (!text) continue;
 			attributes[assignment.attribute.slug] = text;
 		}
@@ -227,19 +282,19 @@ const source = {
 			},
 		]),
 	),
-	attributes: indexAttributes(attributes),
+	attributes: await indexAttributes(attributes),
 	productAttributes: indexProductAttributeValues(products),
 };
 
-mkdirSync(CATALOG_LOCALES_DIR, { recursive: true });
-writeFileSync(CATALOG_SOURCE_FILE, `${JSON.stringify(source, null, 2)}\n`, "utf8");
+mkdirSync(localesDir, { recursive: true });
+writeFileSync(sourceFile, `${JSON.stringify(source, null, 2)}\n`, "utf8");
 
 const plainTextCount = Object.values(source.productAttributes).reduce(
 	(sum, attrs) => sum + Object.keys(attrs).length,
 	0,
 );
 console.log(
-	`[catalog:fetch] Wrote ${CATALOG_SOURCE_FILE} — ${categories.length} categories, ${collections.length} collections, ${products.length} products, ${attributes.length} attributes, ${plainTextCount} product text attributes`,
+	`[catalog:fetch] Wrote ${sourceFile} — ${categories.length} categories, ${collections.length} collections, ${products.length} products, ${attributes.length} attributes, ${plainTextCount} product text attributes`,
 );
 console.log(
 	"[catalog:fetch] Next: copy examples/ to locales/, translate slugs from catalog-source.json, then pnpm catalog:translations:plan",

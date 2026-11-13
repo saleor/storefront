@@ -14,25 +14,54 @@
  * Usage:
  *   node scripts/deploy-catalog-translations.mjs --dry-run
  *   node scripts/deploy-catalog-translations.mjs --fail-on-skip
+ *   node scripts/deploy-catalog-translations.mjs --help
  */
 import {
-	CATALOG_LOCALES_DIR,
+	CliUsageError,
 	assertTranslationPermissions,
 	createGqlClient,
 	editorJsToPlain,
 	getSaleorCredentials,
 	getThrottleConfig,
+	loadAllChoices,
 	loadCatalogSourceSnapshot,
 	loadEnvFromArgs,
 	loadLocaleFixtureFiles,
 	parseCatalogCliArgs,
 	planFixtureTranslations,
 	reportFixtureCoverage,
+	resolveLocalesDir,
 	summarizeSkipped,
 } from "./lib/catalog-translations.mjs";
 
-const cli = parseCatalogCliArgs();
-loadEnvFromArgs();
+const USAGE = `Usage: node scripts/deploy-catalog-translations.mjs [options]
+
+Options:
+  --dry-run        Plan only; no writes
+  --fail-on-skip   Abort before writing if any fixture entry is a data error (unknown slug, empty value)
+  --allow-skip     Don't abort on data errors
+  --overwrite      Also update existing translations that differ from the fixture
+  --env <file>     Load credentials from this env file only (default: .env.local, .env.configurator.local)
+  --locales <dir>  Read fixtures from this directory (default: config/saleor/fixtures/catalog-translations/locales)
+  --help, -h       Show this help`;
+
+// The command line and env file are settled before anything else: a mistyped flag must stop the
+// run, not turn a plan into a deploy.
+let cli;
+try {
+	cli = parseCatalogCliArgs();
+	if (!cli.help) loadEnvFromArgs();
+} catch (error) {
+	if (!(error instanceof CliUsageError)) throw error;
+	console.error(`[catalog:deploy] ${error.message}\n\n${USAGE}`);
+	process.exit(1);
+}
+if (cli.help) {
+	console.log(USAGE);
+	process.exit(0);
+}
+
+const { dir: localesDir, sourceFile } = resolveLocalesDir(cli.localesDir);
 
 const { apiUrl, token } = getSaleorCredentials();
 const channel = process.env.NEXT_PUBLIC_DEFAULT_CHANNEL?.trim() || "default-channel";
@@ -46,10 +75,16 @@ if (!token) {
 	process.exit(1);
 }
 
-const fixtures = loadLocaleFixtureFiles();
+let fixtures;
+try {
+	fixtures = loadLocaleFixtureFiles(localesDir);
+} catch (error) {
+	console.error(`[catalog:deploy] ${error.message}`);
+	process.exit(1);
+}
 if (fixtures.length === 0) {
 	console.error(
-		`[catalog:deploy] No locale fixtures in ${CATALOG_LOCALES_DIR}\n` +
+		`[catalog:deploy] No locale fixtures in ${localesDir}\n` +
 			"  1. Run: pnpm catalog:translations:fetch\n" +
 			"  2. Copy config/saleor/fixtures/catalog-translations/examples/ as a starting point\n" +
 			"  3. Add your locale YAML files to locales/ (gitignored — never commit real catalog slugs)",
@@ -148,12 +183,35 @@ const LIST_ATTRIBUTES = /* GraphQL */ `
 					slug
 					inputType
 					choices(first: 100) {
+						pageInfo {
+							hasNextPage
+							endCursor
+						}
 						edges {
 							node {
 								id
 								slug
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+`;
+
+const MORE_ATTRIBUTE_CHOICES = /* GraphQL */ `
+	query MoreAttributeChoiceIds($id: ID!, $after: String) {
+		attribute(id: $id) {
+			choices(first: 100, after: $after) {
+				pageInfo {
+					hasNextPage
+					endCursor
+				}
+				edges {
+					node {
+						id
+						slug
 					}
 				}
 			}
@@ -245,9 +303,8 @@ async function loadAttributeIndex() {
 		const data = await gql(LIST_ATTRIBUTES, { after });
 		for (const edge of data.attributes.edges) {
 			const attribute = edge.node;
-			const values = new Map(
-				attribute.choices.edges.map((valueEdge) => [valueEdge.node.slug, valueEdge.node.id]),
-			);
+			const choices = await loadAllChoices(gql, attribute, MORE_ATTRIBUTE_CHOICES);
+			const values = new Map(choices.map((choice) => [choice.slug, choice.id]));
 			index.set(attribute.slug, { id: attribute.id, inputType: attribute.inputType, values });
 		}
 		if (!data.attributes.pageInfo.hasNextPage) break;
@@ -353,6 +410,7 @@ const EXISTING_PRODUCT_TRANSLATIONS = /* GraphQL */ `
 							translation(languageCode: $languageCode) {
 								name
 								plainText
+								richText
 							}
 						}
 					}
@@ -371,11 +429,16 @@ const EXISTING_ATTRIBUTE_TRANSLATIONS = /* GraphQL */ `
 			}
 			edges {
 				node {
+					id
 					slug
 					translation(languageCode: $languageCode) {
 						name
 					}
 					choices(first: 100) {
+						pageInfo {
+							hasNextPage
+							endCursor
+						}
 						edges {
 							node {
 								slug
@@ -391,24 +454,48 @@ const EXISTING_ATTRIBUTE_TRANSLATIONS = /* GraphQL */ `
 	}
 `;
 
+const MORE_EXISTING_CHOICE_TRANSLATIONS = /* GraphQL */ `
+	query MoreExistingChoiceTranslations($id: ID!, $after: String, $languageCode: LanguageCodeEnum!) {
+		attribute(id: $id) {
+			choices(first: 100, after: $after) {
+				pageInfo {
+					hasNextPage
+					endCursor
+				}
+				edges {
+					node {
+						slug
+						translation(languageCode: $languageCode) {
+							name
+						}
+					}
+				}
+			}
+		}
+	}
+`;
+
 const PLAIN_TEXT_ATTRIBUTE_TYPES = new Set(["PLAIN_TEXT", "MULTI_LINE_TEXT", "RICH_TEXT"]);
 
-async function loadEntityTranslations(query, languageCode, variables = {}) {
+function entityTranslation(translation) {
+	return {
+		name: translation.name ?? null,
+		description: editorJsToPlain(translation.description),
+		seoTitle: translation.seoTitle ?? null,
+		seoDescription: translation.seoDescription ?? null,
+		slug: translation.slug ?? null,
+	};
+}
+
+async function loadEntityTranslations(query, languageCode) {
 	const map = new Map();
 	let after = null;
 	for (;;) {
-		const data = await gql(query, { ...variables, languageCode, after });
-		const connection = data.categories ?? data.collections ?? data.products;
+		const data = await gql(query, { languageCode, after });
+		const connection = data.categories ?? data.collections;
 		for (const edge of connection.edges) {
-			const translation = edge.node.translation;
-			if (translation) {
-				map.set(edge.node.slug, {
-					name: translation.name ?? null,
-					description: editorJsToPlain(translation.description),
-					seoTitle: translation.seoTitle ?? null,
-					seoDescription: translation.seoDescription ?? null,
-					slug: translation.slug ?? null,
-				});
+			if (edge.node.translation) {
+				map.set(edge.node.slug, entityTranslation(edge.node.translation));
 			}
 		}
 		if (!connection.pageInfo.hasNextPage) break;
@@ -417,26 +504,33 @@ async function loadEntityTranslations(query, languageCode, variables = {}) {
 	return map;
 }
 
-async function loadExistingProductAttributeTranslations(languageCode, channel) {
-	const map = new Map();
+/** Products and the text they have in text attributes, in one pass over the product list. */
+async function loadExistingProductTranslations(languageCode, channel) {
+	const products = new Map();
+	const productAttributes = new Map();
 	let after = null;
 	for (;;) {
 		const data = await gql(EXISTING_PRODUCT_TRANSLATIONS, { after, channel, languageCode });
 		for (const edge of data.products.edges) {
+			if (edge.node.translation) {
+				products.set(edge.node.slug, entityTranslation(edge.node.translation));
+			}
 			for (const assignment of edge.node.attributes) {
 				if (!PLAIN_TEXT_ATTRIBUTE_TYPES.has(assignment.attribute.inputType)) continue;
 				const translation = assignment.values[0]?.translation;
 				if (!translation) continue;
-				map.set(`${edge.node.slug}.${assignment.attribute.slug}`, {
+				productAttributes.set(`${edge.node.slug}.${assignment.attribute.slug}`, {
 					name: translation.name ?? null,
 					plainText: translation.plainText ?? null,
+					// A translation made in the Dashboard for a RICH_TEXT attribute has richText only.
+					richText: translation.richText ?? null,
 				});
 			}
 		}
 		if (!data.products.pageInfo.hasNextPage) break;
 		after = data.products.pageInfo.endCursor;
 	}
-	return map;
+	return { products, productAttributes };
 }
 
 async function loadExistingAttributeTranslations(languageCode) {
@@ -445,10 +539,13 @@ async function loadExistingAttributeTranslations(languageCode) {
 	for (;;) {
 		const data = await gql(EXISTING_ATTRIBUTE_TRANSLATIONS, { after, languageCode });
 		for (const edge of data.attributes.edges) {
+			const choices = await loadAllChoices(gql, edge.node, MORE_EXISTING_CHOICE_TRANSLATIONS, {
+				languageCode,
+			});
 			const values = new Map();
-			for (const valueEdge of edge.node.choices.edges) {
-				if (valueEdge.node.translation?.name) {
-					values.set(valueEdge.node.slug, valueEdge.node.translation.name);
+			for (const choice of choices) {
+				if (choice.translation?.name) {
+					values.set(choice.slug, choice.translation.name);
 				}
 			}
 			map.set(edge.node.slug, { name: edge.node.translation?.name ?? null, values });
@@ -460,15 +557,17 @@ async function loadExistingAttributeTranslations(languageCode) {
 }
 
 async function loadExistingTranslations(languageCode, channel) {
-	const [categories, collections, products, attributes, productAttributes] = await Promise.all([
+	const [categories, collections, { products, productAttributes }, attributes] = await Promise.all([
 		loadEntityTranslations(EXISTING_CATEGORY_TRANSLATIONS, languageCode),
 		loadEntityTranslations(EXISTING_COLLECTION_TRANSLATIONS, languageCode),
-		loadEntityTranslations(EXISTING_PRODUCT_TRANSLATIONS, languageCode, { channel }),
+		loadExistingProductTranslations(languageCode, channel),
 		loadExistingAttributeTranslations(languageCode),
-		loadExistingProductAttributeTranslations(languageCode, channel),
 	]);
 	return { categories, collections, products, attributes, productAttributes };
 }
+
+/** Saleor answered and refused this one entry (validation); other entries can still be written. */
+class TranslationRejectedError extends Error {}
 
 async function applyPlannedTranslation(entry) {
 	const mutation = MUTATIONS[entry.mutation];
@@ -480,7 +579,7 @@ async function applyPlannedTranslation(entry) {
 	const mutationKey = entry.mutation;
 	const errors = result[mutationKey]?.errors;
 	if (errors?.length) {
-		throw new Error(
+		throw new TranslationRejectedError(
 			`${entry.languageCode} ${entry.kind}.${entry.slug}: ${errors.map((error) => error.message).join(", ")}`,
 		);
 	}
@@ -499,10 +598,10 @@ console.log(
 
 await assertTranslationPermissions(gql);
 
-const snapshot = loadCatalogSourceSnapshot();
+const snapshot = loadCatalogSourceSnapshot(sourceFile);
 if (!snapshot) {
 	console.warn(
-		"[catalog:deploy] No locales/catalog-source.json — run pnpm catalog:translations:fetch after seeding your catalog.",
+		`[catalog:deploy] No ${sourceFile} — run pnpm catalog:translations:fetch after seeding your catalog.`,
 	);
 }
 
@@ -600,13 +699,37 @@ if (cli.dryRun) {
 	process.exit(0);
 }
 
-// Phase 3 — execute.
+// Phase 3 — execute. An entry Saleor refuses is reported and the rest still go in; anything else
+// (network, auth, a failing instance) stops the run. Either way a rerun writes only what is
+// still missing, because written fields then compare as unchanged.
 let written = 0;
+const rejected = [];
 for (const { applied } of plan) {
 	for (const entry of applied) {
-		await applyPlannedTranslation(entry);
-		written++;
+		try {
+			await applyPlannedTranslation(entry);
+			written++;
+		} catch (error) {
+			if (error instanceof TranslationRejectedError) {
+				rejected.push(error.message);
+				console.error(`[catalog:deploy] Rejected by Saleor — ${error.message}`);
+				continue;
+			}
+			console.error(
+				`[catalog:deploy] Stopped after ${written} of ${totalApplied} writes: ${error.message}\n` +
+					"  What was written stays; run the deploy again to continue.",
+			);
+			process.exit(1);
+		}
 	}
+}
+
+if (rejected.length > 0) {
+	console.error(
+		`[catalog:deploy] ${written} applied, ${rejected.length} rejected by Saleor (listed above). ` +
+			"Fix those fixture entries and run the deploy again.",
+	);
+	process.exit(1);
 }
 
 console.log(

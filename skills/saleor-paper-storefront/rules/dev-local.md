@@ -1,6 +1,6 @@
 ---
 name: dev-local
-description: Local dev gotchas for real-device testing via ngrok/LAN (ALLOWED_DEV_ORIGINS) and Chrome-iOS hydration noise. Use when client components seem broken over a tunnel or on a phone.
+description: Local dev gotchas for real-device testing via ngrok/LAN (ALLOWED_DEV_ORIGINS) and Chrome-iOS hydration noise, and test orders for the account pages (pnpm orders:seed). Use when client components seem broken over a tunnel or on a phone, or when the account order pages have no orders to show.
 ---
 
 # Local Development & Mobile Testing
@@ -105,3 +105,26 @@ Do **not** refactor `SearchBar` or disable SSR on the header to silence this.
 ❌ **Don't debug carousel swipe on ngrok** before fixing `allowedDevOrigins` — client JS may not load  
 ❌ **Don't commit personal ngrok hostnames** — use `ALLOWED_DEV_ORIGINS` in `.env.local`  
 ❌ **Don't assume Chrome device toolbar = real phone** — it uses localhost + mouse events, not tunnel + touch
+
+---
+
+## Test orders for the account pages
+
+The storefront shows orders only to the signed-in customer: recent orders on the account overview, `/account/orders` and `/account/orders/{number}`. A new account has none, and guest orders never appear there.
+
+```bash
+pnpm orders:seed -- --email you@example.com              # 10 paid orders on that account
+pnpm orders:seed -- --email you@example.com --count 12   # a second page (the list shows 10)
+pnpm orders:seed -- --help
+```
+
+| Need    | Detail                                                                                                                                                             |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Account | Must exist and be active: register it in the storefront first. The script stops after one order if Saleor did not put that order on the account.                   |
+| Token   | `SALEOR_APP_TOKEN` in `.env.local`; orders are paid through the Dummy Payment app. Without that app: `--mode draft` and `SALEOR_ADMIN_TOKEN` with `MANAGE_ORDERS`. |
+| Channel | `--channel <slug>`, default `NEXT_PUBLIC_DEFAULT_CHANNEL`. The channel needs purchasable products and a shipping method for its default country.                   |
+| Result  | Paid, unfulfilled orders of 1–3 lines with a sample address. The account's address book is not changed.                                                            |
+
+To see the other status labels, fulfil or cancel an order in the Dashboard.
+
+The script writes to the instance in `NEXT_PUBLIC_SALEOR_API_URL`: use a dev or staging instance. Saleor sends its usual order confirmation to the account's email when the instance has email set up.
