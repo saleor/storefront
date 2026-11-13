@@ -28,6 +28,10 @@ async function startStore({
 	accounts = [],
 	accountReadable = true,
 	gateways = [DUMMY_GATEWAY],
+	draftMethods = [
+		{ id: "SM-other-zone", active: false },
+		{ id: "SM-for-this-order", active: true },
+	],
 } = {}) {
 	const checkouts = [];
 	const drafts = [];
@@ -124,13 +128,12 @@ async function startStore({
 						order: {
 							id: `D${drafts.length}`,
 							isShippingRequired: true,
-							shippingMethods: [
-								{ id: "SM-other-zone", active: false },
-								{ id: "SM-for-this-order", active: true },
-							],
+							shippingMethods: draftMethods,
 						},
 					},
 				};
+			case "SeedDraftOrderDelete":
+				return { draftOrderDelete: { errors: [] } };
 			case "SeedOrderUpdateShipping":
 				return { orderUpdateShipping: { errors: [], order: { id: variables.orderId } } };
 			case "SeedDraftOrderComplete":
@@ -380,6 +383,23 @@ describe("seed-paid-orders draft mode", () => {
 			expect(store.drafts.map((entry) => entry.userEmail)).toEqual([ACCOUNT, ACCOUNT]);
 			expect(store.drafts.map((entry) => entry.shippingAddress.country)).toEqual(["PL", "PL"]);
 			expect(store.orders.map((order) => order.user?.email)).toEqual([ACCOUNT, ACCOUNT]);
+		},
+		TIMEOUT,
+	);
+
+	it(
+		"deletes the draft instead of trying a method that does not apply to its address",
+		async () => {
+			const store = await startStore({ draftMethods: [{ id: "SM-us-only", active: false }] });
+			const result = await draft(["--count", "1"]);
+
+			expect(result.code).toBe(1);
+			expect(result.stderr).toContain("No shipping method applies to an address in US");
+			expect(requestsFor(store, "SeedOrderUpdateShipping")).toHaveLength(0);
+			expect(requestsFor(store, "SeedDraftOrderDelete").map((request) => request.variables)).toEqual([
+				{ id: "D1" },
+			]);
+			expect(store.orders).toHaveLength(0);
 		},
 		TIMEOUT,
 	);

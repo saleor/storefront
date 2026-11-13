@@ -451,6 +451,18 @@ const CHECKOUT_COMPLETE = /* GraphQL */ `
 	}
 `;
 
+const DRAFT_ORDER_DELETE = /* GraphQL */ `
+	mutation SeedDraftOrderDelete($id: ID!) {
+		draftOrderDelete(id: $id) {
+			errors {
+				message
+				code
+				field
+			}
+		}
+	}
+`;
+
 const DRAFT_ORDER_CREATE = /* GraphQL */ `
 	mutation SeedDraftOrderCreate($input: DraftOrderCreateInput!) {
 		draftOrderCreate(input: $input) {
@@ -690,26 +702,36 @@ async function createDraftPaidOrder(gql, { channelId, variants, email, address, 
 	assertNoMutationErrors("draftOrderCreate", draftData.draftOrderCreate);
 	const draftOrder = draftData.draftOrderCreate.order;
 
-	if (draftOrder.isShippingRequired) {
-		// The order's own list holds the methods valid for its shipping address; the channel-wide
-		// list is the fallback.
-		const candidates = draftOrder.shippingMethods?.length > 0 ? draftOrder.shippingMethods : shippingMethods;
-		const shippingMethod = candidates.find((method) => method.active) ?? candidates[0] ?? null;
-		if (!shippingMethod?.id) {
-			throw new Error(
-				`No shipping method for an address in ${address.country} — check the channel's shipping zones`,
-			);
+	let completeData;
+	try {
+		if (draftOrder.isShippingRequired) {
+			// Saleor lists the channel's methods on the order and marks the ones that apply to its
+			// shipping address as active; it refuses an inactive one. The channel-wide list is the
+			// fallback when the order lists none.
+			const candidates =
+				draftOrder.shippingMethods?.length > 0 ? draftOrder.shippingMethods : shippingMethods;
+			const shippingMethod = candidates.find((method) => method.active);
+			if (!shippingMethod?.id) {
+				throw new Error(
+					`No shipping method applies to an address in ${address.country} — check the channel's shipping zones`,
+				);
+			}
+
+			const shippingData = await gql(ORDER_UPDATE_SHIPPING, {
+				orderId: draftOrder.id,
+				shippingMethodId: shippingMethod.id,
+			});
+			assertNoMutationErrors("orderUpdateShipping", shippingData.orderUpdateShipping);
 		}
 
-		const shippingData = await gql(ORDER_UPDATE_SHIPPING, {
-			orderId: draftOrder.id,
-			shippingMethodId: shippingMethod.id,
-		});
-		assertNoMutationErrors("orderUpdateShipping", shippingData.orderUpdateShipping);
+		completeData = await gql(DRAFT_ORDER_COMPLETE, { id: draftOrder.id });
+		assertNoMutationErrors("draftOrderComplete", completeData.draftOrderComplete);
+	} catch (error) {
+		// A draft that cannot be completed is deleted rather than left in the Dashboard. Saleor
+		// refuses to delete one that did get completed, so this cannot remove an order.
+		await gql(DRAFT_ORDER_DELETE, { id: draftOrder.id }).catch(() => {});
+		throw error;
 	}
-
-	const completeData = await gql(DRAFT_ORDER_COMPLETE, { id: draftOrder.id });
-	assertNoMutationErrors("draftOrderComplete", completeData.draftOrderComplete);
 
 	const paidData = await gql(ORDER_MARK_AS_PAID, { id: completeData.draftOrderComplete.order.id });
 	assertNoMutationErrors("orderMarkAsPaid", paidData.orderMarkAsPaid);
