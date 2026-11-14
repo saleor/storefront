@@ -629,5 +629,21 @@
 			"paymentWebhookFailed": "決済アプリのWebhookが失敗しました。Saleorダッシュボード → Apps → Dummy Payment App でWebhook配信が成功しているか確認してください。",
 			"paymentInitFailed": "支払いを初期化できませんでした。Saleorで決済アプリが稼働しているか確認してください。"
 		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "運営者情報",
+			"metaDescription": "このショップの運営者と連絡先です。",
+			"representedBy": "代表者",
+			"contact": "連絡先",
+			"phone": "電話",
+			"email": "メール",
+			"register": "商業登記",
+			"vatId": "VAT番号"
+		},
+		"footer": {
+			"navLabel": "法的情報",
+			"imprint": "運営者情報"
+		}
 	}
 }

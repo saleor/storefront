@@ -632,5 +632,21 @@
 			"paymentWebhookFailed": "Webhook for betalingsappen mislyktes. I Saleor Dashboard → Apps → Dummy Payment App, sjekk at webhook-leveranser lykkes.",
 			"paymentInitFailed": "Betalingen kunne ikke initialiseres. Sjekk at betalingsappen kjører i Saleor."
 		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "Om selskapet",
+			"metaDescription": "Hvem som driver denne butikken, og hvordan du når oss.",
+			"representedBy": "Representert ved",
+			"contact": "Kontakt",
+			"phone": "Telefon",
+			"email": "E-post",
+			"register": "Foretaksregister",
+			"vatId": "MVA-nummer"
+		},
+		"footer": {
+			"navLabel": "Juridisk informasjon",
+			"imprint": "Om selskapet"
+		}
 	}
 }

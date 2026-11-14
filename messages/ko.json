@@ -620,5 +620,21 @@
 			"paymentWebhookFailed": "결제 앱 웹훅이 실패했습니다. Saleor 대시보드 → 앱 → 테스트 결제 앱에서 웹훅 전달 상태를 확인해주세요.",
 			"paymentInitFailed": "결제를 초기화할 수 없습니다. Saleor에서 결제 앱이 실행 중인지 확인해주세요."
 		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "사업자 정보",
+			"metaDescription": "이 쇼핑몰의 운영자와 연락처입니다.",
+			"representedBy": "대표자",
+			"contact": "연락처",
+			"phone": "전화",
+			"email": "이메일",
+			"register": "상업 등기",
+			"vatId": "부가가치세 번호"
+		},
+		"footer": {
+			"navLabel": "법적 고지",
+			"imprint": "사업자 정보"
+		}
 	}
 }

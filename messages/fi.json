@@ -632,5 +632,21 @@
 			"paymentWebhookFailed": "Maksusovelluksen webhook epäonnistui. Tarkista Saleor-hallintapaneelissa → Sovellukset → Dummy Payment App, että webhook-toimitukset onnistuvat.",
 			"paymentInitFailed": "Maksua ei voitu alustaa. Tarkista, että maksusovellus on käynnissä Saleorissa."
 		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "Yrityksen tiedot",
+			"metaDescription": "Kuka ylläpitää tätä kauppaa ja miten meihin saa yhteyden.",
+			"representedBy": "Edustaja",
+			"contact": "Yhteystiedot",
+			"phone": "Puhelin",
+			"email": "Sähköposti",
+			"register": "Kaupparekisteri",
+			"vatId": "ALV-tunnus"
+		},
+		"footer": {
+			"navLabel": "Oikeudelliset tiedot",
+			"imprint": "Yrityksen tiedot"
+		}
 	}
 }

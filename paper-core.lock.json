@@ -4,16 +4,16 @@
 		"src/lib/saleor/access.ts": "02786a6f5b88316e401d298dc32b7962d93819d359c0944a070234bcb437e075",
 		"src/lib/saleor/cache/life-profiles.data.mjs": "dd094a9bc9c66d234c85315575f29d4dba761ec0fd14c93575e9fd332edbb8a7",
 		"src/lib/saleor/cache/life-profiles.ts": "dd6762d6094fab91a1e66a048bd5e2e81b778cb4c0364e1ff0ef11fed8329b65",
-		"src/lib/saleor/cache/manifest.ts": "7c58f7a0a383ffca5daf006c2675f514e35986fddd45d56fc0ff97cc4dd51c0f",
+		"src/lib/saleor/cache/manifest.ts": "133064fcdf98dce59000659f5936bbcd2ea783ae514c9d95437d2f7b5a15ba23",
 		"src/lib/saleor/cache/tag-primary.ts": "9b4c7a0414e5d049e802fd7df662983a367b16646d87fae8ce0e55ab012aad56",
 		"src/lib/saleor/client.ts": "c7c4cbf92c9aa05a2db3d8d0aadc76294d2522746cb4c665a276effe0170b52d",
 		"src/lib/saleor/extensions.ts": "72d81cb374b9f7d84cd7736254947b91074efd6619ae0a2187c29662a87ba392",
 		"src/lib/saleor/fixtures.ts": "f803ae7d9c73063adfde82601a6e0886ced1f2ba13e79c8521eb2afde6c31d45",
 		"src/lib/saleor/index.ts": "de8ead844b959122e06cf1bbc32f78275c6542fe5f96249019aa01d86b7d726a",
 		"src/lib/saleor/invalidation/revalidate-tags.ts": "e28772954d168642bd82fcfc304b0f6287712cdbf1154f32422c2d9ecee899a0",
-		"src/lib/saleor/invalidation/webhook-events.ts": "5dd875565d716294383b96b63f8b42bc5b901d4bfd5eecc7a70b8170e581162b",
+		"src/lib/saleor/invalidation/webhook-events.ts": "b7d345dd14bf8b459b8a2740f98415024afb7763c0602e183c9c517155a36cc9",
 		"src/lib/saleor/ledger.ts": "5f66b941907bbb077498165a8226e183e624e915522bb07ddfc4b678378c765e",
-		"src/lib/saleor/operations.ts": "b51498953caf9cf51b7681ec3212c91fdd3f558e1fd1a1288b4b7d5ed45b27d3",
+		"src/lib/saleor/operations.ts": "2d3ae7753f9e50d1c80f0cda08a154627da6f3698c1279de1ad68558daec60ab",
 		"src/lib/saleor/raw.ts": "45e3d30eabf2cca7f726571e3ac5b04c01b68f06319028944ad2dbf5dc4005cd",
 		"src/lib/storefront/AGENTS.md": "0801d7f64a44b6469dd8d7c353c882db19e77dcf4e01bb06c8dc6b2c5d93016e",
 		"src/lib/storefront/contract/gallery.ts": "38e03e4d2844fa299330811fb7d6cf0260cd222fc58af3311513ec898d0cc701",
@@ -36,7 +36,7 @@
 		"src/lib/listing/query.ts": "ab82f321fbeb2dec2be789e1e4c827de48a18df5a0dd6fe1f029697e7cd05382",
 		"src/lib/listing/registry.ts": "f83f4fe6b3ea0015e313351b137220a4ce7b66f1978a7b95a706d8688f4241b1",
 		"src/lib/listing/testing.ts": "0ce9ea9c0f36f88120d1f4e8f9f8d7c87eb978d58c3291edd6ce97c4c601afe5",
-		"src/app/api/revalidate/route.ts": "ab573a7143b263cd75d1e142175f8e5b6ccf9cc4e694885a0ca58ca319ea60be",
+		"src/app/api/revalidate/route.ts": "3d9fb90dd8670851df2cd70a0dde0413ae7e1d5153266b48e8428e57d9781709",
 		"src/app/api/cache-info/route.ts": "fb640dddf16d6d360a4ea2e508e03c9b7f6239bb00c899c508126c31e40d2784"
 	}
 }

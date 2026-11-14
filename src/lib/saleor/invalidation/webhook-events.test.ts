@@ -30,6 +30,10 @@ describe("resolveWebhookEventScope", () => {
 		expect(resolveWebhookEventScope("page_updated")?.entity).toBe("page");
 		expect(resolveWebhookEventScope("menu_item_updated")?.entity).toBe("menu");
 		expect(resolveWebhookEventScope("channel_updated")?.entity).toBe("channel");
+		expect(resolveWebhookEventScope("shop_metadata_updated")).toEqual({
+			entity: "shop",
+			affectsListing: false,
+		});
 	});
 
 	it("marks events that can change a listing card", () => {

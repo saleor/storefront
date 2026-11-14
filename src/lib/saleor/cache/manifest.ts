@@ -153,6 +153,18 @@ const profiles = {
 		tagPattern: "channels",
 		pathPattern: null,
 	},
+	/**
+	 * Seller details for the imprint and the footer (company address, public `seller.*`
+	 * shop metadata). `shop_metadata_updated` busts it; a company address edit has no
+	 * Saleor event and waits for the hourly revalidate.
+	 */
+	shop: {
+		id: "shop",
+		label: "Shop Details",
+		cacheProfile: "menus",
+		tagPattern: "shop",
+		pathPattern: null,
+	},
 	storefrontContent: {
 		id: "storefront-content",
 		label: "Storefront Content",

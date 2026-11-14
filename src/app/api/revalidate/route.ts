@@ -295,6 +295,15 @@ export async function POST(request: NextRequest) {
 			return Response.json({ paths: [], tags: revalidatedTags, success: true });
 		}
 
+		if (type === "shop") {
+			const profile = CACHE_PROFILES.shop;
+			const revalidatedTags = await revalidateTags([
+				{ tag: buildTag(profile), profile: profile.cacheProfile },
+			]);
+			console.log("[Revalidate] Success:", { type, tags: revalidatedTags });
+			return Response.json({ paths: [], tags: revalidatedTags, success: true });
+		}
+
 		const targetChannel = channel || DefaultChannelSlug;
 		if (!targetChannel) {
 			return Response.json(

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { StorefrontRegionPicker } from "./storefront-region-picker";
 import {
 	getStaticStorefrontChannelSlugs,
@@ -17,20 +18,44 @@ import { CopyrightText } from "./copyright-text";
 import { FooterAttribution } from "./footer-attribution";
 import { FooterPhotoCredits } from "./footer-photo-credits";
 import { brandConfig } from "@/config/brand";
+import { IMPRINT_PATH, LEGAL_PAGE_KEYS } from "@/config/legal";
+import { resolveLocaleFromSlug } from "@/config/locale";
+import { getLegalLinks } from "@/lib/catalog/get-legal-links";
+import { getSellerIdentity } from "@/lib/channels/get-seller-identity";
+import { sellerAddressLines } from "@/lib/channels/seller-identity";
 import { Logo } from "./shared/logo";
 
 import { buildStorefrontPath } from "@/lib/storefront-path";
+
+const legalLinkClass = "text-xs text-inverse-muted transition-colors hover:text-inverse-subtle";
 
 export async function Footer({ locale, channel }: { locale: string; channel: string }) {
 	const resolvedSlugs = needsAsyncChannelDiscovery()
 		? await getStorefrontChannelSlugs()
 		: getStaticStorefrontChannelSlugs();
 
-	const [menuItems, channels, content] = await Promise.all([
+	const [menuItems, channels, content, seller, legalLinks, tLegal] = await Promise.all([
 		getFooterMenuItems(channel, locale),
 		shouldFetchChannelMetadata(resolvedSlugs) ? getCachedChannelsList() : Promise.resolve(null),
 		getStorefrontContent(channel, locale),
+		getSellerIdentity(),
+		getLegalLinks(locale),
+		getTranslations({ locale, namespace: "legal.footer" }),
 	]);
+
+	// Who sells, on every page: the legal name is in the copyright line, the address under
+	// it. The imprint has the rest.
+	const sellerAddressLine = seller?.address
+		? sellerAddressLines(seller.address, resolveLocaleFromSlug(locale).bcp47).join(" · ")
+		: null;
+	// Only pages that exist: the imprint needs a seller, the rest need their Saleor Page.
+	const legalNav = [
+		...(seller ? [{ label: tLegal("imprint"), path: IMPRINT_PATH }] : []),
+		...LEGAL_PAGE_KEYS.flatMap((key) => {
+			const link = legalLinks[key];
+			return link ? [{ label: link.title, path: link.path }] : [];
+		}),
+	];
 
 	const footerMenuItems = menuItems ?? [];
 	const localeOptions = getStorefrontLocaleOptions();
@@ -68,28 +93,30 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 						<p className="text-xs text-inverse-muted">
 							{/* The year is read at request time; the shell keeps the line's height. */}
 							<Suspense fallback={"\u00a0"}>
-								<CopyrightText />
+								<CopyrightText holder={seller?.legalName} />
 							</Suspense>
 						</p>
+						{sellerAddressLine ? <p className="text-xs text-inverse-muted">{sellerAddressLine}</p> : null}
 						<FooterAttribution />
 						<FooterPhotoCredits credits={content.surfaces.homepage.photoCredits} />
 					</div>
-					<div className="flex items-center gap-6">
-						<Link
-							href="/privacy"
-							prefetch={false}
-							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
+					{legalNav.length > 0 ? (
+						<nav
+							aria-label={tLegal("navLabel")}
+							className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:justify-end"
 						>
-							Privacy Policy
-						</Link>
-						<Link
-							href="/terms"
-							prefetch={false}
-							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
-						>
-							Terms of Service
-						</Link>
-					</div>
+							{legalNav.map((link) => (
+								<Link
+									key={link.path}
+									href={buildStorefrontPath(locale, channel, link.path)}
+									prefetch={false}
+									className={legalLinkClass}
+								>
+									{link.label}
+								</Link>
+							))}
+						</nav>
+					) : null}
 				</div>
 			</div>
 		</footer>

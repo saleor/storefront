@@ -632,5 +632,21 @@
 			"paymentWebhookFailed": "Webhook der Zahlungs-App fehlgeschlagen. Prüfen Sie im Saleor Dashboard → Apps → Dummy Payment App, ob Webhook-Zustellungen erfolgreich sind.",
 			"paymentInitFailed": "Zahlung konnte nicht initialisiert werden. Prüfen Sie, ob die Zahlungs-App in Saleor läuft."
 		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "Impressum",
+			"metaDescription": "Wer diesen Shop betreibt und wie Sie uns erreichen.",
+			"representedBy": "Vertreten durch",
+			"contact": "Kontakt",
+			"phone": "Telefon",
+			"email": "E-Mail",
+			"register": "Handelsregister",
+			"vatId": "Umsatzsteuer-ID"
+		},
+		"footer": {
+			"navLabel": "Rechtliches",
+			"imprint": "Impressum"
+		}
 	}
 }

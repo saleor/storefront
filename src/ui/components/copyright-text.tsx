@@ -6,13 +6,14 @@ import { getCopyrightText } from "@/config/brand";
 
 /**
  * Copyright line with the current year. Render it inside `<Suspense>`.
+ * `holder` is the seller's legal name from Saleor; without it the brand config's is used.
  *
  * `new Date()` during a prerender is sync IO. Under Cache Components it aborts the
  * prerender mid-tree, and the request-time resume of the surrounding boundary then
  * fails ("Couldn't find all resumable slots") and falls back to client rendering.
  * `io()` turns the read into a small dynamic hole instead.
  */
-export function CopyrightText() {
+export function CopyrightText({ holder }: { holder?: string | null }) {
 	use(io());
-	return <>{getCopyrightText()}</>;
+	return <>{getCopyrightText(new Date().getFullYear(), holder ?? undefined)}</>;
 }
