@@ -568,7 +568,7 @@
 			"authorizedTitle": "Zahlung autorisiert — Bestellung abschließen",
 			"authorizedBody": "Ihre Zahlung ist autorisiert (die Belastung erfolgt bei der Auftragsabwicklung). Tippen Sie unten, um Ihre Bestellung aufzugeben — Sie werden beim Checkout nicht erneut belastet.",
 			"freeOrderBody": "Ihre Bestellsumme beträgt {total}. Keine Zahlung erforderlich — bestätigen Sie unten, um Ihre Bestellung aufzugeben.",
-			"dummyTestMode": "Testmodus. Keine Kartendaten erforderlich — nutzen Sie Bezahlen, um eine Testbestellung abzuschließen.",
+			"dummyTestMode": "Testmodus. Keine Kartendaten erforderlich — nutzen Sie „Zahlungspflichtig bestellen“, um eine Testbestellung abzuschließen.",
 			"stripeLoadTitle": "Stripe konnte nicht geladen werden"
 		},
 		"confirmation": {

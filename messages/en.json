@@ -426,8 +426,8 @@
 			"logIn": "Log in",
 			"returnToInformation": "Return to information",
 			"returnToShipping": "Return to shipping",
-			"payNow": "Pay now",
-			"payTotal": "Pay {total}",
+			"payNow": "Buy now",
+			"payTotal": "Buy now",
 			"completeOrder": "Complete order",
 			"placingOrder": "Placing order…",
 			"creatingOrder": "Creating order…",
@@ -568,7 +568,7 @@
 			"authorizedTitle": "Payment authorized — place your order",
 			"authorizedBody": "Your payment is authorized (capture happens when we fulfill the order). Tap below to place your order — you will not be charged again at checkout.",
 			"freeOrderBody": "Your order total is {total}. No payment is required — confirm below to place your order.",
-			"dummyTestMode": "Test mode. No card details needed — use Pay to complete a test order.",
+			"dummyTestMode": "Test mode. No card details needed — use Buy now to complete a test order.",
 			"stripeLoadTitle": "Could not load Stripe"
 		},
 		"confirmation": {
