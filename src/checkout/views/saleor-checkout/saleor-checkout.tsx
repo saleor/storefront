@@ -12,6 +12,7 @@ import { useCheckoutStep } from "@/checkout/hooks/use-checkout-step";
 import { useCheckoutStepFromUrl } from "@/checkout/hooks/use-checkout-step-from-url";
 import { useCustomerAttach } from "@/checkout/hooks/use-customer-attach";
 import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries";
+import { unavailableLineIdsFromProblems } from "@/checkout/lib/checkout-availability";
 import { useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import {
@@ -67,7 +68,13 @@ const SaleorCheckoutView: FC = () => {
 				}
 
 				setCheckout(result.checkout);
-				const remainingIds = (availabilityIssue?.lineIds ?? []).filter((id) => id !== lineId);
+				// Lines Saleor still lists in `problems` are tracked live from the checkout, so keep
+				// only the ones a step reported. Otherwise they would stay flagged after the shopper
+				// fixes them another way (lowering the quantity).
+				const liveProblemIds = new Set(unavailableLineIdsFromProblems(result.checkout.problems));
+				const remainingIds = (availabilityIssue?.lineIds ?? []).filter(
+					(id) => id !== lineId && !liveProblemIds.has(id),
+				);
 				setAvailabilityIssue(
 					remainingIds.length && availabilityIssue ? { ...availabilityIssue, lineIds: remainingIds } : null,
 				);
@@ -172,9 +179,11 @@ const SaleorCheckoutView: FC = () => {
 											}
 										>
 											<p>
-												{availabilityIssue.lineIds.length
-													? tErrors("itemUnavailableRemoveMessage")
-													: tErrors("itemUnavailableMessage")}
+												{availabilityIssue.cause === "stock"
+													? tErrors("itemOutOfStockMessage")
+													: availabilityIssue.lineIds.length
+														? tErrors("itemUnavailableRemoveMessage")
+														: tErrors("itemUnavailableMessage")}
 											</p>
 											{removeUnavailableError ? (
 												<p className="mt-2 text-destructive">{removeUnavailableError}</p>

@@ -451,6 +451,7 @@
 			"itemUnavailableTitle": "Produkt jest niedostępny",
 			"itemUnavailableMessage": "Tego produktu nie da się zrealizować na podany adres. Spróbuj innego miejsca dostawy.",
 			"itemUnavailableRemoveMessage": "Tego produktu nie da się zrealizować na podany adres. Usuń go, żeby kontynuować, albo zmień miejsce dostawy.",
+			"itemOutOfStockMessage": "Ten produkt jest wyprzedany albo nie jest już dostępny w wybranej ilości. Usuń go, żeby kontynuować.",
 			"itemUnavailableRemove": "Usuń produkt",
 			"itemUnavailableRemoveFailed": "Nie udało się usunąć produktu. Spróbuj ponownie.",
 			"fulfillmentCheckFailed": "Nie udało się sprawdzić dostępności produktu. Spróbuj ponownie.",

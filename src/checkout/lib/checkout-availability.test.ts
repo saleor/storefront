@@ -2,11 +2,74 @@ import { describe, expect, it } from "vitest";
 
 import {
 	availabilityIssueFromFieldErrors,
+	availabilityIssueFromProblems,
 	isAvailabilityFieldError,
 	matchUnavailableLineIds,
+	mergeAvailabilityIssues,
 	messageMentionsVariant,
 	partitionCheckoutFieldErrors,
+	unavailableLineIdsFromProblems,
 } from "./checkout-availability";
+
+describe("unavailableLineIdsFromProblems", () => {
+	it("collects the lines Saleor reports as out of stock or not available", () => {
+		expect(
+			unavailableLineIdsFromProblems([
+				{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-a" } },
+				{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-b" } },
+			]),
+		).toEqual(["line-a", "line-b"]);
+	});
+
+	it("ignores delivery problems and lists each line once", () => {
+		expect(
+			unavailableLineIdsFromProblems([
+				{ __typename: "CheckoutProblemDeliveryMethodStale" },
+				{ __typename: "CheckoutProblemDeliveryMethodInvalid" },
+				{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-a" } },
+				{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-a" } },
+			]),
+		).toEqual(["line-a"]);
+	});
+
+	it("returns nothing when the checkout has no problems", () => {
+		expect(unavailableLineIdsFromProblems(null)).toEqual([]);
+		expect(unavailableLineIdsFromProblems(undefined)).toEqual([]);
+		expect(unavailableLineIdsFromProblems([])).toEqual([]);
+	});
+});
+
+describe("availabilityIssueFromProblems", () => {
+	it("builds an issue for the affected lines", () => {
+		expect(
+			availabilityIssueFromProblems([
+				{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-a" } },
+			]),
+		).toEqual({ message: "", lineIds: ["line-a"], cause: "stock" });
+	});
+
+	it("returns null when only delivery problems are present", () => {
+		expect(availabilityIssueFromProblems([{ __typename: "CheckoutProblemDeliveryMethodStale" }])).toBeNull();
+	});
+});
+
+describe("mergeAvailabilityIssues", () => {
+	it("returns whichever issue exists", () => {
+		const issue = { message: "Out of stock", lineIds: ["line-a"] };
+		expect(mergeAvailabilityIssues(null, null)).toBeNull();
+		expect(mergeAvailabilityIssues(issue, null)).toBe(issue);
+		expect(mergeAvailabilityIssues(null, issue)).toBe(issue);
+	});
+
+	it("unions the lines, keeps the reported message and takes the stock cause", () => {
+		expect(
+			mergeAvailabilityIssues(
+				{ message: "Could not add items M.", lineIds: ["line-a"] },
+				{ message: "", lineIds: ["line-a", "line-b"], cause: "stock" },
+			),
+		).toEqual({ message: "Could not add items M.", lineIds: ["line-a", "line-b"], cause: "stock" });
+	});
+});
 
 describe("isAvailabilityFieldError", () => {
 	it("treats quantity, variant, and INSUFFICIENT_STOCK as availability", () => {

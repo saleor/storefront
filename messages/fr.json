@@ -453,6 +453,7 @@
 			"itemUnavailableTitle": "An item isn’t available",
 			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
+			"itemOutOfStockMessage": "Cet article est épuisé ou n’est plus disponible dans la quantité choisie. Retirez-le pour continuer.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."

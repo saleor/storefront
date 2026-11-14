@@ -442,6 +442,7 @@
 			"itemUnavailableTitle": "An item isn’t available",
 			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
+			"itemOutOfStockMessage": "이 상품은 품절되었거나 선택한 수량만큼 구매할 수 없습니다. 계속하려면 상품을 삭제하세요.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",

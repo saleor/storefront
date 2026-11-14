@@ -3,6 +3,11 @@ import type { CheckoutFieldError } from "@/checkout/lib/checkout-action-types";
 export type CheckoutAvailabilityIssue = {
 	message: string;
 	lineIds: string[];
+	/**
+	 * `"stock"`: Saleor lists the lines in `checkout.problems` (sold out, short on quantity, or
+	 * no longer sold). Absent: a mutation was rejected, which is about the destination.
+	 */
+	cause?: "stock";
 };
 
 export function isAvailabilityFieldError(error: { field?: string | null; code?: string | null }): boolean {
@@ -68,6 +73,59 @@ export function availabilityIssueFromFieldErrors(
 	return {
 		message: first.message ?? fallbackMessage,
 		lineIds: [...lineIds],
+	};
+}
+
+/** Shape of the `checkout.problems` entries this module reads. */
+export type CheckoutProblemLike = {
+	__typename?: string;
+	line?: { id: string } | null;
+};
+
+const LINE_PROBLEM_TYPES: ReadonlySet<string> = new Set([
+	"CheckoutLineProblemInsufficientStock",
+	"CheckoutLineProblemVariantNotAvailable",
+]);
+
+/** Line ids Saleor flags as out of stock or no longer available in `checkout.problems`. */
+export function unavailableLineIdsFromProblems(
+	problems: ReadonlyArray<CheckoutProblemLike> | null | undefined,
+): string[] {
+	const lineIds = new Set<string>();
+	for (const problem of problems ?? []) {
+		if (problem.__typename && LINE_PROBLEM_TYPES.has(problem.__typename) && problem.line?.id) {
+			lineIds.add(problem.line.id);
+		}
+	}
+	return [...lineIds];
+}
+
+/**
+ * With the channel's legacy error flow off (`useLegacyErrorFlow: false`), Saleor no longer
+ * rejects checkout mutations for stock. It lists the affected lines in `checkout.problems`
+ * and only fails at `checkoutComplete`, which is after the shopper has paid.
+ */
+export function availabilityIssueFromProblems(
+	problems: ReadonlyArray<CheckoutProblemLike> | null | undefined,
+	message = "",
+): CheckoutAvailabilityIssue | null {
+	const lineIds = unavailableLineIdsFromProblems(problems);
+	return lineIds.length ? { message, lineIds, cause: "stock" } : null;
+}
+
+/** Combine the issue a step reported with the one read from `checkout.problems`. */
+export function mergeAvailabilityIssues(
+	reported: CheckoutAvailabilityIssue | null,
+	fromProblems: CheckoutAvailabilityIssue | null,
+): CheckoutAvailabilityIssue | null {
+	if (!reported || !fromProblems) {
+		return reported ?? fromProblems;
+	}
+
+	return {
+		message: reported.message || fromProblems.message,
+		lineIds: [...new Set([...reported.lineIds, ...fromProblems.lineIds])],
+		cause: fromProblems.cause ?? reported.cause,
 	};
 }
 

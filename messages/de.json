@@ -450,12 +450,13 @@
 			"updateAddressFailed": "Adresse konnte nicht aktualisiert werden",
 			"crashTitle": "Checkout-Fehler",
 			"crashMessage": "Beim Laden des Checkouts ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
-			"itemUnavailableTitle": "An item isn’t available",
-			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
-			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
-			"itemUnavailableRemove": "Remove item",
-			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"itemUnavailableTitle": "Ein Artikel ist nicht verfügbar",
+			"itemUnavailableMessage": "Dieser Artikel kann nicht an die angegebene Adresse geliefert werden. Versuchen Sie es mit einer anderen Lieferadresse.",
+			"itemUnavailableRemoveMessage": "Dieser Artikel kann nicht an die angegebene Adresse geliefert werden. Entfernen Sie ihn, um fortzufahren, oder wählen Sie eine andere Lieferadresse.",
+			"itemOutOfStockMessage": "Dieser Artikel ist ausverkauft oder nicht mehr in der gewählten Menge verfügbar. Entfernen Sie ihn, um fortzufahren.",
+			"itemUnavailableRemove": "Artikel entfernen",
+			"itemUnavailableRemoveFailed": "Der Artikel konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
+			"fulfillmentCheckFailed": "Die Verfügbarkeit konnte nicht geprüft werden. Bitte versuchen Sie es erneut."
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -489,9 +490,9 @@
 			"method": "Methode",
 			"delivery": "Lieferung",
 			"digital": "Digital",
-			"soldOut": "Sold out",
-			"unavailableHint": "An item isn’t available",
-			"removeItem": "Remove"
+			"soldOut": "Ausverkauft",
+			"unavailableHint": "Ein Artikel ist nicht verfügbar",
+			"removeItem": "Entfernen"
 		},
 		"promo": {
 			"placeholder": "Rabattcode",
