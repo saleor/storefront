@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Edellinen",
 			"next": "Seuraava"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Sis. ALV, lisäksi <shipping>toimituskulut</shipping>",
+			"allInclVatPlusShipping": "Kaikki hinnat sis. ALV, lisäksi <shipping>toimituskulut</shipping>.",
+			"inclVat": "Sis. ALV"
 		}
 	},
 	"pdp": {

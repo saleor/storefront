@@ -43,6 +43,7 @@ const CORE_OPERATIONS = {
 	CategoriesBySlug: cached("global"),
 	ChannelsList: cached("global", "app"),
 	ShopSellerIdentity: cached("global"),
+	ChannelPriceDisplay: cached("global"),
 
 	// Storefront session reads.
 	CurrentUser: session(),

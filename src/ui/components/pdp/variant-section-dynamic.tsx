@@ -12,6 +12,7 @@ import { AddToCart } from "./add-to-cart";
 import { NonMatrixBuyBox } from "./non-matrix-buy-box";
 import { VariantSelectionSection } from "./variant-selection";
 import { StickyBar } from "./sticky-bar";
+import { PriceNote } from "@/ui/components/price-note";
 import { Badge } from "@/ui/components/ui/badge";
 import { SaleBadge } from "@/ui/components/ui/sale-label";
 import { resolveSelectedVariantId, type Product } from "./gallery-utils";
@@ -176,6 +177,7 @@ export async function VariantSectionDynamic({
 					disabledReason={disabledReason}
 					secureCheckoutLabel={secureCheckoutLabel}
 					freeShippingTrustLabel={freeShippingTrustLabel}
+					priceNote={<PriceNote channel={channel} locale={localeSlug} />}
 				/>
 
 				<StickyBar productName={product.name} price={price} show={!isAddToCartDisabled} />

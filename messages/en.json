@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Previous",
 			"next": "Next"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Incl. VAT, plus <shipping>shipping costs</shipping>",
+			"allInclVatPlusShipping": "All prices incl. VAT, plus <shipping>shipping costs</shipping>.",
+			"inclVat": "Incl. VAT"
 		}
 	},
 	"pdp": {

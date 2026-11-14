@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "前へ",
 			"next": "次へ"
+		},
+		"prices": {
+			"inclVatPlusShipping": "税込、<shipping>送料</shipping>別",
+			"allInclVatPlusShipping": "価格はすべて税込、<shipping>送料</shipping>別です。",
+			"inclVat": "税込"
 		}
 	},
 	"pdp": {

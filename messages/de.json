@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Zurück",
 			"next": "Weiter"
+		},
+		"prices": {
+			"inclVatPlusShipping": "inkl. MwSt., zzgl. <shipping>Versandkosten</shipping>",
+			"allInclVatPlusShipping": "Alle Preise inkl. MwSt., zzgl. <shipping>Versandkosten</shipping>.",
+			"inclVat": "inkl. MwSt."
 		}
 	},
 	"pdp": {

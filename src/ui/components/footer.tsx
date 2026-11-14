@@ -23,6 +23,7 @@ import { resolveLocaleFromSlug } from "@/config/locale";
 import { getLegalLinks } from "@/lib/catalog/get-legal-links";
 import { getSellerIdentity } from "@/lib/channels/get-seller-identity";
 import { sellerAddressLines } from "@/lib/channels/seller-identity";
+import { PriceNote } from "./price-note";
 import { Logo } from "./shared/logo";
 
 import { buildStorefrontPath } from "@/lib/storefront-path";
@@ -86,6 +87,9 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 						<StorefrontRegionPicker locales={localeOptions} channels={selectorChannels} variant="inverted" />
 					</div>
 				)}
+
+				{/* Covers every price on the page that has no note of its own (listing cards, search). */}
+				<PriceNote channel={channel} locale={locale} variant="all" className="mt-10 text-inverse-muted" />
 
 				{/* Bottom bar */}
 				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-inverse pt-8 sm:flex-row">

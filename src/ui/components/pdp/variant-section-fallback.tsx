@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ShoppingBag } from "lucide-react";
 
 import type { StorefrontContent } from "@/lib/content";
@@ -39,6 +40,8 @@ export interface VariantSectionFallbackProps {
 	selectOptionsLabel: string;
 	secureCheckoutLabel: string;
 	freeShippingTrustLabel?: string | null;
+	/** `<PriceNote />`, so the shell keeps the line the buy box will show under the price. */
+	priceNote?: ReactNode;
 }
 
 type FallbackProduct = {
@@ -92,6 +95,7 @@ export function VariantSectionFallback({
 	selectOptionsLabel,
 	secureCheckoutLabel,
 	freeShippingTrustLabel,
+	priceNote,
 }: VariantSectionFallbackProps) {
 	return (
 		<>
@@ -101,8 +105,11 @@ export function VariantSectionFallback({
 
 			<div className="order-3 mt-4 space-y-6" aria-busy="true">
 				<div className="space-y-4">
-					<div className="flex items-baseline gap-3">
-						<span className="text-2xl font-semibold tabular-nums tracking-tight">{price}</span>
+					<div className="space-y-1">
+						<div className="flex items-baseline gap-3">
+							<span className="text-2xl font-semibold tabular-nums tracking-tight">{price}</span>
+						</div>
+						{priceNote}
 					</div>
 					<Button type="button" size="lg" disabled className="h-14 w-full text-base font-medium">
 						<ShoppingBag className="mr-2 h-5 w-5" />

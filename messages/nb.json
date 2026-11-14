@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Forrige",
 			"next": "Neste"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Inkl. mva., pluss <shipping>frakt</shipping>",
+			"allInclVatPlusShipping": "Alle priser inkl. mva., pluss <shipping>frakt</shipping>.",
+			"inclVat": "Inkl. mva."
 		}
 	},
 	"pdp": {

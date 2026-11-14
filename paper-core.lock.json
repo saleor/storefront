@@ -13,7 +13,7 @@
 		"src/lib/saleor/invalidation/revalidate-tags.ts": "e28772954d168642bd82fcfc304b0f6287712cdbf1154f32422c2d9ecee899a0",
 		"src/lib/saleor/invalidation/webhook-events.ts": "b7d345dd14bf8b459b8a2740f98415024afb7763c0602e183c9c517155a36cc9",
 		"src/lib/saleor/ledger.ts": "5f66b941907bbb077498165a8226e183e624e915522bb07ddfc4b678378c765e",
-		"src/lib/saleor/operations.ts": "2d3ae7753f9e50d1c80f0cda08a154627da6f3698c1279de1ad68558daec60ab",
+		"src/lib/saleor/operations.ts": "30ac62f5abc52b0c89d7d878ca92f034271dfa2b6141135e234febb0970b98f1",
 		"src/lib/saleor/raw.ts": "45e3d30eabf2cca7f726571e3ac5b04c01b68f06319028944ad2dbf5dc4005cd",
 		"src/lib/storefront/AGENTS.md": "0801d7f64a44b6469dd8d7c353c882db19e77dcf4e01bb06c8dc6b2c5d93016e",
 		"src/lib/storefront/contract/gallery.ts": "38e03e4d2844fa299330811fb7d6cf0260cd222fc58af3311513ec898d0cc701",

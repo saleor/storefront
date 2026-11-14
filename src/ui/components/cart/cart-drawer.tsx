@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -120,6 +120,8 @@ interface CartDrawerProps {
 	policies: StorefrontPolicies;
 	deleteCartLine: DeleteCartLine;
 	updateCartLineQuantity: UpdateCartLineQuantity;
+	/** Server-rendered `<PriceNote variant="total" />` ("incl. VAT"), shown under the total. */
+	totalNote?: ReactNode;
 }
 
 export function CartDrawer({
@@ -131,6 +133,7 @@ export function CartDrawer({
 	policies,
 	deleteCartLine,
 	updateCartLineQuantity,
+	totalNote,
 }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isCartBusy, setIsCartBusy] = useState(false);
@@ -385,6 +388,7 @@ export function CartDrawer({
 								<span>{t("total")}</span>
 								<span>{formatMoney(subtotal, currency, intlLocale)}</span>
 							</div>
+							{totalNote}
 						</div>
 
 						{/* Actions */}

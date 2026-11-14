@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Précédent",
 			"next": "Suivant"
+		},
+		"prices": {
+			"inclVatPlusShipping": "TVA incluse, <shipping>frais de livraison</shipping> en sus",
+			"allInclVatPlusShipping": "Tous les prix s’entendent TVA incluse, <shipping>frais de livraison</shipping> en sus.",
+			"inclVat": "TVA incluse"
 		}
 	},
 	"pdp": {

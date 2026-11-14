@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
 import { ShoppingBag } from "lucide-react";
@@ -17,6 +17,8 @@ interface AddToCartProps {
 	disabledReason?: "no-selection" | "out-of-stock";
 	secureCheckoutLabel: string;
 	freeShippingTrustLabel?: string | null;
+	/** Server-rendered `<PriceNote />` ("incl. VAT, plus shipping costs"), shown under the price. */
+	priceNote?: ReactNode;
 }
 
 function AddToCartButton({
@@ -68,17 +70,23 @@ export function AddToCart({
 	disabledReason,
 	secureCheckoutLabel,
 	freeShippingTrustLabel,
+	priceNote,
 }: AddToCartProps) {
 	return (
 		<div className="space-y-4">
-			<div className="flex items-baseline gap-3">
-				<span className="text-2xl font-semibold tabular-nums tracking-tight">{price}</span>
-				{compareAtPrice && (
-					<>
-						<span className="text-lg tabular-nums text-muted-foreground line-through">{compareAtPrice}</span>
-						{discountPercent ? <DiscountPercentLabel percent={discountPercent} /> : null}
-					</>
-				)}
+			<div className="space-y-1">
+				<div className="flex items-baseline gap-3">
+					<span className="text-2xl font-semibold tabular-nums tracking-tight">{price}</span>
+					{compareAtPrice && (
+						<>
+							<span className="text-lg tabular-nums text-muted-foreground line-through">
+								{compareAtPrice}
+							</span>
+							{discountPercent ? <DiscountPercentLabel percent={discountPercent} /> : null}
+						</>
+					)}
+				</div>
+				{priceNote}
 			</div>
 
 			<AddToCartButton disabled={disabled} disabledReason={disabledReason} />

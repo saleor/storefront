@@ -1,0 +1,15 @@
+# Whether the channel shows prices with tax included (its tax configuration's
+# "display gross prices"). Saleor exposes that setting to anonymous clients only through
+# product pricing, so this reads it from one product of the channel.
+query ChannelPriceDisplay($channel: String!) {
+	products(first: 1, channel: $channel) {
+		edges {
+			node {
+				id
+				pricing {
+					displayGrossPrices
+				}
+			}
+		}
+	}
+}

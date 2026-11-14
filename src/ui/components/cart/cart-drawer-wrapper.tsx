@@ -3,6 +3,7 @@ import { io } from "next/cache";
 import { deleteCartLine, updateCartLineQuantity } from "@/app/actions";
 import type { CartContent, StorefrontPolicies } from "@/lib/content";
 import * as Checkout from "@/lib/checkout";
+import { PriceNote } from "@/ui/components/price-note";
 import { CartDrawer } from "./cart-drawer";
 
 interface CartDrawerWrapperProps {
@@ -29,6 +30,7 @@ export async function CartDrawerWrapper({ channel, localeSlug, cart, policies }:
 			policies={policies}
 			deleteCartLine={deleteCartLine}
 			updateCartLineQuantity={updateCartLineQuantity}
+			totalNote={<PriceNote channel={channel} locale={localeSlug} variant="total" className="text-right" />}
 		/>
 	);
 }

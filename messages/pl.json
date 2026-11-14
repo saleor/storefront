@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Poprzednia",
 			"next": "Następna"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Zawiera VAT, plus <shipping>koszty dostawy</shipping>",
+			"allInclVatPlusShipping": "Wszystkie ceny zawierają VAT, plus <shipping>koszty dostawy</shipping>.",
+			"inclVat": "Zawiera VAT"
 		}
 	},
 	"pdp": {
