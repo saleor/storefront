@@ -636,6 +636,11 @@
 			"paymentTryAgain": "Paiement échoué. Veuillez réessayer.",
 			"paymentWebhookFailed": "Échec du webhook de l'application de paiement. Dans Saleor Dashboard → Apps → Dummy Payment App, vérifiez que les livraisons de webhooks réussissent.",
 			"paymentInitFailed": "Le paiement n'a pas pu être initialisé. Vérifiez que l'application de paiement fonctionne dans Saleor."
+		},
+		"legal": {
+			"terms": "En passant commande, vous acceptez nos <link>conditions générales de vente</link>.",
+			"withdrawal": "Vous disposez d’un droit de rétractation : consultez nos <link>informations sur la rétractation</link>.",
+			"privacy": "Notre <link>politique de confidentialité</link> explique comment nous utilisons vos données."
 		}
 	},
 	"legal": {

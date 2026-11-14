@@ -636,6 +636,11 @@
 			"paymentTryAgain": "Płatność nie powiodła się. Spróbuj ponownie.",
 			"paymentWebhookFailed": "Webhook aplikacji płatności nie powiódł się. W panelu Saleor → Aplikacje → Dummy Payment App sprawdź dostarczanie webhooków.",
 			"paymentInitFailed": "Nie udało się zainicjować płatności. Sprawdź, czy aplikacja płatności działa w Saleor."
+		},
+		"legal": {
+			"terms": "Składając zamówienie, akceptujesz nasz <link>regulamin</link>.",
+			"withdrawal": "Masz prawo odstąpienia od umowy: zobacz <link>informacje o odstąpieniu</link>.",
+			"privacy": "O przetwarzaniu Twoich danych informuje <link>polityka prywatności</link>."
 		}
 	},
 	"legal": {

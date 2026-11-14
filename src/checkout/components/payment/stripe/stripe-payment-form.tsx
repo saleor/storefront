@@ -22,6 +22,7 @@ import { PaymentTrustSignals } from "@/checkout/components/payment/payment-trust
 import { type StripeBillingContext } from "./stripe-billing-context";
 import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
+import { OrderLegalNotice } from "@/checkout/components/payment/order-legal-notice";
 
 export type { StripeBillingContext } from "./stripe-billing-context";
 
@@ -142,6 +143,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 					}}
 				/>
 				<PaymentTrustSignals provider="stripe" className="pt-1" />
+				<OrderLegalNotice />
 				<Button
 					type="button"
 					className="h-12 w-full md:w-auto md:min-w-[200px]"

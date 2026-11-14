@@ -20,6 +20,10 @@ import { CheckoutPaymentReturnErrorProvider } from "@/checkout/providers/checkou
 import type { LocaleSlug } from "@/config/locale";
 import type { CheckoutMessages } from "@/i18n/load-messages";
 import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
+import {
+	CheckoutLegalLinksProvider,
+	type CheckoutLegalLinks,
+} from "@/checkout/providers/checkout-legal-links";
 import { RootViews } from "./views/root-views";
 import { CheckoutPaymentHistoryGuard } from "@/checkout/components/checkout-payment-history-guard";
 import { CheckoutSessionCleanup } from "@/checkout/components/checkout-session-cleanup";
@@ -45,6 +49,7 @@ type CheckoutAppProps = {
 	checkoutContent: CheckoutContent;
 	storefrontLocale: LocaleSlug;
 	messages: CheckoutMessages;
+	legalLinks?: CheckoutLegalLinks;
 };
 
 /**
@@ -61,6 +66,7 @@ export function CheckoutApp({
 	checkoutContent,
 	storefrontLocale,
 	messages,
+	legalLinks = {},
 }: CheckoutAppProps) {
 	return (
 		<CheckoutIntlProvider locale={storefrontLocale} messages={messages}>
@@ -79,17 +85,19 @@ export function CheckoutApp({
 							channelDefaultCountryCode={channelDefaultCountryCode}
 						>
 							<CheckoutContentProvider content={checkoutContent}>
-								<CheckoutCommerceEvents />
-								<CheckoutPaymentReturnErrorProvider>
-									<Suspense fallback={null}>
-										<StripeCheckoutCompletionHost />
-									</Suspense>
-									<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
-										<Suspense fallback={<CheckoutLoadingFallback />}>
-											<RootViews />
+								<CheckoutLegalLinksProvider links={legalLinks}>
+									<CheckoutCommerceEvents />
+									<CheckoutPaymentReturnErrorProvider>
+										<Suspense fallback={null}>
+											<StripeCheckoutCompletionHost />
 										</Suspense>
-									</ErrorBoundary>
-								</CheckoutPaymentReturnErrorProvider>
+										<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
+											<Suspense fallback={<CheckoutLoadingFallback />}>
+												<RootViews />
+											</Suspense>
+										</ErrorBoundary>
+									</CheckoutPaymentReturnErrorProvider>
+								</CheckoutLegalLinksProvider>
 							</CheckoutContentProvider>
 						</CheckoutDataProvider>
 					</CheckoutUserProvider>

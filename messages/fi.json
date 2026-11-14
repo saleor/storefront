@@ -636,6 +636,11 @@
 			"paymentTryAgain": "Maksu epäonnistui. Yritä uudelleen.",
 			"paymentWebhookFailed": "Maksusovelluksen webhook epäonnistui. Tarkista Saleor-hallintapaneelissa → Sovellukset → Dummy Payment App, että webhook-toimitukset onnistuvat.",
 			"paymentInitFailed": "Maksua ei voitu alustaa. Tarkista, että maksusovellus on käynnissä Saleorissa."
+		},
+		"legal": {
+			"terms": "Tekemällä tilauksen hyväksyt <link>toimitusehtomme</link>.",
+			"withdrawal": "Sinulla on peruuttamisoikeus: katso <link>peruuttamisohjeet</link>.",
+			"privacy": "<link>Tietosuojaselosteemme</link> kertoo, miten käsittelemme tietojasi."
 		}
 	},
 	"legal": {

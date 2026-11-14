@@ -624,6 +624,11 @@
 			"paymentTryAgain": "결제에 실패했습니다. 다시 시도해주세요.",
 			"paymentWebhookFailed": "결제 앱 웹훅이 실패했습니다. Saleor 대시보드 → 앱 → 테스트 결제 앱에서 웹훅 전달 상태를 확인해주세요.",
 			"paymentInitFailed": "결제를 초기화할 수 없습니다. Saleor에서 결제 앱이 실행 중인지 확인해주세요."
+		},
+		"legal": {
+			"terms": "주문하시면 <link>이용약관</link>에 동의하는 것으로 간주됩니다.",
+			"withdrawal": "청약 철회에 대해서는 <link>안내</link>를 확인하세요.",
+			"privacy": "개인정보 처리 방식은 <link>개인정보 처리방침</link>에서 확인하세요."
 		}
 	},
 	"legal": {

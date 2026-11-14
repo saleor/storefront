@@ -425,8 +425,8 @@
 			"logIn": "Anmelden",
 			"returnToInformation": "Zurück zu den Informationen",
 			"returnToShipping": "Zurück zum Versand",
-			"payNow": "Jetzt bezahlen",
-			"payTotal": "{total} bezahlen",
+			"payNow": "Zahlungspflichtig bestellen",
+			"payTotal": "Zahlungspflichtig bestellen",
 			"completeOrder": "Bestellung abschließen",
 			"placingOrder": "Bestellung wird aufgegeben…",
 			"creatingOrder": "Bestellung wird erstellt…",
@@ -636,6 +636,11 @@
 			"paymentTryAgain": "Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.",
 			"paymentWebhookFailed": "Webhook der Zahlungs-App fehlgeschlagen. Prüfen Sie im Saleor Dashboard → Apps → Dummy Payment App, ob Webhook-Zustellungen erfolgreich sind.",
 			"paymentInitFailed": "Zahlung konnte nicht initialisiert werden. Prüfen Sie, ob die Zahlungs-App in Saleor läuft."
+		},
+		"legal": {
+			"terms": "Mit Ihrer Bestellung akzeptieren Sie unsere <link>AGB</link>.",
+			"withdrawal": "Es gilt die <link>Widerrufsbelehrung</link>.",
+			"privacy": "Hinweise zur Verarbeitung Ihrer Daten finden Sie in der <link>Datenschutzerklärung</link>."
 		}
 	},
 	"legal": {

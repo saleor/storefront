@@ -633,6 +633,11 @@
 			"paymentTryAgain": "支払いに失敗しました。もう一度お試しください。",
 			"paymentWebhookFailed": "決済アプリのWebhookが失敗しました。Saleorダッシュボード → Apps → Dummy Payment App でWebhook配信が成功しているか確認してください。",
 			"paymentInitFailed": "支払いを初期化できませんでした。Saleorで決済アプリが稼働しているか確認してください。"
+		},
+		"legal": {
+			"terms": "ご注文により、<link>利用規約</link>に同意したものとみなされます。",
+			"withdrawal": "返品・キャンセルについては<link>こちら</link>をご覧ください。",
+			"privacy": "個人情報の取り扱いは<link>プライバシーポリシー</link>をご覧ください。"
 		}
 	},
 	"legal": {

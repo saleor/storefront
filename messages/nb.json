@@ -636,6 +636,11 @@
 			"paymentTryAgain": "Betaling mislyktes. Prøv igjen.",
 			"paymentWebhookFailed": "Webhook for betalingsappen mislyktes. I Saleor Dashboard → Apps → Dummy Payment App, sjekk at webhook-leveranser lykkes.",
 			"paymentInitFailed": "Betalingen kunne ikke initialiseres. Sjekk at betalingsappen kjører i Saleor."
+		},
+		"legal": {
+			"terms": "Ved å bestille godtar du våre <link>vilkår</link>.",
+			"withdrawal": "Du har angrerett: se <link>informasjon om angrerett</link>.",
+			"privacy": "<link>Personvernerklæringen</link> forklarer hvordan vi bruker opplysningene dine."
 		}
 	},
 	"legal": {

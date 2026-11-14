@@ -33,6 +33,7 @@ import { consumePaymentCompletionError } from "@/checkout/lib/payment/checkout-p
 import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
 import { useSyncCheckoutRouterUrl } from "@/checkout/hooks/use-sync-checkout-router-url";
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
+import { OrderLegalNotice } from "@/checkout/components/payment/order-legal-notice";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -277,6 +278,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 					initialSameAsShipping={sameAsBilling}
 				/>
 			) : null}
+
+			{!usesClientSubmit ? <OrderLegalNotice className="md:text-right" /> : null}
 
 			<div className="flex items-center justify-between">
 				<button
