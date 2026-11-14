@@ -1,5 +1,6 @@
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
 import { toProductCardData } from "@/lib/listing/providers/saleor/to-card";
+import { getPriceReductionReference } from "@/lib/channels/get-price-display";
 import { FEATURED_COLLECTION_IMAGE_SIZES } from "@/lib/images";
 import { ProductGrid, type ProductGridDesktopColumns } from "@/ui/components/plp/product-grid";
 import { Section, type SectionTone, type SectionWidth } from "@/ui/sections/section";
@@ -35,9 +36,11 @@ export async function FeaturedCollectionSection({
 	width = "content",
 	className,
 }: FeaturedCollectionSectionProps) {
-	const products = (await getFeaturedProducts(channel, locale, limit, collectionSlug)).map((product) =>
-		toProductCardData(product, locale, channel),
-	);
+	const [featured, priceReference] = await Promise.all([
+		getFeaturedProducts(channel, locale, limit, collectionSlug),
+		getPriceReductionReference(channel),
+	]);
+	const products = featured.map((product) => toProductCardData(product, locale, channel, priceReference));
 	const headingId = "featured-collection-heading";
 
 	return (

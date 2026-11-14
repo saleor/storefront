@@ -36,7 +36,7 @@ export type VariantSelectionIndex = {
 function getMaxDiscountInfo(variants: SaleorVariant[]): { hasDiscount: boolean; maxPercent: number } {
 	const result = getMaxDiscountInfoBase(variants, (v) => ({
 		current: v.pricing?.price?.gross?.amount,
-		prior: v.pricing?.pricePrior?.gross?.amount,
+		reference: v.pricing?.priceReference?.gross?.amount,
 	}));
 	return {
 		hasDiscount: result.isOnSale,

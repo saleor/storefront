@@ -1,6 +1,7 @@
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { resolveLocaleFromSlug } from "@/config/locale";
-import { getDiscountInfo } from "@/lib/pricing";
+import { getDiscountInfo, withPriceReference } from "@/lib/pricing";
+import { getPriceReductionReference } from "@/lib/channels/get-price-display";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
 import { getStorefrontContent } from "@/lib/content/server";
 import { addVariantToCart } from "@/app/actions";
@@ -42,7 +43,7 @@ export async function VariantSectionDynamic({
 	const { variant: variantParam, sku: skuParam } = await searchParams;
 	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
 
-	const [t, content, currency, variantResult] = await Promise.all([
+	const [t, content, currency, variantResult, priceReference] = await Promise.all([
 		getTranslations({ locale: localeSlug, namespace: "pdp" }),
 		getStorefrontContent(channel, localeSlug),
 		resolveChannelCurrency(channel),
@@ -50,9 +51,13 @@ export async function VariantSectionDynamic({
 			variantId: variantParam,
 			sku: skuParam,
 		}),
+		getPriceReductionReference(channel),
 	]);
 
-	const { variants, totalCount, overBudget, strategy } = variantResult;
+	const { totalCount, overBudget, strategy } = variantResult;
+	// Settle here what each variant's reduction is measured against (the prior price, or
+	// the list price where the channel allows it). The selectors only read the result.
+	const variants = variantResult.variants.map((variant) => withPriceReference(variant, priceReference));
 	const productWithVariants: Product = {
 		...product,
 		variants,
@@ -92,19 +97,14 @@ export async function VariantSectionDynamic({
 				intlLocale,
 			) || "";
 
-	// The reduction is measured against Saleor's prior price (lowest of the last 30 days),
-	// never the undiscounted list price. No prior price: no strike-through and no badge.
+	// No reference price: no strike-through and no badge.
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
-	const priorPrice = selectedVariant?.pricing?.pricePrior?.gross?.amount;
-	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, priorPrice);
+	const referencePrice = selectedVariant?.pricing.priceReference?.gross;
+	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, referencePrice?.amount);
 
 	const compareAtPrice =
-		isOnSale && selectedVariant?.pricing?.pricePrior?.gross
-			? formatMoney(
-					selectedVariant.pricing.pricePrior.gross.amount,
-					selectedVariant.pricing.pricePrior.gross.currency,
-					intlLocale,
-				)
+		isOnSale && referencePrice
+			? formatMoney(referencePrice.amount, referencePrice.currency, intlLocale)
 			: null;
 
 	const freeShippingThreshold = content.policies.shipping.freeShippingThreshold;

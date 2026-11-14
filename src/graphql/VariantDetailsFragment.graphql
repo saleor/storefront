@@ -66,7 +66,16 @@ fragment VariantDetails on ProductVariant {
 				amount
 			}
 		}
+		# Lowest price of the last 30 days (the variant listing's priorPrice), when the merchant set it.
 		pricePrior {
+			gross {
+				currency
+				amount
+			}
+		}
+		# List price before promotions. A reduction is measured against it only where the
+		# channel's rule allows (see src/lib/pricing.ts).
+		priceUndiscounted {
 			gross {
 				currency
 				amount

@@ -89,7 +89,7 @@ Detects dead-end selections. Output: `{ slug, name, blockedBy }` or `null`.
 
 ## Discount Detection
 
-A variant has a discount when `pricePrior.gross.amount > price.gross.amount`. `pricePrior` is Saleor's prior price (the lowest price of the last 30 days, kept in the variant's channel listing as `priorPrice`), not the undiscounted list price. A variant without a prior price shows no strike-through, percentage or sale badge — see `rules/ui-legal.md`.
+A variant has a discount when `pricing.priceReference.gross.amount > price.gross.amount`. `priceReference` is attached on the server by `withPriceReference` (`src/lib/pricing.ts`): Saleor's prior price on channels that ship to the EU/EEA, and the prior price or else the list price elsewhere. A variant without a reference shows no strike-through, percentage or sale badge — see `rules/ui-legal.md`.
 
 Option-level: aggregate across all variants with that option value (`hasDiscount`, max `discountPercent`).
 

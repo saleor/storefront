@@ -4620,12 +4620,20 @@ Paper always renders gross amounts. A channel Saleor marks as net display gets n
 
 ## Price reductions
 
-A strike-through price, a percentage and the sale badge are measured against Saleor's **prior price** (`pricing.pricePrior` on variants, `pricing.priceRangePrior` on products): the lowest price of the last 30 days. Merchants keep it in the variant's channel listing (`priorPrice`); Saleor does not fill it by itself. The helpers in `src/lib/pricing.ts` are the single place that decides.
+What a strike-through price, a percentage and the sale badge are measured against depends on the channel (`PriceReductionReference`, `src/config/pricing.ts`):
 
-- No prior price: the plain price, with no strike-through, percentage or badge, even while a promotion runs.
-- Listing cards show the cheapest variant's price, so they strike through only that variant's own prior price. A reduction on a dearer variant keeps the badge without a strike-through.
+| Rule            | Applies to                                          | Reference price                                                                  |
+| --------------- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `"prior-price"` | A channel that ships to at least one EU/EEA country | Only Saleor's prior price (`pricing.pricePrior`, `pricing.priceRangePrior`)      |
+| `"list-price"`  | Every other channel                                 | The prior price when set, otherwise the list price (`pricing.priceUndiscounted`) |
 
-❌ `priceUndiscounted` / `priceRangeUndiscounted` as the reference price. It is the list price before promotions, and a product that was cheaper two weeks ago would show a reduction from a price nobody paid recently.
+- The **prior price** is the lowest price of the last 30 days. Merchants keep it in the variant's channel listing (`priorPrice`); Saleor does not fill it by itself. Under `"prior-price"` a product without one shows the plain price, with no strike-through, percentage or badge, even while a promotion runs.
+- `getPriceReductionReference(channel)` (`src/lib/channels/get-price-display.ts`) decides: the override in `priceReductionReferenceByChannel`, else the channel's shipping countries against `PRIOR_PRICE_COUNTRIES`. A channel without shipping countries is judged by its default country; with neither known, the stricter rule applies.
+- The rule is settled **once on the server**. `withPriceReference` attaches `pricing.priceReference` to PDP variants and cart lines; `toProductCardData` takes the rule as its last argument. Client components read `priceReference` and never choose between `pricePrior` and `priceUndiscounted`.
+- Listing cards show the cheapest variant's price, so they strike through only that variant's own reference. A reduction on a dearer variant keeps the badge without a strike-through.
+
+❌ Reading `priceUndiscounted` in a component to draw a strike-through. On an EU channel it shows a reduction from a price nobody paid recently.
+❌ Defaulting a new caller of `toProductCardData` to `"list-price"`. Pass `await getPriceReductionReference(channel)`.
 
 ## Copy that promises something
 

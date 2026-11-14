@@ -1,7 +1,16 @@
-# Whether the channel shows prices with tax included (its tax configuration's
-# "display gross prices"). Saleor exposes that setting to anonymous clients only through
-# product pricing, so this reads it from one product of the channel.
+# What a storefront needs to know about how a channel shows prices, in one read:
+#
+# - Whether prices are shown with tax included (the tax configuration's "display gross
+#   prices"). Saleor exposes that setting to anonymous clients only through product
+#   pricing, so it is read from one product of the channel.
+# - Which countries the channel ships to. A channel that sells into the EU/EEA measures
+#   price reductions against the prior price only (see src/lib/pricing.ts).
 query ChannelPriceDisplay($channel: String!) {
+	channel(slug: $channel) {
+		countries {
+			code
+		}
+	}
 	products(first: 1, channel: $channel) {
 		edges {
 			node {

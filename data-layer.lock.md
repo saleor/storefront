@@ -58,7 +58,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | cachedQuery      | ProductVariantForPdpDocument            | CACHE_PROFILES.products                       | src/lib/catalog/get-product-data.ts › getProductVariantForPdp                                 |
 | cachedQuery      | CategoriesBySlugDocument                | CACHE_PROFILES.categories                     | src/lib/catalog/resolve-category-slugs.ts › resolveCategorySlugsCached                        |
 | cachedQuery      | ChannelsListDocument                    | CACHE_PROFILES.channels (allows partial data) | src/lib/channels/get-channels-data.ts › readChannelsList                                      |
-| cachedQuery      | ChannelPriceDisplayDocument             | CACHE_PROFILES.listingAll                     | src/lib/channels/get-price-display.ts › getPricesIncludeTax                                   |
+| cachedQuery      | ChannelPriceDisplayDocument             | CACHE_PROFILES.listingAll                     | src/lib/channels/get-price-display.ts › getChannelPriceDisplay                                |
 | cachedQuery      | ShopSellerIdentityDocument              | CACHE_PROFILES.shop                           | src/lib/channels/get-seller-identity.ts › getSellerIdentity                                   |
 | mutate           | CheckoutCreateDocument                  | —                                             | src/lib/checkout.ts › create                                                                  |
 | mutate           | CheckoutCustomerDetachDocument          | —                                             | src/lib/checkout.ts › detachCustomer                                                          |

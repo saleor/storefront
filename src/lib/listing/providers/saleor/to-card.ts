@@ -6,7 +6,13 @@ import { sortByOptionLabel } from "@/lib/sizes";
 import { localeConfig, resolveLocaleFromSlug } from "@/config/locale";
 import { PDP_VARIANT_CAP } from "@/config/variants";
 import { normalizeFacetValueSlug } from "@/config/facets";
-import { calculateDiscountPercent, hasDiscount, hasDiscountInPriceRange } from "@/lib/pricing";
+import {
+	calculateDiscountPercent,
+	hasDiscount,
+	hasDiscountInPriceRange,
+	pickReferenceRange,
+	type PriceReductionReference,
+} from "@/lib/pricing";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { isBestseller } from "@/lib/catalog/product-flags";
@@ -67,20 +73,23 @@ export function toProductCardData(
 	product: ProductListItemFragment,
 	locale: string,
 	channel: string,
+	/** The channel's rule (`getPriceReductionReference`). Defaults to the stricter one. */
+	priceReference: PriceReductionReference = "prior-price",
 ): ProductCardView {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
 	const stopPrice = product.pricing?.priceRange?.stop?.gross;
-	const priorStartPrice = product.pricing?.priceRangePrior?.start?.gross;
+	const referenceRange = pickReferenceRange(product.pricing, priceReference);
 	const startAmount = startPrice?.amount ?? 0;
 	const stopAmount = stopPrice?.amount;
-	// Reductions are measured against Saleor's prior price (lowest of the last 30 days).
-	// Without one the card shows the plain price: no badge, no strike-through.
-	const isSale = hasDiscountInPriceRange(product.pricing?.priceRange, product.pricing?.priceRangePrior);
-	const priorStartAmount = priorStartPrice?.amount;
+	// Reductions are measured against the channel's reference range: Saleor's prior price,
+	// or the list price where the channel allows it. Without a reference the card shows the
+	// plain price: no badge, no strike-through.
+	const isSale = hasDiscountInPriceRange(product.pricing?.priceRange, referenceRange);
+	const referenceStartAmount = referenceRange?.start?.gross?.amount;
 	// The card's price is the cheapest variant's, so only its own reduction is shown next
 	// to it. A sale on a dearer variant keeps the badge without a strike-through.
-	const startIsReduced = hasDiscount(startAmount, priorStartAmount);
-	const discountPercent = startIsReduced ? calculateDiscountPercent(startAmount, priorStartAmount) : null;
+	const startIsReduced = hasDiscount(startAmount, referenceStartAmount);
+	const discountPercent = startIsReduced ? calculateDiscountPercent(startAmount, referenceStartAmount) : null;
 	const variantSample = listVariantNodes(product);
 	const variantSampleSize = variantSample.length;
 	const variantTotalCount = product.productVariants?.totalCount ?? variantSampleSize;
@@ -94,7 +103,7 @@ export function toProductCardData(
 		brand: categoryName,
 		price: startAmount,
 		priceStop: stopAmount != null && stopAmount !== startAmount ? stopAmount : null,
-		compareAtPrice: startIsReduced ? priorStartAmount : null,
+		compareAtPrice: startIsReduced ? referenceStartAmount : null,
 		discountPercent,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",

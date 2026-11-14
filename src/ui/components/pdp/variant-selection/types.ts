@@ -122,7 +122,7 @@ export interface VariantSelectionSectionProps {
 		/** Pricing info for discount detection */
 		pricing?: {
 			price?: { gross: { amount: number; currency: string } } | null;
-			pricePrior?: { gross: { amount: number; currency: string } } | null;
+			priceReference?: { gross: { amount: number; currency: string } } | null;
 		} | null;
 	}>;
 	/** Currently selected variant ID from URL params */

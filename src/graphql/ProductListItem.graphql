@@ -37,6 +37,20 @@ fragment ProductListItem on Product {
 				}
 			}
 		}
+		priceRangeUndiscounted {
+			start {
+				gross {
+					amount
+					currency
+				}
+			}
+			stop {
+				gross {
+					amount
+					currency
+				}
+			}
+		}
 	}
 	category {
 		id

@@ -24,7 +24,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 29.99, currency: "USD" } },
-			pricePrior: { gross: { amount: 29.99, currency: "USD" } },
+			priceReference: { gross: { amount: 29.99, currency: "USD" } },
 		},
 	},
 	{
@@ -37,7 +37,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 29.99, currency: "USD" } },
-			pricePrior: { gross: { amount: 29.99, currency: "USD" } },
+			priceReference: { gross: { amount: 29.99, currency: "USD" } },
 		},
 	},
 	{
@@ -50,7 +50,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 29.99, currency: "USD" } },
-			pricePrior: { gross: { amount: 29.99, currency: "USD" } },
+			priceReference: { gross: { amount: 29.99, currency: "USD" } },
 		},
 	},
 	{
@@ -63,7 +63,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 29.99, currency: "USD" } },
-			pricePrior: { gross: { amount: 29.99, currency: "USD" } },
+			priceReference: { gross: { amount: 29.99, currency: "USD" } },
 		},
 	},
 	{
@@ -76,7 +76,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 29.99, currency: "USD" } },
-			pricePrior: { gross: { amount: 29.99, currency: "USD" } },
+			priceReference: { gross: { amount: 29.99, currency: "USD" } },
 		},
 	},
 	{
@@ -89,7 +89,7 @@ export const tshirtVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 29.99, currency: "USD" } },
-			pricePrior: { gross: { amount: 29.99, currency: "USD" } },
+			priceReference: { gross: { amount: 29.99, currency: "USD" } },
 		},
 	},
 ];
@@ -193,7 +193,7 @@ export const discountedVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 19.99, currency: "USD" } }, // 20% off
-			pricePrior: { gross: { amount: 24.99, currency: "USD" } },
+			priceReference: { gross: { amount: 24.99, currency: "USD" } },
 		},
 	},
 	{
@@ -206,7 +206,7 @@ export const discountedVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 24.99, currency: "USD" } }, // No discount
-			pricePrior: { gross: { amount: 24.99, currency: "USD" } },
+			priceReference: { gross: { amount: 24.99, currency: "USD" } },
 		},
 	},
 	{
@@ -219,7 +219,7 @@ export const discountedVariants: SaleorVariant[] = [
 		],
 		pricing: {
 			price: { gross: { amount: 0, currency: "USD" } }, // FREE (100% off)
-			pricePrior: { gross: { amount: 24.99, currency: "USD" } },
+			priceReference: { gross: { amount: 24.99, currency: "USD" } },
 		},
 	},
 ];
@@ -258,7 +258,7 @@ export const nameOnlyVariants: SaleorVariant[] = [
 		selectionAttributes: [], // No structured attributes
 		pricing: {
 			price: { gross: { amount: 30.0, currency: "EUR" } },
-			pricePrior: { gross: { amount: 30.0, currency: "EUR" } },
+			priceReference: { gross: { amount: 30.0, currency: "EUR" } },
 		},
 	},
 	{
@@ -268,7 +268,7 @@ export const nameOnlyVariants: SaleorVariant[] = [
 		selectionAttributes: [], // No structured attributes
 		pricing: {
 			price: { gross: { amount: 30.0, currency: "EUR" } },
-			pricePrior: { gross: { amount: 30.0, currency: "EUR" } },
+			priceReference: { gross: { amount: 30.0, currency: "EUR" } },
 		},
 	},
 	{
@@ -278,7 +278,7 @@ export const nameOnlyVariants: SaleorVariant[] = [
 		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 30.0, currency: "EUR" } },
-			pricePrior: { gross: { amount: 30.0, currency: "EUR" } },
+			priceReference: { gross: { amount: 30.0, currency: "EUR" } },
 		},
 	},
 ];
@@ -294,7 +294,7 @@ export const nameOnlyDifferentPrices: SaleorVariant[] = [
 		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 25.0, currency: "USD" } },
-			pricePrior: { gross: { amount: 25.0, currency: "USD" } },
+			priceReference: { gross: { amount: 25.0, currency: "USD" } },
 		},
 	},
 	{
@@ -304,7 +304,7 @@ export const nameOnlyDifferentPrices: SaleorVariant[] = [
 		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 50.0, currency: "USD" } },
-			pricePrior: { gross: { amount: 50.0, currency: "USD" } },
+			priceReference: { gross: { amount: 50.0, currency: "USD" } },
 		},
 	},
 	{
@@ -314,7 +314,7 @@ export const nameOnlyDifferentPrices: SaleorVariant[] = [
 		selectionAttributes: [],
 		pricing: {
 			price: { gross: { amount: 100.0, currency: "USD" } },
-			pricePrior: { gross: { amount: 100.0, currency: "USD" } },
+			priceReference: { gross: { amount: 100.0, currency: "USD" } },
 		},
 	},
 ];
