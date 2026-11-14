@@ -4618,6 +4618,15 @@ Paper always renders gross amounts. A channel Saleor marks as net display gets n
 - The final checkout button's label is `checkout.actions.payTotal`. German reads "Zahlungspflichtig bestellen" with nothing else on the button. Other locales say "Pay {total}". Keep the wording a plain statement that ordering costs money; "Continue", "Confirm" or "Order" alone do not say so.
 - `OrderLegalNotice` (`src/checkout/components/payment/order-legal-notice.tsx`) sits directly above the button for server-submit gateways and inside the Stripe form. One sentence each for terms, withdrawal and privacy, shown only when its page exists. The checkout session loader resolves the URLs on the server and passes them through `CheckoutLegalLinksProvider`.
 
+## Price reductions
+
+A strike-through price, a percentage and the sale badge are measured against Saleor's **prior price** (`pricing.pricePrior` on variants, `pricing.priceRangePrior` on products): the lowest price of the last 30 days. Merchants keep it in the variant's channel listing (`priorPrice`); Saleor does not fill it by itself. The helpers in `src/lib/pricing.ts` are the single place that decides.
+
+- No prior price: the plain price, with no strike-through, percentage or badge, even while a promotion runs.
+- Listing cards show the cheapest variant's price, so they strike through only that variant's own prior price. A reduction on a dearer variant keeps the badge without a strike-through.
+
+❌ `priceUndiscounted` / `priceRangeUndiscounted` as the reference price. It is the list price before promotions, and a product that was cheaper two weeks ago would show a reduction from a price nobody paid recently.
+
 ## Copy that promises something
 
 A sentence about delivery time, shipping cost, a returns window or a discount is a promise. It must come from Saleor or from merchant content, never from a code default or a message string.
@@ -4628,7 +4637,7 @@ A sentence about delivery time, shipping cost, a returns window or a discount is
 
 ## Not built
 
-Unit prices, the 30-day prior price for discounts (`pricePrior`), a statement of delivery restrictions and accepted payment methods before checkout, a withdrawal function on order pages, the legal-guarantee notice, a consent banner, and a dedicated product-safety block on the product page.
+Unit prices, a statement of delivery restrictions and accepted payment methods before checkout, a withdrawal function on order pages, the legal-guarantee notice, a consent banner, and a dedicated product-safety block on the product page.
 
 ---
 

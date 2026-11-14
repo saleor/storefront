@@ -31,7 +31,7 @@ function buildLargeMatrix(colors: number, sizes: number): SaleorVariant[] {
 				],
 				pricing: {
 					price: { gross: { amount: 20 + c, currency: "USD" } },
-					priceUndiscounted: { gross: { amount: 20 + c, currency: "USD" } },
+					pricePrior: { gross: { amount: 20 + c, currency: "USD" } },
 				},
 			});
 		}

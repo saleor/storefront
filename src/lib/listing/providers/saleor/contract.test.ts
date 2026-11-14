@@ -15,7 +15,7 @@ function cardNode(index: number) {
 				start: { gross: { amount: 10 + index, currency: "USD" } },
 				stop: { gross: { amount: 10 + index, currency: "USD" } },
 			},
-			priceRangeUndiscounted: {
+			priceRangePrior: {
 				start: { gross: { amount: 10 + index, currency: "USD" } },
 				stop: { gross: { amount: 10 + index, currency: "USD" } },
 			},

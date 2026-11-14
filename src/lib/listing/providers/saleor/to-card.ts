@@ -70,18 +70,17 @@ export function toProductCardData(
 ): ProductCardView {
 	const startPrice = product.pricing?.priceRange?.start?.gross;
 	const stopPrice = product.pricing?.priceRange?.stop?.gross;
-	const undiscountedStartPrice = product.pricing?.priceRangeUndiscounted?.start?.gross;
+	const priorStartPrice = product.pricing?.priceRangePrior?.start?.gross;
 	const startAmount = startPrice?.amount ?? 0;
 	const stopAmount = stopPrice?.amount;
-	const isSale = hasDiscountInPriceRange(
-		product.pricing?.priceRange,
-		product.pricing?.priceRangeUndiscounted,
-	);
-	const undiscountedStartAmount = undiscountedStartPrice?.amount;
-	const discountPercent =
-		isSale && hasDiscount(startAmount, undiscountedStartAmount)
-			? calculateDiscountPercent(startAmount, undiscountedStartAmount)
-			: null;
+	// Reductions are measured against Saleor's prior price (lowest of the last 30 days).
+	// Without one the card shows the plain price: no badge, no strike-through.
+	const isSale = hasDiscountInPriceRange(product.pricing?.priceRange, product.pricing?.priceRangePrior);
+	const priorStartAmount = priorStartPrice?.amount;
+	// The card's price is the cheapest variant's, so only its own reduction is shown next
+	// to it. A sale on a dearer variant keeps the badge without a strike-through.
+	const startIsReduced = hasDiscount(startAmount, priorStartAmount);
+	const discountPercent = startIsReduced ? calculateDiscountPercent(startAmount, priorStartAmount) : null;
 	const variantSample = listVariantNodes(product);
 	const variantSampleSize = variantSample.length;
 	const variantTotalCount = product.productVariants?.totalCount ?? variantSampleSize;
@@ -95,7 +94,7 @@ export function toProductCardData(
 		brand: categoryName,
 		price: startAmount,
 		priceStop: stopAmount != null && stopAmount !== startAmount ? stopAmount : null,
-		compareAtPrice: isSale ? undiscountedStartAmount : null,
+		compareAtPrice: startIsReduced ? priorStartAmount : null,
 		discountPercent,
 		currency: startPrice?.currency ?? localeConfig.fallbackCurrency,
 		image: product.thumbnail?.url ?? "/placeholder.svg",

@@ -92,15 +92,17 @@ export async function VariantSectionDynamic({
 				intlLocale,
 			) || "";
 
+	// The reduction is measured against Saleor's prior price (lowest of the last 30 days),
+	// never the undiscounted list price. No prior price: no strike-through and no badge.
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
-	const undiscountedPrice = selectedVariant?.pricing?.priceUndiscounted?.gross?.amount;
-	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, undiscountedPrice);
+	const priorPrice = selectedVariant?.pricing?.pricePrior?.gross?.amount;
+	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, priorPrice);
 
 	const compareAtPrice =
-		isOnSale && selectedVariant?.pricing?.priceUndiscounted?.gross
+		isOnSale && selectedVariant?.pricing?.pricePrior?.gross
 			? formatMoney(
-					selectedVariant.pricing.priceUndiscounted.gross.amount,
-					selectedVariant.pricing.priceUndiscounted.gross.currency,
+					selectedVariant.pricing.pricePrior.gross.amount,
+					selectedVariant.pricing.pricePrior.gross.currency,
 					intlLocale,
 				)
 			: null;

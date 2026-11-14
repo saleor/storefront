@@ -3,6 +3,13 @@
  * Used by PDP, PLP, variant selection, cart, and other pricing-related components.
  *
  * SINGLE SOURCE OF TRUTH for all discount/sale detection logic.
+ *
+ * The reference a reduction is measured against is Saleor's **prior price**
+ * (`pricing.pricePrior`, `pricing.priceRangePrior`): the lowest price of the last 30 days,
+ * which the merchant keeps in the variant's channel listing (`priorPrice`). It is not the
+ * undiscounted list price: a product that was cheaper two weeks ago must not be shown as
+ * reduced from a price nobody paid recently. No prior price, no reduction: Paper then
+ * shows the plain price, without a strike-through, percentage or sale badge.
  */
 
 export interface PriceInfo {
@@ -26,26 +33,22 @@ export interface PriceRange {
  */
 export function hasDiscount(
 	currentPrice: number | null | undefined,
-	undiscountedPrice: number | null | undefined,
+	priorPrice: number | null | undefined,
 ): boolean {
-	return (
-		typeof undiscountedPrice === "number" &&
-		typeof currentPrice === "number" &&
-		undiscountedPrice > currentPrice
-	);
+	return typeof priorPrice === "number" && typeof currentPrice === "number" && priorPrice > currentPrice;
 }
 
 /**
- * Calculate discount percentage from price and undiscounted price.
+ * Calculate discount percentage from price and prior price.
  * Returns 0 if no discount or invalid prices.
  */
 export function calculateDiscountPercent(
 	currentPrice: number | null | undefined,
-	undiscountedPrice: number | null | undefined,
+	priorPrice: number | null | undefined,
 ): number {
-	if (!hasDiscount(currentPrice, undiscountedPrice)) return 0;
+	if (!hasDiscount(currentPrice, priorPrice)) return 0;
 	// TypeScript knows these are numbers after hasDiscount check
-	return Math.round(((undiscountedPrice! - currentPrice!) / undiscountedPrice!) * 100);
+	return Math.round(((priorPrice! - currentPrice!) / priorPrice!) * 100);
 }
 
 /**
@@ -54,10 +57,10 @@ export function calculateDiscountPercent(
  */
 export function getDiscountInfo(
 	currentPrice: number | null | undefined,
-	undiscountedPrice: number | null | undefined,
+	priorPrice: number | null | undefined,
 ): DiscountInfo {
-	const isOnSale = hasDiscount(currentPrice, undiscountedPrice);
-	const discountPercent = isOnSale ? calculateDiscountPercent(currentPrice, undiscountedPrice) : null;
+	const isOnSale = hasDiscount(currentPrice, priorPrice);
+	const discountPercent = isOnSale ? calculateDiscountPercent(currentPrice, priorPrice) : null;
 	return { isOnSale, discountPercent };
 }
 
@@ -67,16 +70,16 @@ export function getDiscountInfo(
  */
 export function getMaxDiscountInfo<T>(
 	items: T[],
-	getPrices: (item: T) => { current: number | null | undefined; undiscounted: number | null | undefined },
+	getPrices: (item: T) => { current: number | null | undefined; prior: number | null | undefined },
 ): DiscountInfo {
 	let hasAnyDiscount = false;
 	let maxPercent = 0;
 
 	for (const item of items) {
-		const { current, undiscounted } = getPrices(item);
-		if (hasDiscount(current, undiscounted)) {
+		const { current, prior } = getPrices(item);
+		if (hasDiscount(current, prior)) {
 			hasAnyDiscount = true;
-			const percent = calculateDiscountPercent(current, undiscounted);
+			const percent = calculateDiscountPercent(current, prior);
 			if (percent > maxPercent) maxPercent = percent;
 		}
 	}
@@ -96,22 +99,22 @@ export function getMaxDiscountInfo<T>(
  * @example
  * // Variant A: $50 -> $30 (on sale), Variant B: $20 -> $20 (not on sale)
  * // priceRange: { start: $20, stop: $30 }
- * // priceRangeUndiscounted: { start: $20, stop: $50 }
+ * // priceRangePrior: { start: $20, stop: $50 }
  * // Result: true (because stop shows a discount)
  */
 export function hasDiscountInPriceRange(
 	priceRange: PriceRange | null | undefined,
-	priceRangeUndiscounted: PriceRange | null | undefined,
+	priceRangePrior: PriceRange | null | undefined,
 ): boolean {
 	const startPrice = priceRange?.start?.gross?.amount;
 	const stopPrice = priceRange?.stop?.gross?.amount;
-	const undiscountedStart = priceRangeUndiscounted?.start?.gross?.amount;
-	const undiscountedStop = priceRangeUndiscounted?.stop?.gross?.amount;
+	const priorStart = priceRangePrior?.start?.gross?.amount;
+	const priorStop = priceRangePrior?.stop?.gross?.amount;
 
 	// Check if cheapest variant is on sale
-	const hasStartDiscount = hasDiscount(startPrice, undiscountedStart);
+	const hasStartDiscount = hasDiscount(startPrice, priorStart);
 	// Check if most expensive variant is on sale
-	const hasStopDiscount = hasDiscount(stopPrice, undiscountedStop);
+	const hasStopDiscount = hasDiscount(stopPrice, priorStop);
 
 	return hasStartDiscount || hasStopDiscount;
 }

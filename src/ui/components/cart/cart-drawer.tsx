@@ -48,7 +48,7 @@ interface CartLine {
 					currency: string;
 				};
 			} | null;
-			priceUndiscounted?: {
+			pricePrior?: {
 				gross: {
 					amount: number;
 					currency: string;
@@ -247,7 +247,7 @@ export function CartDrawer({
 								const variantAttributes = getVariantDetails(line.variant);
 								const isDiscounted = hasDiscount(
 									line.variant.pricing?.price?.gross.amount,
-									line.variant.pricing?.priceUndiscounted?.gross.amount,
+									line.variant.pricing?.pricePrior?.gross.amount,
 								);
 
 								return (
@@ -351,11 +351,11 @@ export function CartDrawer({
 																intlLocale,
 															)}
 														</span>
-														{isDiscounted && line.variant.pricing?.priceUndiscounted && (
+														{isDiscounted && line.variant.pricing?.pricePrior && (
 															<span className="block text-xs text-muted-foreground line-through">
 																{formatMoney(
-																	line.variant.pricing.priceUndiscounted.gross.amount * line.quantity,
-																	line.variant.pricing.priceUndiscounted.gross.currency,
+																	line.variant.pricing.pricePrior.gross.amount * line.quantity,
+																	line.variant.pricing.pricePrior.gross.currency,
 																	intlLocale,
 																)}
 															</span>

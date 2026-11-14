@@ -23,7 +23,7 @@ fragment ProductListItem on Product {
 				}
 			}
 		}
-		priceRangeUndiscounted {
+		priceRangePrior {
 			start {
 				gross {
 					amount

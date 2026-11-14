@@ -32,7 +32,7 @@
 		"src/lib/listing/providers/saleor/constraints.ts": "662462b5ff8987e56e7f54ed922af94ff0f0cd26fc9ea4a907918f9af4849c20",
 		"src/lib/listing/providers/saleor/index.ts": "ccb00383a1c04d6cbb415d978a9fbb2ed6b86b50762d3095230cb9e5e569276e",
 		"src/lib/listing/providers/saleor/sample-facets.ts": "5754db9106d5eae0e9ade7dc131185d9a2ca04a90f655037b8e55c4551ffa531",
-		"src/lib/listing/providers/saleor/to-card.ts": "746cff6c843ca5bab213413089a84e96157e603902d401394f80190d350eb890",
+		"src/lib/listing/providers/saleor/to-card.ts": "f1790fb5538acde9c434349efb9974ce691f0798f49084b995b2fa01772b553a",
 		"src/lib/listing/query.ts": "ab82f321fbeb2dec2be789e1e4c827de48a18df5a0dd6fe1f029697e7cd05382",
 		"src/lib/listing/registry.ts": "f83f4fe6b3ea0015e313351b137220a4ce7b66f1978a7b95a706d8688f4241b1",
 		"src/lib/listing/testing.ts": "0ce9ea9c0f36f88120d1f4e8f9f8d7c87eb978d58c3291edd6ce97c4c601afe5",

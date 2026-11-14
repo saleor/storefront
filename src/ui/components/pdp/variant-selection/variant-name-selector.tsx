@@ -34,7 +34,7 @@ interface VariantNameSelectorProps {
 		quantityAvailable?: number | null;
 		pricing?: {
 			price?: { gross: { amount: number; currency: string } } | null;
-			priceUndiscounted?: { gross: { amount: number; currency: string } } | null;
+			pricePrior?: { gross: { amount: number; currency: string } } | null;
 		} | null;
 	}>;
 	selectedVariantId?: string;
@@ -83,10 +83,10 @@ export function VariantNameSelector({
 					const isSelected = variant.id === selectedVariantId;
 					const isOutOfStock = (variant.quantityAvailable ?? 0) <= 0;
 					const price = variant.pricing?.price?.gross;
-					const undiscountedPrice = variant.pricing?.priceUndiscounted?.gross;
-					const hasDiscount = price && undiscountedPrice && undiscountedPrice.amount > price.amount;
+					const priorPrice = variant.pricing?.pricePrior?.gross;
+					const hasDiscount = price && priorPrice && priorPrice.amount > price.amount;
 					const discountPercent = hasDiscount
-						? Math.round((1 - price.amount / undiscountedPrice.amount) * 100)
+						? Math.round((1 - price.amount / priorPrice.amount) * 100)
 						: null;
 
 					// Build accessible label
