@@ -14,7 +14,7 @@ export type ConfiguratorSeedModel = {
 
 /** Display names from config/saleor/storefront-content.config.yml `contentAttributes`. */
 const ATTR = {
-	freeShippingThreshold: "Free shipping threshold",
+	freeShippingThreshold: "Free shipping threshold override (not recommended)",
 	returnsWindowDays: "Returns window days",
 	announcementId: "Announcement ID",
 	announcementMessage: "Announcement message",

@@ -36,6 +36,8 @@ describe("buildConfiguratorSeedModels", () => {
 			},
 		});
 
-		expect(policies.attributes).toMatchObject({ "Free shipping threshold": 50 });
+		expect(policies.attributes).toMatchObject({
+			"Free shipping threshold override (not recommended)": 50,
+		});
 	});
 });

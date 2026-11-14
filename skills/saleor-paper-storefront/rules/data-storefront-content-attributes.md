@@ -42,17 +42,17 @@ GraphQL: `AssignedSingleCollectionReferenceAttribute`, `AssignedMultiCollectionR
 
 ## Scalar & media types (roadmap)
 
-| `inputType`                       | Typical storefront use                        | Wired in Paper                                                           |
-| --------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------ |
-| `PLAIN_TEXT`                      | Headings, labels, short copy                  | Yes                                                                      |
-| `BOOLEAN`                         | Dismissible flags, toggles                    | Yes                                                                      |
-| `SINGLE_REFERENCE` + `COLLECTION` | Featured collection override                  | Yes (`featured-collection`)                                              |
-| `SINGLE_REFERENCE` + `CATEGORY`   | Category spotlight                            | No                                                                       |
-| `REFERENCE` + `COLLECTION`        | Collection list ordering                      | No                                                                       |
-| `RICH_TEXT`                       | Long copy, collection description on homepage | No — prefer catalog `description` for entities                           |
-| `FILE`                            | Hero / editorial images                       | No                                                                       |
-| `DROPDOWN` / `SWATCH`             | Layout variants (e.g. image left/right)       | No — code enum today for editorial position                              |
-| `NUMERIC`                         | Policy values, limits, counts                 | Yes — `free-shipping-threshold`, `returns-window-days`, `featured-limit` |
+| `inputType`                       | Typical storefront use                        | Wired in Paper                                                                                    |
+| --------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `PLAIN_TEXT`                      | Headings, labels, short copy                  | Yes                                                                                               |
+| `BOOLEAN`                         | Dismissible flags, toggles                    | Yes                                                                                               |
+| `SINGLE_REFERENCE` + `COLLECTION` | Featured collection override                  | Yes (`featured-collection`)                                                                       |
+| `SINGLE_REFERENCE` + `CATEGORY`   | Category spotlight                            | No                                                                                                |
+| `REFERENCE` + `COLLECTION`        | Collection list ordering                      | No                                                                                                |
+| `RICH_TEXT`                       | Long copy, collection description on homepage | No — prefer catalog `description` for entities                                                    |
+| `FILE`                            | Hero / editorial images                       | No                                                                                                |
+| `DROPDOWN` / `SWATCH`             | Layout variants (e.g. image left/right)       | No — code enum today for editorial position                                                       |
+| `NUMERIC`                         | Policy values, limits, counts                 | Yes — `free-shipping-threshold-override-not-recommended`, `returns-window-days`, `featured-limit` |
 
 `NUMERIC` is read via `attrNumber()` (`buildAttributeMap` stores the `Float` directly); `attrInt()` truncates it. Use `NUMERIC` for any value consumed by logic or formatted as money/count — not `PLAIN_TEXT`. Policy money values are stored in the channel currency; format with the live cart currency (cart drawer) or `resolveChannelCurrency()` (chrome/homepage), then interpolate via `buildPolicyLabelValues()` + `formatContentLabel()`.
 
