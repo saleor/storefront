@@ -287,7 +287,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 					<span className="text-base font-semibold tabular-nums">{formatMoney(total)}</span>
 				</div>
 				{unavailableLineIds.length > 0 ? (
-					<p className="text-xs text-destructive">{t("unavailableHint")}</p>
+					<p className="text-xs text-destructive">
+						{t("unavailableHint", { count: unavailableLineIds.length })}
+					</p>
 				) : null}
 			</button>
 

@@ -2,6 +2,7 @@ import { updateCheckoutShippingAddress } from "@/app/(checkout)/actions";
 import { getAddressInputDataFromAddress } from "@/checkout/components/address-form/utils";
 import {
 	availabilityIssueFromFieldErrors,
+	type AvailabilityLine,
 	type CheckoutAvailabilityIssue,
 } from "@/checkout/lib/checkout-availability";
 
@@ -9,10 +10,7 @@ type FulfillmentCheckout = {
 	id: string;
 	isShippingRequired: boolean;
 	shippingAddress?: Parameters<typeof getAddressInputDataFromAddress>[0] | null;
-	lines: ReadonlyArray<{
-		id: string;
-		variant?: { name?: string | null } | null;
-	}>;
+	lines: ReadonlyArray<AvailabilityLine>;
 };
 
 export type CheckoutFulfillmentResult =

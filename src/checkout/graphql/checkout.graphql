@@ -107,6 +107,7 @@ fragment CheckoutFragment on Checkout {
 fragment CheckoutLineFragment on CheckoutLine {
 	id
 	quantity
+	isGift
 	totalPrice {
 		gross {
 			currency
@@ -134,6 +135,7 @@ fragment CheckoutLineFragment on CheckoutLine {
 		}
 		id
 		name
+		sku
 		translation(languageCode: $languageCode) {
 			name
 		}
@@ -217,8 +219,8 @@ mutation checkoutLinesUpdate(
 	}
 }
 
-mutation checkoutLineDelete($checkoutId: ID!, $lineId: ID!, $languageCode: LanguageCodeEnum!) {
-	checkoutLinesDelete(id: $checkoutId, linesIds: [$lineId]) {
+mutation checkoutLinesDelete($checkoutId: ID!, $lineIds: [ID!]!, $languageCode: LanguageCodeEnum!) {
+	checkoutLinesDelete(id: $checkoutId, linesIds: $lineIds) {
 		errors {
 			...CheckoutErrorFragment
 		}

@@ -62,6 +62,7 @@ describe("validateCheckoutFulfillment", () => {
 			issue: {
 				message: "Could not add items M. Only 0 remaining in stock.",
 				lineIds: ["line-m"],
+				isExact: true,
 			},
 		});
 		expect(updateAddress).toHaveBeenCalledWith(
