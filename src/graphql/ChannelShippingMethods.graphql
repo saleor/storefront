@@ -1,0 +1,16 @@
+# Shipping methods a channel offers to one country, before any checkout exists.
+# Paper reads the free-shipping threshold from it: the smallest minimum order price among
+# the methods that cost nothing.
+query ChannelShippingMethods($channel: String!, $country: CountryCode!) {
+	shop {
+		availableShippingMethods(channel: $channel, address: { country: $country }) {
+			id
+			price {
+				amount
+			}
+			minimumOrderPrice {
+				amount
+			}
+		}
+	}
+}

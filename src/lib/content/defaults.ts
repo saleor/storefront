@@ -14,7 +14,9 @@ export const defaultStorefrontContent = {
 	// numbers into strings, so the cart math, announcement, and trust labels never drift.
 	policies: {
 		shipping: {
-			freeShippingThreshold: 75,
+			// No figure of Paper's own. The threshold comes from Saleor's shipping methods, or
+			// from the Storefront — Policies Model when a merchant sets one there.
+			freeShippingThreshold: null,
 		},
 		returns: {
 			windowDays: 30,

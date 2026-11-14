@@ -372,7 +372,6 @@
 			"modelType": "Storefront — Policies",
 			"isPublished": true,
 			"attributes": {
-				"Free shipping threshold": 75,
 				"Returns window days": 30
 			}
 		},
@@ -466,5 +465,5 @@
 			}
 		}
 	],
-	"contentHash": "bb0b30f65eabcc6a"
+	"contentHash": "837e6b3bf613460e"
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FC, type FormEvent } from "react";
 import Image from "next/image";
-import { Tag, ShieldCheck, RotateCcw, Truck, ChevronDown, ShoppingBag, X } from "lucide-react";
+import { Tag, ChevronDown, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -409,34 +409,6 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 							</data>
 						</div>
 					</section>
-
-					{/* Trust/Social proof */}
-					<footer className="grid grid-cols-3 gap-2 border-t border-border bg-secondary/30 px-5 py-4">
-						<div className="flex flex-col items-center rounded-lg bg-secondary p-2.5 text-center">
-							<ShieldCheck className="mb-1 h-4 w-4 text-muted-foreground" />
-							<span className="text-[10px] leading-tight text-muted-foreground">
-								Secure
-								<br />
-								checkout
-							</span>
-						</div>
-						<div className="flex flex-col items-center rounded-lg bg-secondary p-2.5 text-center">
-							<RotateCcw className="mb-1 h-4 w-4 text-muted-foreground" />
-							<span className="text-[10px] leading-tight text-muted-foreground">
-								30-day
-								<br />
-								returns
-							</span>
-						</div>
-						<div className="flex flex-col items-center rounded-lg bg-secondary p-2.5 text-center">
-							<Truck className="mb-1 h-4 w-4 text-muted-foreground" />
-							<span className="text-[10px] leading-tight text-muted-foreground">
-								Free
-								<br />
-								shipping
-							</span>
-						</div>
-					</footer>
 				</div>
 			</div>
 		</article>

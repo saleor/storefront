@@ -70,7 +70,8 @@
 			"productDetails": "Tuotetiedot",
 			"careInstructions": "Hoito-ohjeet",
 			"shippingReturns": "Toimitus ja palautukset",
-			"shippingBody": "Ilmainen toimitus tilauksille yli {freeShippingThreshold}. Normaali toimitus 3–5 arkipäivää.",
+			"shippingBody": "Ilmainen toimitus tilauksille yli {freeShippingThreshold}.",
+			"shippingAtCheckout": "Osoitteesi toimitustavat ja -kulut näkyvät kassalla ennen tilaamista.",
 			"returnsBody": "Ilmaiset palautukset {returnsWindowDays} päivän kuluessa ostosta. Tuotteiden on oltava käyttämättömiä ja tunnisteineen.",
 			"yes": "Kyllä",
 			"no": "Ei"

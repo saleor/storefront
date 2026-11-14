@@ -70,7 +70,8 @@
 			"productDetails": "Szczegóły produktu",
 			"careInstructions": "Instrukcje pielęgnacji",
 			"shippingReturns": "Dostawa i zwroty",
-			"shippingBody": "Darmowa dostawa przy zamówieniach powyżej {freeShippingThreshold}. Standardowa dostawa w 3–5 dni roboczych.",
+			"shippingBody": "Darmowa dostawa przy zamówieniach powyżej {freeShippingThreshold}.",
+			"shippingAtCheckout": "Sposoby i koszty dostawy dla Twojego adresu zobaczysz w kasie, przed złożeniem zamówienia.",
 			"returnsBody": "Darmowe zwroty w ciągu {returnsWindowDays} dni od zakupu. Produkty muszą być nieużywane i z metkami.",
 			"yes": "Tak",
 			"no": "Nie"

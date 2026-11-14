@@ -118,7 +118,11 @@ export function ProductAttributes({
 					{t("shippingReturns")}
 				</AccordionTrigger>
 				<AccordionContent className="leading-relaxed text-muted-foreground">
-					<p className="mb-2">{t("shippingBody", policyLabels)}</p>
+					{/* The threshold is the channel's content policy; no program, no claim. */}
+					{policyLabels.freeShippingThreshold ? (
+						<p className="mb-2">{t("shippingBody", policyLabels)}</p>
+					) : null}
+					<p className="mb-2">{t("shippingAtCheckout")}</p>
 					<p>{t("returnsBody", policyLabels)}</p>
 				</AccordionContent>
 			</AccordionItemWithContext>

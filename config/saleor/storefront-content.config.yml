@@ -230,7 +230,6 @@ models:
     modelType: Storefront — Policies
     isPublished: true
     attributes:
-      Free shipping threshold: 75
       Returns window days: 30
   - title: Storefront Chrome
     slug: storefront-chrome

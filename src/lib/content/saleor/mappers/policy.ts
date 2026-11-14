@@ -7,10 +7,11 @@ import { attrNumber, buildAttributeMap } from "@/lib/content/saleor/attributes";
 /**
  * Channel-wide commerce policies (free-shipping threshold, returns window).
  *
- * Numbers come from `NUMERIC` attributes; an unset threshold leaves the code default.
- * Set the threshold to `0` in Dashboard to advertise free shipping on every order, and
- * model "no free-shipping program" by omitting the value (keeps the default) — UI hides
- * the progress bar / trust signal when the resolved threshold is `null`.
+ * Numbers come from `NUMERIC` attributes. An unset threshold leaves the decision to
+ * Saleor's shipping methods (`withFreeShippingThreshold`); a value here overrides them,
+ * so keep it equal to what checkout applies. Set it to `0` in Dashboard to advertise
+ * free shipping on every order. UI hides the progress bar / trust signal when the
+ * resolved threshold is `null`.
  */
 export function mapPolicyPage(page: StorefrontContentPageFragment | null): PartialStorefrontContent {
 	if (!page || page.pageType.slug !== STOREFRONT_PAGE_TYPES.policy) return {};

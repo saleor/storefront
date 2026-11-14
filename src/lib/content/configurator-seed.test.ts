@@ -18,24 +18,24 @@ describe("buildConfiguratorSeedModels", () => {
 		]);
 	});
 
-	it("maps policy numbers from defaults", () => {
+	it("maps the returns window and leaves the free-shipping threshold unset by default", () => {
 		const [policies] = buildConfiguratorSeedModels(defaultStorefrontContent);
 
-		expect(policies.attributes).toMatchObject({
-			"Free shipping threshold": defaultStorefrontContent.policies.shipping.freeShippingThreshold,
+		// The threshold comes from Saleor's shipping methods; a seeded value would override it.
+		expect(policies.attributes).toEqual({
 			"Returns window days": defaultStorefrontContent.policies.returns.windowDays,
 		});
 	});
 
-	it("rejects null free-shipping threshold for seed export", () => {
-		expect(() =>
-			buildConfiguratorSeedModels({
-				...defaultStorefrontContent,
-				policies: {
-					...defaultStorefrontContent.policies,
-					shipping: { freeShippingThreshold: null },
-				},
-			}),
-		).toThrow(/freeShippingThreshold is null/);
+	it("exports a free-shipping threshold a fork set in its defaults", () => {
+		const [policies] = buildConfiguratorSeedModels({
+			...defaultStorefrontContent,
+			policies: {
+				...defaultStorefrontContent.policies,
+				shipping: { freeShippingThreshold: 50 },
+			},
+		});
+
+		expect(policies.attributes).toMatchObject({ "Free shipping threshold": 50 });
 	});
 });

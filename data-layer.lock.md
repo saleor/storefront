@@ -64,6 +64,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | mutate           | CheckoutCustomerDetachDocument          | —                                             | src/lib/checkout.ts › detachCustomer                                                          |
 | liveQuery        | CheckoutFindDocument                    | —                                             | src/lib/checkout.ts › find                                                                    |
 | bindCacheProfile | —                                       | —                                             | src/lib/content/get-announcement-bar-props.ts › getAnnouncementBarProps                       |
+| cachedQuery      | ChannelShippingMethodsDocument          | CACHE_PROFILES.storefrontContent              | src/lib/content/get-saleor-free-shipping.ts › getSaleorFreeShippingThreshold                  |
 | bindCacheProfile | —                                       | —                                             | src/lib/content/get-storefront-content.ts › getStorefrontContent                              |
 | cachedQuery      | StorefrontContentPagesDocument          | CACHE_PROFILES.storefrontContent              | src/lib/content/saleor/saleor-provider.ts › fetchStorefrontPages                              |
 | cachedQuery      | ProductListByCategoryProductsDocument   | input.profile                                 | src/lib/listing/providers/saleor/index.ts › kernelTransport                                   |
