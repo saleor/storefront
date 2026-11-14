@@ -68,6 +68,20 @@ One codebase, many markets. Browse URLs are **`/{locale}/{channel}/…`** — e.
 
 **Developer docs:** [`docs/international-storefront.md`](docs/international-storefront.md) · ADRs [0001](docs/adr/0001-locale-channel-url-routing.md) / [0002](docs/adr/0002-cms-copy-vs-code-owned-ui-strings.md) / [0004](docs/adr/0004-translatable-slugs.md) · skills [`ui-locale-routing`](skills/saleor-paper-storefront/rules/ui-locale-routing.md) / [`ui-i18n`](skills/saleor-paper-storefront/rules/ui-i18n.md)
 
+### 🇪🇺 Built for Selling in the EU
+
+A shop that sells to EU consumers has to show who the seller is, what a price includes, what a reduction is measured against, and what the final button commits the customer to. Paper shows these, and takes every fact from Saleor, so the storefront cannot promise one thing while checkout does another.
+
+- **Imprint and seller line** — `/imprint` and the footer render the shop's company address and its public `seller.*` metadata
+- **Legal pages** — terms, privacy, withdrawal and shipping pages are Saleor Pages; Paper links only the ones that exist, in the footer, at sign-up and above the order button
+- **Price notice** — "incl. VAT, plus shipping costs" next to prices when the channel displays gross prices
+- **Price reductions against the 30-day prior price** — on channels that ship to the EU/EEA, a strike-through price is measured against Saleor's `priorPrice`, not the list price; other channels keep the list price
+- **Order button** — "Buy now" / "Zahlungspflichtig bestellen", with nothing else on it
+- **Free-shipping threshold from Saleor** — read from the shipping method, so the banner and the checkout agree
+- **No sale without stock** — checkout reads `checkout.problems` and stops a customer whose item sold out before payment
+
+Paper covers what a storefront displays; it is not legal advice. **Guide:** [`docs/selling-in-the-eu.md`](docs/selling-in-the-eu.md) — what to set up in Saleor, and what is not built yet.
+
 ### 📱 Product Pages Done Right
 
 The hard parts are solved. Adapt the look, keep the logic.
