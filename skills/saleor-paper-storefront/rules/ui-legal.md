@@ -27,7 +27,7 @@ Everything above is readable without a token, except the channel's default count
 - `/{locale}/{channel}/imprint` renders `SellerIdentity`. It is a route, not a Saleor Page, so the details cannot drift from the shop's settings. `notFound()` when the shop names no seller.
 - The footer puts the legal name in the copyright line, the address under it, and links the imprint when there is a seller.
 - Every field is optional. Add a field by adding the `metafield(key: …)` alias to `ShopSellerIdentity.graphql`, the property to `SellerIdentity`, and a label under `legal.imprint` in `messages/*.json`.
-- Cache: profile `shop` (hourly). `shop_metadata_updated` busts it. Saleor has no event for a company address edit.
+- Cache: profile `shop` (hourly); an edit shows within the hour. The revalidate route accepts `shop_metadata_updated`, but the Paper app does not subscribe: Saleor delivers that event only to apps with `MANAGE_SETTINGS`, and the app does not ask for it. Saleor has no event for a company address edit.
 - The site name in page titles and JSON-LD is still `src/config/brand.ts`.
 
 ## Legal page links

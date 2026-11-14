@@ -155,8 +155,8 @@ const profiles = {
 	},
 	/**
 	 * Seller details for the imprint and the footer (company address, public `seller.*`
-	 * shop metadata). `shop_metadata_updated` busts it; a company address edit has no
-	 * Saleor event and waits for the hourly revalidate.
+	 * shop metadata). Freshness is the hourly revalidate. `shop_metadata_updated` busts it
+	 * for setups that send the webhook; the Paper app does not (needs MANAGE_SETTINGS).
 	 */
 	shop: {
 		id: "shop",

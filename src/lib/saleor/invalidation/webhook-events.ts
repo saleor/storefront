@@ -87,7 +87,9 @@ const WEBHOOK_EVENT_SCOPES: Readonly<Record<string, WebhookEventScope>> = {
 	channel_metadata_updated: { entity: "channel", affectsListing: false },
 
 	// Seller details on the imprint and in the footer live in public shop metadata.
-	// Saleor has no event for the company address: that waits for the profile's revalidate.
+	// Accepted for setups that send it. The Paper app does not: Saleor delivers this event
+	// only to apps with MANAGE_SETTINGS. Without it, and for the company address (no Saleor
+	// event), the profile's hourly revalidate is the freshness.
 	shop_metadata_updated: { entity: "shop", affectsListing: false },
 	...extensionWebhookScopes,
 };

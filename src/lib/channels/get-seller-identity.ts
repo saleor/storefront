@@ -7,8 +7,8 @@ import { type SellerIdentity, toSellerIdentity } from "./seller-identity";
 /**
  * The seller's public details (see `SellerIdentity`). `null` when the shop names no seller.
  *
- * Busted by `shop_metadata_updated`. A company address edit has no Saleor event and shows
- * after the profile's hourly revalidate.
+ * Refreshed by the profile's hourly revalidate. `shop_metadata_updated` also busts it when
+ * a setup sends that webhook; the Paper app does not (the event needs MANAGE_SETTINGS).
  */
 export async function getSellerIdentity(): Promise<SellerIdentity | null> {
 	"use cache";

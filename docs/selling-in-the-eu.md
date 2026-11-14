@@ -39,7 +39,7 @@ Saleor has no seller entity yet, so the details live in two places:
 
 Every field is optional; the imprint shows what is set. Public metadata is readable without a token, so never store private numbers there. The imprint is a route, not a Saleor Page, so it cannot drift from the shop's settings. A shop that names no seller has no imprint and no imprint link.
 
-A metadata change shows at once when the Paper app forwards Saleor's `SHOP_METADATA_UPDATED` event; otherwise within an hour. Saleor has no event for a company address edit.
+A change to these details shows on the storefront within an hour. The storefront also accepts Saleor's `shop_metadata_updated` webhook for an immediate refresh, but the Paper app does not send it: Saleor delivers that event only to apps that hold the broad `MANAGE_SETTINGS` permission, which an hour's delay does not justify.
 
 ## Legal Pages
 
