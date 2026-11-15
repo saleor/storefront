@@ -1,0 +1,43 @@
+name: Agent skills
+
+# Restores the pinned external skills from a clean checkout, the way a new clone does, and runs
+# the full paper doctor on the result. Build leaves this out because it needs GitHub and no
+# build step reads the skills, so it runs only when something that decides what agents get
+# installed changes. Do not make it a required check: a skipped path-filtered check never reports.
+on:
+  pull_request:
+    paths:
+      - "skills-lock.json"
+      - "scripts/bootstrap-agent-skills.mjs"
+      - "scripts/paper-doctor.mjs"
+      - "scripts/lib/skills-lock.mjs"
+      # The skills CLI version is pinned here.
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/agent-skills.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: agent-skills-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: "package.json"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Restore the pinned skills
+        run: pnpm skills:bootstrap
+      - name: paper doctor (installed skills match the lock)
+        run: pnpm run doctor:check

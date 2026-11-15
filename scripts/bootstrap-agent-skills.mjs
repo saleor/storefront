@@ -2,8 +2,12 @@
 /**
  * Wire agent skills for Cursor discovery.
  *
- * External skills: restored from skills-lock.json via the skills CLI
- *   (npx skills experimental_install — upstream "npm install from lockfile")
+ * External skills: restored from skills-lock.json by the skills CLI. The CLI is an exact
+ *   devDependency and the lock names a full commit and a content hash for every skill, so
+ *   each clone gets the same files. --frozen-lockfile turns a mismatch into an error
+ *   instead of a rewritten lock; `pnpm skills:update` is the one command that moves the pins.
+ *   The CLI also links the skills into the folder of each agent it finds on this machine
+ *   (.claude/skills/ for Claude Code, which does not read .agents/skills/).
  *
  * Project skill: skills/saleor-paper-storefront/ is the SoT. Cursor does not
  * scan repo-root skills/, so we symlink into .agents/skills/ (no copy, no drift).
@@ -39,7 +43,7 @@ function ensurePaperSkillSymlink() {
 
 ensurePaperSkillSymlink();
 
-console.log("[skills:bootstrap] npx skills experimental_install");
-execSync("npx skills experimental_install", { cwd: ROOT, stdio: "inherit" });
+console.log("[skills:bootstrap] skills experimental_install --frozen-lockfile");
+execSync("pnpm exec skills experimental_install --frozen-lockfile", { cwd: ROOT, stdio: "inherit" });
 
 console.log("[skills:bootstrap] Done.");

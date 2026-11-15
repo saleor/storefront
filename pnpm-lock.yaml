@@ -31,7 +31,7 @@ importers:
         version: 2.2.6(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@saleor/auth-sdk':
         specifier: 1.0.3
-        version: 1.0.3(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(urql@4.0.6(graphql@16.8.1)(react@19.2.7))
+        version: 1.0.3(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(urql@4.0.6(graphql@16.8.1)(react@19.2.7))
       '@stripe/react-stripe-js':
         specifier: 6.6.0
         version: 6.6.0(@stripe/stripe-js@9.8.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -40,10 +40,10 @@ importers:
         version: 9.8.0
       '@vercel/analytics':
         specifier: 2.0.1
-        version: 2.0.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
+        version: 2.0.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       '@vercel/speed-insights':
         specifier: 1.3.1
-        version: 1.3.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
+        version: 1.3.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -61,7 +61,7 @@ importers:
         version: 8.6.0(react@19.2.7)
       geist:
         specifier: 1.7.2
-        version: 1.7.2(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
+        version: 1.7.2(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
       graphql:
         specifier: 16.8.1
         version: 16.8.1
@@ -76,10 +76,10 @@ importers:
         version: 0.358.0(react@19.2.7)
       next:
         specifier: 16.4.5
-        version: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       next-intl:
         specifier: 4.13.0
-        version: 4.13.0(@swc/helpers@0.5.23)(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(typescript@5.3.3)
+        version: 4.13.0(@swc/helpers@0.5.23)(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(typescript@5.3.3)
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -137,13 +137,13 @@ importers:
         version: 16.4.5
       '@next/playwright':
         specifier: 16.4.5
-        version: 16.4.5(@playwright/test@1.55.0)
+        version: 16.4.5(@playwright/test@1.65.0)
       '@parcel/watcher':
         specifier: 2.5.6
         version: 2.5.6
       '@playwright/test':
-        specifier: 1.55.0
-        version: 1.55.0
+        specifier: 1.65.0
+        version: 1.65.0
       '@tailwindcss/container-queries':
         specifier: 0.1.1
         version: 0.1.1(tailwindcss@3.4.19(yaml@2.9.0))
@@ -198,6 +198,9 @@ importers:
       schema-dts:
         specifier: 1.1.2
         version: 1.1.2(typescript@5.3.3)
+      skills:
+        specifier: 1.8.1
+        version: 1.8.1
       tailwindcss:
         specifier: 3.4.19
         version: 3.4.19(yaml@2.9.0)
@@ -1553,6 +1556,10 @@ packages:
       '@types/node':
         optional: true
 
+  '@isaacs/fs-minipass@4.0.1':
+    resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
+    engines: {node: '>=18.0.0'}
+
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
 
@@ -1742,9 +1749,9 @@ packages:
     resolution: {integrity: sha512-tmmZ3lQxAe/k/+rNnXQRawJ4NjxO2hqiOLTHvWchtGZULp4RyFeh6aU4XdOYBFe2KE1oShQTv4AblOs2iOrNnQ==}
     engines: {node: '>= 10.0.0'}
 
-  '@playwright/test@1.55.0':
-    resolution: {integrity: sha512-04IXzPwHrW69XusN/SIdDdKZBzMfOT9UNT/YiJit/xpy2VuAoB8NHc8Aplb96zsWDddLnbkPL3TsmrS04ZU2xQ==}
-    engines: {node: '>=18'}
+  '@playwright/test@1.65.0':
+    resolution: {integrity: sha512-iGURLGuKDLakSEl7Pgfv8h7f+XLT+V861Wfhz0zlEl5nyFuKUopdkFBPKqTllTUp06aOwPuH8iuUEb3yp3MpbQ==}
+    engines: {node: '>=20'}
     hasBin: true
 
   '@radix-ui/number@1.1.1':
@@ -3180,6 +3187,10 @@ packages:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
 
+  chownr@3.0.0:
+    resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
+    engines: {node: '>=18'}
+
   class-variance-authority@0.7.1:
     resolution: {integrity: sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==}
 
@@ -3731,11 +3742,6 @@ packages:
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
-
-  fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
 
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
@@ -4354,6 +4360,14 @@ packages:
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
+  minipass@7.1.3:
+    resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
+    engines: {node: '>=16 || 14 >=14.17'}
+
+  minizlib@3.1.0:
+    resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
+    engines: {node: '>= 18'}
+
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
@@ -4464,6 +4478,9 @@ packages:
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+
+  nostics@1.3.0:
+    resolution: {integrity: sha512-wzRsrJwNlFbqIRQt8aCeL2WE8USip/uuvGSOZV1D02CxX8ABTMbw8IywKjH7yWHETMXbWJI4OBpihg9rmz2Vyg==}
 
   npm-run-path@5.3.0:
     resolution: {integrity: sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==}
@@ -4641,14 +4658,14 @@ packages:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
 
-  playwright-core@1.55.0:
-    resolution: {integrity: sha512-GvZs4vU3U5ro2nZpeiwyb0zuFaqb9sUiAJuyrWpcGouD8y9/HLgGbNRjIph7zU9D3hnPaisMl9zG9CgFi/biIg==}
-    engines: {node: '>=18'}
+  playwright-core@1.65.0:
+    resolution: {integrity: sha512-vNSKgH6YqtN7cdT/L334zo0a+YwkrpicyrHJlWWPIm/Q+Nn2SWInil01oT0mbu96U4GgoRtCYQD9CzJQgju+lA==}
+    engines: {node: '>=20'}
     hasBin: true
 
-  playwright@1.55.0:
-    resolution: {integrity: sha512-sdCWStblvV1YU909Xqx0DhOjPZE4/5lJsIS84IfN9dAZfcl/CIZ5O8l3o0j7hPMjDvqoTF8ZUcc+i/GL5erstA==}
-    engines: {node: '>=18'}
+  playwright@1.65.0:
+    resolution: {integrity: sha512-F3AMWcR44qMBt4kq+6Kb6mX7bjGXshktKFOPULd7reED6ZJWevjbNRqysP7q+AATE9kdPEZBibex1BYsvpVoeA==}
+    engines: {node: '>=20'}
     hasBin: true
 
   po-parser@2.1.1:
@@ -5040,6 +5057,11 @@ packages:
   signedsource@1.0.0:
     resolution: {integrity: sha512-6+eerH9fEnNmi/hyM1DXcRK3pWdoMQtlkQ+ns0ntzunjKqp5i3sKCc80ym8Fib3iaYhdJUOPdhlJWj1tvge2Ww==}
 
+  skills@1.8.1:
+    resolution: {integrity: sha512-QK3wlZ5j8wcpLPUOXt7+1Gu1f9JKpv7lBpO0zmqKa5VBrt45/woVo8Max1x4wha3pCNafNHiiodYK6Xi/0alQQ==}
+    engines: {node: '>=22.20.0'}
+    hasBin: true
+
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -5205,6 +5227,10 @@ packages:
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
     engines: {node: '>=6'}
+
+  tar@7.5.22:
+    resolution: {integrity: sha512-MFO/QzvtAOmJbkhOaCTvbGcFN9L9b+JunIsDwaKljSOdcLMea3NJ1k9Usz/rjdfSXTq4dfzfeS7W4p4YOAAHeA==}
+    engines: {node: '>=18'}
 
   thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}
@@ -5559,12 +5585,21 @@ packages:
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
+  yallist@5.0.0:
+    resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
+    engines: {node: '>=18'}
+
   yaml@2.3.4:
     resolution: {integrity: sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==}
     engines: {node: '>= 14'}
 
   yaml@2.9.0:
     resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
+  yaml@2.9.1:
+    resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
     engines: {node: '>= 14.6'}
     hasBin: true
 
@@ -7122,6 +7157,10 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.12.4
 
+  '@isaacs/fs-minipass@4.0.1':
+    dependencies:
+      minipass: 7.1.3
+
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -7154,9 +7193,9 @@ snapshots:
     dependencies:
       fast-glob: 3.3.1
 
-  '@next/playwright@16.4.5(@playwright/test@1.55.0)':
+  '@next/playwright@16.4.5(@playwright/test@1.65.0)':
     optionalDependencies:
-      '@playwright/test': 1.55.0
+      '@playwright/test': 1.65.0
 
   '@next/swc-darwin-arm64@16.4.5':
     optional: true
@@ -7256,9 +7295,9 @@ snapshots:
       '@parcel/watcher-win32-ia32': 2.5.6
       '@parcel/watcher-win32-x64': 2.5.6
 
-  '@playwright/test@1.55.0':
+  '@playwright/test@1.65.0':
     dependencies:
-      playwright: 1.55.0
+      playwright: 1.65.0
 
   '@radix-ui/number@1.1.1': {}
 
@@ -7888,13 +7927,13 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@saleor/auth-sdk@1.0.3(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(urql@4.0.6(graphql@16.8.1)(react@19.2.7))':
+  '@saleor/auth-sdk@1.0.3(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(urql@4.0.6(graphql@16.8.1)(react@19.2.7))':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
       cookie: 1.1.1
       graphql: 16.8.1
     optionalDependencies:
-      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
       urql: 4.0.6(graphql@16.8.1)(react@19.2.7)
@@ -8204,14 +8243,14 @@ snapshots:
     transitivePeerDependencies:
       - graphql
 
-  '@vercel/analytics@2.0.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)':
+  '@vercel/analytics@2.0.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)':
     optionalDependencies:
-      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react: 19.2.7
 
-  '@vercel/speed-insights@1.3.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)':
+  '@vercel/speed-insights@1.3.1(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)':
     optionalDependencies:
-      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react: 19.2.7
 
   '@vitest/expect@4.1.9':
@@ -8587,6 +8626,8 @@ snapshots:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+
+  chownr@3.0.0: {}
 
   class-variance-authority@0.7.1:
     dependencies:
@@ -9301,9 +9342,6 @@ snapshots:
 
   fs.realpath@1.0.0: {}
 
-  fsevents@2.3.2:
-    optional: true
-
   fsevents@2.3.3:
     optional: true
 
@@ -9320,9 +9358,9 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
-  geist@1.7.2(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)):
+  geist@1.7.2(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)):
     dependencies:
-      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
 
   generator-function@2.0.1: {}
 
@@ -9919,6 +9957,12 @@ snapshots:
 
   minimist@1.2.8: {}
 
+  minipass@7.1.3: {}
+
+  minizlib@3.1.0:
+    dependencies:
+      minipass: 7.1.3
+
   ms@2.1.2: {}
 
   ms@2.1.3: {}
@@ -9943,14 +9987,14 @@ snapshots:
 
   next-intl-swc-plugin-extractor@4.13.0: {}
 
-  next-intl@4.13.0(@swc/helpers@0.5.23)(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(typescript@5.3.3):
+  next-intl@4.13.0(@swc/helpers@0.5.23)(next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(typescript@5.3.3):
     dependencies:
       '@formatjs/intl-localematcher': 0.8.10
       '@parcel/watcher': 2.5.6
       '@swc/core': 1.15.41(@swc/helpers@0.5.23)
       icu-minify: 4.13.0
       negotiator: 1.0.0
-      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      next: 16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       next-intl-swc-plugin-extractor: 4.13.0
       po-parser: 2.1.1
       react: 19.2.7
@@ -9960,7 +10004,7 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.55.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  next@16.4.5(@babel/core@7.28.6)(@playwright/test@1.65.0)(@types/node@24.12.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@next/env': 16.4.5
       '@swc/helpers': 0.5.23
@@ -9979,7 +10023,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.4.5
       '@next/swc-win32-arm64-msvc': 16.4.5
       '@next/swc-win32-x64-msvc': 16.4.5
-      '@playwright/test': 1.55.0
+      '@playwright/test': 1.65.0
       sharp: 0.35.5(@types/node@24.12.4)
     transitivePeerDependencies:
       - '@babel/core'
@@ -10016,6 +10060,8 @@ snapshots:
       remove-trailing-separator: 1.1.0
 
   normalize-path@3.0.0: {}
+
+  nostics@1.3.0: {}
 
   npm-run-path@5.3.0:
     dependencies:
@@ -10188,13 +10234,11 @@ snapshots:
 
   pirates@4.0.7: {}
 
-  playwright-core@1.55.0: {}
+  playwright-core@1.65.0: {}
 
-  playwright@1.55.0:
+  playwright@1.65.0:
     dependencies:
-      playwright-core: 1.55.0
-    optionalDependencies:
-      fsevents: 2.3.2
+      playwright-core: 1.65.0
 
   po-parser@2.1.1: {}
 
@@ -10617,6 +10661,12 @@ snapshots:
 
   signedsource@1.0.0: {}
 
+  skills@1.8.1:
+    dependencies:
+      nostics: 1.3.0
+      tar: 7.5.22
+      yaml: 2.9.1
+
   slash@3.0.0: {}
 
   slice-ansi@5.0.0:
@@ -10822,6 +10872,14 @@ snapshots:
       - yaml
 
   tapable@2.3.0: {}
+
+  tar@7.5.22:
+    dependencies:
+      '@isaacs/fs-minipass': 4.0.1
+      chownr: 3.0.0
+      minipass: 7.1.3
+      minizlib: 3.1.0
+      yallist: 5.0.0
 
   thenify-all@1.6.0:
     dependencies:
@@ -11183,9 +11241,13 @@ snapshots:
 
   yallist@3.1.1: {}
 
+  yallist@5.0.0: {}
+
   yaml@2.3.4: {}
 
   yaml@2.9.0: {}
+
+  yaml@2.9.1: {}
 
   yargs-parser@18.1.3:
     dependencies:

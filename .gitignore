@@ -33,6 +33,8 @@ scripts/local/*
 .DS_Store
 *.pem
 .agents/
+# skills:bootstrap links the installed skills into the folder of each agent found on the machine
+.claude/skills/
 
 # Saleor Configurator deploy reports (generated per deploy, env-specific)
 .configurator/
