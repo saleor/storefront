@@ -37,8 +37,16 @@ export const addressFieldPairs: [AddressField, AddressField][] = [
 // Shared Components
 // =============================================================================
 
-export const FieldError: FC<{ error?: string }> = ({ error }) =>
-	error ? <p className="text-sm text-destructive">{error}</p> : null;
+/** Error text under a field. Give it the id the field's `aria-describedby` points at. */
+export const FieldError: FC<{ error?: string; id?: string }> = ({ error, id }) =>
+	error ? (
+		<p id={id} className="text-sm text-destructive">
+			{error}
+		</p>
+	) : null;
+
+/** Id of a field's error text, for `aria-describedby`. */
+export const fieldErrorId = (fieldId: string) => `${fieldId}-error`;
 
 interface FormSelectProps {
 	id: string;
@@ -70,6 +78,8 @@ export const FormSelect: FC<FormSelectProps> = ({
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
 			autoComplete={autoComplete}
+			aria-invalid={error ? true : undefined}
+			aria-describedby={error ? fieldErrorId(id) : undefined}
 			className={cn(
 				"flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm",
 				"ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -132,6 +142,8 @@ export const FormInput: FC<FormInputProps> = ({
 			onChange={(e) => onChange(e.target.value)}
 			maxLength={maxLength}
 			autoComplete={autoComplete}
+			aria-invalid={error ? true : undefined}
+			aria-describedby={error ? fieldErrorId(id) : undefined}
 			className={cn("h-12", Icon && "pl-10", error && "border-destructive", className)}
 		/>
 	</div>
@@ -211,7 +223,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 							label: typeof verbose === "string" ? verbose : "",
 						}))}
 					/>
-					<FieldError error={error} />
+					<FieldError error={error} id={fieldErrorId(fieldId)} />
 				</div>
 			);
 		}
@@ -232,7 +244,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 					icon={Icon}
 					autoComplete={autoComplete}
 				/>
-				<FieldError error={error} />
+				<FieldError error={error} id={fieldErrorId(fieldId)} />
 			</div>
 		);
 	};

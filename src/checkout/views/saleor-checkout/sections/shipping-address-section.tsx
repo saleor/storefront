@@ -3,7 +3,7 @@
 import { type FC } from "react";
 import { useTranslations } from "next-intl";
 import { Label } from "@/ui/components/ui/label";
-import { FormSelect, FieldError, AddressFields } from "../address-form-fields";
+import { FormSelect, FieldError, fieldErrorId, AddressFields } from "../address-form-fields";
 import { HybridAddressSelector } from "@/checkout/components/shipping-address";
 import type { ShippingCountryOption } from "@/checkout/lib/checkout-types";
 import type { CountryCode, AddressFragment } from "@/checkout/graphql";
@@ -96,7 +96,11 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						sheetTitle={t("selectShippingAddressSheet")}
 						onAddNew={() => onShowNewAddressForm(true)}
 					/>
-					{errors.address && <FieldError error={errors.address} />}
+					{errors.address ? (
+						<div role="status">
+							<FieldError error={errors.address} />
+						</div>
+					) : null}
 				</>
 			) : (
 				<>
@@ -129,7 +133,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 								label,
 							}))}
 						/>
-						<FieldError error={errors.countryCode} />
+						<FieldError error={errors.countryCode} id={fieldErrorId("country")} />
 					</div>
 
 					{/* Dynamic address fields */}
