@@ -279,7 +279,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 				/>
 			) : null}
 
-			{!usesClientSubmit ? <OrderLegalNotice className="md:text-right" /> : null}
+			{/* Desktop: above the button. On phones the sticky bar carries it (MobileStickyAction). */}
+			{!usesClientSubmit ? <OrderLegalNotice className="hidden text-right md:block" /> : null}
 
 			<div className="flex items-center justify-between">
 				<button

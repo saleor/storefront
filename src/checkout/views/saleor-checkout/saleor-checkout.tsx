@@ -139,7 +139,13 @@ const SaleorCheckoutView: FC = () => {
 			isShippingRequired={isShippingRequired}
 			storefrontChannel={checkout.channel.slug}
 		>
-			<main className="mx-auto max-w-7xl px-4 py-6 pb-24 sm:px-6 md:py-8 md:pb-8 lg:px-8">
+			{/* Bottom padding clears the mobile sticky action bar, which is taller on the payment
+			    step (trust line, legal notice, button). */}
+			<main
+				className={`mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-8 md:pb-8 lg:px-8 ${
+					currentStep.id === "PAYMENT" ? "pb-48" : "pb-24"
+				}`}
+			>
 				<div className="flex flex-col gap-8 md:flex-row">
 					<div className="min-w-0 flex-1">
 						<div className="mb-4 overflow-hidden rounded-lg border border-border bg-card md:hidden">
