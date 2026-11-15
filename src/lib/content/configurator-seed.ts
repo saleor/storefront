@@ -82,7 +82,10 @@ export function buildConfiguratorSeedModels(content: StorefrontContent): Configu
 				// Unset by default: the threshold comes from Saleor's shipping methods, and a value
 				// here would override it.
 				...(freeShippingThreshold !== null ? { [ATTR.freeShippingThreshold]: freeShippingThreshold } : {}),
-				[ATTR.returnsWindowDays]: policies.returns.windowDays,
+				// Unset by default too: a returns window is the merchant's statement, not Paper's.
+				...(policies.returns.windowDays !== null
+					? { [ATTR.returnsWindowDays]: policies.returns.windowDays }
+					: {}),
 			},
 		},
 		{

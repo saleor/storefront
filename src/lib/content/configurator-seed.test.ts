@@ -18,13 +18,21 @@ describe("buildConfiguratorSeedModels", () => {
 		]);
 	});
 
-	it("maps the returns window and leaves the free-shipping threshold unset by default", () => {
+	it("leaves the free-shipping threshold and the returns window unset by default", () => {
 		const [policies] = buildConfiguratorSeedModels(defaultStorefrontContent);
 
-		// The threshold comes from Saleor's shipping methods; a seeded value would override it.
-		expect(policies.attributes).toEqual({
-			"Returns window days": defaultStorefrontContent.policies.returns.windowDays,
+		// The threshold comes from Saleor's shipping methods, and a returns window is the
+		// merchant's statement. A seeded value would make a claim on their behalf.
+		expect(policies.attributes).toEqual({});
+	});
+
+	it("exports a returns window a fork set in its defaults", () => {
+		const [policies] = buildConfiguratorSeedModels({
+			...defaultStorefrontContent,
+			policies: { ...defaultStorefrontContent.policies, returns: { windowDays: 30 } },
 		});
+
+		expect(policies.attributes).toEqual({ "Returns window days": 30 });
 	});
 
 	it("exports a free-shipping threshold a fork set in its defaults", () => {

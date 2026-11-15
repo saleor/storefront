@@ -19,8 +19,12 @@ export type ShippingPolicy = {
 };
 
 export type ReturnsPolicy = {
-	/** Number of days a customer has to return an order. */
-	windowDays: number;
+	/**
+	 * Number of days a customer has to return an order, as the merchant states it in the
+	 * Storefront — Policies Model. `null` (the default) means Paper makes no returns claim:
+	 * the statutory right of withdrawal belongs on the shop's withdrawal page.
+	 */
+	windowDays: number | null;
 };
 
 export type StorefrontPolicies = {

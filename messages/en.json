@@ -72,7 +72,7 @@
 			"shippingReturns": "Shipping & Returns",
 			"shippingBody": "Free shipping on orders over {freeShippingThreshold}.",
 			"shippingAtCheckout": "Shipping options and costs for your address are shown at checkout, before you order.",
-			"returnsBody": "Free returns within {returnsWindowDays} days of purchase. Items must be unworn with tags attached.",
+			"returnsBody": "Returns within {returnsWindowDays} days.",
 			"yes": "Yes",
 			"no": "No"
 		},

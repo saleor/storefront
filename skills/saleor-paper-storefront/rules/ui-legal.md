@@ -84,6 +84,7 @@ What a strike-through price, a percentage and the sale badge are measured agains
 A sentence about delivery time, shipping cost, a returns window or a discount is a promise. It must come from Saleor or from merchant content, never from a code default or a message string.
 
 ❌ "Standard delivery 3-5 business days" in `messages/*.json`.
+❌ A returns window, "free returns" or an item-condition rule in code defaults. `policies.returns.windowDays` is `null` unless the merchant sets it.
 ❌ A fixed "Free shipping" badge.
 ✅ Delivery days from the shipping method, in the checkout's shipping step.
 

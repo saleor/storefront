@@ -72,7 +72,7 @@
 			"shippingReturns": "Dostawa i zwroty",
 			"shippingBody": "Darmowa dostawa przy zamówieniach powyżej {freeShippingThreshold}.",
 			"shippingAtCheckout": "Sposoby i koszty dostawy dla Twojego adresu zobaczysz w kasie, przed złożeniem zamówienia.",
-			"returnsBody": "Darmowe zwroty w ciągu {returnsWindowDays} dni od zakupu. Produkty muszą być nieużywane i z metkami.",
+			"returnsBody": "Zwroty w ciągu {returnsWindowDays} dni.",
 			"yes": "Tak",
 			"no": "Nie"
 		},

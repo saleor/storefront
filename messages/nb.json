@@ -72,7 +72,7 @@
 			"shippingReturns": "Frakt og retur",
 			"shippingBody": "Gratis frakt på bestillinger over {freeShippingThreshold}.",
 			"shippingAtCheckout": "Fraktalternativer og priser for adressen din vises i kassen før du bestiller.",
-			"returnsBody": "Gratis retur innen {returnsWindowDays} dager etter kjøp. Varene må være ubrukte med merkelapper.",
+			"returnsBody": "Retur innen {returnsWindowDays} dager.",
 			"yes": "Ja",
 			"no": "Nei"
 		},

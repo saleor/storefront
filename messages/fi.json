@@ -72,7 +72,7 @@
 			"shippingReturns": "Toimitus ja palautukset",
 			"shippingBody": "Ilmainen toimitus tilauksille yli {freeShippingThreshold}.",
 			"shippingAtCheckout": "Osoitteesi toimitustavat ja -kulut näkyvät kassalla ennen tilaamista.",
-			"returnsBody": "Ilmaiset palautukset {returnsWindowDays} päivän kuluessa ostosta. Tuotteiden on oltava käyttämättömiä ja tunnisteineen.",
+			"returnsBody": "Palautus {returnsWindowDays} päivän kuluessa.",
 			"yes": "Kyllä",
 			"no": "Ei"
 		},

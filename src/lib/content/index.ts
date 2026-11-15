@@ -16,6 +16,7 @@ export { CheckoutContentProvider, useCheckoutContent } from "@/lib/content/check
 export {
 	buildPolicyLabelValues,
 	formatPolicyAwareLabel,
+	needsMissingPolicy,
 	type PolicyLabelValues,
 } from "@/lib/content/policy-format";
 export { resolveAnnouncementDismissKey } from "@/lib/content/announcement-dismiss-key";

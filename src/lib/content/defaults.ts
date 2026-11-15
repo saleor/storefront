@@ -19,7 +19,8 @@ export const defaultStorefrontContent = {
 			freeShippingThreshold: null,
 		},
 		returns: {
-			windowDays: 30,
+			// No figure of Paper's own: a returns claim shows only when the merchant sets one.
+			windowDays: null,
 		},
 	},
 	chrome: {
@@ -71,7 +72,7 @@ export const defaultStorefrontContent = {
 					},
 					{
 						title: "Returns",
-						text: "Easy returns within {returnsWindowDays} days.",
+						text: "Describe your returns policy.",
 					},
 				],
 				columnsDesktop: 3,

@@ -72,7 +72,7 @@
 			"shippingReturns": "配送と返品",
 			"shippingBody": "{freeShippingThreshold}以上のご注文で送料無料。",
 			"shippingAtCheckout": "お届け先の配送方法と送料は、ご注文前にチェックアウト画面でご確認いただけます。",
-			"returnsBody": "ご購入から{returnsWindowDays}日以内は返品無料。タグ付き・未使用の商品に限ります。",
+			"returnsBody": "{returnsWindowDays}日以内の返品を承ります。",
 			"yes": "はい",
 			"no": "いいえ"
 		},

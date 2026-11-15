@@ -72,7 +72,7 @@
 			"shippingReturns": "Versand & Rückgabe",
 			"shippingBody": "Kostenloser Versand bei Bestellungen über {freeShippingThreshold}.",
 			"shippingAtCheckout": "Versandarten und -kosten für Ihre Adresse sehen Sie im Checkout, bevor Sie bestellen.",
-			"returnsBody": "Kostenlose Rückgabe innerhalb von {returnsWindowDays} Tagen nach dem Kauf. Artikel müssen ungetragen und mit Etiketten versehen sein.",
+			"returnsBody": "Rückgabe innerhalb von {returnsWindowDays} Tagen.",
 			"yes": "Ja",
 			"no": "Nein"
 		},
