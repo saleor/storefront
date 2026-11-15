@@ -6,7 +6,6 @@ describe("withTranslatedCartCheckout", () => {
 		const checkout = withTranslatedCartCheckout({
 			id: "chk",
 			email: null,
-			availablePaymentGateways: [],
 			totalPrice: { gross: { amount: 10, currency: "PLN" } },
 			lines: [
 				{

@@ -58,7 +58,11 @@ async function CartContent({
 	]);
 	const cart = surfaces.cart;
 	const intlLocale = resolveLocaleFromSlug(params.locale).bcp47;
-	const checkout = checkoutId ? await Checkout.find(checkoutId, params.locale) : null;
+	// The delivery note is cached per channel; read it alongside the checkout, not after it.
+	const [checkout, deliveryPayment] = await Promise.all([
+		checkoutId ? Checkout.find(checkoutId, params.locale) : null,
+		getDeliveryPaymentSummary({ channel: params.channel, localeSlug: params.locale }),
+	]);
 
 	if (!checkout || checkout.lines.length < 1) {
 		return (
@@ -71,12 +75,6 @@ async function CartContent({
 			</div>
 		);
 	}
-	const deliveryPayment = await getDeliveryPaymentSummary({
-		channel: params.channel,
-		localeSlug: params.locale,
-		gateways: checkout.availablePaymentGateways,
-	});
-
 	return (
 		<>
 			<h1 className="mt-8 text-balance text-h1 text-foreground">{t("title")}</h1>

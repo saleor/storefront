@@ -111,11 +111,13 @@ A comma list. The key with a language suffix (`.de`, `.fr`, the storefront's loc
 
 `card`, `apple-pay`, `google-pay`, `paypal`, `klarna`, `sepa-debit`, `ideal`, `bancontact`, `blik`, `invoice`
 
-Paper translates them and keeps brand names as they are. Without the key, Paper names what it knows each installed payment app offers: "card" for the Stripe app, the app's own name for others. That guess cannot see which methods you switched on in your payment provider, so set the key.
+Paper translates them and keeps brand names as they are. Without the key, checkout names only what Paper can take payment with ("card" with the Stripe app) and the cart names no payment method. Paper cannot see which methods you switched on in your payment provider, so set the key.
 
 A change to these keys or to your shipping zones shows on the storefront within a day. The storefront accepts Saleor's `channel_metadata_updated` webhook for an immediate refresh, but the Paper app does not send it: Saleor delivers that event only to apps that hold `MANAGE_CHANNELS`, which can create, delete and reconfigure channels. The postcode check below asks Saleor live, so a postcode rule you add applies at once.
 
-**Postcode check.** When a customer enters a postcode at checkout, Paper asks Saleor whether any shipping method serves it, using the postcode rules on your shipping zones. If none does, the customer reads "We don't deliver to postcode 35001." under the field and cannot continue until they change the address. They learn it before they choose shipping, not after.
+**Postcode check.** When a customer enters a postcode at checkout, Paper asks Saleor whether your shipping zones serve it. If your zones serve the country but their postcode rules exclude this postcode, the customer reads "We don't deliver to postcode 35001." under the field and cannot continue until they change the address. They learn it before they choose shipping, not after.
+
+The check sees only the shipping methods defined in your shipping zones. If your shipping methods come from an app, there is no early check: the customer sees the methods, or that none is available, at the shipping step. If an app delivers to postcodes your own zones exclude, turn the check off: `postcodeDeliveryCheck = false` in `src/config/checkout-delivery.ts`.
 
 ## Product Safety
 

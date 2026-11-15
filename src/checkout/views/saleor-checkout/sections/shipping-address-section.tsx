@@ -34,6 +34,7 @@ interface ShippingAddressSectionProps {
 	availableCountries: ShippingCountryOption[];
 	formData: Record<string, string>;
 	onFieldChange: (field: string, value: string) => void;
+	onFieldBlur?: (field: string) => void;
 	errors: Record<string, string>;
 
 	// Address field configuration (from useAddressFormUtils)
@@ -61,6 +62,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 	availableCountries,
 	formData,
 	onFieldChange,
+	onFieldBlur,
 	errors,
 	orderedAddressFields,
 	getFieldLabel,
@@ -144,6 +146,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						formData={formData}
 						errors={errors}
 						onFieldChange={onFieldChange}
+						onFieldBlur={onFieldBlur}
 						countryAreaChoices={countryAreaChoices}
 					/>
 				</>

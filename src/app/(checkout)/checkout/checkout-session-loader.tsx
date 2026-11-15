@@ -3,6 +3,7 @@ import { invariant } from "ts-invariant";
 import { buildCheckoutPath, buildOrderStatusPath } from "@paper/session-bridge";
 import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
+import { paymentMethodsForCheckout } from "@/checkout/lib/payment/payment-methods";
 import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
 import { getLegalHrefs } from "@/lib/catalog/get-legal-links";
 import { getDeliveryPaymentSummary } from "@/lib/channels/get-delivery-payment";
@@ -115,7 +116,7 @@ export async function CheckoutSessionLoader({
 			? getDeliveryPaymentSummary({
 					channel: contentChannel,
 					localeSlug: browseLocale,
-					gateways: initialCheckout.availablePaymentGateways,
+					fallbackPaymentMethods: paymentMethodsForCheckout(initialCheckout.availablePaymentGateways),
 				})
 			: null,
 	]);

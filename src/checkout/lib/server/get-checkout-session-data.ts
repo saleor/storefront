@@ -37,7 +37,13 @@ export const getCheckoutSessionCountries = cache(async (channelSlug: string, loc
  * countries as before.
  */
 export const getCheckoutSessionBillingCountries = cache(async (localeSlug: LocaleSlug) => {
-	const codes = await getShopCountryCodes();
+	let codes: string[];
+	try {
+		codes = await getShopCountryCodes();
+	} catch (error) {
+		console.warn("[Checkout] Shop countries unavailable; billing offers the shipping countries", error);
+		return [];
+	}
 	const collator = new Intl.Collator(localeSlug);
 	// Saleor returns codes as strings; they are its own CountryCode values.
 	return (codes as CountryCode[])

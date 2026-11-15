@@ -6,7 +6,6 @@ import {
 	deliveryPaymentMetadataKeys,
 	EU_COUNTRY_CODES,
 	parsePaymentMethods,
-	paymentMethodsFromGateways,
 	type DeliveryPaymentMessages,
 } from "@/lib/delivery-payment";
 
@@ -83,21 +82,8 @@ describe("buildDeliveryPaymentSummary", () => {
 
 describe("payment method sources", () => {
 	it("parses the store's list, ignoring unknown keys and duplicates", () => {
-		expect(parsePaymentMethods(" Card, klarna, bitcoin, card ")).toEqual([
-			{ key: "card" },
-			{ key: "klarna" },
-		]);
+		expect(parsePaymentMethods(" Card, klarna, bitcoin, card ")).toEqual(["card", "klarna"]);
 		expect(parsePaymentMethods(undefined)).toEqual([]);
-	});
-
-	it("falls back to what the checkout's payment apps are known to offer", () => {
-		expect(
-			paymentMethodsFromGateways([
-				{ id: "saleor.app.payment.stripe", name: "Stripe" },
-				{ id: "saleor.io.gift-card-payment-gateway", name: "Gift card" },
-				{ id: "acme.pay", name: "Acme Pay" },
-			]),
-		).toEqual([{ key: "card" }, { name: "Acme Pay" }]);
 	});
 });
 

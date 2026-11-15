@@ -10,7 +10,6 @@ import {
 	deliveryExclusionsFor,
 	deliveryPaymentMetadataKeys,
 	parsePaymentMethods,
-	paymentMethodsFromGateways,
 	PAYMENT_METHODS_KEY,
 	type DeliveryPaymentSummary,
 	type PaymentMethodKey,
@@ -48,17 +47,24 @@ async function getChannelDeliveryPayment(channel: string): Promise<ChannelDelive
 
 /**
  * Display strings for "Delivery and payment", for the cart and the start of checkout.
- * `gateways` are the checkout's payment apps, used only when the store states no
- * `payment.methods`. `null` when Saleor lists no delivery countries.
+ * `fallbackPaymentMethods` are named only when the store states no `payment.methods` (the
+ * checkout passes what it can take payment with). `null` when Saleor lists no delivery countries
+ * or cannot be read: the note is left out, the cart and checkout still render.
  */
 export async function getDeliveryPaymentSummary(input: {
 	channel: string;
 	localeSlug: string;
-	gateways?: ReadonlyArray<{ id: string; name: string }> | null;
+	fallbackPaymentMethods?: readonly PaymentMethodKey[];
 }): Promise<DeliveryPaymentSummary | null> {
 	const { channel, localeSlug } = input;
-	const [facts, legalLinks, t] = await Promise.all([
-		getChannelDeliveryPayment(channel),
+	let facts: ChannelDeliveryPayment;
+	try {
+		facts = await getChannelDeliveryPayment(channel);
+	} catch (error) {
+		console.warn("[DeliveryPayment] Channel delivery facts unavailable; leaving the note out", error);
+		return null;
+	}
+	const [legalLinks, t] = await Promise.all([
 		getLegalLinks(localeSlug),
 		getTranslations({ locale: localeSlug, namespace: "common.deliveryPayment" }),
 	]);
@@ -69,7 +75,7 @@ export async function getDeliveryPaymentSummary(input: {
 	return buildDeliveryPaymentSummary({
 		countryCodes: facts.countryCodes,
 		exclusions: deliveryExclusionsFor(facts.metadata, localeSlug),
-		paymentMethods: stated.length > 0 ? stated : paymentMethodsFromGateways(input.gateways),
+		paymentMethods: stated.length > 0 ? stated : (input.fallbackPaymentMethods ?? []),
 		bcp47: resolveLocaleFromSlug(localeSlug).bcp47,
 		shippingPage: shipping
 			? { href: buildStorefrontPath(localeSlug, channel, shipping.path), title: shipping.title }

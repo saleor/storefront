@@ -39,6 +39,7 @@ import {
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 import { DeliveryPaymentPanel } from "@/checkout/components/delivery-payment-panel";
 import { usePostcodeDelivery } from "@/checkout/hooks/use-postcode-delivery";
+import { postcodeDeliveryCheck } from "@/config/checkout-delivery";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
 import { useTranslations } from "next-intl";
 
@@ -215,13 +216,16 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const postcodeForCheck = usingSavedAddressForCheck
 		? (savedAddressForCheck?.postalCode ?? "")
 		: (formData.postalCode ?? "");
+	// While the shopper types in the postcode field the check waits for them to leave it, so a
+	// partial code is never reported as unserved. Autofill changes the field without focus.
+	const [typingPostcode, setTypingPostcode] = useState(false);
 	const deliveryStatus = usePostcodeDelivery({
 		channel: checkout.channel.slug,
 		countryCode: usingSavedAddressForCheck
 			? (savedAddressForCheck?.country?.code as CountryCode | undefined)
 			: effectiveCountryCode,
-		postalCode: postcodeForCheck,
-		enabled: checkout.isShippingRequired,
+		postalCode: !usingSavedAddressForCheck && typingPostcode ? "" : postcodeForCheck,
+		enabled: postcodeDeliveryCheck && checkout.isShippingRequired,
 	});
 	const deliveryErrorField = usingSavedAddressForCheck ? "address" : "postalCode";
 	const deliveryError =
@@ -250,6 +254,13 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const handleFieldChange = (field: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
 		if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+		if (field === "postalCode" && document.activeElement?.getAttribute("name") === "postalCode") {
+			setTypingPostcode(true);
+		}
+	};
+
+	const handleFieldBlur = (field: string) => {
+		if (field === "postalCode") setTypingPostcode(false);
 	};
 
 	const handleCountryChange = (value: string) => {
@@ -347,15 +358,12 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 				}
 			}
 
-			// The postcode check said no: stay here and say why, instead of failing at shipping.
-			if (deliveryError && !newErrors[deliveryErrorField]) {
-				newErrors[deliveryErrorField] = deliveryError;
-			}
-
 			setErrors(newErrors);
-			if (Object.keys(newErrors).length > 0) {
+			// The postcode check said no: stay here, with focus on the field that shows why. The
+			// message comes from the check itself, so it clears when the address changes.
+			const firstErrorField = Object.keys(newErrors)[0] ?? (deliveryError ? deliveryErrorField : undefined);
+			if (firstErrorField) {
 				// Focus the first invalid field
-				const firstErrorField = Object.keys(newErrors)[0];
 				const element = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement;
 				element?.focus();
 				return;
@@ -627,6 +635,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					availableCountries={availableShippingCountries}
 					formData={formData}
 					onFieldChange={handleFieldChange}
+					onFieldBlur={handleFieldBlur}
 					errors={addressErrors}
 					orderedAddressFields={orderedAddressFields}
 					getFieldLabel={getFieldLabel}

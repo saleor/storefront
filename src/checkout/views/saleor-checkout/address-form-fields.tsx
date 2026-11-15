@@ -107,6 +107,7 @@ interface FormInputProps {
 	placeholder: string;
 	value: string;
 	onChange: (value: string) => void;
+	onBlur?: () => void;
 	error?: string;
 	icon?: LucideIcon;
 	maxLength?: number;
@@ -122,6 +123,7 @@ export const FormInput: FC<FormInputProps> = ({
 	placeholder,
 	value,
 	onChange,
+	onBlur,
 	error,
 	icon: Icon,
 	maxLength,
@@ -140,6 +142,7 @@ export const FormInput: FC<FormInputProps> = ({
 			placeholder={placeholder}
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
+			onBlur={onBlur}
 			maxLength={maxLength}
 			autoComplete={autoComplete}
 			aria-invalid={error ? true : undefined}
@@ -166,6 +169,8 @@ interface AddressFieldsProps {
 	errors: Record<string, string>;
 	/** Callback when field value changes */
 	onFieldChange: (field: string, value: string) => void;
+	/** Callback when a text field loses focus */
+	onFieldBlur?: (field: string) => void;
 	/** Country area choices for state/province dropdown */
 	countryAreaChoices?: Array<{ raw?: unknown; verbose?: unknown }>;
 	/** ID prefix for form fields (e.g., "billing-") */
@@ -181,6 +186,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 	formData,
 	errors,
 	onFieldChange,
+	onFieldBlur,
 	countryAreaChoices,
 	idPrefix = "",
 	autocompleteSection = "shipping",
@@ -240,6 +246,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 					placeholder={label}
 					value={formData[field] || ""}
 					onChange={(value) => onFieldChange(field, value)}
+					onBlur={onFieldBlur ? () => onFieldBlur(field) : undefined}
 					error={error}
 					icon={Icon}
 					autoComplete={autoComplete}

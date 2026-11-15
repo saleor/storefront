@@ -22,13 +22,12 @@ export async function CartDrawerWrapper({ channel, localeSlug, cart, policies }:
 	await io();
 
 	const checkoutId = await Checkout.getIdFromCookies(channel);
-	const [checkout, priceReference] = await Promise.all([
+	const [checkout, priceReference, deliveryPayment] = await Promise.all([
 		checkoutId ? Checkout.find(checkoutId, localeSlug) : null,
 		getPriceReductionReference(channel),
+		// Cached per channel; the cart names payment methods only when the store states them.
+		checkoutId ? getDeliveryPaymentSummary({ channel, localeSlug }) : null,
 	]);
-	const deliveryPayment = checkout?.lines.length
-		? await getDeliveryPaymentSummary({ channel, localeSlug, gateways: checkout.availablePaymentGateways })
-		: null;
 	// Settle what each line's reduction is measured against; the drawer only reads the result.
 	const lines = (checkout?.lines ?? []).map((line) => ({
 		...line,
@@ -46,7 +45,7 @@ export async function CartDrawerWrapper({ channel, localeSlug, cart, policies }:
 			deleteCartLine={deleteCartLine}
 			updateCartLineQuantity={updateCartLineQuantity}
 			totalNote={<PriceNote channel={channel} locale={localeSlug} variant="total" className="text-right" />}
-			deliveryNote={<DeliveryPaymentNote summary={deliveryPayment} />}
+			deliveryNote={<DeliveryPaymentNote summary={checkout?.lines.length ? deliveryPayment : null} />}
 		/>
 	);
 }

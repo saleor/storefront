@@ -10,7 +10,8 @@
  *   (MANAGE_SHIPPING), so the names are stated by the store. Without the key Paper makes no
  *   claim about exclusions.
  * - Payment methods: public channel metadata `payment.methods`, a comma list of the keys below.
- *   Without it, what each payment app on the checkout is known to offer.
+ *   Without it, the checkout names what it can take payment with (`paymentMethodsForCheckout`
+ *   in the checkout); the cart says nothing about payment.
  *
  * Pure functions: the cart (server) and the checkout session loader build the same summary.
  */
@@ -84,48 +85,17 @@ export const PAYMENT_METHOD_BRAND_NAMES: Partial<Record<PaymentMethodKey, string
 	blik: "BLIK",
 };
 
-/** What each known payment app offers for certain, used when `payment.methods` is not set. */
-const GATEWAY_METHODS: Readonly<Record<string, readonly PaymentMethodKey[]>> = {
-	// Stripe's Payment Element always offers cards; other methods depend on the Stripe account.
-	"saleor.app.payment.stripe": ["card"],
-	"saleor.io.dummy-payment-app": ["test"],
-};
-const IGNORED_GATEWAYS: ReadonlySet<string> = new Set(["saleor.io.gift-card-payment-gateway"]);
-
-/** A payment method to name: a key Paper translates, or an unknown app's own name. */
-export type PaymentMethodItem = { key: PaymentMethodKey } | { name: string };
-
 function isPaymentMethodKey(value: string): value is PaymentMethodKey {
 	return (PAYMENT_METHOD_KEYS as readonly string[]).includes(value);
 }
 
 /** Parse `payment.methods`. Unknown keys are ignored, duplicates dropped. */
-export function parsePaymentMethods(value: string | null | undefined): PaymentMethodItem[] {
+export function parsePaymentMethods(value: string | null | undefined): PaymentMethodKey[] {
 	const keys = (value ?? "")
 		.split(",")
 		.map((part) => part.trim().toLowerCase())
 		.filter(isPaymentMethodKey);
-	return [...new Set(keys)].map((key) => ({ key }));
-}
-
-/** Methods the checkout's payment apps are known to offer, when the store states none. */
-export function paymentMethodsFromGateways(
-	gateways: ReadonlyArray<{ id: string; name: string }> | null | undefined,
-): PaymentMethodItem[] {
-	const items: PaymentMethodItem[] = [];
-	const seen = new Set<string>();
-	for (const gateway of gateways ?? []) {
-		if (IGNORED_GATEWAYS.has(gateway.id)) continue;
-		const known = GATEWAY_METHODS[gateway.id];
-		for (const item of known ? known.map((key) => ({ key })) : [{ name: gateway.name }]) {
-			const id = "key" in item ? item.key : item.name;
-			if (!seen.has(id)) {
-				seen.add(id);
-				items.push(item);
-			}
-		}
-	}
-	return items;
+	return [...new Set(keys)];
 }
 
 /** Excluded areas for the shopper's language: `market.deliveryExclusions.<slug>`, else the plain key. */
@@ -180,7 +150,7 @@ const SHORT_EXCLUSIONS = 3;
 export function buildDeliveryPaymentSummary(input: {
 	countryCodes: readonly string[];
 	exclusions: readonly string[];
-	paymentMethods: readonly PaymentMethodItem[];
+	paymentMethods: readonly PaymentMethodKey[];
 	bcp47: string;
 	messages: DeliveryPaymentMessages;
 	shippingPage: { href: string; title: string } | null;
@@ -223,9 +193,7 @@ export function buildDeliveryPaymentSummary(input: {
 						: and.format(shown),
 				);
 
-	const methodNames = paymentMethods.map((item) =>
-		"key" in item ? (PAYMENT_METHOD_BRAND_NAMES[item.key] ?? messages.method(item.key)) : item.name,
-	);
+	const methodNames = paymentMethods.map((key) => PAYMENT_METHOD_BRAND_NAMES[key] ?? messages.method(key));
 	const payment = methodNames.length > 0 ? messages.payment(or.format(methodNames)) : null;
 
 	return {

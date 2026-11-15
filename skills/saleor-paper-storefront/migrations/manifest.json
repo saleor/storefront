@@ -421,7 +421,9 @@
 				"src/ui/components/delivery-payment-note.tsx",
 				"src/ui/components/pdp/product-safety.tsx",
 				"src/checkout/components/delivery-payment-panel.tsx",
-				"src/checkout/hooks/use-postcode-delivery.ts"
+				"src/checkout/hooks/use-postcode-delivery.ts",
+				"src/config/checkout-delivery.ts",
+				"src/checkout/lib/payment/payment-methods.ts"
 			],
 			"detectMarkers": [
 				"legalPageSlugs",

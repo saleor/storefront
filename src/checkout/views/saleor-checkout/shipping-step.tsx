@@ -21,12 +21,17 @@ import { formatShippingPrice } from "@/checkout/lib/utils/money";
 import { CheckoutIssueBanner } from "@/checkout/components/checkout-issue-banner";
 import { MobileStickyAction } from "./mobile-sticky-action";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
-import { useLocale, useTranslations } from "next-intl";
+import { useAvailableShippingCountries } from "@/checkout/hooks/use-available-shipping-countries";
+import { knownPostcodeDelivery } from "@/checkout/hooks/use-postcode-delivery";
+import { useTranslations } from "next-intl";
 
 interface ShippingStepProps {
 	checkout: CheckoutFragment;
 	deliveries: DeliveryOption[];
 	isLoadingDeliveries: boolean;
+	/** Saleor could not be asked for delivery options. */
+	deliveriesFailed: boolean;
+	onRetryDeliveries: () => void;
 	onBack: () => void;
 	onComplete: (checkout: ServerCheckout) => void;
 }
@@ -35,6 +40,8 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	checkout,
 	deliveries,
 	isLoadingDeliveries,
+	deliveriesFailed,
+	onRetryDeliveries,
 	onBack,
 	onComplete,
 }) => {
@@ -54,16 +61,18 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
-	const locale = useLocale();
-	// Saleor names countries in English; name it in the shopper's language from the code.
-	const countryName = (code: string | null | undefined) => {
-		if (!code) return "";
-		try {
-			return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code;
-		} catch {
-			return code;
-		}
-	};
+	const { availableShippingCountries } = useAvailableShippingCountries();
+	// Saleor names countries in English; the server formatted them in the shopper's language.
+	const shippingAddress = checkout.shippingAddress;
+	const countryCode = shippingAddress?.country?.code;
+	const countryName =
+		availableShippingCountries.find((country) => country.code === countryCode)?.label ??
+		shippingAddress?.country?.country ??
+		"";
+	// Name the postcode only when the shop's own zones exclude it; an empty list can also mean
+	// weight or price limits, or shipping that comes from an app.
+	const postcodeExcluded =
+		knownPostcodeDelivery(checkout.channel.slug, countryCode, shippingAddress?.postalCode) === "unserved";
 
 	const showInvalidWarning =
 		hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid") &&
@@ -164,11 +173,20 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 					<div className="rounded-lg border border-border bg-muted/40 p-4">
 						<p className="text-sm text-foreground">{t("shipping.noAddressYet")}</p>
 					</div>
-				) : deliveries.length === 0 ? (
-					// Saleor offers no method for this address: an excluded area (an island, an
-					// overseas territory), since the country list only has served countries.
+				) : deliveries.length === 0 && deliveriesFailed ? (
 					<CheckoutIssueBanner
-						title={t("shipping.noDeliveryTitle")}
+						title={t("shipping.loadMethodsFailedTitle")}
+						action={
+							<Button type="button" variant="outline-solid" size="sm" onClick={onRetryDeliveries}>
+								{tActions("tryAgain")}
+							</Button>
+						}
+					>
+						<p>{t("shipping.loadMethodsFailed")}</p>
+					</CheckoutIssueBanner>
+				) : deliveries.length === 0 ? (
+					<CheckoutIssueBanner
+						title={postcodeExcluded ? t("shipping.noDeliveryTitle") : t("shipping.noMethodTitle")}
 						action={
 							<Button type="button" variant="outline-solid" size="sm" onClick={onBack}>
 								{t("shipping.changeAddress")}
@@ -176,14 +194,12 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 						}
 					>
 						<p>
-							{checkout.shippingAddress?.postalCode
+							{postcodeExcluded && shippingAddress?.postalCode
 								? t("shipping.noDeliveryToPostcode", {
-										postalCode: checkout.shippingAddress.postalCode,
-										country: countryName(checkout.shippingAddress.country.code),
+										postalCode: shippingAddress.postalCode,
+										country: countryName,
 									})
-								: t("shipping.noDeliveryToAddress", {
-										country: countryName(checkout.shippingAddress?.country?.code),
-									})}
+								: t("shipping.noMethodForAddress", { country: countryName })}
 						</p>
 					</CheckoutIssueBanner>
 				) : (

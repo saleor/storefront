@@ -3,17 +3,32 @@ import { useEffect, useState } from "react";
 import { checkPostcodeDelivery } from "@/app/(checkout)/actions";
 import type { CountryCode } from "@/checkout/graphql";
 
-export type PostcodeDeliveryStatus = "idle" | "checking" | "served" | "unserved";
+export type PostcodeDeliveryStatus = "idle" | "checking" | "served" | "unserved" | "unknown";
+type PostcodeAnswer = "served" | "unserved" | "unknown";
 
 /** Answers for this page load, per channel, country and postcode. Not cached on the server. */
-const answers = new Map<string, boolean>();
+const answers = new Map<string, PostcodeAnswer>();
 
-const DEBOUNCE_MS = 500;
+const DEBOUNCE_MS = 300;
+
+const answerKey = (channel: string, countryCode: string, postalCode: string) =>
+	`${channel}|${countryCode}|${postalCode.trim().toUpperCase()}`;
+
+/** What the postcode check answered on this page, if it ran. The shipping step words its empty state by it. */
+export function knownPostcodeDelivery(
+	channel: string,
+	countryCode: string | null | undefined,
+	postalCode: string | null | undefined,
+): PostcodeAnswer | undefined {
+	if (!countryCode || !postalCode?.trim()) return undefined;
+	return answers.get(answerKey(channel, countryCode, postalCode));
+}
 
 /**
- * Whether the shop delivers to the postcode being entered, so the address form can say so before
- * the shipping step. Asks Paper's server action after typing pauses; an unanswered check stays
- * "idle" and the shipping step remains the backstop.
+ * Whether the shop delivers to the postcode entered, so the address form can say so before the
+ * shipping step. The caller passes an empty postcode while the shopper is still typing in the
+ * field, so a partial code is never judged. An unanswered or "unknown" check never blocks; the
+ * shipping step remains the backstop.
  */
 export function usePostcodeDelivery(input: {
 	channel: string;
@@ -24,9 +39,9 @@ export function usePostcodeDelivery(input: {
 	const postalCode = (input.postalCode ?? "").trim();
 	const key =
 		input.enabled && input.countryCode && postalCode
-			? `${input.channel}|${input.countryCode}|${postalCode.toUpperCase()}`
+			? answerKey(input.channel, input.countryCode, postalCode)
 			: null;
-	const [answered, setAnswered] = useState<{ key: string; served: boolean } | null>(null);
+	const [answered, setAnswered] = useState<{ key: string; answer: PostcodeAnswer } | null>(null);
 	const [pendingKey, setPendingKey] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -40,8 +55,8 @@ export function usePostcodeDelivery(input: {
 			void checkPostcodeDelivery(input.channel, countryCode, postalCode)
 				.then((result) => {
 					if (result.ok) {
-						answers.set(key, result.served);
-						if (!cancelled) setAnswered({ key, served: result.served });
+						answers.set(key, result.status);
+						if (!cancelled) setAnswered({ key, answer: result.status });
 					}
 				})
 				.catch(() => {})
@@ -57,7 +72,7 @@ export function usePostcodeDelivery(input: {
 	}, [key, input.channel, input.countryCode, postalCode]);
 
 	if (!key) return "idle";
-	const served = answers.get(key) ?? (answered?.key === key ? answered.served : undefined);
-	if (served === undefined) return pendingKey === key ? "checking" : "idle";
-	return served ? "served" : "unserved";
+	const answer = answers.get(key) ?? (answered?.key === key ? answered.answer : undefined);
+	if (answer === undefined) return pendingKey === key ? "checking" : "idle";
+	return answer;
 }
