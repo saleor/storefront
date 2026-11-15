@@ -25,8 +25,9 @@ type ChannelDeliveryPayment = {
 
 /**
  * The channel's delivery countries and its delivery and payment metadata. Cached with the
- * channel list: `channel_metadata_updated` busts it, and the countries follow the daily
- * revalidate (Saleor sends no event for a shipping zone change). Optional read: a field error
+ * channel list and follows its daily revalidate. `channel_metadata_updated` busts it for setups
+ * that send it; the Paper app does not (needs MANAGE_CHANNELS). Saleor sends no event for a
+ * shipping zone change. Optional read: a field error
  * means a shorter summary, never a broken cart or checkout.
  */
 async function getChannelDeliveryPayment(channel: string): Promise<ChannelDeliveryPayment> {
