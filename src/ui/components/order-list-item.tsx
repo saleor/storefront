@@ -59,9 +59,10 @@ export const OrderListItem = ({ order }: Props) => {
 									}
 
 									const product = item.variant.product;
+									const variantName = variantDisplayName(item.variant);
 
 									return (
-										<tr key={product.id}>
+										<tr key={item.id}>
 											<td className="py-6 pr-6 md:w-[60%] lg:w-[70%]">
 												<div className="flex flex-row items-center">
 													{product.thumbnail && (
@@ -85,8 +86,8 @@ export const OrderListItem = ({ order }: Props) => {
 														>
 															{product.name}
 														</LinkWithChannel>
-														{variantDisplayName(item.variant) && (
-															<p className="mt-1 break-words">Variant: {variantDisplayName(item.variant)}</p>
+														{variantName && (
+															<p className="mt-1 [overflow-wrap:anywhere]">Variant: {variantName}</p>
 														)}
 													</div>
 												</div>

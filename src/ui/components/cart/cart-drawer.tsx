@@ -243,6 +243,7 @@ export function CartDrawer({
 						<ul className="divide-y divide-border">
 							{lines.map((line) => {
 								const variantAttributes = getVariantDetails(line.variant);
+								const variantName = variantDisplayName(line.variant);
 								const isDiscounted = hasDiscount(
 									line.variant.pricing?.price?.gross.amount,
 									line.variant.pricing?.priceUndiscounted?.gross.amount,
@@ -284,7 +285,7 @@ export function CartDrawer({
 														{variantAttributes.length > 0 ? (
 															<div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
 																{variantAttributes.map((attr, index) => (
-																	<span key={attr.name} className="flex items-center gap-1.5">
+																	<span key={attr.name} className="flex min-w-0 items-center gap-1.5">
 																		{index > 0 && <span className="text-border">|</span>}
 																		{attr.colorHex && (
 																			<span
@@ -293,13 +294,15 @@ export function CartDrawer({
 																			/>
 																		)}
 																		{/* Show "Size X" for size attributes, just value for colors */}
-																		<span>{attr.isColor ? attr.value : `${attr.name} ${attr.value}`}</span>
+																		<span className="min-w-0 [overflow-wrap:anywhere]">
+																			{attr.isColor ? attr.value : `${attr.name} ${attr.value}`}
+																		</span>
 																	</span>
 																))}
 															</div>
-														) : variantDisplayName(line.variant) ? (
-															<p className="mt-1 truncate text-xs text-muted-foreground">
-																{variantDisplayName(line.variant)}
+														) : variantName ? (
+															<p className="mt-1 line-clamp-2 text-xs text-muted-foreground [overflow-wrap:anywhere]">
+																{variantName}
 															</p>
 														) : null}
 													</div>

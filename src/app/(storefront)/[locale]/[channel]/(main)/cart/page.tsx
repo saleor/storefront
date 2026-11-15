@@ -103,15 +103,15 @@ async function CartContent({
 													variantId: item.variant.id,
 												})}
 											>
-												<h2 className="break-words font-medium text-foreground">
+												<h2 className="font-medium text-foreground [overflow-wrap:anywhere]">
 													{item.variant?.product?.name}
 												</h2>
 											</LinkWithChannel>
-											<p className="mt-1 text-sm text-muted-foreground">
+											<p className="mt-1 text-sm text-muted-foreground [overflow-wrap:anywhere]">
 												{item.variant?.product?.category?.name}
 											</p>
 											{variantName && (
-												<p className="mt-1 truncate text-sm text-muted-foreground">
+												<p className="mt-1 line-clamp-2 text-sm text-muted-foreground [overflow-wrap:anywhere]">
 													{t("variant", { name: variantName })}
 												</p>
 											)}

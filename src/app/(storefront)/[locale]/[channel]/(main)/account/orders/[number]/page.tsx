@@ -7,6 +7,7 @@ import { getOrdersForNumberLookup } from "@/lib/account/get-orders";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { pickTranslatedName } from "@/lib/saleor-translations";
+import { variantDisplayName } from "@/lib/variant-name";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { OrderTimeline } from "@/ui/components/account/order-timeline";
@@ -79,7 +80,7 @@ async function OrderDetailContent({ params }: Props) {
 								const variant = line.variant;
 								const product = variant.product;
 								const productName = pickTranslatedName(product);
-								const variantName = pickTranslatedName(variant);
+								const variantName = variantDisplayName({ id: variant.id, name: pickTranslatedName(variant) });
 								const lineTotal = variant.pricing?.price?.gross
 									? variant.pricing.price.gross.amount * line.quantity
 									: null;
@@ -100,12 +101,14 @@ async function OrderDetailContent({ params }: Props) {
 										<div className="min-w-0 flex-1">
 											<LinkWithChannel
 												href={`/products/${product.slug}`}
-												className="text-sm font-medium hover:underline"
+												className="text-sm font-medium [overflow-wrap:anywhere] hover:underline"
 											>
 												{productName}
 											</LinkWithChannel>
-											{variantName !== variant.id && Boolean(variantName) && (
-												<p className="text-[13px] text-muted-foreground">{variantName}</p>
+											{variantName && (
+												<p className="text-[13px] text-muted-foreground [overflow-wrap:anywhere]">
+													{variantName}
+												</p>
 											)}
 											<p className="text-[13px] text-muted-foreground">
 												{tCommon("qty", { count: line.quantity })}

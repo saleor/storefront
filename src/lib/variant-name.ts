@@ -7,7 +7,8 @@
  */
 export function variantDisplayName(variant: { id: string; name?: string | null }): string | null {
 	const name = variant.name?.trim();
-	if (!name || name === variant.id || isSaleorGlobalIdOf(name, "ProductVariant")) {
+	// Any ProductVariant ID, the variant's own included.
+	if (!name || isSaleorGlobalIdOf(name, "ProductVariant")) {
 		return null;
 	}
 	return name;
