@@ -15,10 +15,6 @@ function cardNode(index: number) {
 				start: { gross: { amount: 10 + index, currency: "USD" } },
 				stop: { gross: { amount: 10 + index, currency: "USD" } },
 			},
-			priceRangePrior: {
-				start: { gross: { amount: 10 + index, currency: "USD" } },
-				stop: { gross: { amount: 10 + index, currency: "USD" } },
-			},
 		},
 		thumbnail: null,
 		productVariants: { edges: [], totalCount: 1 },

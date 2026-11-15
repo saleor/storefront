@@ -1,15 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { PRIOR_PRICE_COUNTRIES } from "@/config/pricing";
-import {
-	pickReferencePrice,
-	pickReferenceRange,
-	resolvePriceReductionReference,
-	withPriceReference,
-} from "@/lib/pricing";
+import { pickReferencePrice, resolvePriceReductionReference, withPriceReference } from "@/lib/pricing";
 
 const money = (amount: number) => ({ gross: { amount, currency: "EUR" } });
-const range = (start: number, stop: number) => ({ start: money(start), stop: money(stop) });
 
 describe("resolvePriceReductionReference", () => {
 	const resolve = (input: {
@@ -85,18 +79,5 @@ describe("withPriceReference", () => {
 			id: "v1",
 			pricing: { price: money(71.99) },
 		});
-	});
-});
-
-describe("pickReferenceRange", () => {
-	it("uses the prior range when Saleor has one", () => {
-		const pricing = { priceRangePrior: range(89.99, 99.99), priceRangeUndiscounted: range(109.99, 119.99) };
-		expect(pickReferenceRange(pricing, "list-price")).toEqual(range(89.99, 99.99));
-	});
-
-	it("falls back to the list price range only where the channel allows it", () => {
-		const pricing = { priceRangePrior: null, priceRangeUndiscounted: range(109.99, 119.99) };
-		expect(pickReferenceRange(pricing, "prior-price")).toBeNull();
-		expect(pickReferenceRange(pricing, "list-price")).toEqual(range(109.99, 119.99));
 	});
 });

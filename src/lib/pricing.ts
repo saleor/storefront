@@ -17,7 +17,8 @@
  *   price before promotions (`priceUndiscounted`).
  *
  * The rule is settled on the server and handed on as a resolved **reference price**
- * (`pickReferencePrice`, `withPriceReference`, `pickReferenceRange`). Everything below
+ * (`pickReferencePrice`, `withPriceReference`). Always per variant: a product's price
+ * range and prior range can come from different variants. Everything below
  * only compares a price with its reference and never chooses between the two sources.
  */
 
@@ -28,9 +29,9 @@ export type { PriceReductionReference };
 type Money = { gross: { amount: number; currency: string } };
 
 /** Saleor variant pricing as far as reductions go. */
-type ReferencePricing = {
-	pricePrior?: Money | null;
-	priceUndiscounted?: Money | null;
+type ReferencePricing<M = Money> = {
+	pricePrior?: M | null;
+	priceUndiscounted?: M | null;
 };
 
 /**
@@ -63,10 +64,10 @@ export function resolvePriceReductionReference(input: {
 }
 
 /** The price a reduction is measured against under the channel's rule. `null`: none. */
-export function pickReferencePrice(
-	pricing: ReferencePricing | null | undefined,
+export function pickReferencePrice<M>(
+	pricing: ReferencePricing<M> | null | undefined,
 	reference: PriceReductionReference,
-): Money | null {
+): M | null {
 	if (pricing?.pricePrior) {
 		return pricing.pricePrior;
 	}
@@ -88,24 +89,6 @@ export function withPriceReference<T extends { pricing?: ReferencePricing | null
 			priceReference: pickReferencePrice(item.pricing, reference),
 		},
 	};
-}
-
-/**
- * The price range a product's reductions are measured against: Saleor's prior range, or,
- * where the channel allows it and no prior price is set, the list price range.
- */
-export function pickReferenceRange(
-	pricing:
-		| { priceRangePrior?: PriceRange | null; priceRangeUndiscounted?: PriceRange | null }
-		| null
-		| undefined,
-	reference: PriceReductionReference,
-): PriceRange | null {
-	const prior = pricing?.priceRangePrior;
-	if (typeof prior?.start?.gross?.amount === "number" || typeof prior?.stop?.gross?.amount === "number") {
-		return prior ?? null;
-	}
-	return reference === "list-price" ? (pricing?.priceRangeUndiscounted ?? null) : null;
 }
 
 export interface PriceInfo {
@@ -189,6 +172,10 @@ export function getMaxDiscountInfo<T>(
 }
 
 /**
+ * @deprecated Ranges cannot tell which variant a reduction belongs to: Saleor builds the
+ * prior range only from variants that have a prior price. Compare each variant with its
+ * own reference price instead (`pickReferencePrice`), as listing cards do.
+ *
  * Check if ANY variant in a product is on sale using price ranges.
  *
  * For PLP product cards where we only have aggregated price ranges (not per-variant pricing).
