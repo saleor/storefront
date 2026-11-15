@@ -4,7 +4,9 @@ A shop that sells to consumers in the European Union has to show certain things 
 
 This page lists what Paper does, where each fact comes from, what you have to set up in Saleor, and what is not built yet.
 
-It is not legal advice. The rules differ per country and per product, and Paper covers only the part a storefront displays. Have your shop reviewed before you go live.
+> **Guidance, not legal or tax advice.** Paper's EU features help you work towards compliance. They do not make your store compliant, and they are not legal, tax or other professional advice. Laws differ by country and change often, and this guide may be incomplete or out of date. You remain responsible for your store's compliance: confirm every point with a qualified lawyer, tax adviser or the competent authority before you rely on it. Example company details and prices are fictitious.
+
+Paper covers only the part a storefront displays, and the rules also differ per product.
 
 ## At a Glance
 
@@ -23,6 +25,20 @@ It is not legal advice. The rules differ per country and per product, and Paper 
 | A returns window                                    | The Storefront — Policies Model                              | "Returns window days", or nothing          |
 
 A fact that is missing in Saleor is not shown. Paper has no fallback figures and never links to a page that does not exist.
+
+## What Applies Where
+
+Some behaviour depends on the market a channel serves, some on the language, and some applies everywhere.
+
+| Behaviour                                    | Legal scope                                                                                                                   | Where Paper shows it                                                                                    |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 30-day prior price for sales                 | EU and EEA consumers (Directive 98/6/EC Art. 6a, added by the Omnibus Directive)                                              | Per channel: channels that ship to an EU or EEA country                                                 |
+| Order button stating the obligation to pay   | Every EU and EEA country (Consumer Rights Directive Art. 8(2)); German courts are strict about the wording                    | Per language. English and German so far; French, Polish, Finnish and Norwegian still read "Pay {total}" |
+| "Incl. VAT, plus shipping costs"             | EU final-price rules (Directive 98/6/EC Art. 2; Consumer Rights Directive Art. 6(1)(e)); the German phrase is German practice | Per channel when prices are shown including VAT, in every language                                      |
+| Imprint and seller details                   | EU-established sellers (E-Commerce Directive Art. 5)                                                                          | Every channel                                                                                           |
+| Where the shop delivers, and payment methods | EU and EEA (Consumer Rights Directive Art. 8(3))                                                                              | Every channel                                                                                           |
+| Product safety information                   | EU (General Product Safety Regulation, Regulation (EU) 2023/988)                                                              | Every channel                                                                                           |
+| Billing address from any country             | EU (Geo-blocking Regulation, Regulation (EU) 2018/302)                                                                        | Every channel, for orders that are shipped                                                              |
 
 ## Seller Details and the Imprint
 

@@ -7,7 +7,7 @@ description: What Paper shows for consumer-law duties (EU distance selling) and 
 
 Paper shows the statements a shop owes its customers. It does not write them: every fact comes from Saleor, and a missing fact shows nothing. The storefront never links to a page that does not exist and never states a figure the store did not set.
 
-This rule covers what is built. It is not legal advice, and it is not a complete list of what a shop needs (see "Not built" below).
+Guidance, not legal or tax advice: these features help a shop work towards compliance and do not make it compliant (full notice in `docs/selling-in-the-eu.md`). This rule covers what is built, not everything a shop needs (see "Not built" below).
 
 ## Where each fact lives
 
