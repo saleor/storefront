@@ -69,6 +69,7 @@ interface CartLine {
 }
 
 import { getColorHex, isColorAttribute } from "@/lib/colors";
+import { variantDisplayName } from "@/lib/variant-name";
 
 interface VariantAttribute {
 	name: string;
@@ -271,7 +272,7 @@ export function CartDrawer({
 											{/* Product Details */}
 											<div className="min-w-0 flex-1">
 												<div className="flex items-start justify-between gap-2">
-													<div>
+													<div className="min-w-0">
 														<LinkWithChannel
 															href={`/products/${line.variant.product.slug}?variant=${line.variant.id}`}
 															onClick={closeCart}
@@ -296,8 +297,10 @@ export function CartDrawer({
 																	</span>
 																))}
 															</div>
-														) : line.variant.name && line.variant.name !== line.variant.id ? (
-															<p className="mt-1 text-xs text-muted-foreground">{line.variant.name}</p>
+														) : variantDisplayName(line.variant) ? (
+															<p className="mt-1 truncate text-xs text-muted-foreground">
+																{variantDisplayName(line.variant)}
+															</p>
 														) : null}
 													</div>
 													<Button

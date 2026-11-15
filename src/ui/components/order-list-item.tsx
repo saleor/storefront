@@ -3,6 +3,7 @@ import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney, getHrefForVariant } from "@/lib/utils";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { PaymentStatus } from "@/ui/components/payment-status";
+import { variantDisplayName } from "@/lib/variant-name";
 
 type Props = {
 	order: OrderDetailsFragment;
@@ -11,7 +12,7 @@ type Props = {
 export const OrderListItem = ({ order }: Props) => {
 	return (
 		<li className="bg-card">
-			<div className="bg-muted/50 flex flex-col gap-2 border px-6 py-4 md:grid md:grid-cols-4 md:gap-8">
+			<div className="flex flex-col gap-2 border bg-muted/50 px-6 py-4 md:grid md:grid-cols-4 md:gap-8">
 				<dl className="flex flex-col divide-y divide-border text-sm md:col-span-3 md:grid md:grid-cols-3 md:gap-6 md:divide-none lg:col-span-2">
 					<div className="flex flex-row items-center justify-between py-4 md:flex-col md:items-start md:gap-y-1">
 						<dt className="font-medium text-foreground">Order number</dt>
@@ -74,7 +75,7 @@ export const OrderListItem = ({ order }: Props) => {
 															/>
 														</div>
 													)}
-													<div>
+													<div className="min-w-0">
 														<LinkWithChannel
 															href={getHrefForVariant({
 																productSlug: product.slug,
@@ -84,8 +85,8 @@ export const OrderListItem = ({ order }: Props) => {
 														>
 															{product.name}
 														</LinkWithChannel>
-														{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
-															<p className="mt-1">Variant: {item.variant.name}</p>
+														{variantDisplayName(item.variant) && (
+															<p className="mt-1 break-words">Variant: {variantDisplayName(item.variant)}</p>
 														)}
 													</div>
 												</div>
