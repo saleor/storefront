@@ -24,7 +24,7 @@ import {
 	type BillingAddressData,
 } from "@/checkout/components/payment";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
-import { getFormattedMoney, formatMoneyWithFallback } from "@/checkout/lib/utils/money";
+import { getFormattedMoney } from "@/checkout/lib/utils/money";
 import { AuthorizedPaymentRecovery } from "@/checkout/components/payment/stripe/authorized-payment-recovery";
 import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount";
 import { shouldShowPaymentMethodArea } from "@/checkout/lib/payment/should-show-payment-method-area";
@@ -34,6 +34,8 @@ import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-pay
 import { useSyncCheckoutRouterUrl } from "@/checkout/hooks/use-sync-checkout-router-url";
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 import { OrderLegalNotice } from "@/checkout/components/payment/order-legal-notice";
+import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
+import { getLocaleDefinition, localeConfig } from "@/config/locale";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -155,7 +157,14 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	};
 
 	const total = checkout.totalPrice?.gross;
-	const totalStr = formatMoneyWithFallback(total);
+	// The phone bar's total line, formatted like the order summary ("17,89 €" in German).
+	const browseLocale = useCheckoutBrowseLocale();
+	const barTotal = total
+		? new Intl.NumberFormat(getLocaleDefinition(browseLocale)?.bcp47 ?? localeConfig.default, {
+				style: "currency",
+				currency: total.currency,
+			}).format(total.amount)
+		: undefined;
 
 	const buttonText = isLoading
 		? isCompletingOrder
@@ -165,7 +174,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 				: tActions("processingPayment")
 		: isFreeOrder
 			? tActions("completeOrder")
-			: tActions("payTotal", { total: totalStr });
+			: tActions("buyNow");
 
 	const hasInvalidDelivery = checkout.problems?.some(
 		(p) => p.__typename === "CheckoutProblemDeliveryMethodInvalid",
@@ -321,7 +330,8 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 						onAction={submit}
 						isLoading={isLoading}
 						disabled={isDisabled}
-						total={totalStr}
+						total={barTotal}
+						totalIncludesTax={(checkout.totalPrice?.tax?.amount ?? 0) > 0}
 						loadingText={isCompletingOrder ? tActions("creatingOrder") : tActions("processingPayment")}
 						showPaymentTrust
 					/>

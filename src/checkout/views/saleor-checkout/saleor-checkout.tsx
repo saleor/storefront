@@ -103,10 +103,12 @@ const SaleorCheckoutView: FC = () => {
 		setCheckout,
 	});
 
-	const { deliveries: shippingDeliveries, isLoading: isLoadingShippingDeliveries } = useShippingDeliveries(
-		checkout,
-		currentStep.id === "SHIPPING",
-	);
+	const {
+		deliveries: shippingDeliveries,
+		isLoading: isLoadingShippingDeliveries,
+		loadFailed: shippingDeliveriesFailed,
+		retry: retryShippingDeliveries,
+	} = useShippingDeliveries(checkout, currentStep.id === "SHIPPING");
 
 	if (isPaymentFlowActive) {
 		return (
@@ -195,6 +197,8 @@ const SaleorCheckoutView: FC = () => {
 										checkout={checkout}
 										deliveries={shippingDeliveries}
 										isLoadingDeliveries={isLoadingShippingDeliveries}
+										deliveriesFailed={shippingDeliveriesFailed}
+										onRetryDeliveries={retryShippingDeliveries}
 										onBack={() => goToStep("INFO")}
 										onComplete={(updated) => completeStep(updated, "PAYMENT")}
 									/>

@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Incl. VAT, plus <shipping>shipping costs</shipping>",
 			"allInclVatPlusShipping": "All prices incl. VAT, plus <shipping>shipping costs</shipping>.",
 			"inclVat": "Incl. VAT"
+		},
+		"deliveryPayment": {
+			"title": "Delivery and payment",
+			"deliverTo": "We deliver to {list}.",
+			"deliverToCount": "We deliver to {count, plural, one {# country} other {# countries}}.",
+			"euCountries": "{count} EU countries",
+			"notTo": "Not to: {areas}.",
+			"andMore": "{list} and {count} more",
+			"payment": "Payment by {list}.",
+			"toggle": "Where we deliver",
+			"countriesHeading": "We deliver to",
+			"exclusionsHeading": "Not to these areas",
+			"methods": {
+				"card": "card",
+				"sepa-debit": "SEPA Direct Debit",
+				"invoice": "invoice",
+				"test": "test payment",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -72,7 +97,7 @@
 			"shippingReturns": "Shipping & Returns",
 			"shippingBody": "Free shipping on orders over {freeShippingThreshold}.",
 			"shippingAtCheckout": "Shipping options and costs for your address are shown at checkout, before you order.",
-			"returnsBody": "Free returns within {returnsWindowDays} days of purchase. Items must be unworn with tags attached.",
+			"returnsBody": "Returns within {returnsWindowDays} days.",
 			"yes": "Yes",
 			"no": "No"
 		},
@@ -83,6 +108,13 @@
 			"previous": "Previous image",
 			"next": "Next image",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Material & safety",
+			"material": "Material",
+			"safetyInformation": "Safety information",
+			"manufacturer": "Manufacturer",
+			"euResponsiblePerson": "EU responsible person"
 		}
 	},
 	"plp": {
@@ -426,8 +458,7 @@
 			"logIn": "Log in",
 			"returnToInformation": "Return to information",
 			"returnToShipping": "Return to shipping",
-			"payNow": "Buy now",
-			"payTotal": "Buy now",
+			"buyNow": "Buy now",
 			"completeOrder": "Complete order",
 			"placingOrder": "Placing order…",
 			"creatingOrder": "Creating order…",
@@ -460,6 +491,8 @@
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "We don't deliver to postcode {postalCode}.",
+			"checkingDelivery": "Checking delivery…",
 			"crashTitle": "Checkout error",
 			"crashMessage": "Something went wrong loading checkout. Please try again."
 		},
@@ -485,6 +518,7 @@
 			"itemCount": "{count, plural, one {# item} other {# items}}",
 			"subtotal": "Subtotal",
 			"shipping": "Shipping",
+			"shippingPending": "Depends on shipping method",
 			"taxVat": "Tax (VAT)",
 			"discount": "Discount",
 			"total": "Total",
@@ -509,6 +543,13 @@
 			"methodTitle": "Shipping method",
 			"loadingMethods": "Loading shipping methods…",
 			"noAddressYet": "Please go back and enter your shipping address first.",
+			"noDeliveryTitle": "We can't deliver to this address",
+			"noDeliveryToPostcode": "We don't deliver to postcode {postalCode} in {country}. Change the address to continue.",
+			"noMethodTitle": "No shipping method available",
+			"noMethodForAddress": "No shipping method is available for this order to this address in {country}.",
+			"loadMethodsFailedTitle": "Shipping methods didn't load",
+			"loadMethodsFailed": "We couldn't get the shipping methods for this address. Try again in a moment.",
+			"changeAddress": "Change address",
 			"addressTitle": "Shipping address",
 			"countryRegion": "Country/Region",
 			"selectCountry": "Select country",
@@ -552,7 +593,7 @@
 			"methodRequired": "Could not determine the selected payment method. Please choose a payment option and try again.",
 			"detailsUnavailable": "Could not retrieve payment details. Please try again.",
 			"expressReset": "The express checkout buttons were reset before payment could be confirmed. Please try again.",
-			"formReset": "The payment form was reset before your card could be confirmed. Please try Pay again without refreshing the page.",
+			"formReset": "The payment form was reset before your card could be confirmed. Press Buy now again without refreshing the page.",
 			"totalChanged": "Order total changed. Review the updated amount and try again.",
 			"bankDeclined": "Your bank declined the payment. Please try again or use a different card.",
 			"sessionExpired": "Payment session expired after redirect. Please try again.",

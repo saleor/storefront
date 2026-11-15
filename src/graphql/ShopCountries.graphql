@@ -1,0 +1,10 @@
+# Every country Saleor knows. Billing accepts any of them when the order is shipped: the
+# Geo-blocking Regulation forbids refusing a customer for where they live when delivery goes
+# to a country the shop serves. Names are formatted on the server from the codes.
+query ShopCountries {
+	shop {
+		countries {
+			code
+		}
+	}
+}

@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "부가세 포함, <shipping>배송비</shipping> 별도",
 			"allInclVatPlusShipping": "모든 가격은 부가세 포함이며 <shipping>배송비</shipping>는 별도입니다.",
 			"inclVat": "부가세 포함"
+		},
+		"deliveryPayment": {
+			"title": "배송 및 결제",
+			"deliverTo": "배송 국가: {list}.",
+			"deliverToCount": "{count}개국으로 배송합니다.",
+			"euCountries": "EU {count}개국",
+			"notTo": "제외 지역: {areas}.",
+			"andMore": "{list} 외 {count}곳",
+			"payment": "결제 수단: {list}.",
+			"toggle": "배송 지역 보기",
+			"countriesHeading": "배송 국가",
+			"exclusionsHeading": "배송 제외 지역",
+			"methods": {
+				"card": "카드",
+				"sepa-debit": "SEPA 자동이체",
+				"invoice": "청구서 결제",
+				"test": "테스트 결제",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -64,7 +89,7 @@
 			"shippingReturns": "배송 및 반품",
 			"shippingBody": "{freeShippingThreshold} 이상 구매 시 무료 배송.",
 			"shippingAtCheckout": "배송지의 배송 방법과 배송비는 주문 전에 결제 화면에서 확인할 수 있습니다.",
-			"returnsBody": "구매 후 {returnsWindowDays}일 이내 무료 반품이 가능합니다. 상품은 미착용 상태여야 하며 태그가 부착되어 있어야 합니다.",
+			"returnsBody": "{returnsWindowDays}일 이내 반품 가능합니다.",
 			"yes": "예",
 			"no": "아니요"
 		},
@@ -75,6 +100,13 @@
 			"previous": "이전 이미지",
 			"next": "다음 이미지",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "소재 및 안전",
+			"material": "소재",
+			"safetyInformation": "안전 정보",
+			"manufacturer": "제조사",
+			"euResponsiblePerson": "EU 책임자"
 		}
 	},
 	"plp": {
@@ -417,8 +449,7 @@
 			"logIn": "로그인",
 			"returnToInformation": "정보 입력으로 돌아가기",
 			"returnToShipping": "배송 단계로 돌아가기",
-			"payNow": "지금 결제하기",
-			"payTotal": "{total} 결제하기",
+			"buyNow": "지금 구매하기",
 			"completeOrder": "주문 완료",
 			"placingOrder": "주문 접수 중…",
 			"creatingOrder": "주문 생성 중…",
@@ -451,6 +482,8 @@
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "우편번호 {postalCode}(으)로는 배송하지 않습니다.",
+			"checkingDelivery": "배송 가능 여부를 확인하는 중…",
 			"crashTitle": "결제 오류",
 			"crashMessage": "결제 정보를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요."
 		},
@@ -476,6 +509,7 @@
 			"itemCount": "{count, plural, other {상품 #개}}",
 			"subtotal": "소계",
 			"shipping": "배송비",
+			"shippingPending": "배송 방법에 따라 다름",
 			"taxVat": "세금 (부가세)",
 			"discount": "할인",
 			"total": "합계",
@@ -497,6 +531,13 @@
 			"methodTitle": "배송 방법",
 			"loadingMethods": "배송 방법을 불러오는 중…",
 			"noAddressYet": "먼저 이전 단계로 돌아가 배송지 주소를 입력해주세요.",
+			"noDeliveryTitle": "이 주소로는 배송할 수 없습니다",
+			"noDeliveryToPostcode": "{country}의 우편번호 {postalCode}(으)로는 배송하지 않습니다. 계속하려면 주소를 변경하세요.",
+			"noMethodTitle": "사용 가능한 배송 방법이 없습니다",
+			"noMethodForAddress": "{country}의 이 주소로 이 주문에 사용할 수 있는 배송 방법이 없습니다.",
+			"loadMethodsFailedTitle": "배송 방법을 불러오지 못했습니다",
+			"loadMethodsFailed": "이 주소의 배송 방법을 가져오지 못했습니다. 잠시 후 다시 시도하세요.",
+			"changeAddress": "주소 변경",
 			"addressTitle": "배송지 주소",
 			"countryRegion": "국가/지역",
 			"selectCountry": "국가 선택",
@@ -540,7 +581,7 @@
 			"methodRequired": "선택한 결제 수단을 확인할 수 없습니다. 결제 방법을 선택한 후 다시 시도해주세요.",
 			"detailsUnavailable": "결제 정보를 가져올 수 없습니다. 다시 시도해주세요.",
 			"expressReset": "결제가 확인되기 전에 간편 결제 버튼이 초기화되었습니다. 다시 시도해주세요.",
-			"formReset": "카드 확인 전에 결제 양식이 초기화되었습니다. 페이지를 새로고침하지 말고 결제를 다시 시도해주세요.",
+			"formReset": "카드 확인 전에 결제 양식이 초기화되었습니다. 페이지를 새로고침하지 말고 '지금 구매하기'를 다시 눌러주세요.",
 			"totalChanged": "주문 총액이 변경되었습니다. 업데이트된 금액을 확인한 후 다시 시도해주세요.",
 			"bankDeclined": "카드사에서 결제를 거절했습니다. 다시 시도하거나 다른 카드를 사용해주세요.",
 			"sessionExpired": "리디렉션 후 결제 세션이 만료되었습니다. 다시 시도해주세요.",
@@ -556,7 +597,7 @@
 			"authorizedTitle": "결제가 승인되었습니다 — 주문을 접수하세요",
 			"authorizedBody": "결제가 승인되었습니다 (주문 처리 시 청구됩니다). 아래를 눌러 주문을 접수하세요 — 결제 시 추가로 청구되지 않습니다.",
 			"freeOrderBody": "주문 총액은 {total}입니다. 결제가 필요하지 않습니다 — 아래에서 확인하여 주문을 접수하세요.",
-			"dummyTestMode": "테스트 모드입니다. 카드 정보가 필요 없습니다 — 결제를 눌러 테스트 주문을 완료하세요.",
+			"dummyTestMode": "테스트 모드입니다. 카드 정보가 필요 없습니다 — '지금 구매하기'를 눌러 테스트 주문을 완료하세요.",
 			"stripeLoadTitle": "Stripe를 불러올 수 없습니다"
 		},
 		"confirmation": {

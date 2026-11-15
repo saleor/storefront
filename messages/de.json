@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "inkl. MwSt., zzgl. <shipping>Versandkosten</shipping>",
 			"allInclVatPlusShipping": "Alle Preise inkl. MwSt., zzgl. <shipping>Versandkosten</shipping>.",
 			"inclVat": "inkl. MwSt."
+		},
+		"deliveryPayment": {
+			"title": "Lieferung und Zahlung",
+			"deliverTo": "Lieferländer: {list}.",
+			"deliverToCount": "Wir liefern in {count, plural, one {# Land} other {# Länder}}.",
+			"euCountries": "{count} EU-Länder",
+			"notTo": "Ausgenommen: {areas}.",
+			"andMore": "{list} und {count} weitere",
+			"payment": "Zahlung per {list}.",
+			"toggle": "Liefergebiet anzeigen",
+			"countriesHeading": "Lieferländer",
+			"exclusionsHeading": "Nicht in diese Gebiete",
+			"methods": {
+				"card": "Karte",
+				"sepa-debit": "SEPA-Lastschrift",
+				"invoice": "Rechnung",
+				"test": "Testzahlung",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -72,7 +97,7 @@
 			"shippingReturns": "Versand & Rückgabe",
 			"shippingBody": "Kostenloser Versand bei Bestellungen über {freeShippingThreshold}.",
 			"shippingAtCheckout": "Versandarten und -kosten für Ihre Adresse sehen Sie im Checkout, bevor Sie bestellen.",
-			"returnsBody": "Kostenlose Rückgabe innerhalb von {returnsWindowDays} Tagen nach dem Kauf. Artikel müssen ungetragen und mit Etiketten versehen sein.",
+			"returnsBody": "Rückgabe innerhalb von {returnsWindowDays} Tagen.",
 			"yes": "Ja",
 			"no": "Nein"
 		},
@@ -83,6 +108,13 @@
 			"previous": "Vorheriges Bild",
 			"next": "Nächstes Bild",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Material & Sicherheit",
+			"material": "Material",
+			"safetyInformation": "Sicherheitshinweise",
+			"manufacturer": "Hersteller",
+			"euResponsiblePerson": "Verantwortliche Person in der EU"
 		}
 	},
 	"plp": {
@@ -426,8 +458,7 @@
 			"logIn": "Anmelden",
 			"returnToInformation": "Zurück zu den Informationen",
 			"returnToShipping": "Zurück zum Versand",
-			"payNow": "Zahlungspflichtig bestellen",
-			"payTotal": "Zahlungspflichtig bestellen",
+			"buyNow": "Zahlungspflichtig bestellen",
 			"completeOrder": "Bestellung abschließen",
 			"placingOrder": "Bestellung wird aufgegeben…",
 			"creatingOrder": "Bestellung wird erstellt…",
@@ -461,7 +492,9 @@
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "An die Postleitzahl {postalCode} liefern wir nicht.",
+			"checkingDelivery": "Lieferung wird geprüft …"
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -485,6 +518,7 @@
 			"itemCount": "{count, plural, one {# Artikel} other {# Artikel}}",
 			"subtotal": "Zwischensumme",
 			"shipping": "Versand",
+			"shippingPending": "Abhängig von der Versandart",
 			"taxVat": "Steuer (MwSt.)",
 			"discount": "Rabatt",
 			"total": "Gesamt",
@@ -509,6 +543,13 @@
 			"methodTitle": "Versandart",
 			"loadingMethods": "Versandarten werden geladen…",
 			"noAddressYet": "Bitte gehen Sie zurück und geben Sie zuerst Ihre Lieferadresse ein.",
+			"noDeliveryTitle": "An diese Adresse können wir nicht liefern",
+			"noDeliveryToPostcode": "An die Postleitzahl {postalCode} in {country} liefern wir nicht. Ändern Sie die Adresse, um fortzufahren.",
+			"noMethodTitle": "Keine Versandart verfügbar",
+			"noMethodForAddress": "Für diese Bestellung an diese Adresse in {country} ist keine Versandart verfügbar.",
+			"loadMethodsFailedTitle": "Versandarten nicht geladen",
+			"loadMethodsFailed": "Wir konnten die Versandarten für diese Adresse nicht abrufen. Versuchen Sie es gleich noch einmal.",
+			"changeAddress": "Adresse ändern",
 			"addressTitle": "Lieferadresse",
 			"countryRegion": "Land/Region",
 			"selectCountry": "Land auswählen",

@@ -398,7 +398,7 @@
 		},
 		{
 			"id": "2026-11-eu-consumer-rules",
-			"title": "Seller, legal pages, price notice, prior-price reductions and order button, from Saleor",
+			"title": "Seller, legal pages, price notice, prior-price reductions, delivery and payment, product safety and order button, from Saleor",
 			"upstreamSha": "",
 			"landedAt": "2026-11-15T12:00:00+01:00",
 			"introducedIn": "2026.11",
@@ -415,7 +415,15 @@
 				"src/ui/components/price-note.tsx",
 				"src/ui/components/footer.tsx",
 				"src/checkout/components/payment/order-legal-notice.tsx",
-				"src/app/(storefront)/[locale]/[channel]/(main)/imprint/"
+				"src/app/(storefront)/[locale]/[channel]/(main)/imprint/",
+				"src/config/product-safety.ts",
+				"src/lib/delivery-payment.ts",
+				"src/ui/components/delivery-payment-note.tsx",
+				"src/ui/components/pdp/product-safety.tsx",
+				"src/checkout/components/delivery-payment-panel.tsx",
+				"src/checkout/hooks/use-postcode-delivery.ts",
+				"src/config/checkout-delivery.ts",
+				"src/checkout/lib/payment/payment-methods.ts"
 			],
 			"detectMarkers": [
 				"legalPageSlugs",

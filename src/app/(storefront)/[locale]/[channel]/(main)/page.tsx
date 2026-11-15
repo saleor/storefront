@@ -3,7 +3,7 @@ import { brandConfig } from "@/config/brand";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { getFeaturedProducts } from "@/lib/catalog/get-featured-products";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
-import { buildPolicyLabelValues } from "@/lib/content";
+import { buildPolicyLabelValues, needsMissingPolicy } from "@/lib/content";
 import { formatContentLabel } from "@/lib/content/format-label";
 import { getStorefrontContent } from "@/lib/content/server";
 import { buildSaleorSrcSet } from "@/lib/images";
@@ -130,10 +130,14 @@ async function HomePageContent({ params }: { params: HomeParams }) {
 		currency,
 		locale: resolveLocaleFromSlug(locale).bcp47,
 	});
-	const valueColumns = values.columns.map((column) => ({
-		...column,
-		text: formatContentLabel(column.text, policyValues),
-	}));
+	// A column that states a policy the channel does not have (a returns window, a threshold)
+	// is left out rather than shown with a hole in it.
+	const valueColumns = values.columns
+		.filter((column) => !needsMissingPolicy(column.text, policyValues))
+		.map((column) => ({
+			...column,
+			text: formatContentLabel(column.text, policyValues),
+		}));
 
 	return (
 		<>

@@ -3,17 +3,29 @@ import "server-only";
 import edjsHTML from "editorjs-html";
 import xss from "xss";
 
+import {
+	PRODUCT_SAFETY_FIELDS,
+	productSafetyAttributeSlugs,
+	type ProductSafetyField,
+} from "@/config/product-safety";
 import { mapProductExtensions } from "@/config/storefront-view";
 import type { ProductShell } from "@/lib/catalog/get-product-data";
 import { BESTSELLER_ATTRIBUTE_SLUGS, isBestseller } from "@/lib/catalog/product-flags";
 import { defaultProductImages } from "@/lib/storefront/mappers/gallery-images";
-import type { ProductView, ProductViewAttribute } from "@/lib/storefront/contract/product";
+import type { ProductView, ProductViewAttribute, ProductViewSafety } from "@/lib/storefront/contract/product";
 import { pickTranslatedName } from "@/lib/saleor-translations";
 
 const parser = edjsHTML();
 
 const VARIANT_ATTRIBUTE_SLUGS = ["size", "color", "colour", "variant"];
-const INTERNAL_ATTRIBUTE_SLUGS = ["care-instructions", "care", ...BESTSELLER_ATTRIBUTE_SLUGS];
+const SAFETY_ATTRIBUTE_SLUGS: string[] = Object.values(productSafetyAttributeSlugs).flat();
+const INTERNAL_ATTRIBUTE_SLUGS = [
+	"care-instructions",
+	"care",
+	...BESTSELLER_ATTRIBUTE_SLUGS,
+	// Shown in their own block under the buy box (src/config/product-safety.ts).
+	...SAFETY_ATTRIBUTE_SLUGS,
+];
 
 type AssignedAttribute = NonNullable<ProductShell["assignedAttributes"]>[number];
 
@@ -34,6 +46,7 @@ export function toProductView(product: ProductShell): ProductView {
 			: null,
 		descriptionHtml: parseDescription(product.description),
 		attributes: extractProductAttributes(product),
+		safety: extractSafety(product),
 		careInstructions: extractCareInstructions(product),
 		images: defaultProductImages(product),
 		priceRange: start
@@ -82,6 +95,28 @@ function extractProductAttributes(product: Pick<ProductShell, "assignedAttribute
 			if (typeof attr.value === "boolean") return true;
 			return attr.value !== "";
 		});
+}
+
+/** The product's safety and material details, or `null` when it has none of them. */
+function extractSafety(product: Pick<ProductShell, "assignedAttributes">): ProductViewSafety | null {
+	const attributes = product.assignedAttributes || [];
+	const valueFor = (field: ProductSafetyField): string | null => {
+		for (const slug of productSafetyAttributeSlugs[field]) {
+			const attr = attributes.find((candidate) => (candidate.attribute.slug ?? "").toLowerCase() === slug);
+			const value = attr ? assignedAttributeDisplayValue(attr) : null;
+			const text = Array.isArray(value) ? value.join(", ") : typeof value === "string" ? value : null;
+			if (text) return text;
+		}
+		return null;
+	};
+
+	const safety: ProductViewSafety = {
+		material: valueFor("material"),
+		safetyInformation: valueFor("safetyInformation"),
+		manufacturer: valueFor("manufacturer"),
+		euResponsiblePerson: valueFor("euResponsiblePerson"),
+	};
+	return PRODUCT_SAFETY_FIELDS.some((field) => safety[field]) ? safety : null;
 }
 
 function extractCareInstructions(product: Pick<ProductShell, "assignedAttributes">): string | null {

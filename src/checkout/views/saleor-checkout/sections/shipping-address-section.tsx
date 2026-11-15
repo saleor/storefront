@@ -3,7 +3,7 @@
 import { type FC } from "react";
 import { useTranslations } from "next-intl";
 import { Label } from "@/ui/components/ui/label";
-import { FormSelect, FieldError, AddressFields } from "../address-form-fields";
+import { FormSelect, FieldError, fieldErrorId, AddressFields } from "../address-form-fields";
 import { HybridAddressSelector } from "@/checkout/components/shipping-address";
 import type { ShippingCountryOption } from "@/checkout/lib/checkout-types";
 import type { CountryCode, AddressFragment } from "@/checkout/graphql";
@@ -34,6 +34,7 @@ interface ShippingAddressSectionProps {
 	availableCountries: ShippingCountryOption[];
 	formData: Record<string, string>;
 	onFieldChange: (field: string, value: string) => void;
+	onFieldBlur?: (field: string) => void;
 	errors: Record<string, string>;
 
 	// Address field configuration (from useAddressFormUtils)
@@ -61,6 +62,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 	availableCountries,
 	formData,
 	onFieldChange,
+	onFieldBlur,
 	errors,
 	orderedAddressFields,
 	getFieldLabel,
@@ -96,7 +98,11 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						sheetTitle={t("selectShippingAddressSheet")}
 						onAddNew={() => onShowNewAddressForm(true)}
 					/>
-					{errors.address && <FieldError error={errors.address} />}
+					{errors.address ? (
+						<div role="status">
+							<FieldError error={errors.address} />
+						</div>
+					) : null}
 				</>
 			) : (
 				<>
@@ -129,7 +135,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 								label,
 							}))}
 						/>
-						<FieldError error={errors.countryCode} />
+						<FieldError error={errors.countryCode} id={fieldErrorId("country")} />
 					</div>
 
 					{/* Dynamic address fields */}
@@ -140,6 +146,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						formData={formData}
 						errors={errors}
 						onFieldChange={onFieldChange}
+						onFieldBlur={onFieldBlur}
 						countryAreaChoices={countryAreaChoices}
 					/>
 				</>

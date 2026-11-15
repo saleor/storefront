@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "TVA incluse, <shipping>frais de livraison</shipping> en sus",
 			"allInclVatPlusShipping": "Tous les prix s’entendent TVA incluse, <shipping>frais de livraison</shipping> en sus.",
 			"inclVat": "TVA incluse"
+		},
+		"deliveryPayment": {
+			"title": "Livraison et paiement",
+			"deliverTo": "Nous livrons : {list}.",
+			"deliverToCount": "Nous livrons dans {count, plural, one {# pays} other {# pays}}.",
+			"euCountries": "{count} pays de l’UE",
+			"notTo": "Sauf : {areas}.",
+			"andMore": "{list} et {count} autres",
+			"payment": "Paiement par {list}.",
+			"toggle": "Zones de livraison",
+			"countriesHeading": "Pays de livraison",
+			"exclusionsHeading": "Zones non desservies",
+			"methods": {
+				"card": "carte",
+				"sepa-debit": "prélèvement SEPA",
+				"invoice": "facture",
+				"test": "paiement test",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -72,7 +97,7 @@
 			"shippingReturns": "Livraison et retours",
 			"shippingBody": "Livraison gratuite pour les commandes supérieures à {freeShippingThreshold}.",
 			"shippingAtCheckout": "Les modes et frais de livraison pour votre adresse sont indiqués lors du paiement, avant la commande.",
-			"returnsBody": "Retours gratuits sous {returnsWindowDays} jours après l'achat. Les articles doivent être non portés et avec leurs étiquettes.",
+			"returnsBody": "Retours sous {returnsWindowDays} jours.",
 			"yes": "Oui",
 			"no": "Non"
 		},
@@ -83,6 +108,13 @@
 			"previous": "Image précédente",
 			"next": "Image suivante",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Matière et sécurité",
+			"material": "Matière",
+			"safetyInformation": "Consignes de sécurité",
+			"manufacturer": "Fabricant",
+			"euResponsiblePerson": "Personne responsable dans l’UE"
 		}
 	},
 	"plp": {
@@ -426,8 +458,7 @@
 			"logIn": "Se connecter",
 			"returnToInformation": "Retour aux informations",
 			"returnToShipping": "Retour à la livraison",
-			"payNow": "Payer maintenant",
-			"payTotal": "Payer {total}",
+			"buyNow": "Acheter maintenant",
 			"completeOrder": "Valider la commande",
 			"placingOrder": "Commande en cours…",
 			"creatingOrder": "Création de la commande…",
@@ -461,7 +492,9 @@
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "Nous ne livrons pas le code postal {postalCode}.",
+			"checkingDelivery": "Vérification de la livraison…"
 		},
 		"contact": {
 			"title": "Contact",
@@ -485,6 +518,7 @@
 			"itemCount": "{count, plural, one {# article} other {# articles}}",
 			"subtotal": "Sous-total",
 			"shipping": "Livraison",
+			"shippingPending": "Selon le mode de livraison",
 			"taxVat": "Taxe (TVA)",
 			"discount": "Réduction",
 			"total": "Total",
@@ -509,6 +543,13 @@
 			"methodTitle": "Mode de livraison",
 			"loadingMethods": "Chargement des modes de livraison…",
 			"noAddressYet": "Veuillez revenir en arrière et saisir d'abord votre adresse de livraison.",
+			"noDeliveryTitle": "Nous ne pouvons pas livrer à cette adresse",
+			"noDeliveryToPostcode": "Nous ne livrons pas le code postal {postalCode} ({country}). Modifiez l’adresse pour continuer.",
+			"noMethodTitle": "Aucun mode de livraison disponible",
+			"noMethodForAddress": "Aucun mode de livraison n’est disponible pour cette commande à cette adresse ({country}).",
+			"loadMethodsFailedTitle": "Modes de livraison non chargés",
+			"loadMethodsFailed": "Nous n’avons pas pu obtenir les modes de livraison pour cette adresse. Réessayez dans un instant.",
+			"changeAddress": "Modifier l’adresse",
 			"addressTitle": "Adresse de livraison",
 			"countryRegion": "Pays/Région",
 			"selectCountry": "Sélectionner un pays",
@@ -568,7 +609,7 @@
 			"authorizedTitle": "Paiement autorisé — validez votre commande",
 			"authorizedBody": "Votre paiement est autorisé (le prélèvement interviendra lors de l'expédition). Appuyez ci-dessous pour passer votre commande — vous ne serez pas débité à nouveau au paiement.",
 			"freeOrderBody": "Le total de votre commande est de {total}. Aucun paiement requis — confirmez ci-dessous pour passer votre commande.",
-			"dummyTestMode": "Mode test. Aucune carte requise — utilisez Payer pour finaliser une commande test.",
+			"dummyTestMode": "Mode test. Aucune carte requise — utilisez « Acheter maintenant » pour finaliser une commande test.",
 			"stripeLoadTitle": "Impossible de charger Stripe"
 		},
 		"confirmation": {

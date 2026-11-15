@@ -432,3 +432,19 @@ mutation deliveryOptionsCalculate($id: ID!) {
 		}
 	}
 }
+
+# Whether the shop delivers to a postcode, before the shipping step. Saleor applies the
+# shipping zones' postcode exclusions itself; no permission needed. Paper asks through the
+# checkout's server action, never from the browser.
+# The shop's own shipping methods (zones and their postcode rules) for an address, and for its
+# country alone. App-provided methods are not included: Saleor lists those only for a checkout.
+query shippingMethodsForAddress($channel: String!, $address: AddressInput!, $countryOnly: AddressInput!) {
+	shop {
+		forAddress: availableShippingMethods(channel: $channel, address: $address) {
+			id
+		}
+		forCountry: availableShippingMethods(channel: $channel, address: $countryOnly) {
+			id
+		}
+	}
+}

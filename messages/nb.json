@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Inkl. mva., pluss <shipping>frakt</shipping>",
 			"allInclVatPlusShipping": "Alle priser inkl. mva., pluss <shipping>frakt</shipping>.",
 			"inclVat": "Inkl. mva."
+		},
+		"deliveryPayment": {
+			"title": "Levering og betaling",
+			"deliverTo": "Vi leverer til {list}.",
+			"deliverToCount": "Vi leverer til {count, plural, one {# land} other {# land}}.",
+			"euCountries": "{count} EU-land",
+			"notTo": "Ikke til: {areas}.",
+			"andMore": "{list} og {count} til",
+			"payment": "Betaling med {list}.",
+			"toggle": "Hvor vi leverer",
+			"countriesHeading": "Vi leverer til",
+			"exclusionsHeading": "Ikke til disse områdene",
+			"methods": {
+				"card": "kort",
+				"sepa-debit": "SEPA-avtalegiro",
+				"invoice": "faktura",
+				"test": "testbetaling",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -72,7 +97,7 @@
 			"shippingReturns": "Frakt og retur",
 			"shippingBody": "Gratis frakt på bestillinger over {freeShippingThreshold}.",
 			"shippingAtCheckout": "Fraktalternativer og priser for adressen din vises i kassen før du bestiller.",
-			"returnsBody": "Gratis retur innen {returnsWindowDays} dager etter kjøp. Varene må være ubrukte med merkelapper.",
+			"returnsBody": "Retur innen {returnsWindowDays} dager.",
 			"yes": "Ja",
 			"no": "Nei"
 		},
@@ -83,6 +108,13 @@
 			"previous": "Forrige bilde",
 			"next": "Neste bilde",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Materiale og sikkerhet",
+			"material": "Materiale",
+			"safetyInformation": "Sikkerhetsinformasjon",
+			"manufacturer": "Produsent",
+			"euResponsiblePerson": "Ansvarlig person i EU"
 		}
 	},
 	"plp": {
@@ -426,8 +458,7 @@
 			"logIn": "Logg inn",
 			"returnToInformation": "Tilbake til informasjon",
 			"returnToShipping": "Tilbake til frakt",
-			"payNow": "Betal nå",
-			"payTotal": "Betal {total}",
+			"buyNow": "Kjøp nå",
 			"completeOrder": "Fullfør bestilling",
 			"placingOrder": "Legger inn bestilling…",
 			"creatingOrder": "Oppretter bestilling…",
@@ -461,7 +492,9 @@
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "Vi leverer ikke til postnummer {postalCode}.",
+			"checkingDelivery": "Sjekker levering …"
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -485,6 +518,7 @@
 			"itemCount": "{count, plural, one {# vare} other {# varer}}",
 			"subtotal": "Delsum",
 			"shipping": "Frakt",
+			"shippingPending": "Avhenger av fraktmetode",
 			"taxVat": "MVA",
 			"discount": "Rabatt",
 			"total": "Totalt",
@@ -509,6 +543,13 @@
 			"methodTitle": "Fraktmetode",
 			"loadingMethods": "Laster fraktmetoder…",
 			"noAddressYet": "Gå tilbake og oppgi leveringsadressen din først.",
+			"noDeliveryTitle": "Vi kan ikke levere til denne adressen",
+			"noDeliveryToPostcode": "Vi leverer ikke til postnummer {postalCode} i {country}. Endre adressen for å fortsette.",
+			"noMethodTitle": "Ingen fraktmetode tilgjengelig",
+			"noMethodForAddress": "Ingen fraktmetode er tilgjengelig for denne bestillingen til denne adressen i {country}.",
+			"loadMethodsFailedTitle": "Fraktmetodene ble ikke lastet",
+			"loadMethodsFailed": "Vi fikk ikke hentet fraktmetodene for denne adressen. Prøv igjen om litt.",
+			"changeAddress": "Endre adresse",
 			"addressTitle": "Leveringsadresse",
 			"countryRegion": "Land/region",
 			"selectCountry": "Velg land",
@@ -568,7 +609,7 @@
 			"authorizedTitle": "Betaling autorisert — legg inn bestillingen",
 			"authorizedBody": "Betalingen din er autorisert (belastning skjer når vi oppfyller bestillingen). Trykk nedenfor for å legge inn bestillingen — du belastes ikke igjen i kassen.",
 			"freeOrderBody": "Ordresummen din er {total}. Ingen betaling kreves — bekreft nedenfor for å legge inn bestillingen.",
-			"dummyTestMode": "Testmodus. Ingen kortdetaljer nødvendig — bruk Betal for å fullføre en testbestilling.",
+			"dummyTestMode": "Testmodus. Ingen kortdetaljer nødvendig — bruk «Kjøp nå» for å fullføre en testbestilling.",
 			"stripeLoadTitle": "Kunne ikke laste Stripe"
 		},
 		"confirmation": {

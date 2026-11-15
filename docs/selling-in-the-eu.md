@@ -4,7 +4,9 @@ A shop that sells to consumers in the European Union has to show certain things 
 
 This page lists what Paper does, where each fact comes from, what you have to set up in Saleor, and what is not built yet.
 
-It is not legal advice. The rules differ per country and per product, and Paper covers only the part a storefront displays. Have your shop reviewed before you go live.
+> **Guidance, not legal or tax advice.** Paper's EU features help you work towards compliance. They do not make your store compliant, and they are not legal, tax or other professional advice. Laws differ by country and change often, and this guide may be incomplete or out of date. You remain responsible for your store's compliance: confirm every point with a qualified lawyer, tax adviser or the competent authority before you rely on it. Example company details and prices are fictitious.
+
+Paper covers only the part a storefront displays, and the rules also differ per product.
 
 ## At a Glance
 
@@ -17,8 +19,26 @@ It is not legal advice. The rules differ per country and per product, and Paper 
 | Free-shipping threshold                             | A shipping method priced 0 with a minimum order price        | Shipping methods                           |
 | Order button wording and the legal line above it    | Paper's translations; the legal pages above                  | Nothing                                    |
 | Shipping methods, prices, delivery days, VAT amount | The checkout                                                 | Shipping zones and methods, delivery days  |
+| Where you deliver and how customers can pay         | Shipping zones; public channel metadata                      | Two optional metadata keys per channel     |
+| "We don't deliver to this postcode" before shipping | The shipping zones' postcode rules                           | Postcode rules on shipping zones           |
+| "Material & safety" on the product page             | Product attributes with fixed slugs                          | Four attributes                            |
+| A returns window                                    | The Storefront — Policies Model                              | "Returns window days", or nothing          |
 
 A fact that is missing in Saleor is not shown. Paper has no fallback figures and never links to a page that does not exist.
+
+## What Applies Where
+
+Some behaviour depends on the market a channel serves, some on the language, and some applies everywhere.
+
+| Behaviour                                    | Legal scope                                                                                                                   | Where Paper shows it                                               |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 30-day prior price for sales                 | EU and EEA consumers (Directive 98/6/EC Art. 6a, added by the Omnibus Directive)                                              | Per channel: channels that ship to an EU or EEA country            |
+| Order button stating the obligation to pay   | Every EU and EEA country (Consumer Rights Directive Art. 8(2)); German courts are strict about the wording                    | Per language                                                       |
+| "Incl. VAT, plus shipping costs"             | EU final-price rules (Directive 98/6/EC Art. 2; Consumer Rights Directive Art. 6(1)(e)); the German phrase is German practice | Per channel when prices are shown including VAT, in every language |
+| Imprint and seller details                   | EU-established sellers (E-Commerce Directive Art. 5)                                                                          | Every channel                                                      |
+| Where the shop delivers, and payment methods | EU and EEA (Consumer Rights Directive Art. 8(3))                                                                              | Every channel                                                      |
+| Product safety information                   | EU (General Product Safety Regulation, Regulation (EU) 2023/988)                                                              | Every channel                                                      |
+| Billing address from any country             | EU (Geo-blocking Regulation, Regulation (EU) 2018/302)                                                                        | Every channel, for orders that are shipped                         |
 
 ## Seller Details and the Imprint
 
@@ -86,6 +106,56 @@ export const priceReductionReferenceByChannel = { uk: "prior-price" };
 
 **Not built:** unit prices (price per litre or kilogram).
 
+## Delivery and Payment
+
+Customers have to learn where you deliver and how they can pay before they start ordering. Paper puts a short "Delivery and payment" note in the cart drawer and on the cart page, and the same facts at the top of checkout, collapsed, with a list of countries and excluded areas behind a toggle:
+
+> We deliver to 27 EU countries and Monaco. Not to: Canary Islands, Ceuta, Melilla and 7 more. Payment by card or PayPal.
+
+**Countries** come from the channel's shipping zones. Up to three are named; all 27 EU countries are summed up as "27 EU countries", with up to three others named after them; anything else is a count.
+
+**Excluded areas.** Saleor stores excluded postcodes as ranges, which a customer cannot read, and reading them needs a permission that can change your shipping setup. So you name the areas yourself, in public channel metadata (Dashboard → Configuration → Channels → the channel → Metadata):
+
+| Key                            | Example                                        |
+| ------------------------------ | ---------------------------------------------- |
+| `market.deliveryExclusions`    | `Canary Islands, Ceuta, Melilla, Heligoland`   |
+| `market.deliveryExclusions.de` | `Kanarische Inseln, Ceuta, Melilla, Helgoland` |
+
+A comma list. The key with a language suffix (`.de`, `.fr`, the storefront's locale) is shown in that language; the plain key everywhere else. Without either key Paper says nothing about exclusions. Keep the list in step with the postcode rules on your shipping zones: the names are what customers read, the rules are what checkout applies.
+
+**Payment methods.** Set `payment.methods` on the channel to a comma list of these keys:
+
+`card`, `apple-pay`, `google-pay`, `paypal`, `klarna`, `sepa-debit`, `ideal`, `bancontact`, `blik`, `invoice`
+
+Paper translates them and keeps brand names as they are. Without the key, checkout names only what Paper can take payment with ("card" with the Stripe app) and the cart names no payment method. Paper cannot see which methods you switched on in your payment provider, so set the key.
+
+A change to these keys or to your shipping zones shows on the storefront within a day. The storefront accepts Saleor's `channel_metadata_updated` webhook for an immediate refresh, but the Paper app does not send it: Saleor delivers that event only to apps that hold `MANAGE_CHANNELS`, which can create, delete and reconfigure channels. The postcode check below asks Saleor live, so a postcode rule you add applies at once.
+
+**Postcode check.** When a customer enters a postcode at checkout, Paper asks Saleor whether your shipping zones serve it. If your zones serve the country but their postcode rules exclude this postcode, the customer reads "We don't deliver to postcode 35001." under the field and cannot continue until they change the address. They learn it before they choose shipping, not after.
+
+The check sees only the shipping methods defined in your shipping zones. If your shipping methods come from an app, there is no early check: the customer sees the methods, or that none is available, at the shipping step. If an app delivers to postcodes your own zones exclude, turn the check off: `postcodeDeliveryCheck = false` in `src/config/checkout-delivery.ts`.
+
+## Product Safety
+
+Every offer of a consumer product in the EU names the manufacturer (name, postal and email address), an EU responsible person when the manufacturer is outside the EU, and warnings or safety information (General Product Safety Regulation, Art. 19). Textiles state their fibre composition before purchase.
+
+Paper shows these in a "Material & safety" block under the buy box, always open. Create them as product attributes with these slugs and add them to your product types:
+
+| Slug                    | Shown as              |
+| ----------------------- | --------------------- |
+| `material`              | Material              |
+| `safety-information`    | Safety information    |
+| `manufacturer`          | Manufacturer          |
+| `eu-responsible-person` | EU responsible person |
+
+Plain text or choice attributes, translated in Saleor like any other attribute. An email address in the manufacturer text becomes a link. A product with none of them shows no block; one with some shows those. Using other slugs? Map them in `src/config/product-safety.ts`.
+
+## Returns
+
+Paper states no returns window unless you set one: the Storefront — Policies Model's "Returns window days". With it, the cart, product page and homepage mention your window ("Returns within 30 days.", "30-day returns"). Without it, they say nothing about returns.
+
+Your statutory withdrawal information belongs on the `withdrawal` page; a returns window is a promise on top of it.
+
 ## Free Shipping
 
 Define free shipping in Saleor as a shipping method with price 0 and a minimum order price. Checkout applies it, and Paper advertises the same number in the announcement bar, on the product page and in the cart's progress bar.
@@ -96,9 +166,10 @@ The Storefront — Policies Model has an attribute "Free shipping threshold over
 
 ## Checkout
 
-- **Order button.** The final button reads "Buy now" in English and "Zahlungspflichtig bestellen" in German, with nothing else on it. The total stays in the order summary beside it.
+- **Order button.** The final button says "buy now" in the customer's language ("Acheter maintenant", "Kup teraz", "Osta nyt", "Kjøp nå") and "Zahlungspflichtig bestellen" in German, with nothing else on it. The total is shown directly above it: beside it in the order summary on a computer, and in the bar at the bottom of the screen on a phone.
 - **Legal line.** Above the button: one sentence each for the terms, the withdrawal information and the privacy notice, each shown only when its page exists.
-- **Countries.** The address form offers the countries of the channel's shipping zones and preselects the channel's default country (the preselection needs `SALEOR_APP_TOKEN`).
+- **Countries.** The shipping address form offers the countries of the channel's shipping zones and preselects the channel's default country (the preselection needs `SALEOR_APP_TOKEN`). The billing address can be in any country Saleor knows: a customer in Austria can pay with a card registered in Switzerland.
+- **Delivery and payment.** The facts from [Delivery and Payment](#delivery-and-payment) sit at the top of the first step, and an address you do not serve is refused before the shipping step.
 - **Shipping.** Method names, prices and delivery days come from Saleor for the address entered.
 - **VAT.** The summary shows the VAT amount and recalculates it for the destination country.
 - **Stock.** Paper reads `checkout.problems`, so it works with the channel setting `useLegacyErrorFlow: false`: a customer whose item sold out is stopped before payment.
@@ -117,12 +188,10 @@ Product names, descriptions and attribute values come from Saleor's translations
 
 ## Not Built Yet
 
-- A statement of delivery restrictions and accepted payment methods before checkout starts
 - A withdrawal function on order pages
 - The legal-guarantee notice
 - A cookie consent banner (Paper's analytics can wait for consent, but there is no banner to collect it)
 - Unit prices
-- A dedicated product-safety block on the product page (manufacturer and safety attributes show under "Product Details")
 - Net price display for business channels
 
 ## For Developers

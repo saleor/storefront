@@ -80,7 +80,7 @@ A shop that sells to EU consumers has to show who the seller is, what a price in
 - **Free-shipping threshold from Saleor** — read from the shipping method, so the banner and the checkout agree
 - **No sale without stock** — checkout reads `checkout.problems` and stops a customer whose item sold out before payment
 
-Paper covers what a storefront displays; it is not legal advice. **Guide:** [`docs/selling-in-the-eu.md`](docs/selling-in-the-eu.md) — what to set up in Saleor, and what is not built yet.
+Paper covers what a storefront displays. It is guidance, not legal or tax advice, and does not make a store compliant on its own. **Guide:** [`docs/selling-in-the-eu.md`](docs/selling-in-the-eu.md) — what to set up in Saleor, and what is not built yet.
 
 ### 📱 Product Pages Done Right
 

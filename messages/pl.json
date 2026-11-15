@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Zawiera VAT, plus <shipping>koszty dostawy</shipping>",
 			"allInclVatPlusShipping": "Wszystkie ceny zawierają VAT, plus <shipping>koszty dostawy</shipping>.",
 			"inclVat": "Zawiera VAT"
+		},
+		"deliveryPayment": {
+			"title": "Dostawa i płatność",
+			"deliverTo": "Dostarczamy do: {list}.",
+			"deliverToCount": "Dostarczamy do {count, plural, one {# kraju} few {# krajów} many {# krajów} other {# kraju}}.",
+			"euCountries": "{count} krajów UE",
+			"notTo": "Z wyjątkiem: {areas}.",
+			"andMore": "{list} i {count} innych",
+			"payment": "Płatność: {list}.",
+			"toggle": "Obszar dostawy",
+			"countriesHeading": "Dostarczamy do",
+			"exclusionsHeading": "Nie dostarczamy do",
+			"methods": {
+				"card": "karta",
+				"sepa-debit": "polecenie zapłaty SEPA",
+				"invoice": "faktura",
+				"test": "płatność testowa",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -72,7 +97,7 @@
 			"shippingReturns": "Dostawa i zwroty",
 			"shippingBody": "Darmowa dostawa przy zamówieniach powyżej {freeShippingThreshold}.",
 			"shippingAtCheckout": "Sposoby i koszty dostawy dla Twojego adresu zobaczysz w kasie, przed złożeniem zamówienia.",
-			"returnsBody": "Darmowe zwroty w ciągu {returnsWindowDays} dni od zakupu. Produkty muszą być nieużywane i z metkami.",
+			"returnsBody": "Zwroty w ciągu {returnsWindowDays} dni.",
 			"yes": "Tak",
 			"no": "Nie"
 		},
@@ -83,6 +108,13 @@
 			"previous": "Poprzednie zdjęcie",
 			"next": "Następne zdjęcie",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Materiał i bezpieczeństwo",
+			"material": "Materiał",
+			"safetyInformation": "Informacje o bezpieczeństwie",
+			"manufacturer": "Producent",
+			"euResponsiblePerson": "Osoba odpowiedzialna w UE"
 		}
 	},
 	"plp": {
@@ -426,8 +458,7 @@
 			"logIn": "Zaloguj się",
 			"returnToInformation": "Wróć do danych",
 			"returnToShipping": "Wróć do dostawy",
-			"payNow": "Zapłać teraz",
-			"payTotal": "Zapłać {total}",
+			"buyNow": "Kup teraz",
 			"completeOrder": "Złóż zamówienie",
 			"placingOrder": "Składanie zamówienia…",
 			"creatingOrder": "Tworzenie zamówienia…",
@@ -460,6 +491,8 @@
 			"itemUnavailableRemove": "Usuń produkt",
 			"itemUnavailableRemoveFailed": "Nie udało się usunąć produktu. Spróbuj ponownie.",
 			"fulfillmentCheckFailed": "Nie udało się sprawdzić dostępności produktu. Spróbuj ponownie.",
+			"postcodeNotServed": "Nie dostarczamy pod kod pocztowy {postalCode}.",
+			"checkingDelivery": "Sprawdzamy dostawę…",
 			"crashTitle": "Błąd kasy",
 			"crashMessage": "Coś poszło nie tak podczas ładowania kasy. Spróbuj ponownie."
 		},
@@ -485,6 +518,7 @@
 			"itemCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
 			"subtotal": "Suma częściowa",
 			"shipping": "Dostawa",
+			"shippingPending": "Zależy od sposobu dostawy",
 			"taxVat": "Podatek (VAT)",
 			"discount": "Rabat",
 			"total": "Razem",
@@ -509,6 +543,13 @@
 			"methodTitle": "Metoda dostawy",
 			"loadingMethods": "Ładowanie metod dostawy…",
 			"noAddressYet": "Wróć i podaj adres dostawy.",
+			"noDeliveryTitle": "Nie możemy dostarczyć pod ten adres",
+			"noDeliveryToPostcode": "Nie dostarczamy pod kod pocztowy {postalCode} ({country}). Zmień adres, żeby kontynuować.",
+			"noMethodTitle": "Brak dostępnej metody dostawy",
+			"noMethodForAddress": "Dla tego zamówienia pod ten adres ({country}) nie ma dostępnej metody dostawy.",
+			"loadMethodsFailedTitle": "Nie udało się wczytać metod dostawy",
+			"loadMethodsFailed": "Nie udało się pobrać metod dostawy dla tego adresu. Spróbuj ponownie za chwilę.",
+			"changeAddress": "Zmień adres",
 			"addressTitle": "Adres dostawy",
 			"countryRegion": "Kraj/region",
 			"selectCountry": "Wybierz kraj",
@@ -552,7 +593,7 @@
 			"methodRequired": "Nie udało się określić metody płatności. Wybierz opcję płatności i spróbuj ponownie.",
 			"detailsUnavailable": "Nie udało się pobrać szczegółów płatności. Spróbuj ponownie.",
 			"expressReset": "Przyciski szybkiej płatności zostały zresetowane. Spróbuj ponownie.",
-			"formReset": "Formularz płatności został zresetowany. Kliknij Zapłać ponownie bez odświeżania strony.",
+			"formReset": "Formularz płatności został zresetowany. Kliknij „Kup teraz” ponownie bez odświeżania strony.",
 			"totalChanged": "Suma zamówienia się zmieniła. Sprawdź kwotę i spróbuj ponownie.",
 			"bankDeclined": "Bank odrzucił płatność. Spróbuj ponownie lub użyj innej karty.",
 			"sessionExpired": "Sesja płatności wygasła po przekierowaniu. Spróbuj ponownie.",
@@ -568,7 +609,7 @@
 			"authorizedTitle": "Płatność autoryzowana — złóż zamówienie",
 			"authorizedBody": "Płatność jest autoryzowana (pobranie nastąpi przy realizacji zamówienia). Kliknij poniżej, aby złożyć zamówienie — nie zostaniesz obciążony ponownie przy kasie.",
 			"freeOrderBody": "Suma zamówienia to {total}. Płatność nie jest wymagana — potwierdź poniżej, aby złożyć zamówienie.",
-			"dummyTestMode": "Tryb testowy. Dane karty nie są potrzebne — użyj Zapłać, aby złożyć zamówienie testowe.",
+			"dummyTestMode": "Tryb testowy. Dane karty nie są potrzebne — użyj „Kup teraz”, aby złożyć zamówienie testowe.",
 			"stripeLoadTitle": "Nie udało się wczytać Stripe"
 		},
 		"confirmation": {

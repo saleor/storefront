@@ -14,6 +14,8 @@ import { resolveLocaleFromSlug } from "@/config/locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buttonClassName } from "@/ui/components/ui/button";
 import { PriceNote } from "@/ui/components/price-note";
+import { DeliveryPaymentNote } from "@/ui/components/delivery-payment-note";
+import { getDeliveryPaymentSummary } from "@/lib/channels/get-delivery-payment";
 
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
@@ -56,7 +58,11 @@ async function CartContent({
 	]);
 	const cart = surfaces.cart;
 	const intlLocale = resolveLocaleFromSlug(params.locale).bcp47;
-	const checkout = checkoutId ? await Checkout.find(checkoutId, params.locale) : null;
+	// The delivery note is cached per channel; read it alongside the checkout, not after it.
+	const [checkout, deliveryPayment] = await Promise.all([
+		checkoutId ? Checkout.find(checkoutId, params.locale) : null,
+		checkoutId ? getDeliveryPaymentSummary({ channel: params.channel, localeSlug: params.locale }) : null,
+	]);
 
 	if (!checkout || checkout.lines.length < 1) {
 		return (
@@ -69,7 +75,6 @@ async function CartContent({
 			</div>
 		);
 	}
-
 	return (
 		<>
 			<h1 className="mt-8 text-balance text-h1 text-foreground">{t("title")}</h1>
@@ -147,7 +152,8 @@ async function CartContent({
 							</div>
 						</div>
 					</div>
-					<div className="mt-10 text-center">
+					<DeliveryPaymentNote summary={deliveryPayment} className="mx-auto mt-8 max-w-xl" />
+					<div className="mt-8 text-center">
 						<CheckoutLink
 							checkoutId={checkoutId}
 							disabled={!checkout.lines.length}

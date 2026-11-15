@@ -14,7 +14,6 @@ import { useLiveCheckoutSearchParams } from "@/checkout/lib/checkout-search-para
 import { isStripeExpressCheckoutEnabled } from "@/checkout/lib/payment/providers/stripe";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { cn } from "@/lib/utils";
-import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { executeStripeCheckoutPayment } from "./execute-stripe-checkout-payment";
 import { StripeExpressCheckout } from "./stripe-express-checkout";
 import { StripePaymentProcessingOverlay } from "./stripe-payment-processing-overlay";
@@ -60,9 +59,6 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const paymentElementChangeTypeRef = useRef<string | null>(null);
 	const showExpressCheckout = isStripeExpressCheckoutEnabled();
-
-	const total = checkout.totalPrice?.gross;
-	const totalStr = formatMoneyWithFallback(total);
 
 	const handlePay = async () => {
 		onError("");
@@ -160,7 +156,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 							{tActions("processingPayment")}
 						</span>
 					) : (
-						tActions("payTotal", { total: totalStr })
+						tActions("buyNow")
 					)}
 				</Button>
 			</div>

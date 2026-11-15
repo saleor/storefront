@@ -92,6 +92,8 @@ fragment OrderFragment on Order {
 	deliveryMethod {
 		...ShippingFragment
 	}
+	# Kept on the order after its shipping method is deleted.
+	shippingMethodName
 	total {
 		gross {
 			...Money

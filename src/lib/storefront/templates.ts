@@ -19,6 +19,12 @@ export interface PdpTemplateSlots {
 	breadcrumbs: ReactNode;
 	/** Default description / specs / shipping accordion. Optional to place. */
 	attributes: ReactNode;
+	/**
+	 * "Material & safety" block (GPSR manufacturer and warnings, textile composition). Place it
+	 * where shoppers decide, next to the buy box. Renders nothing for a product without these
+	 * attributes. Every template places it: the attributes accordion no longer lists them.
+	 */
+	productSafety: ReactNode;
 }
 
 export interface PdpTemplateProps {

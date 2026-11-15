@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildPolicyLabelValues, formatPolicyAwareLabel } from "@/lib/content/policy-format";
+import {
+	buildPolicyLabelValues,
+	formatPolicyAwareLabel,
+	needsMissingPolicy,
+} from "@/lib/content/policy-format";
 import type { StorefrontPolicies } from "@/lib/content/types";
 
 const policies: StorefrontPolicies = {
@@ -48,5 +52,31 @@ describe("formatPolicyAwareLabel", () => {
 		expect(warn).toHaveBeenCalledWith(expect.stringContaining("freeShippingThreshold"));
 		vi.unstubAllEnvs();
 		warn.mockRestore();
+	});
+});
+
+describe("needsMissingPolicy", () => {
+	const values = { freeShippingThreshold: "", returnsWindowDays: "" as const };
+
+	it("flags copy that names a policy the channel does not have", () => {
+		expect(needsMissingPolicy("Returns within {returnsWindowDays} days.", values)).toBe(true);
+		expect(needsMissingPolicy("Free shipping over {freeShippingThreshold}", values)).toBe(true);
+	});
+
+	it("keeps copy without policy tokens, or whose policies are set", () => {
+		expect(needsMissingPolicy("Describe your returns policy.", values)).toBe(false);
+		expect(
+			needsMissingPolicy("Returns within {returnsWindowDays} days.", { ...values, returnsWindowDays: 30 }),
+		).toBe(false);
+	});
+});
+
+describe("buildPolicyLabelValues without a returns window", () => {
+	it("leaves the returns token empty", () => {
+		const result = buildPolicyLabelValues(
+			{ shipping: { freeShippingThreshold: null }, returns: { windowDays: null } },
+			{ currency: "EUR", locale: "de-DE" },
+		);
+		expect(result.returnsWindowDays).toBe("");
 	});
 });

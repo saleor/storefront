@@ -44,7 +44,7 @@ describe("PDP templates", () => {
 		expect(templates.pdp.gallery).toBe(ACTIVE_PDP_GALLERY);
 	});
 
-	it("places the gallery and buy box slots once in every template", () => {
+	it("places the gallery, buy box and product safety slots once in every template", () => {
 		const presetWidth: Record<string, string> = {
 			immersive: "container-super-wide",
 			standard: "container-content",
@@ -61,11 +61,13 @@ describe("PDP templates", () => {
 						buyBox: slot("pdp-slot-buybox"),
 						breadcrumbs: slot("pdp-slot-breadcrumbs"),
 						attributes: slot("pdp-slot-attributes"),
+						productSafety: slot("pdp-slot-safety"),
 					},
 				}),
 			);
 
-			for (const id of ["pdp-slot-gallery", "pdp-slot-buybox"]) {
+			// Product safety must be visible on every product page (GPSR Art. 19).
+			for (const id of ["pdp-slot-gallery", "pdp-slot-buybox", "pdp-slot-safety"]) {
 				expect(html.match(new RegExp(`id="${id}"`, "g")), template.id).toHaveLength(1);
 			}
 			expect(html).toContain("Tee");

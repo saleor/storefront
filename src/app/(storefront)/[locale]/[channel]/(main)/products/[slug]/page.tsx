@@ -24,6 +24,7 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
 import { PriceNote } from "@/ui/components/price-note";
+import { ProductSafety } from "@/ui/components/pdp/product-safety";
 import {
 	ProductAttributes,
 	activeGalleryVariant,
@@ -262,6 +263,7 @@ async function ProductShell({
 						</ErrorBoundary>
 					),
 					attributes: productAttributesNode,
+					productSafety: <ProductSafety safety={view.safety} locale={params.locale} />,
 				}}
 			/>
 		</>

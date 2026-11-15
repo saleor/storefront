@@ -8,6 +8,8 @@ import { shippingDeliveriesCacheKey } from "@/checkout/lib/shipping-deliveries";
 export function useShippingDeliveries(checkout: ServerCheckout | null, isActive: boolean) {
 	const [deliveries, setDeliveries] = useState<DeliveryOption[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	// Saleor could not be asked: not the same as "no method for this address".
+	const [loadFailed, setLoadFailed] = useState(false);
 	const loadedKeyRef = useRef<string | null>(null);
 	const prevStaleRef = useRef(false);
 
@@ -22,12 +24,9 @@ export function useShippingDeliveries(checkout: ServerCheckout | null, isActive:
 
 			setIsLoading(true);
 			try {
-				const result = await calculateDeliveryOptions(checkout.id);
-				if (result.ok) {
-					setDeliveries(result.deliveries);
-				} else {
-					setDeliveries([]);
-				}
+				const result = await calculateDeliveryOptions(checkout.id).catch(() => null);
+				setDeliveries(result?.ok ? result.deliveries : []);
+				setLoadFailed(!result?.ok);
 				loadedKeyRef.current = key;
 			} finally {
 				setIsLoading(false);
@@ -53,5 +52,7 @@ export function useShippingDeliveries(checkout: ServerCheckout | null, isActive:
 	const cacheKey = isActive && checkout ? shippingDeliveriesCacheKey(checkout) : null;
 	const awaitingFetch = cacheKey !== null && loadedKeyRef.current !== cacheKey;
 
-	return { deliveries, isLoading: isLoading || awaitingFetch };
+	const retry = useCallback(() => void loadDeliveries(true), [loadDeliveries]);
+
+	return { deliveries, isLoading: isLoading || awaitingFetch, loadFailed, retry };
 }

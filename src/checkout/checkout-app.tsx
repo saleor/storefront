@@ -20,6 +20,8 @@ import { CheckoutPaymentReturnErrorProvider } from "@/checkout/providers/checkou
 import type { LocaleSlug } from "@/config/locale";
 import type { CheckoutMessages } from "@/i18n/load-messages";
 import { CheckoutIntlProvider } from "@/checkout/providers/checkout-intl";
+import { CheckoutDeliveryPaymentProvider } from "@/checkout/providers/checkout-delivery-payment";
+import type { DeliveryPaymentSummary } from "@/lib/delivery-payment";
 import {
 	CheckoutLegalLinksProvider,
 	type CheckoutLegalLinks,
@@ -45,6 +47,10 @@ type CheckoutAppProps = {
 	initialCheckout: ServerCheckout | null;
 	initialUser: CheckoutUser | null;
 	shippingCountries: ShippingCountries;
+	/** Every country, for billing when the order is shipped. */
+	billingCountries?: ShippingCountries;
+	/** "Delivery and payment" for the start of checkout. */
+	deliveryPayment?: DeliveryPaymentSummary | null;
 	channelDefaultCountryCode: ChannelDefaultCountryCode;
 	checkoutContent: CheckoutContent;
 	storefrontLocale: LocaleSlug;
@@ -62,6 +68,8 @@ export function CheckoutApp({
 	initialCheckout,
 	initialUser,
 	shippingCountries,
+	billingCountries = [],
+	deliveryPayment = null,
 	channelDefaultCountryCode,
 	checkoutContent,
 	storefrontLocale,
@@ -82,21 +90,24 @@ export function CheckoutApp({
 							loadState={loadState}
 							initialCheckout={initialCheckout}
 							shippingCountries={shippingCountries}
+							billingCountries={billingCountries}
 							channelDefaultCountryCode={channelDefaultCountryCode}
 						>
 							<CheckoutContentProvider content={checkoutContent}>
 								<CheckoutLegalLinksProvider links={legalLinks}>
-									<CheckoutCommerceEvents />
-									<CheckoutPaymentReturnErrorProvider>
-										<Suspense fallback={null}>
-											<StripeCheckoutCompletionHost />
-										</Suspense>
-										<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
-											<Suspense fallback={<CheckoutLoadingFallback />}>
-												<RootViews />
+									<CheckoutDeliveryPaymentProvider summary={deliveryPayment}>
+										<CheckoutCommerceEvents />
+										<CheckoutPaymentReturnErrorProvider>
+											<Suspense fallback={null}>
+												<StripeCheckoutCompletionHost />
 											</Suspense>
-										</ErrorBoundary>
-									</CheckoutPaymentReturnErrorProvider>
+											<ErrorBoundary FallbackComponent={CheckoutCrashFallback}>
+												<Suspense fallback={<CheckoutLoadingFallback />}>
+													<RootViews />
+												</Suspense>
+											</ErrorBoundary>
+										</CheckoutPaymentReturnErrorProvider>
+									</CheckoutDeliveryPaymentProvider>
 								</CheckoutLegalLinksProvider>
 							</CheckoutContentProvider>
 						</CheckoutDataProvider>

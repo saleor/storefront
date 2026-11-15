@@ -37,6 +37,9 @@ import {
 	isUsingSavedShippingAddress,
 } from "@/checkout/lib/shipping-address-submit";
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
+import { DeliveryPaymentPanel } from "@/checkout/components/delivery-payment-panel";
+import { usePostcodeDelivery } from "@/checkout/hooks/use-postcode-delivery";
+import { postcodeDeliveryCheck } from "@/config/checkout-delivery";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
 import { useTranslations } from "next-intl";
 
@@ -199,6 +202,42 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const { orderedAddressFields, getFieldLabel, isRequiredField, countryAreaChoices } =
 		useAddressFormUtils(effectiveCountryCode);
 
+	// Delivery check for the address being entered or picked, before the shipping step.
+	const usingSavedAddressForCheck = isUsingSavedShippingAddress({
+		isAuthenticated: authenticated,
+		savedAddressCount: user?.addresses?.length ?? 0,
+		showNewAddressForm,
+		isEnteringNewAddress,
+		selectedAddressId,
+	});
+	const savedAddressForCheck = usingSavedAddressForCheck
+		? user?.addresses?.find((address) => address.id === selectedAddressId)
+		: undefined;
+	const postcodeForCheck = usingSavedAddressForCheck
+		? (savedAddressForCheck?.postalCode ?? "")
+		: (formData.postalCode ?? "");
+	// While the shopper types in the postcode field the check waits for them to leave it, so a
+	// partial code is never reported as unserved. Autofill changes the field without focus.
+	const [typingPostcode, setTypingPostcode] = useState(false);
+	const { status: deliveryStatus, check: checkPostcode } = usePostcodeDelivery({
+		channel: checkout.channel.slug,
+		countryCode: usingSavedAddressForCheck
+			? (savedAddressForCheck?.country?.code as CountryCode | undefined)
+			: effectiveCountryCode,
+		postalCode: postcodeForCheck,
+		paused: !usingSavedAddressForCheck && typingPostcode,
+		enabled: postcodeDeliveryCheck && checkout.isShippingRequired,
+	});
+	const deliveryErrorField = usingSavedAddressForCheck ? "address" : "postalCode";
+	const deliveryError =
+		deliveryStatus === "unserved"
+			? tErrors("postcodeNotServed", { postalCode: postcodeForCheck.trim() })
+			: null;
+	const addressErrors =
+		deliveryError && !errors[deliveryErrorField]
+			? { ...errors, [deliveryErrorField]: deliveryError }
+			: errors;
+
 	// ----- Event Handlers -----
 	const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -216,6 +255,13 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const handleFieldChange = (field: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
 		if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+		if (field === "postalCode" && document.activeElement?.getAttribute("name") === "postalCode") {
+			setTypingPostcode(true);
+		}
+	};
+
+	const handleFieldBlur = (field: string) => {
+		if (field === "postalCode") setTypingPostcode(false);
 	};
 
 	const handleCountryChange = (value: string) => {
@@ -277,6 +323,12 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 			if (isSubmitting) return;
 
+			// Leaving the postcode field by submitting (Enter, or Continue right after typing) must
+			// not skip the check: ask now and wait. Unanswered or "unknown" never blocks.
+			setTypingPostcode(false);
+			const deliveryAnswer = await checkPostcode();
+			const blockedByDelivery = deliveryAnswer === "unserved";
+
 			const newErrors: Record<string, string> = {};
 
 			// Validate email (guests only)
@@ -314,9 +366,12 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			}
 
 			setErrors(newErrors);
-			if (Object.keys(newErrors).length > 0) {
+			// The postcode check said no: stay here, with focus on the field that shows why. The
+			// message comes from the check itself, so it clears when the address changes.
+			const firstErrorField =
+				Object.keys(newErrors)[0] ?? (blockedByDelivery ? deliveryErrorField : undefined);
+			if (firstErrorField) {
 				// Focus the first invalid field
-				const firstErrorField = Object.keys(newErrors)[0];
 				const element = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement;
 				element?.focus();
 				return;
@@ -466,6 +521,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			effectiveCountryCode,
 			onComplete,
 			setAvailabilityIssue,
+			checkPostcode,
+			deliveryErrorField,
 		],
 	);
 
@@ -519,6 +576,10 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 	return (
 		<form className="space-y-8" method="post" action="#" onSubmit={handleSubmit} noValidate>
+			<DeliveryPaymentPanel />
+			<p className="sr-only" aria-live="polite">
+				{deliveryStatus === "checking" ? tErrors("checkingDelivery") : (deliveryError ?? "")}
+			</p>
 			{isOrphaned ? (
 				<div className="space-y-3 rounded-lg border border-border bg-muted/40 p-4">
 					<p className="text-sm text-foreground">{tErrors("orphanedCartMessage")}</p>
@@ -582,7 +643,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					availableCountries={availableShippingCountries}
 					formData={formData}
 					onFieldChange={handleFieldChange}
-					errors={errors}
+					onFieldBlur={handleFieldBlur}
+					errors={addressErrors}
 					orderedAddressFields={orderedAddressFields}
 					getFieldLabel={getFieldLabel}
 					isRequiredField={isRequiredField}

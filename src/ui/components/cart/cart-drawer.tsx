@@ -122,6 +122,8 @@ interface CartDrawerProps {
 	updateCartLineQuantity: UpdateCartLineQuantity;
 	/** Server-rendered `<PriceNote variant="total" />` ("incl. VAT"), shown under the total. */
 	totalNote?: ReactNode;
+	/** Server-rendered `<DeliveryPaymentNote />`, shown above the checkout button. */
+	deliveryNote?: ReactNode;
 }
 
 export function CartDrawer({
@@ -134,6 +136,7 @@ export function CartDrawer({
 	deleteCartLine,
 	updateCartLineQuantity,
 	totalNote,
+	deliveryNote,
 }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isCartBusy, setIsCartBusy] = useState(false);
@@ -180,9 +183,10 @@ export function CartDrawer({
 			? Math.min((subtotal / freeShippingThreshold) * 100, 100)
 			: 100;
 	const amountToFreeShipping = freeShippingEnabled ? Math.max(freeShippingThreshold - subtotal, 0) : 0;
-	const returnsLabel = formatContentLabel(cart.trust.returnsLabel, {
-		returnsWindowDays: policies.returns.windowDays,
-	});
+	// No returns window set by the merchant: no returns claim.
+	const returnsWindowDays = policies.returns.windowDays;
+	const returnsLabel =
+		returnsWindowDays != null ? formatContentLabel(cart.trust.returnsLabel, { returnsWindowDays }) : null;
 
 	return (
 		<Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
@@ -393,6 +397,7 @@ export function CartDrawer({
 
 						{/* Actions */}
 						<div className="space-y-3 px-6 pb-6">
+							{deliveryNote}
 							<Link
 								href={checkoutHref}
 								onClick={(event) => {
@@ -426,19 +431,23 @@ export function CartDrawer({
 							</LinkWithChannel>
 						</div>
 
-						{/* Trust Signals */}
-						<div className="flex items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
-							{freeShippingEnabled && (
-								<span className="flex items-center gap-1.5">
-									<Truck className="h-4 w-4" />
-									{cart.trust.freeShippingPrefix} {formatMoney(freeShippingThreshold, currency, intlLocale)}
-								</span>
-							)}
-							<span className="flex items-center gap-1.5">
-								<RotateCcw className="h-4 w-4" />
-								{returnsLabel}
-							</span>
-						</div>
+						{/* Trust Signals: only the policies the channel actually has */}
+						{freeShippingEnabled || returnsLabel ? (
+							<div className="flex items-center justify-center gap-6 border-t border-border px-6 pb-4 pt-4 text-xs text-muted-foreground">
+								{freeShippingEnabled && (
+									<span className="flex items-center gap-1.5">
+										<Truck className="h-4 w-4" />
+										{cart.trust.freeShippingPrefix} {formatMoney(freeShippingThreshold, currency, intlLocale)}
+									</span>
+								)}
+								{returnsLabel ? (
+									<span className="flex items-center gap-1.5">
+										<RotateCcw className="h-4 w-4" />
+										{returnsLabel}
+									</span>
+								) : null}
+							</div>
+						) : null}
 					</div>
 				)}
 			</SheetContent>

@@ -45,6 +45,8 @@ const CORE_OPERATIONS = {
 	ShopSellerIdentity: cached("global"),
 	ChannelPriceDisplay: cached("channel"),
 	ChannelShippingMethods: cached("channel"),
+	ShopCountries: cached("global"),
+	ChannelDeliveryPayment: cached("channel"),
 
 	// Storefront session reads.
 	CurrentUser: session(),
@@ -73,6 +75,7 @@ const CORE_OPERATIONS = {
 	checkoutCommerceContext: live(),
 	channel: live(),
 	addressValidationRules: live(),
+	shippingMethodsForAddress: live(),
 	order: live(),
 	ordersByNumber: live("app"),
 	user: session(),

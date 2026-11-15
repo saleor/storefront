@@ -6,4 +6,8 @@
 - On a channel that displays gross prices, the product page shows the price notice and the footer shows the all-prices line.
 - On a channel that ships to the EU/EEA, a product on promotion without `priorPrice` shows no strike-through; with `priorPrice` it shows that price struck through. On any other channel a promotion still shows the list price struck through.
 - The storefront advertises the same free-shipping threshold as the price-0 shipping method's minimum order price for the channel's default country, or none.
+- On a channel with shipping zones, the cart drawer, the cart page and the top of checkout state where the shop delivers and, when known, how customers can pay; `market.deliveryExclusions` names appear when set and nothing about exclusions appears when not.
+- At checkout, a postcode that no shipping method serves shows an error under the field and keeps the customer on the information step; a served postcode continues.
+- The product page shows "Material & safety" under the buy box for a product with any of the mapped attributes, and those attributes are gone from "Product Details".
+- Without a returns window in the Policies Model, no page mentions returns.
 - The payment step's button reads "Buy now" / "Zahlungspflichtig bestellen", and the legal notice appears above it once the `terms`, `withdrawal` and `privacy` pages exist (in the sticky bar on phones).

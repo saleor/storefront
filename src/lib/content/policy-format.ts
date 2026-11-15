@@ -5,7 +5,8 @@ import type { StorefrontPolicies } from "@/lib/content/types";
 /** Values for `{freeShippingThreshold}` / `{returnsWindowDays}` tokens in copy templates. */
 export type PolicyLabelValues = {
 	freeShippingThreshold: string;
-	returnsWindowDays: number;
+	/** Empty when the merchant set no returns window. */
+	returnsWindowDays: number | "";
 };
 
 /**
@@ -20,8 +21,19 @@ export function buildPolicyLabelValues(
 	const threshold = policies.shipping.freeShippingThreshold;
 	return {
 		freeShippingThreshold: threshold != null ? formatMoney(threshold, currency, locale) : "",
-		returnsWindowDays: policies.returns.windowDays,
+		returnsWindowDays: policies.returns.windowDays ?? "",
 	};
+}
+
+/**
+ * True when `template` names a policy value the channel does not have (`{freeShippingThreshold}`
+ * without a threshold, `{returnsWindowDays}` without a window). Such copy is dropped rather than
+ * shown with a hole in it ("Free shipping over ", "Returns within  days").
+ */
+export function needsMissingPolicy(template: string, policyValues: PolicyLabelValues): boolean {
+	return (Object.keys(policyValues) as (keyof PolicyLabelValues)[]).some(
+		(key) => template.includes(`{${key}}`) && policyValues[key] === "",
+	);
 }
 
 /**

@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Sis. ALV, lisäksi <shipping>toimituskulut</shipping>",
 			"allInclVatPlusShipping": "Kaikki hinnat sis. ALV, lisäksi <shipping>toimituskulut</shipping>.",
 			"inclVat": "Sis. ALV"
+		},
+		"deliveryPayment": {
+			"title": "Toimitus ja maksu",
+			"deliverTo": "Toimitamme: {list}.",
+			"deliverToCount": "Toimitamme {count, plural, one {# maahan} other {# maahan}}.",
+			"euCountries": "{count} EU-maata",
+			"notTo": "Paitsi: {areas}.",
+			"andMore": "{list} ja {count} muuta",
+			"payment": "Maksutavat: {list}.",
+			"toggle": "Toimitusalue",
+			"countriesHeading": "Toimitusmaat",
+			"exclusionsHeading": "Emme toimita näille alueille",
+			"methods": {
+				"card": "kortti",
+				"sepa-debit": "SEPA-suoraveloitus",
+				"invoice": "lasku",
+				"test": "testimaksu",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -72,7 +97,7 @@
 			"shippingReturns": "Toimitus ja palautukset",
 			"shippingBody": "Ilmainen toimitus tilauksille yli {freeShippingThreshold}.",
 			"shippingAtCheckout": "Osoitteesi toimitustavat ja -kulut näkyvät kassalla ennen tilaamista.",
-			"returnsBody": "Ilmaiset palautukset {returnsWindowDays} päivän kuluessa ostosta. Tuotteiden on oltava käyttämättömiä ja tunnisteineen.",
+			"returnsBody": "Palautus {returnsWindowDays} päivän kuluessa.",
 			"yes": "Kyllä",
 			"no": "Ei"
 		},
@@ -83,6 +108,13 @@
 			"previous": "Edellinen kuva",
 			"next": "Seuraava kuva",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Materiaali ja turvallisuus",
+			"material": "Materiaali",
+			"safetyInformation": "Turvallisuustiedot",
+			"manufacturer": "Valmistaja",
+			"euResponsiblePerson": "Vastuuhenkilö EU:ssa"
 		}
 	},
 	"plp": {
@@ -426,8 +458,7 @@
 			"logIn": "Kirjaudu",
 			"returnToInformation": "Takaisin tietoihin",
 			"returnToShipping": "Takaisin toimitukseen",
-			"payNow": "Maksa nyt",
-			"payTotal": "Maksa {total}",
+			"buyNow": "Osta nyt",
 			"completeOrder": "Viimeistele tilaus",
 			"placingOrder": "Tilataan…",
 			"creatingOrder": "Luodaan tilausta…",
@@ -461,7 +492,9 @@
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "Emme toimita postinumeroon {postalCode}.",
+			"checkingDelivery": "Tarkistetaan toimitusta…"
 		},
 		"contact": {
 			"title": "Yhteystiedot",
@@ -485,6 +518,7 @@
 			"itemCount": "{count, plural, one {# tuote} other {# tuotetta}}",
 			"subtotal": "Välisumma",
 			"shipping": "Toimitus",
+			"shippingPending": "Riippuu toimitustavasta",
 			"taxVat": "Vero (ALV)",
 			"discount": "Alennus",
 			"total": "Yhteensä",
@@ -509,6 +543,13 @@
 			"methodTitle": "Toimitustapa",
 			"loadingMethods": "Ladataan toimitustapoja…",
 			"noAddressYet": "Palaa takaisin ja anna ensin toimitusosoitteesi.",
+			"noDeliveryTitle": "Emme voi toimittaa tähän osoitteeseen",
+			"noDeliveryToPostcode": "Emme toimita postinumeroon {postalCode} ({country}). Muuta osoitetta jatkaaksesi.",
+			"noMethodTitle": "Toimitustapaa ei ole saatavilla",
+			"noMethodForAddress": "Tälle tilaukselle ei ole saatavilla toimitustapaa tähän osoitteeseen ({country}).",
+			"loadMethodsFailedTitle": "Toimitustapoja ei voitu ladata",
+			"loadMethodsFailed": "Emme saaneet toimitustapoja tälle osoitteelle. Yritä hetken kuluttua uudelleen.",
+			"changeAddress": "Muuta osoitetta",
 			"addressTitle": "Toimitusosoite",
 			"countryRegion": "Maa/alue",
 			"selectCountry": "Valitse maa",
@@ -568,7 +609,7 @@
 			"authorizedTitle": "Maksu valtuutettu — viimeistele tilauksesi",
 			"authorizedBody": "Maksusi on valtuutettu (veloitus tapahtuu tilauksen toimituksen yhteydessä). Napauta alla tehdäksesi tilauksen — sinua ei veloiteta uudelleen kassalla.",
 			"freeOrderBody": "Tilauksesi summa on {total}. Maksua ei vaadita — vahvista alla tehdäksesi tilauksen.",
-			"dummyTestMode": "Testitila. Korttitietoja ei tarvita — käytä Maksa-painiketta testitilauksen viimeistelyyn.",
+			"dummyTestMode": "Testitila. Korttitietoja ei tarvita — käytä Osta nyt -painiketta testitilauksen viimeistelyyn.",
 			"stripeLoadTitle": "Stripea ei voitu ladata"
 		},
 		"confirmation": {

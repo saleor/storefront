@@ -37,8 +37,16 @@ export const addressFieldPairs: [AddressField, AddressField][] = [
 // Shared Components
 // =============================================================================
 
-export const FieldError: FC<{ error?: string }> = ({ error }) =>
-	error ? <p className="text-sm text-destructive">{error}</p> : null;
+/** Error text under a field. Give it the id the field's `aria-describedby` points at. */
+export const FieldError: FC<{ error?: string; id?: string }> = ({ error, id }) =>
+	error ? (
+		<p id={id} className="text-sm text-destructive">
+			{error}
+		</p>
+	) : null;
+
+/** Id of a field's error text, for `aria-describedby`. */
+export const fieldErrorId = (fieldId: string) => `${fieldId}-error`;
 
 interface FormSelectProps {
 	id: string;
@@ -70,6 +78,8 @@ export const FormSelect: FC<FormSelectProps> = ({
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
 			autoComplete={autoComplete}
+			aria-invalid={error ? true : undefined}
+			aria-describedby={error ? fieldErrorId(id) : undefined}
 			className={cn(
 				"flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm",
 				"ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -97,6 +107,7 @@ interface FormInputProps {
 	placeholder: string;
 	value: string;
 	onChange: (value: string) => void;
+	onBlur?: () => void;
 	error?: string;
 	icon?: LucideIcon;
 	maxLength?: number;
@@ -112,6 +123,7 @@ export const FormInput: FC<FormInputProps> = ({
 	placeholder,
 	value,
 	onChange,
+	onBlur,
 	error,
 	icon: Icon,
 	maxLength,
@@ -130,8 +142,11 @@ export const FormInput: FC<FormInputProps> = ({
 			placeholder={placeholder}
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
+			onBlur={onBlur}
 			maxLength={maxLength}
 			autoComplete={autoComplete}
+			aria-invalid={error ? true : undefined}
+			aria-describedby={error ? fieldErrorId(id) : undefined}
 			className={cn("h-12", Icon && "pl-10", error && "border-destructive", className)}
 		/>
 	</div>
@@ -154,6 +169,8 @@ interface AddressFieldsProps {
 	errors: Record<string, string>;
 	/** Callback when field value changes */
 	onFieldChange: (field: string, value: string) => void;
+	/** Callback when a text field loses focus */
+	onFieldBlur?: (field: string) => void;
 	/** Country area choices for state/province dropdown */
 	countryAreaChoices?: Array<{ raw?: unknown; verbose?: unknown }>;
 	/** ID prefix for form fields (e.g., "billing-") */
@@ -169,6 +186,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 	formData,
 	errors,
 	onFieldChange,
+	onFieldBlur,
 	countryAreaChoices,
 	idPrefix = "",
 	autocompleteSection = "shipping",
@@ -211,7 +229,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 							label: typeof verbose === "string" ? verbose : "",
 						}))}
 					/>
-					<FieldError error={error} />
+					<FieldError error={error} id={fieldErrorId(fieldId)} />
 				</div>
 			);
 		}
@@ -228,11 +246,12 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 					placeholder={label}
 					value={formData[field] || ""}
 					onChange={(value) => onFieldChange(field, value)}
+					onBlur={onFieldBlur ? () => onFieldBlur(field) : undefined}
 					error={error}
 					icon={Icon}
 					autoComplete={autoComplete}
 				/>
-				<FieldError error={error} />
+				<FieldError error={error} id={fieldErrorId(fieldId)} />
 			</div>
 		);
 	};

@@ -26,6 +26,7 @@ A Paper shop picks one PDP layout at build time. The route owns data, caching, a
 - `slots.gallery` — the variant gallery, already inside Suspense. Place it exactly once. Thumbnails and the hero stay inside this slot. Set the template `gallery` field to `standard` (thumbs under the hero), `immersive`, `mosaic`, or `columns` (thumbs on the left, hero in the center, buy box on the right). `ACTIVE_PDP_GALLERY` must equal that field.
 - `slots.buyBox` — price, variant pickers, add to cart. Already inside Suspense and an error boundary. Place it exactly once.
 - `slots.breadcrumbs` and `slots.attributes` — ready-made chrome. Place `attributes` or draw `product.attributes` yourself.
+- `slots.productSafety` — the "Material & safety" block (manufacturer, warnings, EU responsible person, material). Place it exactly once, next to the buy box, never inside an accordion: GPSR wants it on the offer. The contract test fails a template that leaves it out. The data is `product.safety`; which attributes feed it is `src/config/product-safety.ts`, and those attributes are no longer on `product.attributes`.
 
 Specs other than size, color, care, and the bestseller flag are already on `product.attributes`. A highlighted material line does not need a new query. A field that is not on `ProductView` goes through the extension fragment and `mapProductExtensions`. Run `pnpm generate` after the fragment change. Do not edit `src/lib/storefront/mappers/product.ts`.
 

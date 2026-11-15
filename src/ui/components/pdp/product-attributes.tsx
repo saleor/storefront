@@ -123,7 +123,8 @@ export function ProductAttributes({
 						<p className="mb-2">{t("shippingBody", policyLabels)}</p>
 					) : null}
 					<p className="mb-2">{t("shippingAtCheckout")}</p>
-					<p>{t("returnsBody", policyLabels)}</p>
+					{/* No returns window set by the merchant: no returns claim. */}
+					{policyLabels.returnsWindowDays !== "" ? <p>{t("returnsBody", policyLabels)}</p> : null}
 				</AccordionContent>
 			</AccordionItemWithContext>
 		</Accordion>

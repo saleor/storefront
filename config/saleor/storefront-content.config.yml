@@ -235,8 +235,7 @@ models:
     slug: storefront-policy
     modelType: Storefront — Policies
     isPublished: true
-    attributes:
-      Returns window days: 30
+    attributes: {}
   - title: Storefront Chrome
     slug: storefront-chrome
     modelType: Storefront — Chrome
@@ -278,7 +277,7 @@ models:
       Values column 2 title: Shipping
       Values column 2 text: Describe how and when orders arrive.
       Values column 3 title: Returns
-      Values column 3 text: Easy returns within {returnsWindowDays} days.
+      Values column 3 text: Describe your returns policy.
       Editorial heading: From the shop
       Editorial paragraph 1: Highlight a collection, seasonal story, or campaign — then edit this block in Models.
       Editorial image position: right

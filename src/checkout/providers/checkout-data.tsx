@@ -22,6 +22,8 @@ export type CheckoutDataContextValue = {
 	loadState: CheckoutLoadState;
 	checkout: ServerCheckout | null;
 	shippingCountries: ShippingCountries;
+	/** Every country, for billing when the order is shipped. Empty when unknown. */
+	billingCountries: ShippingCountries;
 	channelDefaultCountryCode: ChannelDefaultCountryCode;
 	setCheckout: (checkout: ServerCheckout) => void;
 	/** Re-fetch from Saleor; returns null when the checkout is missing or the request fails. */
@@ -30,11 +32,14 @@ export type CheckoutDataContextValue = {
 
 const CheckoutDataContext = createContext<CheckoutDataContextValue | null>(null);
 
+const EMPTY_COUNTRIES: ShippingCountries = [];
+
 type CheckoutDataProviderProps = {
 	checkoutId: string | null;
 	loadState: CheckoutLoadState;
 	initialCheckout: ServerCheckout | null;
 	shippingCountries: ShippingCountries;
+	billingCountries?: ShippingCountries;
 	channelDefaultCountryCode: ChannelDefaultCountryCode;
 	children: ReactNode;
 };
@@ -44,6 +49,7 @@ export function CheckoutDataProvider({
 	loadState,
 	initialCheckout,
 	shippingCountries,
+	billingCountries = EMPTY_COUNTRIES,
 	channelDefaultCountryCode,
 	children,
 }: CheckoutDataProviderProps) {
@@ -103,11 +109,19 @@ export function CheckoutDataProvider({
 			loadState,
 			checkout: sessionCheckout,
 			shippingCountries,
+			billingCountries,
 			channelDefaultCountryCode,
 			setCheckout,
 			refreshCheckout,
 		}),
-		[loadState, refreshCheckout, sessionCheckout, shippingCountries, channelDefaultCountryCode],
+		[
+			loadState,
+			refreshCheckout,
+			sessionCheckout,
+			shippingCountries,
+			billingCountries,
+			channelDefaultCountryCode,
+		],
 	);
 
 	return <CheckoutDataContext value={value}>{children}</CheckoutDataContext>;

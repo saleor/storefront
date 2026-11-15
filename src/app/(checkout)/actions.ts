@@ -17,12 +17,15 @@ import {
 	CheckoutShippingAddressUpdateDocument,
 	DeliveryOptionsCalculateDocument,
 	RequestPasswordResetDocument,
+	ShippingMethodsForAddressDocument,
 	PaymentGatewaysInitializeDocument,
 	TransactionInitializeDocument,
 	TransactionProcessDocument,
 	UserSetDefaultAddressDocument,
 	type AddressValidationRulesQuery,
 	type AddressValidationRulesQueryVariables,
+	type ShippingMethodsForAddressQuery,
+	type ShippingMethodsForAddressQueryVariables,
 	type CheckoutAddPromoCodeMutation,
 	type CheckoutAddPromoCodeMutationVariables,
 	type CheckoutBillingAddressUpdateMutation,
@@ -168,6 +171,11 @@ const addressValidationRulesDocument = toTypedDocument<
 	AddressValidationRulesQuery,
 	AddressValidationRulesQueryVariables
 >(AddressValidationRulesDocument);
+
+const shippingMethodsForAddressDocument = toTypedDocument<
+	ShippingMethodsForAddressQuery,
+	ShippingMethodsForAddressQueryVariables
+>(ShippingMethodsForAddressDocument);
 
 const checkoutAddPromoCodeDocument = toTypedDocument<
 	CheckoutAddPromoCodeMutation,
@@ -643,6 +651,38 @@ export async function getAddressValidationRules(
 	}
 
 	return { ok: true, rules: result.data.addressValidationRules };
+}
+
+/**
+ * Whether the shop's own shipping zones serve a postcode. "unserved" only when they serve the
+ * country but exclude this postcode; "unknown" when they have no method for the country at all
+ * (shipping comes from an app, or every method has inclusion-only postcode rules), since Saleor
+ * lists app-provided methods only for a checkout. The shipping step stays the final answer.
+ */
+export async function checkPostcodeDelivery(
+	channel: string,
+	countryCode: CountryCode,
+	postalCode: string,
+): Promise<{ ok: true; status: "served" | "unserved" | "unknown" } | { ok: false }> {
+	const result = await liveQuery(shippingMethodsForAddressDocument, {
+		variables: {
+			channel,
+			address: { country: countryCode, postalCode },
+			countryOnly: { country: countryCode },
+		},
+	});
+
+	if (!result.ok) {
+		return { ok: false };
+	}
+	const { forAddress, forCountry } = result.data.shop;
+	if (!forAddress || !forCountry) {
+		return { ok: false };
+	}
+	if (forAddress.length > 0) {
+		return { ok: true, status: "served" };
+	}
+	return { ok: true, status: forCountry.length > 0 ? "unserved" : "unknown" };
 }
 
 export async function removeCheckoutLine(checkoutId: string, lineId: string): Promise<CheckoutActionResult> {

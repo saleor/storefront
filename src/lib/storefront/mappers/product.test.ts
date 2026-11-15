@@ -53,6 +53,48 @@ function shell(): ProductShell {
 	} as unknown as ProductShell;
 }
 
+function withAttributes(
+	attributes: Array<{ slug: string; name: string; text: string; translation?: string }>,
+): ProductShell {
+	return {
+		...shell(),
+		assignedAttributes: attributes.map(({ slug, name, text, translation }) => ({
+			attribute: { name, slug, translation: null },
+			plainText: text,
+			plainTextTranslation: translation ?? null,
+		})),
+	} as unknown as ProductShell;
+}
+
+describe("toProductView safety", () => {
+	it("moves the safety attributes into their own block and out of the specs", () => {
+		const view = toProductView(
+			withAttributes([
+				{ slug: "material", name: "Material", text: "100% polyester", translation: "100 % Polyester" },
+				{ slug: "safety-information", name: "Safety information", text: "Keep away from open flames." },
+				{
+					slug: "manufacturer",
+					name: "Manufacturer",
+					text: "Northvale Outfitters GmbH, Musterstraße 1, 10115 Berlin, Germany, hello@example.com",
+				},
+				{ slug: "fit", name: "Fit", text: "Regular" },
+			]),
+		);
+
+		expect(view.safety).toEqual({
+			material: "100 % Polyester",
+			safetyInformation: "Keep away from open flames.",
+			manufacturer: "Northvale Outfitters GmbH, Musterstraße 1, 10115 Berlin, Germany, hello@example.com",
+			euResponsiblePerson: null,
+		});
+		expect(view.attributes).toEqual([{ name: "Fit", value: "Regular" }]);
+	});
+
+	it("is null for a product without any of them", () => {
+		expect(toProductView(withAttributes([{ slug: "fit", name: "Fit", text: "Regular" }])).safety).toBeNull();
+	});
+});
+
 describe("toProductView", () => {
 	it("maps the shell and drops variant and care attributes from specs", () => {
 		const view = toProductView(shell());
@@ -71,7 +113,9 @@ describe("toProductView", () => {
 			priceRange: { low: 10, high: 20, currency: "USD" },
 			extensions: {},
 		});
-		expect(view.attributes).toEqual([{ name: "Material", value: "Cotton" }]);
+		// Material is a safety field now: shown under the buy box, not in the specs.
+		expect(view.attributes).toEqual([]);
+		expect(view.safety).toMatchObject({ material: "Cotton" });
 		expect(view.descriptionHtml).toEqual(["<p>Soft cotton</p>"]);
 		expect(view.images[0]).toMatchObject({
 			url: "https://cdn.example/2048",
