@@ -44,12 +44,6 @@ export async function validateCheckoutFulfillment(
 	checkout: FulfillmentCheckout,
 	fallbackError: string,
 ): Promise<CheckoutFulfillmentResult> {
-	// Saleor already lists a line in this snapshot: no need to ask again.
-	const knownIssue = availabilityIssueFromProblems(checkout.problems);
-	if (knownIssue) {
-		return { ok: false, reason: "availability", issue: knownIssue };
-	}
-
 	let problems = checkout.problems;
 
 	if (checkout.isShippingRequired && checkout.shippingAddress) {

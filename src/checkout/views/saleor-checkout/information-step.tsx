@@ -31,7 +31,9 @@ import { mapAddressFieldErrors } from "@/checkout/lib/address-field-errors";
 import {
 	availabilityIssueFromFieldErrors,
 	partitionCheckoutFieldErrors,
+	unavailableLineIdsFromProblems,
 } from "@/checkout/lib/checkout-availability";
+import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import {
 	getCheckoutSaveAddressFlag,
 	isUsingSavedShippingAddress,
@@ -113,6 +115,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const tErrors = useTranslations("checkout.errors");
 	const tAccount = useTranslations("account.errors");
 	const { setAvailabilityIssue } = useCheckoutAvailability();
+	const { setCheckout } = useCheckoutData();
 	const infoStep = useCheckoutStepNumber("INFO", checkout.isShippingRequired);
 	const {
 		isOrphaned,
@@ -438,6 +441,13 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					}
 				}
 
+				// New error flow: Saleor accepts the address but lists lines it cannot fulfil.
+				// Stay here; the banner and the Remove action come from the live checkout.
+				if (unavailableLineIdsFromProblems(updatedCheckout.problems).length > 0) {
+					setCheckout(updatedCheckout);
+					return;
+				}
+
 				onComplete(updatedCheckout);
 			} catch {
 				setErrors({ form: tErrors("crashMessage") });
@@ -466,6 +476,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			effectiveCountryCode,
 			onComplete,
 			setAvailabilityIssue,
+			setCheckout,
 		],
 	);
 

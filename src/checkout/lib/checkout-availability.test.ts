@@ -8,6 +8,7 @@ import {
 	mergeAvailabilityIssues,
 	messageMentionsVariant,
 	partitionCheckoutFieldErrors,
+	stillReportedIssue,
 	unavailableLineIdsFromProblems,
 } from "./checkout-availability";
 
@@ -184,5 +185,28 @@ describe("matchUnavailableLineIds", () => {
 		expect(matchUnavailableLineIds(lines, "Could not add items M. Only 0 remaining in stock.")).toEqual([
 			"line-m",
 		]);
+	});
+});
+
+describe("stillReportedIssue", () => {
+	const before = { id: "chk", problems: [] };
+	const after = { id: "chk", problems: [] };
+	const stock = { message: "", lineIds: ["line-a"], cause: "stock" as const };
+	const destination = { message: "Could not add items M.", lineIds: ["line-a"] };
+
+	it("keeps a stock issue while the checkout is the one it was reported against", () => {
+		expect(stillReportedIssue({ issue: stock, against: before }, before)).toBe(stock);
+	});
+
+	it("drops a stock issue once the checkout changes, so the live problems decide", () => {
+		expect(stillReportedIssue({ issue: stock, against: before }, after)).toBeNull();
+	});
+
+	it("keeps a destination issue across checkout changes", () => {
+		expect(stillReportedIssue({ issue: destination, against: before }, after)).toBe(destination);
+	});
+
+	it("has nothing to keep when nothing was reported", () => {
+		expect(stillReportedIssue(null, before)).toBeNull();
 	});
 });

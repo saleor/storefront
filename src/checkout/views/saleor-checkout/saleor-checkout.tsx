@@ -12,7 +12,6 @@ import { useCheckoutStep } from "@/checkout/hooks/use-checkout-step";
 import { useCheckoutStepFromUrl } from "@/checkout/hooks/use-checkout-step-from-url";
 import { useCustomerAttach } from "@/checkout/hooks/use-customer-attach";
 import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries";
-import { unavailableLineIdsFromProblems } from "@/checkout/lib/checkout-availability";
 import { useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import {
@@ -68,13 +67,12 @@ const SaleorCheckoutView: FC = () => {
 				}
 
 				setCheckout(result.checkout);
-				// Lines Saleor still lists in `problems` are tracked live from the checkout, so keep
-				// only the ones a step reported. Otherwise they would stay flagged after the shopper
-				// fixes them another way (lowering the quantity).
-				const liveProblemIds = new Set(unavailableLineIdsFromProblems(result.checkout.problems));
-				const remainingIds = (availabilityIssue?.lineIds ?? []).filter(
-					(id) => id !== lineId && !liveProblemIds.has(id),
-				);
+				// Stock issues come from the live checkout's `problems`, which the new checkout
+				// carries. A destination issue keeps its other lines.
+				const remainingIds =
+					availabilityIssue && availabilityIssue.cause !== "stock"
+						? availabilityIssue.lineIds.filter((id) => id !== lineId)
+						: [];
 				setAvailabilityIssue(
 					remainingIds.length && availabilityIssue ? { ...availabilityIssue, lineIds: remainingIds } : null,
 				);

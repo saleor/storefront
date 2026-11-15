@@ -140,3 +140,25 @@ export function matchUnavailableLineIds(
 		.filter((line) => messageMentionsVariant(message, line.variant?.name ?? ""))
 		.map((line) => line.id);
 }
+
+/** An issue a step reported, with the checkout snapshot that was in context at the time. */
+export type ReportedAvailabilityIssue = {
+	issue: CheckoutAvailabilityIssue;
+	against: unknown;
+};
+
+/**
+ * The reported issue that still applies to `current`. A stock issue read from
+ * `checkout.problems` is a snapshot: once the checkout changes, the live `problems` decide,
+ * or a shopper who fixed the cart would stay blocked. A destination issue (a rejected
+ * mutation in the legacy error flow) has no live counterpart and stays until cleared.
+ */
+export function stillReportedIssue(
+	reported: ReportedAvailabilityIssue | null,
+	current: unknown,
+): CheckoutAvailabilityIssue | null {
+	if (!reported) {
+		return null;
+	}
+	return reported.issue.cause !== "stock" || reported.against === current ? reported.issue : null;
+}

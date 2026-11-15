@@ -94,24 +94,23 @@ describe("validateCheckoutFulfillment", () => {
 		});
 	});
 
-	it("does not re-submit the address when the checkout already lists a stock problem", async () => {
+	it("asks Saleor again even when the snapshot passed in lists a stock problem", async () => {
+		// A stale snapshot must not block the shopper once the problem is gone.
+		updateAddress.mockResolvedValue({
+			ok: true,
+			checkout: { ...checkout, problems: [] },
+		} as unknown as Awaited<ReturnType<typeof updateCheckoutShippingAddress>>);
+
 		await expect(
 			validateCheckoutFulfillment(
 				{
 					...checkout,
-					problems: [
-						{ __typename: "CheckoutProblemDeliveryMethodStale" },
-						{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-m" } },
-					],
+					problems: [{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-m" } }],
 				},
 				"Could not verify availability.",
 			),
-		).resolves.toEqual({
-			ok: false,
-			reason: "availability",
-			issue: { message: "", lineIds: ["line-m"], cause: "stock" },
-		});
-		expect(updateAddress).not.toHaveBeenCalled();
+		).resolves.toEqual({ ok: true });
+		expect(updateAddress).toHaveBeenCalled();
 	});
 
 	it("passes when Saleor accepts the address and lists only delivery problems", async () => {

@@ -5,7 +5,9 @@ import { createContext, use, useCallback, useMemo, useState, type ReactNode } fr
 import {
 	mergeAvailabilityIssues,
 	availabilityIssueFromProblems,
+	stillReportedIssue,
 	type CheckoutAvailabilityIssue,
+	type ReportedAvailabilityIssue,
 } from "@/checkout/lib/checkout-availability";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 
@@ -15,7 +17,10 @@ type CheckoutAvailabilityContextValue = {
 	 * merged with the lines Saleor lists in the live checkout's `problems`.
 	 */
 	availabilityIssue: CheckoutAvailabilityIssue | null;
-	/** Sets or clears the reported issue. Lines in `checkout.problems` stay flagged until Saleor clears them. */
+	/**
+	 * Sets or clears the reported issue. Lines in `checkout.problems` stay flagged until
+	 * Saleor clears them; a reported stock issue lapses when the checkout in context changes.
+	 */
 	setAvailabilityIssue: (issue: CheckoutAvailabilityIssue | null) => void;
 };
 
@@ -23,11 +28,15 @@ const CheckoutAvailabilityContext = createContext<CheckoutAvailabilityContextVal
 
 export function CheckoutAvailabilityProvider({ children }: { children: ReactNode }) {
 	const { checkout } = useCheckoutData();
-	const [reportedIssue, setReportedIssue] = useState<CheckoutAvailabilityIssue | null>(null);
-	const setAvailabilityIssue = useCallback((issue: CheckoutAvailabilityIssue | null) => {
-		setReportedIssue(issue);
-	}, []);
+	const [reported, setReported] = useState<ReportedAvailabilityIssue | null>(null);
+	const setAvailabilityIssue = useCallback(
+		(issue: CheckoutAvailabilityIssue | null) => {
+			setReported(issue ? { issue, against: checkout } : null);
+		},
+		[checkout],
+	);
 
+	const reportedIssue = stillReportedIssue(reported, checkout);
 	const problems = checkout?.problems;
 	const availabilityIssue = useMemo(
 		() => mergeAvailabilityIssues(reportedIssue, availabilityIssueFromProblems(problems)),
