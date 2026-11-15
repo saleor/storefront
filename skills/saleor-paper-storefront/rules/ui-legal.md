@@ -1,6 +1,6 @@
 ---
 name: ui-legal
-description: What Paper shows for consumer-law duties (EU distance selling) and where each fact comes from in Saleor — seller identity and the /imprint route, legal page links by Saleor Page slug, the "incl. VAT, plus shipping costs" price notice, the order button wording and the legal notice next to it. Use when touching the footer, imprint, price display, legal pages, the checkout's final button, or any copy that promises shipping, returns or prices.
+description: What Paper shows for consumer-law duties (EU distance selling) and where each fact comes from in Saleor — seller identity and the /imprint route, legal page links by Saleor Page slug, the "incl. VAT, plus shipping costs" price notice, prior-price reductions, delivery restrictions and payment methods before ordering, the postcode check, the product safety block, the order button wording and the legal notice next to it. Use when touching the footer, imprint, price display, legal pages, the cart's delivery note, the checkout's address or final steps, product safety, or any copy that promises shipping, returns or prices.
 ---
 
 # Legal surfaces
@@ -19,6 +19,10 @@ This rule covers what is built. It is not legal advice, and it is not a complete
 | Whether prices include tax                             | The channel's tax configuration ("display gross prices"), read from one product's `pricing.displayGrossPrices`                                                                          | `ChannelPriceDisplay.graphql`, `getPricesIncludeTax()` |
 | Free-shipping threshold                                | Shipping methods of the channel's default country; the Storefront — Policies attribute "Free shipping threshold override (not recommended)" overrides. See `data-storefront-content.md` | `src/lib/content/free-shipping.ts`                     |
 | Shipping methods, prices, delivery days, VAT amount    | The checkout (`deliveryOptionsCalculate`, `totalPrice.tax`)                                                                                                                             | `src/checkout/views/saleor-checkout/`                  |
+| Delivery countries                                     | The channel's shipping zones (`channel.countries`)                                                                                                                                      | `src/lib/delivery-payment.ts`                          |
+| Excluded areas inside those countries                  | Public channel metadata `market.deliveryExclusions`, `market.deliveryExclusions.<locale slug>`                                                                                          | `ChannelDeliveryPayment.graphql`                       |
+| Accepted payment methods                               | Public channel metadata `payment.methods`, else the checkout's payment apps                                                                                                             | `getDeliveryPaymentSummary()`                          |
+| Whether a postcode is served                           | `shippingMethods` on an address (Saleor applies the zones' postcode rules)                                                                                                              | `checkPostcodeDelivery` server action                  |
 
 Everything above is readable without a token, except the channel's default country (app token), which the free-shipping threshold needs.
 
@@ -79,6 +83,24 @@ What a strike-through price, a percentage and the sale badge are measured agains
 ❌ Reading `priceUndiscounted` in a component to draw a strike-through. On an EU channel it shows a reduction from a price nobody paid recently.
 ❌ Defaulting a new caller of `toProductCardData` to `"list-price"`. Pass `await getPriceReductionReference(channel)`.
 
+## Delivery and payment before ordering
+
+Delivery restrictions and accepted payment methods are stated "at the latest at the beginning of the ordering process" (Consumer Rights Directive Art. 8(3)).
+
+- `<DeliveryPaymentNote>` (`src/ui/components/delivery-payment-note.tsx`) in the cart drawer and on the cart page; `DeliveryPaymentPanel` (`src/checkout/components/delivery-payment-panel.tsx`) at the top of the information step, collapsed, with a disclosure listing countries, excluded areas and the `shipping` page.
+- `buildDeliveryPaymentSummary` (`src/lib/delivery-payment.ts`) is pure; the cart (server component) and the checkout session loader build the same summary. Countries: three or fewer are named; all 27 EU states plus up to three others read "27 EU countries and Monaco"; otherwise a count. Excluded areas: three or fewer named, else the first three "and N more".
+- Excluded areas are names the store writes in public channel metadata (comma list; the `.<locale slug>` key is read first). Saleor keeps postcode ranges, not names, and reading them needs `MANAGE_SHIPPING`, a write permission Paper does not ask for. No key: no statement about exclusions, never an inferred one.
+- Payment methods: `payment.methods` is a comma list of `PAYMENT_METHOD_KEYS` (translated under `common.deliveryPayment.methods`; brands keep their names). Without it, `paymentMethodsFromGateways` maps known apps (`saleor.app.payment.stripe` → card, the dummy app → test payment) and shows other apps by their name. Add a method by adding its key and its message in every locale.
+- Cache: `ChannelDeliveryPayment` uses the `channels` profile (daily revalidate). The revalidate route busts it on `channel_metadata_updated`, but the Paper app subscribes to no channel events, so a metadata or shipping zone change usually shows within a day. The postcode check is live and does not wait. Partial data is allowed: a field error drops that line, the cart and checkout still render, and the postcode check still applies.
+
+### Postcode check
+
+- The information step asks `checkPostcodeDelivery` (`src/app/(checkout)/actions.ts`) whether any shipping method serves country + postcode. The action calls Saleor through the kernel (`liveQuery`, operation `shippingMethodsForAddress`); the browser never talks to Saleor.
+- `usePostcodeDelivery` debounces 500 ms and remembers answers per page load. An unserved postcode is a field error (`checkout.errors.postcodeNotServed`), Continue stays on the step and focuses the field, and a polite live region announces the check.
+- The shipping step's empty state is a `CheckoutIssueBanner` naming the postcode and the country in the shopper's language, with "Change address".
+
+❌ A sentence that names a region or country as undeliverable from code or a message string. Names come from the store's metadata; the check comes from Saleor.
+
 ## Product safety
 
 The product page shows a "Material & safety" block under the buy box, always visible (GPSR Art. 19: manufacturer name, postal and electronic address, EU responsible person, warnings; textile regulation Art. 16: fibre composition before purchase).
@@ -100,4 +122,4 @@ A sentence about delivery time, shipping cost, a returns window or a discount is
 
 ## Not built
 
-Unit prices, a statement of delivery restrictions and accepted payment methods before checkout, a withdrawal function on order pages, the legal-guarantee notice, a consent banner, and a dedicated product-safety block on the product page.
+Unit prices, a withdrawal function on order pages, the legal-guarantee notice, and a consent banner.

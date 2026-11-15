@@ -1,6 +1,6 @@
 # 2026-11-eu-consumer-rules
 
-Show what a shop owes its customers (seller, legal pages, price notice, price reductions, order button), with every fact taken from Saleor. Read `rules/ui-legal.md` first; it is the destination. `docs/selling-in-the-eu.md` is the merchant's side.
+Show what a shop owes its customers (seller, legal pages, price notice, price reductions, delivery and payment before ordering, product safety, order button), with every fact taken from Saleor. Read `rules/ui-legal.md` first; it is the destination. `docs/selling-in-the-eu.md` is the merchant's side.
 
 Requires `2026-10-listing-contract`. `upstreamSha` stays empty until the commit that releases this migration exists.
 
@@ -18,5 +18,6 @@ Several defaults change what an existing shop shows. Tell the user about each on
 8. **Product safety. Visible.** Add `src/config/product-safety.ts`, `product.safety` in the mapper and `ProductSafety`. A fork's own PDP template must place the new `slots.productSafety` next to the buy box: the attributes it shows leave the "Product Details" accordion, so a template that skips it would hide them. Map the fork's own attribute slugs in the config.
 9. **Returns window. Visible.** `policies.returns.windowDays` is `null` by default. Without a merchant-set window, no returns claim shows. A fork that relied on the 30-day default sets its window in the Storefront — Policies Model.
 10. **Billing countries.** A shipped order accepts a billing address from any country (`ShopCountries`, `billingCountries` in the checkout data).
-11. Mirror every new message key in all locale files (`legal`, `common.prices`, `checkout.legal`, `pdp.attributes.shippingAtCheckout`, `pdp.safety`).
-12. Run `pnpm generate`, `pnpm data:lock`, `pnpm content:export-seed` and `pnpm run verify`.
+11. **Delivery and payment before ordering. Visible.** Add `ChannelDeliveryPayment.graphql`, `src/lib/delivery-payment.ts`, `get-delivery-payment.ts` and `DeliveryPaymentNote`; render it in the cart drawer and on the cart page. In checkout, add `availablePaymentGateways` to `CheckoutFind`, the summary in the session loader, `CheckoutDeliveryPaymentProvider` and `DeliveryPaymentPanel` at the top of the information step. For the postcode check, add the `shippingMethodsForAddress` query and operation, `checkPostcodeDelivery` in `src/app/(checkout)/actions.ts`, `usePostcodeDelivery`, and the information step's field error and submit guard. Replace the shipping step's empty-state sentence with the `noDelivery*` banner. A fork whose checkout steps are its own wires the hook and the banner there. Tell the user about the two optional channel metadata keys, `market.deliveryExclusions[.<locale>]` and `payment.methods` (`docs/selling-in-the-eu.md`): without them the note names countries and the payment apps it recognises, and nothing about excluded areas.
+12. Mirror every new message key in all locale files (`legal`, `common.prices`, `common.deliveryPayment`, `checkout.legal`, `checkout.errors.postcodeNotServed`, `checkout.errors.checkingDelivery`, `checkout.shipping.noDelivery*`, `checkout.shipping.changeAddress`, `pdp.attributes.shippingAtCheckout`, `pdp.safety`).
+13. Run `pnpm generate`, `pnpm data:lock`, `pnpm content:export-seed` and `pnpm run verify`.
