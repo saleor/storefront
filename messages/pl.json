@@ -519,6 +519,7 @@
 			"itemCount": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
 			"subtotal": "Suma częściowa",
 			"shipping": "Dostawa",
+			"shippingPending": "Zależy od sposobu dostawy",
 			"taxVat": "Podatek (VAT)",
 			"discount": "Rabat",
 			"total": "Razem",

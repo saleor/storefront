@@ -519,6 +519,7 @@
 			"itemCount": "{count, plural, one {# item} other {# items}}",
 			"subtotal": "Subtotal",
 			"shipping": "Shipping",
+			"shippingPending": "Depends on shipping method",
 			"taxVat": "Tax (VAT)",
 			"discount": "Discount",
 			"total": "Total",

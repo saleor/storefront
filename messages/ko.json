@@ -510,6 +510,7 @@
 			"itemCount": "{count, plural, other {상품 #개}}",
 			"subtotal": "소계",
 			"shipping": "배송비",
+			"shippingPending": "배송 방법에 따라 다름",
 			"taxVat": "세금 (부가세)",
 			"discount": "할인",
 			"total": "합계",

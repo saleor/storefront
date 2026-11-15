@@ -519,6 +519,7 @@
 			"itemCount": "{count, plural, one {# tuote} other {# tuotetta}}",
 			"subtotal": "Välisumma",
 			"shipping": "Toimitus",
+			"shippingPending": "Riippuu toimitustavasta",
 			"taxVat": "Vero (ALV)",
 			"discount": "Alennus",
 			"total": "Yhteensä",

@@ -519,6 +519,7 @@
 			"itemCount": "{count, plural, other {# 点}}",
 			"subtotal": "小計",
 			"shipping": "送料",
+			"shippingPending": "配送方法により異なります",
 			"taxVat": "税（VAT）",
 			"discount": "割引",
 			"total": "合計",

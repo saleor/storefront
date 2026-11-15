@@ -519,6 +519,7 @@
 			"itemCount": "{count, plural, one {# vare} other {# varer}}",
 			"subtotal": "Delsum",
 			"shipping": "Frakt",
+			"shippingPending": "Avhenger av fraktmetode",
 			"taxVat": "MVA",
 			"discount": "Rabatt",
 			"total": "Totalt",

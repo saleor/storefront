@@ -519,6 +519,7 @@
 			"itemCount": "{count, plural, one {# Artikel} other {# Artikel}}",
 			"subtotal": "Zwischensumme",
 			"shipping": "Versand",
+			"shippingPending": "Abhängig von der Versandart",
 			"taxVat": "Steuer (MwSt.)",
 			"discount": "Rabatt",
 			"total": "Gesamt",
