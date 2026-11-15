@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useState, type FC } from "react";
+import { useCallback, useMemo, useState, type FC } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { removeCheckoutLine } from "@/app/(checkout)/actions";
+import { removeCheckoutLines } from "@/app/(checkout)/actions";
 import { Button } from "@/ui/components/ui/button";
 import { CheckoutIssueBanner } from "@/checkout/components/checkout-issue-banner";
 import { useCheckout } from "@/checkout/hooks/use-checkout";
@@ -14,6 +14,11 @@ import { useCustomerAttach } from "@/checkout/hooks/use-customer-attach";
 import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries";
 import { useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
+import {
+	bulkRemovableLineIds,
+	reportedIssueAfterRemoval,
+	unavailableLineIdsInCart,
+} from "@/checkout/lib/checkout-availability";
 import {
 	CheckoutAvailabilityProvider,
 	useCheckoutAvailability,
@@ -51,50 +56,51 @@ const SaleorCheckoutView: FC = () => {
 	const isPaymentFlowActive = transition === "completing";
 	const isCheckoutNavigationLocked = isPaymentFlowActive || isPaymentBusy;
 
-	const removeUnavailableLine = useCallback(
-		async (lineId: string) => {
-			if (!checkout || isRemovingUnavailableLine) {
+	const removeUnavailableLines = useCallback(
+		async (lineIds: readonly string[]) => {
+			if (!checkout || isRemovingUnavailableLine || lineIds.length === 0) {
 				return;
 			}
 
+			const failedMessage = tErrors("itemUnavailableRemoveFailed", { count: lineIds.length });
 			setIsRemovingUnavailableLine(true);
 			setRemoveUnavailableError(null);
 			try {
-				const result = await removeCheckoutLine(checkout.id, lineId);
+				const result = await removeCheckoutLines(checkout.id, [...lineIds]);
 				if (!result.ok) {
-					setRemoveUnavailableError(tErrors("itemUnavailableRemoveFailed"));
+					setRemoveUnavailableError(failedMessage);
 					return;
 				}
 
 				setCheckout(result.checkout);
+				// Read the current issue: another step may have replaced or cleared it meanwhile.
 				// Stock issues come from the live checkout's `problems`, which the new checkout
-				// carries. A destination issue keeps its other lines.
-				const remainingIds =
-					availabilityIssue && availabilityIssue.cause !== "stock"
-						? availabilityIssue.lineIds.filter((id) => id !== lineId)
-						: [];
-				setAvailabilityIssue(
-					remainingIds.length && availabilityIssue ? { ...availabilityIssue, lineIds: remainingIds } : null,
-				);
+				// carries. A destination issue keeps its lines that are still in the cart.
+				setAvailabilityIssue((current) => reportedIssueAfterRemoval(current, result.checkout.lines));
 
 				if (result.checkout.lines.length === 0) {
 					refreshCheckoutRsc();
 				}
 			} catch {
-				setRemoveUnavailableError(tErrors("itemUnavailableRemoveFailed"));
+				setRemoveUnavailableError(failedMessage);
 			} finally {
 				setIsRemovingUnavailableLine(false);
 			}
 		},
-		[
-			availabilityIssue,
-			checkout,
-			isRemovingUnavailableLine,
-			refreshCheckoutRsc,
-			tErrors,
-			setAvailabilityIssue,
-			setCheckout,
-		],
+		[checkout, isRemovingUnavailableLine, refreshCheckoutRsc, tErrors, setAvailabilityIssue, setCheckout],
+	);
+	const removeUnavailableLine = useCallback(
+		(lineId: string) => removeUnavailableLines([lineId]),
+		[removeUnavailableLines],
+	);
+	const checkoutLines = checkout?.lines;
+	const unavailableLineIds = useMemo(
+		() => unavailableLineIdsInCart(availabilityIssue, checkoutLines ?? []),
+		[availabilityIssue, checkoutLines],
+	);
+	const bulkRemovableIds = useMemo(
+		() => bulkRemovableLineIds(availabilityIssue, checkoutLines ?? []),
+		[availabilityIssue, checkoutLines],
 	);
 
 	useCustomerAttach();
@@ -151,7 +157,7 @@ const SaleorCheckoutView: FC = () => {
 							<OrderSummary
 								checkout={checkout}
 								onCheckoutChange={() => void refetch()}
-								unavailableLineIds={availabilityIssue?.lineIds}
+								unavailableLineIds={unavailableLineIds}
 								onRemoveUnavailableLine={removeUnavailableLine}
 								isRemovingUnavailableLine={isRemovingUnavailableLine}
 							/>
@@ -161,26 +167,31 @@ const SaleorCheckoutView: FC = () => {
 								{availabilityIssue ? (
 									<div className="mb-8">
 										<CheckoutIssueBanner
-											title={tErrors("itemUnavailableTitle")}
+											title={tErrors("itemUnavailableTitle", {
+												// No matched line still means at least one item is unavailable.
+												count: Math.max(unavailableLineIds.length, 1),
+											})}
 											action={
-												availabilityIssue.lineIds[0] ? (
+												bulkRemovableIds.length ? (
 													<Button
 														type="button"
 														variant="outline-solid"
 														size="sm"
 														disabled={isRemovingUnavailableLine}
-														onClick={() => void removeUnavailableLine(availabilityIssue.lineIds[0])}
+														onClick={() => void removeUnavailableLines(bulkRemovableIds)}
 													>
-														{tErrors("itemUnavailableRemove")}
+														{tErrors("itemUnavailableRemove", { count: bulkRemovableIds.length })}
 													</Button>
 												) : undefined
 											}
 										>
 											<p>
 												{availabilityIssue.cause === "stock"
-													? tErrors("itemOutOfStockMessage")
-													: availabilityIssue.lineIds.length
-														? tErrors("itemUnavailableRemoveMessage")
+													? tErrors("itemOutOfStockMessage", {
+															count: Math.max(unavailableLineIds.length, 1),
+														})
+													: unavailableLineIds.length
+														? tErrors("itemUnavailableRemoveMessage", { count: unavailableLineIds.length })
 														: tErrors("itemUnavailableMessage")}
 											</p>
 											{removeUnavailableError ? (
@@ -223,7 +234,7 @@ const SaleorCheckoutView: FC = () => {
 							<OrderSummary
 								checkout={checkout}
 								onCheckoutChange={() => void refetch()}
-								unavailableLineIds={availabilityIssue?.lineIds}
+								unavailableLineIds={unavailableLineIds}
 								onRemoveUnavailableLine={removeUnavailableLine}
 								isRemovingUnavailableLine={isRemovingUnavailableLine}
 							/>

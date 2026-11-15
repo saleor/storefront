@@ -450,12 +450,12 @@
 			"updateAddressFailed": "Kunne ikke oppdatere adresse",
 			"crashTitle": "Kassefeil",
 			"crashMessage": "Noe gikk galt under lasting av kassen. Prøv igjen.",
-			"itemUnavailableTitle": "An item isn’t available",
+			"itemUnavailableTitle": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
 			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
-			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
-			"itemOutOfStockMessage": "Denne varen er utsolgt eller ikke lenger tilgjengelig i antallet du valgte. Fjern den for å fortsette.",
-			"itemUnavailableRemove": "Remove item",
-			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
+			"itemUnavailableRemoveMessage": "{count, plural, =1 {This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.} other {These items can’t be fulfilled for the address you entered. Remove them to continue, or try a different destination.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Denne varen er utsolgt eller ikke lenger tilgjengelig i antallet du valgte. Fjern den for å fortsette.} other {Disse varene er utsolgt eller ikke lenger tilgjengelige i antallene du valgte. Fjern dem for å fortsette.}}",
+			"itemUnavailableRemove": "{count, plural, =1 {Remove item} other {Remove # items}}",
+			"itemUnavailableRemoveFailed": "{count, plural, =1 {Could not remove this item. Try again.} other {Could not remove these items. Try again.}}",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
 		},
 		"contact": {
@@ -491,7 +491,7 @@
 			"delivery": "Levering",
 			"digital": "Digital",
 			"soldOut": "Sold out",
-			"unavailableHint": "An item isn’t available",
+			"unavailableHint": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
 			"removeItem": "Remove"
 		},
 		"promo": {

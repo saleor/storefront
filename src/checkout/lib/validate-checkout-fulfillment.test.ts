@@ -62,6 +62,7 @@ describe("validateCheckoutFulfillment", () => {
 			issue: {
 				message: "Could not add items M. Only 0 remaining in stock.",
 				lineIds: ["line-m"],
+				isExact: true,
 			},
 		});
 		expect(updateAddress).toHaveBeenCalledWith(
@@ -90,7 +91,7 @@ describe("validateCheckoutFulfillment", () => {
 		await expect(validateCheckoutFulfillment(checkout, "Could not verify availability.")).resolves.toEqual({
 			ok: false,
 			reason: "availability",
-			issue: { message: "", lineIds: ["line-m"], cause: "stock" },
+			issue: { message: "", lineIds: ["line-m"], isExact: true, cause: "stock" },
 		});
 	});
 
@@ -138,7 +139,7 @@ describe("validateCheckoutFulfillment", () => {
 		).resolves.toEqual({
 			ok: false,
 			reason: "availability",
-			issue: { message: "", lineIds: ["line-m"], cause: "stock" },
+			issue: { message: "", lineIds: ["line-m"], isExact: true, cause: "stock" },
 		});
 		expect(updateAddress).not.toHaveBeenCalled();
 	});
