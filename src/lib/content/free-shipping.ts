@@ -7,22 +7,21 @@ type ShippingMethodPrices = {
 
 /**
  * The order value from which Saleor offers a shipping method that costs nothing: the
- * smallest `minimumOrderPrice` among the price-0 methods. `null` when there is no such
- * method, and when one has no minimum (shipping is then always free, so there is no
- * threshold to advertise).
+ * smallest `minimumOrderPrice` among the price-0 methods that have one. `null` when there
+ * is none.
+ *
+ * A price-0 method without a minimum is skipped rather than read as "always free": it is
+ * often a store pickup, and it must not hide the threshold of free delivery.
  */
 export function freeShippingThresholdFromMethods(
 	methods: ReadonlyArray<ShippingMethodPrices> | null | undefined,
 ): number | null {
 	const minimums = (methods ?? [])
 		.filter((method) => method.price.amount === 0)
-		.map((method) => method.minimumOrderPrice?.amount ?? 0);
-	if (minimums.length === 0) {
-		return null;
-	}
+		.map((method) => method.minimumOrderPrice?.amount ?? 0)
+		.filter((minimum) => minimum > 0);
 
-	const threshold = Math.min(...minimums);
-	return threshold > 0 ? threshold : null;
+	return minimums.length > 0 ? Math.min(...minimums) : null;
 }
 
 /**

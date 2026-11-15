@@ -30,8 +30,12 @@ describe("freeShippingThresholdFromMethods", () => {
 		expect(freeShippingThresholdFromMethods(null)).toBeNull();
 	});
 
-	it("returns null when shipping is always free: there is no threshold to advertise", () => {
-		expect(freeShippingThresholdFromMethods([method(0), method(0, 50)])).toBeNull();
+	it("does not let a free method without a minimum (a pickup) hide free delivery", () => {
+		expect(freeShippingThresholdFromMethods([method(0), method(4.9, 0), method(0, 50)])).toBe(50);
+	});
+
+	it("returns null when the only free method has no minimum", () => {
+		expect(freeShippingThresholdFromMethods([method(0), method(4.9, 0)])).toBeNull();
 	});
 });
 

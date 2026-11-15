@@ -5,13 +5,6 @@ import type { PartialStorefrontContent } from "@/lib/content/saleor/types";
 import { attrNumber, buildAttributeMap } from "@/lib/content/saleor/attributes";
 
 /**
- * Slug of the attribute before it was renamed to say it is an override ("Free shipping
- * threshold"). Stores that created their Models earlier still have it, possibly with a
- * value: it keeps working as the override. The renamed attribute wins when both are set.
- */
-const LEGACY_FREE_SHIPPING_THRESHOLD = "free-shipping-threshold";
-
-/**
  * Channel-wide commerce policies (free-shipping threshold, returns window).
  *
  * Numbers come from `NUMERIC` attributes. The free-shipping threshold belongs on the
@@ -27,8 +20,10 @@ export function mapPolicyPage(page: StorefrontContentPageFragment | null): Parti
 	const attrs = buildAttributeMap(page);
 
 	const shipping: { freeShippingThreshold?: number } = {};
-	const freeShippingThreshold =
-		attrNumber(attrs, A.freeShippingThreshold) ?? attrNumber(attrs, LEGACY_FREE_SHIPPING_THRESHOLD);
+	// Only the renamed attribute counts. The old "Free shipping threshold" was seeded with
+	// 75 on every store, so its value says nothing about what the merchant chose; reading
+	// it as an override would keep advertising 75 against the shop's shipping methods.
+	const freeShippingThreshold = attrNumber(attrs, A.freeShippingThreshold);
 	if (freeShippingThreshold !== undefined) shipping.freeShippingThreshold = freeShippingThreshold;
 
 	const returns: { windowDays?: number } = {};
