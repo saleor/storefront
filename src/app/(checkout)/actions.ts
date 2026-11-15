@@ -581,9 +581,14 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 
 	if (payload.errors?.length) {
 		const { server: t } = await getCheckoutServerTranslations();
+		// Completion runs after the payment. A stock failure here means the shopper has paid
+		// and has no order: say that, not Saleor's "Insufficient product stock: <id>".
+		const soldOut = payload.errors.some((error) => error.code === "INSUFFICIENT_STOCK");
 		return {
 			ok: false,
-			error: payload.errors[0].message ?? t("completeOrderFailed"),
+			error: soldOut
+				? t("orderNotPlacedOutOfStock")
+				: (payload.errors[0].message ?? t("completeOrderFailed")),
 			fieldErrors: payload.errors.map((error) => ({
 				field: error.field,
 				message: error.message ?? t("completeOrderFailed"),
