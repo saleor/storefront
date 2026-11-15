@@ -31,7 +31,10 @@ export function PdpPresetLayout({
 
 						{slots.buyBox}
 
-						{layout.attributesPlacement === "info" && <div className="order-4 mt-6">{slots.attributes}</div>}
+						{/* Material & safety: visible where the shopper decides, never collapsed. */}
+						<div className="order-4 mt-8 empty:hidden">{slots.productSafety}</div>
+
+						{layout.attributesPlacement === "info" && <div className="order-5 mt-6">{slots.attributes}</div>}
 					</div>
 
 					{layout.attributesPlacement === "gallery" && layout.attributesGalleryBlock && (

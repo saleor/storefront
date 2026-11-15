@@ -83,6 +83,13 @@
 			"previous": "Forrige bilde",
 			"next": "Neste bilde",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Materiale og sikkerhet",
+			"material": "Materiale",
+			"safetyInformation": "Sikkerhetsinformasjon",
+			"manufacturer": "Produsent",
+			"euResponsiblePerson": "Ansvarlig person i EU"
 		}
 	},
 	"plp": {

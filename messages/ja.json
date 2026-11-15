@@ -83,6 +83,13 @@
 			"previous": "前の画像",
 			"next": "次の画像",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "素材と安全性",
+			"material": "素材",
+			"safetyInformation": "安全に関する情報",
+			"manufacturer": "製造者",
+			"euResponsiblePerson": "EU域内の責任者"
 		}
 	},
 	"plp": {

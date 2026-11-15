@@ -75,6 +75,13 @@
 			"previous": "이전 이미지",
 			"next": "다음 이미지",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "소재 및 안전",
+			"material": "소재",
+			"safetyInformation": "안전 정보",
+			"manufacturer": "제조사",
+			"euResponsiblePerson": "EU 책임자"
 		}
 	},
 	"plp": {

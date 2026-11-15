@@ -83,6 +83,13 @@
 			"previous": "Edellinen kuva",
 			"next": "Seuraava kuva",
 			"counter": "{current} / {total}"
+		},
+		"safety": {
+			"heading": "Materiaali ja turvallisuus",
+			"material": "Materiaali",
+			"safetyInformation": "Turvallisuustiedot",
+			"manufacturer": "Valmistaja",
+			"euResponsiblePerson": "Vastuuhenkilö EU:ssa"
 		}
 	},
 	"plp": {

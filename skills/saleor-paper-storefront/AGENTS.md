@@ -3735,6 +3735,7 @@ A Paper shop picks one PDP layout at build time. The route owns data, caching, a
 - `slots.gallery` — the variant gallery, already inside Suspense. Place it exactly once. Thumbnails and the hero stay inside this slot. Set the template `gallery` field to `standard` (thumbs under the hero), `immersive`, `mosaic`, or `columns` (thumbs on the left, hero in the center, buy box on the right). `ACTIVE_PDP_GALLERY` must equal that field.
 - `slots.buyBox` — price, variant pickers, add to cart. Already inside Suspense and an error boundary. Place it exactly once.
 - `slots.breadcrumbs` and `slots.attributes` — ready-made chrome. Place `attributes` or draw `product.attributes` yourself.
+- `slots.productSafety` — the "Material & safety" block (manufacturer, warnings, EU responsible person, material). Place it exactly once, next to the buy box, never inside an accordion: GPSR wants it on the offer. The contract test fails a template that leaves it out. The data is `product.safety`; which attributes feed it is `src/config/product-safety.ts`, and those attributes are no longer on `product.attributes`.
 
 Specs other than size, color, care, and the bestseller flag are already on `product.attributes`. A highlighted material line does not need a new query. A field that is not on `ProductView` goes through the extension fragment and `mapProductExtensions`. Run `pnpm generate` after the fragment change. Do not edit `src/lib/storefront/mappers/product.ts`.
 
@@ -4638,6 +4639,16 @@ What a strike-through price, a percentage and the sale badge are measured agains
 
 ❌ Reading `priceUndiscounted` in a component to draw a strike-through. On an EU channel it shows a reduction from a price nobody paid recently.
 ❌ Defaulting a new caller of `toProductCardData` to `"list-price"`. Pass `await getPriceReductionReference(channel)`.
+
+## Product safety
+
+The product page shows a "Material & safety" block under the buy box, always visible (GPSR Art. 19: manufacturer name, postal and electronic address, EU responsible person, warnings; textile regulation Art. 16: fibre composition before purchase).
+
+- Source: Saleor attributes by slug, mapped in `src/config/product-safety.ts` (`material`, `safety-information`, `manufacturer`, `eu-responsible-person`). Values use Saleor's attribute translations; labels are Paper's own (`pdp.safety`).
+- The mapper puts them on `product.safety` and removes them from `product.attributes`. Templates place `slots.productSafety`; the template contract test requires it.
+- No attribute set: no block. Some set: only those rows. An email in the manufacturer text becomes a mailto link; the rest shows as entered.
+
+❌ Product safety details only inside a collapsed accordion or a tab.
 
 ## Copy that promises something
 

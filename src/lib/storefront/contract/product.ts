@@ -16,6 +16,20 @@ export interface ProductViewAttribute {
 	value: string | boolean | string[];
 }
 
+/**
+ * Product safety and material details, shown always visible under the buy box. Each field is
+ * the Saleor attribute value in the shopper's language, or `null` when the product has none.
+ * Which attributes feed which field: `src/config/product-safety.ts`.
+ */
+export interface ProductViewSafety {
+	material: string | null;
+	/** Warnings and safety information. */
+	safetyInformation: string | null;
+	/** Name, postal address and electronic address, as entered. */
+	manufacturer: string | null;
+	euResponsiblePerson: string | null;
+}
+
 export interface ProductViewImage {
 	url: string;
 	alt: string | null;
@@ -39,8 +53,10 @@ export interface ProductView {
 	category: ProductViewCategory | null;
 	/** Sanitized HTML blocks from the product description. */
 	descriptionHtml: string[] | null;
-	/** Specs. Size, color, care, and bestseller flags are already removed. */
+	/** Specs. Size, color, care, bestseller flags and the safety fields are already removed. */
 	attributes: ProductViewAttribute[];
+	/** `null` when the product has none of the safety attributes. */
+	safety?: ProductViewSafety | null;
 	careInstructions: string | null;
 	images: ProductViewImage[];
 	priceRange: ProductViewPriceRange | null;

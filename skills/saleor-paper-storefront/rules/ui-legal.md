@@ -79,6 +79,16 @@ What a strike-through price, a percentage and the sale badge are measured agains
 ❌ Reading `priceUndiscounted` in a component to draw a strike-through. On an EU channel it shows a reduction from a price nobody paid recently.
 ❌ Defaulting a new caller of `toProductCardData` to `"list-price"`. Pass `await getPriceReductionReference(channel)`.
 
+## Product safety
+
+The product page shows a "Material & safety" block under the buy box, always visible (GPSR Art. 19: manufacturer name, postal and electronic address, EU responsible person, warnings; textile regulation Art. 16: fibre composition before purchase).
+
+- Source: Saleor attributes by slug, mapped in `src/config/product-safety.ts` (`material`, `safety-information`, `manufacturer`, `eu-responsible-person`). Values use Saleor's attribute translations; labels are Paper's own (`pdp.safety`).
+- The mapper puts them on `product.safety` and removes them from `product.attributes`. Templates place `slots.productSafety`; the template contract test requires it.
+- No attribute set: no block. Some set: only those rows. An email in the manufacturer text becomes a mailto link; the rest shows as entered.
+
+❌ Product safety details only inside a collapsed accordion or a tab.
+
 ## Copy that promises something
 
 A sentence about delivery time, shipping cost, a returns window or a discount is a promise. It must come from Saleor or from merchant content, never from a code default or a message string.
