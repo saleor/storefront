@@ -160,14 +160,14 @@ function extractOrderData(order: OrderFragment): OrderSummaryData {
 
 	const discount = order.discounts?.reduce((sum, d) => sum + (d.amount?.amount || 0), 0) || 0;
 	// `deliveryMethod` is null both for an order that ships nothing and for one whose method was
-	// deleted later; a charged amount always shows.
+	// deleted later; the method's name stays on the order, and a charged amount always shows.
 	const shippingAmount = order.shippingPrice?.gross?.amount || 0;
 
 	return {
 		lines,
 		currency: order.total?.gross?.currency || localeConfig.fallbackCurrency,
 		subtotal: order.subtotal?.gross?.amount || 0,
-		shipping: order.deliveryMethod || shippingAmount > 0 ? shippingAmount : null,
+		shipping: order.deliveryMethod || order.shippingMethodName || shippingAmount > 0 ? shippingAmount : null,
 		tax: order.total?.tax?.amount || 0,
 		discount,
 		total: order.total?.gross?.amount || 0,

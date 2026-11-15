@@ -24,13 +24,9 @@ export function useShippingDeliveries(checkout: ServerCheckout | null, isActive:
 
 			setIsLoading(true);
 			try {
-				const result = await calculateDeliveryOptions(checkout.id);
-				setDeliveries(result.ok ? result.deliveries : []);
-				setLoadFailed(!result.ok);
-				loadedKeyRef.current = key;
-			} catch {
-				setDeliveries([]);
-				setLoadFailed(true);
+				const result = await calculateDeliveryOptions(checkout.id).catch(() => null);
+				setDeliveries(result?.ok ? result.deliveries : []);
+				setLoadFailed(!result?.ok);
 				loadedKeyRef.current = key;
 			} finally {
 				setIsLoading(false);
@@ -56,10 +52,7 @@ export function useShippingDeliveries(checkout: ServerCheckout | null, isActive:
 	const cacheKey = isActive && checkout ? shippingDeliveriesCacheKey(checkout) : null;
 	const awaitingFetch = cacheKey !== null && loadedKeyRef.current !== cacheKey;
 
-	const retry = useCallback(() => {
-		loadedKeyRef.current = null;
-		void loadDeliveries(true);
-	}, [loadDeliveries]);
+	const retry = useCallback(() => void loadDeliveries(true), [loadDeliveries]);
 
 	return { deliveries, isLoading: isLoading || awaitingFetch, loadFailed, retry };
 }

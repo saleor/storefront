@@ -6,6 +6,7 @@ import { fetchCheckoutUserOnServer } from "@/checkout/lib/server/fetch-checkout-
 import { fetchChannelCountriesOnServer } from "@/checkout/lib/server/fetch-channel-countries";
 import { fetchCheckoutOnServer } from "@/checkout/lib/server/fetch-checkout";
 import { formatCountryNameOnServer } from "@/checkout/lib/server/format-country-name";
+import { rethrowNextInternalError } from "@/checkout/lib/rethrow-next-internal-error";
 import type { CountryCode } from "@/checkout/graphql";
 import type { LocaleSlug } from "@/config/locale";
 import { getShopCountryCodes } from "@/lib/channels/get-shop-countries";
@@ -41,6 +42,7 @@ export const getCheckoutSessionBillingCountries = cache(async (localeSlug: Local
 	try {
 		codes = await getShopCountryCodes();
 	} catch (error) {
+		rethrowNextInternalError(error);
 		console.warn("[Checkout] Shop countries unavailable; billing offers the shipping countries", error);
 		return [];
 	}

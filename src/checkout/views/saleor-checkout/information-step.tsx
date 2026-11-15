@@ -219,12 +219,13 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	// While the shopper types in the postcode field the check waits for them to leave it, so a
 	// partial code is never reported as unserved. Autofill changes the field without focus.
 	const [typingPostcode, setTypingPostcode] = useState(false);
-	const deliveryStatus = usePostcodeDelivery({
+	const { status: deliveryStatus, check: checkPostcode } = usePostcodeDelivery({
 		channel: checkout.channel.slug,
 		countryCode: usingSavedAddressForCheck
 			? (savedAddressForCheck?.country?.code as CountryCode | undefined)
 			: effectiveCountryCode,
-		postalCode: !usingSavedAddressForCheck && typingPostcode ? "" : postcodeForCheck,
+		postalCode: postcodeForCheck,
+		paused: !usingSavedAddressForCheck && typingPostcode,
 		enabled: postcodeDeliveryCheck && checkout.isShippingRequired,
 	});
 	const deliveryErrorField = usingSavedAddressForCheck ? "address" : "postalCode";
@@ -322,6 +323,12 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 			if (isSubmitting) return;
 
+			// Leaving the postcode field by submitting (Enter, or Continue right after typing) must
+			// not skip the check: ask now and wait. Unanswered or "unknown" never blocks.
+			setTypingPostcode(false);
+			const deliveryAnswer = await checkPostcode();
+			const blockedByDelivery = deliveryAnswer === "unserved";
+
 			const newErrors: Record<string, string> = {};
 
 			// Validate email (guests only)
@@ -361,7 +368,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			setErrors(newErrors);
 			// The postcode check said no: stay here, with focus on the field that shows why. The
 			// message comes from the check itself, so it clears when the address changes.
-			const firstErrorField = Object.keys(newErrors)[0] ?? (deliveryError ? deliveryErrorField : undefined);
+			const firstErrorField =
+				Object.keys(newErrors)[0] ?? (blockedByDelivery ? deliveryErrorField : undefined);
 			if (firstErrorField) {
 				// Focus the first invalid field
 				const element = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement;
@@ -513,7 +521,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			effectiveCountryCode,
 			onComplete,
 			setAvailabilityIssue,
-			deliveryError,
+			checkPostcode,
 			deliveryErrorField,
 		],
 	);

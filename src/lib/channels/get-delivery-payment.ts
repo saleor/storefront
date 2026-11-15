@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_rethrow } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { getStorefrontLocaleSlugs, resolveLocaleFromSlug } from "@/config/locale";
@@ -61,6 +62,7 @@ export async function getDeliveryPaymentSummary(input: {
 	try {
 		facts = await getChannelDeliveryPayment(channel);
 	} catch (error) {
+		unstable_rethrow(error);
 		console.warn("[DeliveryPayment] Channel delivery facts unavailable; leaving the note out", error);
 		return null;
 	}

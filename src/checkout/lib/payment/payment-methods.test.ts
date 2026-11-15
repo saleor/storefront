@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { paymentMethodsForCheckout } from "./payment-methods";
 
 const stripe = { id: "saleor.app.payment.stripe", name: "Stripe" };
@@ -7,6 +7,18 @@ const legacyDummy = { id: "mirumee.payments.dummy", name: "Dummy" };
 const giftCard = { id: "saleor.io.gift-card-payment-gateway", name: "Gift Card Payment Gateway" };
 
 describe("paymentMethodsForCheckout", () => {
+	beforeEach(() => {
+		// Independent of the shell or CI job running the tests.
+		for (const name of [
+			"ENABLE_STRIPE_PAYMENTS",
+			"NEXT_PUBLIC_ENABLE_STRIPE_PAYMENTS",
+			"ALLOW_DUMMY_PAYMENT",
+			"NEXT_PUBLIC_ALLOW_DUMMY_PAYMENT",
+		]) {
+			vi.stubEnv(name, "");
+		}
+	});
+
 	afterEach(() => {
 		vi.unstubAllEnvs();
 	});

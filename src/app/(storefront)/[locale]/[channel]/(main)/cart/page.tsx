@@ -61,7 +61,7 @@ async function CartContent({
 	// The delivery note is cached per channel; read it alongside the checkout, not after it.
 	const [checkout, deliveryPayment] = await Promise.all([
 		checkoutId ? Checkout.find(checkoutId, params.locale) : null,
-		getDeliveryPaymentSummary({ channel: params.channel, localeSlug: params.locale }),
+		checkoutId ? getDeliveryPaymentSummary({ channel: params.channel, localeSlug: params.locale }) : null,
 	]);
 
 	if (!checkout || checkout.lines.length < 1) {

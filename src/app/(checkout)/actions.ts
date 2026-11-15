@@ -654,11 +654,6 @@ export async function getAddressValidationRules(
 }
 
 /**
- * Whether the channel delivers to this postcode, asked before the shipping step so the address
- * form can say so where it is typed. Saleor applies the postcode exclusions of the shipping
- * zones. `{ ok: false }` when Saleor cannot answer: the shipping step stays the backstop.
- */
-/**
  * Whether the shop's own shipping zones serve a postcode. "unserved" only when they serve the
  * country but exclude this postcode; "unknown" when they have no method for the country at all
  * (shipping comes from an app, or every method has inclusion-only postcode rules), since Saleor
