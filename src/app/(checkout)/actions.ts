@@ -11,8 +11,8 @@ import {
 	CheckoutDeliveryMethodUpdateDocument,
 	CheckoutEmailUpdateDocument,
 	CheckoutMetadataUpdateDocument,
-	CheckoutLineDeleteDocument,
 	CheckoutLinesAddDocument,
+	CheckoutLinesDeleteDocument,
 	CheckoutRemovePromoCodeDocument,
 	CheckoutShippingAddressUpdateDocument,
 	DeliveryOptionsCalculateDocument,
@@ -39,10 +39,10 @@ import {
 	type CheckoutEmailUpdateMutationVariables,
 	type CheckoutMetadataUpdateMutation,
 	type CheckoutMetadataUpdateMutationVariables,
-	type CheckoutLineDeleteMutation,
-	type CheckoutLineDeleteMutationVariables,
 	type CheckoutLinesAddMutation,
 	type CheckoutLinesAddMutationVariables,
+	type CheckoutLinesDeleteMutation,
+	type CheckoutLinesDeleteMutationVariables,
 	type CheckoutRemovePromoCodeMutation,
 	type CheckoutRemovePromoCodeMutationVariables,
 	type CheckoutShippingAddressUpdateMutation,
@@ -125,10 +125,10 @@ const checkoutLinesAddDocument = toTypedDocument<CheckoutLinesAddMutation, Check
 	CheckoutLinesAddDocument,
 );
 
-const checkoutLineDeleteDocument = toTypedDocument<
-	CheckoutLineDeleteMutation,
-	CheckoutLineDeleteMutationVariables
->(CheckoutLineDeleteDocument);
+const checkoutLinesDeleteDocument = toTypedDocument<
+	CheckoutLinesDeleteMutation,
+	CheckoutLinesDeleteMutationVariables
+>(CheckoutLinesDeleteDocument);
 
 const checkoutDeliveryMethodUpdateDocument = toTypedDocument<
 	CheckoutDeliveryMethodUpdateMutation,
@@ -645,11 +645,14 @@ export async function getAddressValidationRules(
 	return { ok: true, rules: result.data.addressValidationRules };
 }
 
-export async function removeCheckoutLine(checkoutId: string, lineId: string): Promise<CheckoutActionResult> {
-	const result = await mutate(checkoutLineDeleteDocument, {
+export async function removeCheckoutLines(
+	checkoutId: string,
+	lineIds: string[],
+): Promise<CheckoutActionResult> {
+	const result = await mutate(checkoutLinesDeleteDocument, {
 		variables: {
 			checkoutId,
-			lineId,
+			lineIds,
 			languageCode: await checkoutGraphqlLanguageCode(),
 		},
 	});

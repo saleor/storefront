@@ -2,7 +2,20 @@ import type { CheckoutFieldError } from "@/checkout/lib/checkout-action-types";
 
 export type CheckoutAvailabilityIssue = {
 	message: string;
+	/** Lines the stock errors point at, in cart order. */
 	lineIds: string[];
+	/**
+	 * False when a variant label matched more lines than Saleor sent errors for it (size
+	 * "M" on two products, one of them in stock). Some flagged lines may then be fine, so
+	 * they must not be removed in bulk.
+	 */
+	isExact: boolean;
+};
+
+export type AvailabilityLine = {
+	id: string;
+	isGift?: boolean | null;
+	variant?: { name?: string | null; sku?: string | null } | null;
 };
 
 export function isAvailabilityFieldError(error: { field?: string | null; code?: string | null }): boolean {
@@ -27,25 +40,33 @@ export function partitionCheckoutFieldErrors(errors: ReadonlyArray<CheckoutField
 	return { address, availability };
 }
 
-function escapeRegExp(value: string): string {
-	return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** Saleor copy: "Could not add items {variant}. Only {n} remaining in stock." */
+const SALEOR_STOCK_MESSAGE = /\bitems?\s+(.+?)(?:\.\s+Only\s+-?\d+\s+remaining\b.*)?\.?\s*$/i;
+
+/**
+ * The variant label in a Saleor stock error, or null when the message has another shape.
+ * The label is read whole, so an error about "Pink Dahlia" cannot flag a line whose
+ * variant is "Pink".
+ */
+export function unavailableVariantLabel(message: string): string | null {
+	return SALEOR_STOCK_MESSAGE.exec(message)?.[1]?.trim() || null;
 }
 
-/** Saleor copy is "Could not add items {variantName}." — match that token, not a prefix. */
-export function messageMentionsVariant(message: string, variantName: string): boolean {
-	const name = variantName.trim();
-	if (!name) {
-		return false;
-	}
-
-	return new RegExp(`\\bitems?\\s+${escapeRegExp(name)}(?=\\b|[.])`, "i").test(message);
+/**
+ * How Saleor prints a variant in that error: its name, or its SKU when the name is empty.
+ * (Its last resort, "ID:<pk>" for a variant with neither, is not matched.)
+ */
+function variantLabel(variant: AvailabilityLine["variant"]): string {
+	return variant?.name?.trim() || variant?.sku?.trim() || "";
 }
 
+/**
+ * Saleor sends one stock error per unavailable variant and names the variant only in the
+ * message text (no variant or line ids on this path). Every line whose label appears in
+ * an error is flagged.
+ */
 export function availabilityIssueFromFieldErrors(
-	lines: ReadonlyArray<{
-		id: string;
-		variant?: { name?: string | null } | null;
-	}>,
+	lines: ReadonlyArray<AvailabilityLine>,
 	fieldErrors: ReadonlyArray<CheckoutFieldError>,
 	fallbackMessage = "",
 ): CheckoutAvailabilityIssue | null {
@@ -55,30 +76,76 @@ export function availabilityIssueFromFieldErrors(
 		return null;
 	}
 
-	// Saleor returns one error per unavailable variant ("Could not add items X."), so
-	// collect the lines from every error, not just the first — otherwise only one item
-	// is flagged and the others look purchasable.
-	const lineIds = new Set<string>();
+	const errorsPerLabel = new Map<string, number>();
 	for (const error of availability) {
-		for (const id of matchUnavailableLineIds(lines, error.message ?? "")) {
-			lineIds.add(id);
+		const label = unavailableVariantLabel(error.message ?? "");
+		if (label) {
+			errorsPerLabel.set(label, (errorsPerLabel.get(label) ?? 0) + 1);
+		}
+	}
+
+	const lineIds: string[] = [];
+	const linesPerLabel = new Map<string, number>();
+	for (const line of lines) {
+		const label = variantLabel(line.variant);
+		if (errorsPerLabel.has(label)) {
+			lineIds.push(line.id);
+			linesPerLabel.set(label, (linesPerLabel.get(label) ?? 0) + 1);
 		}
 	}
 
 	return {
 		message: first.message ?? fallbackMessage,
-		lineIds: [...lineIds],
+		lineIds,
+		isExact: [...linesPerLabel].every(([label, count]) => count <= (errorsPerLabel.get(label) ?? 0)),
 	};
 }
 
-export function matchUnavailableLineIds(
-	lines: ReadonlyArray<{
-		id: string;
-		variant?: { name?: string | null } | null;
-	}>,
-	message: string,
+/** Flagged lines that are still in the cart, in cart order. */
+export function unavailableLineIdsInCart(
+	issue: CheckoutAvailabilityIssue | null,
+	lines: ReadonlyArray<{ id: string }>,
 ): string[] {
-	return lines
-		.filter((line) => messageMentionsVariant(message, line.variant?.name ?? ""))
-		.map((line) => line.id);
+	if (!issue) {
+		return [];
+	}
+
+	const flagged = new Set(issue.lineIds);
+	return lines.filter((line) => flagged.has(line.id)).map((line) => line.id);
+}
+
+/**
+ * Flagged lines the banner may remove in one `checkoutLinesDelete` call. Saleor rejects
+ * the whole call for a gift line or an id that left the cart, and an inexact issue may
+ * flag lines that are in stock.
+ */
+export function bulkRemovableLineIds(
+	issue: CheckoutAvailabilityIssue | null,
+	lines: ReadonlyArray<{ id: string; isGift?: boolean | null }>,
+): string[] {
+	if (!issue?.isExact) {
+		return [];
+	}
+
+	return unavailableLineIdsInCart(
+		issue,
+		lines.filter((line) => !line.isGift),
+	);
+}
+
+/**
+ * Drop flagged lines that left the cart (removed here, in another tab, or by Saleor).
+ * The issue is resolved once none of its flagged lines is left.
+ */
+export function availabilityIssueForLines(
+	issue: CheckoutAvailabilityIssue | null,
+	lines: ReadonlyArray<{ id: string }>,
+): CheckoutAvailabilityIssue | null {
+	// An issue that matched no line stays until the next stock check.
+	if (!issue || issue.lineIds.length === 0) {
+		return issue;
+	}
+
+	const lineIds = unavailableLineIdsInCart(issue, lines);
+	return lineIds.length ? { ...issue, lineIds } : null;
 }

@@ -74,7 +74,7 @@ const CORE_OPERATIONS = {
 	ordersByNumber: live("app"),
 	user: session(),
 	checkoutLinesUpdate: mutate(),
-	checkoutLineDelete: mutate(),
+	checkoutLinesDelete: mutate(),
 	checkoutEmailUpdate: mutate(),
 	checkoutMetadataUpdate: mutate(),
 	checkoutCustomerAttach: mutate(),
