@@ -160,6 +160,8 @@ export function createSaleorListingProvider(
 		},
 		freshness: { kind: "saleor-webhooks" },
 		async load(query) {
+			// Independent of the products query: start it now, await it after.
+			const priceReferencePromise = resolvePriceReference(query.channel);
 			const kind = query.surface.kind;
 			const slug = kind === "category" || kind === "collection" ? query.surface.slug : undefined;
 
@@ -208,7 +210,7 @@ export function createSaleorListingProvider(
 			const connection = unwrap(kind, data);
 			if (!connection && kind !== "search") return null;
 			const edges = connection?.edges ?? [];
-			const priceReference = await resolvePriceReference(query.channel);
+			const priceReference = await priceReferencePromise;
 			const items = edges.map((edge) =>
 				toProductCardData(edge.node, query.locale, query.channel, priceReference),
 			);

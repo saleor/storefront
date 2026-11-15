@@ -11,7 +11,10 @@ import { resolvePriceReductionReference } from "@/lib/pricing";
 import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
 
 type ChannelPriceDisplay = {
-	/** Saleor says the channel shows prices with tax included. */
+	/**
+	 * Saleor says the channel shows prices with tax included. `true` when no product tells:
+	 * Paper always renders gross amounts, so "incl. VAT" describes what the shopper sees.
+	 */
 	pricesIncludeTax: boolean;
 	/** Country codes the channel ships to (from its shipping zones). */
 	shippingCountries: string[];
@@ -25,22 +28,28 @@ type ChannelPriceDisplay = {
 async function getChannelPriceDisplay(channel: string): Promise<ChannelPriceDisplay> {
 	"use cache";
 
+	// Optional read with safe fallbacks (notice shown, stricter reduction rule), so a field
+	// error must not take down every page that shows a price.
 	const data = await cachedQuery(ChannelPriceDisplayDocument, {
 		profile: CACHE_PROFILES.listingAll,
 		tag: { channel },
 		variables: { channel },
+		allowPartialData: true,
 	});
 
+	const displayGrossPrices = data.products?.edges
+		.map((edge) => edge.node.pricing?.displayGrossPrices)
+		.find((value): value is boolean => typeof value === "boolean");
+
 	return {
-		pricesIncludeTax: data.products?.edges[0]?.node.pricing?.displayGrossPrices === true,
+		pricesIncludeTax: displayGrossPrices ?? true,
 		shippingCountries: (data.channel?.countries ?? []).map((country) => country.code),
 	};
 }
 
 /**
  * True when the channel shows prices with tax included, which is when a storefront may
- * say "incl. VAT" next to them. False when Saleor says prices are shown net, and for a
- * channel without products (nothing to read the setting from).
+ * say "incl. VAT" next to them. False only when Saleor says prices are shown net.
  */
 export async function getPricesIncludeTax(channel: string): Promise<boolean> {
 	return (await getChannelPriceDisplay(channel)).pricesIncludeTax;

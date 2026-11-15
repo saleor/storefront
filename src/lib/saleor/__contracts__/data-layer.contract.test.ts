@@ -76,6 +76,9 @@ describe("operation registry", () => {
 				expect(vars, name).toContain("$channel");
 				expect(vars, name).toMatch(/\$languageCode/);
 			}
+			if (spec.scope === "channel") {
+				expect(vars, name).toContain("$channel");
+			}
 			if (spec.scope === "locale") {
 				expect(vars, name).toMatch(/\$languageCode/);
 			}

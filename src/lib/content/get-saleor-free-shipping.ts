@@ -13,10 +13,10 @@ import { CACHE_PROFILES, cachedQuery } from "@/lib/saleor";
  * Shoppers in another country can have a different threshold; the storefront knows the
  * destination only at checkout, where the shipping step shows Saleor's own methods.
  *
- * Cached with the storefront content it feeds. No shipping webhook busts it: a changed
- * shipping price shows after the profile's hourly revalidate.
+ * Cached per channel, tagged like the all-products listing. No shipping webhook busts it:
+ * a changed shipping price shows after the profile's hourly revalidate.
  */
-export async function getSaleorFreeShippingThreshold(channel: string, bcp47: string): Promise<number | null> {
+export async function getSaleorFreeShippingThreshold(channel: string): Promise<number | null> {
 	"use cache";
 
 	const channels = await getCachedChannelsList();
@@ -25,12 +25,15 @@ export async function getSaleorFreeShippingThreshold(channel: string, bcp47: str
 		return null;
 	}
 
+	// Optional read: a field error means no threshold copy, never a broken page. Storefront
+	// content (and with it every page and the checkout) waits on this value.
 	const data = await cachedQuery(ChannelShippingMethodsDocument, {
-		profile: CACHE_PROFILES.storefrontContent,
-		tag: { channel, locale: bcp47 },
+		profile: CACHE_PROFILES.listingAll,
+		tag: { channel },
 		// `Channel.defaultCountry.code` is typed as a string; it is one of Saleor's country codes.
 		variables: { channel, country: country as CountryCode },
+		allowPartialData: true,
 	});
 
-	return freeShippingThresholdFromMethods(data.shop.availableShippingMethods);
+	return freeShippingThresholdFromMethods(data.shop?.availableShippingMethods);
 }

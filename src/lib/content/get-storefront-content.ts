@@ -23,7 +23,7 @@ export async function getStorefrontContent(
 
 	const [content, saleorFreeShippingThreshold] = await Promise.all([
 		loadStorefrontContent({ channel, locale: localeSlug }),
-		getSaleorFreeShippingThreshold(channel, bcp47),
+		getSaleorFreeShippingThreshold(channel),
 	]);
 
 	return withFreeShippingThreshold(content, saleorFreeShippingThreshold, { channel });

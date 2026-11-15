@@ -26,7 +26,7 @@ export type DataExtensionWebhookScope = {
 export type DataExtensionOperation = {
 	access: "cached" | "live" | "session" | "mutate";
 	auth: "none" | "session" | "app";
-	scope?: "channel-locale" | "locale" | "global";
+	scope?: "channel-locale" | "channel" | "locale" | "global";
 };
 
 export const dataExtensions: {

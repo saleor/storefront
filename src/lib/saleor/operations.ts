@@ -9,7 +9,7 @@ import { extensionOperations } from "./extensions";
 
 export type OperationAccess = "cached" | "live" | "session" | "mutate";
 export type OperationAuth = "none" | "session" | "app";
-export type CacheScope = "channel-locale" | "locale" | "global";
+export type CacheScope = "channel-locale" | "channel" | "locale" | "global";
 
 export type OperationSpec = {
 	access: OperationAccess;
@@ -43,8 +43,8 @@ const CORE_OPERATIONS = {
 	CategoriesBySlug: cached("global"),
 	ChannelsList: cached("global", "app"),
 	ShopSellerIdentity: cached("global"),
-	ChannelPriceDisplay: cached("global"),
-	ChannelShippingMethods: cached("global"),
+	ChannelPriceDisplay: cached("channel"),
+	ChannelShippingMethods: cached("channel"),
 
 	// Storefront session reads.
 	CurrentUser: session(),
