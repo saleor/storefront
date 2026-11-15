@@ -45,6 +45,8 @@ type CheckoutAppProps = {
 	initialCheckout: ServerCheckout | null;
 	initialUser: CheckoutUser | null;
 	shippingCountries: ShippingCountries;
+	/** Every country, for billing when the order is shipped. */
+	billingCountries?: ShippingCountries;
 	channelDefaultCountryCode: ChannelDefaultCountryCode;
 	checkoutContent: CheckoutContent;
 	storefrontLocale: LocaleSlug;
@@ -62,6 +64,7 @@ export function CheckoutApp({
 	initialCheckout,
 	initialUser,
 	shippingCountries,
+	billingCountries = [],
 	channelDefaultCountryCode,
 	checkoutContent,
 	storefrontLocale,
@@ -82,6 +85,7 @@ export function CheckoutApp({
 							loadState={loadState}
 							initialCheckout={initialCheckout}
 							shippingCountries={shippingCountries}
+							billingCountries={billingCountries}
 							channelDefaultCountryCode={channelDefaultCountryCode}
 						>
 							<CheckoutContentProvider content={checkoutContent}>

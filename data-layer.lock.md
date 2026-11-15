@@ -60,6 +60,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | cachedQuery      | ChannelsListDocument                    | CACHE_PROFILES.channels (allows partial data)   | src/lib/channels/get-channels-data.ts › readChannelsList                                      |
 | cachedQuery      | ChannelPriceDisplayDocument             | CACHE_PROFILES.listingAll (allows partial data) | src/lib/channels/get-price-display.ts › getChannelPriceDisplay                                |
 | cachedQuery      | ShopSellerIdentityDocument              | CACHE_PROFILES.shop                             | src/lib/channels/get-seller-identity.ts › getSellerIdentity                                   |
+| cachedQuery      | ShopCountriesDocument                   | CACHE_PROFILES.channels                         | src/lib/channels/get-shop-countries.ts › getShopCountryCodes                                  |
 | mutate           | CheckoutCreateDocument                  | —                                               | src/lib/checkout.ts › create                                                                  |
 | mutate           | CheckoutCustomerDetachDocument          | —                                               | src/lib/checkout.ts › detachCustomer                                                          |
 | liveQuery        | CheckoutFindDocument                    | —                                               | src/lib/checkout.ts › find                                                                    |

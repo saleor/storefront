@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { FormSelect, AddressFields } from "@/checkout/views/saleor-checkout/address-form-fields";
 import { type CountryCode, type AddressFragment } from "@/checkout/graphql";
 import { useAvailableShippingCountries } from "@/checkout/hooks/use-available-shipping-countries";
+import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { useAddressFormUtils } from "@/checkout/components/address-form/use-address-form-utils";
 import { getBillingAddressOptions } from "@/checkout/lib/billing-addresses";
 import { HybridAddressSelector, AddressCard } from "@/checkout/components/shipping-address";
@@ -85,8 +86,19 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 	const t = useTranslations("checkout.billing");
 	const tShipping = useTranslations("checkout.shipping");
 	const { availableShippingCountries, resolveBlankCountry } = useAvailableShippingCountries();
+	const { billingCountries } = useCheckoutData();
+	// A shipped order takes a billing address from any country: the Geo-blocking Regulation
+	// forbids refusing a customer for where they live when delivery goes to a country the shop
+	// serves (Art. 4(1)(a)), and Saleor takes tax from the shipping address. Without shipping
+	// the billing address decides the tax, so it stays on the channel's countries.
+	const billingCountryOptions =
+		isShippingRequired && billingCountries.length > 0 ? billingCountries : availableShippingCountries;
+	const existingBillingCountry = billingAddress?.country?.code ?? shippingAddress?.country?.code;
 	// Billing country usually matches shipping — prefer it over the channel default.
-	const defaultCountry = resolveBlankCountry(billingAddress?.country?.code ?? shippingAddress?.country?.code);
+	const defaultCountry =
+		existingBillingCountry && billingCountryOptions.some((option) => option.code === existingBillingCountry)
+			? (existingBillingCountry as CountryCode)
+			: resolveBlankCountry(existingBillingCountry);
 
 	const hasShippingAddress = !!shippingAddress;
 	const selectableAddresses = useMemo(
@@ -262,7 +274,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 											onChange={handleCountryChange}
 											placeholder={tShipping("selectCountry")}
 											autoComplete="billing country"
-											options={availableShippingCountries.map(({ code, label }) => ({
+											options={billingCountryOptions.map(({ code, label }) => ({
 												value: code,
 												label,
 											}))}
@@ -330,7 +342,7 @@ export const BillingAddressSection: FC<BillingAddressSectionProps> = ({
 									onChange={handleCountryChange}
 									placeholder={tShipping("selectCountry")}
 									autoComplete="billing country"
-									options={availableShippingCountries.map(({ code, label }) => ({
+									options={billingCountryOptions.map(({ code, label }) => ({
 										value: code,
 										label,
 									}))}
