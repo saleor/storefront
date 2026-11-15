@@ -4,9 +4,8 @@ import { buildCheckoutPath, buildOrderStatusPath } from "@paper/session-bridge";
 import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
 import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
-import { getLegalLinks } from "@/lib/catalog/get-legal-links";
+import { getLegalHrefs } from "@/lib/catalog/get-legal-links";
 import { getStorefrontContent } from "@/lib/content/server";
-import { buildStorefrontPath } from "@/lib/storefront-path";
 import type { CheckoutLegalLinks } from "@/checkout/providers/checkout-legal-links";
 import { loadCheckoutMessages } from "@/i18n/load-messages";
 import type {
@@ -102,20 +101,17 @@ export async function CheckoutSessionLoader({
 
 	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
 	const contentChannel = browseChannel ?? DefaultChannelSlug ?? "default-channel";
-	const [checkoutContent, messages, legalPages] = await Promise.all([
+	const [checkoutContent, messages, legalHrefs] = await Promise.all([
 		getStorefrontContent(contentChannel, browseLocale).then((content) => content.surfaces.checkout),
 		loadCheckoutMessages(browseLocale),
-		getLegalLinks(browseLocale),
+		// Legal pages live on the storefront surface; the order button's notice links to
+		// them. With a checkout loaded, `contentChannel` is the checkout's own channel.
+		getLegalHrefs(browseLocale, contentChannel),
 	]);
-	// Legal pages live on the storefront surface; the order button's notice links to them.
-	const legalHref = (key: "terms" | "withdrawal" | "privacy") => {
-		const page = legalPages[key];
-		return page ? buildStorefrontPath(browseLocale, contentChannel, page.path) : undefined;
-	};
 	const legalLinks: CheckoutLegalLinks = {
-		terms: legalHref("terms"),
-		withdrawal: legalHref("withdrawal"),
-		privacy: legalHref("privacy"),
+		terms: legalHrefs.terms,
+		withdrawal: legalHrefs.withdrawal,
+		privacy: legalHrefs.privacy,
 	};
 
 	return (

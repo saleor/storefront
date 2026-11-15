@@ -4,7 +4,7 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/lib/catalog/get-page-data", () => ({ getPageData: vi.fn() }));
 
 import { getPageData } from "@/lib/catalog/get-page-data";
-import { getLegalLinks } from "./get-legal-links";
+import { getLegalHrefs, getLegalLinks } from "./get-legal-links";
 
 const getPage = vi.mocked(getPageData);
 type Page = Awaited<ReturnType<typeof getPageData>>;
@@ -42,5 +42,17 @@ describe("getLegalLinks", () => {
 	it("returns no links for a shop without legal pages", async () => {
 		getPage.mockResolvedValue(null);
 		await expect(getLegalLinks("en")).resolves.toEqual({});
+	});
+});
+
+describe("getLegalHrefs", () => {
+	beforeEach(() => {
+		getPage.mockReset();
+	});
+
+	it("builds storefront URLs for the pages that exist", async () => {
+		getPage.mockImplementation(async (slug) => (slug === "terms" ? page("terms", "AGB", "agb") : null));
+
+		await expect(getLegalHrefs("de", "eu")).resolves.toEqual({ terms: "/de/eu/pages/agb" });
 	});
 });

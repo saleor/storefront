@@ -310,17 +310,22 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 			</div>
 
 			{!usesClientSubmit ? (
-				<MobileStickyAction
-					step={paymentStep}
-					isShippingRequired={isShippingRequired}
-					type="submit"
-					onAction={submit}
-					isLoading={isLoading}
-					disabled={isDisabled}
-					total={totalStr}
-					loadingText={isCompletingOrder ? tActions("creatingOrder") : tActions("processingPayment")}
-					showPaymentTrust
-				/>
+				<>
+					{/* The payment step's sticky bar is taller (trust line, legal notice, button)
+					    than the page padding that clears it on other steps. */}
+					<div aria-hidden className="h-24 md:hidden" />
+					<MobileStickyAction
+						step={paymentStep}
+						isShippingRequired={isShippingRequired}
+						type="submit"
+						onAction={submit}
+						isLoading={isLoading}
+						disabled={isDisabled}
+						total={totalStr}
+						loadingText={isCompletingOrder ? tActions("creatingOrder") : tActions("processingPayment")}
+						showPaymentTrust
+					/>
+				</>
 			) : null}
 		</>
 	);

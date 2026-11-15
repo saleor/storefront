@@ -126,14 +126,18 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 				aria-hidden={showProcessingOverlay}
 			>
 				{showExpressCheckout ? (
-					<StripeExpressCheckout
-						checkout={checkout}
-						billing={billing}
-						onError={onError}
-						onBillingErrors={onBillingErrors}
-						onPriceChangeNotice={onPriceChangeNotice}
-						onPaymentActivityChange={onPaymentActivityChange}
-					/>
+					<div className="space-y-3">
+						<StripeExpressCheckout
+							checkout={checkout}
+							billing={billing}
+							onError={onError}
+							onBillingErrors={onBillingErrors}
+							onPriceChangeNotice={onPriceChangeNotice}
+							onPaymentActivityChange={onPaymentActivityChange}
+						/>
+						{/* A wallet button places the order too, so it gets the notice beside it. */}
+						<OrderLegalNotice />
+					</div>
 				) : null}
 
 				<PaymentElement
