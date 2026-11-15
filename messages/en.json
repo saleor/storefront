@@ -613,7 +613,7 @@
 			"paymentProcessFailed": "Payment processing failed",
 			"completeOrderFailed": "Failed to complete order",
 			"orderCreateFailed": "Payment was processed but the order could not be created. Please try again or contact support.",
-			"orderNotPlacedOutOfStock": "Your payment went through, but an item sold out before we could place your order. Please do not pay again. Remove the sold-out item to complete the order with the rest, or contact us for a refund.",
+			"orderNotPlacedItemUnavailable": "An item sold out or became unavailable before we could place your order, so no order was created. If you have already paid, please do not pay again and contact us.",
 			"validationRulesUnavailable": "Validation rules not available",
 			"setDefaultAddressFailed": "Failed to set default address",
 			"dummyNotAllowed": "Test payment is not available in this environment.",

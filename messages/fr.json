@@ -614,7 +614,7 @@
 			"paymentProcessFailed": "Échec du traitement du paiement",
 			"completeOrderFailed": "Échec de la finalisation de la commande",
 			"orderCreateFailed": "Le paiement a été traité, mais la commande n'a pas pu être créée. Veuillez réessayer ou contacter le support.",
-			"orderNotPlacedOutOfStock": "Votre paiement a bien été reçu, mais un article a été épuisé avant que nous puissions enregistrer votre commande. Ne payez pas une seconde fois. Retirez l’article épuisé pour finaliser la commande avec le reste, ou contactez-nous pour un remboursement.",
+			"orderNotPlacedItemUnavailable": "Un article a été épuisé ou est devenu indisponible avant que nous puissions enregistrer votre commande : aucune commande n’a été créée. Si vous avez déjà payé, ne payez pas une seconde fois et contactez-nous.",
 			"validationRulesUnavailable": "Règles de validation non disponibles",
 			"setDefaultAddressFailed": "Échec de la définition de l'adresse par défaut",
 			"dummyNotAllowed": "Le paiement test n'est pas disponible dans cet environnement.",

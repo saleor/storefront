@@ -614,7 +614,7 @@
 			"paymentProcessFailed": "Nie udało się przetworzyć płatności",
 			"completeOrderFailed": "Nie udało się złożyć zamówienia",
 			"orderCreateFailed": "Płatność została przetworzona, ale nie udało się utworzyć zamówienia. Spróbuj ponownie lub skontaktuj się z obsługą.",
-			"orderNotPlacedOutOfStock": "Płatność została przyjęta, ale jeden z produktów wyprzedał się, zanim złożyliśmy zamówienie. Nie płać ponownie. Usuń wyprzedany produkt, żeby dokończyć zamówienie z pozostałymi, albo skontaktuj się z nami w sprawie zwrotu.",
+			"orderNotPlacedItemUnavailable": "Produkt wyprzedał się lub stał się niedostępny, zanim złożyliśmy zamówienie, więc zamówienie nie zostało utworzone. Jeśli już zapłaciłeś, nie płać ponownie i skontaktuj się z nami.",
 			"validationRulesUnavailable": "Reguły walidacji są niedostępne",
 			"setDefaultAddressFailed": "Nie udało się ustawić domyślnego adresu",
 			"dummyNotAllowed": "Płatność testowa nie jest dostępna w tym środowisku.",

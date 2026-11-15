@@ -614,7 +614,7 @@
 			"paymentProcessFailed": "Zahlungsverarbeitung fehlgeschlagen",
 			"completeOrderFailed": "Bestellung konnte nicht abgeschlossen werden",
 			"orderCreateFailed": "Die Zahlung wurde verarbeitet, aber die Bestellung konnte nicht erstellt werden. Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.",
-			"orderNotPlacedOutOfStock": "Ihre Zahlung ist eingegangen, aber ein Artikel war ausverkauft, bevor wir Ihre Bestellung aufnehmen konnten. Bitte zahlen Sie nicht erneut. Entfernen Sie den ausverkauften Artikel, um die Bestellung mit den übrigen Artikeln abzuschließen, oder kontaktieren Sie uns für eine Erstattung.",
+			"orderNotPlacedItemUnavailable": "Ein Artikel war ausverkauft oder nicht mehr verfügbar, bevor wir Ihre Bestellung aufnehmen konnten. Es wurde keine Bestellung angelegt. Falls Sie bereits bezahlt haben, zahlen Sie bitte nicht erneut und kontaktieren Sie uns.",
 			"validationRulesUnavailable": "Validierungsregeln nicht verfügbar",
 			"setDefaultAddressFailed": "Standardadresse konnte nicht festgelegt werden",
 			"dummyNotAllowed": "Testzahlung ist in dieser Umgebung nicht verfügbar.",

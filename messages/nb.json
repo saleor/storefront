@@ -614,7 +614,7 @@
 			"paymentProcessFailed": "Betalingsbehandling mislyktes",
 			"completeOrderFailed": "Kunne ikke fullføre bestillingen",
 			"orderCreateFailed": "Betalingen ble behandlet, men bestillingen kunne ikke opprettes. Prøv igjen eller kontakt kundestøtte.",
-			"orderNotPlacedOutOfStock": "Betalingen gikk gjennom, men en vare ble utsolgt før vi rakk å registrere bestillingen. Ikke betal på nytt. Fjern den utsolgte varen for å fullføre bestillingen med resten, eller kontakt oss for refusjon.",
+			"orderNotPlacedItemUnavailable": "En vare ble utsolgt eller utilgjengelig før vi rakk å registrere bestillingen, så ingen bestilling ble opprettet. Hvis du allerede har betalt, ikke betal på nytt, men kontakt oss.",
 			"validationRulesUnavailable": "Valideringsregler er ikke tilgjengelige",
 			"setDefaultAddressFailed": "Kunne ikke angi standardadresse",
 			"dummyNotAllowed": "Testbetaling er ikke tilgjengelig i dette miljøet.",

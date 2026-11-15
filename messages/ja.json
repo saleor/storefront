@@ -611,7 +611,7 @@
 			"paymentProcessFailed": "支払い処理に失敗しました",
 			"completeOrderFailed": "注文の完了に失敗しました",
 			"orderCreateFailed": "支払いは処理されましたが、注文を作成できませんでした。再試行するか、サポートにお問い合わせください。",
-			"orderNotPlacedOutOfStock": "お支払いは完了しましたが、ご注文の確定前に商品が売り切れました。再度お支払いにならないでください。売り切れの商品を削除して残りの商品で注文を完了するか、返金についてお問い合わせください。",
+			"orderNotPlacedItemUnavailable": "ご注文の確定前に商品が売り切れたか購入できなくなったため、注文は作成されていません。すでにお支払い済みの場合は、再度お支払いにならず、お問い合わせください。",
 			"validationRulesUnavailable": "検証ルールを利用できません",
 			"setDefaultAddressFailed": "既定の住所の設定に失敗しました",
 			"dummyNotAllowed": "この環境ではテスト決済を利用できません。",

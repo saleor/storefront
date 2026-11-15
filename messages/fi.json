@@ -614,7 +614,7 @@
 			"paymentProcessFailed": "Maksun käsittely epäonnistui",
 			"completeOrderFailed": "Tilauksen viimeistely epäonnistui",
 			"orderCreateFailed": "Maksu käsiteltiin, mutta tilausta ei voitu luoda. Yritä uudelleen tai ota yhteyttä tukeen.",
-			"orderNotPlacedOutOfStock": "Maksusi onnistui, mutta tuote myytiin loppuun ennen kuin ehdimme vahvistaa tilauksesi. Älä maksa uudelleen. Poista loppuunmyyty tuote ja viimeistele tilaus muilla tuotteilla tai ota meihin yhteyttä hyvitystä varten.",
+			"orderNotPlacedItemUnavailable": "Tuote myytiin loppuun tai poistui myynnistä ennen kuin ehdimme vahvistaa tilauksesi, joten tilausta ei luotu. Jos olet jo maksanut, älä maksa uudelleen vaan ota meihin yhteyttä.",
 			"validationRulesUnavailable": "Validointisäännöt eivät ole saatavilla",
 			"setDefaultAddressFailed": "Oletusosoitteen asettaminen epäonnistui",
 			"dummyNotAllowed": "Testimaksu ei ole käytettävissä tässä ympäristössä.",

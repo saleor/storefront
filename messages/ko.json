@@ -602,7 +602,7 @@
 			"paymentProcessFailed": "결제 처리에 실패했습니다",
 			"completeOrderFailed": "주문 완료에 실패했습니다",
 			"orderCreateFailed": "결제는 처리되었지만 주문을 생성할 수 없습니다. 다시 시도하거나 고객 지원에 문의해주세요.",
-			"orderNotPlacedOutOfStock": "결제는 완료되었지만 주문이 접수되기 전에 상품이 품절되었습니다. 다시 결제하지 마세요. 품절된 상품을 삭제하고 나머지 상품으로 주문을 완료하거나 환불을 문의해 주세요.",
+			"orderNotPlacedItemUnavailable": "주문이 접수되기 전에 상품이 품절되었거나 구매할 수 없게 되어 주문이 생성되지 않았습니다. 이미 결제하셨다면 다시 결제하지 마시고 문의해 주세요.",
 			"validationRulesUnavailable": "검증 규칙을 사용할 수 없습니다",
 			"setDefaultAddressFailed": "기본 주소 설정에 실패했습니다",
 			"dummyNotAllowed": "이 환경에서는 테스트 결제를 사용할 수 없습니다.",
