@@ -5,6 +5,7 @@ import { DefaultChannelSlug } from "@/app/config";
 import { CheckoutApp } from "@/checkout/checkout-app";
 import { resolveBrowseLocaleForCheckout } from "@/lib/browse-locale-server";
 import { getLegalHrefs } from "@/lib/catalog/get-legal-links";
+import { getDeliveryPaymentSummary } from "@/lib/channels/get-delivery-payment";
 import { getStorefrontContent } from "@/lib/content/server";
 import type { CheckoutLegalLinks } from "@/checkout/providers/checkout-legal-links";
 import { loadCheckoutMessages } from "@/i18n/load-messages";
@@ -102,13 +103,21 @@ export async function CheckoutSessionLoader({
 
 	const browseChannel = channelSlug ?? (await Checkout.getChannelSlugFromCartCookies());
 	const contentChannel = browseChannel ?? DefaultChannelSlug ?? "default-channel";
-	const [checkoutContent, messages, legalHrefs, billingCountries] = await Promise.all([
+	const [checkoutContent, messages, legalHrefs, billingCountries, deliveryPayment] = await Promise.all([
 		getStorefrontContent(contentChannel, browseLocale).then((content) => content.surfaces.checkout),
 		loadCheckoutMessages(browseLocale),
 		// Legal pages live on the storefront surface; the order button's notice links to
 		// them. With a checkout loaded, `contentChannel` is the checkout's own channel.
 		getLegalHrefs(browseLocale, contentChannel),
 		getCheckoutSessionBillingCountries(browseLocale),
+		// Delivery restrictions and payment methods at the start of ordering (CRD Art. 8(3)).
+		initialCheckout
+			? getDeliveryPaymentSummary({
+					channel: contentChannel,
+					localeSlug: browseLocale,
+					gateways: initialCheckout.availablePaymentGateways,
+				})
+			: null,
 	]);
 	const legalLinks: CheckoutLegalLinks = {
 		terms: legalHrefs.terms,
@@ -124,6 +133,7 @@ export async function CheckoutSessionLoader({
 			initialUser={initialUser}
 			shippingCountries={shippingCountries}
 			billingCountries={billingCountries}
+			deliveryPayment={deliveryPayment}
 			channelDefaultCountryCode={channelDefaultCountryCode}
 			checkoutContent={checkoutContent}
 			storefrontLocale={browseLocale}

@@ -5,6 +5,8 @@ import type { CartContent, StorefrontPolicies } from "@/lib/content";
 import * as Checkout from "@/lib/checkout";
 import { getPriceReductionReference } from "@/lib/channels/get-price-display";
 import { withPriceReference } from "@/lib/pricing";
+import { getDeliveryPaymentSummary } from "@/lib/channels/get-delivery-payment";
+import { DeliveryPaymentNote } from "@/ui/components/delivery-payment-note";
 import { PriceNote } from "@/ui/components/price-note";
 import { CartDrawer } from "./cart-drawer";
 
@@ -24,6 +26,9 @@ export async function CartDrawerWrapper({ channel, localeSlug, cart, policies }:
 		checkoutId ? Checkout.find(checkoutId, localeSlug) : null,
 		getPriceReductionReference(channel),
 	]);
+	const deliveryPayment = checkout?.lines.length
+		? await getDeliveryPaymentSummary({ channel, localeSlug, gateways: checkout.availablePaymentGateways })
+		: null;
 	// Settle what each line's reduction is measured against; the drawer only reads the result.
 	const lines = (checkout?.lines ?? []).map((line) => ({
 		...line,
@@ -41,6 +46,7 @@ export async function CartDrawerWrapper({ channel, localeSlug, cart, policies }:
 			deleteCartLine={deleteCartLine}
 			updateCartLineQuantity={updateCartLineQuantity}
 			totalNote={<PriceNote channel={channel} locale={localeSlug} variant="total" className="text-right" />}
+			deliveryNote={<DeliveryPaymentNote summary={deliveryPayment} />}
 		/>
 	);
 }

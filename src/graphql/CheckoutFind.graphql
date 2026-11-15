@@ -2,6 +2,11 @@ query CheckoutFind($id: ID!, $languageCode: LanguageCodeEnum!) {
 	checkout(id: $id) {
 		id
 		email
+		# Names the accepted payment methods when the store states none (src/lib/delivery-payment.ts).
+		availablePaymentGateways {
+			id
+			name
+		}
 		lines {
 			id
 			quantity

@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "inkl. MwSt., zzgl. <shipping>Versandkosten</shipping>",
 			"allInclVatPlusShipping": "Alle Preise inkl. MwSt., zzgl. <shipping>Versandkosten</shipping>.",
 			"inclVat": "inkl. MwSt."
+		},
+		"deliveryPayment": {
+			"title": "Lieferung und Zahlung",
+			"deliverTo": "Lieferländer: {list}.",
+			"deliverToCount": "Wir liefern in {count, plural, one {# Land} other {# Länder}}.",
+			"euCountries": "{count} EU-Länder",
+			"notTo": "Ausgenommen: {areas}.",
+			"andMore": "{list} und {count} weitere",
+			"payment": "Zahlung per {list}.",
+			"toggle": "Liefergebiet anzeigen",
+			"countriesHeading": "Lieferländer",
+			"exclusionsHeading": "Nicht in diese Gebiete",
+			"methods": {
+				"card": "Karte",
+				"sepa-debit": "SEPA-Lastschrift",
+				"invoice": "Rechnung",
+				"test": "Testzahlung",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -468,7 +493,9 @@
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "An die Postleitzahl {postalCode} liefern wir nicht.",
+			"checkingDelivery": "Lieferung wird geprüft …"
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -516,6 +543,10 @@
 			"methodTitle": "Versandart",
 			"loadingMethods": "Versandarten werden geladen…",
 			"noAddressYet": "Bitte gehen Sie zurück und geben Sie zuerst Ihre Lieferadresse ein.",
+			"noDeliveryTitle": "An diese Adresse können wir nicht liefern",
+			"noDeliveryToPostcode": "An die Postleitzahl {postalCode} in {country} liefern wir nicht. Ändern Sie die Adresse, um fortzufahren.",
+			"noDeliveryToAddress": "An diese Adresse in {country} liefern wir nicht. Ändern Sie die Adresse, um fortzufahren.",
+			"changeAddress": "Adresse ändern",
 			"addressTitle": "Lieferadresse",
 			"countryRegion": "Land/Region",
 			"selectCountry": "Land auswählen",

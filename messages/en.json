@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Incl. VAT, plus <shipping>shipping costs</shipping>",
 			"allInclVatPlusShipping": "All prices incl. VAT, plus <shipping>shipping costs</shipping>.",
 			"inclVat": "Incl. VAT"
+		},
+		"deliveryPayment": {
+			"title": "Delivery and payment",
+			"deliverTo": "We deliver to {list}.",
+			"deliverToCount": "We deliver to {count, plural, one {# country} other {# countries}}.",
+			"euCountries": "{count} EU countries",
+			"notTo": "Not to: {areas}.",
+			"andMore": "{list} and {count} more",
+			"payment": "Payment by {list}.",
+			"toggle": "Where we deliver",
+			"countriesHeading": "We deliver to",
+			"exclusionsHeading": "Not to these areas",
+			"methods": {
+				"card": "card",
+				"sepa-debit": "SEPA Direct Debit",
+				"invoice": "invoice",
+				"test": "test payment",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -467,6 +492,8 @@
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "We don't deliver to postcode {postalCode}.",
+			"checkingDelivery": "Checking delivery…",
 			"crashTitle": "Checkout error",
 			"crashMessage": "Something went wrong loading checkout. Please try again."
 		},
@@ -516,6 +543,10 @@
 			"methodTitle": "Shipping method",
 			"loadingMethods": "Loading shipping methods…",
 			"noAddressYet": "Please go back and enter your shipping address first.",
+			"noDeliveryTitle": "We can't deliver to this address",
+			"noDeliveryToPostcode": "We don't deliver to postcode {postalCode} in {country}. Change the address to continue.",
+			"noDeliveryToAddress": "We don't deliver to this address in {country}. Change the address to continue.",
+			"changeAddress": "Change address",
 			"addressTitle": "Shipping address",
 			"countryRegion": "Country/Region",
 			"selectCountry": "Select country",

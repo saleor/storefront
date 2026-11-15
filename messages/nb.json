@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Inkl. mva., pluss <shipping>frakt</shipping>",
 			"allInclVatPlusShipping": "Alle priser inkl. mva., pluss <shipping>frakt</shipping>.",
 			"inclVat": "Inkl. mva."
+		},
+		"deliveryPayment": {
+			"title": "Levering og betaling",
+			"deliverTo": "Vi leverer til {list}.",
+			"deliverToCount": "Vi leverer til {count, plural, one {# land} other {# land}}.",
+			"euCountries": "{count} EU-land",
+			"notTo": "Ikke til: {areas}.",
+			"andMore": "{list} og {count} til",
+			"payment": "Betaling med {list}.",
+			"toggle": "Hvor vi leverer",
+			"countriesHeading": "Vi leverer til",
+			"exclusionsHeading": "Ikke til disse områdene",
+			"methods": {
+				"card": "kort",
+				"sepa-debit": "SEPA-avtalegiro",
+				"invoice": "faktura",
+				"test": "testbetaling",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -468,7 +493,9 @@
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "Vi leverer ikke til postnummer {postalCode}.",
+			"checkingDelivery": "Sjekker levering …"
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -516,6 +543,10 @@
 			"methodTitle": "Fraktmetode",
 			"loadingMethods": "Laster fraktmetoder…",
 			"noAddressYet": "Gå tilbake og oppgi leveringsadressen din først.",
+			"noDeliveryTitle": "Vi kan ikke levere til denne adressen",
+			"noDeliveryToPostcode": "Vi leverer ikke til postnummer {postalCode} i {country}. Endre adressen for å fortsette.",
+			"noDeliveryToAddress": "Vi leverer ikke til denne adressen i {country}. Endre adressen for å fortsette.",
+			"changeAddress": "Endre adresse",
 			"addressTitle": "Leveringsadresse",
 			"countryRegion": "Land/region",
 			"selectCountry": "Velg land",

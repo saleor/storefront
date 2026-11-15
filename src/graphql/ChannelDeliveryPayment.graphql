@@ -1,0 +1,12 @@
+# What a shopper must be told before ordering (Consumer Rights Directive Art. 8(3)): where the
+# shop delivers and which payment methods it accepts. Countries come from the channel's
+# shipping zones. Excluded areas and payment methods are optional public channel metadata
+# (market.deliveryExclusions[.<locale>], payment.methods); see src/lib/delivery-payment.ts.
+query ChannelDeliveryPayment($channel: String!, $keys: [String!]) {
+	channel(slug: $channel) {
+		countries {
+			code
+		}
+		metafields(keys: $keys)
+	}
+}

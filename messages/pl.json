@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Zawiera VAT, plus <shipping>koszty dostawy</shipping>",
 			"allInclVatPlusShipping": "Wszystkie ceny zawierają VAT, plus <shipping>koszty dostawy</shipping>.",
 			"inclVat": "Zawiera VAT"
+		},
+		"deliveryPayment": {
+			"title": "Dostawa i płatność",
+			"deliverTo": "Dostarczamy do: {list}.",
+			"deliverToCount": "Dostarczamy do {count, plural, one {# kraju} few {# krajów} many {# krajów} other {# kraju}}.",
+			"euCountries": "{count} krajów UE",
+			"notTo": "Z wyjątkiem: {areas}.",
+			"andMore": "{list} i {count} innych",
+			"payment": "Płatność: {list}.",
+			"toggle": "Obszar dostawy",
+			"countriesHeading": "Dostarczamy do",
+			"exclusionsHeading": "Nie dostarczamy do",
+			"methods": {
+				"card": "karta",
+				"sepa-debit": "polecenie zapłaty SEPA",
+				"invoice": "faktura",
+				"test": "płatność testowa",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -467,6 +492,8 @@
 			"itemUnavailableRemove": "Usuń produkt",
 			"itemUnavailableRemoveFailed": "Nie udało się usunąć produktu. Spróbuj ponownie.",
 			"fulfillmentCheckFailed": "Nie udało się sprawdzić dostępności produktu. Spróbuj ponownie.",
+			"postcodeNotServed": "Nie dostarczamy pod kod pocztowy {postalCode}.",
+			"checkingDelivery": "Sprawdzamy dostawę…",
 			"crashTitle": "Błąd kasy",
 			"crashMessage": "Coś poszło nie tak podczas ładowania kasy. Spróbuj ponownie."
 		},
@@ -516,6 +543,10 @@
 			"methodTitle": "Metoda dostawy",
 			"loadingMethods": "Ładowanie metod dostawy…",
 			"noAddressYet": "Wróć i podaj adres dostawy.",
+			"noDeliveryTitle": "Nie możemy dostarczyć pod ten adres",
+			"noDeliveryToPostcode": "Nie dostarczamy pod kod pocztowy {postalCode} ({country}). Zmień adres, żeby kontynuować.",
+			"noDeliveryToAddress": "Nie dostarczamy pod ten adres ({country}). Zmień adres, żeby kontynuować.",
+			"changeAddress": "Zmień adres",
 			"addressTitle": "Adres dostawy",
 			"countryRegion": "Kraj/region",
 			"selectCountry": "Wybierz kraj",

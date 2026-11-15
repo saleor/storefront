@@ -17,12 +17,15 @@ import {
 	CheckoutShippingAddressUpdateDocument,
 	DeliveryOptionsCalculateDocument,
 	RequestPasswordResetDocument,
+	ShippingMethodsForAddressDocument,
 	PaymentGatewaysInitializeDocument,
 	TransactionInitializeDocument,
 	TransactionProcessDocument,
 	UserSetDefaultAddressDocument,
 	type AddressValidationRulesQuery,
 	type AddressValidationRulesQueryVariables,
+	type ShippingMethodsForAddressQuery,
+	type ShippingMethodsForAddressQueryVariables,
 	type CheckoutAddPromoCodeMutation,
 	type CheckoutAddPromoCodeMutationVariables,
 	type CheckoutBillingAddressUpdateMutation,
@@ -168,6 +171,11 @@ const addressValidationRulesDocument = toTypedDocument<
 	AddressValidationRulesQuery,
 	AddressValidationRulesQueryVariables
 >(AddressValidationRulesDocument);
+
+const shippingMethodsForAddressDocument = toTypedDocument<
+	ShippingMethodsForAddressQuery,
+	ShippingMethodsForAddressQueryVariables
+>(ShippingMethodsForAddressDocument);
 
 const checkoutAddPromoCodeDocument = toTypedDocument<
 	CheckoutAddPromoCodeMutation,
@@ -643,6 +651,24 @@ export async function getAddressValidationRules(
 	}
 
 	return { ok: true, rules: result.data.addressValidationRules };
+}
+
+/**
+ * Whether the channel delivers to this postcode, asked before the shipping step so the address
+ * form can say so where it is typed. Saleor applies the postcode exclusions of the shipping
+ * zones. `{ ok: false }` when Saleor cannot answer: the shipping step stays the backstop.
+ */
+export async function checkPostcodeDelivery(
+	channel: string,
+	countryCode: CountryCode,
+	postalCode: string,
+): Promise<{ ok: true; served: boolean } | { ok: false }> {
+	const result = await liveQuery(shippingMethodsForAddressDocument, {
+		variables: { channel, address: { country: countryCode, postalCode } },
+	});
+
+	const methods = result.ok ? result.data.shop.availableShippingMethods : null;
+	return methods ? { ok: true, served: methods.length > 0 } : { ok: false };
 }
 
 export async function removeCheckoutLine(checkoutId: string, lineId: string): Promise<CheckoutActionResult> {

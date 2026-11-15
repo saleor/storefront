@@ -9,6 +9,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | mutate           | checkoutAddPromoCodeDocument            | —                                               | src/app/(checkout)/actions.ts › applyCheckoutPromoCode                                        |
 | mutate           | checkoutCustomerAttachDocument          | —                                               | src/app/(checkout)/actions.ts › attachCustomerToCheckout                                      |
 | mutate           | deliveryOptionsCalculateDocument        | —                                               | src/app/(checkout)/actions.ts › calculateDeliveryOptions                                      |
+| liveQuery        | shippingMethodsForAddressDocument       | —                                               | src/app/(checkout)/actions.ts › checkPostcodeDelivery                                         |
 | liveQuery        | addressValidationRulesDocument          | —                                               | src/app/(checkout)/actions.ts › getAddressValidationRules                                     |
 | mutate           | transactionInitializeDocument           | —                                               | src/app/(checkout)/actions.ts › initializeCheckoutTransaction                                 |
 | mutate           | paymentGatewaysInitializeDocument       | —                                               | src/app/(checkout)/actions.ts › initializePaymentGateways                                     |
@@ -58,6 +59,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | cachedQuery      | ProductVariantForPdpDocument            | CACHE_PROFILES.products                         | src/lib/catalog/get-product-data.ts › getProductVariantForPdp                                 |
 | cachedQuery      | CategoriesBySlugDocument                | CACHE_PROFILES.categories                       | src/lib/catalog/resolve-category-slugs.ts › resolveCategorySlugsCached                        |
 | cachedQuery      | ChannelsListDocument                    | CACHE_PROFILES.channels (allows partial data)   | src/lib/channels/get-channels-data.ts › readChannelsList                                      |
+| cachedQuery      | ChannelDeliveryPaymentDocument          | CACHE_PROFILES.channels (allows partial data)   | src/lib/channels/get-delivery-payment.ts › getChannelDeliveryPayment                          |
 | cachedQuery      | ChannelPriceDisplayDocument             | CACHE_PROFILES.listingAll (allows partial data) | src/lib/channels/get-price-display.ts › getChannelPriceDisplay                                |
 | cachedQuery      | ShopSellerIdentityDocument              | CACHE_PROFILES.shop                             | src/lib/channels/get-seller-identity.ts › getSellerIdentity                                   |
 | cachedQuery      | ShopCountriesDocument                   | CACHE_PROFILES.channels                         | src/lib/channels/get-shop-countries.ts › getShopCountryCodes                                  |

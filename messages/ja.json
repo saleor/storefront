@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "税込、<shipping>送料</shipping>別",
 			"allInclVatPlusShipping": "価格はすべて税込、<shipping>送料</shipping>別です。",
 			"inclVat": "税込"
+		},
+		"deliveryPayment": {
+			"title": "配送とお支払い",
+			"deliverTo": "配送先：{list}。",
+			"deliverToCount": "{count}か国に配送しています。",
+			"euCountries": "EU加盟{count}か国",
+			"notTo": "対象外：{areas}。",
+			"andMore": "{list}ほか{count}地域",
+			"payment": "お支払い方法：{list}。",
+			"toggle": "配送地域を見る",
+			"countriesHeading": "配送先の国",
+			"exclusionsHeading": "配送対象外の地域",
+			"methods": {
+				"card": "カード",
+				"sepa-debit": "SEPA口座振替",
+				"invoice": "請求書払い",
+				"test": "テスト決済",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -467,6 +492,8 @@
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "郵便番号 {postalCode} への配送は承っておりません。",
+			"checkingDelivery": "配送可否を確認しています…",
 			"crashTitle": "チェックアウトエラー",
 			"crashMessage": "チェックアウトの読み込み中に問題が発生しました。もう一度お試しください。"
 		},
@@ -513,6 +540,10 @@
 			"methodTitle": "配送方法",
 			"loadingMethods": "配送方法を読み込み中…",
 			"noAddressYet": "戻って先に配送先住所を入力してください。",
+			"noDeliveryTitle": "このご住所には配送できません",
+			"noDeliveryToPostcode": "{country}の郵便番号 {postalCode} への配送は承っておりません。続行するにはご住所を変更してください。",
+			"noDeliveryToAddress": "{country}のこのご住所への配送は承っておりません。続行するにはご住所を変更してください。",
+			"changeAddress": "住所を変更",
 			"addressTitle": "配送先住所",
 			"countryRegion": "国 / 地域",
 			"selectCountry": "国を選択",

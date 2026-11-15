@@ -122,6 +122,8 @@ interface CartDrawerProps {
 	updateCartLineQuantity: UpdateCartLineQuantity;
 	/** Server-rendered `<PriceNote variant="total" />` ("incl. VAT"), shown under the total. */
 	totalNote?: ReactNode;
+	/** Server-rendered `<DeliveryPaymentNote />`, shown above the checkout button. */
+	deliveryNote?: ReactNode;
 }
 
 export function CartDrawer({
@@ -134,6 +136,7 @@ export function CartDrawer({
 	deleteCartLine,
 	updateCartLineQuantity,
 	totalNote,
+	deliveryNote,
 }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isCartBusy, setIsCartBusy] = useState(false);
@@ -394,6 +397,7 @@ export function CartDrawer({
 
 						{/* Actions */}
 						<div className="space-y-3 px-6 pb-6">
+							{deliveryNote}
 							<Link
 								href={checkoutHref}
 								onClick={(event) => {

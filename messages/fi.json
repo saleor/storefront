@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "Sis. ALV, lisäksi <shipping>toimituskulut</shipping>",
 			"allInclVatPlusShipping": "Kaikki hinnat sis. ALV, lisäksi <shipping>toimituskulut</shipping>.",
 			"inclVat": "Sis. ALV"
+		},
+		"deliveryPayment": {
+			"title": "Toimitus ja maksu",
+			"deliverTo": "Toimitamme: {list}.",
+			"deliverToCount": "Toimitamme {count, plural, one {# maahan} other {# maahan}}.",
+			"euCountries": "{count} EU-maata",
+			"notTo": "Paitsi: {areas}.",
+			"andMore": "{list} ja {count} muuta",
+			"payment": "Maksutavat: {list}.",
+			"toggle": "Toimitusalue",
+			"countriesHeading": "Toimitusmaat",
+			"exclusionsHeading": "Emme toimita näille alueille",
+			"methods": {
+				"card": "kortti",
+				"sepa-debit": "SEPA-suoraveloitus",
+				"invoice": "lasku",
+				"test": "testimaksu",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -468,7 +493,9 @@
 			"itemUnavailableRemoveMessage": "This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.",
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "Emme toimita postinumeroon {postalCode}.",
+			"checkingDelivery": "Tarkistetaan toimitusta…"
 		},
 		"contact": {
 			"title": "Yhteystiedot",
@@ -516,6 +543,10 @@
 			"methodTitle": "Toimitustapa",
 			"loadingMethods": "Ladataan toimitustapoja…",
 			"noAddressYet": "Palaa takaisin ja anna ensin toimitusosoitteesi.",
+			"noDeliveryTitle": "Emme voi toimittaa tähän osoitteeseen",
+			"noDeliveryToPostcode": "Emme toimita postinumeroon {postalCode} ({country}). Muuta osoitetta jatkaaksesi.",
+			"noDeliveryToAddress": "Emme toimita tähän osoitteeseen ({country}). Muuta osoitetta jatkaaksesi.",
+			"changeAddress": "Muuta osoitetta",
 			"addressTitle": "Toimitusosoite",
 			"countryRegion": "Maa/alue",
 			"selectCountry": "Valitse maa",

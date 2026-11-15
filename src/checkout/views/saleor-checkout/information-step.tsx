@@ -37,6 +37,8 @@ import {
 	isUsingSavedShippingAddress,
 } from "@/checkout/lib/shipping-address-submit";
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
+import { DeliveryPaymentPanel } from "@/checkout/components/delivery-payment-panel";
+import { usePostcodeDelivery } from "@/checkout/hooks/use-postcode-delivery";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
 import { useTranslations } from "next-intl";
 
@@ -199,6 +201,38 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const { orderedAddressFields, getFieldLabel, isRequiredField, countryAreaChoices } =
 		useAddressFormUtils(effectiveCountryCode);
 
+	// Delivery check for the address being entered or picked, before the shipping step.
+	const usingSavedAddressForCheck = isUsingSavedShippingAddress({
+		isAuthenticated: authenticated,
+		savedAddressCount: user?.addresses?.length ?? 0,
+		showNewAddressForm,
+		isEnteringNewAddress,
+		selectedAddressId,
+	});
+	const savedAddressForCheck = usingSavedAddressForCheck
+		? user?.addresses?.find((address) => address.id === selectedAddressId)
+		: undefined;
+	const postcodeForCheck = usingSavedAddressForCheck
+		? (savedAddressForCheck?.postalCode ?? "")
+		: (formData.postalCode ?? "");
+	const deliveryStatus = usePostcodeDelivery({
+		channel: checkout.channel.slug,
+		countryCode: usingSavedAddressForCheck
+			? (savedAddressForCheck?.country?.code as CountryCode | undefined)
+			: effectiveCountryCode,
+		postalCode: postcodeForCheck,
+		enabled: checkout.isShippingRequired,
+	});
+	const deliveryErrorField = usingSavedAddressForCheck ? "address" : "postalCode";
+	const deliveryError =
+		deliveryStatus === "unserved"
+			? tErrors("postcodeNotServed", { postalCode: postcodeForCheck.trim() })
+			: null;
+	const addressErrors =
+		deliveryError && !errors[deliveryErrorField]
+			? { ...errors, [deliveryErrorField]: deliveryError }
+			: errors;
+
 	// ----- Event Handlers -----
 	const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -311,6 +345,11 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 						}
 					});
 				}
+			}
+
+			// The postcode check said no: stay here and say why, instead of failing at shipping.
+			if (deliveryError && !newErrors[deliveryErrorField]) {
+				newErrors[deliveryErrorField] = deliveryError;
 			}
 
 			setErrors(newErrors);
@@ -466,6 +505,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			effectiveCountryCode,
 			onComplete,
 			setAvailabilityIssue,
+			deliveryError,
+			deliveryErrorField,
 		],
 	);
 
@@ -519,6 +560,10 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 
 	return (
 		<form className="space-y-8" method="post" action="#" onSubmit={handleSubmit} noValidate>
+			<DeliveryPaymentPanel />
+			<p className="sr-only" aria-live="polite">
+				{deliveryStatus === "checking" ? tErrors("checkingDelivery") : (deliveryError ?? "")}
+			</p>
 			{isOrphaned ? (
 				<div className="space-y-3 rounded-lg border border-border bg-muted/40 p-4">
 					<p className="text-sm text-foreground">{tErrors("orphanedCartMessage")}</p>
@@ -582,7 +627,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					availableCountries={availableShippingCountries}
 					formData={formData}
 					onFieldChange={handleFieldChange}
-					errors={errors}
+					errors={addressErrors}
 					orderedAddressFields={orderedAddressFields}
 					getFieldLabel={getFieldLabel}
 					isRequiredField={isRequiredField}

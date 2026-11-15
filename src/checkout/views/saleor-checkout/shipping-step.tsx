@@ -18,9 +18,10 @@ import {
 	useCheckoutSummaryLabels,
 } from "./checkout-summary-context";
 import { formatShippingPrice } from "@/checkout/lib/utils/money";
+import { CheckoutIssueBanner } from "@/checkout/components/checkout-issue-banner";
 import { MobileStickyAction } from "./mobile-sticky-action";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface ShippingStepProps {
 	checkout: CheckoutFragment;
@@ -53,6 +54,16 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
+	const locale = useLocale();
+	// Saleor names countries in English; name it in the shopper's language from the code.
+	const countryName = (code: string | null | undefined) => {
+		if (!code) return "";
+		try {
+			return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code;
+		} catch {
+			return code;
+		}
+	};
 
 	const showInvalidWarning =
 		hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid") &&
@@ -149,16 +160,32 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 						<div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
 						<p className="text-sm text-muted-foreground">{t("shipping.loadingMethods")}</p>
 					</div>
-				) : deliveries.length === 0 ? (
-					<div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-						<p className="text-sm text-amber-800">
-							{!hasShippingAddress
-								? t("shipping.noAddressYet")
-								: `No shipping methods available for ${
-										checkout.shippingAddress?.country?.country || "your address"
-									}. Please check your address or contact support.`}
-						</p>
+				) : deliveries.length === 0 && !hasShippingAddress ? (
+					<div className="rounded-lg border border-border bg-muted/40 p-4">
+						<p className="text-sm text-foreground">{t("shipping.noAddressYet")}</p>
 					</div>
+				) : deliveries.length === 0 ? (
+					// Saleor offers no method for this address: an excluded area (an island, an
+					// overseas territory), since the country list only has served countries.
+					<CheckoutIssueBanner
+						title={t("shipping.noDeliveryTitle")}
+						action={
+							<Button type="button" variant="outline-solid" size="sm" onClick={onBack}>
+								{t("shipping.changeAddress")}
+							</Button>
+						}
+					>
+						<p>
+							{checkout.shippingAddress?.postalCode
+								? t("shipping.noDeliveryToPostcode", {
+										postalCode: checkout.shippingAddress.postalCode,
+										country: countryName(checkout.shippingAddress.country.code),
+									})
+								: t("shipping.noDeliveryToAddress", {
+										country: countryName(checkout.shippingAddress?.country?.code),
+									})}
+						</p>
+					</CheckoutIssueBanner>
 				) : (
 					<div className={cn("space-y-3", isSubmitting && "pointer-events-none opacity-60")}>
 						{deliveries.map((delivery) => {

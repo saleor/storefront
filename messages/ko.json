@@ -35,6 +35,31 @@
 			"inclVatPlusShipping": "부가세 포함, <shipping>배송비</shipping> 별도",
 			"allInclVatPlusShipping": "모든 가격은 부가세 포함이며 <shipping>배송비</shipping>는 별도입니다.",
 			"inclVat": "부가세 포함"
+		},
+		"deliveryPayment": {
+			"title": "배송 및 결제",
+			"deliverTo": "배송 국가: {list}.",
+			"deliverToCount": "{count}개국으로 배송합니다.",
+			"euCountries": "EU {count}개국",
+			"notTo": "제외 지역: {areas}.",
+			"andMore": "{list} 외 {count}곳",
+			"payment": "결제 수단: {list}.",
+			"toggle": "배송 지역 보기",
+			"countriesHeading": "배송 국가",
+			"exclusionsHeading": "배송 제외 지역",
+			"methods": {
+				"card": "카드",
+				"sepa-debit": "SEPA 자동이체",
+				"invoice": "청구서 결제",
+				"test": "테스트 결제",
+				"apple-pay": "Apple Pay",
+				"google-pay": "Google Pay",
+				"paypal": "PayPal",
+				"klarna": "Klarna",
+				"ideal": "iDEAL",
+				"bancontact": "Bancontact",
+				"blik": "BLIK"
+			}
 		}
 	},
 	"pdp": {
@@ -458,6 +483,8 @@
 			"itemUnavailableRemove": "Remove item",
 			"itemUnavailableRemoveFailed": "Could not remove this item. Try again.",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again.",
+			"postcodeNotServed": "우편번호 {postalCode}(으)로는 배송하지 않습니다.",
+			"checkingDelivery": "배송 가능 여부를 확인하는 중…",
 			"crashTitle": "결제 오류",
 			"crashMessage": "결제 정보를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요."
 		},
@@ -504,6 +531,10 @@
 			"methodTitle": "배송 방법",
 			"loadingMethods": "배송 방법을 불러오는 중…",
 			"noAddressYet": "먼저 이전 단계로 돌아가 배송지 주소를 입력해주세요.",
+			"noDeliveryTitle": "이 주소로는 배송할 수 없습니다",
+			"noDeliveryToPostcode": "{country}의 우편번호 {postalCode}(으)로는 배송하지 않습니다. 계속하려면 주소를 변경하세요.",
+			"noDeliveryToAddress": "{country}의 이 주소로는 배송하지 않습니다. 계속하려면 주소를 변경하세요.",
+			"changeAddress": "주소 변경",
 			"addressTitle": "배송지 주소",
 			"countryRegion": "국가/지역",
 			"selectCountry": "국가 선택",
