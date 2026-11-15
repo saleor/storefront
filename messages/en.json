@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Previous",
 			"next": "Next"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Incl. VAT, plus <shipping>shipping costs</shipping>",
+			"allInclVatPlusShipping": "All prices incl. VAT, plus <shipping>shipping costs</shipping>.",
+			"inclVat": "Incl. VAT"
 		}
 	},
 	"pdp": {
@@ -65,7 +70,8 @@
 			"productDetails": "Product Details",
 			"careInstructions": "Care Instructions",
 			"shippingReturns": "Shipping & Returns",
-			"shippingBody": "Free shipping on orders over {freeShippingThreshold}. Standard delivery 3-5 business days.",
+			"shippingBody": "Free shipping on orders over {freeShippingThreshold}.",
+			"shippingAtCheckout": "Shipping options and costs for your address are shown at checkout, before you order.",
 			"returnsBody": "Free returns within {returnsWindowDays} days of purchase. Items must be unworn with tags attached.",
 			"yes": "Yes",
 			"no": "No"
@@ -420,8 +426,8 @@
 			"logIn": "Log in",
 			"returnToInformation": "Return to information",
 			"returnToShipping": "Return to shipping",
-			"payNow": "Pay now",
-			"payTotal": "Pay {total}",
+			"payNow": "Buy now",
+			"payTotal": "Buy now",
 			"completeOrder": "Complete order",
 			"placingOrder": "Placing order…",
 			"creatingOrder": "Creating order…",
@@ -562,7 +568,7 @@
 			"authorizedTitle": "Payment authorized — place your order",
 			"authorizedBody": "Your payment is authorized (capture happens when we fulfill the order). Tap below to place your order — you will not be charged again at checkout.",
 			"freeOrderBody": "Your order total is {total}. No payment is required — confirm below to place your order.",
-			"dummyTestMode": "Test mode. No card details needed — use Pay to complete a test order.",
+			"dummyTestMode": "Test mode. No card details needed — use Buy now to complete a test order.",
 			"stripeLoadTitle": "Could not load Stripe"
 		},
 		"confirmation": {
@@ -630,6 +636,27 @@
 			"paymentTryAgain": "Payment failed. Please try again.",
 			"paymentWebhookFailed": "Payment app webhook failed. In Saleor Dashboard → Apps → Dummy Payment App, check webhook deliveries are succeeding.",
 			"paymentInitFailed": "Payment could not be initialized. Check that the payment app is running in Saleor."
+		},
+		"legal": {
+			"terms": "By placing your order you accept our <link>terms and conditions</link>.",
+			"withdrawal": "You have a right of withdrawal: see our <link>withdrawal information</link>.",
+			"privacy": "Our <link>privacy notice</link> explains how we use your data."
+		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "Imprint",
+			"metaDescription": "Who operates this shop and how to reach us.",
+			"representedBy": "Represented by",
+			"contact": "Contact",
+			"phone": "Phone",
+			"email": "Email",
+			"register": "Commercial register",
+			"vatId": "VAT ID"
+		},
+		"footer": {
+			"navLabel": "Legal",
+			"imprint": "Imprint"
 		}
 	}
 }

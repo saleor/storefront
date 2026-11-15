@@ -15,6 +15,8 @@ import type { ListingProvider } from "@/lib/listing/provider";
 import type { ListingQuery, ListingResult, SortId } from "@/lib/storefront/contract/listing";
 import { buildProductListingConstraints, buildSortVariables } from "./constraints";
 import { sampleFacets } from "./sample-facets";
+import { getPriceReductionReference } from "@/lib/channels/get-price-display";
+import type { PriceReductionReference } from "@/lib/pricing";
 import { toProductCardData } from "./to-card";
 
 const LISTING_SORTS = [
@@ -140,6 +142,8 @@ async function kernelTransport(input: Parameters<SaleorListingTransport>[0]): Pr
 
 export function createSaleorListingProvider(
 	transport: SaleorListingTransport = kernelTransport,
+	/** Which price the channel measures reductions against. Injected so tests need no Saleor. */
+	resolvePriceReference: (channel: string) => Promise<PriceReductionReference> = getPriceReductionReference,
 ): ListingProvider {
 	const provider: ListingProvider = {
 		id: "saleor",
@@ -156,6 +160,8 @@ export function createSaleorListingProvider(
 		},
 		freshness: { kind: "saleor-webhooks" },
 		async load(query) {
+			// Independent of the products query: start it now, await it after.
+			const priceReferencePromise = resolvePriceReference(query.channel);
 			const kind = query.surface.kind;
 			const slug = kind === "category" || kind === "collection" ? query.surface.slug : undefined;
 
@@ -204,7 +210,10 @@ export function createSaleorListingProvider(
 			const connection = unwrap(kind, data);
 			if (!connection && kind !== "search") return null;
 			const edges = connection?.edges ?? [];
-			const items = edges.map((edge) => toProductCardData(edge.node, query.locale, query.channel));
+			const priceReference = await priceReferencePromise;
+			const items = edges.map((edge) =>
+				toProductCardData(edge.node, query.locale, query.channel, priceReference),
+			);
 			const sorts = provider.capabilities.sorts[kind] ?? [];
 			return {
 				items,

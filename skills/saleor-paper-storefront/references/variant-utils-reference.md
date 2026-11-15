@@ -89,7 +89,7 @@ Detects dead-end selections. Output: `{ slug, name, blockedBy }` or `null`.
 
 ## Discount Detection
 
-A variant has a discount when `priceUndiscounted.gross.amount > price.gross.amount`.
+A variant has a discount when `pricing.priceReference.gross.amount > price.gross.amount`. `priceReference` is attached on the server by `withPriceReference` (`src/lib/pricing.ts`): Saleor's prior price on channels that ship to the EU/EEA, and the prior price or else the list price elsewhere. A variant without a reference shows no strike-through, percentage or sale badge — see `rules/ui-legal.md`.
 
 Option-level: aggregate across all variants with that option value (`hasDiscount`, max `discountPercent`).
 

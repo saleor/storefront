@@ -9,7 +9,9 @@ export const STOREFRONT_CONTENT_VERSION = 1 as const;
  */
 export type ShippingPolicy = {
 	/**
-	 * Order subtotal in the channel currency required to unlock free shipping.
+	 * Order subtotal in the channel currency required to unlock free shipping. From
+	 * Saleor's shipping methods for the channel's default country, unless the Storefront —
+	 * Policies Model overrides it (`withFreeShippingThreshold`).
 	 * `null` means the channel runs no free-shipping program (hide the progress bar,
 	 * the "free delivery over" trust signal, and the announcement threshold).
 	 */

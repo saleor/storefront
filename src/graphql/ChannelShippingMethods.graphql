@@ -1,0 +1,21 @@
+# Shipping methods a channel offers to one country, before any checkout exists.
+# Paper reads the free-shipping threshold from it: the smallest minimum order price among
+# the methods that cost nothing.
+#
+# `minimumOrderPrice` is deprecated on `ShippingMethod` in Saleor 3.23, with no public
+# replacement (the channel listing's value needs MANAGE_SHIPPING). It still returns the
+# value. If Saleor removes it, codegen fails here: drop the field and the loader, and the
+# threshold then comes only from the Storefront — Policies Model.
+query ChannelShippingMethods($channel: String!, $country: CountryCode!) {
+	shop {
+		availableShippingMethods(channel: $channel, address: { country: $country }) {
+			id
+			price {
+				amount
+			}
+			minimumOrderPrice {
+				amount
+			}
+		}
+	}
+}

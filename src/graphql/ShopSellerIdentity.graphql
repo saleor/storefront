@@ -1,0 +1,23 @@
+# Who sells: the shop's company address plus the public `seller.*` metadata keys.
+# Everything here is readable without a token. Rendered on the imprint and in the footer.
+query ShopSellerIdentity {
+	shop {
+		name
+		companyAddress {
+			companyName
+			streetAddress1
+			streetAddress2
+			postalCode
+			city
+			phone
+			country {
+				code
+			}
+		}
+		sellerLegalName: metafield(key: "seller.legalName")
+		sellerRepresentatives: metafield(key: "seller.representatives")
+		sellerRegister: metafield(key: "seller.register")
+		sellerVatId: metafield(key: "seller.vatId")
+		sellerEmail: metafield(key: "seller.email")
+	}
+}

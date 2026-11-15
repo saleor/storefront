@@ -21,7 +21,13 @@
 contentAttributes:
   # Storefront — Policies (channel-wide facts; NUMERIC so the Dashboard validates them
   # and the storefront can reuse the same value in cart math and in copy placeholders)
-  - name: Free shipping threshold
+  #
+  # The free-shipping threshold belongs on the shipping method in Saleor (a method priced 0
+  # with a minimum order price). Paper reads it from there, and checkout applies the same
+  # value. This attribute overrides what the storefront advertises and can drift from what
+  # checkout charges, so its label says what it is. Leave it empty. Saleor attributes have
+  # no help text: the label is the only hint a merchant sees in the Dashboard.
+  - name: Free shipping threshold override (not recommended)
     inputType: NUMERIC
   - name: Returns window days
     inputType: NUMERIC
@@ -144,7 +150,7 @@ modelTypes:
   - name: "Storefront — Policies"
     slug: storefront-policies
     attributes:
-      - attribute: Free shipping threshold
+      - attribute: Free shipping threshold override (not recommended)
       - attribute: Returns window days
 
   - name: "Storefront — Chrome"
@@ -230,7 +236,6 @@ models:
     modelType: Storefront — Policies
     isPublished: true
     attributes:
-      Free shipping threshold: 75
       Returns window days: 30
   - title: Storefront Chrome
     slug: storefront-chrome

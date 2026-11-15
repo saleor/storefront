@@ -96,6 +96,8 @@ const DESCRIPTIONS = {
 		"Locale + channel URL routing /{locale}/{channel}/…: locale config, allowlisted pairs, per-locale cache keys, region picker, GraphQL languageCode. Use when touching locale/market URLs or i18n routing.",
 	"ui-i18n.md":
 		"Code-owned functional UI strings via next-intl (messages/{locale}.json): namespaces, ICU plurals, server vs client usage. Use when adding or translating functional UI strings (not merchant-editable copy).",
+	"ui-legal.md":
+		'What Paper shows for consumer-law duties (EU distance selling) and where each fact comes from in Saleor — seller identity and the /imprint route, legal page links by Saleor Page slug, the "incl. VAT, plus shipping costs" price notice, the order button wording and the legal notice next to it. Use when touching the footer, imprint, price display, legal pages, the checkout\'s final button, or any copy that promises shipping, returns or prices.',
 	"seo-metadata.md":
 		"SEO: metadata helpers, product JSON-LD, OG images, hreflang/canonical for locale×channel. Use when adding page metadata, structured data, or social images.",
 	"dev-local.md":

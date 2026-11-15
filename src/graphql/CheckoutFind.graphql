@@ -40,6 +40,12 @@ query CheckoutFind($id: ID!, $languageCode: LanguageCodeEnum!) {
 							currency
 						}
 					}
+					pricePrior {
+						gross {
+							amount
+							currency
+						}
+					}
 					priceUndiscounted {
 						gross {
 							amount

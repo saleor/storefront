@@ -5,6 +5,7 @@ import { buildAnnouncementBarContent } from "@/lib/content/get-announcement-bar-
 
 const baseContent: StorefrontContent = {
 	...defaultStorefrontContent,
+	policies: { ...defaultStorefrontContent.policies, shipping: { freeShippingThreshold: 75 } },
 	chrome: {
 		...defaultStorefrontContent.chrome,
 		announcementBar: {
@@ -39,5 +40,30 @@ describe("buildAnnouncementBarContent", () => {
 		expect(props.linkLabel).toBe("Shop sale");
 		expect(props.message).toContain("75");
 		expect(props.message).not.toContain("{freeShippingThreshold}");
+	});
+
+	it("hides a threshold message when the channel has no free-shipping threshold", () => {
+		const props = buildAnnouncementBarContent(
+			{ ...baseContent, policies: { ...baseContent.policies, shipping: { freeShippingThreshold: null } } },
+			{ currency: "EUR", localeSlug: "de" },
+		);
+
+		expect(props.message).toBe("");
+	});
+
+	it("keeps a message that does not mention the threshold", () => {
+		const props = buildAnnouncementBarContent(
+			{
+				...baseContent,
+				policies: { ...baseContent.policies, shipping: { freeShippingThreshold: null } },
+				chrome: {
+					...baseContent.chrome,
+					announcementBar: { ...baseContent.chrome.announcementBar, message: "New season in store" },
+				},
+			},
+			{ currency: "EUR", localeSlug: "en" },
+		);
+
+		expect(props.message).toBe("New season in store");
 	});
 });

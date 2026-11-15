@@ -12,7 +12,13 @@ import { buildAccountConfirmationRedirectUrl } from "@/lib/auth/account-confirma
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { cn } from "@/lib/utils";
 
-export function SignUpForm() {
+type SignUpFormProps = {
+	/** Links to the shop's legal pages. Without one, the words stay plain text. */
+	termsHref?: string;
+	privacyHref?: string;
+};
+
+export function SignUpForm({ termsHref, privacyHref }: SignUpFormProps = {}) {
 	const t = useTranslations("account");
 	const params = useParams<{ locale: string; channel: string }>();
 
@@ -138,7 +144,7 @@ export function SignUpForm() {
 
 				<form onSubmit={handleSubmit} className="space-y-4">
 					{error && (
-						<div role="alert" className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">
+						<div role="alert" className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
 							{error}
 						</div>
 					)}
@@ -256,16 +262,22 @@ export function SignUpForm() {
 
 					<p className="text-center text-xs text-muted-foreground">
 						{t.rich("signup.terms", {
-							terms: (chunks) => (
-								<Link href="#" className="underline hover:no-underline">
-									{chunks}
-								</Link>
-							),
-							privacy: (chunks) => (
-								<Link href="#" className="underline hover:no-underline">
-									{chunks}
-								</Link>
-							),
+							terms: (chunks) =>
+								termsHref ? (
+									<Link href={termsHref} className="underline hover:no-underline">
+										{chunks}
+									</Link>
+								) : (
+									chunks
+								),
+							privacy: (chunks) =>
+								privacyHref ? (
+									<Link href={privacyHref} className="underline hover:no-underline">
+										{chunks}
+									</Link>
+								) : (
+									chunks
+								),
 						})}
 					</p>
 				</form>

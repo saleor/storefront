@@ -17,7 +17,7 @@ dependencies:
 
 Project-specific guide for the Saleor Paper storefront — a Next.js 16 e-commerce
 application with TypeScript, Tailwind CSS, and the Saleor GraphQL API. Contains
-37 rules across 8 categories covering architecture, Vercel cost discipline, caching, analytics & attribution, storefront content, PDP architecture, checkout v2,
+38 rules across 8 categories covering architecture, Vercel cost discipline, caching, analytics & attribution, storefront content, PDP architecture, checkout v2,
 design & composition (token system, design quality, section catalog, page composition, design-from-image, verification),
 components, UI patterns, locale routing, i18n, and SEO.
 
@@ -45,6 +45,7 @@ Reference these guidelines when:
 - Molding PDP or homepage layout/design, or designing from a prompt or reference image
 - Creating UI components with design tokens
 - Adding locale/channel routing, market picker, next-intl messages, or i18n URL structure
+- Touching the footer, imprint, legal pages, price notices, or the checkout's order button
 - Adding SEO metadata, JSON-LD, or OG images
 - Writing tests or investigating Saleor API behavior
 - Testing on a real phone via ngrok or LAN while `pnpm dev` is running
@@ -117,6 +118,7 @@ Reference these guidelines when:
 - `ui-channels` - Channel allowlist, fulfillment triangle, multi-currency, channel selector
 - `ui-locale-routing` - `/{locale}/{channel}/` routing, middleware redirects, path helpers
 - `ui-i18n` - next-intl namespaces, server/client patterns, ADR 0002 boundary
+- `ui-legal` - Seller identity + `/imprint`, legal page links by slug, price notice, order button wording — and where each fact comes from in Saleor
 
 ### 6. SEO (MEDIUM)
 

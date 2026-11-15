@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Poprzednia",
 			"next": "Następna"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Zawiera VAT, plus <shipping>koszty dostawy</shipping>",
+			"allInclVatPlusShipping": "Wszystkie ceny zawierają VAT, plus <shipping>koszty dostawy</shipping>.",
+			"inclVat": "Zawiera VAT"
 		}
 	},
 	"pdp": {
@@ -65,7 +70,8 @@
 			"productDetails": "Szczegóły produktu",
 			"careInstructions": "Instrukcje pielęgnacji",
 			"shippingReturns": "Dostawa i zwroty",
-			"shippingBody": "Darmowa dostawa przy zamówieniach powyżej {freeShippingThreshold}. Standardowa dostawa w 3–5 dni roboczych.",
+			"shippingBody": "Darmowa dostawa przy zamówieniach powyżej {freeShippingThreshold}.",
+			"shippingAtCheckout": "Sposoby i koszty dostawy dla Twojego adresu zobaczysz w kasie, przed złożeniem zamówienia.",
 			"returnsBody": "Darmowe zwroty w ciągu {returnsWindowDays} dni od zakupu. Produkty muszą być nieużywane i z metkami.",
 			"yes": "Tak",
 			"no": "Nie"
@@ -631,6 +637,27 @@
 			"paymentTryAgain": "Płatność nie powiodła się. Spróbuj ponownie.",
 			"paymentWebhookFailed": "Webhook aplikacji płatności nie powiódł się. W panelu Saleor → Aplikacje → Dummy Payment App sprawdź dostarczanie webhooków.",
 			"paymentInitFailed": "Nie udało się zainicjować płatności. Sprawdź, czy aplikacja płatności działa w Saleor."
+		},
+		"legal": {
+			"terms": "Składając zamówienie, akceptujesz nasz <link>regulamin</link>.",
+			"withdrawal": "Masz prawo odstąpienia od umowy: zobacz <link>informacje o odstąpieniu</link>.",
+			"privacy": "O przetwarzaniu Twoich danych informuje <link>polityka prywatności</link>."
+		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "Dane sprzedawcy",
+			"metaDescription": "Kto prowadzi ten sklep i jak się z nami skontaktować.",
+			"representedBy": "Reprezentowany przez",
+			"contact": "Kontakt",
+			"phone": "Telefon",
+			"email": "E-mail",
+			"register": "Rejestr handlowy",
+			"vatId": "Numer VAT"
+		},
+		"footer": {
+			"navLabel": "Informacje prawne",
+			"imprint": "Dane sprzedawcy"
 		}
 	}
 }

@@ -23,20 +23,6 @@ fragment ProductListItem on Product {
 				}
 			}
 		}
-		priceRangeUndiscounted {
-			start {
-				gross {
-					amount
-					currency
-				}
-			}
-			stop {
-				gross {
-					amount
-					currency
-				}
-			}
-		}
 	}
 	category {
 		id
@@ -90,6 +76,26 @@ fragment ProductListItem on Product {
 		edges {
 			node {
 				id
+				# A card's reduction compares each variant with its own reference price.
+				# Product-level ranges cannot: Saleor builds priceRangePrior only from the
+				# variants that have a prior price, so its start can belong to another variant.
+				pricing {
+					price {
+						gross {
+							amount
+						}
+					}
+					pricePrior {
+						gross {
+							amount
+						}
+					}
+					priceUndiscounted {
+						gross {
+							amount
+						}
+					}
+				}
 				selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
 					attribute {
 						slug

@@ -76,6 +76,9 @@ describe("operation registry", () => {
 				expect(vars, name).toContain("$channel");
 				expect(vars, name).toMatch(/\$languageCode/);
 			}
+			if (spec.scope === "channel") {
+				expect(vars, name).toContain("$channel");
+			}
 			if (spec.scope === "locale") {
 				expect(vars, name).toMatch(/\$languageCode/);
 			}
@@ -109,6 +112,7 @@ describe("manifest tag contract", () => {
 			"navigation:navigation:{channel}",
 			"pages:page:{slug}",
 			"products:product:{slug}",
+			"shop:shop",
 			"storefront-content:storefront-content:{channel}:{locale}",
 		]);
 		expect(fingerprint).toHaveLength(16);
@@ -118,7 +122,7 @@ describe("manifest tag contract", () => {
 describe("invalidation wiring", () => {
 	it("busts every core cache profile from the revalidate route", () => {
 		const route = readFileSync(join(ROOT, "src/app/api/revalidate/route.ts"), "utf8");
-		const direct = ["products", "categories", "collections", "channels"];
+		const direct = ["products", "categories", "collections", "channels", "shop"];
 		const viaPlanner: Record<string, string> = {
 			pages: "planPageRevalidation",
 			navigation: "planMenuRevalidation",

@@ -15,7 +15,13 @@ describe("variantSectionFallbackProps", () => {
 					},
 				},
 			},
-			content: defaultStorefrontContent,
+			content: {
+				...defaultStorefrontContent,
+				policies: {
+					...defaultStorefrontContent.policies,
+					shipping: { freeShippingThreshold: 75 },
+				},
+			},
 			currency: "USD",
 			locale: "en-US",
 			selectOptionsLabel: "Select options",

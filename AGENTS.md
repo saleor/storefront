@@ -19,7 +19,7 @@ Paper rules are **authoritative on architecture**: Server Components by default,
 - **Product:** `product-pdp`, `product-variants`, `product-high-cardinality`, `product-filtering`, `plp-listing`
 - **Checkout:** `paper-surfaces`, `checkout-design-principles`, `checkout-management`, `checkout-payment-gateways`, `checkout-components`
 - **Design:** `ui-design-system`, `design-quality-rubric`, `ui-sections`, `page-composition`, `ui-templates`, `design-from-image`, `design-verification`
-- **UI & channels:** `ui-components`, `ui-images`, `ui-channels`, `ui-locale-routing`, `ui-i18n`
+- **UI & channels:** `ui-components`, `ui-images`, `ui-channels`, `ui-locale-routing`, `ui-i18n`, `ui-legal`
 - **SEO:** `seo-metadata`
 - **Dev:** `dev-local`, `dev-investigation`, `third-party-embeds`
 - **Fork upgrades:** `skills/saleor-paper-storefront/migrations/SKILL.md` (triggers: "upgrade Paper", "apply Paper migrations")
@@ -64,7 +64,7 @@ Do not add plan writeups to the repo (forbidden: `docs/plans/`) unless the user 
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 

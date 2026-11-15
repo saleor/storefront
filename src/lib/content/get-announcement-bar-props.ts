@@ -17,6 +17,12 @@ export function buildAnnouncementBarContent(
 	});
 	const bar = content.chrome.announcementBar;
 
+	// A message about the free-shipping threshold has nothing to say without one. An empty
+	// message hides the bar.
+	if (bar.message.includes("{freeShippingThreshold}") && !policyValues.freeShippingThreshold) {
+		return { ...bar, message: "" };
+	}
+
 	return {
 		...bar,
 		message: formatPolicyAwareLabel(bar.message, policyValues, {

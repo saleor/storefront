@@ -13,6 +13,7 @@ import { buildBrowsePageMetadata } from "@/lib/seo";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buttonClassName } from "@/ui/components/ui/button";
+import { PriceNote } from "@/ui/components/price-note";
 
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
@@ -130,6 +131,12 @@ async function CartContent({
 							<div>
 								<p className="font-semibold text-foreground">{t("yourTotal")}</p>
 								<p className="mt-1 text-sm text-muted-foreground">{t("shippingNote")}</p>
+								<PriceNote
+									channel={params.channel}
+									locale={params.locale}
+									variant="total"
+									className="mt-1 text-sm"
+								/>
 							</div>
 							<div className="font-medium text-foreground">
 								{formatMoney(

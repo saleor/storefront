@@ -274,6 +274,7 @@ describe("full purge tag planning", () => {
 			"collections",
 			"pages",
 			"channels",
+			"shop",
 		]);
 	});
 });

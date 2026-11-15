@@ -15,10 +15,6 @@ function cardNode(index: number) {
 				start: { gross: { amount: 10 + index, currency: "USD" } },
 				stop: { gross: { amount: 10 + index, currency: "USD" } },
 			},
-			priceRangeUndiscounted: {
-				start: { gross: { amount: 10 + index, currency: "USD" } },
-				stop: { gross: { amount: 10 + index, currency: "USD" } },
-			},
 		},
 		thumbnail: null,
 		productVariants: { edges: [], totalCount: 1 },
@@ -55,10 +51,13 @@ function sliceConnection(variables: Record<string, unknown>): SaleorTransportDat
 }
 
 function saleorStub(): ListingProvider {
-	return createSaleorListingProvider(async (input) => {
-		if (input.variables.channel === "boom") throw new Error("saleor down");
-		return sliceConnection(input.variables);
-	});
+	return createSaleorListingProvider(
+		async (input) => {
+			if (input.variables.channel === "boom") throw new Error("saleor down");
+			return sliceConnection(input.variables);
+		},
+		async () => "prior-price",
+	);
 }
 
 const categoryQuery = {
@@ -75,10 +74,13 @@ describe("saleor listing provider", () => {
 
 	function capture() {
 		const seen: Array<Record<string, unknown>> = [];
-		const provider = createSaleorListingProvider(async (input) => {
-			seen.push(input.variables);
-			return sliceConnection(input.variables);
-		});
+		const provider = createSaleorListingProvider(
+			async (input) => {
+				seen.push(input.variables);
+				return sliceConnection(input.variables);
+			},
+			async () => "prior-price",
+		);
 		return { provider, seen };
 	}
 

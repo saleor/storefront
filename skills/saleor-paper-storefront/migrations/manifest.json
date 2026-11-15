@@ -395,6 +395,34 @@
 				"src/app/api/listing/route.ts"
 			],
 			"detectMarkers": ["ListingQuery", "definePlpTemplate", "LISTING_PROVIDERS"]
+		},
+		{
+			"id": "2026-11-eu-consumer-rules",
+			"title": "Seller, legal pages, price notice, prior-price reductions and order button, from Saleor",
+			"upstreamSha": "",
+			"landedAt": "2026-11-15T12:00:00+01:00",
+			"introducedIn": "2026.11",
+			"requires": ["2026-10-listing-contract"],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "presentation",
+			"touchPaths": [
+				"src/config/legal.ts",
+				"src/config/pricing.ts",
+				"src/lib/pricing.ts",
+				"src/lib/channels/",
+				"src/lib/content/free-shipping.ts",
+				"src/ui/components/price-note.tsx",
+				"src/ui/components/footer.tsx",
+				"src/checkout/components/payment/order-legal-notice.tsx",
+				"src/app/(storefront)/[locale]/[channel]/(main)/imprint/"
+			],
+			"detectMarkers": [
+				"legalPageSlugs",
+				"getPriceReductionReference",
+				"withFreeShippingThreshold",
+				"PriceNote"
+			]
 		}
 	]
 }

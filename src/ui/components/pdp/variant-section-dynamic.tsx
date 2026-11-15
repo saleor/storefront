@@ -1,6 +1,7 @@
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
 import { resolveLocaleFromSlug } from "@/config/locale";
-import { getDiscountInfo } from "@/lib/pricing";
+import { getDiscountInfo, withPriceReference } from "@/lib/pricing";
+import { getPriceReductionReference } from "@/lib/channels/get-price-display";
 import { resolveChannelCurrency } from "@/lib/channels/resolve-channel-currency";
 import { getStorefrontContent } from "@/lib/content/server";
 import { addVariantToCart } from "@/app/actions";
@@ -12,6 +13,7 @@ import { AddToCart } from "./add-to-cart";
 import { NonMatrixBuyBox } from "./non-matrix-buy-box";
 import { VariantSelectionSection } from "./variant-selection";
 import { StickyBar } from "./sticky-bar";
+import { PriceNote } from "@/ui/components/price-note";
 import { Badge } from "@/ui/components/ui/badge";
 import { SaleBadge } from "@/ui/components/ui/sale-label";
 import { resolveSelectedVariantId, type Product } from "./gallery-utils";
@@ -41,7 +43,7 @@ export async function VariantSectionDynamic({
 	const { variant: variantParam, sku: skuParam } = await searchParams;
 	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
 
-	const [t, content, currency, variantResult] = await Promise.all([
+	const [t, content, currency, variantResult, priceReference] = await Promise.all([
 		getTranslations({ locale: localeSlug, namespace: "pdp" }),
 		getStorefrontContent(channel, localeSlug),
 		resolveChannelCurrency(channel),
@@ -49,9 +51,13 @@ export async function VariantSectionDynamic({
 			variantId: variantParam,
 			sku: skuParam,
 		}),
+		getPriceReductionReference(channel),
 	]);
 
-	const { variants, totalCount, overBudget, strategy } = variantResult;
+	const { totalCount, overBudget, strategy } = variantResult;
+	// Settle here what each variant's reduction is measured against (the prior price, or
+	// the list price where the channel allows it). The selectors only read the result.
+	const variants = variantResult.variants.map((variant) => withPriceReference(variant, priceReference));
 	const productWithVariants: Product = {
 		...product,
 		variants,
@@ -91,17 +97,14 @@ export async function VariantSectionDynamic({
 				intlLocale,
 			) || "";
 
+	// No reference price: no strike-through and no badge.
 	const currentPrice = selectedVariant?.pricing?.price?.gross?.amount;
-	const undiscountedPrice = selectedVariant?.pricing?.priceUndiscounted?.gross?.amount;
-	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, undiscountedPrice);
+	const referencePrice = selectedVariant?.pricing.priceReference?.gross;
+	const { isOnSale, discountPercent } = getDiscountInfo(currentPrice, referencePrice?.amount);
 
 	const compareAtPrice =
-		isOnSale && selectedVariant?.pricing?.priceUndiscounted?.gross
-			? formatMoney(
-					selectedVariant.pricing.priceUndiscounted.gross.amount,
-					selectedVariant.pricing.priceUndiscounted.gross.currency,
-					intlLocale,
-				)
+		isOnSale && referencePrice
+			? formatMoney(referencePrice.amount, referencePrice.currency, intlLocale)
 			: null;
 
 	const freeShippingThreshold = content.policies.shipping.freeShippingThreshold;
@@ -176,6 +179,7 @@ export async function VariantSectionDynamic({
 					disabledReason={disabledReason}
 					secureCheckoutLabel={secureCheckoutLabel}
 					freeShippingTrustLabel={freeShippingTrustLabel}
+					priceNote={<PriceNote channel={channel} locale={localeSlug} />}
 				/>
 
 				<StickyBar productName={product.name} price={price} show={!isAddToCartDisabled} />

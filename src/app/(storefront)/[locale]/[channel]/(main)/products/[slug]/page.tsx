@@ -23,6 +23,7 @@ import { toProductView } from "@/lib/storefront/mappers/product";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { pickTranslatedSlug } from "@/lib/saleor-translations";
 import { Breadcrumbs } from "@/ui/components/breadcrumbs";
+import { PriceNote } from "@/ui/components/price-note";
 import {
 	ProductAttributes,
 	activeGalleryVariant,
@@ -192,6 +193,7 @@ async function ProductShell({
 				locale: intlLocale,
 				selectOptionsLabel: tPdp("selectOptions"),
 			})}
+			priceNote={<PriceNote channel={params.channel} locale={params.locale} />}
 		/>
 	);
 

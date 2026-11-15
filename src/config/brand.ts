@@ -60,6 +60,9 @@ export function formatPageTitle(title: string): string {
  * Get copyright text with specified year.
  * Render through `CopyrightText` inside `<Suspense>`: it calls `io()` before reading the clock.
  */
-export function getCopyrightText(year: number = new Date().getFullYear()): string {
-	return `© ${year} ${brandConfig.copyrightHolder}. All rights reserved.`;
+export function getCopyrightText(
+	year: number = new Date().getFullYear(),
+	holder: string = brandConfig.copyrightHolder,
+): string {
+	return `© ${year} ${holder}. All rights reserved.`;
 }

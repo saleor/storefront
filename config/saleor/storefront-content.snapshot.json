@@ -2,8 +2,8 @@
 	"paperContentSchemaVersion": 1,
 	"contentAttributes": [
 		{
-			"name": "Free shipping threshold",
-			"slug": "free-shipping-threshold",
+			"name": "Free shipping threshold override (not recommended)",
+			"slug": "free-shipping-threshold-override-not-recommended",
 			"inputType": "NUMERIC"
 		},
 		{
@@ -278,7 +278,7 @@
 			"name": "Storefront — Policies",
 			"slug": "storefront-policies",
 			"attributes": [
-				"Free shipping threshold",
+				"Free shipping threshold override (not recommended)",
 				"Returns window days"
 			]
 		},
@@ -372,7 +372,6 @@
 			"modelType": "Storefront — Policies",
 			"isPublished": true,
 			"attributes": {
-				"Free shipping threshold": 75,
 				"Returns window days": 30
 			}
 		},
@@ -466,5 +465,5 @@
 			}
 		}
 	],
-	"contentHash": "bb0b30f65eabcc6a"
+	"contentHash": "ce5f469af8ab916d"
 }

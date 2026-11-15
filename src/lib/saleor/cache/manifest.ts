@@ -153,6 +153,18 @@ const profiles = {
 		tagPattern: "channels",
 		pathPattern: null,
 	},
+	/**
+	 * Seller details for the imprint and the footer (company address, public `seller.*`
+	 * shop metadata). Freshness is the hourly revalidate. `shop_metadata_updated` busts it
+	 * for setups that send the webhook; the Paper app does not (needs MANAGE_SETTINGS).
+	 */
+	shop: {
+		id: "shop",
+		label: "Shop Details",
+		cacheProfile: "menus",
+		tagPattern: "shop",
+		pathPattern: null,
+	},
 	storefrontContent: {
 		id: "storefront-content",
 		label: "Storefront Content",

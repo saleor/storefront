@@ -7,6 +7,7 @@ import { AccountUnavailable } from "@/ui/components/account/account-unavailable"
 import { SignUpForm } from "@/ui/components/sign-up-form";
 import { CurrentUserDocument } from "@/gql/graphql";
 import { fetchAuthenticatedUserIfSession } from "@/lib/auth/fetch-authenticated-user";
+import { getLegalHrefs } from "@/lib/catalog/get-legal-links";
 import { resolveSessionUser } from "@/lib/auth/resolve-session-user";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
@@ -46,9 +47,11 @@ async function SignUpContent({ params }: { params: Promise<{ locale: string; cha
 		return <AccountUnavailable locale={locale} />;
 	}
 
+	const legalHrefs = await getLegalHrefs(locale, channel);
+
 	return (
 		<AuthFormSection>
-			<SignUpForm />
+			<SignUpForm termsHref={legalHrefs.terms} privacyHref={legalHrefs.privacy} />
 		</AuthFormSection>
 	);
 }

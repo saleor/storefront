@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Edellinen",
 			"next": "Seuraava"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Sis. ALV, lisäksi <shipping>toimituskulut</shipping>",
+			"allInclVatPlusShipping": "Kaikki hinnat sis. ALV, lisäksi <shipping>toimituskulut</shipping>.",
+			"inclVat": "Sis. ALV"
 		}
 	},
 	"pdp": {
@@ -65,7 +70,8 @@
 			"productDetails": "Tuotetiedot",
 			"careInstructions": "Hoito-ohjeet",
 			"shippingReturns": "Toimitus ja palautukset",
-			"shippingBody": "Ilmainen toimitus tilauksille yli {freeShippingThreshold}. Normaali toimitus 3–5 arkipäivää.",
+			"shippingBody": "Ilmainen toimitus tilauksille yli {freeShippingThreshold}.",
+			"shippingAtCheckout": "Osoitteesi toimitustavat ja -kulut näkyvät kassalla ennen tilaamista.",
 			"returnsBody": "Ilmaiset palautukset {returnsWindowDays} päivän kuluessa ostosta. Tuotteiden on oltava käyttämättömiä ja tunnisteineen.",
 			"yes": "Kyllä",
 			"no": "Ei"
@@ -631,6 +637,27 @@
 			"paymentTryAgain": "Maksu epäonnistui. Yritä uudelleen.",
 			"paymentWebhookFailed": "Maksusovelluksen webhook epäonnistui. Tarkista Saleor-hallintapaneelissa → Sovellukset → Dummy Payment App, että webhook-toimitukset onnistuvat.",
 			"paymentInitFailed": "Maksua ei voitu alustaa. Tarkista, että maksusovellus on käynnissä Saleorissa."
+		},
+		"legal": {
+			"terms": "Tekemällä tilauksen hyväksyt <link>toimitusehtomme</link>.",
+			"withdrawal": "Sinulla on peruuttamisoikeus: katso <link>peruuttamisohjeet</link>.",
+			"privacy": "<link>Tietosuojaselosteemme</link> kertoo, miten käsittelemme tietojasi."
+		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "Yrityksen tiedot",
+			"metaDescription": "Kuka ylläpitää tätä kauppaa ja miten meihin saa yhteyden.",
+			"representedBy": "Edustaja",
+			"contact": "Yhteystiedot",
+			"phone": "Puhelin",
+			"email": "Sähköposti",
+			"register": "Kaupparekisteri",
+			"vatId": "ALV-tunnus"
+		},
+		"footer": {
+			"navLabel": "Oikeudelliset tiedot",
+			"imprint": "Yrityksen tiedot"
 		}
 	}
 }

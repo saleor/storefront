@@ -30,6 +30,11 @@
 		"pagination": {
 			"previous": "Forrige",
 			"next": "Neste"
+		},
+		"prices": {
+			"inclVatPlusShipping": "Inkl. mva., pluss <shipping>frakt</shipping>",
+			"allInclVatPlusShipping": "Alle priser inkl. mva., pluss <shipping>frakt</shipping>.",
+			"inclVat": "Inkl. mva."
 		}
 	},
 	"pdp": {
@@ -65,7 +70,8 @@
 			"productDetails": "Produktdetaljer",
 			"careInstructions": "Vaskeanvisning",
 			"shippingReturns": "Frakt og retur",
-			"shippingBody": "Gratis frakt på bestillinger over {freeShippingThreshold}. Standardlevering på 3–5 virkedager.",
+			"shippingBody": "Gratis frakt på bestillinger over {freeShippingThreshold}.",
+			"shippingAtCheckout": "Fraktalternativer og priser for adressen din vises i kassen før du bestiller.",
 			"returnsBody": "Gratis retur innen {returnsWindowDays} dager etter kjøp. Varene må være ubrukte med merkelapper.",
 			"yes": "Ja",
 			"no": "Nei"
@@ -631,6 +637,27 @@
 			"paymentTryAgain": "Betaling mislyktes. Prøv igjen.",
 			"paymentWebhookFailed": "Webhook for betalingsappen mislyktes. I Saleor Dashboard → Apps → Dummy Payment App, sjekk at webhook-leveranser lykkes.",
 			"paymentInitFailed": "Betalingen kunne ikke initialiseres. Sjekk at betalingsappen kjører i Saleor."
+		},
+		"legal": {
+			"terms": "Ved å bestille godtar du våre <link>vilkår</link>.",
+			"withdrawal": "Du har angrerett: se <link>informasjon om angrerett</link>.",
+			"privacy": "<link>Personvernerklæringen</link> forklarer hvordan vi bruker opplysningene dine."
+		}
+	},
+	"legal": {
+		"imprint": {
+			"title": "Om selskapet",
+			"metaDescription": "Hvem som driver denne butikken, og hvordan du når oss.",
+			"representedBy": "Representert ved",
+			"contact": "Kontakt",
+			"phone": "Telefon",
+			"email": "E-post",
+			"register": "Foretaksregister",
+			"vatId": "MVA-nummer"
+		},
+		"footer": {
+			"navLabel": "Juridisk informasjon",
+			"imprint": "Om selskapet"
 		}
 	}
 }

@@ -14,7 +14,7 @@ export type ConfiguratorSeedModel = {
 
 /** Display names from config/saleor/storefront-content.config.yml `contentAttributes`. */
 const ATTR = {
-	freeShippingThreshold: "Free shipping threshold",
+	freeShippingThreshold: "Free shipping threshold override (not recommended)",
 	returnsWindowDays: "Returns window days",
 	announcementId: "Announcement ID",
 	announcementMessage: "Announcement message",
@@ -72,13 +72,6 @@ export function buildConfiguratorSeedModels(content: StorefrontContent): Configu
 	const { policies, chrome, surfaces } = content;
 	const freeShippingThreshold = policies.shipping.freeShippingThreshold;
 
-	if (freeShippingThreshold === null) {
-		throw new Error(
-			"Cannot export storefront seed: policies.shipping.freeShippingThreshold is null. " +
-				"Set a numeric threshold in defaults.ts or omit the policy from the seed export.",
-		);
-	}
-
 	return [
 		{
 			title: "Storefront Policies",
@@ -86,7 +79,9 @@ export function buildConfiguratorSeedModels(content: StorefrontContent): Configu
 			modelType: "Storefront — Policies",
 			isPublished: true,
 			attributes: {
-				[ATTR.freeShippingThreshold]: freeShippingThreshold,
+				// Unset by default: the threshold comes from Saleor's shipping methods, and a value
+				// here would override it.
+				...(freeShippingThreshold !== null ? { [ATTR.freeShippingThreshold]: freeShippingThreshold } : {}),
 				[ATTR.returnsWindowDays]: policies.returns.windowDays,
 			},
 		},

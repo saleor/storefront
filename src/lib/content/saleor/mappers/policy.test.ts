@@ -24,7 +24,7 @@ describe("mapPolicyPage", () => {
 	it("maps numeric policy attributes", () => {
 		const partial = mapPolicyPage(
 			policyPage([
-				{ slug: "free-shipping-threshold", numeric: 300 },
+				{ slug: "free-shipping-threshold-override-not-recommended", numeric: 300 },
 				{ slug: "returns-window-days", numeric: 45 },
 			]),
 		);
@@ -44,8 +44,23 @@ describe("mapPolicyPage", () => {
 		);
 	});
 
+	it("ignores the attribute from before it was renamed", () => {
+		// "Free shipping threshold" was seeded with 75 on every store: not a merchant's choice.
+		const partial = mapPolicyPage(
+			policyPage([
+				{ slug: "free-shipping-threshold", numeric: 75 },
+				{ slug: "returns-window-days", numeric: 30 },
+			]),
+		);
+		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
+
+		expect(merged.policies.shipping.freeShippingThreshold).toBeNull();
+	});
+
 	it("supports a zero threshold (free shipping on every order)", () => {
-		const partial = mapPolicyPage(policyPage([{ slug: "free-shipping-threshold", numeric: 0 }]));
+		const partial = mapPolicyPage(
+			policyPage([{ slug: "free-shipping-threshold-override-not-recommended", numeric: 0 }]),
+		);
 		const merged = mergeStorefrontContent(defaultStorefrontContent, partial);
 
 		expect(merged.policies.shipping.freeShippingThreshold).toBe(0);

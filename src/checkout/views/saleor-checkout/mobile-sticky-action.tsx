@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/ui/components/ui/button";
 import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
+import { OrderLegalNotice } from "@/checkout/components/payment/order-legal-notice";
 import {
 	PaymentTrustSignals,
 	type PaymentTrustProvider,
@@ -79,6 +80,8 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 			{showPaymentTrust && isPaymentStep ? (
 				<PaymentTrustSignals variant="compact" provider={paymentTrustProvider} className="mb-3" />
 			) : null}
+			{/* The bar is always on screen, so the notice belongs here, next to the button it is about. */}
+			{isPaymentStep ? <OrderLegalNotice className="mb-3 text-center text-[11px] leading-snug" /> : null}
 			<Button
 				type={type}
 				onClick={type === "button" ? onAction : undefined}

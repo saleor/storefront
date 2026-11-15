@@ -13,7 +13,9 @@ export const STOREFRONT_CHROME_ATTRIBUTES = {
 } as const;
 
 export const STOREFRONT_POLICY_ATTRIBUTES = {
-	freeShippingThreshold: "free-shipping-threshold",
+	// "Free shipping threshold override (not recommended)": Saleor's shipping methods are the
+	// source of the threshold; this attribute only overrides what the storefront advertises.
+	freeShippingThreshold: "free-shipping-threshold-override-not-recommended",
 	returnsWindowDays: "returns-window-days",
 } as const;
 

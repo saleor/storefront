@@ -33,6 +33,7 @@ import { consumePaymentCompletionError } from "@/checkout/lib/payment/checkout-p
 import { useCheckoutPaymentReturnError } from "@/checkout/providers/checkout-payment-return-error";
 import { useSyncCheckoutRouterUrl } from "@/checkout/hooks/use-sync-checkout-router-url";
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
+import { OrderLegalNotice } from "@/checkout/components/payment/order-legal-notice";
 
 interface PaymentStepProps {
 	checkout: CheckoutFragment;
@@ -278,6 +279,9 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 				/>
 			) : null}
 
+			{/* Desktop: above the button. On phones the sticky bar carries it (MobileStickyAction). */}
+			{!usesClientSubmit ? <OrderLegalNotice className="hidden text-right md:block" /> : null}
+
 			<div className="flex items-center justify-between">
 				<button
 					type="button"
@@ -306,17 +310,22 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 			</div>
 
 			{!usesClientSubmit ? (
-				<MobileStickyAction
-					step={paymentStep}
-					isShippingRequired={isShippingRequired}
-					type="submit"
-					onAction={submit}
-					isLoading={isLoading}
-					disabled={isDisabled}
-					total={totalStr}
-					loadingText={isCompletingOrder ? tActions("creatingOrder") : tActions("processingPayment")}
-					showPaymentTrust
-				/>
+				<>
+					{/* The payment step's sticky bar is taller (trust line, legal notice, button)
+					    than the page padding that clears it on other steps. */}
+					<div aria-hidden className="h-24 md:hidden" />
+					<MobileStickyAction
+						step={paymentStep}
+						isShippingRequired={isShippingRequired}
+						type="submit"
+						onAction={submit}
+						isLoading={isLoading}
+						disabled={isDisabled}
+						total={totalStr}
+						loadingText={isCompletingOrder ? tActions("creatingOrder") : tActions("processingPayment")}
+						showPaymentTrust
+					/>
+				</>
 			) : null}
 		</>
 	);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,7 +48,7 @@ interface CartLine {
 					currency: string;
 				};
 			} | null;
-			priceUndiscounted?: {
+			priceReference?: {
 				gross: {
 					amount: number;
 					currency: string;
@@ -120,6 +120,8 @@ interface CartDrawerProps {
 	policies: StorefrontPolicies;
 	deleteCartLine: DeleteCartLine;
 	updateCartLineQuantity: UpdateCartLineQuantity;
+	/** Server-rendered `<PriceNote variant="total" />` ("incl. VAT"), shown under the total. */
+	totalNote?: ReactNode;
 }
 
 export function CartDrawer({
@@ -131,6 +133,7 @@ export function CartDrawer({
 	policies,
 	deleteCartLine,
 	updateCartLineQuantity,
+	totalNote,
 }: CartDrawerProps) {
 	const { isOpen, closeCart } = useCart();
 	const [isCartBusy, setIsCartBusy] = useState(false);
@@ -244,7 +247,7 @@ export function CartDrawer({
 								const variantAttributes = getVariantDetails(line.variant);
 								const isDiscounted = hasDiscount(
 									line.variant.pricing?.price?.gross.amount,
-									line.variant.pricing?.priceUndiscounted?.gross.amount,
+									line.variant.pricing?.priceReference?.gross.amount,
 								);
 
 								return (
@@ -348,11 +351,11 @@ export function CartDrawer({
 																intlLocale,
 															)}
 														</span>
-														{isDiscounted && line.variant.pricing?.priceUndiscounted && (
+														{isDiscounted && line.variant.pricing?.priceReference && (
 															<span className="block text-xs text-muted-foreground line-through">
 																{formatMoney(
-																	line.variant.pricing.priceUndiscounted.gross.amount * line.quantity,
-																	line.variant.pricing.priceUndiscounted.gross.currency,
+																	line.variant.pricing.priceReference.gross.amount * line.quantity,
+																	line.variant.pricing.priceReference.gross.currency,
 																	intlLocale,
 																)}
 															</span>
@@ -385,6 +388,7 @@ export function CartDrawer({
 								<span>{t("total")}</span>
 								<span>{formatMoney(subtotal, currency, intlLocale)}</span>
 							</div>
+							{totalNote}
 						</div>
 
 						{/* Actions */}
