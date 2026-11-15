@@ -30,15 +30,15 @@ A fact that is missing in Saleor is not shown. Paper has no fallback figures and
 
 Some behaviour depends on the market a channel serves, some on the language, and some applies everywhere.
 
-| Behaviour                                    | Legal scope                                                                                                                   | Where Paper shows it                                                                                    |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| 30-day prior price for sales                 | EU and EEA consumers (Directive 98/6/EC Art. 6a, added by the Omnibus Directive)                                              | Per channel: channels that ship to an EU or EEA country                                                 |
-| Order button stating the obligation to pay   | Every EU and EEA country (Consumer Rights Directive Art. 8(2)); German courts are strict about the wording                    | Per language. English and German so far; French, Polish, Finnish and Norwegian still read "Pay {total}" |
-| "Incl. VAT, plus shipping costs"             | EU final-price rules (Directive 98/6/EC Art. 2; Consumer Rights Directive Art. 6(1)(e)); the German phrase is German practice | Per channel when prices are shown including VAT, in every language                                      |
-| Imprint and seller details                   | EU-established sellers (E-Commerce Directive Art. 5)                                                                          | Every channel                                                                                           |
-| Where the shop delivers, and payment methods | EU and EEA (Consumer Rights Directive Art. 8(3))                                                                              | Every channel                                                                                           |
-| Product safety information                   | EU (General Product Safety Regulation, Regulation (EU) 2023/988)                                                              | Every channel                                                                                           |
-| Billing address from any country             | EU (Geo-blocking Regulation, Regulation (EU) 2018/302)                                                                        | Every channel, for orders that are shipped                                                              |
+| Behaviour                                    | Legal scope                                                                                                                   | Where Paper shows it                                               |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 30-day prior price for sales                 | EU and EEA consumers (Directive 98/6/EC Art. 6a, added by the Omnibus Directive)                                              | Per channel: channels that ship to an EU or EEA country            |
+| Order button stating the obligation to pay   | Every EU and EEA country (Consumer Rights Directive Art. 8(2)); German courts are strict about the wording                    | Per language                                                       |
+| "Incl. VAT, plus shipping costs"             | EU final-price rules (Directive 98/6/EC Art. 2; Consumer Rights Directive Art. 6(1)(e)); the German phrase is German practice | Per channel when prices are shown including VAT, in every language |
+| Imprint and seller details                   | EU-established sellers (E-Commerce Directive Art. 5)                                                                          | Every channel                                                      |
+| Where the shop delivers, and payment methods | EU and EEA (Consumer Rights Directive Art. 8(3))                                                                              | Every channel                                                      |
+| Product safety information                   | EU (General Product Safety Regulation, Regulation (EU) 2023/988)                                                              | Every channel                                                      |
+| Billing address from any country             | EU (Geo-blocking Regulation, Regulation (EU) 2018/302)                                                                        | Every channel, for orders that are shipped                         |
 
 ## Seller Details and the Imprint
 
@@ -166,7 +166,7 @@ The Storefront — Policies Model has an attribute "Free shipping threshold over
 
 ## Checkout
 
-- **Order button.** The final button reads "Buy now" in English and "Zahlungspflichtig bestellen" in German, with nothing else on it. The total stays in the order summary beside it.
+- **Order button.** The final button says "buy now" in the customer's language ("Acheter maintenant", "Kup teraz", "Osta nyt", "Kjøp nå") and "Zahlungspflichtig bestellen" in German, with nothing else on it. The total is shown directly above it: beside it in the order summary on a computer, and in the bar at the bottom of the screen on a phone.
 - **Legal line.** Above the button: one sentence each for the terms, the withdrawal information and the privacy notice, each shown only when its page exists.
 - **Countries.** The shipping address form offers the countries of the channel's shipping zones and preselects the channel's default country (the preselection needs `SALEOR_APP_TOKEN`). The billing address can be in any country Saleor knows: a customer in Austria can pay with a card registered in Switzerland.
 - **Delivery and payment.** The facts from [Delivery and Payment](#delivery-and-payment) sit at the top of the first step, and an address you do not serve is refused before the shipping step.

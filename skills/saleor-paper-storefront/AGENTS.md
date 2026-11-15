@@ -4624,7 +4624,7 @@ Paper always renders gross amounts. A channel Saleor marks as net display gets n
 
 ## Order button and the notice next to it
 
-- The final checkout button's label is `checkout.actions.payTotal`. English reads "Buy now" and German "Zahlungspflichtig bestellen", with nothing else on the button: no amount, no icon text. The other locales say "Pay {total}". Keep the wording a plain statement that ordering costs money; "Continue", "Confirm" or "Order" alone do not say so. The total stays visible in the order summary next to it.
+- The final checkout button's label is `checkout.actions.buyNow`, the same in every place (desktop button, Stripe form, phone bar): "Buy now", "Acheter maintenant", "Kup teraz", "Osta nyt", "Kjøp nå", "今すぐ購入", "지금 구매하기", and in German the statutory "Zahlungspflichtig bestellen". Nothing else on the button: no amount, no icon text (Consumer Rights Directive Art. 8(2): only the order words). The total sits directly above it: in the order summary beside it on desktop, and as a "Total … incl. VAT" line in `MobileStickyAction` on phones. Keep the wording a plain statement that ordering costs money; "Continue", "Confirm" or "Order" alone do not say so.
 - `OrderLegalNotice` (`src/checkout/components/payment/order-legal-notice.tsx`) sits next to the button: directly above it on desktop, inside the sticky action bar on phones (`MobileStickyAction`, which is always on screen), and inside the Stripe form. One sentence each for terms, withdrawal and privacy, shown only when its page exists. The checkout session loader resolves the URLs on the server and passes them through `CheckoutLegalLinksProvider`.
 
 ## Price reductions

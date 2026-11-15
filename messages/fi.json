@@ -458,8 +458,7 @@
 			"logIn": "Kirjaudu",
 			"returnToInformation": "Takaisin tietoihin",
 			"returnToShipping": "Takaisin toimitukseen",
-			"payNow": "Maksa nyt",
-			"payTotal": "Maksa {total}",
+			"buyNow": "Osta nyt",
 			"completeOrder": "Viimeistele tilaus",
 			"placingOrder": "Tilataan…",
 			"creatingOrder": "Luodaan tilausta…",
@@ -610,7 +609,7 @@
 			"authorizedTitle": "Maksu valtuutettu — viimeistele tilauksesi",
 			"authorizedBody": "Maksusi on valtuutettu (veloitus tapahtuu tilauksen toimituksen yhteydessä). Napauta alla tehdäksesi tilauksen — sinua ei veloiteta uudelleen kassalla.",
 			"freeOrderBody": "Tilauksesi summa on {total}. Maksua ei vaadita — vahvista alla tehdäksesi tilauksen.",
-			"dummyTestMode": "Testitila. Korttitietoja ei tarvita — käytä Maksa-painiketta testitilauksen viimeistelyyn.",
+			"dummyTestMode": "Testitila. Korttitietoja ei tarvita — käytä Osta nyt -painiketta testitilauksen viimeistelyyn.",
 			"stripeLoadTitle": "Stripea ei voitu ladata"
 		},
 		"confirmation": {

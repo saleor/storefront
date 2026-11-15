@@ -458,8 +458,7 @@
 			"logIn": "Zaloguj się",
 			"returnToInformation": "Wróć do danych",
 			"returnToShipping": "Wróć do dostawy",
-			"payNow": "Zapłać teraz",
-			"payTotal": "Zapłać {total}",
+			"buyNow": "Kup teraz",
 			"completeOrder": "Złóż zamówienie",
 			"placingOrder": "Składanie zamówienia…",
 			"creatingOrder": "Tworzenie zamówienia…",
@@ -594,7 +593,7 @@
 			"methodRequired": "Nie udało się określić metody płatności. Wybierz opcję płatności i spróbuj ponownie.",
 			"detailsUnavailable": "Nie udało się pobrać szczegółów płatności. Spróbuj ponownie.",
 			"expressReset": "Przyciski szybkiej płatności zostały zresetowane. Spróbuj ponownie.",
-			"formReset": "Formularz płatności został zresetowany. Kliknij Zapłać ponownie bez odświeżania strony.",
+			"formReset": "Formularz płatności został zresetowany. Kliknij „Kup teraz” ponownie bez odświeżania strony.",
 			"totalChanged": "Suma zamówienia się zmieniła. Sprawdź kwotę i spróbuj ponownie.",
 			"bankDeclined": "Bank odrzucił płatność. Spróbuj ponownie lub użyj innej karty.",
 			"sessionExpired": "Sesja płatności wygasła po przekierowaniu. Spróbuj ponownie.",
@@ -610,7 +609,7 @@
 			"authorizedTitle": "Płatność autoryzowana — złóż zamówienie",
 			"authorizedBody": "Płatność jest autoryzowana (pobranie nastąpi przy realizacji zamówienia). Kliknij poniżej, aby złożyć zamówienie — nie zostaniesz obciążony ponownie przy kasie.",
 			"freeOrderBody": "Suma zamówienia to {total}. Płatność nie jest wymagana — potwierdź poniżej, aby złożyć zamówienie.",
-			"dummyTestMode": "Tryb testowy. Dane karty nie są potrzebne — użyj Zapłać, aby złożyć zamówienie testowe.",
+			"dummyTestMode": "Tryb testowy. Dane karty nie są potrzebne — użyj „Kup teraz”, aby złożyć zamówienie testowe.",
 			"stripeLoadTitle": "Nie udało się wczytać Stripe"
 		},
 		"confirmation": {

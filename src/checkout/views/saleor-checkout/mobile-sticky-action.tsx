@@ -23,8 +23,10 @@ interface MobileStickyActionProps {
 	disabled?: boolean;
 	/** Custom loading text */
 	loadingText?: string;
-	/** Total to display (for payment step) */
+	/** Total shown directly above the button on the payment step, never on it. */
 	total?: string;
+	/** Whether the total includes VAT, so the line can say so. */
+	totalIncludesTax?: boolean;
 	/** Click handler */
 	onAction?: () => void;
 	/** Button type */
@@ -45,12 +47,14 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 	disabled = false,
 	loadingText,
 	total,
+	totalIncludesTax = false,
 	onAction,
 	type = "button",
 	showPaymentTrust = false,
 	paymentTrustProvider = "default",
 }) => {
 	const t = useTranslations("checkout.actions");
+	const tSummary = useTranslations("checkout.summary");
 	const paymentStep = useCheckoutStepNumber("PAYMENT", isShippingRequired);
 	const shippingStep = useCheckoutStepNumber("SHIPPING", isShippingRequired);
 	const infoStep = useCheckoutStepNumber("INFO", isShippingRequired);
@@ -59,7 +63,7 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 		if (isLoading && loadingText) return loadingText;
 
 		if (step === paymentStep) {
-			return total ? t("payTotal", { total }) : t("payNow");
+			return t("buyNow");
 		}
 
 		if (step === infoStep) {
@@ -82,6 +86,18 @@ export const MobileStickyAction: FC<MobileStickyActionProps> = ({
 			) : null}
 			{/* The bar is always on screen, so the notice belongs here, next to the button it is about. */}
 			{isPaymentStep ? <OrderLegalNotice className="mb-3 text-center text-[11px] leading-snug" /> : null}
+			{/* The button carries only the order words; the total sits directly above it. */}
+			{isPaymentStep && total ? (
+				<div className="mb-3 flex items-baseline justify-between gap-3 text-sm">
+					<span className="text-muted-foreground">{tSummary("total")}</span>
+					<span className="tabular-nums">
+						<span className="font-semibold text-foreground">{total}</span>
+						{totalIncludesTax ? (
+							<span className="ml-1.5 text-xs text-muted-foreground">{tSummary("includingVat")}</span>
+						) : null}
+					</span>
+				</div>
+			) : null}
 			<Button
 				type={type}
 				onClick={type === "button" ? onAction : undefined}

@@ -458,8 +458,7 @@
 			"logIn": "Se connecter",
 			"returnToInformation": "Retour aux informations",
 			"returnToShipping": "Retour à la livraison",
-			"payNow": "Payer maintenant",
-			"payTotal": "Payer {total}",
+			"buyNow": "Acheter maintenant",
 			"completeOrder": "Valider la commande",
 			"placingOrder": "Commande en cours…",
 			"creatingOrder": "Création de la commande…",
@@ -610,7 +609,7 @@
 			"authorizedTitle": "Paiement autorisé — validez votre commande",
 			"authorizedBody": "Votre paiement est autorisé (le prélèvement interviendra lors de l'expédition). Appuyez ci-dessous pour passer votre commande — vous ne serez pas débité à nouveau au paiement.",
 			"freeOrderBody": "Le total de votre commande est de {total}. Aucun paiement requis — confirmez ci-dessous pour passer votre commande.",
-			"dummyTestMode": "Mode test. Aucune carte requise — utilisez Payer pour finaliser une commande test.",
+			"dummyTestMode": "Mode test. Aucune carte requise — utilisez « Acheter maintenant » pour finaliser une commande test.",
 			"stripeLoadTitle": "Impossible de charger Stripe"
 		},
 		"confirmation": {
