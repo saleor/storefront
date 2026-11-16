@@ -453,6 +453,7 @@
 			"itemUnavailableTitle": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
 			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
 			"itemUnavailableRemoveMessage": "{count, plural, =1 {This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.} other {These items can’t be fulfilled for the address you entered. Remove them to continue, or try a different destination.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Tämä tuote on loppuunmyyty tai sitä ei ole enää saatavilla valitsemaasi määrää. Poista se jatkaaksesi.} other {Nämä tuotteet on myyty loppuun tai niitä ei ole enää saatavilla valitsemiasi määriä. Poista ne jatkaaksesi.}}",
 			"itemUnavailableRemove": "{count, plural, =1 {Remove item} other {Remove # items}}",
 			"itemUnavailableRemoveFailed": "{count, plural, =1 {Could not remove this item. Try again.} other {Could not remove these items. Try again.}}",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
@@ -556,6 +557,7 @@
 			"stripeKeyMissing": "Stripen julkinen avain puuttuu. Tarkista Stripen sovelluksen määritys Saleor-hallintapaneelissa.",
 			"dummyGateway": "Testimaksu",
 			"failed": "Maksu epäonnistui",
+			"errorTitle": "Tilausta ei voitu viimeistellä",
 			"interruptedBeforeCharge": "Maksu keskeytettiin ennen veloitusta. Voit turvallisesti yrittää uudelleen.",
 			"interruptedAfterAuthorize": "Maksusi onnistui, mutta tilausta ei ole vielä tehty. Älä maksa uudelleen — käytä alla olevaa „Viimeistele tilaus” -painiketta.",
 			"verificationUnavailable": "Emme voineet vahvistaa aiempaa maksuyritystäsi. Päivitä sivu — älä maksa uudelleen ennen kuin se on vahvistettu.",
@@ -612,6 +614,7 @@
 			"paymentProcessFailed": "Maksun käsittely epäonnistui",
 			"completeOrderFailed": "Tilauksen viimeistely epäonnistui",
 			"orderCreateFailed": "Maksu käsiteltiin, mutta tilausta ei voitu luoda. Yritä uudelleen tai ota yhteyttä tukeen.",
+			"orderNotPlacedItemUnavailable": "Tuote myytiin loppuun tai poistui myynnistä ennen kuin ehdimme vahvistaa tilauksesi, joten tilausta ei luotu. Jos olet jo maksanut, älä maksa uudelleen vaan ota meihin yhteyttä.",
 			"validationRulesUnavailable": "Validointisäännöt eivät ole saatavilla",
 			"setDefaultAddressFailed": "Oletusosoitteen asettaminen epäonnistui",
 			"dummyNotAllowed": "Testimaksu ei ole käytettävissä tässä ympäristössä.",

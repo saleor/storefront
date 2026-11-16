@@ -561,6 +561,14 @@ export async function processCheckoutTransaction(
 	return { ok: true, data: payload };
 }
 
+/** checkoutComplete errors that mean a line can no longer be ordered (Saleor 3.23 codes). */
+const ORDER_LINE_UNAVAILABLE_CODES: ReadonlySet<string> = new Set([
+	"INSUFFICIENT_STOCK",
+	"UNAVAILABLE_VARIANT_IN_CHANNEL",
+	"PRODUCT_NOT_PUBLISHED",
+	"PRODUCT_UNAVAILABLE_FOR_PURCHASE",
+]);
+
 export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutCompleteActionResult> {
 	// Before complete — Saleor copies checkout public metadata onto the order.
 	await enrichCheckoutCommerceContext(checkoutId);
@@ -581,9 +589,17 @@ export async function runCheckoutComplete(checkoutId: string): Promise<CheckoutC
 
 	if (payload.errors?.length) {
 		const { server: t } = await getCheckoutServerTranslations();
+		// Completion runs after the payment (or for a free order, instead of one). A line that
+		// sold out or became unavailable in between leaves a paid shopper without an order:
+		// say so plainly instead of Saleor's raw text, and do not suggest paying again.
+		const itemUnavailable = payload.errors.some((error) =>
+			error.code ? ORDER_LINE_UNAVAILABLE_CODES.has(error.code) : false,
+		);
 		return {
 			ok: false,
-			error: payload.errors[0].message ?? t("completeOrderFailed"),
+			error: itemUnavailable
+				? t("orderNotPlacedItemUnavailable")
+				: (payload.errors[0].message ?? t("completeOrderFailed")),
 			fieldErrors: payload.errors.map((error) => ({
 				field: error.field,
 				message: error.message ?? t("completeOrderFailed"),

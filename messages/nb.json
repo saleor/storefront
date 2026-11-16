@@ -453,6 +453,7 @@
 			"itemUnavailableTitle": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
 			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
 			"itemUnavailableRemoveMessage": "{count, plural, =1 {This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.} other {These items can’t be fulfilled for the address you entered. Remove them to continue, or try a different destination.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Denne varen er utsolgt eller ikke lenger tilgjengelig i antallet du valgte. Fjern den for å fortsette.} other {Disse varene er utsolgt eller ikke lenger tilgjengelige i antallene du valgte. Fjern dem for å fortsette.}}",
 			"itemUnavailableRemove": "{count, plural, =1 {Remove item} other {Remove # items}}",
 			"itemUnavailableRemoveFailed": "{count, plural, =1 {Could not remove this item. Try again.} other {Could not remove these items. Try again.}}",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
@@ -556,6 +557,7 @@
 			"stripeKeyMissing": "Stripe publiserbar nøkkel mangler. Sjekk Stripe-appkonfigurasjonen i Saleor Dashboard.",
 			"dummyGateway": "Testbetaling",
 			"failed": "Betaling mislyktes",
+			"errorTitle": "Vi kunne ikke fullføre bestillingen",
 			"interruptedBeforeCharge": "Betalingen ble avbrutt før du ble belastet. Du kan trygt prøve igjen.",
 			"interruptedAfterAuthorize": "Betalingen gikk gjennom, men bestillingen er ikke lagt inn ennå. Ikke betal igjen — bruk «Fullfør bestilling» nedenfor for å fullføre.",
 			"verificationUnavailable": "Vi kunne ikke bekrefte ditt forrige betalingsforsøk. Oppdater siden — ikke betal igjen før det er bekreftet.",
@@ -612,6 +614,7 @@
 			"paymentProcessFailed": "Betalingsbehandling mislyktes",
 			"completeOrderFailed": "Kunne ikke fullføre bestillingen",
 			"orderCreateFailed": "Betalingen ble behandlet, men bestillingen kunne ikke opprettes. Prøv igjen eller kontakt kundestøtte.",
+			"orderNotPlacedItemUnavailable": "En vare ble utsolgt eller utilgjengelig før vi rakk å registrere bestillingen, så ingen bestilling ble opprettet. Hvis du allerede har betalt, ikke betal på nytt, men kontakt oss.",
 			"validationRulesUnavailable": "Valideringsregler er ikke tilgjengelige",
 			"setDefaultAddressFailed": "Kunne ikke angi standardadresse",
 			"dummyNotAllowed": "Testbetaling er ikke tilgjengelig i dette miljøet.",

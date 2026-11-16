@@ -80,6 +80,19 @@ fragment CheckoutFragment on Checkout {
 		... on CheckoutProblemDeliveryMethodInvalid {
 			__typename
 		}
+		... on CheckoutLineProblemInsufficientStock {
+			__typename
+			availableQuantity
+			line {
+				id
+			}
+		}
+		... on CheckoutLineProblemVariantNotAvailable {
+			__typename
+			line {
+				id
+			}
+		}
 	}
 	totalPrice {
 		gross {

@@ -3,12 +3,92 @@ import { describe, expect, it } from "vitest";
 import {
 	availabilityIssueForLines,
 	availabilityIssueFromFieldErrors,
+	availabilityIssueFromProblems,
 	bulkRemovableLineIds,
 	isAvailabilityFieldError,
+	mergeAvailabilityIssues,
+	nextReportedIssue,
 	partitionCheckoutFieldErrors,
+	reportedIssueAfterRemoval,
+	stillReportedIssue,
+	unavailableLineIdsFromProblems,
 	unavailableLineIdsInCart,
 	unavailableVariantLabel,
 } from "./checkout-availability";
+
+describe("unavailableLineIdsFromProblems", () => {
+	it("collects the lines Saleor reports as out of stock or not available", () => {
+		expect(
+			unavailableLineIdsFromProblems([
+				{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-a" } },
+				{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-b" } },
+			]),
+		).toEqual(["line-a", "line-b"]);
+	});
+
+	it("ignores delivery problems and lists each line once", () => {
+		expect(
+			unavailableLineIdsFromProblems([
+				{ __typename: "CheckoutProblemDeliveryMethodStale" },
+				{ __typename: "CheckoutProblemDeliveryMethodInvalid" },
+				{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-a" } },
+				{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-a" } },
+			]),
+		).toEqual(["line-a"]);
+	});
+
+	it("returns nothing when the checkout has no problems", () => {
+		expect(unavailableLineIdsFromProblems(null)).toEqual([]);
+		expect(unavailableLineIdsFromProblems(undefined)).toEqual([]);
+		expect(unavailableLineIdsFromProblems([])).toEqual([]);
+	});
+});
+
+describe("availabilityIssueFromProblems", () => {
+	it("builds an exact issue for the affected lines", () => {
+		expect(
+			availabilityIssueFromProblems([
+				{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-a" } },
+			]),
+		).toEqual({ message: "", lineIds: ["line-a"], isExact: true, cause: "stock" });
+	});
+
+	it("returns null when only delivery problems are present", () => {
+		expect(availabilityIssueFromProblems([{ __typename: "CheckoutProblemDeliveryMethodStale" }])).toBeNull();
+	});
+});
+
+describe("mergeAvailabilityIssues", () => {
+	it("returns whichever issue exists", () => {
+		const issue = { message: "Out of stock", lineIds: ["line-a"], isExact: true };
+		expect(mergeAvailabilityIssues(null, null)).toBeNull();
+		expect(mergeAvailabilityIssues(issue, null)).toBe(issue);
+		expect(mergeAvailabilityIssues(null, issue)).toBe(issue);
+	});
+
+	it("unions the lines, keeps the reported message and takes the stock cause", () => {
+		expect(
+			mergeAvailabilityIssues(
+				{ message: "Could not add items M.", lineIds: ["line-a"], isExact: true },
+				{ message: "", lineIds: ["line-a", "line-b"], isExact: true, cause: "stock" },
+			),
+		).toEqual({
+			message: "Could not add items M.",
+			lineIds: ["line-a", "line-b"],
+			isExact: true,
+			cause: "stock",
+		});
+	});
+
+	it("is inexact when the reported issue is, so bulk removal cannot take an in-stock line", () => {
+		const merged = mergeAvailabilityIssues(
+			{ message: "Could not add items M.", lineIds: ["line-a", "line-c"], isExact: false },
+			{ message: "", lineIds: ["line-b"], isExact: true, cause: "stock" },
+		);
+		expect(merged?.isExact).toBe(false);
+		expect(bulkRemovableLineIds(merged, [{ id: "line-a" }, { id: "line-b" }, { id: "line-c" }])).toEqual([]);
+	});
+});
 
 describe("isAvailabilityFieldError", () => {
 	it("treats quantity, variant, and INSUFFICIENT_STOCK as availability", () => {
@@ -210,5 +290,138 @@ describe("availabilityIssueForLines", () => {
 		const unmatched = { message: "Could not add items M.", lineIds: [], isExact: true };
 		expect(availabilityIssueForLines(unmatched, [{ id: "line-x" }])).toBe(unmatched);
 		expect(availabilityIssueForLines(null, [{ id: "line-x" }])).toBeNull();
+	});
+});
+
+describe("stillReportedIssue", () => {
+	const before = { id: "chk", problems: [] };
+	const after = { id: "chk", problems: [] };
+	const stock = { message: "", lineIds: ["line-a"], isExact: true, cause: "stock" as const };
+	const destination = { message: "Could not add items M.", lineIds: ["line-a"], isExact: true };
+
+	it("keeps a stock issue while the checkout is the one it was reported against", () => {
+		expect(stillReportedIssue({ issue: stock, against: before }, before)).toBe(stock);
+	});
+
+	it("drops a stock issue once the checkout changes, so the live problems decide", () => {
+		expect(stillReportedIssue({ issue: stock, against: before }, after)).toBeNull();
+	});
+
+	it("keeps a destination issue across checkout changes", () => {
+		expect(stillReportedIssue({ issue: destination, against: before }, after)).toBe(destination);
+	});
+
+	it("has nothing to keep when nothing was reported", () => {
+		expect(stillReportedIssue(null, before)).toBeNull();
+	});
+});
+
+describe("nextReportedIssue", () => {
+	const before = { id: "chk", problems: [] };
+	const after = { id: "chk", problems: [] };
+	const stock = { message: "", lineIds: ["line-a"], isExact: true, cause: "stock" as const };
+	const destination = { message: "Could not add items M.", lineIds: ["line-a", "line-b"], isExact: true };
+
+	it("tags a set value with the checkout in context", () => {
+		expect(nextReportedIssue(null, destination, after)).toEqual({ issue: destination, against: after });
+	});
+
+	it("clears on null", () => {
+		expect(nextReportedIssue({ issue: destination, against: before }, null, after)).toBeNull();
+	});
+
+	it("hands an updater the issue still in effect, never a lapsed stock issue", () => {
+		const seen: unknown[] = [];
+		const result = nextReportedIssue(
+			{ issue: stock, against: before },
+			(issue) => {
+				seen.push(issue);
+				return issue && availabilityIssueForLines(issue, [{ id: "line-a" }]);
+			},
+			after,
+		);
+		expect(seen).toEqual([null]);
+		expect(result).toBeNull();
+	});
+
+	it("keeps the original tag when an updater leaves the issue unchanged", () => {
+		const previous = { issue: stock, against: before };
+		expect(nextReportedIssue(previous, (issue) => issue, before)).toBe(previous);
+	});
+
+	it("re-tags an issue an updater changed", () => {
+		const result = nextReportedIssue(
+			{ issue: destination, against: before },
+			(issue) => availabilityIssueForLines(issue, [{ id: "line-b" }]),
+			after,
+		);
+		expect(result).toEqual({ issue: { ...destination, lineIds: ["line-b"] }, against: after });
+	});
+});
+
+describe("bulk removal across both error flows", () => {
+	it("offers the reported lines and the lines in problems, but no gift line", () => {
+		const merged = mergeAvailabilityIssues(
+			{ message: "Could not add items M.", lineIds: ["line-a"], isExact: true },
+			availabilityIssueFromProblems([
+				{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-b" } },
+				{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-gift" } },
+			]),
+		);
+		expect(
+			bulkRemovableLineIds(merged, [
+				{ id: "line-a" },
+				{ id: "line-b" },
+				{ id: "line-gift", isGift: true },
+				{ id: "line-ok" },
+			]),
+		).toEqual(["line-a", "line-b"]);
+	});
+});
+
+describe("reportedIssueAfterRemoval", () => {
+	const stock = { message: "", lineIds: ["line-a"], isExact: true, cause: "stock" as const };
+	const destination = { message: "Could not add items M.", lineIds: ["line-a", "line-b"], isExact: true };
+
+	it("drops a stock issue, so the live problems decide", () => {
+		expect(reportedIssueAfterRemoval(stock, [{ id: "line-a" }])).toBeNull();
+	});
+
+	it("keeps the lines of a destination issue that are still in the cart", () => {
+		expect(reportedIssueAfterRemoval(destination, [{ id: "line-b" }, { id: "line-c" }])).toEqual({
+			...destination,
+			lineIds: ["line-b"],
+		});
+	});
+
+	it("resolves a destination issue once none of its lines is left", () => {
+		expect(reportedIssueAfterRemoval(destination, [{ id: "line-c" }])).toBeNull();
+	});
+
+	it("has nothing to update when nothing was reported", () => {
+		expect(reportedIssueAfterRemoval(null, [])).toBeNull();
+	});
+});
+
+describe("nextReportedIssue dispatched from an older checkout snapshot", () => {
+	// The provider's setter closes over the checkout it rendered with. By the time a slow
+	// response dispatches, a newer checkout may be in context.
+	const older = { id: "chk", problems: [] };
+	const newer = { id: "chk", problems: [] };
+	const stock = { message: "", lineIds: ["line-a", "line-b"], isExact: true, cause: "stock" as const };
+
+	it("keeps a stock issue lapsed for the newer checkout when the updater returns it as is", () => {
+		const next = nextReportedIssue({ issue: stock, against: older }, (issue) => issue, older);
+		expect(stillReportedIssue(next, newer)).toBeNull();
+	});
+
+	it("keeps it lapsed when the updater changes it", () => {
+		const next = nextReportedIssue(
+			{ issue: stock, against: older },
+			(issue) => availabilityIssueForLines(issue, [{ id: "line-b" }]),
+			older,
+		);
+		expect(next?.issue.lineIds).toEqual(["line-b"]);
+		expect(stillReportedIssue(next, newer)).toBeNull();
 	});
 });

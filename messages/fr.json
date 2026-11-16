@@ -453,6 +453,7 @@
 			"itemUnavailableTitle": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
 			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
 			"itemUnavailableRemoveMessage": "{count, plural, =1 {This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.} other {These items can’t be fulfilled for the address you entered. Remove them to continue, or try a different destination.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Cet article est épuisé ou n’est plus disponible dans la quantité choisie. Retirez-le pour continuer.} other {Ces articles sont épuisés ou ne sont plus disponibles dans les quantités choisies. Retirez-les pour continuer.}}",
 			"itemUnavailableRemove": "{count, plural, =1 {Remove item} other {Remove # items}}",
 			"itemUnavailableRemoveFailed": "{count, plural, =1 {Could not remove this item. Try again.} other {Could not remove these items. Try again.}}",
 			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
@@ -556,6 +557,7 @@
 			"stripeKeyMissing": "La clé publique Stripe est manquante. Vérifiez la configuration de l'application Stripe dans le tableau de bord Saleor.",
 			"dummyGateway": "Paiement fictif",
 			"failed": "Échec du paiement",
+			"errorTitle": "Nous n’avons pas pu finaliser votre commande",
 			"interruptedBeforeCharge": "Le paiement a été interrompu avant que vous ne soyez débité. Vous pouvez réessayer en toute sécurité.",
 			"interruptedAfterAuthorize": "Votre paiement a été effectué, mais la commande n'a pas encore été passée. Ne payez pas à nouveau — utilisez « Valider la commande » ci-dessous pour terminer.",
 			"verificationUnavailable": "Nous n'avons pas pu vérifier votre tentative de paiement précédente. Veuillez actualiser la page — ne payez pas à nouveau tant que ce n'est pas vérifié.",
@@ -612,6 +614,7 @@
 			"paymentProcessFailed": "Échec du traitement du paiement",
 			"completeOrderFailed": "Échec de la finalisation de la commande",
 			"orderCreateFailed": "Le paiement a été traité, mais la commande n'a pas pu être créée. Veuillez réessayer ou contacter le support.",
+			"orderNotPlacedItemUnavailable": "Un article a été épuisé ou est devenu indisponible avant que nous puissions enregistrer votre commande : aucune commande n’a été créée. Si vous avez déjà payé, ne payez pas une seconde fois et contactez-nous.",
 			"validationRulesUnavailable": "Règles de validation non disponibles",
 			"setDefaultAddressFailed": "Échec de la définition de l'adresse par défaut",
 			"dummyNotAllowed": "Le paiement test n'est pas disponible dans cet environnement.",

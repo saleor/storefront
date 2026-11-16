@@ -7,9 +7,15 @@ export type CheckoutAvailabilityIssue = {
 	/**
 	 * False when a variant label matched more lines than Saleor sent errors for it (size
 	 * "M" on two products, one of them in stock). Some flagged lines may then be fine, so
-	 * they must not be removed in bulk.
+	 * they must not be removed in bulk. Always true for lines read from `checkout.problems`,
+	 * which names them by id.
 	 */
 	isExact: boolean;
+	/**
+	 * `"stock"`: Saleor lists the lines in `checkout.problems` (sold out, short on quantity, or
+	 * no longer sold). Absent: a mutation was rejected, which is about the destination.
+	 */
+	cause?: "stock";
 };
 
 export type AvailabilityLine = {
@@ -101,6 +107,61 @@ export function availabilityIssueFromFieldErrors(
 	};
 }
 
+/** Shape of the `checkout.problems` entries this module reads. */
+export type CheckoutProblemLike = {
+	__typename?: string;
+	line?: { id: string } | null;
+};
+
+const LINE_PROBLEM_TYPES: ReadonlySet<string> = new Set([
+	"CheckoutLineProblemInsufficientStock",
+	"CheckoutLineProblemVariantNotAvailable",
+]);
+
+/** Line ids Saleor flags as out of stock or no longer available in `checkout.problems`. */
+export function unavailableLineIdsFromProblems(
+	problems: ReadonlyArray<CheckoutProblemLike> | null | undefined,
+): string[] {
+	const lineIds = new Set<string>();
+	for (const problem of problems ?? []) {
+		if (problem.__typename && LINE_PROBLEM_TYPES.has(problem.__typename) && problem.line?.id) {
+			lineIds.add(problem.line.id);
+		}
+	}
+	return [...lineIds];
+}
+
+/**
+ * With the channel's legacy error flow off (`useLegacyErrorFlow: false`), Saleor no longer
+ * rejects checkout mutations for stock. It lists the affected lines in `checkout.problems`
+ * and only fails at `checkoutComplete`, which is after the shopper has paid.
+ */
+export function availabilityIssueFromProblems(
+	problems: ReadonlyArray<CheckoutProblemLike> | null | undefined,
+	message = "",
+): CheckoutAvailabilityIssue | null {
+	const lineIds = unavailableLineIdsFromProblems(problems);
+	return lineIds.length ? { message, lineIds, isExact: true, cause: "stock" } : null;
+}
+
+/** Combine the issue a step reported with the one read from `checkout.problems`. */
+export function mergeAvailabilityIssues(
+	reported: CheckoutAvailabilityIssue | null,
+	fromProblems: CheckoutAvailabilityIssue | null,
+): CheckoutAvailabilityIssue | null {
+	if (!reported || !fromProblems) {
+		return reported ?? fromProblems;
+	}
+
+	return {
+		message: reported.message || fromProblems.message,
+		lineIds: [...new Set([...reported.lineIds, ...fromProblems.lineIds])],
+		// A loose name match in the reported issue may flag in-stock lines; keep them out of bulk removal.
+		isExact: reported.isExact && fromProblems.isExact,
+		cause: fromProblems.cause ?? reported.cause,
+	};
+}
+
 /** Flagged lines that are still in the cart, in cart order. */
 export function unavailableLineIdsInCart(
 	issue: CheckoutAvailabilityIssue | null,
@@ -148,4 +209,61 @@ export function availabilityIssueForLines(
 
 	const lineIds = unavailableLineIdsInCart(issue, lines);
 	return lineIds.length ? { ...issue, lineIds } : null;
+}
+
+/**
+ * The reported issue after flagged lines were removed. A stock issue is dropped: the checkout
+ * Saleor returns carries the live `problems`, which decide from here. A destination issue
+ * keeps the flagged lines still in the cart.
+ */
+export function reportedIssueAfterRemoval(
+	issue: CheckoutAvailabilityIssue | null,
+	lines: ReadonlyArray<{ id: string }>,
+): CheckoutAvailabilityIssue | null {
+	return issue?.cause === "stock" ? null : availabilityIssueForLines(issue, lines);
+}
+
+/** An issue a step reported, with the checkout snapshot that was in context at the time. */
+export type ReportedAvailabilityIssue = {
+	issue: CheckoutAvailabilityIssue;
+	against: unknown;
+};
+
+/**
+ * The reported issue that still applies to `current`. A stock issue read from
+ * `checkout.problems` is a snapshot: once the checkout changes, the live `problems` decide,
+ * or a shopper who fixed the cart would stay blocked. A destination issue (a rejected
+ * mutation in the legacy error flow) has no live counterpart and stays until cleared.
+ */
+export function stillReportedIssue(
+	reported: ReportedAvailabilityIssue | null,
+	current: unknown,
+): CheckoutAvailabilityIssue | null {
+	if (!reported) {
+		return null;
+	}
+	return reported.issue.cause !== "stock" || reported.against === current ? reported.issue : null;
+}
+
+/**
+ * The reported issue after a set: a value, or an updater that receives the issue still in
+ * effect for `current`, the checkout the caller rendered with (it may be older than the one
+ * in context by now). A new issue is tagged with that same `current`, so a stock issue that
+ * has lapsed for a newer checkout stays lapsed whatever the updater returns. One an updater
+ * left as it was keeps its original tag.
+ */
+export function nextReportedIssue(
+	previous: ReportedAvailabilityIssue | null,
+	action:
+		| CheckoutAvailabilityIssue
+		| null
+		| ((issue: CheckoutAvailabilityIssue | null) => CheckoutAvailabilityIssue | null),
+	current: unknown,
+): ReportedAvailabilityIssue | null {
+	const inEffect = stillReportedIssue(previous, current);
+	const issue = typeof action === "function" ? action(inEffect) : action;
+	if (!issue) {
+		return null;
+	}
+	return previous && inEffect === issue ? previous : { issue, against: current };
 }

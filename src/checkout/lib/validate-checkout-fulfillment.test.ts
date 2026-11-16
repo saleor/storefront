@@ -72,6 +72,78 @@ describe("validateCheckoutFulfillment", () => {
 		);
 	});
 
+	it("returns an availability issue when Saleor accepts the address but lists a stock problem", async () => {
+		// Channel with `useLegacyErrorFlow: false`: no mutation error, the line is in `problems`.
+		updateAddress.mockResolvedValue({
+			ok: true,
+			checkout: {
+				...checkout,
+				problems: [
+					{
+						__typename: "CheckoutLineProblemInsufficientStock",
+						availableQuantity: 0,
+						line: { id: "line-m" },
+					},
+				],
+			},
+		} as unknown as Awaited<ReturnType<typeof updateCheckoutShippingAddress>>);
+
+		await expect(validateCheckoutFulfillment(checkout, "Could not verify availability.")).resolves.toEqual({
+			ok: false,
+			reason: "availability",
+			issue: { message: "", lineIds: ["line-m"], isExact: true, cause: "stock" },
+		});
+	});
+
+	it("asks Saleor again even when the snapshot passed in lists a stock problem", async () => {
+		// A stale snapshot must not block the shopper once the problem is gone.
+		updateAddress.mockResolvedValue({
+			ok: true,
+			checkout: { ...checkout, problems: [] },
+		} as unknown as Awaited<ReturnType<typeof updateCheckoutShippingAddress>>);
+
+		await expect(
+			validateCheckoutFulfillment(
+				{
+					...checkout,
+					problems: [{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-m" } }],
+				},
+				"Could not verify availability.",
+			),
+		).resolves.toEqual({ ok: true });
+		expect(updateAddress).toHaveBeenCalled();
+	});
+
+	it("passes when Saleor accepts the address and lists only delivery problems", async () => {
+		updateAddress.mockResolvedValue({
+			ok: true,
+			checkout: { ...checkout, problems: [{ __typename: "CheckoutProblemDeliveryMethodStale" }] },
+		} as unknown as Awaited<ReturnType<typeof updateCheckoutShippingAddress>>);
+
+		await expect(validateCheckoutFulfillment(checkout, "Could not verify availability.")).resolves.toEqual({
+			ok: true,
+		});
+	});
+
+	it("reads the problems of a checkout that needs no shipping without calling Saleor", async () => {
+		await expect(
+			validateCheckoutFulfillment(
+				{
+					...checkout,
+					isShippingRequired: false,
+					shippingAddress: null,
+					problems: [{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-m" } }],
+				},
+				"Could not verify availability.",
+			),
+		).resolves.toEqual({
+			ok: false,
+			reason: "availability",
+			issue: { message: "", lineIds: ["line-m"], isExact: true, cause: "stock" },
+		});
+		expect(updateAddress).not.toHaveBeenCalled();
+	});
+
 	it("fails closed on non-stock address errors so pay cannot proceed", async () => {
 		updateAddress.mockResolvedValue({
 			ok: false,

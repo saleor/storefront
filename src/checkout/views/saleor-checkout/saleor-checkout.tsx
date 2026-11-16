@@ -15,8 +15,8 @@ import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries"
 import { useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import {
-	availabilityIssueForLines,
 	bulkRemovableLineIds,
+	reportedIssueAfterRemoval,
 	unavailableLineIdsInCart,
 } from "@/checkout/lib/checkout-availability";
 import {
@@ -74,7 +74,9 @@ const SaleorCheckoutView: FC = () => {
 
 				setCheckout(result.checkout);
 				// Read the current issue: another step may have replaced or cleared it meanwhile.
-				setAvailabilityIssue((current) => availabilityIssueForLines(current, result.checkout.lines));
+				// Stock issues come from the live checkout's `problems`, which the new checkout
+				// carries. A destination issue keeps its lines that are still in the cart.
+				setAvailabilityIssue((current) => reportedIssueAfterRemoval(current, result.checkout.lines));
 
 				if (result.checkout.lines.length === 0) {
 					refreshCheckoutRsc();
@@ -184,9 +186,13 @@ const SaleorCheckoutView: FC = () => {
 											}
 										>
 											<p>
-												{unavailableLineIds.length
-													? tErrors("itemUnavailableRemoveMessage", { count: unavailableLineIds.length })
-													: tErrors("itemUnavailableMessage")}
+												{availabilityIssue.cause === "stock"
+													? tErrors("itemOutOfStockMessage", {
+															count: Math.max(unavailableLineIds.length, 1),
+														})
+													: unavailableLineIds.length
+														? tErrors("itemUnavailableRemoveMessage", { count: unavailableLineIds.length })
+														: tErrors("itemUnavailableMessage")}
 											</p>
 											{removeUnavailableError ? (
 												<p className="mt-2 text-destructive">{removeUnavailableError}</p>
