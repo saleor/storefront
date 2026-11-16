@@ -38,6 +38,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | mutate           | CheckoutLinesUpdateDocument             | —                                             | src/app/actions.ts › updateCartLineQuantity                                                   |
 | rawMutation      | —                                       | —                                             | src/app/api/auth/register/route.ts › POST                                                     |
 | rawMutation      | —                                       | —                                             | src/app/api/auth/reset-password/route.ts › POST                                               |
+| mutate           | BuyAgainAddLinesDocument                | —                                             | src/app/buy-again/actions.ts › buyAgain                                                       |
 | mutate           | checkoutMetadataUpdateDocument          | —                                             | src/checkout/lib/server/enrich-commerce-context.ts › enrichCheckoutCommerceContext            |
 | liveQuery        | checkoutCommerceContextDocument         | —                                             | src/checkout/lib/server/enrich-commerce-context.ts › readCheckoutMetadata                     |
 | liveQuery        | channelQueryDocument                    | —                                             | src/checkout/lib/server/fetch-channel-countries.ts › fetchChannelCountriesOnServer            |
@@ -64,6 +65,9 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | bindCacheProfile | —                                       | —                                             | src/lib/content/get-announcement-bar-props.ts › getAnnouncementBarProps                       |
 | bindCacheProfile | —                                       | —                                             | src/lib/content/get-storefront-content.ts › getStorefrontContent                              |
 | cachedQuery      | StorefrontContentPagesDocument          | CACHE_PROFILES.storefrontContent              | src/lib/content/saleor/saleor-provider.ts › fetchStorefrontPages                              |
+| liveQuery        | BuyAgainAvailabilityDocument            | —                                             | src/lib/custom/get-buy-again.ts › getBuyAgainAvailability                                     |
+| liveQuery        | CheckoutFindDocument                    | —                                             | src/lib/custom/get-buy-again.ts › getBuyAgainCart                                             |
+| liveQuery        | BuyAgainDemoCatalogDocument             | —                                             | src/lib/custom/get-buy-again.ts › getBuyAgainDemoOrders                                       |
 | cachedQuery      | ProductListByCategoryProductsDocument   | input.profile                                 | src/lib/listing/providers/saleor/index.ts › kernelTransport                                   |
 | cachedQuery      | ProductListByCollectionProductsDocument | input.profile                                 | src/lib/listing/providers/saleor/index.ts › kernelTransport                                   |
 | cachedQuery      | ProductListPaginatedDocument            | input.profile                                 | src/lib/listing/providers/saleor/index.ts › kernelTransport                                   |

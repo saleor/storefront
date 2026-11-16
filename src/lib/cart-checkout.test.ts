@@ -5,6 +5,7 @@ describe("withTranslatedCartCheckout", () => {
 	it("translates product, variant, and attribute labels for cart display", () => {
 		const checkout = withTranslatedCartCheckout({
 			id: "chk",
+			channel: { slug: "default-channel" },
 			email: null,
 			totalPrice: { gross: { amount: 10, currency: "PLN" } },
 			lines: [
