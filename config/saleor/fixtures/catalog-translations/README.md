@@ -22,7 +22,8 @@ If your translation workflow lives in the Dashboard or a dedicated TMS integrati
 
 ## Safety model
 
-- **Create-only by default** — deploy writes a field only when no translation exists yet. Existing translations (e.g. hand-edited in the Dashboard) are **left untouched** and reported as `protected`. Pass `--overwrite` to update them.
+- **Create-only by default** — deploy writes a field only when no translation exists yet. Existing translations (e.g. hand-edited in the Dashboard) are **left untouched** and reported as `protected`. Pass `--overwrite` to update them. This covers rich-text attributes and descriptions made of lists, which hold no plain text.
+- **Strict command line** — an argument the scripts do not know stops the run before any request, so a mistyped `--dryrun` cannot turn a plan into a deploy.
 - **Idempotent** — fields already matching the fixture are classified `unchanged` and skipped, so re-runs make no redundant writes.
 - **`locales/` is gitignored** — your real slugs and translations never ship in the repo.
 - **`examples/` are fictional** — templates only; deploy never reads this folder.
@@ -88,7 +89,7 @@ collections:
   your-collection-slug:
     name: "..."
     slug: "..."
-    description: "Plain text — deploy converts to EditorJS"
+    description: "Plain text — deploy converts to EditorJS; a blank line starts a new paragraph"
 
 products:
   your-product-slug:
@@ -117,6 +118,8 @@ pnpm catalog:translations:deploy
 
 Create-only: applies **new** translations, skips **unchanged**, and leaves any **differing existing** translation untouched (reported as `protected`). Uses `--fail-on-skip`, so data errors abort before any write.
 
+If Saleor rejects an entry (a validation error), it is listed, the rest are still written, and the command exits with an error. If the instance itself fails (network, auth, `5xx` after retries), the run stops and says how many writes it made. In both cases run the deploy again: what was written now compares as `unchanged`, so only the rest is sent.
+
 To update existing translations (overwrites Dashboard/manual edits — use deliberately):
 
 ```bash
@@ -139,13 +142,15 @@ node scripts/deploy-catalog-translations.mjs --allow-skip
 
 ### Flags
 
-| Flag             | Effect                                                                                |
-| ---------------- | ------------------------------------------------------------------------------------- |
-| `--dry-run`      | Plan only; no writes                                                                  |
-| `--fail-on-skip` | Abort before writing if any fixture entry is a data error (unknown slug, empty value) |
-| `--overwrite`    | Also update existing translations that differ from the fixture                        |
-| `--allow-skip`   | Don't abort on data errors                                                            |
-| `--env <file>`   | Load credentials from a specific env file                                             |
+| Flag              | Effect                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `--dry-run`       | Plan only; no writes                                                                  |
+| `--fail-on-skip`  | Abort before writing if any fixture entry is a data error (unknown slug, empty value) |
+| `--overwrite`     | Also update existing translations that differ from the fixture                        |
+| `--allow-skip`    | Don't abort on data errors                                                            |
+| `--env <file>`    | Load credentials from this env file only; the run stops if it cannot be read          |
+| `--locales <dir>` | Use this directory for the fixtures and `catalog-source.json` instead of `locales/`   |
+| `--help`          | Show the options                                                                      |
 
 ## When slugs do not match
 

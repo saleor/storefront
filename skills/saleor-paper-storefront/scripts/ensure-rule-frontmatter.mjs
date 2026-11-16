@@ -99,7 +99,7 @@ const DESCRIPTIONS = {
 	"seo-metadata.md":
 		"SEO: metadata helpers, product JSON-LD, OG images, hreflang/canonical for locale×channel. Use when adding page metadata, structured data, or social images.",
 	"dev-local.md":
-		"Local dev gotchas for real-device testing via ngrok/LAN (ALLOWED_DEV_ORIGINS) and Chrome-iOS hydration noise. Use when client components seem broken over a tunnel or on a phone.",
+		"Local dev gotchas for real-device testing via ngrok/LAN (ALLOWED_DEV_ORIGINS) and Chrome-iOS hydration noise, and test orders for the account pages (pnpm orders:seed). Use when client components seem broken over a tunnel or on a phone, or when the account order pages have no orders to show.",
 	"dev-investigation.md":
 		"Investigating Saleor API behavior via generated types (src/gql/graphql.ts) and Saleor source. Use when unsure about a field, enum, nullability, or storefront auto-filtering behavior.",
 	"ui-templates.md":
