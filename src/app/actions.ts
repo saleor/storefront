@@ -5,12 +5,84 @@ import { refresh } from "next/cache";
 import { signOutSession } from "@/lib/auth/bff-server";
 import { mutate } from "@/lib/saleor";
 import {
+	BuyAgainAddLinesDocument,
 	CheckoutAddLineDocument,
 	CheckoutDeleteLinesDocument,
 	CheckoutLinesUpdateDocument,
 } from "@/gql/graphql";
 import { emitCommerceEvent } from "@/lib/analytics/emit.server";
 import * as Checkout from "@/lib/checkout";
+import { getStorefrontChannelSlugs } from "@/lib/channel-slugs";
+import { availableQuantity, getRepeatVariants } from "@/lib/custom/get-buy-again";
+import { planRepeatOrder, type RepeatLine } from "@/lib/custom/buy-again";
+
+export type BuyAgainResult =
+	| { ok: true; added: number; skipped: number }
+	| { ok: false; error: "invalid" | "unavailable" | "changed" | "uncertain" };
+
+export async function buyAgain(input: {
+	channel: string;
+	localeSlug: string;
+	lines: RepeatLine[];
+}): Promise<BuyAgainResult> {
+	if (
+		!input ||
+		!Array.isArray(input.lines) ||
+		input.lines.length === 0 ||
+		input.lines.length > 100 ||
+		input.lines.some(
+			(line) =>
+				!line ||
+				!Number.isInteger(line.quantity) ||
+				line.quantity < 1 ||
+				line.quantity > 999 ||
+				(line.variantId !== null && (typeof line.variantId !== "string" || line.variantId.length > 200)),
+		) ||
+		!(await getStorefrontChannelSlugs()).includes(input.channel)
+	) {
+		return { ok: false, error: "invalid" };
+	}
+
+	const variants = await getRepeatVariants(input.channel, [
+		...new Set(input.lines.flatMap((line) => (line.variantId ? [line.variantId] : []))),
+	]);
+	const stock = new Map(variants.map((variant) => [variant.id, availableQuantity(variant)]));
+	if (!planRepeatOrder(input.lines, stock, new Map()).added) return { ok: false, error: "unavailable" };
+
+	const checkout = await Checkout.findOrCreate({
+		checkoutId: await Checkout.getIdFromCookies(input.channel),
+		channel: input.channel,
+		localeSlug: input.localeSlug,
+	});
+	if (!checkout) return { ok: false, error: "uncertain" };
+	const existing = new Map<string, number>();
+	for (const line of checkout.lines) {
+		existing.set(line.variant.id, (existing.get(line.variant.id) ?? 0) + line.quantity);
+	}
+	const plan = planRepeatOrder(input.lines, stock, existing);
+	if (!plan.added) return { ok: false, error: "unavailable" };
+	// Save before the mutation so even an ambiguous network failure leaves the cart recoverable.
+	await Checkout.saveIdToCookie(input.channel, checkout.id);
+	const result = await mutate(BuyAgainAddLinesDocument, {
+		variables: { id: checkout.id, lines: plan.lines },
+	});
+	refresh();
+	if (!result.ok || result.partialErrors?.length) return { ok: false, error: "uncertain" };
+	if (result.data.checkoutLinesAdd?.errors.length) return { ok: false, error: "changed" };
+	if (!result.data.checkoutLinesAdd?.checkout) return { ok: false, error: "uncertain" };
+	emitCommerceEvent({
+		name: "product_added_to_cart",
+		channel: input.channel,
+		value: plan.lines.reduce(
+			(sum, line) =>
+				sum +
+				line.quantity * (variants.find((v) => v.id === line.variantId)?.pricing?.price?.gross.amount ?? 0),
+			0,
+		),
+		currency: variants[0]?.pricing?.price?.gross.currency ?? "",
+	});
+	return { ok: true, added: plan.added, skipped: plan.skipped };
+}
 
 // Private state (session/cart cookies) lives in dynamic holes that read cookies at
 // request time — it is never in the shared cache, so there is nothing global to

@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { getCurrentUserOrders } from "@/lib/account/get-orders";
+import { getBuyAgainHistory } from "@/lib/custom/get-buy-again";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
-import { OrderRow } from "@/ui/components/account/order-row";
-import { buildOrderRowLabels } from "@/ui/components/account/order-row-labels";
+import { BuyAgainHistory } from "@/ui/components/account/buy-again-history";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { Button } from "@/ui/components/ui/button";
 import { accountRoutes } from "@/ui/components/account/routes";
@@ -12,8 +11,8 @@ import { AccountOrdersListSkeleton } from "@/ui/components/account/account-skele
 const ORDERS_PER_PAGE = 10;
 
 type Props = {
-	params: Promise<{ locale: string }>;
-	searchParams: Promise<{ after?: string }>;
+	params: Promise<{ locale: string; channel: string }>;
+	searchParams: Promise<{ after?: string; approach?: string }>;
 };
 
 export default function AccountOrdersPage({ params, searchParams }: Props) {
@@ -25,30 +24,21 @@ export default function AccountOrdersPage({ params, searchParams }: Props) {
 }
 
 async function AccountOrdersContent({ params, searchParams }: Props) {
-	const [{ locale }, { after }] = await Promise.all([params, searchParams]);
+	const [{ locale, channel }, { after, approach }] = await Promise.all([params, searchParams]);
 	const t = await getTranslations({ locale, namespace: "account.orders" });
 	const tErrors = await getTranslations({ locale, namespace: "account.errors" });
-	const tOrder = await getTranslations({ locale, namespace: "account" });
-	const tStatus = await getTranslations({ locale, namespace: "account.orderStatus" });
 
 	if (!(await hasAuthSession())) {
 		return <AccountOrdersError title={t("title")} message={t("signInRequired")} />;
 	}
 
-	const result = await getCurrentUserOrders(locale, ORDERS_PER_PAGE, after);
+	const result = await getBuyAgainHistory(channel, ORDERS_PER_PAGE, after).catch(() => null);
 
-	if (!result.ok) {
+	if (!result) {
 		return <AccountOrdersError title={t("title")} message={tErrors("loadOrdersFailed")} />;
 	}
 
-	if (!result.data.me) {
-		return <AccountOrdersError title={t("title")} message={t("signInRequired")} />;
-	}
-
-	const ordersConnection = result.data.me.orders;
-	const orders = ordersConnection?.edges ?? [];
-	const pageInfo = ordersConnection?.pageInfo;
-	const totalCount = ordersConnection?.totalCount ?? 0;
+	const { orders, pageInfo, totalCount } = result;
 
 	return (
 		<div className="space-y-6">
@@ -63,16 +53,12 @@ async function AccountOrdersContent({ params, searchParams }: Props) {
 				</div>
 			) : (
 				<>
-					<div className="space-y-2">
-						{orders.map(({ node: order }) => (
-							<OrderRow
-								key={order.id}
-								order={order}
-								localeSlug={locale}
-								labels={buildOrderRowLabels(tOrder, tStatus, order)}
-							/>
-						))}
-					</div>
+					<BuyAgainHistory
+						orders={orders}
+						channel={channel}
+						localeSlug={locale}
+						initialApproach={approach === "preview" || approach === "shelf" ? approach : "compact"}
+					/>
 
 					{pageInfo?.hasNextPage && pageInfo.endCursor && (
 						<div className="flex justify-center pt-2">

@@ -1,0 +1,92 @@
+query BuyAgainVariants($channel: String!, $ids: [ID!], $after: String) {
+	productVariants(first: 100, ids: $ids, channel: $channel, after: $after) {
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+		edges {
+			node {
+				id
+				name
+				quantityAvailable
+				pricing {
+					price {
+						gross {
+							amount
+							currency
+						}
+					}
+				}
+				product {
+					id
+					name
+					isAvailable
+					thumbnail(size: 256, format: WEBP) {
+						url
+						alt
+					}
+				}
+			}
+		}
+	}
+}
+
+query BuyAgainHistory($first: Int!, $after: String) {
+	me {
+		orders(first: $first, after: $after) {
+			totalCount
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+			edges {
+				node {
+					id
+					number
+					created
+					statusDisplay
+					channel {
+						slug
+					}
+					total {
+						gross {
+							amount
+							currency
+						}
+					}
+					lines {
+						id
+						productName
+						variantName
+						quantity
+						thumbnail(size: 256, format: WEBP) {
+							url
+							alt
+						}
+						variant {
+							id
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+mutation BuyAgainAddLines($id: ID!, $lines: [CheckoutLineInput!]!) {
+	checkoutLinesAdd(id: $id, lines: $lines) {
+		checkout {
+			id
+			lines {
+				quantity
+				variant {
+					id
+				}
+			}
+		}
+		errors {
+			code
+			message
+		}
+	}
+}
