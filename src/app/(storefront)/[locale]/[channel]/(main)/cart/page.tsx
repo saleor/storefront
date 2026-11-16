@@ -13,6 +13,7 @@ import { buildBrowsePageMetadata } from "@/lib/seo";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buttonClassName } from "@/ui/components/ui/button";
+import { variantDisplayName } from "@/lib/variant-name";
 
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
@@ -78,50 +79,55 @@ async function CartContent({
 					role="list"
 					className="divide-y divide-border border-b border-t border-border"
 				>
-					{checkout.lines.map((item) => (
-						<li key={item.id} className="flex py-4">
-							<div className="aspect-square h-24 w-24 shrink-0 overflow-hidden rounded-md border bg-muted sm:h-32 sm:w-32">
-								{item.variant?.product?.thumbnail?.url && (
-									<Image
-										src={item.variant.product.thumbnail.url}
-										alt={item.variant.product.thumbnail.alt ?? item.variant.product.name}
-										width={200}
-										height={200}
-										className="h-full w-full object-contain object-center"
-									/>
-								)}
-							</div>
-							<div className="relative flex flex-1 flex-col justify-between p-4 py-2">
-								<div className="flex justify-between justify-items-start gap-4">
-									<div>
-										<LinkWithChannel
-											href={getHrefForVariant({
-												productSlug: item.variant.product.slug,
-												variantId: item.variant.id,
-											})}
-										>
-											<h2 className="font-medium text-foreground">{item.variant?.product?.name}</h2>
-										</LinkWithChannel>
-										<p className="mt-1 text-sm text-muted-foreground">
-											{item.variant?.product?.category?.name}
-										</p>
-										{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
-											<p className="mt-1 text-sm text-muted-foreground">
-												{t("variant", { name: item.variant.name })}
+					{checkout.lines.map((item) => {
+						const variantName = variantDisplayName(item.variant);
+						return (
+							<li key={item.id} className="flex py-4">
+								<div className="aspect-square h-24 w-24 shrink-0 overflow-hidden rounded-md border bg-muted sm:h-32 sm:w-32">
+									{item.variant?.product?.thumbnail?.url && (
+										<Image
+											src={item.variant.product.thumbnail.url}
+											alt={item.variant.product.thumbnail.alt ?? item.variant.product.name}
+											width={200}
+											height={200}
+											className="h-full w-full object-contain object-center"
+										/>
+									)}
+								</div>
+								<div className="relative flex min-w-0 flex-1 flex-col justify-between p-4 py-2">
+									<div className="flex justify-between justify-items-start gap-4">
+										<div className="min-w-0">
+											<LinkWithChannel
+												href={getHrefForVariant({
+													productSlug: item.variant.product.slug,
+													variantId: item.variant.id,
+												})}
+											>
+												<h2 className="font-medium text-foreground [overflow-wrap:anywhere]">
+													{item.variant?.product?.name}
+												</h2>
+											</LinkWithChannel>
+											<p className="mt-1 text-sm text-muted-foreground [overflow-wrap:anywhere]">
+												{item.variant?.product?.category?.name}
 											</p>
-										)}
+											{variantName && (
+												<p className="mt-1 line-clamp-2 text-sm text-muted-foreground [overflow-wrap:anywhere]">
+													{t("variant", { name: variantName })}
+												</p>
+											)}
+										</div>
+										<p className="shrink-0 whitespace-nowrap text-right font-semibold text-foreground">
+											{formatMoney(item.totalPrice.gross.amount, item.totalPrice.gross.currency, intlLocale)}
+										</p>
 									</div>
-									<p className="text-right font-semibold text-foreground">
-										{formatMoney(item.totalPrice.gross.amount, item.totalPrice.gross.currency, intlLocale)}
-									</p>
+									<div className="flex justify-between">
+										<div className="text-sm font-bold">{t("quantity", { count: item.quantity })}</div>
+										<DeleteLineButton deleteLine={deleteCartLine.bind(null, checkoutId, item.id)} />
+									</div>
 								</div>
-								<div className="flex justify-between">
-									<div className="text-sm font-bold">{t("quantity", { count: item.quantity })}</div>
-									<DeleteLineButton deleteLine={deleteCartLine.bind(null, checkoutId, item.id)} />
-								</div>
-							</div>
-						</li>
-					))}
+							</li>
+						);
+					})}
 				</ul>
 
 				<div className="mt-12">

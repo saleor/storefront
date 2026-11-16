@@ -1,3 +1,4 @@
+import { isSaleorGlobalIdOf } from "@/lib/variant-name";
 import { isOrderViewHmacToken } from "./token";
 
 export type ClassifiedOrderViewKey =
@@ -6,12 +7,7 @@ export type ClassifiedOrderViewKey =
 	| { kind: "number"; number: string };
 
 export function isSaleorOrderGlobalId(value: string): boolean {
-	try {
-		const decoded = Buffer.from(value, "base64").toString("utf8");
-		return decoded.startsWith("Order:");
-	} catch {
-		return false;
-	}
+	return isSaleorGlobalIdOf(value, "Order");
 }
 
 export function classifyOrderViewKey(raw: string): ClassifiedOrderViewKey {
