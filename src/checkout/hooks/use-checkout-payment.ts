@@ -48,7 +48,7 @@ export function useCheckoutPayment({
 	userAddresses,
 	authenticated,
 }: UseCheckoutPaymentParams) {
-	const { refreshCheckout } = useCheckoutData();
+	const { refreshCheckout, setCheckout } = useCheckoutData();
 	const { setAvailabilityIssue } = useCheckoutAvailability();
 	const paymentMessages = useCheckoutPaymentMessages();
 	const gatewayMessages = useCheckoutGatewayMessages();
@@ -151,6 +151,12 @@ export function useCheckoutPayment({
 				);
 				if (!fulfillment.ok) {
 					if (fulfillment.reason === "availability") {
+						// `refreshCheckout()` above already replaced the checkout in context, so a stock
+						// issue reported from this render lapses on the next one. Adopt the checkout Saleor
+						// returned: its `problems` keep the lines flagged and Pay blocked.
+						if (fulfillment.checkout) {
+							setCheckout(fulfillment.checkout);
+						}
 						setAvailabilityIssue(fulfillment.issue);
 					} else {
 						setErrors({ payment: fulfillment.error });
@@ -208,6 +214,7 @@ export function useCheckoutPayment({
 			authenticated,
 			provider,
 			refreshCheckout,
+			setCheckout,
 			setAvailabilityIssue,
 			paymentMessages,
 			gatewayMessages,

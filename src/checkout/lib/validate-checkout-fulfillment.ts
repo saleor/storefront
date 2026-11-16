@@ -7,6 +7,7 @@ import {
 	type CheckoutAvailabilityIssue,
 	type CheckoutProblemLike,
 } from "@/checkout/lib/checkout-availability";
+import type { ServerCheckout } from "@/checkout/lib/checkout-types";
 
 type FulfillmentCheckout = {
 	id: string;
@@ -18,7 +19,18 @@ type FulfillmentCheckout = {
 
 export type CheckoutFulfillmentResult =
 	| { ok: true }
-	| { ok: false; reason: "availability"; issue: CheckoutAvailabilityIssue }
+	| {
+			ok: false;
+			reason: "availability";
+			issue: CheckoutAvailabilityIssue;
+			/**
+			 * The checkout Saleor returned from the address re-submit, when the lines came from its
+			 * `problems`. A caller whose context may hold an older snapshot puts it in context, so
+			 * the banner and the Pay block read the live `problems` (a stock issue reported against
+			 * an older snapshot lapses on the next render).
+			 */
+			checkout?: ServerCheckout;
+	  }
 	| { ok: false; reason: "error"; error: string };
 
 /**
@@ -42,37 +54,32 @@ export async function validateCheckoutFulfillment(
 	checkout: FulfillmentCheckout,
 	fallbackError: string,
 ): Promise<CheckoutFulfillmentResult> {
-	let problems = checkout.problems;
+	if (!checkout.isShippingRequired || !checkout.shippingAddress) {
+		const issue = availabilityIssueFromProblems(checkout.problems);
+		return issue ? { ok: false, reason: "availability", issue } : { ok: true };
+	}
 
-	if (checkout.isShippingRequired && checkout.shippingAddress) {
-		const result = await updateCheckoutShippingAddress(
-			checkout.id,
-			getAddressInputDataFromAddress(checkout.shippingAddress),
-			false,
-		);
+	const result = await updateCheckoutShippingAddress(
+		checkout.id,
+		getAddressInputDataFromAddress(checkout.shippingAddress),
+		false,
+	);
 
-		if (!result.ok) {
-			if (result.fieldErrors?.length) {
-				const issue = availabilityIssueFromFieldErrors(checkout.lines, result.fieldErrors);
-				if (issue) {
-					return { ok: false, reason: "availability", issue };
-				}
+	if (!result.ok) {
+		if (result.fieldErrors?.length) {
+			const issue = availabilityIssueFromFieldErrors(checkout.lines, result.fieldErrors);
+			if (issue) {
+				return { ok: false, reason: "availability", issue };
 			}
-
-			return {
-				ok: false,
-				reason: "error",
-				error: result.error ?? result.fieldErrors?.[0]?.message ?? fallbackError,
-			};
 		}
 
-		problems = result.checkout.problems;
+		return {
+			ok: false,
+			reason: "error",
+			error: result.error ?? result.fieldErrors?.[0]?.message ?? fallbackError,
+		};
 	}
 
-	const issue = availabilityIssueFromProblems(problems);
-	if (issue) {
-		return { ok: false, reason: "availability", issue };
-	}
-
-	return { ok: true };
+	const issue = availabilityIssueFromProblems(result.checkout.problems);
+	return issue ? { ok: false, reason: "availability", issue, checkout: result.checkout } : { ok: true };
 }

@@ -65,6 +65,9 @@ describe("validateCheckoutFulfillment", () => {
 				isExact: true,
 			},
 		});
+		await expect(
+			validateCheckoutFulfillment(checkout, "Could not verify availability."),
+		).resolves.not.toHaveProperty("checkout");
 		expect(updateAddress).toHaveBeenCalledWith(
 			checkout.id,
 			expect.objectContaining({ country: "US" }),
@@ -74,25 +77,30 @@ describe("validateCheckoutFulfillment", () => {
 
 	it("returns an availability issue when Saleor accepts the address but lists a stock problem", async () => {
 		// Channel with `useLegacyErrorFlow: false`: no mutation error, the line is in `problems`.
+		const returned = {
+			...checkout,
+			problems: [
+				{
+					__typename: "CheckoutLineProblemInsufficientStock",
+					availableQuantity: 0,
+					line: { id: "line-m" },
+				},
+			],
+		};
 		updateAddress.mockResolvedValue({
 			ok: true,
-			checkout: {
-				...checkout,
-				problems: [
-					{
-						__typename: "CheckoutLineProblemInsufficientStock",
-						availableQuantity: 0,
-						line: { id: "line-m" },
-					},
-				],
-			},
+			checkout: returned,
 		} as unknown as Awaited<ReturnType<typeof updateCheckoutShippingAddress>>);
 
-		await expect(validateCheckoutFulfillment(checkout, "Could not verify availability.")).resolves.toEqual({
+		const result = await validateCheckoutFulfillment(checkout, "Could not verify availability.");
+		expect(result).toEqual({
 			ok: false,
 			reason: "availability",
 			issue: { message: "", lineIds: ["line-m"], isExact: true, cause: "stock" },
+			checkout: returned,
 		});
+		// The caller may put it in context, so it must be the checkout Saleor returned, not the snapshot.
+		expect(!result.ok && result.reason === "availability" && result.checkout).toBe(returned);
 	});
 
 	it("asks Saleor again even when the snapshot passed in lists a stock problem", async () => {
@@ -141,6 +149,17 @@ describe("validateCheckoutFulfillment", () => {
 			reason: "availability",
 			issue: { message: "", lineIds: ["line-m"], isExact: true, cause: "stock" },
 		});
+		await expect(
+			validateCheckoutFulfillment(
+				{
+					...checkout,
+					isShippingRequired: false,
+					shippingAddress: null,
+					problems: [{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-m" } }],
+				},
+				"Could not verify availability.",
+			),
+		).resolves.not.toHaveProperty("checkout");
 		expect(updateAddress).not.toHaveBeenCalled();
 	});
 

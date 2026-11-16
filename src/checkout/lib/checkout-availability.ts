@@ -162,6 +162,21 @@ export function mergeAvailabilityIssues(
 	};
 }
 
+/**
+ * Text for a surface that cannot show the banner, such as a wallet payment sheet: Saleor's
+ * message when it sent one, otherwise the banner copy. An issue read from `checkout.problems`
+ * has no message of its own.
+ */
+export function availabilityIssueMessage(
+	issue: CheckoutAvailabilityIssue,
+	copy: { outOfStock: (count: number) => string; unavailable: string },
+): string {
+	if (issue.message) {
+		return issue.message;
+	}
+	return issue.cause === "stock" ? copy.outOfStock(Math.max(issue.lineIds.length, 1)) : copy.unavailable;
+}
+
 /** Flagged lines that are still in the cart, in cart order. */
 export function unavailableLineIdsInCart(
 	issue: CheckoutAvailabilityIssue | null,
