@@ -1,0 +1,7 @@
+# Cheapest session read. Run through the kernel when the access token is about to expire: the
+# auth SDK renews it on the way out, so a server-to-server caller can then read a fresh token.
+query SessionTokenCheck {
+	me {
+		id
+	}
+}

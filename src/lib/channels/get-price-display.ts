@@ -66,6 +66,15 @@ export async function getPriceReductionReference(channel: string): Promise<Price
 		return override;
 	}
 
+	return (await isEuEeaChannel(channel)) ? "prior-price" : "list-price";
+}
+
+/**
+ * Whether the channel sells into the EU or EEA: it ships to at least one of
+ * `PRIOR_PRICE_COUNTRIES`; without shipping countries, judged by its default country; when
+ * neither is known, true (the stricter rules apply). Ignores the price-rule override.
+ */
+export async function isEuEeaChannel(channel: string): Promise<boolean> {
 	const { shippingCountries } = await getChannelPriceDisplay(channel);
 	// Only a channel without shipping countries needs the default country (app token).
 	const defaultCountry =
@@ -74,9 +83,11 @@ export async function getPriceReductionReference(channel: string): Promise<Price
 					?.defaultCountry.code
 			: null;
 
-	return resolvePriceReductionReference({
-		shippingCountries,
-		defaultCountry,
-		priorPriceCountries: PRIOR_PRICE_COUNTRIES,
-	});
+	return (
+		resolvePriceReductionReference({
+			shippingCountries,
+			defaultCountry,
+			priorPriceCountries: PRIOR_PRICE_COUNTRIES,
+		}) === "prior-price"
+	);
 }

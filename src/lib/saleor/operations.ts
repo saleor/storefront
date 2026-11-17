@@ -50,6 +50,7 @@ const CORE_OPERATIONS = {
 
 	// Storefront session reads.
 	CurrentUser: session(),
+	SessionTokenCheck: session(),
 	CurrentUserProfile: session(),
 	CurrentUserOrderList: session(),
 	CurrentUserOrdersPaginated: session(),

@@ -18,7 +18,8 @@ import { CopyrightText } from "./copyright-text";
 import { FooterAttribution } from "./footer-attribution";
 import { FooterPhotoCredits } from "./footer-photo-credits";
 import { brandConfig } from "@/config/brand";
-import { IMPRINT_PATH, LEGAL_PAGE_KEYS } from "@/config/legal";
+import { IMPRINT_PATH, LEGAL_PAGE_KEYS, WITHDRAW_PATH } from "@/config/legal";
+import { isWithdrawalAvailable } from "@/lib/withdrawals/availability";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { getLegalLinks } from "@/lib/catalog/get-legal-links";
 import { getSellerIdentity } from "@/lib/channels/get-seller-identity";
@@ -35,14 +36,18 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 		? await getStorefrontChannelSlugs()
 		: getStaticStorefrontChannelSlugs();
 
-	const [menuItems, channels, content, seller, legalLinks, tLegal] = await Promise.all([
-		getFooterMenuItems(channel, locale),
-		shouldFetchChannelMetadata(resolvedSlugs) ? getCachedChannelsList() : Promise.resolve(null),
-		getStorefrontContent(channel, locale),
-		getSellerIdentity(),
-		getLegalLinks(locale),
-		getTranslations({ locale, namespace: "legal.footer" }),
-	]);
+	const [menuItems, channels, content, seller, legalLinks, tLegal, withdrawal, tWithdraw] = await Promise.all(
+		[
+			getFooterMenuItems(channel, locale),
+			shouldFetchChannelMetadata(resolvedSlugs) ? getCachedChannelsList() : Promise.resolve(null),
+			getStorefrontContent(channel, locale),
+			getSellerIdentity(),
+			getLegalLinks(locale),
+			getTranslations({ locale, namespace: "legal.footer" }),
+			isWithdrawalAvailable(channel),
+			getTranslations({ locale, namespace: "withdraw" }),
+		],
+	);
 
 	// Who sells, on every page: the legal name is in the copyright line, the address under
 	// it. The imprint has the rest.
@@ -50,13 +55,18 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 		? sellerAddressLines(seller.address, resolveLocaleFromSlug(locale).bcp47).join(" · ")
 		: null;
 	// Only pages that exist: the imprint needs a seller, the rest need their Saleor Page.
+	// The withdrawal function sits right after the withdrawal information, on every page of a
+	// channel that sells into the EU/EEA.
+	const withdrawLink = { label: tWithdraw("entry"), path: WITHDRAW_PATH };
 	const legalNav = [
 		...(seller ? [{ label: tLegal("imprint"), path: IMPRINT_PATH }] : []),
 		...LEGAL_PAGE_KEYS.flatMap((key) => {
 			const link = legalLinks[key];
-			return link ? [{ label: link.title, path: link.path }] : [];
+			const page = link ? [{ label: link.title, path: link.path }] : [];
+			return key === "withdrawal" && withdrawal ? [...page, withdrawLink] : page;
 		}),
 	];
+	if (withdrawal && !legalNav.includes(withdrawLink)) legalNav.push(withdrawLink);
 
 	const footerMenuItems = menuItems ?? [];
 	const localeOptions = getStorefrontLocaleOptions();

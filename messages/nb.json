@@ -700,5 +700,101 @@
 			"navLabel": "Juridisk informasjon",
 			"imprint": "Om selskapet"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "Angre kjøpet",
+			"description": "Angre et kjøp: oppgi bestillingen og bekreft."
+		},
+		"entry": "Angre kjøpet",
+		"step": "Trinn {step} av 2",
+		"intro": "Fortell oss hvilken bestilling du vil angre. Du bekrefter i neste trinn.",
+		"fields": {
+			"name": "Fullt navn",
+			"email": "E-post for bekreftelsen",
+			"orderNumber": "Bestillingsnummer",
+			"orderNumberHint": "Du finner bestillingsnummeret i ordrebekreftelsen.",
+			"honeypot": "La dette feltet stå tomt"
+		},
+		"continue": "Fortsett",
+		"back": "Tilbake",
+		"whichOrder": "Hvilken bestilling?",
+		"orderLabel": "Bestilling {number}",
+		"period": {
+			"endsOn": "Du kan angre til {date}.",
+			"notStarted": "Angrefristen begynner når bestillingen er levert.",
+			"mayHaveEnded": "Angrefristen kan være utløpt. Du kan likevel sende angremeldingen; butikken vurderer den."
+		},
+		"earlier": "Allerede angret {date} kl. {time}: {items}",
+		"fullyWithdrawn": "Hele denne bestillingen er allerede angret.",
+		"review": {
+			"title": "Se over angremeldingen",
+			"scope": "Hva vil du angre?",
+			"scopeWhole": "Hele bestillingen",
+			"scopeLines": "Bare noen varer",
+			"scopeItems": "Bare noen varer: hvilke?",
+			"itemsTextLabel": "Hvilke varer?",
+			"quantity": "Antall",
+			"statement": "Din melding",
+			"confirm": "Bekreft angring",
+			"stubConfirm": "Send angremeldingen på e-post"
+		},
+		"receipt": {
+			"title": "Angremelding mottatt",
+			"receivedAt": "Vi mottok angremeldingen din {date} kl. {time} ({zone}).",
+			"order": "Bestilling",
+			"scope": "Omfang",
+			"scopeWhole": "Hele bestillingen",
+			"scopeLines": "{count, plural, one {# vare} other {# varer}}",
+			"scopeItems": "Som beskrevet",
+			"sentTo": "Bekreftelse sendt til",
+			"nextSteps": "Hva som skjer videre, står på siden <link>{title}</link>.",
+			"nextStepsNoPage": "Butikken kontakter deg om retur av varene og tilbakebetaling.",
+			"late": "Angrefristen kan være utløpt. Butikken vurderer saken og tar kontakt.",
+			"save": "Lagre kvittering"
+		},
+		"email": {
+			"title": "Send angremeldingen på e-post",
+			"intro": "Send denne teksten til {email}. Angringen gjelder fra e-posten din kommer frem.",
+			"introNoAddress": "Send denne teksten til butikkens e-postadresse, som står i kontaktinformasjonen vår. Angringen gjelder fra e-posten din kommer frem.",
+			"open": "Åpne e-post",
+			"copy": "Kopier tekst",
+			"copied": "Kopiert",
+			"subject": "Angremelding, bestilling {number}",
+			"subjectNoNumber": "Angremelding"
+		},
+		"notices": {
+			"notMatched": "Vi fant ingen bestilling med disse opplysningene. Sjekk bestillingsnummeret og e-postadressen, eller send angremeldingen på e-post: det er også gyldig.",
+			"rateLimited": "For mange forsøk. Prøv igjen om noen minutter, eller send angremeldingen på e-post: det er også gyldig.",
+			"unavailable": "Angring på nett er ikke tilgjengelig akkurat nå. Prøv igjen, eller send angremeldingen på e-post: det er også gyldig.",
+			"automation": "Sjekk opplysningene og bekreft på nytt.",
+			"conflict": "Se over angremeldingen og bekreft på nytt.",
+			"statementUpdated": "Vi har tilpasset meldingen til valget ditt. Se over den og bekreft på nytt.",
+			"noOrders": "Du har ingen bestillinger du kan angre akkurat nå. For en annen bestilling, skriv inn nummeret nedenfor.",
+			"invalid": "Noen opplysninger må rettes."
+		},
+		"errors": {
+			"summary": "Sjekk opplysningene",
+			"nameRequired": "Skriv inn fullt navn.",
+			"nameTooLong": "Maks 200 tegn.",
+			"emailInvalid": "Skriv inn en gyldig e-postadresse, for eksempel navn@example.com.",
+			"orderNumberInvalid": "Skriv inn bestillingsnummeret med sifre, for eksempel 1042.",
+			"orderRequired": "Velg en bestilling.",
+			"linesRequired": "Velg minst én vare.",
+			"itemsTextRequired": "Beskriv hvilke varer du angrer.",
+			"itemsTextTooLong": "Maks 1000 tegn.",
+			"notMatched": "Sjekk denne opplysningen."
+		},
+		"actions": {
+			"tryAgain": "Prøv igjen",
+			"sendByEmail": "Send på e-post"
+		},
+		"statement": {
+			"wholeOrder": "Jeg benytter herved angreretten for kjøpet av varene i bestilling {order} fra {date}. Navn: {name}.",
+			"wholeOrderNoDate": "Jeg benytter herved angreretten for kjøpet av varene i bestilling {order}. Navn: {name}.",
+			"lines": "Jeg benytter herved angreretten for kjøpet av følgende varer: {items}. Bestilling {order} fra {date}. Navn: {name}.",
+			"itemsDescription": "Jeg benytter herved angreretten for kjøpet av følgende varer fra bestilling {order}: {text}. Navn: {name}.",
+			"item": "{name} ({quantity}×)"
+		}
 	}
 }

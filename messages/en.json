@@ -699,5 +699,101 @@
 			"navLabel": "Legal",
 			"imprint": "Imprint"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "Withdraw from contract",
+			"description": "Withdraw from a purchase: tell us which order, then confirm."
+		},
+		"entry": "Withdraw from contract",
+		"step": "Step {step} of 2",
+		"intro": "Tell us which order you want to withdraw from. You'll confirm it in the next step.",
+		"fields": {
+			"name": "Full name",
+			"email": "Email for the confirmation",
+			"orderNumber": "Order number",
+			"orderNumberHint": "You'll find the order number in your order confirmation.",
+			"honeypot": "Leave this field empty"
+		},
+		"continue": "Continue",
+		"back": "Back",
+		"whichOrder": "Which order?",
+		"orderLabel": "Order {number}",
+		"period": {
+			"endsOn": "You can withdraw until {date}.",
+			"notStarted": "The withdrawal period starts when your order is delivered.",
+			"mayHaveEnded": "Your withdrawal period may have ended. You can still send your withdrawal; the shop will check it."
+		},
+		"earlier": "Already withdrawn on {date} at {time}: {items}",
+		"fullyWithdrawn": "Everything from this order has already been withdrawn.",
+		"review": {
+			"title": "Review your withdrawal",
+			"scope": "What do you want to withdraw from?",
+			"scopeWhole": "The whole order",
+			"scopeLines": "Only some items",
+			"scopeItems": "Only some items: which ones?",
+			"itemsTextLabel": "Which items?",
+			"quantity": "Quantity",
+			"statement": "Your statement",
+			"confirm": "Confirm withdrawal",
+			"stubConfirm": "Send your withdrawal by email"
+		},
+		"receipt": {
+			"title": "Withdrawal received",
+			"receivedAt": "We received your withdrawal on {date} at {time} ({zone}).",
+			"order": "Order",
+			"scope": "Scope",
+			"scopeWhole": "Whole order",
+			"scopeLines": "{count, plural, one {# item} other {# items}}",
+			"scopeItems": "As you described",
+			"sentTo": "Confirmation sent to",
+			"nextSteps": "What happens next is explained in our <link>{title}</link>.",
+			"nextStepsNoPage": "The shop will contact you about returning the goods and your refund.",
+			"late": "Your withdrawal period may have ended. The shop will check and get back to you.",
+			"save": "Save receipt"
+		},
+		"email": {
+			"title": "Send your withdrawal by email",
+			"intro": "Send this text to {email}. Your withdrawal counts from when your email arrives.",
+			"introNoAddress": "Send this text to the shop's email address, listed in our imprint. Your withdrawal counts from when your email arrives.",
+			"open": "Open email",
+			"copy": "Copy text",
+			"copied": "Copied",
+			"subject": "Withdrawal, order {number}",
+			"subjectNoNumber": "Withdrawal"
+		},
+		"notices": {
+			"notMatched": "We couldn't find an order with these details. Check the order number and email address, or send your withdrawal by email: that is also valid.",
+			"rateLimited": "There have been too many attempts. Try again in a few minutes, or send your withdrawal by email: that is also valid.",
+			"unavailable": "Our online withdrawal service isn't available right now. Try again, or send your withdrawal by email: that is also valid.",
+			"automation": "Please check the details and confirm again.",
+			"conflict": "Please check your withdrawal and confirm again.",
+			"statementUpdated": "We updated your statement to match your choice. Check it and confirm again.",
+			"noOrders": "You have no orders you can withdraw from right now. For another order, enter its number below.",
+			"invalid": "Some details need a correction."
+		},
+		"errors": {
+			"summary": "Please check the details",
+			"nameRequired": "Enter your full name.",
+			"nameTooLong": "Enter at most 200 characters.",
+			"emailInvalid": "Enter a valid email address, like name@example.com.",
+			"orderNumberInvalid": "Enter the order number as digits, like 1042.",
+			"orderRequired": "Choose an order.",
+			"linesRequired": "Choose at least one item.",
+			"itemsTextRequired": "Describe which items you are withdrawing from.",
+			"itemsTextTooLong": "Enter at most 1000 characters.",
+			"notMatched": "Check this detail."
+		},
+		"actions": {
+			"tryAgain": "Try again",
+			"sendByEmail": "Send by email"
+		},
+		"statement": {
+			"wholeOrder": "I hereby withdraw from my contract for the purchase of the goods in order {order} of {date}. Name: {name}.",
+			"wholeOrderNoDate": "I hereby withdraw from my contract for the purchase of the goods in order {order}. Name: {name}.",
+			"lines": "I hereby withdraw from my contract for the purchase of the following goods: {items}. Order {order} of {date}. Name: {name}.",
+			"itemsDescription": "I hereby withdraw from my contract for the purchase of the following goods from order {order}: {text}. Name: {name}.",
+			"item": "{name} ({quantity}×)"
+		}
 	}
 }

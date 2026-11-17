@@ -50,6 +50,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | sessionQuery     | OrderByNumberDocument                   | —                                               | src/lib/account/get-orders.ts › getOrdersForNumberLookup                                      |
 | rawMutation      | —                                       | —                                               | src/lib/auth/confirm-account.ts › confirmAccountWithToken                                     |
 | sessionQuery     | operation                               | —                                               | src/lib/auth/fetch-authenticated-user.ts › fetchAuthenticatedUserIfSession                    |
+| sessionQuery     | SessionTokenCheckDocument               | —                                               | src/lib/auth/session-access-token.ts › getSessionAccessToken                                  |
 | cachedQuery      | ProductListByCategoryDocument           | CACHE_PROFILES.categories                       | src/lib/catalog/get-category-data.ts › getCategoryData.fetchCategory                          |
 | cachedQuery      | ProductListByCollectionDocument         | CACHE_PROFILES.collections                      | src/lib/catalog/get-collection-data.ts › getCollectionData.fetchCollection                    |
 | cachedQuery      | ProductListByCollectionDocument         | CACHE_PROFILES.collections                      | src/lib/catalog/get-featured-products.ts › getFeaturedProducts                                |

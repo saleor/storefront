@@ -11,3 +11,4 @@
 - The product page shows "Material & safety" under the buy box for a product with any of the mapped attributes, and those attributes are gone from "Product Details".
 - Without a returns window in the Policies Model, no page mentions returns.
 - The payment step's button reads "Buy now" / "Zahlungspflichtig bestellen", and the legal notice appears above it once the `terms`, `withdrawal` and `privacy` pages exist (in the sticky bar on phones).
+- On an EU/EEA channel the footer links "Vertrag widerrufen" / "Withdraw from contract"; `/{locale}/{channel}/withdraw` shows step 1, and the second step ends in "Send your withdrawal by email" with the seller's address. The route sends `Referrer-Policy: no-referrer`. A non-EU channel answers 404.

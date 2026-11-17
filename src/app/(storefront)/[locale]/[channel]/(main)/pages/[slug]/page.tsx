@@ -9,6 +9,11 @@ import { getPageData } from "@/lib/catalog/get-page-data";
 import { buildCatalogPathSuffixByLocale, buildLocaleSlugMap } from "@/lib/catalog/locale-slugs";
 import { buildBrowsePageMetadata, resolveSeoDescription } from "@/lib/seo";
 import { PageContentSkeleton } from "@/ui/components/page-content-skeleton";
+import { getTranslations } from "next-intl/server";
+import { legalPageSlugs, WITHDRAW_PATH } from "@/config/legal";
+import { isWithdrawalAvailable } from "@/lib/withdrawals/availability";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { buttonClassName } from "@/ui/components/ui/button";
 
 const parser = edjsHTML();
 
@@ -68,6 +73,11 @@ async function PageContent({
 	const { title, content } = page;
 
 	const contentHtml = content ? parser.parse(JSON.parse(content)) : null;
+	// The withdrawal information page leads to the withdrawal function.
+	const withdrawCta =
+		page.slug === legalPageSlugs.withdrawal && (await isWithdrawalAvailable(params.channel))
+			? (await getTranslations({ locale: params.locale, namespace: "withdraw" }))("entry")
+			: null;
 
 	return (
 		<div className="container-content py-8 pb-16">
@@ -80,6 +90,11 @@ async function PageContent({
 					))}
 				</div>
 			)}
+			{withdrawCta ? (
+				<LinkWithChannel href={WITHDRAW_PATH} className={buttonClassName({ size: "lg", className: "mt-8" })}>
+					{withdrawCta}
+				</LinkWithChannel>
+			) : null}
 		</div>
 	);
 }

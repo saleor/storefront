@@ -145,6 +145,12 @@ const config = {
 				headers: [{ key: "Cache-Control", value: PUBLIC_ASSET_CACHE_CONTROL }],
 			},
 			{
+				// The withdraw page's `?order=` is a Saleor order ID, which reads that order's email and
+				// address anonymously: never send the URL on as a referrer (CDN images, outbound links).
+				source: "/:locale/:channel/withdraw",
+				headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
+			},
+			{
 				// OG Image API — output is a pure function of the query string, and each render
 				// is expensive, so cache hard. Social crawlers refetch aggressively.
 				source: "/api/og",

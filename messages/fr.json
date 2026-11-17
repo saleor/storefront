@@ -700,5 +700,101 @@
 			"navLabel": "Informations légales",
 			"imprint": "Mentions légales"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "Se rétracter du contrat",
+			"description": "Se rétracter d’un achat : indiquez la commande, puis confirmez."
+		},
+		"entry": "Se rétracter du contrat",
+		"step": "Étape {step} sur 2",
+		"intro": "Indiquez-nous la commande dont vous souhaitez vous rétracter. Vous confirmerez à l’étape suivante.",
+		"fields": {
+			"name": "Prénom et nom",
+			"email": "E-mail pour la confirmation",
+			"orderNumber": "Numéro de commande",
+			"orderNumberHint": "Le numéro figure dans votre confirmation de commande.",
+			"honeypot": "Laissez ce champ vide"
+		},
+		"continue": "Continuer",
+		"back": "Retour",
+		"whichOrder": "Quelle commande ?",
+		"orderLabel": "Commande {number}",
+		"period": {
+			"endsOn": "Rétractation possible jusqu’au {date}.",
+			"notStarted": "Le délai de rétractation commence à la livraison.",
+			"mayHaveEnded": "Votre délai de rétractation est peut-être expiré. Vous pouvez tout de même envoyer votre rétractation ; la boutique la vérifiera."
+		},
+		"earlier": "Déjà rétracté le {date} à {time} : {items}",
+		"fullyWithdrawn": "Vous vous êtes déjà rétracté de toute cette commande.",
+		"review": {
+			"title": "Vérifier votre rétractation",
+			"scope": "De quoi souhaitez-vous vous rétracter ?",
+			"scopeWhole": "Toute la commande",
+			"scopeLines": "Certains articles seulement",
+			"scopeItems": "Certains articles seulement : lesquels ?",
+			"itemsTextLabel": "Quels articles ?",
+			"quantity": "Quantité",
+			"statement": "Votre déclaration",
+			"confirm": "Confirmer la rétractation",
+			"stubConfirm": "Envoyer votre rétractation par e-mail"
+		},
+		"receipt": {
+			"title": "Rétractation reçue",
+			"receivedAt": "Nous avons reçu votre rétractation le {date} à {time} ({zone}).",
+			"order": "Commande",
+			"scope": "Portée",
+			"scopeWhole": "Toute la commande",
+			"scopeLines": "{count, plural, one {# article} other {# articles}}",
+			"scopeItems": "Comme décrit",
+			"sentTo": "Confirmation envoyée à",
+			"nextSteps": "La suite est expliquée dans notre page <link>{title}</link>.",
+			"nextStepsNoPage": "La boutique vous contactera pour le retour des articles et le remboursement.",
+			"late": "Votre délai de rétractation est peut-être expiré. La boutique vérifiera et reviendra vers vous.",
+			"save": "Enregistrer le justificatif"
+		},
+		"email": {
+			"title": "Envoyer votre rétractation par e-mail",
+			"intro": "Envoyez ce texte à {email}. Votre rétractation compte à partir de la réception de votre e-mail.",
+			"introNoAddress": "Envoyez ce texte à l’adresse e-mail de la boutique indiquée dans nos mentions légales. Votre rétractation compte à partir de la réception de votre e-mail.",
+			"open": "Ouvrir l’e-mail",
+			"copy": "Copier le texte",
+			"copied": "Copié",
+			"subject": "Rétractation, commande {number}",
+			"subjectNoNumber": "Rétractation"
+		},
+		"notices": {
+			"notMatched": "Aucune commande ne correspond à ces informations. Vérifiez le numéro de commande et l’adresse e-mail, ou envoyez votre rétractation par e-mail : c’est également valable.",
+			"rateLimited": "Trop de tentatives. Réessayez dans quelques minutes, ou envoyez votre rétractation par e-mail : c’est également valable.",
+			"unavailable": "Notre service de rétractation en ligne n’est pas disponible pour le moment. Réessayez, ou envoyez votre rétractation par e-mail : c’est également valable.",
+			"automation": "Vérifiez les informations et confirmez à nouveau.",
+			"conflict": "Vérifiez votre rétractation et confirmez à nouveau.",
+			"statementUpdated": "Nous avons adapté votre déclaration à votre choix. Vérifiez-la et confirmez à nouveau.",
+			"noOrders": "Vous n’avez aucune commande dont vous pouvez vous rétracter pour le moment. Pour une autre commande, saisissez son numéro ci-dessous.",
+			"invalid": "Certaines informations doivent être corrigées."
+		},
+		"errors": {
+			"summary": "Vérifiez les informations",
+			"nameRequired": "Saisissez votre prénom et votre nom.",
+			"nameTooLong": "200 caractères au maximum.",
+			"emailInvalid": "Saisissez une adresse e-mail valide, par exemple nom@example.com.",
+			"orderNumberInvalid": "Saisissez le numéro de commande en chiffres, par exemple 1042.",
+			"orderRequired": "Choisissez une commande.",
+			"linesRequired": "Choisissez au moins un article.",
+			"itemsTextRequired": "Indiquez les articles concernés.",
+			"itemsTextTooLong": "1000 caractères au maximum.",
+			"notMatched": "Vérifiez cette information."
+		},
+		"actions": {
+			"tryAgain": "Réessayer",
+			"sendByEmail": "Envoyer par e-mail"
+		},
+		"statement": {
+			"wholeOrder": "Par la présente, je me rétracte du contrat portant sur l’achat des biens de la commande {order} du {date}. Nom : {name}.",
+			"wholeOrderNoDate": "Par la présente, je me rétracte du contrat portant sur l’achat des biens de la commande {order}. Nom : {name}.",
+			"lines": "Par la présente, je me rétracte du contrat portant sur l’achat des biens suivants : {items}. Commande {order} du {date}. Nom : {name}.",
+			"itemsDescription": "Par la présente, je me rétracte du contrat portant sur l’achat des biens suivants de la commande {order} : {text}. Nom : {name}.",
+			"item": "{name} ({quantity}×)"
+		}
 	}
 }

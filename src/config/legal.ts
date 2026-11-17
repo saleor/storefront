@@ -22,3 +22,6 @@ export const LEGAL_PAGE_KEYS = Object.keys(legalPageSlugs) as LegalPageKey[];
 
 /** Path after `/{locale}/{channel}` of the imprint route. */
 export const IMPRINT_PATH = "/imprint";
+
+/** The withdrawal function (`/{locale}/{channel}/withdraw`), the same path in every language so links in order emails stay stable. */
+export const WITHDRAW_PATH = "/withdraw";

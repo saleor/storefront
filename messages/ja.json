@@ -697,5 +697,101 @@
 			"navLabel": "法的情報",
 			"imprint": "運営者情報"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "契約を撤回する",
+			"description": "購入の撤回：注文を指定して確定します。"
+		},
+		"entry": "契約を撤回する",
+		"step": "ステップ {step}/2",
+		"intro": "撤回したい注文を指定してください。次のステップで確定します。",
+		"fields": {
+			"name": "氏名",
+			"email": "確認メールの送信先",
+			"orderNumber": "注文番号",
+			"orderNumberHint": "注文番号は注文確認メールに記載されています。",
+			"honeypot": "この欄は空のままにしてください"
+		},
+		"continue": "次へ",
+		"back": "戻る",
+		"whichOrder": "どの注文ですか？",
+		"orderLabel": "注文 {number}",
+		"period": {
+			"endsOn": "{date}まで撤回できます。",
+			"notStarted": "撤回期間はお届け時から始まります。",
+			"mayHaveEnded": "撤回期間が終了している可能性があります。撤回の送信は可能です。ショップが確認します。"
+		},
+		"earlier": "{date} {time}に撤回済み：{items}",
+		"fullyWithdrawn": "この注文はすべて撤回済みです。",
+		"review": {
+			"title": "撤回内容の確認",
+			"scope": "何を撤回しますか？",
+			"scopeWhole": "注文全体",
+			"scopeLines": "一部の商品のみ",
+			"scopeItems": "一部の商品のみ（どれですか？）",
+			"itemsTextLabel": "どの商品ですか？",
+			"quantity": "数量",
+			"statement": "撤回の意思表示",
+			"confirm": "撤回を確定する",
+			"stubConfirm": "メールで撤回を送信する"
+		},
+		"receipt": {
+			"title": "撤回を受け付けました",
+			"receivedAt": "{date} {time}（{zone}）に撤回を受け付けました。",
+			"order": "注文",
+			"scope": "範囲",
+			"scopeWhole": "注文全体",
+			"scopeLines": "{count}点",
+			"scopeItems": "記載のとおり",
+			"sentTo": "確認メールの送信先",
+			"nextSteps": "今後の流れは<link>{title}</link>をご覧ください。",
+			"nextStepsNoPage": "商品の返送と返金について、ショップからご連絡します。",
+			"late": "撤回期間が終了している可能性があります。ショップが確認してご連絡します。",
+			"save": "控えを保存"
+		},
+		"email": {
+			"title": "メールで撤回を送信する",
+			"intro": "このテキストを {email} に送信してください。メールが届いた時点で撤回となります。",
+			"introNoAddress": "このテキストを、特定商取引法に基づく表記に記載のショップのメールアドレスに送信してください。メールが届いた時点で撤回となります。",
+			"open": "メールを開く",
+			"copy": "テキストをコピー",
+			"copied": "コピーしました",
+			"subject": "撤回（注文 {number}）",
+			"subjectNoNumber": "撤回"
+		},
+		"notices": {
+			"notMatched": "この内容に一致する注文が見つかりません。注文番号とメールアドレスをご確認いただくか、メールで撤回を送信してください。メールでも有効です。",
+			"rateLimited": "試行回数が多すぎます。数分後にもう一度お試しいただくか、メールで撤回を送信してください。メールでも有効です。",
+			"unavailable": "オンライン撤回は現在ご利用いただけません。もう一度お試しいただくか、メールで撤回を送信してください。メールでも有効です。",
+			"automation": "内容を確認して、もう一度確定してください。",
+			"conflict": "撤回内容を確認して、もう一度確定してください。",
+			"statementUpdated": "選択内容に合わせて意思表示を更新しました。確認して、もう一度確定してください。",
+			"noOrders": "現在撤回できる注文はありません。別の注文の場合は、下に注文番号を入力してください。",
+			"invalid": "一部の内容を修正してください。"
+		},
+		"errors": {
+			"summary": "入力内容をご確認ください",
+			"nameRequired": "氏名を入力してください。",
+			"nameTooLong": "200文字以内で入力してください。",
+			"emailInvalid": "有効なメールアドレスを入力してください（例：name@example.com）。",
+			"orderNumberInvalid": "注文番号を数字で入力してください（例：1042）。",
+			"orderRequired": "注文を選択してください。",
+			"linesRequired": "商品を1点以上選択してください。",
+			"itemsTextRequired": "撤回する商品を記入してください。",
+			"itemsTextTooLong": "1000文字以内で入力してください。",
+			"notMatched": "この内容をご確認ください。"
+		},
+		"actions": {
+			"tryAgain": "もう一度試す",
+			"sendByEmail": "メールで送信"
+		},
+		"statement": {
+			"wholeOrder": "私は、{date}の注文 {order} の商品の売買契約を撤回します。氏名：{name}。",
+			"wholeOrderNoDate": "私は、注文 {order} の商品の売買契約を撤回します。氏名：{name}。",
+			"lines": "私は、次の商品の売買契約を撤回します：{items}。{date}の注文 {order}。氏名：{name}。",
+			"itemsDescription": "私は、注文 {order} の次の商品の売買契約を撤回します：{text}。氏名：{name}。",
+			"item": "{name}（{quantity}点）"
+		}
 	}
 }

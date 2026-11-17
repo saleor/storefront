@@ -688,5 +688,101 @@
 			"navLabel": "법적 고지",
 			"imprint": "사업자 정보"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "계약 철회",
+			"description": "구매 철회: 주문을 지정한 뒤 확인하세요."
+		},
+		"entry": "계약 철회",
+		"step": "{step}/2단계",
+		"intro": "철회하려는 주문을 알려 주세요. 다음 단계에서 확인합니다.",
+		"fields": {
+			"name": "이름",
+			"email": "확인 메일을 받을 이메일",
+			"orderNumber": "주문 번호",
+			"orderNumberHint": "주문 번호는 주문 확인 메일에 있습니다.",
+			"honeypot": "이 칸은 비워 두세요"
+		},
+		"continue": "계속",
+		"back": "뒤로",
+		"whichOrder": "어떤 주문인가요?",
+		"orderLabel": "주문 {number}",
+		"period": {
+			"endsOn": "{date}까지 철회할 수 있습니다.",
+			"notStarted": "철회 기간은 배송 완료 시점부터 시작됩니다.",
+			"mayHaveEnded": "철회 기간이 끝났을 수 있습니다. 그래도 철회를 보낼 수 있으며 상점에서 확인합니다."
+		},
+		"earlier": "{date} {time}에 이미 철회됨: {items}",
+		"fullyWithdrawn": "이 주문은 이미 모두 철회되었습니다.",
+		"review": {
+			"title": "철회 내용 확인",
+			"scope": "무엇을 철회하시겠어요?",
+			"scopeWhole": "주문 전체",
+			"scopeLines": "일부 상품만",
+			"scopeItems": "일부 상품만: 어떤 상품인가요?",
+			"itemsTextLabel": "어떤 상품인가요?",
+			"quantity": "수량",
+			"statement": "철회 의사 표시",
+			"confirm": "철회 확인",
+			"stubConfirm": "이메일로 철회 보내기"
+		},
+		"receipt": {
+			"title": "철회가 접수되었습니다",
+			"receivedAt": "{date} {time}({zone})에 철회가 접수되었습니다.",
+			"order": "주문",
+			"scope": "범위",
+			"scopeWhole": "주문 전체",
+			"scopeLines": "{count}개 상품",
+			"scopeItems": "설명한 대로",
+			"sentTo": "확인 메일 발송",
+			"nextSteps": "이후 절차는 <link>{title}</link>에서 안내합니다.",
+			"nextStepsNoPage": "상품 반송과 환불에 대해 상점에서 연락드립니다.",
+			"late": "철회 기간이 끝났을 수 있습니다. 상점에서 확인한 뒤 연락드립니다.",
+			"save": "영수증 저장"
+		},
+		"email": {
+			"title": "이메일로 철회 보내기",
+			"intro": "이 내용을 {email}(으)로 보내 주세요. 이메일이 도착한 시점에 철회가 효력을 가집니다.",
+			"introNoAddress": "이 내용을 사업자 정보에 있는 상점 이메일 주소로 보내 주세요. 이메일이 도착한 시점에 철회가 효력을 가집니다.",
+			"open": "이메일 열기",
+			"copy": "내용 복사",
+			"copied": "복사됨",
+			"subject": "철회, 주문 {number}",
+			"subjectNoNumber": "철회"
+		},
+		"notices": {
+			"notMatched": "이 정보와 일치하는 주문을 찾을 수 없습니다. 주문 번호와 이메일 주소를 확인하거나 이메일로 철회를 보내 주세요. 이메일도 유효합니다.",
+			"rateLimited": "시도 횟수가 너무 많습니다. 몇 분 후 다시 시도하거나 이메일로 철회를 보내 주세요. 이메일도 유효합니다.",
+			"unavailable": "온라인 철회를 지금은 사용할 수 없습니다. 다시 시도하거나 이메일로 철회를 보내 주세요. 이메일도 유효합니다.",
+			"automation": "정보를 확인하고 다시 확인을 눌러 주세요.",
+			"conflict": "철회 내용을 확인하고 다시 확인을 눌러 주세요.",
+			"statementUpdated": "선택에 맞게 의사 표시를 바꿨습니다. 확인 후 다시 확인을 눌러 주세요.",
+			"noOrders": "지금 철회할 수 있는 주문이 없습니다. 다른 주문이라면 아래에 주문 번호를 입력하세요.",
+			"invalid": "일부 정보를 수정해야 합니다."
+		},
+		"errors": {
+			"summary": "입력 내용을 확인해 주세요",
+			"nameRequired": "이름을 입력하세요.",
+			"nameTooLong": "200자 이하로 입력하세요.",
+			"emailInvalid": "올바른 이메일 주소를 입력하세요(예: name@example.com).",
+			"orderNumberInvalid": "주문 번호를 숫자로 입력하세요(예: 1042).",
+			"orderRequired": "주문을 선택하세요.",
+			"linesRequired": "상품을 하나 이상 선택하세요.",
+			"itemsTextRequired": "철회할 상품을 적어 주세요.",
+			"itemsTextTooLong": "1000자 이하로 입력하세요.",
+			"notMatched": "이 정보를 확인해 주세요."
+		},
+		"actions": {
+			"tryAgain": "다시 시도",
+			"sendByEmail": "이메일로 보내기"
+		},
+		"statement": {
+			"wholeOrder": "본인은 {date} 주문 {order}의 상품 구매 계약을 철회합니다. 이름: {name}.",
+			"wholeOrderNoDate": "본인은 주문 {order}의 상품 구매 계약을 철회합니다. 이름: {name}.",
+			"lines": "본인은 다음 상품의 구매 계약을 철회합니다: {items}. {date} 주문 {order}. 이름: {name}.",
+			"itemsDescription": "본인은 주문 {order}의 다음 상품 구매 계약을 철회합니다: {text}. 이름: {name}.",
+			"item": "{name} ({quantity}개)"
+		}
 	}
 }
