@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState, type FC } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { removeCheckoutLines } from "@/app/(checkout)/actions";
+import { removeCheckoutLines, updateCheckoutLineQuantity } from "@/app/(checkout)/actions";
 import { Button } from "@/ui/components/ui/button";
 import { CheckoutIssueBanner } from "@/checkout/components/checkout-issue-banner";
 import { useCheckout } from "@/checkout/hooks/use-checkout";
@@ -15,9 +15,10 @@ import { useShippingDeliveries } from "@/checkout/hooks/use-shipping-deliveries"
 import { useCheckoutSteps } from "@/checkout/hooks/use-checkout-steps";
 import { useRefreshCheckoutRsc } from "@/checkout/hooks/use-refresh-checkout-rsc";
 import {
-	bulkRemovableLineIds,
-	reportedIssueAfterRemoval,
-	unavailableLineIdsInCart,
+	availabilityIssueForLines,
+	availabilityIssueWithoutLine,
+	unavailableGiftLineIds,
+	type CheckoutAvailability,
 } from "@/checkout/lib/checkout-availability";
 import {
 	CheckoutAvailabilityProvider,
@@ -45,63 +46,83 @@ const SaleorCheckoutView: FC = () => {
 	const searchParams = useSearchParams();
 	const transition = useCheckoutTransition();
 	const { checkout, setCheckout, refetch } = useCheckout();
-	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
+	const { availability, setDestinationIssue } = useCheckoutAvailability();
 	const tErrors = useTranslations("checkout.errors");
 	// RootViews shows PaymentCompletingScreen while `transition === "completing"` — keep this
 	// as defense-in-depth if SaleorCheckout is ever mounted outside RootViews.
 	const [isPaymentBusy, setIsPaymentBusy] = useState(false);
-	const [isRemovingUnavailableLine, setIsRemovingUnavailableLine] = useState(false);
-	const [removeUnavailableError, setRemoveUnavailableError] = useState<string | null>(null);
+	const [isUpdatingUnavailableLine, setIsUpdatingUnavailableLine] = useState(false);
+	const [unavailableLineError, setUnavailableLineError] = useState<string | null>(null);
 	const refreshCheckoutRsc = useRefreshCheckoutRsc();
 	const isPaymentFlowActive = transition === "completing";
 	const isCheckoutNavigationLocked = isPaymentFlowActive || isPaymentBusy;
 
 	const removeUnavailableLines = useCallback(
 		async (lineIds: readonly string[]) => {
-			if (!checkout || isRemovingUnavailableLine || lineIds.length === 0) {
+			if (!checkout || isUpdatingUnavailableLine || lineIds.length === 0) {
 				return;
 			}
 
 			const failedMessage = tErrors("itemUnavailableRemoveFailed", { count: lineIds.length });
-			setIsRemovingUnavailableLine(true);
-			setRemoveUnavailableError(null);
+			setIsUpdatingUnavailableLine(true);
+			setUnavailableLineError(null);
 			try {
 				const result = await removeCheckoutLines(checkout.id, [...lineIds]);
 				if (!result.ok) {
-					setRemoveUnavailableError(failedMessage);
+					setUnavailableLineError(failedMessage);
 					return;
 				}
 
+				// Stock lines come from the new checkout's `problems`. A destination issue keeps its
+				// lines still in the cart; read the current one, a step may have replaced it meanwhile.
 				setCheckout(result.checkout);
-				// Read the current issue: another step may have replaced or cleared it meanwhile.
-				// Stock issues come from the live checkout's `problems`, which the new checkout
-				// carries. A destination issue keeps its lines that are still in the cart.
-				setAvailabilityIssue((current) => reportedIssueAfterRemoval(current, result.checkout.lines));
+				setDestinationIssue((current) => availabilityIssueForLines(current, result.checkout.lines));
 
 				if (result.checkout.lines.length === 0) {
 					refreshCheckoutRsc();
 				}
 			} catch {
-				setRemoveUnavailableError(failedMessage);
+				setUnavailableLineError(failedMessage);
 			} finally {
-				setIsRemovingUnavailableLine(false);
+				setIsUpdatingUnavailableLine(false);
 			}
 		},
-		[checkout, isRemovingUnavailableLine, refreshCheckoutRsc, tErrors, setAvailabilityIssue, setCheckout],
+		[checkout, isUpdatingUnavailableLine, refreshCheckoutRsc, tErrors, setDestinationIssue, setCheckout],
 	);
 	const removeUnavailableLine = useCallback(
 		(lineId: string) => removeUnavailableLines([lineId]),
 		[removeUnavailableLines],
 	);
-	const checkoutLines = checkout?.lines;
-	const unavailableLineIds = useMemo(
-		() => unavailableLineIdsInCart(availabilityIssue, checkoutLines ?? []),
-		[availabilityIssue, checkoutLines],
+	const reduceUnavailableLine = useCallback(
+		async (lineId: string, quantity: number) => {
+			if (!checkout || isUpdatingUnavailableLine || quantity < 1) {
+				return;
+			}
+
+			const failedMessage = tErrors("itemReduceFailed");
+			setIsUpdatingUnavailableLine(true);
+			setUnavailableLineError(null);
+			try {
+				const result = await updateCheckoutLineQuantity(checkout.id, lineId, quantity);
+				if (!result.ok) {
+					setUnavailableLineError(failedMessage);
+					return;
+				}
+
+				// The line now asks for what Saleor has for this address. If that changed meanwhile,
+				// the new checkout's `problems` flag it again.
+				setCheckout(result.checkout);
+				setDestinationIssue((current) => availabilityIssueWithoutLine(current, lineId));
+			} catch {
+				setUnavailableLineError(failedMessage);
+			} finally {
+				setIsUpdatingUnavailableLine(false);
+			}
+		},
+		[checkout, isUpdatingUnavailableLine, tErrors, setDestinationIssue, setCheckout],
 	);
-	const bulkRemovableIds = useMemo(
-		() => bulkRemovableLineIds(availabilityIssue, checkoutLines ?? []),
-		[availabilityIssue, checkoutLines],
-	);
+
+	const giftLineIds = useMemo(() => unavailableGiftLineIds(checkout), [checkout]);
 
 	useCustomerAttach();
 
@@ -157,47 +178,24 @@ const SaleorCheckoutView: FC = () => {
 							<OrderSummary
 								checkout={checkout}
 								onCheckoutChange={() => void refetch()}
-								unavailableLineIds={unavailableLineIds}
+								unavailableLines={availability?.lines}
+								unavailableKey={availability?.key}
+								unavailableGiftLineIds={giftLineIds}
 								onRemoveUnavailableLine={removeUnavailableLine}
-								isRemovingUnavailableLine={isRemovingUnavailableLine}
+								onReduceUnavailableLine={reduceUnavailableLine}
+								isUpdatingUnavailableLine={isUpdatingUnavailableLine}
 							/>
 						</div>
 						<div className="rounded-lg border border-border bg-card p-6 md:p-8">
 							<div ref={stepRef} tabIndex={-1} className="outline-none">
-								{availabilityIssue ? (
+								{availability ? (
 									<div className="mb-8">
-										<CheckoutIssueBanner
-											title={tErrors("itemUnavailableTitle", {
-												// No matched line still means at least one item is unavailable.
-												count: Math.max(unavailableLineIds.length, 1),
-											})}
-											action={
-												bulkRemovableIds.length ? (
-													<Button
-														type="button"
-														variant="outline-solid"
-														size="sm"
-														disabled={isRemovingUnavailableLine}
-														onClick={() => void removeUnavailableLines(bulkRemovableIds)}
-													>
-														{tErrors("itemUnavailableRemove", { count: bulkRemovableIds.length })}
-													</Button>
-												) : undefined
-											}
-										>
-											<p>
-												{availabilityIssue.cause === "stock"
-													? tErrors("itemOutOfStockMessage", {
-															count: Math.max(unavailableLineIds.length, 1),
-														})
-													: unavailableLineIds.length
-														? tErrors("itemUnavailableRemoveMessage", { count: unavailableLineIds.length })
-														: tErrors("itemUnavailableMessage")}
-											</p>
-											{removeUnavailableError ? (
-												<p className="mt-2 text-destructive">{removeUnavailableError}</p>
-											) : null}
-										</CheckoutIssueBanner>
+										<UnavailableItemsBanner
+											availability={availability}
+											error={unavailableLineError}
+											isBusy={isUpdatingUnavailableLine}
+											onRemove={(lineIds) => void removeUnavailableLines(lineIds)}
+										/>
 									</div>
 								) : null}
 								{currentStep.id === "INFO" ? (
@@ -234,9 +232,12 @@ const SaleorCheckoutView: FC = () => {
 							<OrderSummary
 								checkout={checkout}
 								onCheckoutChange={() => void refetch()}
-								unavailableLineIds={unavailableLineIds}
+								unavailableLines={availability?.lines}
+								unavailableKey={availability?.key}
+								unavailableGiftLineIds={giftLineIds}
 								onRemoveUnavailableLine={removeUnavailableLine}
-								isRemovingUnavailableLine={isRemovingUnavailableLine}
+								onReduceUnavailableLine={reduceUnavailableLine}
+								isUpdatingUnavailableLine={isUpdatingUnavailableLine}
 							/>
 						</div>
 					</div>
@@ -245,3 +246,55 @@ const SaleorCheckoutView: FC = () => {
 		</CheckoutPageShell>
 	);
 };
+
+type UnavailableItemsBannerProps = {
+	availability: CheckoutAvailability;
+	error: string | null;
+	isBusy: boolean;
+	onRemove: (lineIds: readonly string[]) => void;
+};
+
+/** What blocks the order and how to fix it. The summary lists the lines and their actions. */
+function UnavailableItemsBanner({ availability, error, isBusy, onRemove }: UnavailableItemsBannerProps) {
+	const tErrors = useTranslations("checkout.errors");
+	const { stock, destination, lines, removableLineIds } = availability;
+	const soldOut = stock.filter((line) => line.availableQuantity === 0).length;
+	const short = stock.length - soldOut;
+	const destinationOnly = lines.filter((line) => line.availableQuantity === null).length;
+	// Lines the destination issue flagged that the stock messages already cover.
+	const stockIds = new Set(stock.map((line) => line.id));
+	const destinationCoveredByStock = destination?.lineIds.some((id) => stockIds.has(id)) ?? false;
+
+	return (
+		<CheckoutIssueBanner
+			// No matched line still means at least one item is unavailable.
+			title={tErrors("itemUnavailableTitle", { count: Math.max(lines.length, 1) })}
+			action={
+				removableLineIds.length ? (
+					<Button
+						type="button"
+						variant="outline-solid"
+						size="sm"
+						disabled={isBusy}
+						onClick={() => onRemove(removableLineIds)}
+					>
+						{tErrors("itemUnavailableRemove", { count: removableLineIds.length })}
+					</Button>
+				) : undefined
+			}
+		>
+			<div className="space-y-1">
+				{soldOut ? <p>{tErrors("itemOutOfStockMessage", { count: soldOut })}</p> : null}
+				{short ? <p>{tErrors("itemShortStockMessage", { count: short })}</p> : null}
+				{destination && destinationOnly ? (
+					<p>{tErrors("itemUnavailableRemoveMessage", { count: destinationOnly })}</p>
+				) : null}
+				{/* No line the shopper can remove (none matched, or only a gift): only the address can change. */}
+				{destination && !destinationOnly && !destinationCoveredByStock ? (
+					<p>{tErrors("itemUnavailableMessage")}</p>
+				) : null}
+				{error ? <p className="text-destructive">{error}</p> : null}
+			</div>
+		</CheckoutIssueBanner>
+	);
+}

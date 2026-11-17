@@ -52,7 +52,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	const selectedMethod = resolveSelectedDeliveryId(userSelectedMethod, deliveries, savedDeliveryId);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
+	const { availability, setDestinationIssue, reportAvailability } = useCheckoutAvailability();
 
 	const showInvalidWarning =
 		hasDeliveryProblem(checkout, "CheckoutProblemDeliveryMethodInvalid") &&
@@ -71,7 +71,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 
 			setIsSubmitting(true);
 			setError(null);
-			setAvailabilityIssue(null);
+			setDestinationIssue(null);
 
 			try {
 				let nextCheckout = checkout;
@@ -82,7 +82,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 							? availabilityIssueFromFieldErrors(checkout.lines, result.fieldErrors)
 							: null;
 						if (issue) {
-							setAvailabilityIssue(issue);
+							setDestinationIssue(issue);
 						} else {
 							setError(
 								result.error ?? result.fieldErrors?.[0]?.message ?? t("errors.updateShippingMethodFailed"),
@@ -100,7 +100,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 				);
 				if (!fulfillment.ok) {
 					if (fulfillment.reason === "availability") {
-						setAvailabilityIssue(fulfillment.issue);
+						reportAvailability(fulfillment.failure);
 					} else {
 						setError(fulfillment.error);
 					}
@@ -108,18 +108,27 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 					return;
 				}
 
-				onComplete(nextCheckout);
+				onComplete(fulfillment.checkout);
 			} catch {
 				setError(t("errors.fulfillmentCheckFailed"));
 				setIsSubmitting(false);
 			}
 		},
-		[selectedMethod, savedDeliveryId, onComplete, checkout, isSubmitting, setAvailabilityIssue, t],
+		[
+			selectedMethod,
+			savedDeliveryId,
+			onComplete,
+			checkout,
+			isSubmitting,
+			setDestinationIssue,
+			reportAvailability,
+			t,
+		],
 	);
 
 	const showSpinner = isLoadingDeliveries && !isSubmitting && deliveries.length === 0;
 	const canContinue =
-		!isSubmitting && deliveries.length > 0 && !!selectedMethod && !showSpinner && !availabilityIssue;
+		!isSubmitting && deliveries.length > 0 && !!selectedMethod && !showSpinner && !availability;
 	const buttonText = isSubmitting
 		? tActions("saving")
 		: showSpinner

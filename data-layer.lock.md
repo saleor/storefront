@@ -24,6 +24,7 @@ Rows are keyed by file and enclosing function, not line, so formatting does not 
 | mutate           | checkoutBillingAddressUpdateDocument    | —                                             | src/app/(checkout)/actions.ts › updateCheckoutBillingAddress                                  |
 | mutate           | checkoutDeliveryMethodUpdateDocument    | —                                             | src/app/(checkout)/actions.ts › updateCheckoutDeliveryMethod                                  |
 | mutate           | checkoutEmailUpdateDocument             | —                                             | src/app/(checkout)/actions.ts › updateCheckoutEmail                                           |
+| mutate           | checkoutLinesUpdateDocument             | —                                             | src/app/(checkout)/actions.ts › updateCheckoutLineQuantity                                    |
 | mutate           | checkoutMetadataUpdateDocument          | —                                             | src/app/(checkout)/actions.ts › updateCheckoutMarketingConsent                                |
 | mutate           | checkoutShippingAddressUpdateDocument   | —                                             | src/app/(checkout)/actions.ts › updateCheckoutShippingAddress                                 |
 | mutate           | PasswordChangeDocument                  | —                                             | src/app/(storefront)/[locale]/[channel]/(main)/account/actions.ts › changePassword            |

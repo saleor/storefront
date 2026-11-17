@@ -4,8 +4,10 @@ import { isCheckoutFreeOrder } from "@/checkout/lib/payment/checkout-pay-amount"
 import { updateCheckoutBilling } from "@/checkout/lib/payment/update-billing";
 import { finalizeCheckoutOrder } from "@/checkout/lib/payment/finalize-checkout-order";
 import { type ServerCheckout } from "@/checkout/lib/checkout-types";
-import type { CheckoutAvailabilityIssue } from "@/checkout/lib/checkout-availability";
-import { validateCheckoutFulfillment } from "@/checkout/lib/validate-checkout-fulfillment";
+import {
+	validateCheckoutFulfillment,
+	type AvailabilityFailure,
+} from "@/checkout/lib/validate-checkout-fulfillment";
 
 export type CompleteFreeOrderCheckoutParams = {
 	checkout: CheckoutFragment;
@@ -23,7 +25,7 @@ export type CompleteFreeOrderCheckoutResult =
 	| { ok: true }
 	| { ok: false; kind: "billing"; errors: Record<string, string>; focusField?: string }
 	| { ok: false; kind: "complete"; error: string }
-	| { ok: false; kind: "availability"; issue: CheckoutAvailabilityIssue };
+	| { ok: false; kind: "availability"; failure: AvailabilityFailure };
 
 /** Billing sync + checkoutComplete for $0 totals (no PSP transaction). */
 export async function completeFreeOrderCheckout({
@@ -52,7 +54,11 @@ export async function completeFreeOrderCheckout({
 	}
 
 	const liveCheckout = await refreshCheckout({ updateState: false });
-	const checkoutToComplete = liveCheckout ?? checkout;
+	// The stock check reads this checkout's `problems`: never an older copy.
+	if (!liveCheckout) {
+		return { ok: false, kind: "complete", error: fallbackError };
+	}
+	const checkoutToComplete = liveCheckout;
 
 	// Re-verify the live total is still exactly $0 — billing/tax sync above can change it.
 	// A now-positive total must go through the payment flow, not a bare checkoutComplete.
@@ -69,7 +75,7 @@ export async function completeFreeOrderCheckout({
 	const fulfillment = await validateCheckoutFulfillment(checkoutToComplete, fallbackError);
 	if (!fulfillment.ok) {
 		if (fulfillment.reason === "availability") {
-			return { ok: false, kind: "availability", issue: fulfillment.issue };
+			return { ok: false, kind: "availability", failure: fulfillment.failure };
 		}
 		return { ok: false, kind: "complete", error: fulfillment.error };
 	}

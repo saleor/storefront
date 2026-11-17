@@ -43,6 +43,10 @@ import {
 	type CheckoutLinesAddMutationVariables,
 	type CheckoutLinesDeleteMutation,
 	type CheckoutLinesDeleteMutationVariables,
+	CheckoutLinesUpdateDocument,
+	type CheckoutLinesUpdateMutation,
+	type CheckoutLinesUpdateMutationVariables,
+	type CheckoutErrorCode,
 	type CheckoutRemovePromoCodeMutation,
 	type CheckoutRemovePromoCodeMutationVariables,
 	type CheckoutShippingAddressUpdateMutation,
@@ -129,6 +133,11 @@ const checkoutLinesDeleteDocument = toTypedDocument<
 	CheckoutLinesDeleteMutation,
 	CheckoutLinesDeleteMutationVariables
 >(CheckoutLinesDeleteDocument);
+
+const checkoutLinesUpdateDocument = toTypedDocument<
+	CheckoutLinesUpdateMutation,
+	CheckoutLinesUpdateMutationVariables
+>(CheckoutLinesUpdateDocument);
 
 const checkoutDeliveryMethodUpdateDocument = toTypedDocument<
 	CheckoutDeliveryMethodUpdateMutation,
@@ -562,7 +571,8 @@ export async function processCheckoutTransaction(
 }
 
 /** checkoutComplete errors that mean a line can no longer be ordered (Saleor 3.23 codes). */
-const ORDER_LINE_UNAVAILABLE_CODES: ReadonlySet<string> = new Set([
+// Typed against Saleor's generated codes: a rename in an upgrade fails the typecheck.
+const ORDER_LINE_UNAVAILABLE_CODES: ReadonlySet<string> = new Set<CheckoutErrorCode>([
 	"INSUFFICIENT_STOCK",
 	"UNAVAILABLE_VARIANT_IN_CHANNEL",
 	"PRODUCT_NOT_PUBLISHED",
@@ -678,6 +688,27 @@ export async function removeCheckoutLines(
 	}
 
 	return toCheckoutActionResult(result.data.checkoutLinesDelete);
+}
+
+/** Set a line's quantity, e.g. down to what Saleor says is left in stock. */
+export async function updateCheckoutLineQuantity(
+	checkoutId: string,
+	lineId: string,
+	quantity: number,
+): Promise<CheckoutActionResult> {
+	const result = await mutate(checkoutLinesUpdateDocument, {
+		variables: {
+			checkoutId,
+			lines: [{ lineId, quantity }],
+			languageCode: await checkoutGraphqlLanguageCode(),
+		},
+	});
+
+	if (!result.ok) {
+		return { ok: false, error: result.error.message };
+	}
+
+	return toCheckoutActionResult(result.data.checkoutLinesUpdate);
 }
 
 export async function applyCheckoutPromoCode(

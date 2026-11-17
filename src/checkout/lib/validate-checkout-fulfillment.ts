@@ -1,24 +1,25 @@
 import { updateCheckoutShippingAddress } from "@/app/(checkout)/actions";
 import { getAddressInputDataFromAddress } from "@/checkout/components/address-form/utils";
+import type { ServerCheckout } from "@/checkout/lib/checkout-types";
 import {
 	availabilityIssueFromFieldErrors,
-	availabilityIssueFromProblems,
-	type AvailabilityLine,
+	stockLinesFromProblems,
+	unavailableGiftLineIds,
 	type CheckoutAvailabilityIssue,
-	type CheckoutProblemLike,
 } from "@/checkout/lib/checkout-availability";
 
-type FulfillmentCheckout = {
-	id: string;
-	isShippingRequired: boolean;
-	shippingAddress?: Parameters<typeof getAddressInputDataFromAddress>[0] | null;
-	problems?: ReadonlyArray<CheckoutProblemLike> | null;
-	lines: ReadonlyArray<AvailabilityLine>;
+/**
+ * Why the shopper cannot go on. `checkout`: the fresh checkout Saleor answered with, whose live
+ * `problems` list the lines; adopt it. `destination`: a rejected mutation (legacy error flow).
+ */
+export type AvailabilityFailure = {
+	checkout: ServerCheckout | null;
+	destination: CheckoutAvailabilityIssue | null;
 };
 
 export type CheckoutFulfillmentResult =
-	| { ok: true }
-	| { ok: false; reason: "availability"; issue: CheckoutAvailabilityIssue }
+	| { ok: true; checkout: ServerCheckout }
+	| { ok: false; reason: "availability"; failure: AvailabilityFailure }
 	| { ok: false; reason: "error"; error: string };
 
 /**
@@ -27,22 +28,26 @@ export type CheckoutFulfillmentResult =
  * `useLegacyErrorFlow` setting, and this covers both:
  *
  * - Legacy flow: re-submitting the saved shipping address is rejected with
- *   `INSUFFICIENT_STOCK`.
+ *   `INSUFFICIENT_STOCK`. Paper cannot tell which flow a channel uses, so the re-submit stays.
  * - New flow: the mutation succeeds and the affected lines are listed in
- *   `checkout.problems`.
+ *   `checkout.problems` of the checkout it returns.
  *
- * When shipping is not required or no address exists, only `checkout.problems` of the
- * checkout passed in is read, so pass a live snapshot.
+ * The re-submit also makes Saleor recalculate discounts, which swaps a gift that ran out for one in
+ * stock or drops it. A gift line still listed after that fails the check as an error: the shopper
+ * cannot remove it, and trying again re-submits the address.
  *
- * Stock failures become an availability issue. Any other failure (network, unexpected
- * address error) is an error — pay/shipping must not proceed. Charging after a failed
- * check is how shoppers get authorized with no order.
+ * When shipping is not required or no address exists, the checkout passed in is the one read,
+ * so pass a live snapshot. The checkout Saleor answered with comes back either way: callers
+ * adopt it, so the live `problems` in context decide what blocks.
+ *
+ * Any other failure (network, unexpected address error) is an error — pay/shipping must not
+ * proceed. Charging after a failed check is how shoppers get authorized with no order.
  */
 export async function validateCheckoutFulfillment(
-	checkout: FulfillmentCheckout,
+	checkout: ServerCheckout,
 	fallbackError: string,
 ): Promise<CheckoutFulfillmentResult> {
-	let problems = checkout.problems;
+	let live = checkout;
 
 	if (checkout.isShippingRequired && checkout.shippingAddress) {
 		const result = await updateCheckoutShippingAddress(
@@ -53,9 +58,9 @@ export async function validateCheckoutFulfillment(
 
 		if (!result.ok) {
 			if (result.fieldErrors?.length) {
-				const issue = availabilityIssueFromFieldErrors(checkout.lines, result.fieldErrors);
-				if (issue) {
-					return { ok: false, reason: "availability", issue };
+				const destination = availabilityIssueFromFieldErrors(checkout.lines, result.fieldErrors);
+				if (destination) {
+					return { ok: false, reason: "availability", failure: { checkout: null, destination } };
 				}
 			}
 
@@ -66,13 +71,17 @@ export async function validateCheckoutFulfillment(
 			};
 		}
 
-		problems = result.checkout.problems;
+		live = result.checkout;
 	}
 
-	const issue = availabilityIssueFromProblems(problems);
-	if (issue) {
-		return { ok: false, reason: "availability", issue };
+	if (stockLinesFromProblems(live).length > 0) {
+		return { ok: false, reason: "availability", failure: { checkout: live, destination: null } };
 	}
 
-	return { ok: true };
+	// Saleor checks gift lines' stock when it creates the order, after the shopper has paid.
+	if (unavailableGiftLineIds(live).length > 0) {
+		return { ok: false, reason: "error", error: fallbackError };
+	}
+
+	return { ok: true, checkout: live };
 }

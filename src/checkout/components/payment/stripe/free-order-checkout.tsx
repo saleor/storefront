@@ -33,7 +33,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 }) => {
 	const { refreshCheckout } = useCheckoutData();
 	const paymentMessages = useCheckoutPaymentMessages();
-	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
+	const { availability, reportAvailability } = useCheckoutAvailability();
 	const tActions = useTranslations("checkout.actions");
 	const [isLoading, setIsLoading] = useState(false);
 	const totalStr = formatMoneyWithFallback(checkout.totalPrice?.gross);
@@ -61,7 +61,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 				if (result.kind === "billing") {
 					onBillingErrors(result.errors, result.focusField);
 				} else if (result.kind === "availability") {
-					setAvailabilityIssue(result.issue);
+					reportAvailability(result.failure);
 				} else {
 					onError(result.error);
 				}
@@ -89,7 +89,7 @@ export const FreeOrderCheckout: FC<FreeOrderCheckoutProps> = ({
 			<Button
 				type="button"
 				className="h-12 w-full md:w-auto md:min-w-[200px]"
-				disabled={isLoading || Boolean(availabilityIssue)}
+				disabled={isLoading || Boolean(availability)}
 				onClick={() => void handleComplete()}
 			>
 				{isLoading ? (

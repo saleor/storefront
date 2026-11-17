@@ -7,6 +7,7 @@ import {
 	type StripeExpressCheckoutElementOptions,
 } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { type CheckoutFragment } from "@/checkout/graphql";
 import { type CheckoutPriceChangeNotice } from "@/checkout/lib/payment/checkout-pay-amount";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
@@ -15,6 +16,7 @@ import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import { executeStripeCheckoutPayment } from "./execute-stripe-checkout-payment";
 import { type StripeBillingContext } from "./stripe-billing-context";
 import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
+import { stockLinesFromProblems } from "@/checkout/lib/checkout-availability";
 import { useCheckoutAvailability } from "@/checkout/providers/checkout-availability";
 
 const expressCheckoutOptions: StripeExpressCheckoutElementOptions = {
@@ -54,7 +56,8 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 	onPriceChangeNotice,
 	onPaymentActivityChange,
 }) => {
-	const { setAvailabilityIssue } = useCheckoutAvailability();
+	const { reportAvailability } = useCheckoutAvailability();
+	const tSummary = useTranslations("checkout.summary");
 	const stripe = useStripe();
 	const elements = useElements();
 	const searchParams = useSearchParams();
@@ -105,8 +108,15 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 				}
 
 				if (result.kind === "availability") {
-					setAvailabilityIssue(result.issue);
-					event.paymentFailed({ message: result.issue.message });
+					// The fresh checkout's `problems` now block Pay and name the lines in the banner.
+					reportAvailability(result.failure);
+					event.paymentFailed({
+						message:
+							result.failure.destination?.message ||
+							tSummary("unavailableHint", {
+								count: Math.max(stockLinesFromProblems(result.failure.checkout).length, 1),
+							}),
+					});
 					return;
 				}
 
@@ -125,7 +135,8 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			onPriceChangeNotice,
 			paymentMessages,
 			refreshCheckout,
-			setAvailabilityIssue,
+			reportAvailability,
+			tSummary,
 			liveSearchParams,
 			stripe,
 		],

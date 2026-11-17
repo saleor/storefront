@@ -450,13 +450,15 @@
 			"updateAddressFailed": "Osoitteen päivitys epäonnistui",
 			"crashTitle": "Kassavirhe",
 			"crashMessage": "Kassan lataamisessa tapahtui virhe. Yritä uudelleen.",
-			"itemUnavailableTitle": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
-			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
-			"itemUnavailableRemoveMessage": "{count, plural, =1 {This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.} other {These items can’t be fulfilled for the address you entered. Remove them to continue, or try a different destination.}}",
-			"itemOutOfStockMessage": "{count, plural, =1 {Tämä tuote on loppuunmyyty tai sitä ei ole enää saatavilla valitsemaasi määrää. Poista se jatkaaksesi.} other {Nämä tuotteet on myyty loppuun tai niitä ei ole enää saatavilla valitsemiasi määriä. Poista ne jatkaaksesi.}}",
-			"itemUnavailableRemove": "{count, plural, =1 {Remove item} other {Remove # items}}",
-			"itemUnavailableRemoveFailed": "{count, plural, =1 {Could not remove this item. Try again.} other {Could not remove these items. Try again.}}",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"itemUnavailableTitle": "{count, plural, =1 {Tuote ei ole saatavilla} other {Osa tuotteista ei ole saatavilla}}",
+			"itemUnavailableMessage": "Tätä tuotetta ei voida toimittaa antamaasi osoitteeseen. Kokeile toista toimitusosoitetta.",
+			"itemUnavailableRemoveMessage": "{count, plural, =1 {Tätä tuotetta ei voida toimittaa antamaasi osoitteeseen. Poista se jatkaaksesi tai kokeile toista toimitusosoitetta.} other {Näitä tuotteita ei voida toimittaa antamaasi osoitteeseen. Poista ne jatkaaksesi tai kokeile toista toimitusosoitetta.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Tämä tuote on loppuunmyyty tai sitä ei ole enää saatavilla. Poista se jatkaaksesi.} other {Nämä tuotteet on myyty loppuun tai niitä ei ole enää saatavilla. Poista ne jatkaaksesi.}}",
+			"itemShortStockMessage": "{count, plural, =1 {Tätä tuotetta on jäljellä vähemmän kuin valitsit. Pienennä määrää tai poista tuote jatkaaksesi.} other {Näitä tuotteita on jäljellä vähemmän kuin valitsit. Pienennä määriä tai poista tuotteet jatkaaksesi.}}",
+			"itemUnavailableRemove": "{count, plural, =1 {Poista tuote} other {Poista # tuotetta}}",
+			"itemUnavailableRemoveFailed": "{count, plural, =1 {Tuotetta ei voitu poistaa. Yritä uudelleen.} other {Tuotteita ei voitu poistaa. Yritä uudelleen.}}",
+			"itemReduceFailed": "Määrää ei voitu muuttaa. Yritä uudelleen.",
+			"fulfillmentCheckFailed": "Tuotteiden saatavuutta ei voitu tarkistaa. Yritä uudelleen."
 		},
 		"contact": {
 			"title": "Yhteystiedot",
@@ -490,9 +492,13 @@
 			"method": "Tapa",
 			"delivery": "Toimitus",
 			"digital": "Digitaalinen",
-			"soldOut": "Sold out",
-			"unavailableHint": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
-			"removeItem": "Remove"
+			"soldOut": "Loppuunmyyty",
+			"onlyLeft": "Vain {count} jäljellä",
+			"unavailableForAddress": "Ei saatavilla tähän osoitteeseen",
+			"giftUnavailable": "Lahja on loppu varastosta. Se vaihdetaan tai poistetaan, kun jatkat.",
+			"unavailableHint": "{count, plural, =1 {Tuote ei ole saatavilla} other {Osa tuotteista ei ole saatavilla}}",
+			"removeItem": "Poista",
+			"reduceTo": "Pienennä määrään {count}"
 		},
 		"promo": {
 			"placeholder": "Alennuskoodi",

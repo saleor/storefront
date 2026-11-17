@@ -12,50 +12,46 @@ import {
 } from "react";
 
 import {
-	mergeAvailabilityIssues,
-	availabilityIssueFromProblems,
-	nextReportedIssue,
-	stillReportedIssue,
+	checkoutAvailability,
+	type CheckoutAvailability,
 	type CheckoutAvailabilityIssue,
-	type ReportedAvailabilityIssue,
 } from "@/checkout/lib/checkout-availability";
+import type { AvailabilityFailure } from "@/checkout/lib/validate-checkout-fulfillment";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 
 type CheckoutAvailabilityContextValue = {
 	/**
-	 * What blocks the shopper right now: the issue a step reported from a rejected mutation,
-	 * merged with the lines Saleor lists in the live checkout's `problems`.
+	 * What blocks the shopper right now: the lines the live checkout's `problems` list, and a
+	 * destination issue a step reported from a rejected mutation. `null` when nothing does.
 	 */
-	availabilityIssue: CheckoutAvailabilityIssue | null;
+	availability: CheckoutAvailability | null;
+	/** Sets or clears the reported destination issue (legacy error flow). */
+	setDestinationIssue: Dispatch<SetStateAction<CheckoutAvailabilityIssue | null>>;
 	/**
-	 * Sets or clears the reported issue. Lines in `checkout.problems` stay flagged until
-	 * Saleor clears them; a reported stock issue lapses when the checkout in context changes.
-	 * An updater function receives the reported issue that still applies, not the merged one,
-	 * so a slow response cannot restore an issue another step already cleared.
+	 * After a failed stock check: adopt the fresh checkout Saleor answered with (its `problems`
+	 * then decide what blocks) and record a destination issue.
 	 */
-	setAvailabilityIssue: Dispatch<SetStateAction<CheckoutAvailabilityIssue | null>>;
+	reportAvailability: (failure: AvailabilityFailure) => void;
 };
 
 const CheckoutAvailabilityContext = createContext<CheckoutAvailabilityContextValue | null>(null);
 
 export function CheckoutAvailabilityProvider({ children }: { children: ReactNode }) {
-	const { checkout } = useCheckoutData();
-	const [reported, setReported] = useState<ReportedAvailabilityIssue | null>(null);
-	const setAvailabilityIssue = useCallback<Dispatch<SetStateAction<CheckoutAvailabilityIssue | null>>>(
-		(action) => setReported((previous) => nextReportedIssue(previous, action, checkout)),
-		[checkout],
-	);
+	const { checkout, setCheckout } = useCheckoutData();
+	const [destination, setDestinationIssue] = useState<CheckoutAvailabilityIssue | null>(null);
+	const availability = useMemo(() => checkoutAvailability(checkout, destination), [checkout, destination]);
 
-	const reportedIssue = stillReportedIssue(reported, checkout);
-	const problems = checkout?.problems;
-	const availabilityIssue = useMemo(
-		() => mergeAvailabilityIssues(reportedIssue, availabilityIssueFromProblems(problems)),
-		[reportedIssue, problems],
+	const reportAvailability = useCallback(
+		(failure: AvailabilityFailure) => {
+			if (failure.checkout) setCheckout(failure.checkout);
+			if (failure.destination) setDestinationIssue(failure.destination);
+		},
+		[setCheckout],
 	);
 
 	const value = useMemo(
-		() => ({ availabilityIssue, setAvailabilityIssue }),
-		[availabilityIssue, setAvailabilityIssue],
+		() => ({ availability, setDestinationIssue, reportAvailability }),
+		[availability, reportAvailability],
 	);
 
 	return <CheckoutAvailabilityContext value={value}>{children}</CheckoutAvailabilityContext>;

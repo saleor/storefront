@@ -49,7 +49,7 @@ export function useCheckoutPayment({
 	authenticated,
 }: UseCheckoutPaymentParams) {
 	const { refreshCheckout } = useCheckoutData();
-	const { setAvailabilityIssue } = useCheckoutAvailability();
+	const { setDestinationIssue, reportAvailability } = useCheckoutAvailability();
 	const paymentMessages = useCheckoutPaymentMessages();
 	const gatewayMessages = useCheckoutGatewayMessages();
 
@@ -88,7 +88,7 @@ export function useCheckoutPayment({
 			}
 
 			setErrors({});
-			setAvailabilityIssue(null);
+			setDestinationIssue(null);
 			setIsProcessing(true);
 			let orderPlaced = false;
 
@@ -151,7 +151,7 @@ export function useCheckoutPayment({
 				);
 				if (!fulfillment.ok) {
 					if (fulfillment.reason === "availability") {
-						setAvailabilityIssue(fulfillment.issue);
+						reportAvailability(fulfillment.failure);
 					} else {
 						setErrors({ payment: fulfillment.error });
 					}
@@ -208,7 +208,8 @@ export function useCheckoutPayment({
 			authenticated,
 			provider,
 			refreshCheckout,
-			setAvailabilityIssue,
+			setDestinationIssue,
+			reportAvailability,
 			paymentMessages,
 			gatewayMessages,
 		],

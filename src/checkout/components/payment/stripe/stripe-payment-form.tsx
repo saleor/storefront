@@ -54,7 +54,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 	const liveSearchParams = useLiveCheckoutSearchParams(searchParams);
 	const { refreshCheckout } = useCheckoutData();
 	const paymentMessages = useCheckoutPaymentMessages();
-	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
+	const { availability, reportAvailability } = useCheckoutAvailability();
 	const tActions = useTranslations("checkout.actions");
 	const [isLoading, setIsLoading] = useState(false);
 	const paymentElementChangeTypeRef = useRef<string | null>(null);
@@ -95,7 +95,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 			} else if (result.kind === "price_change") {
 				onPriceChangeNotice(result.notice);
 			} else if (result.kind === "availability") {
-				setAvailabilityIssue(result.issue);
+				reportAvailability(result.failure);
 			} else {
 				onError(result.message);
 			}
@@ -124,7 +124,8 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 				className={cn("space-y-6", showProcessingOverlay && "invisible")}
 				aria-hidden={showProcessingOverlay}
 			>
-				{showExpressCheckout ? (
+				{/* Wallet buttons follow the same block as Pay: a sold-out line hides them. */}
+				{showExpressCheckout && !availability ? (
 					<StripeExpressCheckout
 						checkout={checkout}
 						billing={billing}
@@ -145,7 +146,7 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({
 				<Button
 					type="button"
 					className="h-12 w-full md:w-auto md:min-w-[200px]"
-					disabled={isLoading || !stripe || !elements || Boolean(availabilityIssue)}
+					disabled={isLoading || !stripe || !elements || Boolean(availability)}
 					onClick={() => void handlePay()}
 				>
 					{isLoading ? (

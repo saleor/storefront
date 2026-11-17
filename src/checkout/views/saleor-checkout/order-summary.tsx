@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FC, type FormEvent } from "react";
+import { useState, type FC, type FormEvent } from "react";
 import Image from "next/image";
 import { Tag, ShieldCheck, RotateCcw, Truck, ChevronDown, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
@@ -14,6 +14,7 @@ import { useCheckoutBrowseLocale } from "@/checkout/providers/checkout-browse";
 import { getLocaleDefinition } from "@/config/locale";
 import { localeConfig } from "@/config/locale";
 import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
+import type { FlaggedLine } from "@/checkout/lib/checkout-availability";
 import { pickTranslatedName } from "@/lib/saleor-translations";
 
 // ============================================================================
@@ -46,11 +47,20 @@ interface OrderSummaryProps {
 	order?: OrderFragment;
 	editable?: boolean;
 	onCheckoutChange?: () => void;
-	/** Line ids Saleor marked unavailable (warehouse stock for this destination). */
-	unavailableLineIds?: readonly string[];
+	/** Lines the shopper cannot buy as they are, with how many are left. */
+	unavailableLines?: ReadonlyArray<FlaggedLine>;
+	/** Changes whenever the flagged lines change; the summary then opens on mobile. */
+	unavailableKey?: string;
+	/** Gift lines out of stock, which Saleor replaces or removes; they get a note, no actions. */
+	unavailableGiftLineIds?: ReadonlyArray<string>;
 	onRemoveUnavailableLine?: (lineId: string) => void | Promise<void>;
-	isRemovingUnavailableLine?: boolean;
+	/** Lower a line to what is left. */
+	onReduceUnavailableLine?: (lineId: string, quantity: number) => void | Promise<void>;
+	isUpdatingUnavailableLine?: boolean;
 }
+
+const NO_UNAVAILABLE_LINES: ReadonlyArray<FlaggedLine> = [];
+const NO_LINE_IDS: ReadonlyArray<string> = [];
 
 // ============================================================================
 // Data Adapters
@@ -164,6 +174,57 @@ function extractOrderData(order: OrderFragment): OrderSummaryData {
 	};
 }
 
+type UnavailableLineNoticeProps = {
+	line: FlaggedLine | undefined;
+	isBusy?: boolean;
+	onReduce?: (lineId: string, quantity: number) => void | Promise<void>;
+	onRemove?: (lineId: string) => void | Promise<void>;
+};
+
+const lineActionClass =
+	"text-xs font-medium text-foreground underline underline-offset-2 disabled:opacity-50";
+
+/** Why a line cannot be bought as it is, and the fixes: lower it to what is left, or remove it. */
+function UnavailableLineNotice({ line, isBusy, onReduce, onRemove }: UnavailableLineNoticeProps) {
+	const t = useTranslations("checkout.summary");
+	if (!line) {
+		return null;
+	}
+
+	const left = line.availableQuantity;
+	return (
+		<div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+			<p className="text-xs font-medium text-destructive">
+				{left === null
+					? t("unavailableForAddress")
+					: left === 0
+						? t("soldOut")
+						: t("onlyLeft", { count: left })}
+			</p>
+			{onReduce && left && left < line.quantity ? (
+				<button
+					type="button"
+					className={lineActionClass}
+					disabled={isBusy}
+					onClick={() => void onReduce(line.id, left)}
+				>
+					{t("reduceTo", { count: left })}
+				</button>
+			) : null}
+			{onRemove ? (
+				<button
+					type="button"
+					className={lineActionClass}
+					disabled={isBusy}
+					onClick={() => void onRemove(line.id)}
+				>
+					{t("removeItem")}
+				</button>
+			) : null}
+		</div>
+	);
+}
+
 function getCheckoutErrorMessage(errors: readonly CheckoutErrorFragment[] | undefined) {
 	return errors?.[0]?.message ?? null;
 }
@@ -177,9 +238,12 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 	order,
 	editable,
 	onCheckoutChange,
-	unavailableLineIds = [],
+	unavailableLines = NO_UNAVAILABLE_LINES,
+	unavailableKey,
+	unavailableGiftLineIds = NO_LINE_IDS,
 	onRemoveUnavailableLine,
-	isRemovingUnavailableLine,
+	onReduceUnavailableLine,
+	isUpdatingUnavailableLine,
 }) => {
 	const t = useTranslations("checkout.summary");
 	const tCommon = useTranslations("account.common");
@@ -187,14 +251,15 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 	const localeBcp47 = getLocaleDefinition(localeSlug)?.bcp47 ?? localeConfig.default;
 	// Collapsed by default on mobile
 	const [isExpanded, setIsExpanded] = useState(false);
-	const unavailableIds = new Set(unavailableLineIds);
+	const unavailableById = new Map(unavailableLines.map((line) => [line.id, line]));
 
-	useEffect(() => {
-		if (unavailableLineIds.length > 0) {
-			// eslint-disable-next-line react-hooks/set-state-in-effect -- expand summary so the sold-out line is visible
-			setIsExpanded(true);
-		}
-	}, [unavailableLineIds]);
+	// Open once per change of the flagged lines (first render included), so they are visible; the
+	// shopper may close it again.
+	const [expandedForKey, setExpandedForKey] = useState<string | undefined>(undefined);
+	if (unavailableKey !== expandedForKey) {
+		setExpandedForKey(unavailableKey);
+		if (unavailableKey) setIsExpanded(true);
+	}
 
 	// Extract data from either checkout or order
 	const data = checkout ? extractCheckoutData(checkout) : order ? extractOrderData(order) : null;
@@ -286,9 +351,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 					</div>
 					<span className="text-base font-semibold tabular-nums">{formatMoney(total)}</span>
 				</div>
-				{unavailableLineIds.length > 0 ? (
+				{unavailableLines.length > 0 ? (
 					<p className="text-xs text-destructive">
-						{t("unavailableHint", { count: unavailableLineIds.length })}
+						{t("unavailableHint", { count: unavailableLines.length })}
 					</p>
 				) : null}
 			</button>
@@ -339,21 +404,15 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 												{line.attributes.join(" / ")}
 											</p>
 										)}
-										{unavailableIds.has(line.id) ? (
-											<div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-												<p className="text-xs font-medium text-destructive">{t("soldOut")}</p>
-												{onRemoveUnavailableLine ? (
-													<button
-														type="button"
-														className="text-xs font-medium text-foreground underline underline-offset-2 disabled:opacity-50"
-														disabled={isRemovingUnavailableLine}
-														onClick={() => void onRemoveUnavailableLine(line.id)}
-													>
-														{t("removeItem")}
-													</button>
-												) : null}
-											</div>
+										{unavailableGiftLineIds.includes(line.id) ? (
+											<p className="mt-0.5 text-xs text-muted-foreground">{t("giftUnavailable")}</p>
 										) : null}
+										<UnavailableLineNotice
+											line={unavailableById.get(line.id)}
+											isBusy={isUpdatingUnavailableLine}
+											onReduce={onReduceUnavailableLine}
+											onRemove={onRemoveUnavailableLine}
+										/>
 									</div>
 
 									{/* Price */}

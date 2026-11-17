@@ -450,13 +450,15 @@
 			"updateAddressFailed": "Kunne ikke oppdatere adresse",
 			"crashTitle": "Kassefeil",
 			"crashMessage": "Noe gikk galt under lasting av kassen. Prøv igjen.",
-			"itemUnavailableTitle": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
-			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
-			"itemUnavailableRemoveMessage": "{count, plural, =1 {This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.} other {These items can’t be fulfilled for the address you entered. Remove them to continue, or try a different destination.}}",
-			"itemOutOfStockMessage": "{count, plural, =1 {Denne varen er utsolgt eller ikke lenger tilgjengelig i antallet du valgte. Fjern den for å fortsette.} other {Disse varene er utsolgt eller ikke lenger tilgjengelige i antallene du valgte. Fjern dem for å fortsette.}}",
-			"itemUnavailableRemove": "{count, plural, =1 {Remove item} other {Remove # items}}",
-			"itemUnavailableRemoveFailed": "{count, plural, =1 {Could not remove this item. Try again.} other {Could not remove these items. Try again.}}",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"itemUnavailableTitle": "{count, plural, =1 {En vare er ikke tilgjengelig} other {Noen varer er ikke tilgjengelige}}",
+			"itemUnavailableMessage": "Denne varen kan ikke leveres til adressen du oppga. Prøv en annen leveringsadresse.",
+			"itemUnavailableRemoveMessage": "{count, plural, =1 {Denne varen kan ikke leveres til adressen du oppga. Fjern den for å fortsette, eller prøv en annen leveringsadresse.} other {Disse varene kan ikke leveres til adressen du oppga. Fjern dem for å fortsette, eller prøv en annen leveringsadresse.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Denne varen er utsolgt eller ikke lenger tilgjengelig. Fjern den for å fortsette.} other {Disse varene er utsolgt eller ikke lenger tilgjengelige. Fjern dem for å fortsette.}}",
+			"itemShortStockMessage": "{count, plural, =1 {Det er færre igjen av denne varen enn du valgte. Reduser antallet eller fjern den for å fortsette.} other {Det er færre igjen av disse varene enn du valgte. Reduser antallene eller fjern dem for å fortsette.}}",
+			"itemUnavailableRemove": "{count, plural, =1 {Fjern varen} other {Fjern # varer}}",
+			"itemUnavailableRemoveFailed": "{count, plural, =1 {Kunne ikke fjerne varen. Prøv igjen.} other {Kunne ikke fjerne varene. Prøv igjen.}}",
+			"itemReduceFailed": "Kunne ikke endre antallet. Prøv igjen.",
+			"fulfillmentCheckFailed": "Kunne ikke sjekke om varene er tilgjengelige. Prøv igjen."
 		},
 		"contact": {
 			"title": "Kontakt",
@@ -490,9 +492,13 @@
 			"method": "Metode",
 			"delivery": "Levering",
 			"digital": "Digital",
-			"soldOut": "Sold out",
-			"unavailableHint": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
-			"removeItem": "Remove"
+			"soldOut": "Utsolgt",
+			"onlyLeft": "Bare {count} igjen",
+			"unavailableForAddress": "Ikke tilgjengelig for denne adressen",
+			"giftUnavailable": "Gaven er utsolgt. Den byttes ut eller fjernes når du fortsetter.",
+			"unavailableHint": "{count, plural, =1 {En vare er ikke tilgjengelig} other {Noen varer er ikke tilgjengelige}}",
+			"removeItem": "Fjern",
+			"reduceTo": "Reduser til {count}"
 		},
 		"promo": {
 			"placeholder": "Rabattkode",

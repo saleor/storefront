@@ -453,9 +453,11 @@
 			"itemUnavailableTitle": "{count, plural, =1 {Ein Artikel ist nicht verfügbar} other {Einige Artikel sind nicht verfügbar}}",
 			"itemUnavailableMessage": "Dieser Artikel kann nicht an die angegebene Adresse geliefert werden. Versuchen Sie es mit einer anderen Lieferadresse.",
 			"itemUnavailableRemoveMessage": "{count, plural, =1 {Dieser Artikel kann nicht an die angegebene Adresse geliefert werden. Entfernen Sie ihn, um fortzufahren, oder wählen Sie eine andere Lieferadresse.} other {Diese Artikel können nicht an die angegebene Adresse geliefert werden. Entfernen Sie sie, um fortzufahren, oder wählen Sie eine andere Lieferadresse.}}",
-			"itemOutOfStockMessage": "{count, plural, =1 {Dieser Artikel ist ausverkauft oder nicht mehr in der gewählten Menge verfügbar. Entfernen Sie ihn, um fortzufahren.} other {Diese Artikel sind ausverkauft oder nicht mehr in der gewählten Menge verfügbar. Entfernen Sie sie, um fortzufahren.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Dieser Artikel ist ausverkauft oder nicht mehr erhältlich. Entfernen Sie ihn, um fortzufahren.} other {Diese Artikel sind ausverkauft oder nicht mehr erhältlich. Entfernen Sie sie, um fortzufahren.}}",
+			"itemShortStockMessage": "{count, plural, =1 {Von diesem Artikel ist nicht mehr genug für die gewählte Menge vorrätig. Verringern Sie die Menge oder entfernen Sie den Artikel, um fortzufahren.} other {Von diesen Artikeln ist nicht mehr genug für die gewählten Mengen vorrätig. Verringern Sie die Mengen oder entfernen Sie die Artikel, um fortzufahren.}}",
 			"itemUnavailableRemove": "{count, plural, =1 {Artikel entfernen} other {# Artikel entfernen}}",
 			"itemUnavailableRemoveFailed": "{count, plural, =1 {Der Artikel konnte nicht entfernt werden. Bitte versuchen Sie es erneut.} other {Die Artikel konnten nicht entfernt werden. Bitte versuchen Sie es erneut.}}",
+			"itemReduceFailed": "Die Menge konnte nicht geändert werden. Bitte versuchen Sie es erneut.",
 			"fulfillmentCheckFailed": "Die Verfügbarkeit konnte nicht geprüft werden. Bitte versuchen Sie es erneut."
 		},
 		"contact": {
@@ -491,8 +493,12 @@
 			"delivery": "Lieferung",
 			"digital": "Digital",
 			"soldOut": "Ausverkauft",
+			"onlyLeft": "Nur noch {count} verfügbar",
+			"unavailableForAddress": "Für diese Adresse nicht verfügbar",
+			"giftUnavailable": "Geschenk nicht vorrätig. Es wird ersetzt oder entfernt, wenn Sie fortfahren.",
 			"unavailableHint": "{count, plural, =1 {Ein Artikel ist nicht verfügbar} other {Einige Artikel sind nicht verfügbar}}",
-			"removeItem": "Entfernen"
+			"removeItem": "Entfernen",
+			"reduceTo": "Auf {count} verringern"
 		},
 		"promo": {
 			"placeholder": "Rabattcode",

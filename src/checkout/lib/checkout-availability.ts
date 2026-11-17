@@ -1,5 +1,9 @@
 import type { CheckoutFieldError } from "@/checkout/lib/checkout-action-types";
 
+/**
+ * A destination issue: Saleor rejected a checkout mutation for stock at this address (its legacy
+ * error flow). It has no live counterpart in `checkout.problems`, so a step reports it.
+ */
 export type CheckoutAvailabilityIssue = {
 	message: string;
 	/** Lines the stock errors point at, in cart order. */
@@ -7,21 +11,16 @@ export type CheckoutAvailabilityIssue = {
 	/**
 	 * False when a variant label matched more lines than Saleor sent errors for it (size
 	 * "M" on two products, one of them in stock). Some flagged lines may then be fine, so
-	 * they must not be removed in bulk. Always true for lines read from `checkout.problems`,
-	 * which names them by id.
+	 * they must not be removed in bulk.
 	 */
 	isExact: boolean;
-	/**
-	 * `"stock"`: Saleor lists the lines in `checkout.problems` (sold out, short on quantity, or
-	 * no longer sold). Absent: a mutation was rejected, which is about the destination.
-	 */
-	cause?: "stock";
 };
 
 export type AvailabilityLine = {
 	id: string;
+	quantity?: number;
 	isGift?: boolean | null;
-	variant?: { name?: string | null; sku?: string | null } | null;
+	variant?: { id?: string; name?: string | null; sku?: string | null } | null;
 };
 
 export function isAvailabilityFieldError(error: { field?: string | null; code?: string | null }): boolean {
@@ -107,91 +106,98 @@ export function availabilityIssueFromFieldErrors(
 	};
 }
 
-/** Shape of the `checkout.problems` entries this module reads. */
+/** One `checkout.problems` entry, as the checkout fragment selects it. */
 export type CheckoutProblemLike = {
 	__typename?: string;
+	availableQuantity?: number | null;
 	line?: { id: string } | null;
 };
 
-const LINE_PROBLEM_TYPES: ReadonlySet<string> = new Set([
-	"CheckoutLineProblemInsufficientStock",
-	"CheckoutLineProblemVariantNotAvailable",
-]);
+/**
+ * A line Saleor cannot fulfil in full. `availableQuantity`: how many this line may keep, 0 when
+ * none (sold out, or no longer sold).
+ */
+export type StockLine = { id: string; quantity: number; availableQuantity: number };
 
-/** Line ids Saleor flags as out of stock or no longer available in `checkout.problems`. */
-export function unavailableLineIdsFromProblems(
-	problems: ReadonlyArray<CheckoutProblemLike> | null | undefined,
-): string[] {
-	const lineIds = new Set<string>();
-	for (const problem of problems ?? []) {
-		if (problem.__typename && LINE_PROBLEM_TYPES.has(problem.__typename) && problem.line?.id) {
-			lineIds.add(problem.line.id);
+type StockCheckout = {
+	isShippingRequired: boolean;
+	shippingAddress?: unknown;
+	problems?: ReadonlyArray<CheckoutProblemLike> | null;
+	lines: ReadonlyArray<AvailabilityLine>;
+};
+
+/**
+ * Every line `checkout.problems` lists as short or no longer sold, gift lines included, with how
+ * many this line may keep.
+ *
+ * Saleor checks stock per variant: it adds up the quantities of all lines of a variant (gift lines
+ * too) and flags each of them with the variant's total. A line's share is that total minus what
+ * the variant's other lines ask for, so lowering any one flagged line to its share fixes the variant.
+ *
+ * Before a shipping address exists, Saleor judges stock for the channel's default country
+ * (`checkout.country`), which may not be where the shopper ships. Those answers are not used.
+ */
+function shortLines(checkout: StockCheckout | null | undefined): Array<StockLine & { isGift: boolean }> {
+	if (!checkout || (checkout.isShippingRequired && !checkout.shippingAddress)) {
+		return [];
+	}
+	const variantLeft = new Map<string, number>();
+	for (const problem of checkout.problems ?? []) {
+		const id = problem.line?.id;
+		if (!id) continue;
+		if (problem.__typename === "CheckoutLineProblemVariantNotAvailable") {
+			variantLeft.set(id, 0);
+		} else if (problem.__typename === "CheckoutLineProblemInsufficientStock") {
+			const left = Math.max(0, problem.availableQuantity ?? 0);
+			variantLeft.set(id, Math.min(variantLeft.get(id) ?? left, left));
 		}
 	}
-	return [...lineIds];
+
+	const askedPerVariant = new Map<string, number>();
+	for (const line of checkout.lines) {
+		const variantId = line.variant?.id;
+		if (variantId)
+			askedPerVariant.set(variantId, (askedPerVariant.get(variantId) ?? 0) + (line.quantity ?? 0));
+	}
+
+	return checkout.lines.flatMap((line) => {
+		const left = variantLeft.get(line.id);
+		if (left === undefined) return [];
+		const quantity = line.quantity ?? 0;
+		const variantId = line.variant?.id;
+		const askedByOthers = variantId ? (askedPerVariant.get(variantId) ?? quantity) - quantity : 0;
+		return [
+			{
+				id: line.id,
+				quantity,
+				availableQuantity: Math.max(0, left - askedByOthers),
+				isGift: Boolean(line.isGift),
+			},
+		];
+	});
 }
 
 /**
- * With the channel's legacy error flow off (`useLegacyErrorFlow: false`), Saleor no longer
- * rejects checkout mutations for stock. It lists the affected lines in `checkout.problems`
- * and only fails at `checkoutComplete`, which is after the shopper has paid.
+ * Lines the shopper must change before paying, in cart order. With the channel's legacy error flow
+ * off, `problems` is the only place Saleor reports stock before `checkoutComplete`, which is after
+ * the shopper has paid. Gift lines are left out: see `unavailableGiftLineIds`.
  */
-export function availabilityIssueFromProblems(
-	problems: ReadonlyArray<CheckoutProblemLike> | null | undefined,
-	message = "",
-): CheckoutAvailabilityIssue | null {
-	const lineIds = unavailableLineIdsFromProblems(problems);
-	return lineIds.length ? { message, lineIds, isExact: true, cause: "stock" } : null;
-}
-
-/** Combine the issue a step reported with the one read from `checkout.problems`. */
-export function mergeAvailabilityIssues(
-	reported: CheckoutAvailabilityIssue | null,
-	fromProblems: CheckoutAvailabilityIssue | null,
-): CheckoutAvailabilityIssue | null {
-	if (!reported || !fromProblems) {
-		return reported ?? fromProblems;
-	}
-
-	return {
-		message: reported.message || fromProblems.message,
-		lineIds: [...new Set([...reported.lineIds, ...fromProblems.lineIds])],
-		// A loose name match in the reported issue may flag in-stock lines; keep them out of bulk removal.
-		isExact: reported.isExact && fromProblems.isExact,
-		cause: fromProblems.cause ?? reported.cause,
-	};
-}
-
-/** Flagged lines that are still in the cart, in cart order. */
-export function unavailableLineIdsInCart(
-	issue: CheckoutAvailabilityIssue | null,
-	lines: ReadonlyArray<{ id: string }>,
-): string[] {
-	if (!issue) {
-		return [];
-	}
-
-	const flagged = new Set(issue.lineIds);
-	return lines.filter((line) => flagged.has(line.id)).map((line) => line.id);
+export function stockLinesFromProblems(checkout: StockCheckout | null | undefined): StockLine[] {
+	return shortLines(checkout)
+		.filter((line) => !line.isGift)
+		.map((line) => ({ id: line.id, quantity: line.quantity, availableQuantity: line.availableQuantity }));
 }
 
 /**
- * Flagged lines the banner may remove in one `checkoutLinesDelete` call. Saleor rejects
- * the whole call for a gift line or an id that left the cart, and an inexact issue may
- * flag lines that are in stock.
+ * Gift lines `problems` lists while no line the shopper can change is short. Saleor refuses to
+ * delete a gift line, and swaps it for a gift in stock (or drops it) whenever it recalculates
+ * discounts, which re-submitting the shipping address before Continue and Pay does. So these get
+ * a note instead of a block, and the check before paying fails if one is still listed after that.
+ * A gift sharing a variant with a short line the shopper can change clears with that line.
  */
-export function bulkRemovableLineIds(
-	issue: CheckoutAvailabilityIssue | null,
-	lines: ReadonlyArray<{ id: string; isGift?: boolean | null }>,
-): string[] {
-	if (!issue?.isExact) {
-		return [];
-	}
-
-	return unavailableLineIdsInCart(
-		issue,
-		lines.filter((line) => !line.isGift),
-	);
+export function unavailableGiftLineIds(checkout: StockCheckout | null | undefined): string[] {
+	const short = shortLines(checkout);
+	return short.some((line) => !line.isGift) ? [] : short.map((line) => line.id);
 }
 
 /**
@@ -207,63 +213,79 @@ export function availabilityIssueForLines(
 		return issue;
 	}
 
-	const lineIds = unavailableLineIdsInCart(issue, lines);
+	const flagged = new Set(issue.lineIds);
+	const lineIds = lines.filter((line) => flagged.has(line.id)).map((line) => line.id);
 	return lineIds.length ? { ...issue, lineIds } : null;
 }
 
 /**
- * The reported issue after flagged lines were removed. A stock issue is dropped: the checkout
- * Saleor returns carries the live `problems`, which decide from here. A destination issue
- * keeps the flagged lines still in the cart.
+ * The same issue without one line, after the shopper changed that line to what Saleor has for
+ * this address. `null` once no flagged line is left.
  */
-export function reportedIssueAfterRemoval(
+export function availabilityIssueWithoutLine(
 	issue: CheckoutAvailabilityIssue | null,
-	lines: ReadonlyArray<{ id: string }>,
+	lineId: string,
 ): CheckoutAvailabilityIssue | null {
-	return issue?.cause === "stock" ? null : availabilityIssueForLines(issue, lines);
+	if (!issue?.lineIds.includes(lineId)) {
+		return issue;
+	}
+	const lineIds = issue.lineIds.filter((id) => id !== lineId);
+	return lineIds.length ? { ...issue, lineIds } : null;
 }
 
-/** An issue a step reported, with the checkout snapshot that was in context at the time. */
-export type ReportedAvailabilityIssue = {
-	issue: CheckoutAvailabilityIssue;
-	against: unknown;
+/**
+ * A line the shopper cannot buy as it is. `availableQuantity`: how many this line may keep
+ * (0: none). `null` when only the destination check flagged it, which says no number.
+ */
+export type FlaggedLine = { id: string; quantity: number; availableQuantity: number | null };
+
+/** What blocks the shopper: live stock lines and a reported destination issue. */
+export type CheckoutAvailability = {
+	/** From the live checkout's `problems`, so they clear as soon as Saleor clears them. */
+	stock: StockLine[];
+	destination: CheckoutAvailabilityIssue | null;
+	/** Every flagged line still in the cart, in cart order. Never gift lines, which the shopper cannot change. */
+	lines: FlaggedLine[];
+	/**
+	 * Lines one `checkoutLinesDelete` may remove: nothing of them is left, or a destination
+	 * issue matched them exactly. Never gift lines, which Saleor refuses to delete.
+	 */
+	removableLineIds: string[];
+	/** Changes only when the flagged lines or what is left of them change. */
+	key: string;
 };
 
-/**
- * The reported issue that still applies to `current`. A stock issue read from
- * `checkout.problems` is a snapshot: once the checkout changes, the live `problems` decide,
- * or a shopper who fixed the cart would stay blocked. A destination issue (a rejected
- * mutation in the legacy error flow) has no live counterpart and stays until cleared.
- */
-export function stillReportedIssue(
-	reported: ReportedAvailabilityIssue | null,
-	current: unknown,
-): CheckoutAvailabilityIssue | null {
-	if (!reported) {
+export function checkoutAvailability(
+	checkout: StockCheckout | null | undefined,
+	destination: CheckoutAvailabilityIssue | null,
+): CheckoutAvailability | null {
+	const cart = checkout?.lines ?? [];
+	const stock = stockLinesFromProblems(checkout);
+	const reported = availabilityIssueForLines(destination, cart);
+	if (stock.length === 0 && !reported) {
 		return null;
 	}
-	return reported.issue.cause !== "stock" || reported.against === current ? reported.issue : null;
-}
 
-/**
- * The reported issue after a set: a value, or an updater that receives the issue still in
- * effect for `current`, the checkout the caller rendered with (it may be older than the one
- * in context by now). A new issue is tagged with that same `current`, so a stock issue that
- * has lapsed for a newer checkout stays lapsed whatever the updater returns. One an updater
- * left as it was keeps its original tag.
- */
-export function nextReportedIssue(
-	previous: ReportedAvailabilityIssue | null,
-	action:
-		| CheckoutAvailabilityIssue
-		| null
-		| ((issue: CheckoutAvailabilityIssue | null) => CheckoutAvailabilityIssue | null),
-	current: unknown,
-): ReportedAvailabilityIssue | null {
-	const inEffect = stillReportedIssue(previous, current);
-	const issue = typeof action === "function" ? action(inEffect) : action;
-	if (!issue) {
-		return null;
+	const left = new Map<string, number | null>(stock.map((line) => [line.id, line.availableQuantity]));
+	for (const id of reported?.lineIds ?? []) {
+		if (!left.has(id)) left.set(id, null);
 	}
-	return previous && inEffect === issue ? previous : { issue, against: current };
+	const removable = new Set([
+		...stock.filter((line) => line.availableQuantity === 0).map((line) => line.id),
+		...(reported?.isExact ? reported.lineIds : []),
+	]);
+	const lines = cart
+		.filter((line) => left.has(line.id) && !line.isGift)
+		.map((line) => ({
+			id: line.id,
+			quantity: line.quantity ?? 0,
+			availableQuantity: left.get(line.id) ?? null,
+		}));
+	return {
+		stock,
+		destination: reported,
+		lines,
+		removableLineIds: cart.filter((line) => removable.has(line.id) && !line.isGift).map((line) => line.id),
+		key: lines.map((line) => `${line.id}:${line.availableQuantity ?? "-"}`).join(","),
+	};
 }

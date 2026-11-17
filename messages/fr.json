@@ -450,13 +450,15 @@
 			"updateAddressFailed": "Échec de la mise à jour de l'adresse",
 			"crashTitle": "Erreur de paiement",
 			"crashMessage": "Un problème est survenu lors du chargement du paiement. Veuillez réessayer.",
-			"itemUnavailableTitle": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
-			"itemUnavailableMessage": "This item can’t be fulfilled for the address you entered. Try a different destination.",
-			"itemUnavailableRemoveMessage": "{count, plural, =1 {This item can’t be fulfilled for the address you entered. Remove it to continue, or try a different destination.} other {These items can’t be fulfilled for the address you entered. Remove them to continue, or try a different destination.}}",
-			"itemOutOfStockMessage": "{count, plural, =1 {Cet article est épuisé ou n’est plus disponible dans la quantité choisie. Retirez-le pour continuer.} other {Ces articles sont épuisés ou ne sont plus disponibles dans les quantités choisies. Retirez-les pour continuer.}}",
-			"itemUnavailableRemove": "{count, plural, =1 {Remove item} other {Remove # items}}",
-			"itemUnavailableRemoveFailed": "{count, plural, =1 {Could not remove this item. Try again.} other {Could not remove these items. Try again.}}",
-			"fulfillmentCheckFailed": "Could not verify item availability. Please try again."
+			"itemUnavailableTitle": "{count, plural, =1 {Un article n’est pas disponible} other {Certains articles ne sont pas disponibles}}",
+			"itemUnavailableMessage": "Cet article ne peut pas être livré à l’adresse indiquée. Essayez une autre destination.",
+			"itemUnavailableRemoveMessage": "{count, plural, =1 {Cet article ne peut pas être livré à l’adresse indiquée. Retirez-le pour continuer, ou essayez une autre destination.} other {Ces articles ne peuvent pas être livrés à l’adresse indiquée. Retirez-les pour continuer, ou essayez une autre destination.}}",
+			"itemOutOfStockMessage": "{count, plural, =1 {Cet article est épuisé ou n’est plus disponible. Retirez-le pour continuer.} other {Ces articles sont épuisés ou ne sont plus disponibles. Retirez-les pour continuer.}}",
+			"itemShortStockMessage": "{count, plural, =1 {Il ne reste pas assez de cet article pour la quantité choisie. Réduisez la quantité ou retirez-le pour continuer.} other {Il ne reste pas assez de ces articles pour les quantités choisies. Réduisez les quantités ou retirez-les pour continuer.}}",
+			"itemUnavailableRemove": "{count, plural, =1 {Retirer l’article} other {Retirer # articles}}",
+			"itemUnavailableRemoveFailed": "{count, plural, =1 {Impossible de retirer cet article. Réessayez.} other {Impossible de retirer ces articles. Réessayez.}}",
+			"itemReduceFailed": "Impossible de modifier la quantité. Réessayez.",
+			"fulfillmentCheckFailed": "Impossible de vérifier la disponibilité des articles. Réessayez."
 		},
 		"contact": {
 			"title": "Contact",
@@ -490,9 +492,13 @@
 			"method": "Mode",
 			"delivery": "Livraison",
 			"digital": "Numérique",
-			"soldOut": "Sold out",
-			"unavailableHint": "{count, plural, =1 {An item isn’t available} other {Some items aren’t available}}",
-			"removeItem": "Remove"
+			"soldOut": "Épuisé",
+			"onlyLeft": "Plus que {count} en stock",
+			"unavailableForAddress": "Indisponible pour cette adresse",
+			"giftUnavailable": "Cadeau en rupture de stock. Il sera remplacé ou retiré quand vous continuerez.",
+			"unavailableHint": "{count, plural, =1 {Un article n’est pas disponible} other {Certains articles ne sont pas disponibles}}",
+			"removeItem": "Retirer",
+			"reduceTo": "Réduire à {count}"
 		},
 		"promo": {
 			"placeholder": "Code promo",

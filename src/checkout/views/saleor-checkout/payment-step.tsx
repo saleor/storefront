@@ -48,7 +48,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	onPaymentBusyChange,
 }) => {
 	useSyncCheckoutRouterUrl();
-	const { availabilityIssue } = useCheckoutAvailability();
+	const { availability } = useCheckoutAvailability();
 
 	const { user, authenticated } = useUser();
 	const tActions = useTranslations("checkout.actions");
@@ -175,8 +175,7 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 		return fieldErrors;
 	}, [errors]);
 
-	const isDisabled =
-		isLoading || hasInvalidDelivery || Boolean(availabilityIssue) || (!canSubmit && !isFreeOrder);
+	const isDisabled = isLoading || hasInvalidDelivery || Boolean(availability) || (!canSubmit && !isFreeOrder);
 
 	const paymentContent = (
 		<>

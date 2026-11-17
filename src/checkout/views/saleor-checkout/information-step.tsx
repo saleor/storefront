@@ -31,7 +31,7 @@ import { mapAddressFieldErrors } from "@/checkout/lib/address-field-errors";
 import {
 	availabilityIssueFromFieldErrors,
 	partitionCheckoutFieldErrors,
-	unavailableLineIdsFromProblems,
+	stockLinesFromProblems,
 } from "@/checkout/lib/checkout-availability";
 import { useCheckoutData } from "@/checkout/providers/checkout-data";
 import {
@@ -114,8 +114,8 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 	const t = useTranslations("checkout.actions");
 	const tErrors = useTranslations("checkout.errors");
 	const tAccount = useTranslations("account.errors");
-	const { setAvailabilityIssue } = useCheckoutAvailability();
-	const { setCheckout } = useCheckoutData();
+	const { setDestinationIssue } = useCheckoutAvailability();
+	const { setCheckout, refreshCheckout } = useCheckoutData();
 	const infoStep = useCheckoutStepNumber("INFO", checkout.isShippingRequired);
 	const {
 		isOrphaned,
@@ -333,7 +333,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			}
 
 			setIsSubmitting(true);
-			setAvailabilityIssue(null);
+			setDestinationIssue(null);
 			try {
 				let updatedCheckout: ServerCheckout = checkout;
 
@@ -424,7 +424,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 									tErrors("itemUnavailableMessage"),
 								);
 								if (issue) {
-									setAvailabilityIssue(issue);
+									setDestinationIssue(issue);
 								}
 								if (address.length) {
 									setErrors(mapAddressFieldErrors(address, "streetAddress1", tErrors("invalidValue")));
@@ -441,9 +441,15 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					}
 				}
 
+				// Nothing was sent to Saleor (no shipping, email unchanged): read the checkout fresh,
+				// or `problems` from an older copy would block, or pass, forever.
+				if (updatedCheckout === checkout) {
+					updatedCheckout = (await refreshCheckout({ updateState: false })) ?? checkout;
+				}
+
 				// New error flow: Saleor accepts the address but lists lines it cannot fulfil.
 				// Stay here; the banner and the Remove action come from the live checkout.
-				if (unavailableLineIdsFromProblems(updatedCheckout.problems).length > 0) {
+				if (stockLinesFromProblems(updatedCheckout).length > 0) {
 					setCheckout(updatedCheckout);
 					return;
 				}
@@ -475,8 +481,9 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 			countryCode,
 			effectiveCountryCode,
 			onComplete,
-			setAvailabilityIssue,
+			setDestinationIssue,
 			setCheckout,
+			refreshCheckout,
 		],
 	);
 
