@@ -4,6 +4,7 @@ import {
 	availabilityIssueForLines,
 	availabilityIssueFromFieldErrors,
 	availabilityIssueFromProblems,
+	availabilityIssueMessage,
 	bulkRemovableLineIds,
 	isAvailabilityFieldError,
 	mergeAvailabilityIssues,
@@ -423,5 +424,41 @@ describe("nextReportedIssue dispatched from an older checkout snapshot", () => {
 		);
 		expect(next?.issue.lineIds).toEqual(["line-b"]);
 		expect(stillReportedIssue(next, newer)).toBeNull();
+	});
+});
+
+describe("availabilityIssueMessage", () => {
+	const copy = {
+		outOfStock: (count: number) => `sold out (${count})`,
+		unavailable: "cannot ship there",
+	};
+
+	it("uses Saleor's message when it sent one", () => {
+		expect(
+			availabilityIssueMessage(
+				{ message: "Could not add items M.", lineIds: ["line-a"], isExact: true },
+				copy,
+			),
+		).toBe("Could not add items M.");
+	});
+
+	it("falls back to the stock copy, counted, for an issue read from checkout.problems", () => {
+		const issue = availabilityIssueFromProblems([
+			{ __typename: "CheckoutLineProblemInsufficientStock", line: { id: "line-a" } },
+			{ __typename: "CheckoutLineProblemVariantNotAvailable", line: { id: "line-b" } },
+		]);
+		expect(issue && availabilityIssueMessage(issue, copy)).toBe("sold out (2)");
+	});
+
+	it("never counts zero lines", () => {
+		expect(availabilityIssueMessage({ message: "", lineIds: [], isExact: true, cause: "stock" }, copy)).toBe(
+			"sold out (1)",
+		);
+	});
+
+	it("falls back to the destination copy when Saleor sent no text", () => {
+		expect(availabilityIssueMessage({ message: "", lineIds: ["line-a"], isExact: true }, copy)).toBe(
+			"cannot ship there",
+		);
 	});
 });

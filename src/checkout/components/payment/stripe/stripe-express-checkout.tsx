@@ -7,7 +7,9 @@ import {
 	type StripeExpressCheckoutElementOptions,
 } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { type CheckoutFragment } from "@/checkout/graphql";
+import { availabilityIssueMessage } from "@/checkout/lib/checkout-availability";
 import { type CheckoutPriceChangeNotice } from "@/checkout/lib/payment/checkout-pay-amount";
 import { clearPaymentCompleting } from "@/checkout/lib/payment/checkout-payment-completion";
 import { useLiveCheckoutSearchParams } from "@/checkout/lib/checkout-search-params";
@@ -61,6 +63,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 	const liveSearchParams = useLiveCheckoutSearchParams(searchParams);
 	const { refreshCheckout } = useCheckoutData();
 	const paymentMessages = useCheckoutPaymentMessages();
+	const tErrors = useTranslations("checkout.errors");
 	const [hasWallets, setHasWallets] = useState<boolean | null>(null);
 
 	const handleConfirm = useCallback(
@@ -106,7 +109,12 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 
 				if (result.kind === "availability") {
 					setAvailabilityIssue(result.issue);
-					event.paymentFailed({ message: result.issue.message });
+					event.paymentFailed({
+						message: availabilityIssueMessage(result.issue, {
+							outOfStock: (count) => tErrors("itemOutOfStockMessage", { count }),
+							unavailable: tErrors("itemUnavailableMessage"),
+						}),
+					});
 					return;
 				}
 
@@ -128,6 +136,7 @@ export const StripeExpressCheckout: FC<StripeExpressCheckoutProps> = ({
 			setAvailabilityIssue,
 			liveSearchParams,
 			stripe,
+			tErrors,
 		],
 	);
 
