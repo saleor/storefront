@@ -6,16 +6,25 @@ import { redirect } from "next/navigation";
 import { fetchOrderByNumberOnServer } from "@/checkout/lib/server/fetch-order-by-number";
 import { fetchOrderOnServer } from "@/checkout/lib/server/fetch-order";
 import { buildOrderStatusPath } from "@paper/session-bridge";
-import { checkRateLimit } from "@/lib/auth/auth-rate-limit";
 import { getCheckoutLocaleSlug } from "@/lib/browse-locale-server";
 import { isStorefrontLocaleSlug } from "@/config/locale";
 import {
+	ORDER_LOOKUP_TARGET_LIMIT,
 	ORDER_VIEW_FIND_RATE_LIMIT,
+	canonicalOrderGlobalId,
 	emailsMatch,
+	normalizeOrderEmail,
 	parseOrderNumber,
 	setOrderViewCookie,
 	signOrderViewToken,
 } from "@/lib/order-view";
+import {
+	clientIpFromHeaders,
+	consumeAttempt,
+	consumeAttempts,
+	hashedKey,
+	type LimitOutcome,
+} from "@/lib/rate-limit";
 
 export type OrderLookupActionResult = {
 	ok: false;
@@ -24,15 +33,6 @@ export type OrderLookupActionResult = {
 
 function genericMiss(): OrderLookupActionResult {
 	return { ok: false, errorKey: "generic" };
-}
-
-async function clientIp(): Promise<string> {
-	const headerList = await headers();
-	const forwarded = headerList.get("x-forwarded-for");
-	if (forwarded) {
-		return forwarded.split(",")[0]?.trim() || "unknown";
-	}
-	return headerList.get("x-real-ip") ?? "unknown";
 }
 
 function browseLocaleFromForm(formData: FormData): string | null {
@@ -47,26 +47,62 @@ async function grantOrderView(orderId: string, formData: FormData): Promise<neve
 	redirect(buildOrderStatusPath(token, locale));
 }
 
-async function rateLimitOrNull(action: string): Promise<OrderLookupActionResult | null> {
-	const limited = checkRateLimit(`${action}:${await clientIp()}`, ORDER_VIEW_FIND_RATE_LIMIT);
-	if (!limited.allowed) {
-		return { ok: false, errorKey: "rateLimited" };
-	}
-	return null;
+/*
+ * Guessing an email for an order (or an order for an email) is limited three ways: per IP, and
+ * per email and per order, so rotating IPs does not help. Every attempt is counted before Saleor
+ * is asked, so parallel requests cannot all pass on a count that has not caught up. The per-email
+ * and per-order counters hold a keyed hash, not the value, and are shared across instances when a
+ * store is configured. Without one they count per instance, which production logs as a warning;
+ * `RATE_LIMIT_STORE=required` refuses lookups instead, since the number search runs with an app
+ * token that can read every order.
+ */
+
+function resultFor(outcome: LimitOutcome): OrderLookupActionResult | null {
+	if (outcome.ok) return null;
+	return { ok: false, errorKey: outcome.reason === "limited" ? "rateLimited" : "lookupUnavailable" };
 }
+
+async function rejectIfIpLimited(action: string): Promise<OrderLookupActionResult | null> {
+	const ip = clientIpFromHeaders(await headers());
+	return resultFor(await consumeAttempt(`${action}:${ip}`, ORDER_VIEW_FIND_RATE_LIMIT, "strict"));
+}
+
+async function rejectIfTargetsLimited(keys: string[]): Promise<OrderLookupActionResult | null> {
+	return resultFor(
+		await consumeAttempts(
+			keys.map((key) => ({ key, limit: ORDER_LOOKUP_TARGET_LIMIT })),
+			"strict",
+		),
+	);
+}
+
+const emailKey = (email: string) => hashedKey("order-lookup-email", normalizeOrderEmail(email));
 
 /** Email step-up when the visitor already has the Saleor order id (Customer Emails landing). */
 export async function verifyOrderEmailAction(
 	_prev: OrderLookupActionResult | null,
 	formData: FormData,
 ): Promise<OrderLookupActionResult> {
-	const limited = await rateLimitOrNull("order-email");
-	if (limited) {
-		return limited;
+	const ipLimited = await rejectIfIpLimited("order-email");
+	if (ipLimited) {
+		return ipLimited;
 	}
 
-	const orderId = String(formData.get("orderId") ?? "");
+	// Only the spelling Saleor itself uses: any other would get a counter of its own.
+	const orderId = canonicalOrderGlobalId(String(formData.get("orderId") ?? ""));
+	if (!orderId) {
+		return genericMiss();
+	}
+
 	const email = String(formData.get("email") ?? "");
+	const targetsLimited = await rejectIfTargetsLimited([
+		hashedKey("order-lookup-id", orderId),
+		emailKey(email),
+	]);
+	if (targetsLimited) {
+		return targetsLimited;
+	}
+
 	const fetched = await fetchOrderOnServer(orderId);
 	if (fetched.status === "unavailable") {
 		return { ok: false, errorKey: "lookupUnavailable" };
@@ -86,9 +122,9 @@ export async function findOrderByNumberAction(
 	_prev: OrderLookupActionResult | null,
 	formData: FormData,
 ): Promise<OrderLookupActionResult> {
-	const limited = await rateLimitOrNull("order-find");
-	if (limited) {
-		return limited;
+	const ipLimited = await rejectIfIpLimited("order-find");
+	if (ipLimited) {
+		return ipLimited;
 	}
 
 	const parsed = parseOrderNumber(String(formData.get("number") ?? ""));
@@ -96,12 +132,20 @@ export async function findOrderByNumberAction(
 		return genericMiss();
 	}
 
+	const email = String(formData.get("email") ?? "");
+	const targetsLimited = await rejectIfTargetsLimited([
+		hashedKey("order-lookup-number", String(parsed)),
+		emailKey(email),
+	]);
+	if (targetsLimited) {
+		return targetsLimited;
+	}
+
 	const lookup = await fetchOrderByNumberOnServer(parsed);
 	if (lookup.status === "unavailable") {
 		return { ok: false, errorKey: "lookupUnavailable" };
 	}
 
-	const email = String(formData.get("email") ?? "");
 	const storedEmail = lookup.status === "found" ? lookup.order.userEmail : null;
 	// Always compare so a sequential number miss is not faster than a wrong email.
 	if (!emailsMatch(storedEmail, email) || lookup.status !== "found") {

@@ -1,7 +1,12 @@
 import "server-only";
 
-export { ORDER_VIEW_COOKIE_NAME, ORDER_VIEW_FIND_RATE_LIMIT, ORDER_VIEW_TOKEN_PREFIX } from "./constants";
-export { classifyOrderViewKey, isSaleorOrderGlobalId } from "./classify";
+export {
+	ORDER_LOOKUP_TARGET_LIMIT,
+	ORDER_VIEW_COOKIE_NAME,
+	ORDER_VIEW_FIND_RATE_LIMIT,
+	ORDER_VIEW_TOKEN_PREFIX,
+} from "./constants";
+export { canonicalOrderGlobalId, classifyOrderViewKey, isSaleorOrderGlobalId } from "./classify";
 export type { ClassifiedOrderViewKey } from "./classify";
 export { parseOrderNumber } from "./parse-number";
 export { readOrderViewCookie, readVerifiedOrderIdFromCookie, setOrderViewCookie } from "./cookie";

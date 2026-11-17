@@ -600,6 +600,7 @@
 		"server": {
 			"marketingSaveFailed": "マーケティング設定の保存に失敗しました",
 			"invalidRedirectUrl": "無効なリダイレクトURLです",
+			"rateLimited": "試行回数が多すぎます。しばらくしてからもう一度お試しください。",
 			"createAccountFailed": "アカウントの作成に失敗しました",
 			"noSaleorResponse": "Saleorからの応答がありません",
 			"shippingMethodsFailed": "配送方法の読み込みに失敗しました",

@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { after } from "next/server";
 import {
 	AddressValidationRulesDocument,
@@ -91,7 +92,14 @@ import { checkoutGraphqlLanguageCode, resolveCheckoutLocaleSlug } from "@/lib/ch
 import { emitCommerceEvent } from "@/lib/analytics/emit.server";
 import { checkoutCreateContextMetadata } from "@/lib/commerce-context/checkout-create-context";
 import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
+import {
+	REGISTER_IP_LIMIT,
+	RESET_PASSWORD_IP_LIMIT,
+	limitAccountAttempt,
+	limitAuthAttempt,
+} from "@/lib/auth/auth-rate-limit";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
+import { clientIpFromHeaders } from "@/lib/rate-limit";
 import { liveQuery, mutate, rawMutation } from "@/lib/saleor";
 import * as Checkout from "@/lib/checkout";
 import { saveCheckoutId } from "@/app/actions";
@@ -280,6 +288,13 @@ export async function registerCheckoutAccount(input: {
 	channel: string;
 	redirectUrl: string;
 }): Promise<SimpleActionResult> {
+	// Same limit as POST /api/auth/register: this action is callable from any page.
+	const ip = clientIpFromHeaders(await headers());
+	if (!(await limitAuthAttempt("register", ip, REGISTER_IP_LIMIT)).ok) {
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("rateLimited") };
+	}
+
 	// Confirmation emails embed this URL — reject foreign origins (phishing vector).
 	if (!isAllowedRedirectUrl(input.redirectUrl)) {
 		const { server: t } = await getCheckoutServerTranslations();
@@ -723,6 +738,15 @@ export async function requestCheckoutPasswordReset(input: {
 	channel: string;
 	redirectUrl: string;
 }): Promise<SimpleActionResult> {
+	// Same limits as POST /api/auth/reset-password, sharing its counters: this action is callable
+	// from any page, and without them it would send unlimited reset emails.
+	const ip = clientIpFromHeaders(await headers());
+	const limited = !(await limitAuthAttempt("reset-password", ip, RESET_PASSWORD_IP_LIMIT)).ok;
+	if (limited || !(await limitAccountAttempt("reset-password", String(input.email))).ok) {
+		const { server: t } = await getCheckoutServerTranslations();
+		return { ok: false, error: t("rateLimited") };
+	}
+
 	// Reset emails embed this URL — reject foreign origins (phishing vector).
 	if (!isAllowedRedirectUrl(input.redirectUrl)) {
 		const { server: t } = await getCheckoutServerTranslations();

@@ -22,7 +22,7 @@
  *  5. The quarantined compiled doc is ignored from agents (.cursorignore)
  *  6. Always-on AGENTS.md carries the managed Next.js agent-rules block
  *  7. Paper core hashes match paper-core.lock.json
- *  8. Required env present (NEXT_PUBLIC_SALEOR_API_URL) — only when --env
+ *  8. Required env present (NEXT_PUBLIC_SALEOR_API_URL), rate-limit store noted — only when --env
  *
  * Exit code 0 = healthy, 1 = something needs fixing. Every failure prints the fix.
  */
@@ -49,6 +49,10 @@ function ok(msg) {
 }
 function note(msg) {
 	console.log(`  • ${msg}`);
+}
+/** Worth acting on before production, but not a broken setup. */
+function caution(msg, fix) {
+	console.log(`  ! ${msg}\n      fix: ${fix}`);
 }
 
 console.log(
@@ -197,6 +201,32 @@ if (checkEnv) {
 		fail("NEXT_PUBLIC_SALEOR_API_URL is not set.", "add it to .env.local");
 	} else {
 		ok(`NEXT_PUBLIC_SALEOR_API_URL is set (${saleorUrl})`);
+	}
+
+	// Same pairs as src/lib/rate-limit/limiter.ts. Production env usually lives with the host, so a note.
+	const rateLimitStore = [
+		["RATE_LIMIT_REDIS_REST_URL", "RATE_LIMIT_REDIS_REST_TOKEN"],
+		["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
+		["KV_REST_API_URL", "KV_REST_API_TOKEN"],
+	].find(([url, token]) => checksEnv[url] && checksEnv[token]);
+	const storeFix =
+		"connect Upstash Redis (Vercel Marketplace) or set RATE_LIMIT_REDIS_REST_URL / _TOKEN (see .env.example)";
+	if (rateLimitStore) {
+		ok(`Rate-limit store is configured (${rateLimitStore[0]})`);
+	} else if (checksEnv.RATE_LIMIT_STORE?.toLowerCase() === "required") {
+		caution(
+			"RATE_LIMIT_STORE=required but no rate-limit store is set: guest order lookups are refused.",
+			storeFix,
+		);
+	} else if (checksEnv.SALEOR_APP_TOKEN) {
+		caution(
+			"SALEOR_APP_TOKEN turns on guest order lookup by number, but no rate-limit store is set. Fine locally; in production limits would count per server instance.",
+			storeFix,
+		);
+	} else {
+		note(
+			"No rate-limit store in .env files: fine for local dev. Production should use Redis (see .env.example).",
+		);
 	}
 }
 

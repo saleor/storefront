@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
+import { REGISTER_IP_LIMIT, rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { rawMutation, asValidationError, getUserMessage } from "@/lib/saleor";
 
@@ -36,7 +36,7 @@ interface AccountRegisterResult {
 }
 
 export async function POST(request: NextRequest) {
-	const rateLimited = rejectIfRateLimited(request, "register", { limit: 5, windowMs: 60 * 60 * 1000 });
+	const rateLimited = await rejectIfRateLimited(request, "register", REGISTER_IP_LIMIT);
 	if (rateLimited) {
 		return rateLimited;
 	}

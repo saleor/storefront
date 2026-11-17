@@ -24,6 +24,17 @@ Login, logout, and password reset go through **Next.js API routes**, not the bro
 
 Client forms call `loginWithBff()` / `setPasswordWithBff()` (`src/lib/auth/bff-client.ts`). Commerce (cart, checkout lines) stays on **server actions** — do not proxy all GraphQL. The header user menu (`UserMenuServer`) calls `getHeaderUser()` inside Suspense — same server session as account pages, no client `me` fetch.
 
+### Rate limits
+
+Every `/api/auth/*` route starts with `await rejectIfRateLimited(request, action)` (per IP). Login and reset-password also call `rejectIfAccountLimited` (per account, from any IP): 20 sign-in attempts per 15 minutes, 5 reset emails per hour. The checkout server actions `registerCheckoutAccount` and `requestCheckoutPasswordReset` share the same counters (`limitAuthAttempt` / `limitAccountAttempt`), since any page can call them. All of it lives in `src/lib/auth/auth-rate-limit.ts` on top of `src/lib/rate-limit/`:
+
+- Every attempt is counted (`consumeAttempt`) before the work it guards, so parallel requests cannot all pass on a stale count. Never check a count, do the work, and record afterwards.
+- Counts are shared across server instances in Redis over the Upstash REST protocol (`RATE_LIMIT_REDIS_REST_URL` / `_TOKEN`, or the `UPSTASH_REDIS_REST_*` / `KV_REST_API_*` names the Vercel Marketplace sets). **Production apps should configure one.**
+- Without a store, or while it does not answer, limits count in this instance's memory: fine for development and a single long-running server, weak on serverless hosting. Production then logs a warning at server start (`src/instrumentation.ts`) and at most once a minute while counting per instance; `pnpm doctor --env` flags it too.
+- Auth passes `"memory"`: it always falls back, so sign-in never stops. Guest order lookup passes `"strict"`: it falls back too, unless the deployment sets `RATE_LIMIT_STORE=required` (see `checkout-guest-order`). Keys over their limit are remembered per instance, so hammering them never reaches the store.
+- Emails, order numbers and order ids are stored as keyed hashes (`hashedKey`), never as typed.
+- The client IP comes from `clientIpFromHeaders`: `x-forwarded-for` counted back `TRUSTED_PROXY_COUNT` entries (default 1), or Vercel's `x-real-ip` when that setting is absent and `VERCEL` is set. IPv6 counts per /64; anything that is not an address is `unknown`. Never read these headers directly.
+
 ## Keeping header chrome fresh (Router Cache)
 
 HttpOnly cookies are the source of truth, and the header auth/cart chrome renders inside **cookie-gated dynamic holes** — the served document is always cookie-correct, and none of that content is in the shared cache. Freshness triggers are therefore **local to the acting user**; nothing here invalidates shared cache (see [`paper-vercel-cost.md`](paper-vercel-cost.md)):
@@ -91,6 +102,7 @@ export default function AccountOverviewPage() {
 ❌ Client-side sessionStorage retry/recover gates or looping `router.refresh()` from effects — fix cache boundaries server-side
 ❌ Treating all `me === null` as signed out — use `resolveSessionUser` (`guest`/`authenticated`/`unavailable`); show the login link only on `guest`
 ❌ `<Link>` from checkout → storefront when the session may have changed — use a plain `<a href>` / `navigateToStorefrontHome()`
+❌ A rate limit in a module-level `Map` or keyed on the first `x-forwarded-for` entry — per instance on serverless, and spoofable behind appending proxies; use `@/lib/rate-limit`
 
 ## Key files
 

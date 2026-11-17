@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { httpStatusForAuthErrors } from "@/lib/auth/auth-api-utils";
-import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
+import { rejectIfAccountLimited, rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
 import { signInWithPassword } from "@/lib/auth/bff-server";
 
 interface LoginRequest {
@@ -9,7 +9,7 @@ interface LoginRequest {
 }
 
 export async function POST(request: NextRequest) {
-	const rateLimited = rejectIfRateLimited(request, "login");
+	const rateLimited = await rejectIfRateLimited(request, "login");
 	if (rateLimited) {
 		return rateLimited;
 	}
@@ -26,11 +26,16 @@ export async function POST(request: NextRequest) {
 
 	const { email, password } = body;
 
-	if (!email || !password) {
+	if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
 		return NextResponse.json(
 			{ errors: [{ message: "Email and password are required", code: "REQUIRED" }] },
 			{ status: 400 },
 		);
+	}
+
+	const accountLimited = await rejectIfAccountLimited("login", email);
+	if (accountLimited) {
+		return accountLimited;
 	}
 
 	const result = await signInWithPassword(email, password);

@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { rejectIfRateLimited } from "@/lib/auth/auth-rate-limit";
+import {
+	RESET_PASSWORD_IP_LIMIT,
+	rejectIfAccountLimited,
+	rejectIfRateLimited,
+} from "@/lib/auth/auth-rate-limit";
 import { isAllowedRedirectUrl } from "@/lib/auth/validate-redirect-url";
 import { rawMutation, getUserMessage } from "@/lib/saleor";
 
@@ -28,7 +32,7 @@ interface RequestPasswordResetResult {
 }
 
 export async function POST(request: NextRequest) {
-	const rateLimited = rejectIfRateLimited(request, "reset-password", { limit: 5, windowMs: 60 * 60 * 1000 });
+	const rateLimited = await rejectIfRateLimited(request, "reset-password", RESET_PASSWORD_IP_LIMIT);
 	if (rateLimited) {
 		return rateLimited;
 	}
@@ -45,7 +49,7 @@ export async function POST(request: NextRequest) {
 
 	const { email, channel, redirectUrl } = body;
 
-	if (!email || !channel || !redirectUrl) {
+	if (typeof email !== "string" || !email || !channel || !redirectUrl) {
 		return NextResponse.json(
 			{ errors: [{ message: "Email, channel, and redirectUrl are required", code: "REQUIRED" }] },
 			{ status: 400 },
@@ -66,6 +70,12 @@ export async function POST(request: NextRequest) {
 			},
 			{ status: 400 },
 		);
+	}
+
+	// Same answer whether or not the account exists, so this limit reveals nothing either.
+	const emailLimited = await rejectIfAccountLimited("reset-password", email);
+	if (emailLimited) {
+		return emailLimited;
 	}
 
 	const result = await rawMutation<RequestPasswordResetResult>({

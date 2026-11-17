@@ -10,7 +10,7 @@ interface SetPasswordRequest {
 }
 
 export async function POST(request: NextRequest) {
-	const rateLimited = rejectIfRateLimited(request, "set-password");
+	const rateLimited = await rejectIfRateLimited(request, "set-password");
 	if (rateLimited) {
 		return rateLimited;
 	}
