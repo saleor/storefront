@@ -5,6 +5,8 @@ import { getLocaleDefinition, getStorefrontLocaleSlugs, type LocaleSlug } from "
 import { getConfiguredLocaleChannelPairs } from "@/config/locale-channel";
 import { parseEditorJSToText } from "@/lib/editorjs";
 import { buildStorefrontPath } from "@/lib/storefront-path";
+import { isStorefrontAgentsEnabled } from "@/config/agents";
+import { isAgentPagePath, markdownPath } from "@/lib/agents/negotiation";
 
 /**
  * Root Metadata
@@ -202,6 +204,9 @@ export function buildPageMetadata(options: {
 		...(url && {
 			alternates: {
 				canonical: url,
+				...(isStorefrontAgentsEnabled() && isAgentPagePath(url)
+					? { types: { "text/markdown": markdownPath(url) } }
+					: {}),
 				...(languages && Object.keys(languages).length > 0 ? { languages } : {}),
 			},
 		}),
