@@ -10,7 +10,7 @@ interface ConfirmAccountRequest {
 }
 
 export async function POST(request: NextRequest) {
-	const rateLimited = rejectIfRateLimited(request, "confirm-account", {
+	const rateLimited = await rejectIfRateLimited(request, "confirm-account", {
 		limit: 10,
 		windowMs: 15 * 60 * 1000,
 	});

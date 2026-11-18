@@ -395,6 +395,25 @@
 				"src/app/api/listing/route.ts"
 			],
 			"detectMarkers": ["ListingQuery", "definePlpTemplate", "LISTING_PROVIDERS"]
+		},
+		{
+			"id": "2026-11-shared-rate-limits",
+			"title": "Rate limits use a shared store, with per-email and per-order limits",
+			"upstreamSha": "",
+			"landedAt": "2026-11-17T12:00:00+01:00",
+			"introducedIn": "2026.11",
+			"requires": [],
+			"optional": false,
+			"skipPrompt": null,
+			"category": "data-layer",
+			"touchPaths": [
+				"src/lib/rate-limit/",
+				"src/lib/auth/auth-rate-limit.ts",
+				"src/app/api/auth/",
+				"src/app/(checkout)/order-actions.ts",
+				".env.example"
+			],
+			"detectMarkers": ["consumeAttempt", "clientIpFromHeaders", "ORDER_LOOKUP_FAILURE_LIMIT"]
 		}
 	]
 }

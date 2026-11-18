@@ -12,6 +12,7 @@ import {
 import type { ServerOrder } from "@/checkout/lib/checkout-types";
 import { toTypedDocument } from "@/checkout/lib/server/to-typed-document";
 import { checkoutGraphqlLocaleVariables } from "@/lib/checkout-locale";
+import { canEnforceStrictLimits } from "@/lib/rate-limit";
 import { liveQuery } from "@/lib/saleor";
 import type { LocaleSlug } from "@/config/locale";
 
@@ -40,6 +41,7 @@ export async function fetchOrderByNumberOnServer(
 	return classifyOrdersByNumberQuery(result);
 }
 
+/** The app token to look orders up, and rate limits the deployment accepts (see order-actions). */
 export function isOrderNumberLookupAvailable(): boolean {
-	return Boolean(process.env.SALEOR_APP_TOKEN);
+	return Boolean(process.env.SALEOR_APP_TOKEN) && canEnforceStrictLimits();
 }

@@ -602,6 +602,7 @@
 		"server": {
 			"marketingSaveFailed": "Failed to save marketing preference",
 			"invalidRedirectUrl": "Invalid redirect URL. See server logs for more information.",
+			"rateLimited": "Too many attempts. Please try again later.",
 			"createAccountFailed": "Failed to create account",
 			"noSaleorResponse": "No response from Saleor",
 			"shippingMethodsFailed": "Failed to load shipping methods",

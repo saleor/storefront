@@ -63,6 +63,8 @@ Do not invent a delivery date. Show min/max days only when the shipping method h
 ## Ops
 
 - `ORDER_VIEW_SECRET` (or fallback `REVALIDATE_SECRET`) signs tokens. Required in production.
+- Lookups (`/order/find` and the email step-up) are limited per IP (5 per 15 minutes) and, from any IP, per email, per order number and per order id (10 per hour each). Every attempt counts before Saleor is asked. Counters are keyed hashes in the shared rate-limit store (`src/lib/rate-limit/`). The email step-up takes only Saleor's own spelling of an order id (`canonicalOrderGlobalId`); others are a miss.
+- **Production apps should configure that store**: the number lookup runs with an app token that can read every order. Without one, lookups count per server instance (which serverless hosting multiplies) and production logs a warning. `RATE_LIMIT_STORE=required` refuses lookups (lookup-unavailable) and hides the number form instead.
 - Customer Emails Branding: `https://<storefront-origin>/order/{{id}}`. One URL. Do not add `{{token}}` to the email app.
 - Shop URL in that app must be the origin, not a `/{locale}/{channel}` browse path.
 
@@ -73,3 +75,4 @@ Do not invent a delivery date. Show min/max days only when the shipping method h
 - Linking the confirmation email to `/account/orders/{number}` for guest checkout
 - Inventing a delivery date when the method has no min/max days
 - Treating `/order/{hmac}` as a frozen confirmation screenshot — the URL is stable; the Saleor order is not
+- Answering a lookup differently for "no such order" and "wrong email", or skipping the email compare on a miss
