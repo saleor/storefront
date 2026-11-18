@@ -23,6 +23,7 @@ Paper covers only the part a storefront displays, and the rules also differ per 
 | "We don't deliver to this postcode" before shipping | The shipping zones' postcode rules                           | Postcode rules on shipping zones           |
 | "Material & safety" on the product page             | Product attributes with fixed slugs                          | Four attributes                            |
 | A returns window                                    | The Storefront — Policies Model                              | "Returns window days", or nothing          |
+| "Withdraw from contract" screens                    | Paper; recording needs a backend (not included yet)          | Handle withdrawals sent by email           |
 
 A fact that is missing in Saleor is not shown. Paper has no fallback figures and never links to a page that does not exist.
 
@@ -39,6 +40,7 @@ Some behaviour depends on the market a channel serves, some on the language, and
 | Where the shop delivers, and payment methods | EU and EEA (Consumer Rights Directive Art. 8(3))                                                                              | Every channel                                                      |
 | Product safety information                   | EU (General Product Safety Regulation, Regulation (EU) 2023/988)                                                              | Every channel                                                      |
 | Billing address from any country             | EU (Geo-blocking Regulation, Regulation (EU) 2018/302)                                                                        | Every channel, for orders that are shipped                         |
+| Withdrawal function                          | EU and EEA (Consumer Rights Directive Art. 11a)                                                                               | Per channel: channels that ship to an EU or EEA country            |
 
 ## Seller Details and the Imprint
 
@@ -156,6 +158,26 @@ Paper states no returns window unless you set one: the Storefront — Policies M
 
 Your statutory withdrawal information belongs on the `withdrawal` page; a returns window is a promise on top of it.
 
+## Withdrawal Function
+
+Consumers in the EU and EEA can withdraw from an online purchase through a function on the shop: one step to say which order, labelled "Withdraw from contract" ("Vertrag widerrufen"), a second to confirm, labelled "Confirm withdrawal" ("Widerruf bestätigen"), and a receipt right away. Pressing the confirm button is the time the withdrawal is received.
+
+Paper shows the screens at `/{locale}/{channel}/withdraw` and links them from:
+
+- the footer of every page, next to the withdrawal information page,
+- the customer's order list and order page,
+- the shop's `withdrawal` page, under its own text.
+
+Customers enter their name, the order number and their email, and choose the whole order or describe which items. Only those details are asked for.
+
+**Where it is shown.** On channels that ship to at least one EU or EEA country, the same test as for prior prices. To show it on another channel (for a voluntary returns policy) or hide it, set the channel in `src/config/withdrawals.ts`.
+
+**What Paper does today.** Recording a withdrawal and sending the receipt needs a backend, and Paper does not include one yet. The screens therefore end with "Send your withdrawal by email": the customer's statement written out, the shop's email address from `seller.email`, and a button that opens their mail app. They never say "Confirm withdrawal", because nothing is recorded.
+
+That email route is not a withdrawal function on its own. Until a backend records withdrawals, you have to receive withdrawals sent by email, confirm each one to the customer without delay with its content and the date and time you received it, and handle them yourself. A backend plugs in as a provider in `src/lib/withdrawals`: the screens, the account links and the receipt are built for it.
+
+**Wording.** English and German use the statutory labels. Other languages use clear translations; check them against your country's rules before you rely on them.
+
 ## Free Shipping
 
 Define free shipping in Saleor as a shipping method with price 0 and a minimum order price. Checkout applies it, and Paper advertises the same number in the announcement bar, on the product page and in the cart's progress bar.
@@ -188,7 +210,6 @@ Product names, descriptions and attribute values come from Saleor's translations
 
 ## Not Built Yet
 
-- A withdrawal function on order pages
 - The legal-guarantee notice
 - A cookie consent banner (Paper's analytics can wait for consent, but there is no banner to collect it)
 - Unit prices

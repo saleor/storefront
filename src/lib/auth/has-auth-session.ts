@@ -5,7 +5,7 @@ import { invariant } from "ts-invariant";
 
 import { readAuthCookieValue } from "./read-auth-cookie";
 
-function getAuthStorageKeys(saleorApiUrl: string) {
+export function getAuthStorageKeys(saleorApiUrl: string) {
 	return {
 		access: [saleorApiUrl, "saleor_auth_access_token"].join("+"),
 		refresh: [saleorApiUrl, "saleor_auth_module_refresh_token"].join("+"),

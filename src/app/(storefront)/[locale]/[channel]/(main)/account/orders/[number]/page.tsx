@@ -11,11 +11,13 @@ import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { OrderTimeline } from "@/ui/components/account/order-timeline";
 import { OrderStatusBadge } from "@/ui/components/account/order-status-badge";
+import { WithdrawOrderLink } from "@/ui/components/withdraw/withdraw-order-link";
+import { buttonClassName } from "@/ui/components/ui/button";
 import { AccountOrderDetailSkeleton } from "@/ui/components/account/account-skeleton";
 import { type AddressDetailsFragment } from "@/gql/graphql";
 
 type Props = {
-	params: Promise<{ locale: string; number: string }>;
+	params: Promise<{ locale: string; channel: string; number: string }>;
 };
 
 export default function OrderDetailPage({ params }: Props) {
@@ -27,7 +29,7 @@ export default function OrderDetailPage({ params }: Props) {
 }
 
 async function OrderDetailContent({ params }: Props) {
-	const { number, locale } = await params;
+	const { number, locale, channel } = await params;
 	const intlLocale = resolveLocaleFromSlug(locale).bcp47;
 	const t = await getTranslations({ locale, namespace: "account.orderDetail" });
 	const tCommon = await getTranslations({ locale, namespace: "account.common" });
@@ -64,7 +66,15 @@ async function OrderDetailContent({ params }: Props) {
 					<h1 className="text-balance text-h1">{tOrders("orderNumber", { number: order.number })}</h1>
 					<p className="mt-1 text-sm text-muted-foreground">{t("placedOn", { date: placedDate })}</p>
 				</div>
-				<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} localeSlug={locale} />
+				<div className="flex flex-wrap items-center gap-3">
+					<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} localeSlug={locale} />
+					<WithdrawOrderLink
+						locale={locale}
+						channel={channel}
+						orderId={order.id}
+						className={buttonClassName({ variant: "outline-solid", size: "sm" })}
+					/>
+				</div>
 			</div>
 
 			<div className="grid gap-6 lg:grid-cols-[1fr_320px]">

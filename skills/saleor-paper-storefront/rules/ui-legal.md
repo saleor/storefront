@@ -113,6 +113,21 @@ The product page shows a "Material & safety" block under the buy box, always vis
 
 ❌ Product safety details only inside a collapsed accordion or a tab.
 
+## Withdrawal function
+
+`/{locale}/{channel}/withdraw` (`WITHDRAW_PATH`): two labelled steps and a receipt (Consumer Rights Directive Art. 11a). Merchant view: `docs/selling-in-the-eu.md`.
+
+- Kernel interface `src/lib/withdrawals/`: `WithdrawalsProvider` (`provider.ts`, types in `types.ts`) with `lookup` and `submit`. Paper ships only `stub`, which records nothing: the review step's button and heading say "Send your withdrawal by email", and the flow ends in the email route. A backend plugs in by implementing the interface and returning it from `getWithdrawalsProvider()`.
+- Shown per channel: `withdrawalFunctionByChannel` in `src/config/withdrawals.ts`, else `isEuEeaChannel` (the prior-price test). The page 404s elsewhere; the entry points (footer after the withdrawal page, account order list and order page, the `withdrawal` page's button) follow the same test.
+- Built for a backend as well: `customer` mode (signed in; `getSessionAccessToken()` renews the token through the kernel), `orderLink` (`?order=`), `lookup` (name, order number, email; never shows order contents). With `stub` only `lookup` is used.
+- `flow.ts` rebuilds every step from the submitted fields: orders from the signed snapshot of step 1 (`form-token.ts`), the statement recomposed from the scope in the customer's language (`statement.ts`). On confirm the recomposed statement must equal the one shown, else the step returns with `statementUpdated`. The signed confirm token carries the idempotency key, kept across Back and "Try again".
+- `?order=` is a Saleor order ID, which reads that order's email and address anonymously: the route sends `Referrer-Policy: no-referrer`, the page removes the parameter from the address bar, analytics drop it, and account links include it only when a backend answered for that order.
+- The form submits through `onSubmit` + `startTransition` with `method="post"`; buttons wait for hydration. Like other dynamic Paper pages, it needs JavaScript to display.
+
+❌ "Confirm withdrawal" on a screen that records nothing.
+❌ Asking for anything beyond name, the order (or part of it) and an email; a survey or retention offer before the receipt.
+❌ Docs or copy that call the email route a withdrawal function.
+
 ## Copy that promises something
 
 A sentence about delivery time, shipping cost, a returns window or a discount is a promise. It must come from Saleor or from merchant content, never from a code default or a message string.
@@ -124,4 +139,4 @@ A sentence about delivery time, shipping cost, a returns window or a discount is
 
 ## Not built
 
-Unit prices, a withdrawal function on order pages, the legal-guarantee notice, and a consent banner.
+Unit prices, the legal-guarantee notice, and a consent banner.

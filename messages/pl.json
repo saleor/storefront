@@ -700,5 +700,101 @@
 			"navLabel": "Informacje prawne",
 			"imprint": "Dane sprzedawcy"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "Odstąp od umowy",
+			"description": "Odstąpienie od zakupu: wskaż zamówienie, a następnie potwierdź."
+		},
+		"entry": "Odstąp od umowy",
+		"step": "Krok {step} z 2",
+		"intro": "Wskaż zamówienie, od którego chcesz odstąpić. Potwierdzisz to w następnym kroku.",
+		"fields": {
+			"name": "Imię i nazwisko",
+			"email": "E-mail do potwierdzenia",
+			"orderNumber": "Numer zamówienia",
+			"orderNumberHint": "Numer zamówienia znajdziesz w potwierdzeniu zamówienia.",
+			"honeypot": "Pozostaw to pole puste"
+		},
+		"continue": "Dalej",
+		"back": "Wstecz",
+		"whichOrder": "Które zamówienie?",
+		"orderLabel": "Zamówienie {number}",
+		"period": {
+			"endsOn": "Odstąpienie możliwe do {date}.",
+			"notStarted": "Termin na odstąpienie biegnie od doręczenia.",
+			"mayHaveEnded": "Termin na odstąpienie mógł już upłynąć. Możesz mimo to wysłać oświadczenie; sklep je sprawdzi."
+		},
+		"earlier": "Odstąpiono już {date} o {time}: {items}",
+		"fullyWithdrawn": "Od całego tego zamówienia już odstąpiono.",
+		"review": {
+			"title": "Sprawdź odstąpienie",
+			"scope": "Od czego chcesz odstąpić?",
+			"scopeWhole": "Całe zamówienie",
+			"scopeLines": "Tylko wybrane produkty",
+			"scopeItems": "Tylko wybrane produkty: które?",
+			"itemsTextLabel": "Które produkty?",
+			"quantity": "Ilość",
+			"statement": "Twoje oświadczenie",
+			"confirm": "Potwierdź odstąpienie",
+			"stubConfirm": "Wyślij odstąpienie e-mailem"
+		},
+		"receipt": {
+			"title": "Odstąpienie otrzymane",
+			"receivedAt": "Otrzymaliśmy Twoje odstąpienie {date} o {time} ({zone}).",
+			"order": "Zamówienie",
+			"scope": "Zakres",
+			"scopeWhole": "Całe zamówienie",
+			"scopeLines": "{count, plural, one {# produkt} few {# produkty} many {# produktów} other {# produktu}}",
+			"scopeItems": "Zgodnie z opisem",
+			"sentTo": "Potwierdzenie wysłane do",
+			"nextSteps": "Co dalej, wyjaśniamy na stronie <link>{title}</link>.",
+			"nextStepsNoPage": "Sklep skontaktuje się z Tobą w sprawie zwrotu towaru i pieniędzy.",
+			"late": "Termin na odstąpienie mógł już upłynąć. Sklep to sprawdzi i odezwie się do Ciebie.",
+			"save": "Zapisz potwierdzenie"
+		},
+		"email": {
+			"title": "Wyślij odstąpienie e-mailem",
+			"intro": "Wyślij ten tekst na adres {email}. Odstąpienie liczy się od chwili otrzymania Twojej wiadomości.",
+			"introNoAddress": "Wyślij ten tekst na adres e-mail sklepu podany w nocie prawnej. Odstąpienie liczy się od chwili otrzymania Twojej wiadomości.",
+			"open": "Otwórz e-mail",
+			"copy": "Kopiuj tekst",
+			"copied": "Skopiowano",
+			"subject": "Odstąpienie, zamówienie {number}",
+			"subjectNoNumber": "Odstąpienie"
+		},
+		"notices": {
+			"notMatched": "Nie znaleźliśmy zamówienia z tymi danymi. Sprawdź numer zamówienia i adres e-mail albo wyślij odstąpienie e-mailem: to również jest ważne.",
+			"rateLimited": "Zbyt wiele prób. Spróbuj ponownie za kilka minut albo wyślij odstąpienie e-mailem: to również jest ważne.",
+			"unavailable": "Odstąpienie online jest chwilowo niedostępne. Spróbuj ponownie albo wyślij odstąpienie e-mailem: to również jest ważne.",
+			"automation": "Sprawdź dane i potwierdź ponownie.",
+			"conflict": "Sprawdź odstąpienie i potwierdź ponownie.",
+			"statementUpdated": "Dopasowaliśmy oświadczenie do Twojego wyboru. Sprawdź je i potwierdź ponownie.",
+			"noOrders": "Nie masz teraz zamówień, od których możesz odstąpić. W przypadku innego zamówienia wpisz jego numer poniżej.",
+			"invalid": "Niektóre dane wymagają poprawy."
+		},
+		"errors": {
+			"summary": "Sprawdź dane",
+			"nameRequired": "Podaj imię i nazwisko.",
+			"nameTooLong": "Maksymalnie 200 znaków.",
+			"emailInvalid": "Podaj poprawny adres e-mail, np. imie@example.com.",
+			"orderNumberInvalid": "Podaj numer zamówienia cyframi, np. 1042.",
+			"orderRequired": "Wybierz zamówienie.",
+			"linesRequired": "Wybierz co najmniej jeden produkt.",
+			"itemsTextRequired": "Opisz, od których produktów odstępujesz.",
+			"itemsTextTooLong": "Maksymalnie 1000 znaków.",
+			"notMatched": "Sprawdź tę informację."
+		},
+		"actions": {
+			"tryAgain": "Spróbuj ponownie",
+			"sendByEmail": "Wyślij e-mailem"
+		},
+		"statement": {
+			"wholeOrder": "Niniejszym odstępuję od umowy sprzedaży towarów z zamówienia {order} z dnia {date}. Imię i nazwisko: {name}.",
+			"wholeOrderNoDate": "Niniejszym odstępuję od umowy sprzedaży towarów z zamówienia {order}. Imię i nazwisko: {name}.",
+			"lines": "Niniejszym odstępuję od umowy sprzedaży następujących towarów: {items}. Zamówienie {order} z dnia {date}. Imię i nazwisko: {name}.",
+			"itemsDescription": "Niniejszym odstępuję od umowy sprzedaży następujących towarów z zamówienia {order}: {text}. Imię i nazwisko: {name}.",
+			"item": "{name} ({quantity}×)"
+		}
 	}
 }

@@ -14,7 +14,7 @@ invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
  * the SDK's refresh-then-reread flow works during RSC render (where cookie
  * writes are not allowed). See `createCookieTokenStorage`.
  */
-const createServerCookieStorage = async () => {
+export const createServerCookieStorage = async () => {
 	const cookieStore = await cookies();
 
 	return createCookieTokenStorage(cookieStore, saleorApiUrl, {

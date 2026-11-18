@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUserOrders } from "@/lib/account/get-orders";
+import { WithdrawOrderLink } from "@/ui/components/withdraw/withdraw-order-link";
 import { hasAuthSession } from "@/lib/auth/has-auth-session";
 import { OrderRow } from "@/ui/components/account/order-row";
 import { buildOrderRowLabels } from "@/ui/components/account/order-row-labels";
@@ -12,7 +13,7 @@ import { AccountOrdersListSkeleton } from "@/ui/components/account/account-skele
 const ORDERS_PER_PAGE = 10;
 
 type Props = {
-	params: Promise<{ locale: string }>;
+	params: Promise<{ locale: string; channel: string }>;
 	searchParams: Promise<{ after?: string }>;
 };
 
@@ -25,7 +26,7 @@ export default function AccountOrdersPage({ params, searchParams }: Props) {
 }
 
 async function AccountOrdersContent({ params, searchParams }: Props) {
-	const [{ locale }, { after }] = await Promise.all([params, searchParams]);
+	const [{ locale, channel }, { after }] = await Promise.all([params, searchParams]);
 	const t = await getTranslations({ locale, namespace: "account.orders" });
 	const tErrors = await getTranslations({ locale, namespace: "account.errors" });
 	const tOrder = await getTranslations({ locale, namespace: "account" });
@@ -65,12 +66,19 @@ async function AccountOrdersContent({ params, searchParams }: Props) {
 				<>
 					<div className="space-y-2">
 						{orders.map(({ node: order }) => (
-							<OrderRow
-								key={order.id}
-								order={order}
-								localeSlug={locale}
-								labels={buildOrderRowLabels(tOrder, tStatus, order)}
-							/>
+							<div key={order.id} className="grid gap-1">
+								<OrderRow
+									order={order}
+									localeSlug={locale}
+									labels={buildOrderRowLabels(tOrder, tStatus, order)}
+								/>
+								<WithdrawOrderLink
+									locale={locale}
+									channel={channel}
+									orderId={order.id}
+									className="justify-self-end px-1 text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground"
+								/>
+							</div>
 						))}
 					</div>
 

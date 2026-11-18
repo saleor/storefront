@@ -700,5 +700,101 @@
 			"navLabel": "Oikeudelliset tiedot",
 			"imprint": "Yrityksen tiedot"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "Peru sopimus",
+			"description": "Peru ostos: kerro tilaus ja vahvista."
+		},
+		"entry": "Peru sopimus",
+		"step": "Vaihe {step}/2",
+		"intro": "Kerro, minkä tilauksen haluat perua. Vahvistat peruutuksen seuraavassa vaiheessa.",
+		"fields": {
+			"name": "Etu- ja sukunimi",
+			"email": "Sähköposti vahvistusta varten",
+			"orderNumber": "Tilausnumero",
+			"orderNumberHint": "Tilausnumero on tilausvahvistuksessasi.",
+			"honeypot": "Jätä tämä kenttä tyhjäksi"
+		},
+		"continue": "Jatka",
+		"back": "Takaisin",
+		"whichOrder": "Mikä tilaus?",
+		"orderLabel": "Tilaus {number}",
+		"period": {
+			"endsOn": "Peruutus mahdollinen {date} asti.",
+			"notStarted": "Peruutusaika alkaa toimituksesta.",
+			"mayHaveEnded": "Peruutusaikasi on ehkä päättynyt. Voit silti lähettää peruutuksen; kauppa tarkistaa sen."
+		},
+		"earlier": "Peruttu jo {date} klo {time}: {items}",
+		"fullyWithdrawn": "Koko tilaus on jo peruttu.",
+		"review": {
+			"title": "Tarkista peruutus",
+			"scope": "Mitä haluat perua?",
+			"scopeWhole": "Koko tilaus",
+			"scopeLines": "Vain osa tuotteista",
+			"scopeItems": "Vain osa tuotteista: mitkä?",
+			"itemsTextLabel": "Mitkä tuotteet?",
+			"quantity": "Määrä",
+			"statement": "Ilmoituksesi",
+			"confirm": "Vahvista peruutus",
+			"stubConfirm": "Lähetä peruutus sähköpostilla"
+		},
+		"receipt": {
+			"title": "Peruutus vastaanotettu",
+			"receivedAt": "Vastaanotimme peruutuksesi {date} klo {time} ({zone}).",
+			"order": "Tilaus",
+			"scope": "Laajuus",
+			"scopeWhole": "Koko tilaus",
+			"scopeLines": "{count, plural, one {# tuote} other {# tuotetta}}",
+			"scopeItems": "Kuvauksen mukaan",
+			"sentTo": "Vahvistus lähetetty osoitteeseen",
+			"nextSteps": "Jatkosta kerrotaan sivulla <link>{title}</link>.",
+			"nextStepsNoPage": "Kauppa ottaa sinuun yhteyttä tuotteiden palautuksesta ja hyvityksestä.",
+			"late": "Peruutusaikasi on ehkä päättynyt. Kauppa tarkistaa asian ja ottaa sinuun yhteyttä.",
+			"save": "Tallenna kuitti"
+		},
+		"email": {
+			"title": "Lähetä peruutus sähköpostilla",
+			"intro": "Lähetä tämä teksti osoitteeseen {email}. Peruutus on tehty, kun viestisi on perillä.",
+			"introNoAddress": "Lähetä tämä teksti kaupan sähköpostiosoitteeseen, joka on yhteystiedoissamme. Peruutus on tehty, kun viestisi on perillä.",
+			"open": "Avaa sähköposti",
+			"copy": "Kopioi teksti",
+			"copied": "Kopioitu",
+			"subject": "Peruutus, tilaus {number}",
+			"subjectNoNumber": "Peruutus"
+		},
+		"notices": {
+			"notMatched": "Näillä tiedoilla ei löytynyt tilausta. Tarkista tilausnumero ja sähköpostiosoite tai lähetä peruutus sähköpostilla: sekin on pätevä.",
+			"rateLimited": "Liian monta yritystä. Yritä muutaman minuutin päästä uudelleen tai lähetä peruutus sähköpostilla: sekin on pätevä.",
+			"unavailable": "Verkkoperuutus ei ole juuri nyt käytettävissä. Yritä uudelleen tai lähetä peruutus sähköpostilla: sekin on pätevä.",
+			"automation": "Tarkista tiedot ja vahvista uudelleen.",
+			"conflict": "Tarkista peruutus ja vahvista uudelleen.",
+			"statementUpdated": "Päivitimme ilmoituksesi valintasi mukaiseksi. Tarkista se ja vahvista uudelleen.",
+			"noOrders": "Sinulla ei ole nyt tilauksia, jotka voisit perua. Muun tilauksen kohdalla anna sen numero alla.",
+			"invalid": "Joitakin tietoja on korjattava."
+		},
+		"errors": {
+			"summary": "Tarkista tiedot",
+			"nameRequired": "Anna etu- ja sukunimesi.",
+			"nameTooLong": "Enintään 200 merkkiä.",
+			"emailInvalid": "Anna kelvollinen sähköpostiosoite, esim. nimi@example.com.",
+			"orderNumberInvalid": "Anna tilausnumero numeroina, esim. 1042.",
+			"orderRequired": "Valitse tilaus.",
+			"linesRequired": "Valitse vähintään yksi tuote.",
+			"itemsTextRequired": "Kerro, mitkä tuotteet perut.",
+			"itemsTextTooLong": "Enintään 1000 merkkiä.",
+			"notMatched": "Tarkista tämä tieto."
+		},
+		"actions": {
+			"tryAgain": "Yritä uudelleen",
+			"sendByEmail": "Lähetä sähköpostilla"
+		},
+		"statement": {
+			"wholeOrder": "Peruutan täten tilauksen {order} ({date}) tuotteiden kauppaa koskevan sopimuksen. Nimi: {name}.",
+			"wholeOrderNoDate": "Peruutan täten tilauksen {order} tuotteiden kauppaa koskevan sopimuksen. Nimi: {name}.",
+			"lines": "Peruutan täten seuraavien tuotteiden kauppaa koskevan sopimuksen: {items}. Tilaus {order} ({date}). Nimi: {name}.",
+			"itemsDescription": "Peruutan täten seuraavien tilauksen {order} tuotteiden kauppaa koskevan sopimuksen: {text}. Nimi: {name}.",
+			"item": "{name} ({quantity}×)"
+		}
 	}
 }

@@ -700,5 +700,101 @@
 			"navLabel": "Rechtliches",
 			"imprint": "Impressum"
 		}
+	},
+	"withdraw": {
+		"meta": {
+			"title": "Vertrag widerrufen",
+			"description": "Einen Kauf widerrufen: Bestellung angeben, dann bestätigen."
+		},
+		"entry": "Vertrag widerrufen",
+		"step": "Schritt {step} von 2",
+		"intro": "Sagen Sie uns, welche Bestellung Sie widerrufen möchten. Bestätigen können Sie im nächsten Schritt.",
+		"fields": {
+			"name": "Vor- und Nachname",
+			"email": "E-Mail für die Bestätigung",
+			"orderNumber": "Bestellnummer",
+			"orderNumberHint": "Sie finden die Bestellnummer in Ihrer Bestellbestätigung.",
+			"honeypot": "Dieses Feld bitte leer lassen"
+		},
+		"continue": "Weiter",
+		"back": "Zurück",
+		"whichOrder": "Welche Bestellung?",
+		"orderLabel": "Bestellung {number}",
+		"period": {
+			"endsOn": "Widerruf möglich bis {date}.",
+			"notStarted": "Die Widerrufsfrist beginnt mit der Lieferung.",
+			"mayHaveEnded": "Ihre Widerrufsfrist ist möglicherweise abgelaufen. Sie können trotzdem widerrufen; der Shop prüft das."
+		},
+		"earlier": "Bereits widerrufen am {date} um {time} Uhr: {items}",
+		"fullyWithdrawn": "Diese Bestellung ist bereits vollständig widerrufen.",
+		"review": {
+			"title": "Widerruf prüfen",
+			"scope": "Was möchten Sie widerrufen?",
+			"scopeWhole": "Die ganze Bestellung",
+			"scopeLines": "Nur einzelne Artikel",
+			"scopeItems": "Nur einzelne Artikel: welche?",
+			"itemsTextLabel": "Welche Artikel?",
+			"quantity": "Menge",
+			"statement": "Ihre Erklärung",
+			"confirm": "Widerruf bestätigen",
+			"stubConfirm": "Widerruf per E-Mail senden"
+		},
+		"receipt": {
+			"title": "Widerruf eingegangen",
+			"receivedAt": "Ihr Widerruf ist am {date} um {time} Uhr ({zone}) bei uns eingegangen.",
+			"order": "Bestellung",
+			"scope": "Umfang",
+			"scopeWhole": "Ganze Bestellung",
+			"scopeLines": "{count, plural, one {# Artikel} other {# Artikel}}",
+			"scopeItems": "Wie beschrieben",
+			"sentTo": "Bestätigung an",
+			"nextSteps": "Wie es weitergeht, steht in unserer <link>{title}</link>.",
+			"nextStepsNoPage": "Der Shop meldet sich bei Ihnen zur Rücksendung und Erstattung.",
+			"late": "Ihre Widerrufsfrist ist möglicherweise abgelaufen. Der Shop prüft das und meldet sich bei Ihnen.",
+			"save": "Beleg speichern"
+		},
+		"email": {
+			"title": "Widerruf per E-Mail senden",
+			"intro": "Senden Sie diesen Text an {email}. Ihr Widerruf gilt mit dem Eingang Ihrer E-Mail.",
+			"introNoAddress": "Senden Sie diesen Text an die E-Mail-Adresse aus unserem Impressum. Ihr Widerruf gilt mit dem Eingang Ihrer E-Mail.",
+			"open": "E-Mail öffnen",
+			"copy": "Text kopieren",
+			"copied": "Kopiert",
+			"subject": "Widerruf, Bestellung {number}",
+			"subjectNoNumber": "Widerruf"
+		},
+		"notices": {
+			"notMatched": "Wir konnten keine Bestellung mit diesen Angaben finden. Prüfen Sie Bestellnummer und E-Mail-Adresse, oder senden Sie Ihren Widerruf per E-Mail. Auch das ist gültig.",
+			"rateLimited": "Gerade sind zu viele Versuche eingegangen. Versuchen Sie es in einigen Minuten erneut, oder senden Sie Ihren Widerruf per E-Mail. Auch das ist gültig.",
+			"unavailable": "Unser Online-Widerruf ist gerade nicht erreichbar. Versuchen Sie es erneut, oder senden Sie Ihren Widerruf per E-Mail. Auch das ist gültig.",
+			"automation": "Bitte prüfen Sie die Angaben und bestätigen Sie erneut.",
+			"conflict": "Bitte prüfen Sie Ihren Widerruf und bestätigen Sie erneut.",
+			"statementUpdated": "Wir haben Ihre Erklärung an Ihre Auswahl angepasst. Bitte prüfen Sie sie und bestätigen Sie erneut.",
+			"noOrders": "Sie haben gerade keine Bestellung, die Sie widerrufen können. Für eine andere Bestellung geben Sie unten die Bestellnummer ein.",
+			"invalid": "Einige Angaben müssen korrigiert werden."
+		},
+		"errors": {
+			"summary": "Bitte prüfen Sie Ihre Angaben",
+			"nameRequired": "Geben Sie Ihren Vor- und Nachnamen ein.",
+			"nameTooLong": "Höchstens 200 Zeichen.",
+			"emailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein, z. B. name@example.com.",
+			"orderNumberInvalid": "Geben Sie die Bestellnummer als Ziffern ein, z. B. 1042.",
+			"orderRequired": "Wählen Sie eine Bestellung.",
+			"linesRequired": "Wählen Sie mindestens einen Artikel.",
+			"itemsTextRequired": "Beschreiben Sie, welche Artikel Sie widerrufen.",
+			"itemsTextTooLong": "Höchstens 1000 Zeichen.",
+			"notMatched": "Bitte prüfen Sie diese Angabe."
+		},
+		"actions": {
+			"tryAgain": "Erneut versuchen",
+			"sendByEmail": "Per E-Mail widerrufen"
+		},
+		"statement": {
+			"wholeOrder": "Hiermit widerrufe ich den Vertrag über den Kauf der Waren aus Bestellung {order} vom {date}. Name: {name}.",
+			"wholeOrderNoDate": "Hiermit widerrufe ich den Vertrag über den Kauf der Waren aus Bestellung {order}. Name: {name}.",
+			"lines": "Hiermit widerrufe ich den Vertrag über den Kauf folgender Waren: {items}. Bestellung {order} vom {date}. Name: {name}.",
+			"itemsDescription": "Hiermit widerrufe ich den Vertrag über den Kauf folgender Waren aus Bestellung {order}: {text}. Name: {name}.",
+			"item": "{name} ({quantity}×)"
+		}
 	}
 }
