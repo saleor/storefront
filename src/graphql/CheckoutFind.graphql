@@ -1,6 +1,9 @@
 query CheckoutFind($id: ID!, $languageCode: LanguageCodeEnum!) {
 	checkout(id: $id) {
 		id
+		channel {
+			slug
+		}
 		email
 		lines {
 			id

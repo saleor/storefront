@@ -1,0 +1,62 @@
+query BuyAgainAvailability($ids: [ID!]!, $channel: String!) {
+	productVariants(ids: $ids, first: 100, channel: $channel) {
+		edges {
+			node {
+				id
+				quantityAvailable
+				pricing {
+					price {
+						gross {
+							amount
+							currency
+						}
+					}
+				}
+				product {
+					isAvailable
+				}
+			}
+		}
+	}
+}
+
+query BuyAgainDemoCatalog($channel: String!) {
+	productVariants(first: 100, channel: $channel) {
+		edges {
+			node {
+				id
+				name
+				quantityAvailable
+				pricing {
+					price {
+						gross {
+							amount
+							currency
+						}
+					}
+				}
+				product {
+					id
+					name
+					isAvailable
+					thumbnail(size: 256) {
+						url
+						alt
+					}
+				}
+			}
+		}
+	}
+}
+
+mutation BuyAgainAddLines($id: ID!, $lines: [CheckoutLineInput!]!) {
+	checkoutLinesAdd(id: $id, lines: $lines) {
+		checkout {
+			id
+		}
+		errors {
+			message
+			code
+		}
+	}
+}
